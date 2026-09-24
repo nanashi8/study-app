@@ -192,9 +192,9 @@ test('1項目に複数問ある教材は、テストだけ出題数を母数に�
   const rows = buildLearningContentProgress(createInitialLearningState())
   const byId = Object.fromEntries(rows.map((row) => [row.id, row]))
 
-  assert.equal(byId['koten-grammar'].progress.total, 74)
+  assert.equal(byId['koten-grammar'].progress.total, 130)
   assert.equal(byId['koten-grammar'].progress.quizTotal, KOTEN_GRAMMAR_QUESTIONS.length)
-  assert.equal(byId['koten-grammar'].progress.quizTotal, 136)
+  assert.equal(byId['koten-grammar'].progress.quizTotal, 264)
   assert.equal(byId['koten-culture'].progress.total, 56)
   assert.equal(byId['koten-culture'].progress.quizTotal, KOTEN_CULTURE_QUESTIONS.length)
   assert.equal(byId['koten-culture'].progress.quizTotal, 112)
@@ -220,8 +220,8 @@ test('1項目に複数問ある教材は、テストだけ出題数を母数に�
   })
   const grammar = answered.find((row) => row.id === 'koten-grammar')
   assert.equal(grammar.progress.quiz.correct, 1)
-  assert.equal(grammar.progress.quiz.unanswered, 135)
-  assert.equal(grammar.progress.learning.unlearned, 74)
+  assert.equal(grammar.progress.quiz.unanswered, 263)
+  assert.equal(grammar.progress.learning.unlearned, 130)
 })
 
 test('SRS外テスト結果は端末・進捗コード・クラウド・リセット契約を往復する', () => {

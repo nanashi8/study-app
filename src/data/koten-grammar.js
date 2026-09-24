@@ -1,5 +1,10 @@
+import { KOTEN_GRAMMAR_DETAILS } from './koten-grammar-details.js'
+import { KOTEN_GRAMMAR_MORE } from './koten-grammar-more.js'
+
 // 古典文法の登録・短文解釈で共用する要点集。
 // id は進捗コード／クラウド保存にも使う安定キーなので変更しない。
+// 最初の74項目の重要度・使い分け・時代背景・表は koten-grammar-details.js、
+// 2026-09-24 に足した項目は koten-grammar-more.js（後ろに続けて並べ、既存の順番を動かさない）。
 
 export const KOTEN_GRAMMAR_CATEGORIES = [
   { id: 'auxiliary', label: '助動詞', emoji: '🔗', color: '#d97706' },
@@ -8,9 +13,20 @@ export const KOTEN_GRAMMAR_CATEGORIES = [
   { id: 'honorific', label: '敬語', emoji: '🏯', color: '#9333ea' },
   { id: 'identification', label: '識別', emoji: '🔎', color: '#2563eb' },
   { id: 'rhetoric', label: '和歌修辞', emoji: '🌸', color: '#db2777' },
+  { id: 'reading', label: '文の読み方', emoji: '📖', color: '#0d9488' },
 ]
 
-export const KOTEN_GRAMMAR = [
+// 重要度（古典単語の KOTEN_WORD_LEVELS と同じ5段）。学年・目標別コースもこの段で組む。
+export const KOTEN_GRAMMAR_ITEM_LEVELS = [
+  { id: 'middle', label: '中学入門', shortLabel: '中学', color: '#10b981' },
+  { id: 'basic', label: '高校基礎', shortLabel: '基礎', color: '#0ea5e9' },
+  { id: 'standard', label: '共通テスト・中堅大', shortLabel: '標準', color: '#f59e0b' },
+  { id: 'advanced', label: '難関大学', shortLabel: '難関', color: '#e11d48' },
+  { id: 'elite', label: '最難関大学', shortLabel: '最難関', color: '#7c3aed' },
+]
+export const KOTEN_GRAMMAR_ITEM_LEVEL_BY_ID = Object.fromEntries(KOTEN_GRAMMAR_ITEM_LEVELS.map((level) => [level.id, level]))
+
+const BASE_GRAMMAR = [
   {
     id: 'kg_neg_zu',
     title: '打消の助動詞「ず」',
@@ -39,7 +55,7 @@ export const KOTEN_GRAMMAR = [
     connection: '連用形接続',
     meaning: '…た／…たのだなあ',
     summary: '物語では伝聞的な過去、和歌や会話では気づきの詠嘆になりやすい。',
-    example: { ja: '花ぞ咲きける。', gendai: '花が咲いているのだなあ。' },
+    example: { ja: '昔、男ありけり。', gendai: '昔、ある男がいた（ということだ）。' },
   },
   {
     id: 'kg_perfect_tsu',
@@ -575,7 +591,7 @@ export const KOTEN_GRAMMAR = [
     connection: '連用形に「て・たり」などが続くときに起こりやすい',
     meaning: '発音しやすい形へ音が変化する',
     summary: '元の活用形へ戻して品詞・接続を考える。「思うて」は「思ひて」のウ音便。',
-    example: { ja: 'いとあはれに思うて、涙を流す。', gendai: 'とてもしみじみと感じて、涙を流す。' },
+    example: { ja: '「さりとも」と頼もしう思ひて、文を書いて待つ。', gendai: '「それでも（来るだろう）」と頼もしく思って、手紙を書いて待つ。' },
   },
 
   // 敬語。語彙暗記だけでなく、誰から誰への敬意かまで確認する。
@@ -707,9 +723,9 @@ export const KOTEN_GRAMMAR = [
     category: 'identification',
     forms: '終助詞「ばや」／接続助詞「ば」＋係助詞「や」',
     connection: '未然形直後か、条件節の末かを確認',
-    meaning: '…したい／もし…なら…か',
+    meaning: '…したい／…なら…か／…ので…か',
     summary: '未然形に直接ついて文末を結べば願望。条件を示す「ば」と疑問「や」が別語の場合もある。',
-    example: { ja: '都へ行かばや。', gendai: '都へ行きたい。' },
+    example: { ja: '花見ばや。／花を見ればや、心の慰むらむ。', gendai: '花を見たい。／花を見たので、心が晴れるのだろうか。' },
   },
   {
     id: 'kg_identification_shi',
@@ -751,7 +767,7 @@ export const KOTEN_GRAMMAR = [
     connection: '特定の語に慣用的にかかる',
     meaning: '調子を整え、語のイメージを添える',
     summary: '現代語訳しないことが多い。「あしひきの→山」「ちはやぶる→神」など、対応を覚える。',
-    example: { ja: 'あしひきの山鳥の尾のしだり尾の', gendai: '山鳥の垂れ下がった尾のように' },
+    example: { ja: 'あをによし奈良の都は咲く花のにほふがごとく今盛りなり', gendai: '奈良の都は、咲く花が美しく照り映えるように、今まっさかりである' },
   },
   {
     id: 'kg_rhetoric_jokotoba',
@@ -763,6 +779,11 @@ export const KOTEN_GRAMMAR = [
     summary: '枕詞より長く、作者の創作性が高い。訳す場合も多く、どの語を導くかを見抜く。',
     example: { ja: 'あしびきの山鳥の尾のしだり尾のながながし夜を', gendai: '山鳥の長く垂れた尾のように、長い長い夜を' },
   },
+]
+
+export const KOTEN_GRAMMAR = [
+  ...BASE_GRAMMAR.map((item) => ({ ...item, ...KOTEN_GRAMMAR_DETAILS[item.id] })),
+  ...KOTEN_GRAMMAR_MORE,
 ]
 
 export const KOTEN_GRAMMAR_BY_ID = Object.fromEntries(
@@ -778,3 +799,6 @@ export const KOTEN_GRAMMAR_TOC = KOTEN_GRAMMAR_CATEGORIES.map((category) => ({
   category,
   items: kotenGrammarByCategory(category.id),
 })).filter(({ items }) => items.length > 0)
+
+export const kotenGrammarByLevel = (levelId) =>
+  KOTEN_GRAMMAR.filter((item) => item.level === levelId)

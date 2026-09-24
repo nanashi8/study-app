@@ -6,6 +6,13 @@ import {
   KOTEN_GRAMMAR_CATEGORIES,
 } from '../data/koten-grammar.js'
 import { Button, Chip } from '../components/ui.jsx'
+import { KotenText } from '../components/KotenFurigana.jsx'
+import {
+  KotenGrammarLevelChip,
+  KotenGrammarNotes,
+  KotenGrammarSystemLinks,
+  KotenGrammarTables,
+} from '../components/KotenGrammarExtras.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -288,14 +295,15 @@ export function KotenGrammarStudyScreen() {
           onClick={() => !flipped && setFlipped(true)}
           className="animate-pop-in rounded-[2rem] bg-white p-5 shadow-card"
         >
-          <div className="flex items-start">
+          <div className="flex flex-wrap items-center gap-1.5">
             {category && <Chip color={category.color}>{category.emoji} {category.label}</Chip>}
+            <KotenGrammarLevelChip item={item} />
           </div>
 
           <div className="mt-5 text-center">
             <p className="text-[11px] font-extrabold text-amber-600">古典文法</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink">
-              {item.title}
+              <KotenText>{item.title}</KotenText>
             </h1>
             <p className="mt-3 text-sm font-bold leading-relaxed text-ink/45">
               意味・接続・活用を思い出そう
@@ -314,20 +322,20 @@ export function KotenGrammarStudyScreen() {
               <div className="rounded-2xl bg-amber-50 p-4">
                 <p className="text-[10px] font-extrabold tracking-wide text-amber-600">意味・働き</p>
                 <p className="mt-1 font-display text-lg font-extrabold leading-relaxed text-ink">
-                  {item.meaning}
+                  <KotenText>{item.meaning}</KotenText>
                 </p>
               </div>
               <div className="grid gap-3">
                 <div className="rounded-2xl bg-sky-50 p-3.5">
                   <p className="text-[10px] font-extrabold tracking-wide text-sky-600">接続</p>
                   <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/75">
-                    {item.connection}
+                    <KotenText>{item.connection}</KotenText>
                   </p>
                 </div>
                 <div className="rounded-2xl bg-violet-50 p-3.5">
                   <p className="text-[10px] font-extrabold tracking-wide text-violet-600">活用・形</p>
                   <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/75">
-                    {item.forms}
+                    <KotenText>{item.forms}</KotenText>
                   </p>
                 </div>
               </div>
@@ -336,14 +344,18 @@ export function KotenGrammarStudyScreen() {
                   <Lightbulb size={16} />
                   <span className="text-[10px] font-extrabold tracking-wide">入試での見分け方</span>
                 </div>
-                <p className="text-sm font-bold leading-relaxed text-ink/65">{item.summary}</p>
+                <p className="text-sm font-bold leading-relaxed text-ink/65"><KotenText>{item.summary}</KotenText></p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="font-serif text-base font-bold leading-relaxed text-ink">{item.example.ja}</p>
+                <p className="font-serif text-base font-bold leading-relaxed text-ink"><KotenText>{item.example.ja}</KotenText></p>
                 <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/50">
-                  {item.example.gendai}
+                  <KotenText>{item.example.gendai}</KotenText>
                 </p>
               </div>
+              {/* 活用表・見分け方の表、使い分け、時代背景、この項目が入っている体系表。 */}
+              <KotenGrammarTables item={item} />
+              <KotenGrammarNotes item={item} />
+              <KotenGrammarSystemLinks item={item} />
             </div>
           )}
         </div>

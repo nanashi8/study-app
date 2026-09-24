@@ -17,6 +17,8 @@ import { CardSaveToggle } from '../components/CardStudyControls.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { kotenGrammarChoiceNoteFor } from '../lib/kotenGrammarChoiceNotes.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
+import { KotenText } from '../components/KotenFurigana.jsx'
+import { KotenGrammarNotes, KotenGrammarTablesToggle } from '../components/KotenGrammarExtras.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   ArrowRight,
@@ -288,7 +290,7 @@ export function KotenGrammarQuizScreen() {
           </div>
 
           <div className="mt-4 rounded-2xl bg-gradient-to-br from-slate-900 to-amber-950 p-4 text-white">
-            <p className="font-serif text-lg font-bold leading-[1.9]">{question.passage}</p>
+            <p className="font-serif text-lg font-bold leading-[1.9]"><KotenText>{question.passage}</KotenText></p>
             {question.target && (
               <p className="mt-2 inline-flex rounded-lg bg-amber-300/15 px-2 py-1 text-xs font-extrabold text-amber-200">
                 傍線部相当：{question.target}
@@ -297,7 +299,7 @@ export function KotenGrammarQuizScreen() {
           </div>
 
           <p className="mt-4 text-sm font-extrabold leading-relaxed text-ink/75">
-            {question.question}
+            <KotenText>{question.question}</KotenText>
           </p>
         </section>
 
@@ -363,7 +365,7 @@ export function KotenGrammarQuizScreen() {
             {/* この問題固有の説明と、出題した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
             <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-amber-100" data-koten-grammar-explanation>
               <p className="text-[10px] font-extrabold text-amber-700">解説</p>
-              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{question.explanation}</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75"><KotenText>{question.explanation}</KotenText></p>
             </div>
             <ChoiceExplanations
               title="選択肢解説（3択すべて）"
@@ -381,18 +383,21 @@ export function KotenGrammarQuizScreen() {
               <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2.5">
                 <p className="text-[10px] font-extrabold text-slate-500">現代語訳</p>
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
-                  {question.translation}
+                  <KotenText>{question.translation}</KotenText>
                 </p>
               </div>
             )}
 
+            {/* 関わる文法項目。使い分け・時代背景と、畳んだ活用表・見分け方の表。 */}
             <div className="mt-3 space-y-2">
               {relatedGrammar.map((item) => (
-                <div key={item.id} className="rounded-xl border border-amber-100 px-3 py-2.5">
-                  <p className="text-xs font-extrabold text-amber-800">{item.title}</p>
-                  <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50">
-                    {item.connection} ｜ {item.meaning}
+                <div key={item.id} className="space-y-2 rounded-xl border border-amber-100 px-3 py-2.5" data-koten-grammar-related={item.id}>
+                  <p className="text-xs font-extrabold text-amber-800"><KotenText>{item.title}</KotenText></p>
+                  <p className="text-[11px] font-bold leading-relaxed text-ink/50">
+                    <KotenText>{`${item.connection} ｜ ${item.meaning}`}</KotenText>
                   </p>
+                  <KotenGrammarNotes item={item} />
+                  <KotenGrammarTablesToggle item={item} />
                 </div>
               ))}
             </div>

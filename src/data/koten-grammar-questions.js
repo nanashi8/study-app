@@ -3,6 +3,7 @@ import {
   KOTEN_GRAMMAR,
   KOTEN_GRAMMAR_BY_ID,
 } from './koten-grammar.js'
+import { KOTEN_GRAMMAR_CONTEXT_MORE } from './koten-grammar-questions-more.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
 
 // grammarIds はSRS更新・登録・分野別出題に使う安定キー。
@@ -20,6 +21,7 @@ export const KOTEN_GRAMMAR_QUESTION_FORMATS = {
   honorific: { label: '敬語', emoji: '🏯' },
   rhetoric: { label: '和歌修辞', emoji: '🌸' },
   knowledge: { label: '文法知識', emoji: '🧠' },
+  reading: { label: '文の読み方', emoji: '📖' },
 }
 
 function exam(
@@ -53,7 +55,7 @@ function exam(
   }
 }
 
-export const KOTEN_GRAMMAR_CONTEXT_QUESTIONS = [
+const BASE_CONTEXT_QUESTIONS = [
   // ── 助動詞：本文中の意味・接続を主語と文脈から判定 ─────────────
   exam(
     'kgq_exam_001',
@@ -871,6 +873,24 @@ export const KOTEN_GRAMMAR_CONTEXT_QUESTIONS = [
   ),
 ]
 
+// 追加の文脈問題（koten-grammar-questions-more.js）。選択肢の説明は同じ所に書き、説明の台帳が読む。
+export const KOTEN_GRAMMAR_CONTEXT_QUESTIONS = [
+  ...BASE_CONTEXT_QUESTIONS,
+  ...KOTEN_GRAMMAR_CONTEXT_MORE.map((entry) => exam(
+    entry.id,
+    entry.grammarIds,
+    entry.level,
+    entry.format,
+    entry.passage,
+    entry.target,
+    entry.question,
+    Object.keys(entry.choices),
+    entry.answer,
+    entry.explanation,
+    entry.translation,
+  )),
+]
+
 // 誤答が正解の一部を丸ごと含んでいると、どちらを選んでも正しい問題になる。
 // 「連用形接続」を「連用形接続（カ変・サ変には特殊な接続あり）」の誤答に出す等。
 // 記号を落として包含関係を見て、そういう候補は誤答に採らない。
@@ -909,6 +929,15 @@ function rotateChoices(values, offset) {
   return [...values.slice(shift), ...values.slice(0, shift)]
 }
 
+// 項目の重要度（中学→最難関の5段）から、基礎問題の難しさ（基礎・標準・発展）を決める。
+const FOUNDATION_LEVEL_BY_ITEM_LEVEL = Object.freeze({
+  middle: 'basic',
+  basic: 'basic',
+  standard: 'standard',
+  advanced: 'advanced',
+  elite: 'advanced',
+})
+
 // 全項目に最低1問を保証する基礎問題。例文を手掛かりに、意味・接続・活用を
 // 一問ずつ異なる角度で問うため、新項目を追加しても「覚えるだけ」で終わらない。
 export const KOTEN_GRAMMAR_FOUNDATION_QUESTIONS = KOTEN_GRAMMAR.map((item, index) => {
@@ -927,7 +956,7 @@ export const KOTEN_GRAMMAR_FOUNDATION_QUESTIONS = KOTEN_GRAMMAR.map((item, index
     id: `kgq_foundation_${item.id}`,
     grammarIds: [item.id],
     category: item.category,
-    level: index < 29 ? 'basic' : 'standard',
+    level: FOUNDATION_LEVEL_BY_ITEM_LEVEL[item.level] ?? 'standard',
     format: key === 'meaning' ? 'meaning' : key === 'connection' ? 'connection' : 'inflection',
     style: 'foundation',
     source: '受験基礎型',

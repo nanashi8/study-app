@@ -1,8 +1,9 @@
 {
  "readMe": [
-  "古典・漢文の「必修範囲」の台帳。依頼 requests/2026-09-24-classics-enrich.json の母集団で、tests/classics-enrichment.test.mjs が全件を教材データと突き合わせる。",
+  "古典・漢文の「必修範囲」の台帳。依頼 requests/2026-09-24-classics-enrich.json の母集団で、tests/classics-*.test.mjs が全件を教材データと突き合わせる。",
   "kotenVocab は古典単語の必修語（既存300語＋2026-09-24に足した312語）。section は依頼の文に挙げた分類（心情・評価・人柄・程度と呼応の副詞・動作・敬語動詞・時と暦・住まいと宮廷・恋愛と結婚・仏教と信仰・死と出家の言い方・連語と慣用表現・助動詞と助詞）。",
-  "語を足すときは、先にここへ書いてから教材へ入れる（ここにない語は教材に置かない）。"
+  "語を足すときは、先にここへ書いてから教材へ入れる（ここにない語は教材に置かない）。",
+  "kotenGrammar は古典文法の必修項目（既存74項目＋2026-09-24に足した56項目）。section は依頼の文に挙げた範囲（用言の活用と活用形の用法・助動詞・助詞6種・係り結び・呼応の副詞・敬語・識別・和歌修辞・文の読み方）。"
  ],
  "kotenVocab": [
   {
@@ -3675,6 +3676,788 @@
    "word": "たり（断定）",
    "pos": "助動",
    "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  }
+ ],
+ "kotenGrammar": [
+  {
+   "id": "kg_adjective",
+   "title": "形容詞の活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_adjectival_nari",
+   "title": "形容動詞ナリ活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_yodan",
+   "title": "動詞の四段活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_kamiichidan",
+   "title": "動詞の上一段活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_shimoichidan",
+   "title": "動詞の下一段活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_kaminidan",
+   "title": "動詞の上二段活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_shimonidan",
+   "title": "動詞の下二段活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_kahen",
+   "title": "動詞のカ行変格活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_sahen",
+   "title": "動詞のサ行変格活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_nahen",
+   "title": "動詞のナ行変格活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_verb_rahen",
+   "title": "動詞のラ行変格活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_adjectival_tari",
+   "title": "形容動詞タリ活用",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_onbin",
+   "title": "音便",
+   "section": "用言の活用と活用形の用法",
+   "since": "existing"
+  },
+  {
+   "id": "kg_forms_usage",
+   "title": "活用形の用法（六つの活用形の働き）",
+   "section": "用言の活用と活用形の用法",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_verb_type_identify",
+   "title": "動詞の活用の種類の見分け方",
+   "section": "用言の活用と活用形の用法",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adjective_hojo",
+   "title": "形容詞の補助活用（カリ活用）",
+   "section": "用言の活用と活用形の用法",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_gokan",
+   "title": "形容詞・形容動詞の語幹の用法",
+   "section": "用言の活用と活用形の用法",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_onbin_hatsuon",
+   "title": "撥音便の無表記（あなり・ななり・ざなり）",
+   "section": "用言の活用と活用形の用法",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_neg_zu",
+   "title": "打消の助動詞「ず」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_past_ki",
+   "title": "過去の助動詞「き」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_past_keri",
+   "title": "過去・詠嘆の助動詞「けり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_perfect_tsu",
+   "title": "完了・強意の助動詞「つ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_perfect_nu",
+   "title": "完了・強意の助動詞「ぬ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_perfect_tari",
+   "title": "完了・存続の助動詞「たり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_perfect_ri",
+   "title": "完了・存続の助動詞「り」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conjecture_mu",
+   "title": "推量・意志などの助動詞「む」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conjecture_beshi",
+   "title": "推量・当然などの助動詞「べし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_negative_maji",
+   "title": "打消推量・不可能などの助動詞「まじ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_negative_ji",
+   "title": "打消推量・打消意志の助動詞「じ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_present_ramu",
+   "title": "現在推量・原因推量の助動詞「らむ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_past_kemu",
+   "title": "過去推量・原因推量の助動詞「けむ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_evidence_rashi",
+   "title": "推定の助動詞「らし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_visual_meri",
+   "title": "推定・婉曲の助動詞「めり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_hearsay_nari",
+   "title": "伝聞・推定の助動詞「なり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_assertion_nari",
+   "title": "断定の助動詞「なり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_voice_raru",
+   "title": "受身・尊敬・自発・可能「る・らる」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_causative_sasu",
+   "title": "使役・尊敬「す・さす・しむ」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conjecture_muzu",
+   "title": "推量・意志などの助動詞「むず」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_counterfactual_mashi",
+   "title": "反実仮想・ためらいの助動詞「まし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_desire_mahoshi",
+   "title": "願望の助動詞「まほし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_desire_tashi",
+   "title": "願望の助動詞「たし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_comparison_gotoshi",
+   "title": "比況・例示の助動詞「ごとし」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_assertion_tari",
+   "title": "断定の助動詞「たり」",
+   "section": "助動詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_aux_jodai",
+   "title": "上代の助動詞「ゆ・らゆ・ふ」",
+   "section": "助動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_quote_to",
+   "title": "引用の格助詞「と」",
+   "section": "助詞（格助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_case_no_ga",
+   "title": "格助詞「の・が」",
+   "section": "助詞（格助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_case_ni",
+   "title": "格助詞「に」",
+   "section": "助詞（格助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_case_wo_he",
+   "title": "格助詞「を」「へ」",
+   "section": "助詞（格助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_case_yori",
+   "title": "格助詞「より」「から」",
+   "section": "助詞（格助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_case_nite_shite",
+   "title": "格助詞「にて」「して」",
+   "section": "助詞（格助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_case_to",
+   "title": "格助詞「と」（共同・変化・比較・並列）",
+   "section": "助詞（格助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_conj_ba",
+   "title": "接続助詞「ば」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_concessive_domo",
+   "title": "逆接の接続助詞「ど・ども」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conj_te",
+   "title": "接続助詞「て・して」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conj_tsutsu",
+   "title": "接続助詞「つつ」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conj_nagara",
+   "title": "接続助詞「ながら」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conj_monono",
+   "title": "逆接の接続助詞「ものの・ものを・ものから」",
+   "section": "助詞（接続助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_conj_tomo",
+   "title": "接続助詞「と・とも」（仮定の逆接）",
+   "section": "助詞（接続助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_conj_ga_ni_wo",
+   "title": "接続助詞「が・に・を」",
+   "section": "助詞（接続助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_conj_de",
+   "title": "接続助詞「で」（打消の接続）",
+   "section": "助詞（接続助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_conj_monoyue",
+   "title": "接続助詞「ものゆゑ」",
+   "section": "助詞（接続助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adverb_dani_sura_sae",
+   "title": "副助詞「だに・すら・さへ」",
+   "section": "助詞（副助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_adv_nomi_bakari",
+   "title": "副助詞「のみ」「ばかり」",
+   "section": "助詞（副助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adv_made_nado",
+   "title": "副助詞「まで」「など」",
+   "section": "助詞（副助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adv_shi_shimo",
+   "title": "副助詞「し」「しも」（強意）",
+   "section": "助詞（副助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_kakari_ha_mo",
+   "title": "係助詞「は」「も」",
+   "section": "助詞（係助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_kakari_ya_ka",
+   "title": "係助詞「や」「か」（疑問と反語）",
+   "section": "助詞（係助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_wish_baya",
+   "title": "願望の終助詞「ばや」",
+   "section": "助詞（終助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_prohibition_na_so",
+   "title": "禁止の「な…そ」",
+   "section": "助詞（終助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_wish_teshigana",
+   "title": "願望の終助詞「てしがな・にしがな」",
+   "section": "助詞（終助詞）",
+   "since": "existing"
+  },
+  {
+   "id": "kg_final_mogana",
+   "title": "終助詞「もがな」「がな」",
+   "section": "助詞（終助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_final_na",
+   "title": "終助詞「な」（禁止）と「な」（詠嘆）",
+   "section": "助詞（終助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_final_kashi",
+   "title": "終助詞「かし」",
+   "section": "助詞（終助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_final_kana",
+   "title": "終助詞「かな」「かも」（詠嘆）",
+   "section": "助詞（終助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_interjection",
+   "title": "間投助詞「や」「よ」「を」",
+   "section": "助詞（間投助詞）",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_kakari_renntai",
+   "title": "係り結び「ぞ・なむ・や・か」",
+   "section": "係り結び",
+   "since": "existing"
+  },
+  {
+   "id": "kg_kakari_koso",
+   "title": "係り結び「こそ」",
+   "section": "係り結び",
+   "since": "existing"
+  },
+  {
+   "id": "kg_kakari_shouryaku",
+   "title": "係り結びの省略（結びの省略）",
+   "section": "係り結び",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_kakari_nagare",
+   "title": "結びの流れ（結びの消滅）",
+   "section": "係り結び",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adverb_e_yomo",
+   "title": "呼応の副詞「え・よも」",
+   "section": "呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_adverb_sarani_tsuyu",
+   "title": "呼応の副詞「さらに・つゆ」",
+   "section": "呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_adverb_yume_osaosa",
+   "title": "呼応の副詞「ゆめ」「をさをさ」「たえて」",
+   "section": "呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adverb_ikade",
+   "title": "呼応の副詞「いかで」「いつしか」（願望）",
+   "section": "呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adverb_yoshi",
+   "title": "呼応の副詞「よし」「たとひ」（仮定・譲歩）",
+   "section": "呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_adverb_isa",
+   "title": "「いさ…知らず」",
+   "section": "呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_honorific_direction",
+   "title": "敬語の種類と敬意の方向",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_sonkei",
+   "title": "主な尊敬語",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_kenjo",
+   "title": "主な謙譲語",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_teinei",
+   "title": "主な丁寧語",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_tamau",
+   "title": "「給ふ」の四段・下二段識別",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_double",
+   "title": "二重敬語・最高敬語",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_honorific_sosu_keisu",
+   "title": "「奏す・啓す」の敬意の対象",
+   "section": "敬語",
+   "since": "existing"
+  },
+  {
+   "id": "kg_hon_hojo",
+   "title": "本動詞と補助動詞",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_hon_nihoumen",
+   "title": "二方面への敬語",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_hon_shugo",
+   "title": "敬語から主語を決める",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_hon_tatematsuru_mairu",
+   "title": "「奉る」「参る」の尊敬の用法",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_hon_haberi_saburau",
+   "title": "「侍り」「候ふ」の謙譲と丁寧",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_hon_jikei",
+   "title": "自敬表現",
+   "section": "敬語",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_identification_ru_re",
+   "title": "「る・れ」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_nu_ne",
+   "title": "「ぬ・ね」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_namu",
+   "title": "「なむ」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_nari",
+   "title": "「なり」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_ni",
+   "title": "「に」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_ramu",
+   "title": "「らむ」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_baya",
+   "title": "「ばや」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_identification_shi",
+   "title": "「し」の識別",
+   "section": "識別",
+   "since": "existing"
+  },
+  {
+   "id": "kg_id_shite",
+   "title": "「して」の識別",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_se",
+   "title": "「せ」の識別",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_tari",
+   "title": "「たり」の識別",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_ga",
+   "title": "「が」の識別",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_de",
+   "title": "「で」の識別",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_mu_imi",
+   "title": "「む」の意味の見分け方",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_id_raru_imi",
+   "title": "「る・らる」の4つの意味の見分け方",
+   "section": "識別",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rhetoric_kakekotoba",
+   "title": "掛詞",
+   "section": "和歌修辞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_rhetoric_engou",
+   "title": "縁語",
+   "section": "和歌修辞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_rhetoric_makurakotoba",
+   "title": "枕詞",
+   "section": "和歌修辞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_rhetoric_jokotoba",
+   "title": "序詞",
+   "section": "和歌修辞",
+   "since": "existing"
+  },
+  {
+   "id": "kg_rh_honkadori",
+   "title": "本歌取り",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_taigendome",
+   "title": "体言止め",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_kugire",
+   "title": "句切れ",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_touchi",
+   "title": "倒置法",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_mitate",
+   "title": "見立て",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_gijin",
+   "title": "擬人法",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_oriku_mono",
+   "title": "折句・物名",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_utamakura",
+   "title": "歌枕",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_rh_waka_form",
+   "title": "和歌の形と種類",
+   "section": "和歌修辞",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_read_shugo",
+   "title": "主語の見分け方（接続助詞と敬語）",
+   "section": "文の読み方",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_read_sounyuu",
+   "title": "挿入句",
+   "section": "文の読み方",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_read_kaiwa",
+   "title": "会話文・心の中の言葉の範囲",
+   "section": "文の読み方",
+   "since": "2026-09-24"
+  },
+  {
+   "id": "kg_read_juntai",
+   "title": "準体法（連体形の下を補う）",
+   "section": "文の読み方",
    "since": "2026-09-24"
   }
  ]

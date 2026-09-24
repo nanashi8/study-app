@@ -2,7 +2,11 @@
 // 正解には「この文で正しい理由」を、ほかの選択肢には「その選択肢が表すことと、この文では合わない理由」を書く。
 // 教材は4択のまま全選択肢に書き、出題時に3択へ絞っても説明が欠けないようにする。
 
+import { KOTEN_GRAMMAR_CONTEXT_MORE } from './koten-grammar-questions-more.js'
+
 export const KOTEN_GRAMMAR_CHOICE_NOTES = Object.freeze({
+  // 2026-09-24 に足した文脈問題は、問題と同じ所（koten-grammar-questions-more.js）に選択肢ごとの説明を書いている。
+  ...Object.fromEntries(KOTEN_GRAMMAR_CONTEXT_MORE.map((entry) => [entry.id, entry.choices])),
   kgq_exam_001: {
     '完了': '連用形「咲き」に付く「ぬ」は完了の助動詞「ぬ」の終止形。花が咲いたことを表す。',
     '打消': '打消「ず」の連体形「ぬ」は未然形（咲か）に付く。ここは連用形「咲き」に付き、文末で言い切っている。',

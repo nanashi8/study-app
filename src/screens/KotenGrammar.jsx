@@ -5,10 +5,20 @@ import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js
 import { WordBookButton, WordBookStudySheet } from '../components/WordListSheet.jsx'
 import {
   KOTEN_GRAMMAR,
+  KOTEN_GRAMMAR_BY_ID,
   KOTEN_GRAMMAR_CATEGORIES,
   kotenGrammarByCategory,
 } from '../data/koten-grammar.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../data/koten-grammar-questions.js'
+import { KOTEN_GRAMMAR_SYSTEMS, kotenGrammarSystemItemIds } from '../data/koten-grammar-systems.js'
+import { KotenText } from '../components/KotenFurigana.jsx'
+import {
+  KotenGrammarLevelChip,
+  KotenGrammarNotes,
+  KotenGrammarSystemLinks,
+  KotenGrammarSystemTable,
+  KotenGrammarTables,
+} from '../components/KotenGrammarExtras.jsx'
 import {
   Button,
   IconButton,
@@ -22,11 +32,13 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice, readListView, readOpen, readOpenId, readText } from '../lib/screenParams.js'
+import { readChoice, readOpen, readOpenId, readText } from '../lib/screenParams.js'
 import {
   ArrowRight,
   Book,
+  BookOpen,
   Cards,
+  Lightbulb,
   Search,
 } from '../components/Icons.jsx'
 
@@ -59,7 +71,104 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
   )
 }
 
+// 体系表の入口。表ごとに、表に出てくる項目をまとめて暗記・テストする。
+// 「表を開く」で使い分けの解説と表を出し、表の行を押すとその項目の説明を表の中に開く。
+function SystemCard({ system, srs, quizResults, open, onToggle, onStudy, onQuiz, openRow, onToggleRow, renderItem }) {
+  const ids = kotenGrammarSystemItemIds(system)
+  const items = ids.map((id) => KOTEN_GRAMMAR_BY_ID[id]).filter(Boolean)
+  const questions = KOTEN_GRAMMAR_QUESTIONS.filter((question) => question.grammarIds.some((id) => ids.includes(id)))
+  const status = summarizeSrsItemsWithQuestions({
+    items,
+    srs,
+    questions,
+    quizResults,
+    quizDomain: 'koten-grammar',
+  })
+  return (
+    <LearningEntryCard
+      data-koten-grammar-system={system.id}
+      emoji={system.emoji}
+      accentColor="#b45309"
+      title={system.title}
+      countLabel={`${items.length}項目`}
+      subtitle={`${items.length}項目・${questions.length}問`}
+      status={status}
+      units={{ learning: '項目', quiz: '問' }}
+      studyAriaLabel={`体系表「${system.title}」の項目をまとめて暗記`}
+      onStudy={onStudy}
+      quizAriaLabel={`体系表「${system.title}」の項目をテスト`}
+      onQuiz={onQuiz}
+      browseLabel={open ? '表を閉じる' : '表と使い分け'}
+      browseIcon={<Lightbulb size={15} />}
+      browseAriaLabel={`体系表「${system.title}」を${open ? '閉じる' : '開く'}`}
+      browseProps={{ 'aria-expanded': open, 'data-koten-grammar-system-toggle': system.id }}
+      onBrowse={onToggle}
+    >
+      {open && (
+        <div className="mt-3 space-y-2.5" data-koten-grammar-system-detail={system.id}>
+          <p className="rounded-2xl bg-amber-50/70 p-3 text-sm font-bold leading-relaxed text-ink/75 ring-1 ring-amber-100">
+            <KotenText>{system.explain}</KotenText>
+          </p>
+          <p className="px-1 text-[11px] font-bold text-ink/45">{'左の欄を押すと、その項目の説明が開きます。'}</p>
+          <KotenGrammarSystemTable
+            system={system}
+            openRow={openRow}
+            onToggleRow={onToggleRow}
+            renderItem={renderItem}
+          />
+        </div>
+      )}
+    </LearningEntryCard>
+  )
+}
+
+// 文法辞典・体系表で開く、項目1つの説明。
+function GrammarItemDetail({ item, onStudy, onQuiz, onOpenSystem, compact = false }) {
+  return (
+    <div
+      className="space-y-3 rounded-2xl border border-amber-100 bg-amber-50/60 p-4 animate-slide-up"
+      data-koten-grammar-detail={item.id}
+    >
+      <div className="flex flex-wrap items-center gap-1.5">
+        {compact && <span className="text-sm font-extrabold text-ink"><KotenText>{item.title}</KotenText></span>}
+        <KotenGrammarLevelChip item={item} />
+      </div>
+      {!compact && <WordBookButton domain="kotenGrammar" itemId={item.id} itemLabel={item.title} className="text-amber-700" />}
+      <div>
+        <p className="text-[10px] font-extrabold tracking-wide text-amber-600">意味・働き</p>
+        <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/80"><KotenText>{item.meaning}</KotenText></p>
+      </div>
+      <div>
+        <p className="text-[10px] font-extrabold tracking-wide text-amber-600">活用・形</p>
+        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75"><KotenText>{item.forms}</KotenText></p>
+      </div>
+      <div>
+        <p className="text-[10px] font-extrabold tracking-wide text-amber-600">接続</p>
+        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75"><KotenText>{item.connection}</KotenText></p>
+      </div>
+      <p className="text-sm font-bold leading-relaxed text-ink/65"><KotenText>{item.summary}</KotenText></p>
+      <div className="rounded-2xl bg-white p-3">
+        <p className="font-serif font-bold text-ink"><KotenText>{item.example.ja}</KotenText></p>
+        <p className="mt-1 text-xs font-bold text-ink/50"><KotenText>{item.example.gendai}</KotenText></p>
+      </div>
+      <KotenGrammarTables item={item} />
+      <KotenGrammarNotes item={item} />
+      {onOpenSystem && <KotenGrammarSystemLinks item={item} onOpenSystem={onOpenSystem} />}
+      <div className="grid grid-cols-2 gap-2">
+        <Button size="sm" onClick={() => onStudy([item], item.title)}>
+          <Book size={15} /> 暗記
+        </Button>
+        <Button variant="secondary" size="sm" onClick={() => onQuiz([item], item.title)}>
+          <Cards size={15} /> テスト
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 const readCategory = readChoice(['all', ...KOTEN_GRAMMAR_CATEGORIES.map((meta) => meta.id)], 'all')
+const readView = readChoice(['home', 'list', 'systems'], 'home')
+const readSystem = readChoice(KOTEN_GRAMMAR_SYSTEMS.map((system) => system.id), null)
 
 export function KotenGrammarScreen() {
   const navigate = useStore((state) => state.navigate)
@@ -69,8 +178,10 @@ export function KotenGrammarScreen() {
   const [category, setCategory] = useScreenParam('category', readCategory)
   const [query, setQuery] = useScreenParam('query', readText)
   const [openId, setOpenId] = useScreenParam('openId', readOpenId)
-  const [view, setView] = useScreenParam('view', readListView)
+  const [view, setView] = useScreenParam('view', readView)
   const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
+  const [openSystem, setOpenSystem] = useScreenParam('system', readSystem)
+  const [systemRow, setSystemRow] = useScreenParam('systemRow', readOpenId)
 
   const quizResults = useStore((state) => state.contentQuizResults)
   const totalStatus = summarizeSrsItemsWithQuestions({
@@ -89,7 +200,7 @@ export function KotenGrammarScreen() {
     const normalized = query.trim().toLowerCase()
     if (!normalized) return base
     return base.filter((item) =>
-      [item.title, item.forms, item.connection, item.meaning, item.summary]
+      [item.title, item.forms, item.connection, item.meaning, item.summary, item.usage ?? '']
         .join(' ')
         .toLowerCase()
         .includes(normalized),
@@ -111,6 +222,13 @@ export function KotenGrammarScreen() {
     setCategory(categoryId)
     setQuery('')
     setView('list')
+  }
+  // 体系表を開く。項目の説明から来たときは、その表を開いた状態で見せる。
+  const openSystems = (systemId = null) => {
+    scrollScreenToTop()
+    setOpenSystem(systemId)
+    setSystemRow(null)
+    setView('systems')
   }
 
   // 今日の学習：古典文法の復習。今日の分がなければ、学んだ項目を復習日が近い順に。
@@ -152,6 +270,16 @@ export function KotenGrammarScreen() {
             label="文法辞典"
           >
             全{KOTEN_GRAMMAR.length}項目
+          </ChooserTile>
+          <ChooserTile
+            onClick={() => openSystems()}
+            data-koten-grammar-systems-entry
+            aria-label={`体系表でまとめて暗記。${KOTEN_GRAMMAR_SYSTEMS.length}表`}
+            icon={<BookOpen size={19} />}
+            iconClassName="bg-orange-100 text-orange-700"
+            label="体系表"
+          >
+            {`${KOTEN_GRAMMAR_SYSTEMS.length}表`}
           </ChooserTile>
           <WordBookTile domain="kotenGrammar" returnTo={{ screen: 'kotenGrammar' }} />
         </ChooserTiles>
@@ -283,32 +411,8 @@ export function KotenGrammarScreen() {
             openHint="説明"
             emptyMessage="一致する文法がありません。"
             renderAfter={(item) => openId === item.id && (
-              <div
-                className="mt-2 space-y-3 rounded-2xl border border-amber-100 bg-amber-50/60 p-4 animate-slide-up"
-                data-koten-grammar-detail={item.id}
-              >
-                <WordBookButton domain="kotenGrammar" itemId={item.id} itemLabel={item.title} className="text-amber-700" />
-                <div>
-                  <p className="text-[10px] font-extrabold tracking-wide text-amber-600">活用・形</p>
-                  <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.forms}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-extrabold tracking-wide text-amber-600">接続</p>
-                  <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.connection}</p>
-                </div>
-                <p className="text-sm font-bold leading-relaxed text-ink/65">{item.summary}</p>
-                <div className="rounded-2xl bg-white p-3">
-                  <p className="font-serif font-bold text-ink">{item.example.ja}</p>
-                  <p className="mt-1 text-xs font-bold text-ink/50">{item.example.gendai}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button size="sm" onClick={() => study([item], item.title)}>
-                    <Book size={15} /> 暗記
-                  </Button>
-                  <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
-                    <Cards size={15} /> テスト
-                  </Button>
-                </div>
+              <div className="mt-2">
+                <GrammarItemDetail item={item} onStudy={study} onQuiz={quiz} onOpenSystem={openSystems} />
               </div>
             )}
           />
@@ -317,9 +421,48 @@ export function KotenGrammarScreen() {
     </div>
   )
 
+  // 体系表：用言の活用・助動詞・助詞・敬語などを表にまとめ、表ごとにまとめて暗記・テストする。
+  const systemsView = (
+    <div className="pb-8" data-koten-grammar-systems-view>
+      <ScreenHeader
+        title="体系表でまとめて暗記"
+        subtitle={`${KOTEN_GRAMMAR_SYSTEMS.length}表・全${KOTEN_GRAMMAR.length}項目`}
+        compact
+      />
+      <div className="space-y-3 px-4 pt-3">
+        <p className="px-1 text-xs font-bold leading-relaxed text-ink/50">
+          {'用言の活用・助動詞・助詞・敬語などを表で見比べ、表ごとにまとめて暗記・テストします。'}
+        </p>
+        {KOTEN_GRAMMAR_SYSTEMS.map((system) => {
+          const ids = kotenGrammarSystemItemIds(system)
+          return (
+            <SystemCard
+              key={system.id}
+              system={system}
+              srs={grammarSrs}
+              quizResults={quizResults}
+              open={openSystem === system.id}
+              onToggle={() => {
+                setSystemRow(null)
+                setOpenSystem((current) => current === system.id ? null : system.id)
+              }}
+              onStudy={() => study(ids.map((id) => KOTEN_GRAMMAR_BY_ID[id]), `${system.title}を暗記`)}
+              onQuiz={() => quiz(ids.map((id) => KOTEN_GRAMMAR_BY_ID[id]), `${system.title}・受験型テスト`)}
+              openRow={systemRow}
+              onToggleRow={setSystemRow}
+              renderItem={(id) => KOTEN_GRAMMAR_BY_ID[id] && (
+                <GrammarItemDetail item={KOTEN_GRAMMAR_BY_ID[id]} onStudy={study} onQuiz={quiz} compact />
+              )}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+
   return (
     <>
-      {view === 'list' ? catalogView : homeView}
+      {view === 'list' ? catalogView : view === 'systems' ? systemsView : homeView}
       <WordBookStudySheet
         open={wordBookOpen}
         onClose={() => setWordBookOpen(false)}

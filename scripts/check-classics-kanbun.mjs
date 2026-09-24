@@ -40,8 +40,8 @@ import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
 
 const exactCounts = {
   kotenWords: 612,
-  kotenGrammar: 74,
-  kotenGrammarQuestions: 136,
+  kotenGrammar: 130,
+  kotenGrammarQuestions: 264,
   kotenCulture: 56,
   kotenCultureQuestions: 112,
   kotenInterpretations: 36,

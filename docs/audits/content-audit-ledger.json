@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T07:58:18.934Z",
+  "auditedAt": "2026-09-24T08:10:05.568Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 19,
-    "learningItemCount": 17604,
-    "quizItemCount": 17819,
-    "storedAndGeneratedQuestionPathCount": 5083,
-    "storedAndGeneratedChoicePathCount": 19764,
-    "overallContentSha256": "795e1aeeb4b9ef1d217b8ec3c2de6928b13c47ddd61e5d3a19dccaa32fbdb3a1"
+    "learningItemCount": 17660,
+    "quizItemCount": 17947,
+    "storedAndGeneratedQuestionPathCount": 5211,
+    "storedAndGeneratedChoicePathCount": 20276,
+    "overallContentSha256": "7735dc59241bee20cf18d36c554fbf14d60f0f49967a67f9911335cb42ca831f"
   },
   "completionCriteria": [
     "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "108c2f4f15c5d60bec98cb2d7be04100ad88527d2fbb6f1b3b3c7e153fe4a45f",
+    "sha256": "962d46e84592673cd895b8b4284e60eaea5ad9a400261baf3f006fada4487113",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -169,6 +169,10 @@
       "tests/catalog-return-state.test.mjs",
       "tests/character-talk.test.mjs",
       "tests/character-visual-continuity.test.mjs",
+      "tests/classics-koten-grammar-master.test.mjs",
+      "tests/classics-koten-grammar-questions.test.mjs",
+      "tests/classics-koten-grammar-tables.test.mjs",
+      "tests/classics-koten-grammar-usage.test.mjs",
       "tests/classics-koten-vocab-background.test.mjs",
       "tests/classics-koten-vocab-conjugation.test.mjs",
       "tests/classics-koten-vocab-groups.test.mjs",
@@ -526,11 +530,11 @@
       "label": "古典文法",
       "learningUnit": "項目",
       "quizUnit": "問",
-      "learningItemCount": 74,
-      "quizItemCount": 136,
-      "learningIdOrderSha256": "04c2acc014b67ab7a4c519434edde5b15cb7b614ed4e3ccd1bfcf0dcb45df9a1",
-      "quizIdOrderSha256": "2115268d84a32bef70dfee84ff9ed7a9cd6e91c4452a6a4b3c0e3999c03161ab",
-      "contentSha256": "e20d57cb8407907bff0905f5de5ca98af4e347a303052139f6f89c333bdfbf76",
+      "learningItemCount": 130,
+      "quizItemCount": 264,
+      "learningIdOrderSha256": "92432a12754de9ff6f59befec73b8dbf10c7344d19b8e2e27f4830cd6b0dc9a8",
+      "quizIdOrderSha256": "3a0a56e8cd126442451a8dc03b5c71179c1e7c30fc3600d8633d8c9d27e983f3",
+      "contentSha256": "2654886b3fed7ea4707ac75ea7d04122b3b5ee662c8a9cc4242c8ad2cc25b673",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -803,11 +807,11 @@
     {
       "id": "koten-grammar",
       "label": "古典文法",
-      "questionCount": 136,
-      "choiceCount": 544,
-      "generalRationaleCount": 136,
-      "choiceSpecificRationaleCount": 544,
-      "questionSetSha256": "754e51b0a4d70c569f238a112f7918c178bb462ee8901a42756b4bf6a06155b6",
+      "questionCount": 264,
+      "choiceCount": 1056,
+      "generalRationaleCount": 264,
+      "choiceSpecificRationaleCount": 1056,
+      "questionSetSha256": "6ee2ac78a6d3822777b1c60cec7369c3001f4d726d4da1a1e9c01461177337a0",
       "result": "pass",
       "failureCount": 0,
       "failures": []

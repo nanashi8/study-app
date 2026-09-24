@@ -22,9 +22,9 @@ import { KOTEN_SAVED_SET_ID, foldLegacySavedLists } from '../src/lib/learningNot
 const LEGACY_GRAMMAR_COUNT = 29
 const categoryIds = new Set(KOTEN_GRAMMAR_CATEGORIES.map((item) => item.id))
 
-test('古典文法は既存29idを保ったまま74項目・6分野へ拡充されている', () => {
-  assert.equal(KOTEN_GRAMMAR.length, 74)
-  assert.equal(KOTEN_GRAMMAR_CATEGORIES.length, 6)
+test('古典文法は既存29idを保ったまま130項目・7分野へ拡充されている', () => {
+  assert.equal(KOTEN_GRAMMAR.length, 130)
+  assert.equal(KOTEN_GRAMMAR_CATEGORIES.length, 7)
   assert.equal(new Set(KOTEN_GRAMMAR.map((item) => item.id)).size, KOTEN_GRAMMAR.length)
 
   const legacyBoundary = {
@@ -40,6 +40,9 @@ test('古典文法は既存29idを保ったまま74項目・6分野へ拡充さ�
     assert.equal(KOTEN_GRAMMAR[Number(index)].id, id)
   }
   assert.equal(KOTEN_GRAMMAR[LEGACY_GRAMMAR_COUNT].id, 'kg_conjecture_muzu')
+  // 2026-09-24 に足した56項目は、それまでの74項目の後ろに続く（進捗の id の並びを動かさない）。
+  assert.equal(KOTEN_GRAMMAR[73].id, 'kg_rhetoric_jokotoba')
+  assert.equal(KOTEN_GRAMMAR[74].id, 'kg_aux_jodai')
 
   for (const item of KOTEN_GRAMMAR) {
     assert.ok(item.id?.startsWith('kg_'), item.id)
@@ -54,10 +57,10 @@ test('古典文法は既存29idを保ったまま74項目・6分野へ拡充さ�
   }
 })
 
-test('古典文法136問は4択・参照・解説が全件整合する', () => {
-  assert.equal(KOTEN_GRAMMAR_CONTEXT_QUESTIONS.length, 62)
+test('古典文法264問は4択・参照・解説が全件整合する', () => {
+  assert.equal(KOTEN_GRAMMAR_CONTEXT_QUESTIONS.length, 134)
   assert.equal(KOTEN_GRAMMAR_FOUNDATION_QUESTIONS.length, KOTEN_GRAMMAR.length)
-  assert.equal(KOTEN_GRAMMAR_QUESTIONS.length, 136)
+  assert.equal(KOTEN_GRAMMAR_QUESTIONS.length, 264)
   assert.equal(
     new Set(KOTEN_GRAMMAR_QUESTIONS.map((item) => item.id)).size,
     KOTEN_GRAMMAR_QUESTIONS.length,
@@ -79,7 +82,7 @@ test('古典文法136問は4択・参照・解説が全件整合する', () => {
   }
 })
 
-test('全74文法に基礎問題があり、全6分野に文脈型問題がある', () => {
+test('全130文法に基礎問題があり、全7分野に文脈型問題がある', () => {
   assert.deepEqual(
     new Set(KOTEN_GRAMMAR_FOUNDATION_QUESTIONS.flatMap((item) => item.grammarIds)),
     new Set(KOTEN_GRAMMAR.map((item) => item.id)),
