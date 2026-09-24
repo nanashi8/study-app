@@ -38,17 +38,17 @@ test('文法追加105問は7級の選択・並び替え・語法に35問ずつ�
   const audit = auditEnglishQuestionFormats()
   assert.equal(audit.legacyGrammarQuestionCount, 3450)
   assert.equal(audit.grammarFormatQuestionCount, 105)
-  assert.equal(audit.grammarUnitFormatQuestionCount, 696)
-  assert.equal(audit.grammarPracticeQuestionCount, 4251)
+  assert.equal(audit.grammarUnitFormatQuestionCount, 875)
+  assert.equal(audit.grammarPracticeQuestionCount, 4430)
   assert.deepEqual(audit.grammarFormatTypeCounts, {
     choice: 35,
     usage: 35,
     'word-order': 35,
   })
   assert.ok(Object.values(audit.grammarFormatLevelCounts).every((count) => count === 15))
-  // 形式拡充105問と単元別696問のうち、選択肢を出す420問×4択。
-  assert.equal(audit.grammarChoicePathCount, 1680)
-  assert.equal(audit.grammarWrongChoicePathCount, 1260)
+  // 形式拡充105問と単元別875問のうち、選択肢を出す599問×4択。
+  assert.equal(audit.grammarChoicePathCount, 2396)
+  assert.equal(audit.grammarWrongChoicePathCount, 1797)
 })
 
 test('並び替えは完成文選択ではなく、全問で直接押せる単語カードを使う', async () => {

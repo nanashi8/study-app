@@ -46,6 +46,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['I have been studying for two hours.', '私は2時間ずっと勉強しています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'やり遂げるは carry out／気づいているは be aware of／決定を下すは make a decision。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The committee has carried out a detailed review.', '委員会は詳しい見直しをやり遂げました。'],
+          ['We have been aware of the problem since last year.', '私たちは昨年からその問題に気づいています。'],
+          ['They have already made a decision about the plan.', '彼らはその計画についてすでに決定を下しました。'],
+        ],
+      },
     ],
     mistakes: [
       ['By next year, I will work here for ten years.', 'By next year, I will have worked here for ten years.', '未来の基準までの継続は未来完了 will have＋過去分詞。'],
@@ -86,6 +97,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['have been ＋ 動詞ing', '今までずっと〜している'],
           ['had been ＋ 動詞ing', '過去のある時までずっと〜していた'],
           ['had ＋ 過去分詞', '過去のある時までに〜し終えていた・〜したことがあった'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '状態を表す動詞は過去完了／停電するは go out／研究をするは do research。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I had known him for years before we became partners.', '私たちが組む前、私は彼を何年も前から知っていました。'],
+          ['The power had gone out before we finished the work.', '私たちが仕事を終える前に停電していました。'],
+          ['She had been doing research on the topic for years.', '彼女は何年もそのテーマの研究をし続けていました。'],
         ],
       },
     ],
@@ -133,6 +155,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['You will be able to swim soon.', 'すぐに泳げるようになるでしょう。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'supposed のあとに to を落とさない／許されていないは be not allowed to／will のあとは be able to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Visitors are supposed to show their passes.', '訪問者は通行証を見せることになっています。'],
+          ['You are not allowed to take photos in this hall.', 'このホールでは写真をとることは許されていません。'],
+          ['You will be able to swim across the river next year.', '来年にはその川を泳いで渡れるようになるでしょう。'],
         ],
       },
     ],
@@ -186,6 +219,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['You need not have hurried; we had time.', '急ぐ必要はなかったのに。時間はありましたから。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'する必要はなかったのに／忘れるは forget／見落とすは overlook。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['You need not have hurried; we had plenty of time.', '急ぐ必要はなかったのに。時間はたっぷりありました。'],
+          ['He must have forgotten our appointment.', '彼は私たちの約束を忘れたにちがいありません。'],
+          ['He cannot have overlooked such a serious error.', '彼がそんな重大な誤りを見落としたはずがありません。'],
+        ],
+      },
     ],
     mistakes: [
       ['He must missed the train.', 'He must have missed the train.', '過去の推量は must have＋過去分詞。'],
@@ -231,6 +275,17 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['I am sorry to have kept you waiting.', 'お待たせしてすみません。'],
           ['She is believed to have written the letter.', '彼女がその手紙を書いたと考えられています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'be said to have＋過去分詞／姿を消すは disappear／お待たせしてすみませんは keep 人 waiting。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He is said to have written the book in his twenties.', '彼は20代でその本を書いたと言われています。'],
+          ['The species appears to have disappeared from the island.', 'その種はその島から姿を消したようです。'],
+          ['I am sorry to have kept you waiting so long.', 'たいへんお待たせして申し訳ありません。'],
         ],
       },
     ],
@@ -281,6 +336,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['The meeting is to be held on Monday.', '会議は月曜日に開かれることになっています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '会議を開くは hold a meeting／visit は前置詞を置かない／許可は permission。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The ceremony is to be held on Friday afternoon.', '式典は金曜日の午後に行われることになっています。'],
+          ['The minister is to visit the factory next week.', '大臣は来週その工場を訪れることになっています。'],
+          ['No one is to enter the office without permission.', '許可なくだれも事務所に入ってはいけません。'],
         ],
       },
     ],
@@ -341,6 +407,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['I had the report checked.', '私はレポートを確認してもらいました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'have＋人のあとは原形／get＋人のあとは to＋原形／被害を表す have＋物＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I had him check the report before the meeting.', '私は会議の前に彼に報告書を確認してもらいました。'],
+          ['We got Ken to revise the proposal again.', '私たちはケンに提案をもう一度見直してもらいました。'],
+          ['I had my bag stolen on the train yesterday.', '私は昨日、電車でかばんをぬすまれました。'],
+        ],
+      },
     ],
     mistakes: [
       ['The teacher had us to clean the room.', 'The teacher had us clean the room.', 'have＋人の後ろは原形。'],
@@ -390,6 +467,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['Do you mind my opening the window?', '私が窓を開けてもかまいませんか。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'There is no＋動詞ing／動名詞の意味上の主語／worth のあとは動名詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['There is no denying that the plan has many risks.', 'その計画に多くの危険があることは否定できません。'],
+          ['Do you mind my opening the window?', '私が窓を開けてもかまいませんか。'],
+          ['This museum is worth visiting at least once.', 'この博物館は少なくとも一度は訪れる価値があります。'],
         ],
       },
     ],
@@ -447,6 +535,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['She was sitting with her dog lying beside her.', '彼女は犬をそばに寝そべらせて座っていました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'いっぱいだは be filled with／黙っているは keep silent／書きとめるは write down。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The hall was filled with people waiting for the concert.', 'ホールはコンサートを待つ人でいっぱいでした。'],
+          ['Not knowing what to answer, he kept silent.', '何と答えればよいか分からず、彼は黙っていました。'],
+          ['Having written down the address, he left the office.', '住所を書きとめてから、彼は事務所を出ました。'],
+        ],
+      },
     ],
     mistakes: [
       ['Seeing from space, the earth looks blue.', 'Seen from space, the earth looks blue.', '地球は「見られる」側なので過去分詞で始める。'],
@@ -494,6 +593,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['He is what is called a genius.', '彼はいわゆる天才です。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'AとBの関係は A is to B what C is to D／解決策は solution／いわゆるは what is called。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Exercise is to the body what study is to the mind.', '運動と体の関係は、勉強と心の関係と同じです。'],
+          ['What this team needs now is a practical solution.', 'このチームが今必要としているのは、実際に使える解決策です。'],
+          ['She is what is called a born teacher.', '彼はいわゆる生まれながらの指導者です。'],
+        ],
+      },
     ],
     mistakes: [
       ['That he said surprised us.', 'What he said surprised us.', '「彼が言ったこと」は what。that だと said の目的語がなくなる。'],
@@ -535,6 +645,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['文', '使う語'],
           ['a student who plays tennis', 'すぐ動詞 → who'],
           ['a student whose team won', 'すぐ名詞（team）→ whose'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '物をぬすむは steal／賞をとるは win a prize／本が読まれるは be read。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I met a woman whose bicycle was stolen last week.', '私は先週、自転車をぬすまれた女性に会いました。'],
+          ['We met a student whose essay won the contest.', '私たちは、作文がそのコンテストで優勝した生徒に会いました。'],
+          ['She is a writer whose novels are read all over the world.', '彼女は小説が世界中で読まれている作家です。'],
         ],
       },
     ],
@@ -586,6 +707,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['The club has forty members, most of whom are students.', 'そのクラブには40人の会員がいて、そのほとんどが学生です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '論文を発表するは publish a paper／attend は前置詞を置かない／discuss は about を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He has published six papers, two of which won awards.', '彼は6本の論文を発表し、そのうち2本は賞をとりました。'],
+          ['Ten researchers attended the meeting, three of whom came from abroad.', '10人の研究者が会議に出席し、そのうち3人は海外から来ていました。'],
+          ['We discussed four plans, none of which was practical.', '私たちは4つの計画を話し合いましたが、どれも実際的ではありませんでした。'],
         ],
       },
     ],
@@ -642,6 +774,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['If I had studied harder, I would be a doctor now.', 'もっと一生けんめい勉強していたら、今ごろ医者になっているでしょう。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '〜がなければは Without／万一のときは should／まるで〜かのようには as if。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Without water, we could not live even a week.', '水がなければ、私たちは1週間も生きられないでしょう。'],
+          ['If you should change your mind, please let me know.', '万一考えが変わったら、知らせてください。'],
+          ['She acts as if she were the owner here.', '彼はまるでここの責任者であるかのようにふるまいます。'],
+        ],
+      },
     ],
     mistakes: [
       ['I wish I am taller.', 'I wish I were taller.', 'I wish の後ろは過去形（be は were）。'],
@@ -693,6 +836,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['I wish I had studied harder.', 'もっと一生けんめい勉強しておけばよかった。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '間に合うは catch the train／〜について知っているは know about／試験に失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['If he had left earlier, he would have caught the bus.', 'もっと早く出ていたら、彼はバスに間に合ったのに。'],
+          ['Had I known about the change, I would have waited.', '変更を知っていたら、私は待っていたのに。'],
+          ['If I had not studied hard, I would have failed the exam.', '一生けんめい勉強していなかったら、私は試験に落ちていたでしょう。'],
         ],
       },
     ],
@@ -748,6 +902,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['The question is how we should measure progress.', '問題は、進歩をどのように測るべきかです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '主語の位置は whether／前置詞のあとも whether／進み具合を測るは measure progress。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Whether the project will continue remains undecided.', 'その事業が続くかどうかは、まだ決まっていません。'],
+          ['We talked about whether we should postpone the event.', '私たちはその行事を延期すべきかどうか話し合いました。'],
+          ['The question is how we should measure success.', '問題は、成功をどう測るかということです。'],
+        ],
+      },
     ],
     mistakes: [
       ['If the plan will succeed remains uncertain.', 'Whether the plan will succeed remains uncertain.', '主語になる「〜かどうか」は whether。'],
@@ -793,6 +958,17 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['I make it a rule to walk every day.', '私は毎日歩くことにしています。'],
           ['We owe it to her support that the project succeeded.', '計画が成功したのは彼女の支えのおかげです。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '形式目的語の it を落とさない／〜しやすくするは make it easy to／当然と思うは take it for granted that。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I found it hard to follow his explanation.', '彼の説明はついていきにくいと思いました。'],
+          ['The new map made it easy to find the entrance.', '新しい地図のおかげで、入口を見つけるのが簡単になりました。'],
+          ['We took it for granted that the train would be on time.', '私たちは電車が時間どおりだと当然のように思っていました。'],
         ],
       },
     ],
@@ -843,6 +1019,17 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['The policy gave rise to public concern.', 'その政策は人々の不安を引き起こしました。', { rise: '（名詞）発生・上昇／give rise to 〜 で「〜を引き起こす」' }],
           ['The plan is likely to meet resistance.', 'その計画は反対にあいそうです。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '引き起こすは give rise to／抵抗に出あうは meet resistance／enable のあとは to＋原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The policy gave rise to public concern.', 'その政策は市民の懸念を生みました。'],
+          ['The plan is likely to meet resistance.', 'その計画は反対に遭う可能性が高いです。'],
+          ['The new system will enable the staff to check the data quickly.', '新しい仕組みのおかげで、職員はすばやくデータを確認できるようになります。'],
         ],
       },
     ],
@@ -902,6 +1089,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['He told me that he was tired.', '彼は私に疲れていると言いました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '人を続けるのは tell／たずねた内容は if でつなぐ／warn＋人＋not to＋原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He told me that he was tired.', '彼は疲れていると私に言いました。'],
+          ['She asked me if I was free on Sunday.', '彼女は私に日曜日はひまかどうかたずねました。'],
+          ['The guard warned us not to enter the room.', '警備員は私たちにその部屋へ入らないよう警告しました。'],
+        ],
+      },
     ],
     mistakes: [
       ['He said me that he was tired.', 'He told me that he was tired.', '相手をすぐ後ろに置くのは tell。'],
@@ -950,6 +1148,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['The idea itself is good.', 'その考えそのものはよいです。'],
           ['The president himself answered the letter.', '社長自身がその手紙に返事を書きました。'],
           ['What on earth are you doing?', 'いったい何をしているのですか。', { earth: 'on earth で「いったい」（疑問詞を強める）' }],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '名詞を強めるのは the very／主語を強める再帰代名詞／いったいは on earth。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This is the very book I have been looking for.', 'これこそ私がずっと探していた本です。'],
+          ['The president himself answered the letter.', '社長自身がその手紙に返事を書きました。'],
+          ['What on earth are you doing here?', 'あなたはいったいここで何をしているのですか。'],
         ],
       },
     ],
@@ -1006,6 +1215,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['Who was it that broke the vase?', '花びんを割ったのはいったいだれだったのですか。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '怒りを招くは provoke anger／計画を変えるは change／原因となるは cause。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['It was the sudden decision that provoked public anger.', '人々の怒りを招いたのは、その突然の決定でした。'],
+          ['It was the short message that changed their plan.', '彼らの計画を変えたのは、その短いメッセージでした。'],
+          ['What was it that caused the trouble?', 'その問題を引き起こしたのはいったい何ですか。'],
+        ],
+      },
     ],
     mistakes: [
       ['It was in Paris where I met her.', 'It was in Paris that I met her.', '強調構文では that を使う（in Paris のような語句を強めるとき where は使わない）。'],
@@ -1047,6 +1267,17 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['Only then did I understand the truth.', 'そのとき初めて私は真実を理解しました。'],
           ['Only then did the team understand the risk.', 'そのとき初めて、チームは危険を理解しました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '変化を目にするは see／（物価が）上がるは rise／横たわるは lie。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Never have I seen such a sudden change.', 'こんなに急な変化を目にしたことはありません。'],
+          ['Only after the war did prices rise sharply.', '戦後になって初めて、物価は急に上がりました。'],
+          ['Little did he know that danger lay ahead.', '危険が前に待ち構えていることを、彼は少しも知りませんでした。'],
         ],
       },
     ],
@@ -1104,6 +1335,17 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['The rich are not always happy.', 'お金持ちがいつも幸せとは限りません。'],
           ['He never meets her without talking about music.', '彼は彼女に会うと必ず音楽の話をします。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '全部ではないは not all／全員が〜ないは None／必ずしも〜ないは not necessarily。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Not all of them agreed with the plan.', '彼ら全員がその計画に賛成したわけではありません。'],
+          ['None of them agreed with the plan.', '彼らのだれもその計画に賛成しませんでした。'],
+          ['A high score does not necessarily mean deep understanding.', '高い点数が必ずしも深い理解を意味するとは限りません。'],
         ],
       },
     ],
@@ -1165,6 +1407,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['His explanation accounts for the difference.', '彼の説明でそのちがいが説明できます。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'AとBを区別するは distinguish A from B／説明するは account for／たとえ〜でもは even if。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['We should distinguish facts from opinions.', '私たちは事実と意見を区別すべきです。'],
+          ['His explanation accounts for the difference.', '彼の説明によってその違いを説明できます。'],
+          ['Even if it rains tomorrow, the game will be held.', 'たとえ明日雨が降っても、試合は行われます。'],
+        ],
+      },
     ],
     mistakes: [
       ['Take an umbrella in case it will rain.', 'Take an umbrella in case it rains.', 'in case の中は未来のことでも現在形。'],
@@ -1211,6 +1464,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['The sample was small; however, the results were consistent.', '標本は少なかったものの、結果は一貫していました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'したがっては therefore／そうしないとは otherwise／結果としては as a result。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The report was clear; therefore, the board approved the budget.', '報告書は明快だった。したがって、理事会は予算を承認しました。'],
+          ['Leave now; otherwise, you will miss the last bus.', 'もう出発しなさい。そうしないと最終バスに乗り遅れますよ。'],
+          ['The road was closed; as a result, we took another route.', '道路が閉鎖されていた。その結果、私たちは別の道を通りました。'],
         ],
       },
     ],
@@ -1263,6 +1527,17 @@ export const GRAMMAR_REFERENCE_2 = [
           ['This hall is three times as large as the old one.', 'このホールは古いホールの3倍の広さです。'],
           ['This problem is less difficult than it looks.', 'この問題は見た目ほど難しくありません。'],
           ['He is not so much a scholar as a writer.', '彼は学者というよりむしろ作家です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '…ほど〜でないは less than／〜に劣るは be inferior to／〜に匹敵するは be equal to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This problem is less difficult than it looks.', 'この問題は見かけほど難しくありません。'],
+          ['This method is not inferior to the old one in accuracy.', 'この方法は正確さで古い方法に劣りません。'],
+          ['No other student in this class is equal to Ken in speed.', 'このクラスでケンに速さで匹敵する生徒はほかにいません。'],
         ],
       },
     ],
@@ -1325,6 +1600,17 @@ export const GRAMMAR_REFERENCE_2 = [
         ],
         examples: [
           ['According to the report, the number of visitors increased.', 'その報告によれば、訪問者の数は増えました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '負担をかけるは place a burden on／区別するは distinguish A from B／名詞化した動詞は of でつなぐ。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The new system places a burden on small schools.', '新しい制度は小規模校に負担をかけます。'],
+          ['We must distinguish rumors from facts.', '私たちはうわさと事実を区別しなければなりません。'],
+          ['The cancellation of the concert disappointed many fans.', 'コンサートの中止は多くのファンを落胆させました。'],
         ],
       },
     ],

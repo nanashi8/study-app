@@ -73,6 +73,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I have seen him many times.', '私は彼に何度も会ったことがあります。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '風邪をひいているは have a cold／期間の長さは for、始まりは since／経験をたずねる ever。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['She has had a cold since Monday.', '彼女は月曜日からずっと風邪をひいています。'],
+          ['I have known Ms. Sato for three years.', '私は佐藤さんと3年間の知り合いです。'],
+          ['Have you ever visited that castle before?', 'あなたは以前にあの城を訪れたことがありますか。'],
+        ],
+      },
     ],
     rewrites: [
       ['My dog died three days ago.', 'My dog has been dead for three days.', '「3日前に死んだ」は「3日間ずっと死んでいる（状態）」と、現在完了の継続で言いかえられる。'],
@@ -122,6 +133,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['動詞の種類', '「ずっと〜している」', '例'],
           ['状態（know・like・have など）', '現在完了', 'I have known her for years.'],
           ['動作（play・wait・study など）', '現在完了進行形', 'I have been studying for two hours.'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'know は現在完了進行形にしない／〜を待つは wait for／ピアノの練習をするは practice the piano。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I have known her for years.', '私は彼女を何年も前から知っています。'],
+          ['I have been waiting for the train for thirty minutes.', '私は30分間ずっと電車を待っています。'],
+          ['She has been practicing the piano since noon.', '彼女は正午からずっとピアノの練習をしています。'],
         ],
       },
     ],
@@ -195,6 +217,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['This desk is made of wood.', 'この机は木でできています。'],
           ['Cheese is made from milk.', 'チーズは牛乳から作られます。'],
           ['This tool is used for cutting paper.', 'この道具は紙を切るのに使われます。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '〜に使われるは be used for／おおわれているは be covered with／材料が変わるなら be made from。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This tool is used for cutting paper.', 'この道具は紙を切るために使われます。'],
+          ['The garden is covered with fallen leaves.', 'その庭は落ち葉でおおわれています。'],
+          ['Cheese is made from milk.', 'チーズは牛乳から作られます。'],
         ],
       },
     ],
@@ -296,6 +329,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I found the book difficult.', 'その本は難しいと分かりました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '〜に見えるは look＋形容詞／buy は物を先に言うと for＋人／〜に聞こえるは sound。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['You look happy today.', 'あなたは今日うれしそうに見えます。'],
+          ['My mother bought a bag for me.', '母は私にかばんを買ってくれました。'],
+          ['That sounds interesting to me.', 'それは私にはおもしろそうに聞こえます。'],
+        ],
+      },
     ],
     rewrites: [
       ['He gave me a present.', 'He gave a present to me.', 'SVOO は「物＋to＋人」に言いかえられる（buy・make は for）。'],
@@ -366,6 +410,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['Ken went to the library to study for the report.', 'ケンはレポートの勉強をするために図書館へ行きました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '人に助言するは advise＋人＋to／知らせを聞くは hear the news／ask＋人＋to＋原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['My teacher advised me to check the source.', '先生は私に出典を確認するよう助言しました。'],
+          ['We were glad to hear the news.', '私たちはその知らせを聞いてうれしかったです。'],
+          ['My mother asked me to clean my room.', '母は私に部屋をそうじするように言いました。'],
+        ],
+      },
     ],
     rewrites: [
       ['Roy was so busy that he could not eat lunch.', 'Roy was too busy to eat lunch.', '「とても〜なので…できない」は too 〜 to … で言いかえられる。'],
@@ -416,6 +471,17 @@ export const GRAMMAR_REFERENCE_3 = [
         ],
         examples: [
           ['This song makes me feel happy.', 'この歌を聞くと、うれしい気持ちになります。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'let のあとに to は付けない／物が主語の make＋O＋原形／手伝うは help＋人＋原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Will you let me try this camera?', '私にこのカメラを試させてくれませんか。'],
+          ['This story makes me feel sad.', 'この物語は私を悲しい気持ちにさせます。'],
+          ['She helped her brother finish his homework.', '彼女は弟が宿題を終えるのを手伝いました。'],
         ],
       },
     ],
@@ -507,6 +573,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['We look forward to hearing from you.', '私たちはあなたからのお便りを楽しみにしています。', { hearing: ['hear', '（hear from 〜 で）〜から便りがある'] }],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '楽しみにするは look forward to＋動名詞／keep のあとは動名詞／promise のあとは to＋原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['We look forward to hearing from you.', 'ご連絡を楽しみにしています。'],
+          ['He kept talking for an hour.', '彼は1時間話し続けました。'],
+          ['She promised to clean her room every day.', '彼女は毎日部屋をそうじすると約束しました。'],
+        ],
+      },
     ],
     advanced: {
       level: 'pre2',
@@ -594,6 +671,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I know who broke the window.', 'だれが窓を割ったのか知っています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '「〜かどうか」は if で表す／窓を割るは break the window／電車が出発するは leave。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I don’t know if he will come today.', '私は彼が今日来るかどうか分かりません。'],
+          ['I know who broke the vase.', '私はだれが窓を割ったか知っています。'],
+          ['Do you know when the bus leaves?', 'あなたはそのバスがいつ出発するか知っていますか。'],
+        ],
+      },
     ],
     advanced: {
       level: 'pre2',
@@ -674,6 +762,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I have a dog whose name is Pochi.', '私はポチという名前の犬を飼っています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'ケーキを作るは make a cake／電車に乗って行くは take a train／住んでいるは live。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The soup that she made was delicious.', '彼女が作ったスープはおいしかったです。'],
+          ['I took a bus which goes to the airport.', '私は空港へ行くバスに乗りました。'],
+          ['I have a cousin who lives in Canada.', '私にはカナダに住んでいるいとこがいます。'],
+        ],
+      },
     ],
     rewrites: [
       ['This letter was written by Tom.', 'This is the letter which Tom wrote.', '受動態の文は、関係代名詞を使って「トムが書いた手紙」と言いかえられる。'],
@@ -743,6 +842,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I was surprised at the news.', '私はその知らせに驚きました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '人の気持ちは過去分詞／物事の性質は現在分詞／退屈しているは bored。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['We were surprised at the sudden news.', '私たちはその突然の知らせに驚きました。'],
+          ['That movie was very exciting.', 'その映画はとてもわくわくするものでした。'],
+          ['The students were bored during the long speech.', 'その長い演説の間、生徒たちは退屈していました。'],
+        ],
+      },
     ],
     rewrites: [
       ['I know that girl. She is talking with Jim.', 'I know the girl talking with Jim.', '2つの文を、分詞のまとまり（talking with Jim）で1つにできる。'],
@@ -800,6 +910,17 @@ export const GRAMMAR_REFERENCE_3 = [
         examples: [
           ['This book is much easier than that one.', 'この本はあの本よりずっとやさしいです。'],
           ['Health is as important as money.', '健康はお金と同じくらい大切です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '比較級を強めるのは much／できるだけ早くは as soon as possible／時間がかかるは take time。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This book is much easier than that one.', 'この本はあの本よりずっとやさしいです。'],
+          ['Please come back as soon as possible.', 'できるだけ早く戻ってきてください。'],
+          ['This work will take much more time than that one.', 'この仕事はあの仕事よりずっと多くの時間がかかります。'],
         ],
       },
     ],
@@ -865,6 +986,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I’m afraid I can’t come to the party.', '残念ですが、パーティーには行けないと思います。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '気持ちのあとは that＋文／家に着くは get home／〜するとすぐには as soon as。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I’m sure that many people will use robots.', '多くの人がロボットを使うようになると私は確信しています。'],
+          ['I will call you when I get home tonight.', '今夜家に着いたら電話します。'],
+          ['Let’s begin as soon as she arrives.', '彼女が着いたらすぐに始めましょう。'],
+        ],
+      },
     ],
     mistakes: [
       ['I will call you when I will get home.', 'I will call you when I get home.', 'when の中は未来のことでも現在形。'],
@@ -906,6 +1038,17 @@ export const GRAMMAR_REFERENCE_3 = [
         ],
         examples: [
           ['This box is too heavy to carry.', 'この箱は重すぎて運べません。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '眠り込むは fall asleep／持ち上げるは lift／ほとんど〜ないは hardly。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He was so tired that he fell asleep on the sofa.', '彼はとても疲れていたので、ソファで眠ってしまいました。'],
+          ['The bag was so heavy that I could not lift it.', 'そのかばんはとても重かったので、私は持ち上げられませんでした。'],
+          ['He spoke so quietly that I could hardly hear him.', '彼はとても静かに話したので、私はほとんど聞き取れませんでした。'],
         ],
       },
     ],
@@ -989,6 +1132,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['The rain prevented us from playing outside.', '雨のせいで私たちは外で遊べませんでした。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '〜できないようにするは prevent＋人＋from／while のあとは〈主語＋動詞〉／prevent＋人＋from＋動名詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The rain prevented us from playing outside.', '雨のため私たちは外で遊べませんでした。'],
+          ['Nobody spoke while the movie was playing.', '映画が上映されている間、だれも話しませんでした。'],
+          ['The snow prevented them from going out.', '雪のせいで彼らは外出できませんでした。'],
+        ],
+      },
     ],
     mistakes: [
       ['Finish your report until Friday.', 'Finish your report by Friday.', '「〜までに」は by。'],
@@ -1039,6 +1193,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['I’m right, aren’t I?', '私は正しいですよね。'],
           ['Let’s take a break, shall we?', '休憩しましょうか。'],
           ['Don’t be late, will you?', '遅れないでくださいね。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '休憩するは take a break／映画を見たは have seen／買い物に行くは go shopping。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Let’s take a short break, shall we?', '少し休憩しましょうよ。'],
+          ['You have seen this show before, haven’t you?', 'あなたはこの映画を見たことがありますよね。'],
+          ['You went shopping yesterday, didn’t you?', 'あなたは昨日、買い物に行きましたよね。'],
         ],
       },
     ],
@@ -1104,6 +1269,17 @@ export const GRAMMAR_REFERENCE_3 = [
           ['言い方', '気持ち'],
           ['If I have time, I will help you.', '時間があれば手伝う（ありうる）'],
           ['If I had time, I would help you.', '時間があれば手伝うのに（実際は時間がない）'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '電話をかけるは call／世界中を旅するは travel around the world／夢がかなうは come true。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['If I knew his number, I would call him.', 'もし彼の番号を知っていたら、電話するのに。'],
+          ['If I were rich, I would travel across the country.', 'もしお金持ちなら、その国を旅して回るのに。'],
+          ['I wish my dream would come true.', '私の夢がかなえばいいのに。'],
         ],
       },
     ],

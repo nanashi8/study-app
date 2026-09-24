@@ -1,0 +1,52 @@
+{
+  "id": "2026-09-24-usage-question-quality",
+  "title": "語法問題を英検で実際に問われる語法にし、学習でも語法を学べるようにする",
+  "asked": [
+    "語法問題の品質は、英検で実際に問われる語法となっているか？また、語法について学習で学べるようになっているか？"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "usage-kind-ledger",
+      "text": "語法問題の全件に、英検の短文空所補充で実際に問われる語法の型（句動詞／動詞＋名詞／動詞の語法／形容詞・分詞＋前置詞／名詞の語法／前置詞の使い分け／紛らわしい語の使い分け／決まり文句の8種）を1つずつ付ける。型は台帳（src/data/grammar-usage-kinds.js）で定義し、問題データが持つ",
+      "population": "語法問題385問（単元別350問・形式拡充35問）",
+      "check": "node --test tests/grammar-usage-quality.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-is-not-grammar",
+      "text": "文法の規則だけで答えが決まる問題（時制・相の形、主語と動詞の一致、語順・倒置、付加疑問、感嘆文、関係詞や接続詞の選択、仮定法の形、冠詞の a / an、代名詞の格など）を語法に置かない。語法は「その語がどの語と結び付くか・その語が後ろにどんな形をとるか」を問うものだけにする。取り違えていた問題は選択問題へ移し、同じ単元に本物の語法問題を新しく書く",
+      "population": "語法問題385問を1問ずつ判定した結果（判定は型台帳に全件記録）",
+      "check": "node --test tests/grammar-usage-quality.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-every-unit-kept",
+      "text": "入れ替えたあとも、参考書の全単元が語法問題を3問以上持ち、どの級でも語法だけのテストが1回分（20問）そろう（2026-09-24の前の依頼で満たした条件を壊さない）",
+      "population": "文法の参考書の全127単元＝7級すべて",
+      "check": "node --test tests/grammar-unit-formats.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-learnable-in-reference",
+      "text": "語法をテストだけでなく学習でも学べる。各単元の参考書ページに「語と語の決まった結び付き」を教えるポイントがあり、その単元の語法問題が問う結び付きが、その本文と例文で説明されている（いまは127単元中23単元にしかない）",
+      "population": "文法の参考書の全127単元と、その単元の語法問題385問が問う結び付き",
+      "check": "node --test tests/grammar-usage-quality.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-quality-audits-green",
+      "text": "入れ替え・書き直しでできた問題と参考書の例文が、既存の監査をすべて満たす（完成文の重複なし・選択肢4つと全選択肢の説明・正解を含む解説・参考書の英文の語がすべて辞書で引ける・学習者向け日本語の見直し台帳）",
+      "population": "語法385問・選択問題に移す問題・新しく足す参考書の例文すべて",
+      "check": "npm run check:content && node --test tests/grammar-reference.test.mjs tests/grammar-choice-notes.test.mjs tests/english-question-formats.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめてから main へ push し、公開版で語法の学習ページと語法テストを見る",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

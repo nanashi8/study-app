@@ -10,19 +10,19 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['must have＋過去分詞', 'She must have realized the figures were wrong.', '彼女はその数字がまちがっていると気づいていたにちがいありません。', 'must have＋過去分詞で、過去のことへの強い推量を表す。must のあとは原形 have にする。'],
     ],
     usage: [
-      ['ought のあとに to を落とさない', 'You ought ___ have consulted us first.', ['to', 'of', 'for', 'at'], 'to', 'あなたはまず私たちに相談すべきでした。', 'ought は後ろに to を伴って1つの助動詞のように働く。ought to have＋過去分詞の形にする。', [
+      ['setPhrase', 'ought のあとに to を落とさない', 'You ought ___ have consulted us first.', ['to', 'of', 'for', 'at'], 'to', 'あなたはまず私たちに相談すべきでした。', 'ought は後ろに to を伴って1つの助動詞のように働く。ought to have＋過去分詞の形にする。', [
         'ought to have＋過去分詞の形。ought のあとの to を落とさない。',
         'ought of have という形はない。',
         'ought for have という形もない。',
         'ought at have という形もない。',
       ]],
-      ['おそらく〜は may well', 'You ___ well be right about the cause.', ['may', 'must', 'should', 'need'], 'may', '原因についてはあなたの言うとおりかもしれません。', 'may well＋原形で「おそらく〜だろう・〜するのももっともだ」という決まった言い方になる。', [
+      ['setPhrase', 'おそらく〜は may well', 'You ___ well be right about the cause.', ['may', 'must', 'should', 'need'], 'may', '原因についてはあなたの言うとおりかもしれません。', 'may well＋原形で「おそらく〜だろう・〜するのももっともだ」という決まった言い方になる。', [
         'may well＋原形で「おそらく〜だろう」を表す決まった言い方になる。',
         'must well という結び付きはない。must は「〜にちがいない」を1語で表す。',
         'should well という結び付きはない。',
         'need well という結び付きもない。',
       ]],
-      ['いくら〜してもしすぎない', 'You cannot be ___ careful when you handle chemicals.', ['too', 'very', 'so', 'much'], 'too', '薬品をあつかうときは、いくら注意してもしすぎることはありません。', 'cannot be too＋形容詞で「いくら〜してもしすぎることはない」という決まった言い方になる。', [
+      ['setPhrase', 'いくら〜してもしすぎない', 'You cannot be ___ careful when you handle chemicals.', ['too', 'very', 'so', 'much'], 'too', '薬品をあつかうときは、いくら注意してもしすぎることはありません。', 'cannot be too＋形容詞で「いくら〜してもしすぎることはない」という決まった言い方になる。', [
         'cannot 〜 too … で「いくら…しても…しすぎることはない」を表す。',
         'cannot be very careful では「あまり注意深くできない」という別の意味になる。',
         'cannot be so careful もこの決まった言い方にはならない。',
@@ -38,19 +38,19 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['要求・提案の that 節は原形', 'The residents demanded that the council publish the report.', '住民は議会がその報告書を公表するよう求めました。', 'demand・suggest・insist などの that 節では、主語に関係なく動詞を原形にする。'],
     ],
     usage: [
-      ['万一を表す were to', 'If the project ___ to fail, we would need a backup plan.', ['were', 'is', 'will be', 'has been'], 'were', '万一その事業が失敗したら、私たちは予備の計画が必要になるでしょう。', 'If＋主語＋were to＋原形で「万一〜したら」と、実現しにくい先のことを仮定する。', [
+      ['setPhrase', '万一を表す were to', 'If the project ___ to fail, we would need a backup plan.', ['were', 'is', 'will be', 'has been'], 'were', '万一その事業が失敗したら、私たちは予備の計画が必要になるでしょう。', 'If＋主語＋were to＋原形で「万一〜したら」と、実現しにくい先のことを仮定する。', [
         'If 〜 were to＋原形で「万一〜したら」を表す。主語が何でも were を使う。',
         'is では実際に起こりうる条件の形になり、would と組にならない。',
         'will be は if のまとまりの中では使わない。',
         'has been は今までのつながりを表す形で、この仮定には合わない。',
       ]],
-      ['提案の that 節は原形', 'The doctor suggested that he ___ a complete rest.', ['take', 'takes', 'took', 'is taking'], 'take', '医者は彼が完全に休養をとるよう提案しました。', 'suggest・demand・insist などの that 節の中は、主語が3人称単数でも動詞を原形 take にする。', [
+      ['verbForm', '提案の that 節は原形', 'The doctor suggested that he ___ a complete rest.', ['take', 'takes', 'took', 'is taking'], 'take', '医者は彼が完全に休養をとるよう提案しました。', 'suggest・demand・insist などの that 節の中は、主語が3人称単数でも動詞を原形 take にする。', [
         '提案を表す that 節の中は原形にするので take を置く。',
         'takes と3人称単数の形にすると、提案を表すこの形にならない。',
         'took は過去形で、提案の内容を表す that 節には合わない。',
         'is taking は今の様子を表す形で、提案の内容にはならない。',
       ]],
-      ['It is vital that の中も原形', 'It is vital that every document ___ kept safely.', ['be', 'is', 'was', 'being'], 'be', 'すべての書類が安全に保管されることが極めて重要です。', 'It is vital / essential that 〜 の that 節の中も、動詞を原形にする。受け身なら be＋過去分詞。', [
+      ['adjPrep', 'It is vital that の中も原形', 'It is vital that every document ___ kept safely.', ['be', 'is', 'was', 'being'], 'be', 'すべての書類が安全に保管されることが極めて重要です。', 'It is vital / essential that 〜 の that 節の中も、動詞を原形にする。受け身なら be＋過去分詞。', [
         '重要性を述べる that 節の中は原形なので、受け身も be kept にする。',
         'is kept とすると、事実を述べる形になり、この言い方に合わない。',
         'was kept は過去の事実を述べる形で、これから守るべきことを表さない。',
@@ -66,17 +66,25 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['if 節の be to は意図', 'If we are to finish on time, we must start now.', '時間どおりに終えるつもりなら、今始めなければなりません。', 'if のまとまりの中の be to は「〜するつもりなら」という意図を表す。'],
     ],
     usage: [
+      ['adjPrep', '見込みを表す be subject to', 'The contract is subject ___ change without notice.', ['to', 'for', 'of', 'with'], 'to', 'その契約は予告なく変更されることがあります。', 'be subject to＋名詞で「〜を受けることになっている」。形の似た be to＋原形と区別する。', [
+        'be subject to＋名詞で「〜を受けることになっている」を表す。',
+        'subject for という結び付きはない。',
+        'subject of は「〜の主題」を表す別の言い方になる。',
+        'subject with という結び付きはない。',
+      ]],
+      ['adjPrep', '責任があるは be responsible for', 'Each member is to be ___ for one section of the report.', ['responsible', 'charge', 'duty', 'care'], 'responsible', '各委員は報告書の1章ずつを担当することになっています。', 'be responsible for 〜 で「〜に責任がある・〜を担当する」。担当する範囲を for で示す。', [
+        'be responsible for 〜 で「〜を担当する」。責任の範囲は for で示す。',
+        'charge は be in charge of 〜 の形で使い、in と of が必要になる。',
+        'duty は名詞で、be動詞のあとに置くと「義務そのもの」を指す形になる。',
+        'care は take care of 〜 の形で使い、be動詞のあとに直接は置かない。',
+      ]],
+    ],
+    choice: [
       ['be to のあとは原形', 'The ceremony is to ___ in the main hall.', ['be held', 'hold', 'holding', 'held'], 'be held', '式典は大ホールで行われる予定です。', '式典は「行われる」側なので、be to のあとを be held と be＋過去分詞にする。', [
         '式典は行われる側なので、to のあとを be held と受け身にする。',
         'hold では式典が自分で開くことになり、意味が通らない。',
         'holding だけでは to のあとに続けられない。',
         'held だけでは受け身の形にならない。be を入れる。',
-      ]],
-      ['見込みを表す be subject to', 'The contract is subject ___ change without notice.', ['to', 'for', 'of', 'with'], 'to', 'その契約は予告なく変更されることがあります。', 'be subject to＋名詞で「〜を受けることになっている」。形の似た be to＋原形と区別する。', [
-        'be subject to＋名詞で「〜を受けることになっている」を表す。',
-        'subject for という結び付きはない。',
-        'subject of は「〜の主題」を表す別の言い方になる。',
-        'subject with という結び付きはない。',
       ]],
     ],
   },
@@ -87,19 +95,19 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['deny＋having＋過去分詞', 'He denied having taken the missing documents.', '彼はなくなった書類を持ち出したことを否定しました。', 'deny のあとは動名詞。否定する内容が前のことなら having＋過去分詞にする。'],
     ],
     usage: [
-      ['tell＋人＋to＋原形', 'He told me ___ careful on the icy road.', ['to be', 'be', 'being', 'that be'], 'to be', '彼は私に凍った道では気をつけるように言いました。', '命令の内容を伝えるときは tell＋人＋to＋動詞の原形にして to be とする。to を落とさない。', [
+      ['verbForm', 'tell＋人＋to＋原形', 'He told me ___ careful on the icy road.', ['to be', 'be', 'being', 'that be'], 'to be', '彼は私に凍った道では気をつけるように言いました。', '命令の内容を伝えるときは tell＋人＋to＋動詞の原形にして to be とする。to を落とさない。', [
         'tell＋人＋to＋原形の形なので to be を置く。',
         'told me be careful という形にはしない。to が必要。',
         'being careful では命令の内容を伝える形にならない。',
         'that be careful という形はない。',
       ]],
-      ['deny のあとは動名詞', 'She denied ___ the file without permission.', ['copying', 'to copy', 'copy', 'copied'], 'copying', '彼女は許可なくそのファイルをコピーしたことを否定しました。', 'deny・admit・suggest のあとに動作を置くときは動名詞 copying にする。to＋原形は続けない。', [
+      ['verbForm', 'deny のあとは動名詞', 'She denied ___ the file without permission.', ['copying', 'to copy', 'copy', 'copied'], 'copying', '彼女は許可なくそのファイルをコピーしたことを否定しました。', 'deny・admit・suggest のあとに動作を置くときは動名詞 copying にする。to＋原形は続けない。', [
         'deny のあとは動名詞なので copying を置く。',
         'deny to copy という形にはしない。',
         'deny copy と原形を置くこともできない。',
         'copied は過去形・過去分詞で、deny のあとには置けない。',
       ]],
-      ['be said to have＋過去分詞', 'The policy is believed ___ waste in the city.', ['to have reduced', 'to reduce', 'reducing', 'to be reduced'], 'to have reduced', 'その政策は市のごみを減らしたと考えられています。', '減らしたのは今より前のことなので、to have reduced と to have＋過去分詞にして時の前後を示す。', [
+      ['setPhrase', 'be said to have＋過去分詞', 'The policy is believed ___ waste in the city.', ['to have reduced', 'to reduce', 'reducing', 'to be reduced'], 'to have reduced', 'その政策は市のごみを減らしたと考えられています。', '減らしたのは今より前のことなので、to have reduced と to have＋過去分詞にして時の前後を示す。', [
         '減らしたのは信じられている今より前なので、to have reduced にする。',
         'to reduce では今のことになり、すでに減らした結果を表せない。',
         'reducing だけでは is believed のあとに続けられない。',
@@ -115,23 +123,31 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['「〜から判断すると」は Judging from', 'Judging from his expression, he must be exhausted.', '表情から判断すると、彼はとても疲れているにちがいありません。', 'judging from 〜 は「〜から判断すると」という決まった分詞構文。文の主語と結び付けなくてよい。'],
     ],
     usage: [
-      ['受け身で前のことは Having been', '___ warned of the danger, the crew left the site.', ['Having been', 'Having', 'Being', 'Have been'], 'Having been', '危険を知らされていたので、作業員たちは現場を離れました。', '作業員は「知らされる」側で、しかも現場を離れるより前のことなので Having been＋過去分詞にする。', [
-        '受け身で、しかも文の動詞より前のことなので Having been warned とする。前に終わったことをはっきり示せる。',
-        'Having warned では「作業員が警告した」という意味になってしまう。',
-        'Being warned でも意味は通るが、前に終わったことをはっきり示すのは Having been。',
-        'Have been と原形で始めると命令文の形になってしまう。',
-      ]],
-      ['speaking は形を変えない', '___ speaking, this is not a new idea.', ['Strictly', 'Strict', 'Stricter', 'Strictness'], 'Strictly', '厳密に言えば、これは新しい考えではありません。', 'strictly speaking は決まった分詞構文で、speaking の前には副詞を置く。', [
+      ['setPhrase', 'speaking は形を変えない', '___ speaking, this is not a new idea.', ['Strictly', 'Strict', 'Stricter', 'Strictness'], 'Strictly', '厳密に言えば、これは新しい考えではありません。', 'strictly speaking は決まった分詞構文で、speaking の前には副詞を置く。', [
         'speaking の前には副詞を置くので strictly にする。',
         'strict は形容詞で、speaking の前には置けない。',
         'stricter は比較級で、この決まった言い方には入らない。',
         'strictness は名詞で、speaking の前には置けない。',
       ]],
-      ['「天気が許せば」は weather permitting', 'Weather ___, the concert will take place in the park.', ['permitting', 'permitted', 'permits', 'to permit'], 'permitting', '天気がよければ、そのコンサートは公園で行われます。', 'weather permitting は「天気が許せば」という決まった独立分詞構文。天気は「許す」側なので現在分詞にする。', [
+      ['setPhrase', '「天気が許せば」は weather permitting', 'Weather ___, the concert will take place in the park.', ['permitting', 'permitted', 'permits', 'to permit'], 'permitting', '天気がよければ、そのコンサートは公園で行われます。', 'weather permitting は「天気が許せば」という決まった独立分詞構文。天気は「許す」側なので現在分詞にする。', [
         '天気が許す側なので、現在分詞 permitting を置く。',
         'permitted では天気が許される側になり、意味が通らない。',
         'permits を置くと文の動詞が2つになってしまう。',
         'to permit は「許すために」となり、条件を表さない。',
+      ]],
+      ['setPhrase', '急いでは in haste', 'Having been written in ___, the letter contained errors.', ['haste', 'hurry', 'rush', 'speed'], 'haste', '急いで書かれたので、その手紙には誤りがありました。', 'in haste で「急いで」という決まった言い方になる。冠詞を付けずに使う。', [
+        'in haste で「急いで」。冠詞を付けない決まった言い方。',
+        'hurry は in a hurry のように冠詞が必要になる。',
+        'rush も in a rush のように冠詞が必要になる。',
+        'speed は at speed の形で使い、in とは組にしない。',
+      ]],
+    ],
+    choice: [
+      ['受け身で前のことは Having been', '___ warned of the danger, the crew left the site.', ['Having been', 'Having', 'Being', 'Have been'], 'Having been', '危険を知らされていたので、作業員たちは現場を離れました。', '作業員は「知らされる」側で、しかも現場を離れるより前のことなので Having been＋過去分詞にする。', [
+        '受け身で、しかも文の動詞より前のことなので Having been warned とする。前に終わったことをはっきり示せる。',
+        'Having warned では「作業員が警告した」という意味になってしまう。',
+        'Being warned でも意味は通るが、前に終わったことをはっきり示すのは Having been。',
+        'Have been と原形で始めると命令文の形になってしまう。',
       ]],
     ],
   },
@@ -143,6 +159,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['「考え合わせると」は All things considered', 'All things considered, the trip went very well.', 'すべてを考え合わせると、その旅行はとてもうまくいきました。', 'all things considered は「すべてを考え合わせると」という決まった独立分詞構文。'],
     ],
     usage: [
+      ['verbNoun', '結論に達するは reach a decision', 'There being no objections, the committee ___ a decision quickly.', ['reached', 'arrived', 'came', 'got'], 'reached', '反対がなかったので、委員会はすばやく結論に達しました。', 'reach a decision で「結論に達する」。reach は前置詞を置かずに目的語を取る。過去の文なので reached にする。', [
+        'reach a decision で「結論に達する」。reach のあとに前置詞は置かない。',
+        'arrive は arrive at a decision のように at が必要になる。',
+        'come も come to a decision のように to が必要になる。',
+        'get a decision という結び付きはふつう使わない。',
+      ]],
+      ['phrasal', '取りかかるは set about', 'The data collected, the team ___ about its analysis.', ['set', 'put', 'took', 'made'], 'set', 'データが集まったので、チームは分析に取りかかりました。', 'set about 〜 で「〜に取りかかる」という決まった結び付きになる。', [
+        'set about 〜 で「〜に取りかかる」。仕事を始めることを表す。',
+        'put about 〜 は「（うわさを）広める」などの別の意味になる。',
+        'take about 〜 という結び付きはない。',
+        'make about 〜 という結び付きもない。',
+      ]],
+      ['confusable', 'その場を去るは leave', 'The meeting being over, the audience ___ the hall quietly.', ['left', 'arrived', 'stayed', 'remained'], 'left', '会議が終わったので、聴衆は静かにホールを出ました。', 'leave＋場所 で「〜を去る」。とどまる stay・remain と使い分ける。過去の文なので left にする。', [
+        'leave the hall で「ホールを出る」。leave は前置詞を置かずに目的語を取る。',
+        'arrive は「着く」で、意味が逆になるうえ前置詞も必要になる。',
+        'stay は「とどまる」で、出ていく意味にならない。',
+        'remain も「とどまる」で、出ていく意味にならない。',
+      ]],
+    ],
+    choice: [
       ['主語がちがうときは主語を残す', '___ being over, the audience left quietly.', ['The concert', 'It', 'Being', 'There'], 'The concert', 'コンサートが終わったので、観客は静かに出ていきました。', '分詞の動作をするのが文の主語 the audience とちがうので、分詞の前に The concert を置く。', [
         '終わったのはコンサートなので、分詞の前に The concert を置く。',
         'It being over では何が終わったのか分からない。',
@@ -170,6 +206,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['with＋名詞＋過去分詞', 'He sat in silence with his arms crossed.', '彼は腕を組んで黙ってすわっていました。', '腕は「組まれる」側なので過去分詞 crossed を使う。with＋名詞＋分詞で同時の様子を表す。'],
     ],
     usage: [
+      ['preposition', '付帯状況を表すのは with', 'He walked in ___ a book in his hand.', ['with', 'by', 'on', 'for'], 'with', '彼は本を手に持って入ってきました。', '同時の様子を付け加えるときは with＋名詞＋前置詞句の形にする。by では表せない。', [
+        'with＋名詞＋前置詞句で「〜を…した状態で」という同時の様子を表す。',
+        'by は手段や行為者を表す語で、同時の様子を付け加える働きはない。',
+        'on は接している場所を表す語で、この形には合わない。',
+        'for は目的や相手を表す語で、同時の様子を表せない。',
+      ]],
+      ['verbNoun', '腕を組むは fold one’s arms', 'She stood there with her arms ___ across her chest.', ['folded', 'bent', 'closed', 'tied'], 'folded', '彼女は胸の前で腕を組んで立っていました。', 'fold one’s arms で「腕を組む」という決まった結び付きになる。過去の文なので folded にする。', [
+        'fold one’s arms で「腕を組む」。腕を折り重ねることを fold で表す。',
+        'bend は「曲げる」で、腕を組む決まった言い方にならない。',
+        'close は「閉じる」で、腕には使わない。',
+        'tie は「しばる」で、腕を組む意味にならない。',
+      ]],
+      ['setPhrase', '手に持ってはin one’s hand', 'She walked in with a letter in her ___.', ['hand', 'hands', 'arm', 'finger'], 'hand', '彼女は手紙を手に持って入ってきました。', 'in one’s hand で「手に持って」。1つの物を持つときは単数形 hand にする。', [
+        'in her hand で「手に持って」。1つの物を持つときは単数形にする。',
+        'in her hands は両手でかかえるときの言い方で、手紙1通にはふつう使わない。',
+        'in her arm では「うでの中に」となり、手に持つ意味にならない。',
+        'in her finger では「指の中に」となり、意味が通らない。',
+      ]],
+    ],
+    choice: [
       ['される側なら過去分詞', 'He sat quietly with his eyes ___.', ['closed', 'closing', 'close', 'to close'], 'closed', '彼は目を閉じて静かにすわっていました。', 'with＋名詞＋分詞では、名詞が「される」側なら過去分詞にする。目は閉じられる側なので closed を置く。', [
         '目は閉じられる側なので、過去分詞 closed を置く。',
         'closing では目が何かを閉じていることになってしまう。',
@@ -182,12 +238,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'filling では口が何かを満たしていることになってしまう。',
         'to fill は「満たすために」となり、状態を表さない。',
       ]],
-      ['付帯状況を表すのは with', 'He walked in ___ a book in his hand.', ['with', 'by', 'on', 'for'], 'with', '彼は本を手に持って入ってきました。', '同時の様子を付け加えるときは with＋名詞＋前置詞句の形にする。by では表せない。', [
-        'with＋名詞＋前置詞句で「〜を…した状態で」という同時の様子を表す。',
-        'by は手段や行為者を表す語で、同時の様子を付け加える働きはない。',
-        'on は接している場所を表す語で、この形には合わない。',
-        'for は目的や相手を表す語で、同時の様子を表せない。',
-      ]],
     ],
   },
   {
@@ -198,6 +248,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['that＋experts say＋動詞', 'This is the method that experts say is most reliable.', 'これは専門家が最も信頼できると言う方法です。', 'experts say を取りのぞくと that is most reliable となり、主語が欠けるので主格でつなぐ。'],
     ],
     usage: [
+      ['setPhrase', '「だれが〜と思うか」は Who do you think', 'Who ___ will win the final game?', ['do you think', 'do you think that', 'you think', 'think you'], 'do you think', 'だれが決勝戦に勝つと思いますか。', 'Yes / No で答えられない問いでは、疑問詞を先頭に出して〈疑問詞＋do you think＋主語＋動詞〉の語順にする。', [
+        '疑問詞を先頭に置き、そのあとを do you think＋動詞 の語順にする。',
+        'Who do you think that 〜? のように that を入れることはしない。',
+        'Who you think will win 〜? では疑問文の形になっていない。',
+        'Who think you 〜? という語順はない。',
+      ]],
+      ['verbNoun', '問題を解決するは solve a problem', 'He is the person who I think can ___ this puzzle.', ['solve', 'answer', 'reply', 'respond'], 'solve', '彼はこの難問を解決できると私が思う人です。', 'solve a puzzle で「難問を解決する」。答えを返す answer・reply と使い分ける。', [
+        'solve a puzzle で「難問を解決する」。解き明かすことを solve で表す。',
+        'answer は「（問いに）答える」で、問題を解決する意味にならない。',
+        'reply は「返事をする」で、reply to 〜 の形にする。',
+        'respond も「反応する」で、respond to 〜 の形にする。',
+      ]],
+      ['confusable', '選び出すは select', 'This is the applicant whom I believe the committee will ___.', ['select', 'refuse', 'reject', 'deny'], 'select', 'これは委員会が選ぶだろうと私が思う応募者です。', 'select は多くの中から「選び出す」。断る refuse・reject と意味が逆になる。', [
+        'select は多くの中から選び出すことを表す。',
+        'refuse は「断る」で、選ぶ意味と逆になる。',
+        'reject は「退ける」で、選ぶ意味と逆になる。',
+        'deny は「否定する」で、選ぶ意味にならない。',
+      ]],
+    ],
+    choice: [
       ['取りのぞいて主格か決める', 'She is the person ___ I think can solve this problem.', ['who', 'whom', 'whose', 'what'], 'who', '彼女はこの問題を解決できると私が思う人です。', 'I think を取りのぞくと can solve 〜 の主語が欠けるので、主格の who を使う。', [
         'I think を取りのぞくと主語が欠けるので、主格の who を使う。',
         'whom は目的格で、後ろの動詞の主語にはなれない。',
@@ -210,12 +280,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'whose は後ろに名詞を続ける語で、ここでは合わない。',
         'which は物を受ける語で、the writer には使えない。',
       ]],
-      ['「だれが〜と思うか」は Who do you think', 'Who ___ will win the final game?', ['do you think', 'do you think that', 'you think', 'think you'], 'do you think', 'だれが決勝戦に勝つと思いますか。', 'Yes / No で答えられない問いでは、疑問詞を先頭に出して〈疑問詞＋do you think＋主語＋動詞〉の語順にする。', [
-        '疑問詞を先頭に置き、そのあとを do you think＋動詞 の語順にする。',
-        'Who do you think that 〜? のように that を入れることはしない。',
-        'Who you think will win 〜? では疑問文の形になっていない。',
-        'Who think you 〜? という語順はない。',
-      ]],
     ],
   },
   {
@@ -226,6 +290,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['However＋副詞＋主語＋動詞', 'However quickly we work, the task takes two days.', 'どんなに速く働いても、その作業には2日かかります。', 'however のすぐ後ろに形容詞・副詞を置き、そのあとを〈主語＋動詞〉にする。'],
     ],
     usage: [
+      ['setPhrase', 'no matter＋疑問詞に言いかえる', '___ matter how hard it rains, the train will run.', ['No', 'Not', 'Never', 'None'], 'No', 'どんなに激しく雨が降っても、電車は運行します。', 'no matter＋疑問詞 は -ever の譲歩と同じ意味を表す決まった言い方になる。', [
+        'no matter how 〜 で「どんなに〜でも」を表し、However 〜 と言いかえられる。',
+        'Not matter という言い方はない。',
+        'Never matter という言い方もない。',
+        'None matter という言い方もない。',
+      ]],
+      ['noun', '利用できるは have access to', 'Whoever needs the data may have ___ to it.', ['access', 'entry', 'approach', 'way'], 'access', 'そのデータを必要とする人はだれでも、それを利用できます。', 'have access to 〜 で「〜を利用できる」。access は数えられない名詞として冠詞を付けずに使う。', [
+        'have access to 〜 で「〜を利用できる」。access に冠詞は付けない。',
+        'entry は「入場」で、データを利用する意味にならない。',
+        'approach は「近づき方」で、have approach to という形では使わない。',
+        'way は「方法」で、have way to という形では使わない。',
+      ]],
+      ['setPhrase', '少なくともは at least', 'Whichever plan you choose, allow ___ least three days.', ['at', 'in', 'for', 'by'], 'at', 'どちらの計画を選ぶにしても、少なくとも3日は見ておきなさい。', 'at least で「少なくとも」という決まった言い方になる。', [
+        'at least で「少なくとも」。数量の下限を示す決まった言い方。',
+        'in least という言い方はない。',
+        'for least という言い方もない。',
+        'by least という言い方もない。',
+      ]],
+    ],
+    choice: [
       ['however のあとは形容詞・副詞', '___ difficult it is, we will continue the project.', ['However', 'How', 'Whatever', 'Whenever'], 'However', 'どんなに難しくても、私たちはその事業を続けます。', 'however＋形容詞＋主語＋動詞で「どんなに〜でも」を表す。形容詞を however のすぐ後ろに置く。', [
         'However＋形容詞＋〈主語＋動詞〉で「どんなに〜でも」を表す。',
         'How difficult it is は疑問や感嘆を表す形で、譲歩のまとまりにはならない。',
@@ -238,12 +322,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'whatever は物を表す語で、チケットをほしがる人を指せない。',
         'whichever は「どちらでも」と選ぶ範囲が決まっているときに使う。',
       ]],
-      ['no matter＋疑問詞に言いかえる', '___ matter how hard it rains, the train will run.', ['No', 'Not', 'Never', 'None'], 'No', 'どんなに激しく雨が降っても、電車は運行します。', 'no matter＋疑問詞 は -ever の譲歩と同じ意味を表す決まった言い方になる。', [
-        'no matter how 〜 で「どんなに〜でも」を表し、However 〜 と言いかえられる。',
-        'Not matter という言い方はない。',
-        'Never matter という言い方もない。',
-        'None matter という言い方もない。',
-      ]],
     ],
   },
   {
@@ -253,6 +331,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['whatever＋主語＋動詞', 'Feel free to order whatever you like tonight.', '今夜は何でも好きなものを注文してください。', 'whatever は「〜するものは何でも」を表し、order の目的語になるまとまりを作る。'],
     ],
     usage: [
+      ['confusable', '時なら whenever', 'You can come ___ you like.', ['whenever', 'whatever', 'whoever', 'however'], 'whenever', 'あなたは好きなときにいつでも来てよいです。', '時について「いつでも」を表すのは whenever。物なら whatever、人なら whoever を使う。', [
+        '時について「いつでも」を表すので whenever を使う。',
+        'whatever は物について「何でも」を表し、来る時を表せない。',
+        'whoever は人について「だれでも」を表し、時を表せない。',
+        'however は程度やしかたを表し、時を表せない。',
+      ]],
+      ['setPhrase', '自由に〜してくださいは feel free to', 'Feel ___ to take whatever you like today.', ['free', 'easy', 'ready', 'glad'], 'free', '今日は何でも好きなものを自由に取ってください。', 'feel free to＋原形 で「遠慮なく〜してください」という決まった言い方になる。', [
+        'feel free to 〜 で「遠慮なく〜してください」。まとまりで覚える。',
+        'feel easy to 〜 という決まった言い方はない。',
+        'feel ready to 〜 は「〜する準備ができている」という別の意味になる。',
+        'feel glad to 〜 は「〜してうれしい」という別の意味になる。',
+      ]],
+      ['verbForm', 'support は前置詞を置かない', 'Whatever happens, I will ___ your choice.', ['support', 'depend', 'rely', 'consist'], 'support', '何が起ころうとも、私はあなたの選択を支えます。', 'support は目的語を直接置く動詞。depend・rely は on が、consist は of が必要になる。', [
+        'support your choice で「あなたの選択を支える」。support のあとに前置詞は置かない。',
+        'depend は depend on 〜 の形にする。',
+        'rely も rely on 〜 の形にする。',
+        'consist は consist of 〜 の形にする。',
+      ]],
+    ],
+    choice: [
       ['何が〜しようともは Whatever', '___ may happen, we will not change our plan.', ['Whatever', 'However', 'Whenever', 'Wherever'], 'Whatever', '何が起ころうとも、私たちは計画を変えません。', 'whatever＋may＋動詞で「何が〜しようとも」を表す。主語の位置に立つ語を選ぶ。', [
         'Whatever は happen の主語になり、「何が起ころうとも」を表す。',
         'However のあとには形容詞・副詞が続き、主語の位置には立たない。',
@@ -265,12 +363,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'Whoever は人を指す語で、the weather には使えない。',
         'Whichever は選ぶ範囲が決まっているときに使い、ここでは合わない。',
       ]],
-      ['時なら whenever', 'You can come ___ you like.', ['whenever', 'whatever', 'whoever', 'however'], 'whenever', 'あなたは好きなときにいつでも来てよいです。', '時について「いつでも」を表すのは whenever。物なら whatever、人なら whoever を使う。', [
-        '時について「いつでも」を表すので whenever を使う。',
-        'whatever は物について「何でも」を表し、来る時を表せない。',
-        'whoever は人について「だれでも」を表し、時を表せない。',
-        'however は程度やしかたを表し、時を表せない。',
-      ]],
     ],
   },
   {
@@ -281,6 +373,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['前置詞のあとは whether', 'It depends on whether we have enough time.', 'それは私たちに十分な時間があるかどうかによります。', '前置詞 on の後ろで「〜かどうか」を表すときは whether を使う。if は置けない。'],
     ],
     usage: [
+      ['confusable', 'to 不定詞と組むのは whether', 'I cannot decide ___ to go or not.', ['whether', 'if', 'that', 'what'], 'whether', '私は行くべきかどうか決められません。', 'to＋原形と組にして「〜すべきかどうか」を表せるのは whether だけ。if は to と組にならない。', [
+        'whether to＋原形で「〜すべきかどうか」を表す。',
+        'if は to＋原形と組にできない。〈主語＋動詞〉を続ける必要がある。',
+        'that は「〜ということ」を表し、不確かさを表せない。',
+        'what to go という形では意味が通らない。',
+      ]],
+      ['phrasal', '〜次第だは depend on', 'It ___ on whether we have enough money.', ['depends', 'decides', 'determines', 'discusses'], 'depends', 'それは私たちに十分なお金があるかどうかによります。', 'depend on 〜 で「〜次第だ」。決める側を主語にする decide・determine と使い分ける。主語が3人称単数なので depends にする。', [
+        'depend on 〜 で「〜次第だ」。左右される側を主語にする。',
+        'decide は「決める」で、on を伴わずに目的語を取る。',
+        'determine も「決定する」で、決める側が主語になる。',
+        'discuss は「話し合う」で、on を置かずに目的語を取る。',
+      ]],
+      ['verbNoun', '衝撃を与えるは shock', 'The fact that he lied ___ the whole class.', ['shocked', 'wondered', 'doubted', 'guessed'], 'shocked', '彼がうそをついたという事実は、クラス全体に衝撃を与えました。', 'shock＋人 で「人に衝撃を与える」。物事を主語にして使える。過去の文なので shocked にする。', [
+        'shock the class で「クラスに衝撃を与える」。出来事を主語にできる。',
+        'wonder は「〜だろうかと思う」で、人を目的語に取らない。',
+        'doubt は「疑う」で、衝撃を与える意味にならない。',
+        'guess は「推測する」で、衝撃を与える意味にならない。',
+      ]],
+    ],
+    choice: [
       ['後ろが完全な文なら that', 'There is a chance ___ the schedule will change.', ['that', 'what', 'which', 'whose'], 'that', '予定が変わる見込みがあります。', '後ろの文に欠けている部分がないので、名詞の中身を説明する同格の that を使う。', [
         '後ろの the schedule will change は欠けていない文なので、同格の that を使う。',
         'what は後ろで名詞が欠けているときに使う。この文では欠けていない。',
@@ -293,12 +405,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'Whether は後ろに完全な文を続ける語で、主語が欠けるこの文には合わない。',
         'Which は前に先行詞が必要で、文の先頭には置けない。',
       ]],
-      ['to 不定詞と組むのは whether', 'I cannot decide ___ to go or not.', ['whether', 'if', 'that', 'what'], 'whether', '私は行くべきかどうか決められません。', 'to＋原形と組にして「〜すべきかどうか」を表せるのは whether だけ。if は to と組にならない。', [
-        'whether to＋原形で「〜すべきかどうか」を表す。',
-        'if は to＋原形と組にできない。〈主語＋動詞〉を続ける必要がある。',
-        'that は「〜ということ」を表し、不確かさを表せない。',
-        'what to go という形では意味が通らない。',
-      ]],
     ],
   },
   {
@@ -309,6 +415,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['コンマではさむ同格', 'Marie Curie, a pioneering scientist, won two Nobel Prizes.', '先駆的な科学者であるマリ・キュリーは、ノーベル賞を2度受賞しました。', '名詞のあとにコンマではさんで別の名詞を置くと、前の名詞を言いかえて説明できる。'],
     ],
     usage: [
+      ['confusable', '同格の that をとる名詞', 'The ___ that longer hours improve results is now questioned.', ['assumption', 'assume', 'assuming', 'assumed'], 'assumption', '長時間働けば成果が上がるという想定は、今では疑問視されています。', 'fact・news・idea・assumption などの名詞は、後ろに同格の that 節を取れる。動詞は取れない。', [
+        'assumption は名詞で、後ろに同格の that 節を取れる。',
+        'assume は動詞で、The のあとに置くことはできない。',
+        'assuming は分詞で、The のあとに置いて主語にはできない。',
+        'assumed は過去形・過去分詞で、The のあとには置けない。',
+      ]],
+      ['setPhrase', '疑いの余地がないは there is no doubt', 'There is no ___ that she is right.', ['doubt', 'reason', 'way', 'time'], 'doubt', '彼女が正しいことは疑いありません。', 'There is no doubt that 〜 で「〜は疑いない」という決まった言い方になる。', [
+        'There is no doubt that 〜 で「〜は疑いない」。まとまりで覚える。',
+        'There is no reason that 〜 では「〜という理由がない」となり、意味がちがう。',
+        'There is no way that 〜 は「〜のはずがない」というくだけた言い方になる。',
+        'There is no time that 〜 では時間のことになり、意味が通らない。',
+      ]],
+      ['verbForm', 'deserve は前置詞を置かない', 'Her belief that everyone ___ a second chance guided her decision.', ['deserves', 'worth', 'costs', 'spends'], 'deserves', 'だれもがやり直す機会に値するという信念が、彼女の決定を導きました。', 'deserve は目的語を直接置く動詞。worth は形容詞で be worth 〜 の形になる。主語が3人称単数なので deserves にする。', [
+        'deserve a second chance で「やり直す機会に値する」。前置詞を置かずに目的語を取る。',
+        'worth は形容詞なので、be worth 〜 のように be動詞が必要になる。',
+        'cost は「費用がかかる」で、値するという意味にならない。',
+        'spend は「（お金や時間を）使う」で、値するという意味にならない。',
+      ]],
+    ],
+    choice: [
       ['同格は that でつなぐ', 'The news ___ the factory would close shocked us.', ['that', 'which', 'what', 'whose'], 'that', '工場が閉鎖されるという知らせは、私たちに衝撃を与えました。', '後ろの文が欠けていないので、名詞の中身を説明する同格の that を使う。', [
         '後ろの the factory would close は欠けていない文なので、同格の that を使う。',
         'which を使うには、後ろの文で主語か目的語が欠けている必要がある。',
@@ -321,12 +447,6 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'whose は後ろに名詞を続ける語で、ここでは合わない。',
         'whether は「〜かどうか」を表し、名詞を説明する働きはない。',
       ]],
-      ['同格の that をとる名詞', 'The ___ that longer hours improve results is now questioned.', ['assumption', 'assume', 'assuming', 'assumed'], 'assumption', '長時間働けば成果が上がるという想定は、今では疑問視されています。', 'fact・news・idea・assumption などの名詞は、後ろに同格の that 節を取れる。動詞は取れない。', [
-        'assumption は名詞で、後ろに同格の that 節を取れる。',
-        'assume は動詞で、The のあとに置くことはできない。',
-        'assuming は分詞で、The のあとに置いて主語にはできない。',
-        'assumed は過去形・過去分詞で、The のあとには置けない。',
-      ]],
     ],
   },
   {
@@ -337,18 +457,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['「〜であろうとなかろうと」は whether A or not', 'Whether he agrees or not, the plan will proceed.', '彼が賛成しようとしまいと、その計画は進みます。', 'whether 〜 or not で「〜であろうとなかろうと」という譲歩のまとまりを作る。'],
     ],
     usage: [
-      ['no matter how に言いかえる', 'No matter ___ carefully you check, mistakes may remain.', ['how', 'what', 'which', 'that'], 'how', 'どんなに注意深く確かめても、誤りは残りえます。', 'no matter how＋副詞＋主語＋動詞で「どんなに〜しても」を表す。However 〜 と言いかえられる。', [
+      ['setPhrase', 'no matter how に言いかえる', 'No matter ___ carefully you check, mistakes may remain.', ['how', 'what', 'which', 'that'], 'how', 'どんなに注意深く確かめても、誤りは残りえます。', 'no matter how＋副詞＋主語＋動詞で「どんなに〜しても」を表す。However 〜 と言いかえられる。', [
         'no matter how＋副詞で程度の譲歩を表し、However carefully 〜 と同じ意味になる。',
         'no matter what のあとには名詞や〈主語＋動詞〉が続き、副詞 carefully は続かない。',
         'no matter which は選ぶ範囲が決まっているときに使う。',
         'no matter that という言い方はない。',
       ]],
-      ['much as で譲歩を表す', '___ as I admire his work, I cannot agree here.', ['Much', 'Very', 'So', 'Too'], 'Much', '彼の仕事を大いに賞賛してはいますが、ここでは賛成できません。', 'Much as＋〈主語＋動詞〉で「大いに〜するけれども」という譲歩を表す。', [
+      ['setPhrase', 'much as で譲歩を表す', '___ as I admire his work, I cannot agree here.', ['Much', 'Very', 'So', 'Too'], 'Much', '彼の仕事を大いに賞賛してはいますが、ここでは賛成できません。', 'Much as＋〈主語＋動詞〉で「大いに〜するけれども」という譲歩を表す。', [
         'Much as 〜 で「大いに〜するけれども」という譲歩を表す。',
         'Very as という言い方はない。',
         'So as 〜 は目的を表す別の形で、譲歩にはならない。',
         'Too as という言い方はない。',
       ]],
+      ['verbForm', 'respect は前置詞を置かない', 'Much as I ___ him, I cannot accept this plan.', ['respect', 'depend', 'belong', 'consist'], 'respect', '彼を大いに尊敬してはいますが、この計画は受け入れられません。', 'respect は目的語を直接置く動詞。depend・belong・consist は前置詞が必要になる。', [
+        'respect him で「彼を尊敬する」。respect のあとに前置詞は置かない。',
+        'depend は depend on 〜 の形にする。',
+        'belong は belong to 〜 の形にする。',
+        'consist は consist of 〜 の形にする。',
+      ]],
+    ],
+    choice: [
       ['although に but を重ねない', 'Although the sample was small, the pattern ___ clear.', ['was', 'but was', 'so was', 'and was'], 'was', '標本は小さかったが、その傾向ははっきりしていました。', 'Although のまとまりがすでに「〜だけれども」を表しているので、後ろの文は was だけにして but を重ねない。', [
         'Although のまとまりが逆の内容を示すので、後ろは was だけでよい。',
         'but を重ねると、逆の内容を示す語が2つになってしまう。',
@@ -364,6 +492,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['「〜するとすぐに」は No sooner had 〜 than', 'No sooner had the bell rung than the students left.', 'ベルが鳴るとすぐに生徒たちは出ていきました。', 'No sooner had＋主語＋過去分詞 〜 than＋過去の文 で「〜するとすぐに」を表す。'],
     ],
     usage: [
+      ['verbNoun', '危険を冒すは take a risk', 'Under no circumstances should you ___ such a risk.', ['take', 'make', 'do', 'put'], 'take', 'どんな事情があっても、そのような危険を冒してはいけません。', 'take a risk で「危険を冒す」という決まった結び付きになる。', [
+        'take a risk で「危険を冒す」。あえて引き受けることを take で表す。',
+        'make a risk という結び付きはふつう使わない。',
+        'do a risk という結び付きはない。',
+        'put a risk という結び付きもない。',
+      ]],
+      ['phrasal', '明るみに出るは come to light', 'Only later did the truth ___ to light.', ['come', 'go', 'take', 'put'], 'come', 'あとになって初めて、真実が明るみに出ました。', 'come to light で「明るみに出る」という決まった結び付きになる。', [
+        'come to light で「明るみに出る」。隠れていたことが分かることを表す。',
+        'go to light という結び付きはない。',
+        'take to light という結び付きもない。',
+        'put to light という結び付きもない。',
+      ]],
+      ['verbForm', 'experience は前置詞を置かない', 'Never before had the city ___ such a severe storm.', ['experienced', 'happened', 'occurred', 'arisen'], 'experienced', 'その市はそれほど激しい嵐を経験したことがありませんでした。', 'experience は目的語を直接置く動詞。happen・occur・arise は目的語を取らない。過去の文なので experienced にする。', [
+        'experience such a storm で「そのような嵐を経験する」。目的語を直接置く。',
+        'happen は「起こる」で、目的語を取らない。',
+        'occur も「起こる」で、目的語を取らない。',
+        'arise も「生じる」で、目的語を取らない。',
+      ]],
+    ],
+    choice: [
       ['Never を前に出すと倒置', 'Never ___ such a beautiful sight before.', ['have I seen', 'I have seen', 'did I saw', 'I saw'], 'have I seen', 'こんなに美しい景色は今まで見たことがありません。', '否定の語句を文の先頭に出すと、後ろが〈助動詞＋主語＋動詞〉の語順になり have I seen とする。', [
         'Never を前に出したので、have I seen と倒置させる。',
         'Never I have seen という語順にはしない。',
@@ -392,6 +540,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['do で動詞を強める', 'I do appreciate your patience in this matter.', 'この件でのご辛抱に、本当に感謝しています。', 'do＋動詞の原形で動詞を強める。主語が I なので do を使う。'],
     ],
     usage: [
+      ['verbForm', 'appreciate は物事を目的語に取る', 'I do ___ your help in this matter.', ['appreciate', 'thank', 'grateful', 'oblige'], 'appreciate', 'この件でのご助力に、本当に感謝しています。', 'appreciate は物事を目的語に取る。人を目的語に取る thank と使い分ける。', [
+        'appreciate your help で「ご助力に感謝する」。物事を目的語に取る。',
+        'thank は人を目的語に取り、thank you for your help の形にする。',
+        'grateful は形容詞で、be grateful for 〜 の形にする。',
+        'oblige はこの意味では使わない。',
+      ]],
+      ['setPhrase', '〜のおかげでは thanks to', 'It was ___ to her advice that we finished on time.', ['thanks', 'according', 'next', 'close'], 'thanks', '時間どおりに終えられたのは、彼女の助言のおかげでした。', 'thanks to 〜 で「〜のおかげで」という決まった言い方になる。', [
+        'thanks to 〜 で「〜のおかげで」。よい結果の理由を示す。',
+        'according to 〜 は「〜によると」で、情報の出どころを示す。',
+        'next to 〜 は「〜のとなりに」で、理由を示さない。',
+        'close to 〜 は「〜に近い」で、理由を示さない。',
+      ]],
+      ['confusable', '見直すは revise', 'The committee did ___ the proposal last month.', ['revise', 'repair', 'recover', 'replace'], 'revise', '委員会は先月、確かに提案を見直しました。', 'revise は文章や計画を「見直して直す」。物をなおす repair と使い分ける。', [
+        'revise the proposal で「提案を見直す」。書かれた内容を改めることを表す。',
+        'repair は機械や建物をなおすことを表し、提案には使わない。',
+        'recover は「回復する・取りもどす」で、見直す意味にならない。',
+        'replace は「取りかえる」で、見直す意味にならない。',
+      ]],
+    ],
+    choice: [
       ['not until を受けるのは that', 'It was not until midnight ___ the rain stopped.', ['that', 'when', 'which', 'then'], 'that', '真夜中になってやっと雨がやみました。', 'It is / was not until 〜 の後ろは、時を表す語句を強めても that で受ける。', [
         '強調構文なので、時を強めても that で受ける。',
         'when は使わない。強調構文は It is 〜 that … の形で決まっている。',
@@ -420,19 +588,19 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['Though＋過去分詞', 'Though tired from the trip, he finished the report.', '旅行で疲れていたものの、彼は報告書を仕上げました。', 'Though he was tired 〜 の〈主語＋be動詞〉を省いた形になる。'],
     ],
     usage: [
-      ['if のあとの主語と be動詞を省く', 'Call me later if ___.', ['necessary', 'it necessary', 'is necessary', 'to necessary'], 'necessary', '必要ならあとで電話してください。', 'if it is necessary の〈主語＋be動詞〉を省いて if necessary とする。', [
+      ['setPhrase', 'if のあとの主語と be動詞を省く', 'Call me later if ___.', ['necessary', 'it necessary', 'is necessary', 'to necessary'], 'necessary', '必要ならあとで電話してください。', 'if it is necessary の〈主語＋be動詞〉を省いて if necessary とする。', [
         'if it is を省いて if necessary とするのが決まった言い方になる。',
         'if it necessary では動詞がなく、文の形が整わない。',
         'if is necessary では主語がなく、形が整わない。',
         'to necessary という形はない。',
       ]],
-      ['もしあってもは if any', 'There are few errors, ___ any, in this report.', ['if', 'though', 'even', 'or'], 'if', 'この報告書には、あるとしてもほとんど誤りはありません。', 'if any は「もしあるとしても」を表す決まった言い方。few・little と組にしてよく使う。', [
+      ['setPhrase', 'もしあってもは if any', 'There are few errors, ___ any, in this report.', ['if', 'though', 'even', 'or'], 'if', 'この報告書には、あるとしてもほとんど誤りはありません。', 'if any は「もしあるとしても」を表す決まった言い方。few・little と組にしてよく使う。', [
         'if any で「もしあるとしても」を表す。few と組にしてよく使う。',
         'though any という言い方はない。',
         'even any という言い方もない。',
         'or any ではこの決まった言い方にならない。',
       ]],
-      ['めったにないは seldom, if ever', 'He seldom, ___ ever, goes out on weekdays.', ['if', 'or', 'and', 'though'], 'if', '彼は平日に外出することは、あるとしてもめったにありません。', 'seldom, if ever は「たとえあるとしてもめったに〜ない」を表す決まった言い方になる。', [
+      ['setPhrase', 'めったにないは seldom, if ever', 'He seldom, ___ ever, goes out on weekdays.', ['if', 'or', 'and', 'though'], 'if', '彼は平日に外出することは、あるとしてもめったにありません。', 'seldom, if ever は「たとえあるとしてもめったに〜ない」を表す決まった言い方になる。', [
         'seldom, if ever で「あるとしてもめったに〜ない」を表す。',
         'or ever という言い方はこの形では使わない。',
         'and ever という言い方もない。',
@@ -448,6 +616,26 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['時間のまとまりは単数扱い', 'Twenty kilometers is a long way to walk.', '20キロは歩くには長い道のりです。', '時間・距離・金額のまとまりは1つのかたまりと見るので、動詞は単数に合わせる。20キロで1つの道のりと数える。'],
     ],
     usage: [
+      ['confusable', '質は quality、量は quantity', 'The ___ of the evidence is more important than the number.', ['quality', 'quantity', 'amount', 'number'], 'quality', '証拠の質は、その数よりも重要です。', 'quality は「質」、quantity は「量」。後ろの the number（数）と対にして読む。', [
+        'quality は「質」。数や量と対にして「質のほうが大切だ」と述べている。',
+        'quantity は「量」で、後ろの the number と意味が重なってしまう。',
+        'amount も「量」で、数と対にする語にならない。',
+        'number は「数」で、文の後半とくり返しになる。',
+      ]],
+      ['verbForm', 'express an opinion で意見を述べる', 'Each member ___ a different opinion at the meeting.', ['expressed', 'spoke', 'said', 'talked'], 'expressed', '委員はそれぞれ会議で異なる意見を述べました。', 'express an opinion で「意見を述べる」。speak・talk は目的語を直接置けない。過去の文なので expressed にする。', [
+        'express an opinion で「意見を述べる」。opinion を目的語に直接置ける。',
+        'speak は speak about 〜 の形で使い、opinion を直接置けない。',
+        'say は言った内容を目的語に取るが、an opinion とは結び付かない。',
+        'talk も talk about 〜 の形で使う。',
+      ]],
+      ['setPhrase', '〜とともには along with', 'The manager, ___ with the staff, was interviewed.', ['along', 'apart', 'instead', 'except'], 'along', '支配人は職員とともに取材を受けました。', 'along with 〜 で「〜とともに」。主語の数は変えないので動詞は中心の名詞に合わせる。', [
+        'along with 〜 で「〜とともに」。主語に付け足す言い方になる。',
+        'apart with という言い方はない。apart from 〜 なら「〜は別として」。',
+        'instead with という言い方もない。instead of 〜 なら「〜のかわりに」。',
+        'except with という言い方もない。except for 〜 なら「〜を除いて」。',
+      ]],
+    ],
+    choice: [
       ['中心の名詞に合わせる', 'The quality of the sources ___ more important than the number.', ['is', 'are', 'were', 'have been'], 'is', '資料の質は、数よりも重要です。', '主語の中心は The quality なので、of the sources に引きずられず単数に合わせて is にする。', [
         '中心の名詞は The quality なので、動詞は単数の is にする。',
         'are は of the sources に引きずられた形で、中心の名詞と合わない。',
@@ -476,13 +664,13 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['The＋比較級, the better', 'The earlier we start, the better.', '早く始めれば始めるほどよいです。', 'The＋比較級 〜, the better. は後半を省いた言い方で、「〜するほどよい」を表す。'],
     ],
     usage: [
-      ['数えられる名詞には fewer', 'No ___ than fifty people attended the ceremony.', ['fewer', 'less', 'little', 'few'], 'fewer', '50人もの人がその式典に出席しました。', '数えられる名詞 people には fewer を使う。数えられない名詞には less を使う。', [
+      ['confusable', '数えられる名詞には fewer', 'No ___ than fifty people attended the ceremony.', ['fewer', 'less', 'little', 'few'], 'fewer', '50人もの人がその式典に出席しました。', '数えられる名詞 people には fewer を使う。数えられない名詞には less を使う。', [
         'people は数えられる名詞なので、no fewer than を使う。',
         'less は数えられない名詞の量に使う語で、people には合わない。',
         'little も数えられない名詞に使う語で、than と組にもならない。',
         'few は原級で、than と組にして比べる形にはならない。',
       ]],
-      ['AというよりむしろB', 'The issue is not so much cost ___ fairness.', ['as', 'than', 'but', 'like'], 'as', 'その問題は費用というよりむしろ公平さです。', 'not so much A as B で「AというよりむしろB」を表す。than とは組にならない。', [
+      ['setPhrase', 'AというよりむしろB', 'The issue is not so much cost ___ fairness.', ['as', 'than', 'but', 'like'], 'as', 'その問題は費用というよりむしろ公平さです。', 'not so much A as B で「AというよりむしろB」を表す。than とは組にならない。', [
         'not so much A as B が決まった組み合わせになる。',
         'than は比較級と組にする語で、so much とは組にならない。',
         'but を置くとこの決まった言い方にならない。',
@@ -497,23 +685,31 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['no less 〜 than は反対の意味', 'She is no less talented than her sister is.', '彼女は姉に劣らず才能があります。', 'no less 〜 than … は「…に劣らず〜だ」と、どちらもそうであることを表す。'],
     ],
     usage: [
-      ['打ち消すのは no more', 'A slogan is no ___ an argument than a wish is.', ['more', 'less', 'better', 'worse'], 'more', '標語が論証でないのは、願望が論証でないのと同じです。', 'A is no more B than C is で「CがBでないのと同様、AもBではない」を表す。', [
+      ['setPhrase', '打ち消すのは no more', 'A feeling is no ___ an argument than a wish is.', ['more', 'less', 'better', 'worse'], 'more', '感情が論証でないのは、願望が論証でないのと同じです。', 'A is no more B than C is で「CがBでないのと同様、AもBではない」を表す。', [
         'no more 〜 than … で「…でないのと同様、〜でもない」を強く打ち消す。',
         'no less 〜 than … は「…に劣らず〜だ」と、どちらもそうであることを表す。',
         'no better than 〜 は「〜も同然だ」という別の意味になる。',
         'no worse than 〜 は「〜ほど悪くない」という別の意味になる。',
       ]],
+      ['setPhrase', 'no less＋名詞＋than', 'Her contribution is no ___ important than his.', ['less', 'more', 'fewer', 'little'], 'less', '彼女の貢献は彼の貢献に劣らず重要です。', 'no less 〜 than … で「…に劣らず〜だ」を表す。どちらも重要だという意味になる。', [
+        'no less important than 〜 で「〜に劣らず重要だ」を表す。',
+        'no more important than 〜 では「重要でないのは同じだ」と反対の意味になる。',
+        'fewer は数えられる名詞に使う語で、形容詞 important の前には置かない。',
+        'little は原級で、than と組にして比べる形にはならない。',
+      ]],
+      ['adjPrep', '〜に基づくは be based on', 'A claim is no more reliable than the evidence it is ___ on.', ['based', 'made', 'put', 'set'], 'based', '主張は、それが基づく証拠以上に信頼できるものにはなりません。', 'be based on 〜 で「〜に基づく」。よりどころを on で示す。', [
+        'be based on 〜 で「〜に基づく」。よりどころは on で示す。',
+        'be made on 〜 という結び付きはこの意味では使わない。',
+        'be put on 〜 は「〜の上に置かれる」で、よりどころを表さない。',
+        'be set on 〜 は「〜に決めている」などの別の意味になる。',
+      ]],
+    ],
+    choice: [
       ['than の後ろは be動詞で受ける', 'A bat is no more a bird than a mouse ___.', ['is', 'does', 'has', 'can'], 'is', 'コウモリが鳥でないのは、ネズミが鳥でないのと同じです。', 'than のあとは、前と同じ形をくり返すかわりに be動詞 is だけを置く。', [
         '前が is なので、than のあとも is でくり返す。',
         'does は一般動詞をくり返すときの形で、be動詞の文には合わない。',
         'has は have をくり返すときの形で、この文には合わない。',
         'can は助動詞をくり返すときの形で、この文には合わない。',
-      ]],
-      ['no less＋名詞＋than', 'Her contribution is no ___ important than his.', ['less', 'more', 'fewer', 'little'], 'less', '彼女の貢献は彼の貢献に劣らず重要です。', 'no less 〜 than … で「…に劣らず〜だ」を表す。どちらも重要だという意味になる。', [
-        'no less important than 〜 で「〜に劣らず重要だ」を表す。',
-        'no more important than 〜 では「重要でないのは同じだ」と反対の意味になる。',
-        'fewer は数えられる名詞に使う語で、形容詞 important の前には置かない。',
-        'little は原級で、than と組にして比べる形にはならない。',
       ]],
     ],
   },
@@ -524,6 +720,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['have an impact on＋名詞', 'Social media has a strong impact on young people.', 'ソーシャルメディアは若い人に強い影響を与えています。', 'have an impact on 〜 で「〜に影響を与える」。影響が及ぶ相手は on で示す。'],
       ['in response to＋名詞', 'The city changed the plan in response to public concern.', '市は市民の不安に応えて計画を変えました。', 'in response to＋名詞で「〜に応えて」。前置詞をふくむ3語で1つのまとまりになる。'],
     ],
-    usage: [],
+    usage: [
+    ],
   },
 ])

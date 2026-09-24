@@ -9,7 +9,7 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['Did の疑問文では動詞は原形', 'Did you finish your report yesterday?', 'あなたは昨日レポートを終えましたか。', '過去の疑問文は Did で始める。Did が過去を表すので、そのあとの動詞は原形 finish に戻す。'],
     ],
     usage: [
-      ['参加するは take part in', 'We ___ part in the city marathon last year.', ['took', 'did', 'made', 'got'], 'took', '私たちは昨年、市のマラソンに参加しました。', 'take part in 〜 で「〜に参加する」という決まった結び付きになる。過去の文なので take を過去形 took にする。', [
+      ['phrasal', '参加するは take part in', 'We ___ part in the school festival last year.', ['took', 'did', 'made', 'got'], 'took', '私たちは昨年、学校の祭りに参加しました。', 'take part in 〜 で「〜に参加する」という決まった結び付きになる。過去の文なので take を過去形 took にする。', [
         'take part in 〜 で「〜に参加する」。過去の文なので took にする。',
         'do part in 〜 という結び付きはない。参加するは take part in で表す。',
         'make part in 〜 という結び付きはない。make は「作る」を表す動詞。',
@@ -25,19 +25,19 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['疑問文は was / were を主語の前へ', 'What were you doing yesterday afternoon?', 'あなたは昨日の午後、何をしていましたか。', '疑問詞を文の先頭に置き、そのあとを were＋主語＋動詞ing の語順にする。'],
     ],
     usage: [
-      ['そのときは at that time', 'Ken was studying ___ that time.', ['at', 'in', 'on', 'by'], 'at', 'ケンはそのとき勉強していました。', 'at that time で「そのとき」と過去の一点を指す。過去進行形と組にしてよく使う。', [
+      ['setPhrase', 'そのときは at that time', 'Ken was studying ___ that time.', ['at', 'in', 'on', 'by'], 'at', 'ケンはそのとき勉強していました。', 'at that time で「そのとき」と過去の一点を指す。過去進行形と組にしてよく使う。', [
         'at that time で「そのとき」。時の一点を指すときは at を使う。',
         'in that time という結び付きはふつう使わない。時の一点は at で表す。',
         'on that time という結び付きはない。on は曜日や日付に使う。',
         'by that time は「そのときまでには」と期限を表し、その瞬間の様子を表さない。',
       ]],
-      ['know は過去進行形にしない', 'I ___ his name then.', ['knew', 'was knowing', 'know', 'am knowing'], 'knew', '私はそのとき彼の名前を知っていました。', 'know は状態を表す動詞なので、過去のことでも進行形にせず過去形 knew にする。', [
+      ['verbForm', 'know は過去進行形にしない', 'I ___ his name then.', ['knew', 'was knowing', 'know', 'am knowing'], 'knew', '私はそのとき彼の名前を知っていました。', 'know は状態を表す動詞なので、過去のことでも進行形にせず過去形 knew にする。', [
         'know は状態を表す動詞なので、過去のことは過去形 knew で表す。',
         'know は状態を表す動詞なので、was knowing という進行形にはしない。',
         'know は現在形で、過去を表す then のある文には合わない。',
         'am knowing は現在の進行形で、状態を表す know は進行形にしないうえ、過去の文にも合わない。',
       ]],
-      ['〜している間には while＋主語＋動詞', '___ I was cooking, the phone rang.', ['While', 'During', 'Between', 'For'], 'While', '私が料理をしている間に、電話が鳴りました。', 'while のあとには〈主語＋動詞〉のまとまりを続ける。名詞だけを続ける during と使い分ける。', [
+      ['confusable', '〜している間には while＋主語＋動詞', '___ I was cooking, the phone rang.', ['While', 'During', 'Between', 'For'], 'While', '私が料理をしている間に、電話が鳴りました。', 'while のあとには〈主語＋動詞〉のまとまりを続ける。名詞だけを続ける during と使い分ける。', [
         'while のあとには I was cooking のような〈主語＋動詞〉のまとまりを続ける。',
         'during のあとには the summer のような名詞だけを置く。〈主語＋動詞〉は続けられない。',
         'between は2つのものの間を表す語で、〈主語＋動詞〉を続けることはできない。',
@@ -52,6 +52,20 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['be going to の否定は be動詞＋not', 'She is not going to come today.', '彼女は今日は来ない予定です。', 'be going to の否定文は be動詞のすぐ後ろに not を置く。going to のあとは動詞の原形 come のままにする。'],
     ],
     usage: [
+      ['phrasal', '出かけるは go out', 'We will ___ out for dinner tonight.', ['go', 'take', 'make', 'put'], 'go', '私たちは今夜、夕食に出かけます。', 'go out で「出かける」という決まった結び付きになる。out と組にしてまとまりで覚える。', [
+        'go out で「出かける」。out と組にして1つの意味になる。',
+        'take out は「持ち帰る・取り出す」で、出かける意味にならない。',
+        'make out は「なんとか見分ける」で、出かける意味にならない。',
+        'put out は「（火などを）消す」で、出かける意味にならない。',
+      ]],
+      ['verbNoun', '家にいるは stay home', 'If it snows tomorrow, I will ___ home.', ['stay', 'keep', 'live', 'sit'], 'stay', '明日雪が降ったら、私は家にいます。', 'stay home で「家にいる」という決まった結び付きになる。', [
+        'stay home で「家にいる」。外出しないで同じ場所にとどまることを表す。',
+        'keep home という結び付きはない。keep は状態を保つことを表す。',
+        'live home という結び付きはない。live は「住む」で、live at home の形にする。',
+        'sit home という言い方はふつう使わない。',
+      ]],
+    ],
+    choice: [
       ['be going to は be動詞を忘れない', 'I ___ going to visit my uncle next week.', ['am', 'will', 'do', 'have'], 'am', '私は来週おじを訪ねる予定です。', 'be going to は be動詞＋going to の形。主語 I には am を置き、そのあとに going to＋原形を続ける。', [
         '主語 I に合わせて am を置き、am going to visit の形にする。',
         'will going to という重ね方はしない。will を使うなら will visit とする。',
@@ -74,23 +88,31 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['should は「〜したほうがよい」', 'You should take a rest today.', '今日は休んだほうがいいですよ。', 'should＋動詞の原形で「〜すべきだ・〜したほうがよい」と助言を表す。'],
     ],
     usage: [
-      ['3人称単数の主語には has to', 'Ken ___ to finish his homework before dinner.', ['has', 'have', 'having', 'be'], 'has', 'ケンは夕食前に宿題を終えなければなりません。', 'have to は主語が3人称単数のとき has to に形を変える。must は形が変わらない点とちがう。', [
-        '主語 Ken は3人称単数なので has to にする。そのあとは動詞の原形 finish を置く。',
-        'have to は主語が I・you・複数のときの形。3人称単数の Ken には has to を使う。',
-        'having to だけでは文の動詞にならない。主語のすぐ後ろには has to を置く。',
-        'be to finish という形はここでは使わない。「〜しなければならない」は has to で表す。',
-      ]],
-      ['許可を求める May I 〜?', '___ I use your pen? Sure.', ['May', 'Do', 'Am', 'Have'], 'May', 'あなたのペンを使ってもよいですか。いいですよ。', 'May I 〜? は「〜してもよいですか」とていねいに許可を求める言い方。Sure. などで答える。', [
+      ['setPhrase', '許可を求める May I 〜?', '___ I use your pen? Sure.', ['May', 'Do', 'Am', 'Have'], 'May', 'あなたのペンを使ってもよいですか。いいですよ。', 'May I 〜? は「〜してもよいですか」とていねいに許可を求める言い方。Sure. などで答える。', [
         'May I 〜? で「〜してもよいですか」と許可を求める。Can I 〜? よりていねいな言い方になる。',
         'Do I use your pen? は「私はあなたのペンを使いますか」と事実をたずねる文で、許可を求める意味にならない。',
         'Am I use 〜? という形はない。be動詞のあとに動詞の原形は続けられない。',
         'Have I use 〜? という形はない。have のあとに動詞の原形は続けられない。',
       ]],
-      ['申し出る Shall I 〜?', '___ I carry your bag? Yes, please.', ['Shall', 'Will', 'Do', 'Am'], 'Shall', 'かばんをお持ちしましょうか。はい、お願いします。', 'Shall I 〜? は「（私が）〜しましょうか」と申し出る言い方。Yes, please. などで答える。', [
+      ['setPhrase', '申し出る Shall I 〜?', '___ I carry your bag? Yes, please.', ['Shall', 'Will', 'Do', 'Am'], 'Shall', 'かばんをお持ちしましょうか。はい、お願いします。', 'Shall I 〜? は「（私が）〜しましょうか」と申し出る言い方。Yes, please. などで答える。', [
         'Shall I 〜? で「〜しましょうか」と申し出る。答えは Yes, please. / No, thank you. となる。',
         'Will I 〜? は「私は〜することになりますか」と自分の先のことをたずねる形で、申し出にならない。',
         'Do I carry your bag? は「私はふだんかばんを持ちますか」と事実をたずねる文になる。',
         'Am I carry 〜? という形はない。be動詞のあとに動詞の原形は続けられない。',
+      ]],
+      ['verbNoun', '医者にみてもらうは see a doctor', 'You should ___ a doctor about that cough.', ['see', 'look', 'watch', 'hear'], 'see', 'そのせきについては医者にみてもらったほうがいいですよ。', 'see a doctor で「医者にみてもらう」という決まった結び付きになる。', [
+        'see a doctor で「医者にみてもらう」。診察を受けることを表す決まった言い方。',
+        'look は「目を向ける」で、後ろに a doctor を直接置けない。',
+        'watch は動いている物をじっと見ることを表し、診察を受ける意味にならない。',
+        'hear a doctor では「医者の声が聞こえる」となり、診察を受ける意味にならない。',
+      ]],
+    ],
+    choice: [
+      ['3人称単数の主語には has to', 'Ken ___ to finish his homework before dinner.', ['has', 'have', 'having', 'be'], 'has', 'ケンは夕食前に宿題を終えなければなりません。', 'have to は主語が3人称単数のとき has to に形を変える。must は形が変わらない点とちがう。', [
+        '主語 Ken は3人称単数なので has to にする。そのあとは動詞の原形 finish を置く。',
+        'have to は主語が I・you・複数のときの形。3人称単数の Ken には has to を使う。',
+        'having to だけでは文の動詞にならない。主語のすぐ後ろには has to を置く。',
+        'be to finish という形はここでは使わない。「〜しなければならない」は has to で表す。',
       ]],
     ],
   },
@@ -102,6 +124,26 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['if のまとまりを前に置く', 'If you are free, let’s go shopping.', 'もしひまなら、買い物に行きましょう。', 'if のまとまりを文の前に置くときは、その終わりにコンマを打ち、そのあとに言いたい内容の文を続ける。'],
     ],
     usage: [
+      ['verbNoun', '乗り遅れるは miss the bus', 'Hurry up, or you will ___ the bus.', ['miss', 'lose', 'drop', 'fall'], 'miss', '急がないとバスに乗り遅れますよ。', 'miss the bus で「バスに乗り遅れる」という決まった結び付きになる。', [
+        'miss the bus で「バスに乗り遅れる」。間に合わないことを miss で表す。',
+        'lose the bus では「バスをなくす」となり、乗り遅れる意味にならない。',
+        'drop the bus では「バスを落とす」となり、意味が通らない。',
+        'fall the bus という結び付きはない。',
+      ]],
+      ['verbNoun', '風邪をひくは catch a cold', 'Wear a coat, or you will ___ a cold.', ['catch', 'drink', 'eat', 'make'], 'catch', 'コートを着ないと風邪をひきますよ。', 'catch a cold で「風邪をひく」という決まった結び付きになる。', [
+        'catch a cold で「風邪をひく」。病気になることを catch で表す。',
+        'drink a cold という結び付きはない。',
+        'eat a cold という結び付きもない。',
+        'make a cold では「風邪を作る」となり、意味が通らない。',
+      ]],
+      ['verbNoun', '道路をわたるは cross the street', 'Look both ways when you ___ the street.', ['cross', 'wear', 'wash', 'write'], 'cross', '道路をわたるときは左右をよく見なさい。', 'cross the street で「道路をわたる」という決まった結び付きになる。', [
+        'cross the street で「道路をわたる」。横切ることを cross で表す。',
+        'wear the street では意味が通らない。',
+        'wash the street は「道路を洗う」で、わたる意味にならない。',
+        'write the street では意味が通らない。',
+      ]],
+    ],
+    choice: [
       ['when の中は未来でも現在形', 'Please call me when you ___ at the airport.', ['arrive', 'will arrive', 'arrived', 'arriving'], 'arrive', '空港に着いたら電話してください。', 'when のまとまりの中は、これから先のことでも will を使わず現在形 arrive で表す。', [
         'when のまとまりの中は、これから先のことでも現在形 arrive にする。',
         'when のまとまりの中では will を使わない。未来のことも現在形で表す。',
@@ -129,6 +171,26 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['疑問文は Is there で始める', 'Is there a bank near your house?', 'あなたの家の近くに銀行はありますか。', 'There is 〜. の疑問文は be動詞を there の前に出して Is there 〜? とする。'],
     ],
     usage: [
+      ['preposition', 'この近くには near here', 'Is there a bank ___ here?', ['near', 'on', 'under', 'to'], 'near', 'この近くに銀行はありますか。', 'near here で「この近くに」。少し離れた近い場所を表すときは near を使う。', [
+        'near here で「この近くに」。近い場所を表すときは near を使う。',
+        'on here という言い方はない。on は「〜の上に」を表す。',
+        'under here では「ここの下に」となり、近くを表す言い方にならない。',
+        'to here では行き先を表し、場所があることを言う文に合わない。',
+      ]],
+      ['noun', 'パンは a loaf of で数える', 'There is a ___ of bread on the table.', ['loaf', 'pair', 'sheet', 'glass'], 'loaf', 'テーブルの上にパンが1かたまりあります。', 'bread は数えられない名詞なので、a loaf of bread のようにかたまりで数える。', [
+        'a loaf of bread で「1かたまりのパン」。焼いたパンのかたまりを数える言い方。',
+        'a pair of 〜 は靴や手袋のように2つで1組の物に使う。',
+        'a sheet of 〜 は紙のように薄く平らな物を数える言い方。',
+        'a glass of 〜 は冷たい飲み物を数える言い方で、パンには使わない。',
+      ]],
+      ['verbNoun', '席につくは take a seat', 'There are many seats. Please ___ a seat.', ['take', 'make', 'do', 'put'], 'take', '席はたくさんあります。どうぞおかけください。', 'take a seat で「席につく」という決まった結び付きになる。', [
+        'take a seat で「席につく」。すわるようすすめるときの決まった言い方。',
+        'make a seat では「席を作る」となり、すわる意味にならない。',
+        'do a seat という結び付きはない。',
+        'put a seat では「席を置く」となり、すわる意味にならない。',
+      ]],
+    ],
+    choice: [
       ['否定文では any を使う', 'There ___ any eggs in the fridge.', ['aren’t', 'isn’t', 'doesn’t', 'wasn’t'], 'aren’t', '冷蔵庫には卵が1つもありません。', 'There の文の be動詞は後ろの名詞に合わせる。eggs は複数なので aren’t になり、否定文では some ではなく any を使う。', [
         '後ろの eggs が複数なので aren’t を使う。否定文なので any が続く。',
         'isn’t は後ろが1つのときの形。eggs は複数なので合わない。',
@@ -157,13 +219,13 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['「〜するために」は目的を表す', 'Emi got up early to catch the first train.', 'エミは始発列車に乗るために早く起きました。', '動作の目的は to＋動詞の原形で表し、文の後ろに置く。「早く起きた目的＝始発に乗るため」となる。'],
     ],
     usage: [
-      ['〜してうれしいは be glad to', 'I am glad ___ see you again.', ['to', 'for', 'of', 'at'], 'to', 'また会えてうれしいです。', 'be glad to＋動詞の原形で「〜してうれしい」と気持ちの理由を表す。', [
+      ['adjPrep', '〜してうれしいは be glad to', 'I am glad ___ see you again.', ['to', 'for', 'of', 'at'], 'to', 'また会えてうれしいです。', 'be glad to＋動詞の原形で「〜してうれしい」と気持ちの理由を表す。', [
         'glad のあとに理由となる動作を置くときは to＋動詞の原形にする。',
         'for のあとには名詞や動名詞を置く。動詞の原形 see を続けることはできない。',
         'of のあとには名詞や動名詞を置く。be glad of 〜 でも動詞の原形は続かない。',
         'at のあとには名詞を置く。動詞の原形 see を続けることはできない。',
       ]],
-      ['「何か飲む物」は something to drink', 'I need something ___ in this heat.', ['to drink', 'drinking', 'drink', 'for drink'], 'to drink', 'この暑さの中で、私は何か飲む物が必要です。', 'something のような代名詞を後ろから説明するときは to＋動詞の原形を置き、something to drink とする。', [
+      ['verbForm', '「何か飲む物」は something to drink', 'I need something ___ in this heat.', ['to drink', 'drinking', 'drink', 'for drink'], 'to drink', 'この暑さの中で、私は何か飲む物が必要です。', 'something のような代名詞を後ろから説明するときは to＋動詞の原形を置き、something to drink とする。', [
         'something to drink で「何か飲む物」。to＋原形が前の something を後ろから説明する。',
         'drinking を置くと「飲んでいる何か」となり、これから飲む物を表す言い方にならない。',
         'something drink と原形を並べても、前の語を説明する形にはならない。',
@@ -179,19 +241,19 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['前置詞のあとは動名詞', 'Thank you for helping me yesterday.', '昨日は手伝ってくれてありがとう。', '前置詞 for のあとに動作を置くときは動詞ing にする。動詞の原形は続けられない。'],
     ],
     usage: [
-      ['得意だは be good at＋動名詞', 'My sister is good ___ making sweets.', ['at', 'in', 'on', 'to'], 'at', '姉はお菓子を作るのが得意です。', 'be good at＋動名詞で「〜するのが得意だ」という決まった結び付きになる。', [
+      ['adjPrep', '得意だは be good at＋動名詞', 'My sister is good ___ making sweets.', ['at', 'in', 'on', 'to'], 'at', '姉はお菓子を作るのが得意です。', 'be good at＋動名詞で「〜するのが得意だ」という決まった結び付きになる。', [
         'be good at 〜ing で「〜するのが得意だ」。at のあとは動名詞になる。',
         'good in 〜 は得意であることを表す言い方ではない。',
         'good on 〜 という結び付きはなく、得意であることは表せない。',
         'good to 〜 は「〜に親切だ」という別の意味になる。',
       ]],
-      ['How about のあとは動名詞', 'How about ___ to the zoo tomorrow?', ['going', 'go', 'to go', 'went'], 'going', '明日、動物園へ行くのはどうですか。', 'How about 〜? の about は前置詞なので、後ろの動作を going と動詞ing にする。', [
+      ['setPhrase', 'How about のあとは動名詞', 'How about ___ to the zoo tomorrow?', ['going', 'go', 'to go', 'went'], 'going', '明日、動物園へ行くのはどうですか。', 'How about 〜? の about は前置詞なので、後ろの動作を going と動詞ing にする。', [
         'about は前置詞なので、後ろの動作は going と動名詞にする。',
         '前置詞 about のあとに動詞の原形 go は置けない。',
         'How about to go という言い方はしない。about のあとは動名詞にする。',
         'went は過去形で、前置詞のあとにも、これからの誘いにも合わない。',
       ]],
-      ['finish のあとは動名詞', 'I finished ___ the book last night.', ['reading', 'to read', 'read', 'reads'], 'reading', '私は昨夜その本を読み終えました。', 'finish のあとに「〜すること」を置くときは動詞ing にして finish reading とする。to＋原形は続けられない。', [
+      ['verbForm', 'finish のあとは動名詞', 'I finished ___ the book last night.', ['reading', 'to read', 'read', 'reads'], 'reading', '私は昨夜その本を読み終えました。', 'finish のあとに「〜すること」を置くときは動詞ing にして finish reading とする。to＋原形は続けられない。', [
         'finish のあとは動名詞。finish reading で「読み終える」となる。',
         'finish のあとに to＋原形は置けない。to read を続ける動詞は want などにかぎられる。',
         'finished read と過去形と原形を並べることはできない。',
@@ -206,6 +268,26 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['what to は「何を〜すべきか」', 'I don’t know what to do next.', '私は次に何をすべきか分かりません。', '疑問詞＋to＋動詞の原形で1つの名詞のまとまりになる。know の目的語として what to do next を置く。'],
     ],
     usage: [
+      ['verbForm', 'tell のあとは〈人＋内容〉の順', 'Please tell ___ how to use it.', ['me', 'to me', 'for me', 'my'], 'me', 'それの使い方を私に教えてください。', 'tell は〈tell＋人＋内容〉の順に置く。人は目的格 me にし、その前に to を付けない。', [
+        'tell のすぐ後ろに人を置くので、目的格 me を使う。',
+        'tell to me という形はしない。tell は人を直接後ろに置く。',
+        'tell for me は「私のために話す」となり、「私に教える」という意味にならない。',
+        'my は名詞の前に置いて「私の」を表す形で、tell の後ろには置けない。',
+      ]],
+      ['verbNoun', '切符を買うは buy a ticket', 'He told me where to ___ the ticket.', ['buy', 'take', 'make', 'do'], 'buy', '彼はどこで切符を買えばよいか教えてくれました。', 'buy a ticket で「切符を買う」という決まった結び付きになる。', [
+        'buy a ticket で「切符を買う」。お金を払って手に入れることを buy で表す。',
+        'take a ticket は「切符を取る」で、お金を払って買う意味にならない。',
+        'make a ticket では「切符を作る」となり、買う意味にならない。',
+        'do a ticket という結び付きはない。',
+      ]],
+      ['verbNoun', '機械を使うは use', 'My grandfather knows how to ___ this camera.', ['use', 'make', 'do', 'play'], 'use', '祖父はこのカメラの使い方を知っています。', 'use は道具や機械を「使う」ことを表す。play や do では機械をあつかう意味にならない。', [
+        'use this camera で「このカメラを使う」。道具や機械には use を使う。',
+        'make this camera は「このカメラを作る」で、使う意味にならない。',
+        'do this camera という結び付きはない。',
+        'play は遊びやスポーツ・楽器に使う語で、カメラには使わない。',
+      ]],
+    ],
+    choice: [
       ['how to＋動詞の原形', 'My grandfather knows how ___ the computer.', ['to use', 'use', 'using', 'used'], 'to use', '祖父はコンピューターの使い方を知っています。', 'how to＋動詞の原形で「〜のしかた」を表す。ここは how to use として、to のあとを原形にする。', [
         'how to use で「使い方」。疑問詞のあとは to＋動詞の原形にする。',
         'how use という並べ方はしない。how のあとには to を置く。',
@@ -218,12 +300,6 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
         'which book read と原形だけを並べても、まとまりにはならない。',
         'to のあとは動詞の原形なので、to reading という形にはしない。',
       ]],
-      ['tell のあとは〈人＋内容〉の順', 'Please tell ___ how to use it.', ['me', 'to me', 'for me', 'my'], 'me', 'それの使い方を私に教えてください。', 'tell は〈tell＋人＋内容〉の順に置く。人は目的格 me にし、その前に to を付けない。', [
-        'tell のすぐ後ろに人を置くので、目的格 me を使う。',
-        'tell to me という形はしない。tell は人を直接後ろに置く。',
-        'tell for me は「私のために話す」となり、「私に教える」という意味にならない。',
-        'my は名詞の前に置いて「私の」を表す形で、tell の後ろには置けない。',
-      ]],
     ],
   },
   {
@@ -233,6 +309,26 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['the＋最上級＋in＋集団', 'Emi is the tallest girl in our class.', 'エミは私たちのクラスでいちばん背の高い女の子です。', '「いちばん〜」は the＋最上級。範囲が集団や場所のときは in を使い、in our class とする。'],
     ],
     usage: [
+      ['confusable', '好みを比べるのは like A better than B', 'I like tea ___ than coffee.', ['better', 'more good', 'best', 'well'], 'better', '私はコーヒーより紅茶のほうが好きです。', 'like A better than B で「BよりAのほうが好きだ」。good・well の比較級は better になる。', [
+        'like 〜 better than … で好みを比べる。well の比較級は better。',
+        'more good という形はない。good・well の比較級は better の1語。',
+        'best は最上級で、than と組にはならない。like 〜 the best of … の形で使う。',
+        'well は比べていない形なので、than と組にして使うことはできない。',
+      ]],
+      ['confusable', '値段が高いは expensive', 'This bag is more ___ than that one.', ['expensive', 'high', 'much', 'heavy'], 'expensive', 'このかばんはあのかばんより値段が高いです。', '値段が高いことは expensive で表す。物の位置が高いことを表す high は値段には使わない。', [
+        '値段が高いことは expensive で表す。more expensive than 〜 で比べる。',
+        'high は山や建物の位置が高いことを表し、値段には使わない。',
+        'much は量を表す語で、値段の高さを表す形容詞にはならない。',
+        'heavy は重さを表す語で、値段の高さを表さない。',
+      ]],
+      ['confusable', '年上は older', 'My brother is two years ___ than I am.', ['older', 'elder', 'more old', 'oldest'], 'older', '兄は私より2歳年上です。', '年齢を比べるときは old の比較級 older を使う。than と組にして「〜より年上」を表す。', [
+        'old の比較級は older。than と組にして年齢を比べる。',
+        'elder は my elder brother のように名詞の前に置く形で、than とは組にしない。',
+        'more old という形はない。短い語は er を付けて比較級にする。',
+        'oldest は最上級で、than とは組にならない。',
+      ]],
+    ],
+    choice: [
       ['同じくらいは as＋原級＋as', 'My bag is ___ light as yours.', ['as', 'more', 'than', 'the'], 'as', '私のかばんはあなたのかばんと同じくらい軽いです。', 'as＋原級＋as 〜 で「〜と同じくらい…」。間に入る形容詞は比較級にせず原級のまま置く。', [
         'as light as 〜 で「〜と同じくらい軽い」。前後を as ではさむ。',
         'more light as という言い方はない。light を比べるなら lighter than にする。',
@@ -245,12 +341,6 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
         'on は上にあることを表す前置詞で、範囲を表す言い方にはならない。',
         'at は時や地点を表す前置詞で、最上級の範囲には使わない。',
       ]],
-      ['好みを比べるのは like A better than B', 'I like tea ___ than coffee.', ['better', 'more good', 'best', 'well'], 'better', '私はコーヒーより紅茶のほうが好きです。', 'like A better than B で「BよりAのほうが好きだ」。good・well の比較級は better になる。', [
-        'like 〜 better than … で好みを比べる。well の比較級は better。',
-        'more good という形はない。good・well の比較級は better の1語。',
-        'best は最上級で、than と組にはならない。like 〜 the best of … の形で使う。',
-        'well は比べていない形なので、than と組にして使うことはできない。',
-      ]],
     ],
   },
   {
@@ -261,23 +351,31 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['主語と同じ人が目的語なら再帰代名詞', 'The children enjoyed themselves at the zoo.', '子どもたちは動物園で楽しく過ごしました。', 'enjoy oneself で「楽しく過ごす」。主語 The children と同じ人を指すので themselves にする。'],
     ],
     usage: [
-      ['everyone は1人として扱う', 'Everyone ___ his name.', ['knows', 'know', 'are knowing', 'have known'], 'knows', 'みんなが彼の名前を知っています。', 'everyone・someone などは、意味は多くの人でも文の上では1人として扱う。現在の文では動詞に s を付けて knows にする。', [
-        'everyone は1人として扱うので、現在の文では動詞に s を付けて knows にする。',
-        'know は主語が I・you・複数のときの形で、everyone には合わない。',
-        'know は状態を表す動詞なので進行形にしないうえ、are も everyone には合わない。',
-        'have known は主語が複数のときの形。everyone には has known を使う。',
-      ]],
-      ['自由に取っては help yourself to', 'Please help ___ to the cookies.', ['yourself', 'you', 'your', 'yours'], 'yourself', 'クッキーを自由に取って食べてください。', 'help oneself to 〜 で「〜を自由に取って食べる」という決まった言い方になる。相手1人には yourself を使う。', [
+      ['setPhrase', '自由に取っては help yourself to', 'Please help ___ to the cookies.', ['yourself', 'you', 'your', 'yours'], 'yourself', 'クッキーを自由に取って食べてください。', 'help oneself to 〜 で「〜を自由に取って食べる」という決まった言い方になる。相手1人には yourself を使う。', [
         'help yourself to 〜 で「〜を自由に取って食べる」。相手1人には yourself を使う。',
         'help you では「あなたを手伝う」となり、自由に取ってという意味にならない。',
         'your は名詞の前に置いて「あなたの」を表す形で、help の後ろには置けない。',
         'yours は「あなたのもの」を表す語で、この決まった言い方には入らない。',
       ]],
-      ['each のあとは単数の名詞', '___ student has a tablet.', ['Each', 'All', 'Both', 'Many'], 'Each', '生徒はそれぞれタブレットを持っています。', 'each は「それぞれの」を表し、後ろに単数の名詞を置いて1人ずつを指す。動詞も単数に合わせる。', [
+      ['confusable', 'each のあとは単数の名詞', '___ student has a tablet.', ['Each', 'All', 'Both', 'Many'], 'Each', '生徒はそれぞれタブレットを持っています。', 'each は「それぞれの」を表し、後ろに単数の名詞を置いて1人ずつを指す。動詞も単数に合わせる。', [
         'Each student で「それぞれの生徒」。後ろは単数の名詞になり、動詞も has になる。',
         'All のあとは複数の名詞にする。All students have 〜. の形になる。',
         'Both は2つ・2人のときに使い、後ろは複数の名詞にする。',
         'Many のあとは複数の名詞にする。Many students have 〜. の形になる。',
+      ]],
+      ['confusable', '同じ種類の別の1つは one', 'I lost my eraser, so I bought a new ___.', ['one', 'it', 'thing', 'some'], 'one', '消しゴムをなくしたので、新しいのを買いました。', '前に出た名詞と同じ種類の別の1つは one で受ける。その物そのものを指す it と使い分ける。', [
+        '同じ種類の別の消しゴムを指すので one を使う。a new one で「新しいの」となる。',
+        'it はなくした消しゴムそのものを指すので、新しく買った物を表せない。',
+        'a new thing では「新しい物」と漠然とした言い方になり、消しゴムを指さない。',
+        'some は「いくつか」を表す語で、a new のあとには置けない。',
+      ]],
+    ],
+    choice: [
+      ['everyone は1人として扱う', 'Everyone ___ his name.', ['knows', 'know', 'are knowing', 'have known'], 'knows', 'みんなが彼の名前を知っています。', 'everyone・someone などは、意味は多くの人でも文の上では1人として扱う。現在の文では動詞に s を付けて knows にする。', [
+        'everyone は1人として扱うので、現在の文では動詞に s を付けて knows にする。',
+        'know は主語が I・you・複数のときの形で、everyone には合わない。',
+        'know は状態を表す動詞なので進行形にしないうえ、are も everyone には合わない。',
+        'have known は主語が複数のときの形。everyone には has known を使う。',
       ]],
     ],
   },
@@ -289,13 +387,13 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['by は「〜までに」', 'Please finish this report by five.', 'このレポートを5時までに仕上げてください。', 'by は締め切りを表し「〜までに」となる。その時までずっと続く until と使い分ける。'],
     ],
     usage: [
-      ['到着するは arrive at', 'We arrived ___ the airport early.', ['at', 'to', 'for', 'on'], 'at', '私たちは早く空港に着きました。', 'arrive は目的語の前に前置詞が必要で、地点には at、広い場所には in を使う。to は使わない。', [
+      ['phrasal', '到着するは arrive at', 'We arrived ___ the airport early.', ['at', 'to', 'for', 'on'], 'at', '私たちは早く空港に着きました。', 'arrive は目的語の前に前置詞が必要で、地点には at、広い場所には in を使う。to は使わない。', [
         'arrive at 〜 で「〜に着く」。駅や空港のような地点には at を使う。',
         'arrive to 〜 という言い方はしない。to を使うなら get to 〜 とする。',
         'arrive for 〜 では到着した場所を表せない。for は目的や相手を表す。',
         'arrive on 〜 では上にのる意味になり、着いた場所を表す言い方にならない。',
       ]],
-      ['音楽を聞くは listen to', 'We ___ to music every night.', ['listen', 'hear', 'sound', 'look'], 'listen', '私たちは毎晩音楽を聞きます。', 'listen to 〜 で「〜に耳をかたむけて聞く」。意識して聞くときは listen、自然に聞こえるときは hear を使う。', [
+      ['confusable', '音楽を聞くは listen to', 'We ___ to music every night.', ['listen', 'hear', 'sound', 'look'], 'listen', '私たちは毎晩音楽を聞きます。', 'listen to 〜 で「〜に耳をかたむけて聞く」。意識して聞くときは listen、自然に聞こえるときは hear を使う。', [
         'listen to 〜 で「〜を聞く」。意識して耳をかたむけるときに使う。',
         'hear は「自然に聞こえる」で、to を付けずに hear music とする。',
         'sound は「〜に聞こえる」で、to music と続けて「音楽を聞く」意味にはならない。',
@@ -308,9 +406,29 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
     order: [
       ['一般動詞の文には doesn’t he', 'Your sister plays the violin, doesn’t she?', 'あなたのお姉さんはバイオリンをひきますよね。', 'ふつうの文には否定の短い疑問を付ける。一般動詞の3人称単数の文なので doesn’t を使い、主語は代名詞 she にする。'],
       ['否定文には肯定の形を付ける', 'Tom doesn’t eat meat, does he?', 'トムは肉を食べませんよね。', '否定文の後ろには肯定の形を付ける。doesn’t の文なので does he? を続ける。'],
-      ['Let’s の文には shall we', 'Let’s go home now, shall we?', 'もう家に帰りましょうよ。', 'Let’s 〜. の文に付ける短い疑問は shall we? と決まっている。'],
+      ['Let’s の文には shall we', 'Let’s go home now, shall we?', '早く家に帰りましょうよ。', 'Let’s 〜. の文に付ける短い疑問は shall we? と決まっている。'],
     ],
     usage: [
+      ['verbNoun', 'テニスをするは play tennis', 'Ken ___ tennis every Sunday, doesn’t he?', ['plays', 'does', 'makes', 'takes'], 'plays', 'ケンは毎週日曜日にテニスをしますよね。', 'play tennis で「テニスをする」。スポーツや楽器には play を使う。主語が3人称単数なので plays にする。', [
+        'play tennis で「テニスをする」。スポーツには play を使う。',
+        'do tennis という結び付きはない。do は do my homework のように課された事に使う。',
+        'make tennis では「テニスを作る」となり、意味が通らない。',
+        'take tennis という結び付きはない。',
+      ]],
+      ['phrasal', '家に帰るは go home', 'Let’s ___ home early, shall we?', ['go', 'put', 'make', 'hold'], 'go', 'もう家に帰りましょうよ。', 'go home で「家に帰る」。home は副詞なので前に to を置かない。', [
+        'go home で「家に帰る」。home の前に to は付けない。',
+        'put home という結び付きはない。',
+        'make home という結び付きもない。',
+        'hold home という結び付きもない。',
+      ]],
+      ['verbNoun', 'ドアを開けるは open the door', 'Please ___ the door, will you?', ['open', 'cut', 'wash', 'wear'], 'open', 'ドアを開けてくれませんか。', 'open the door で「ドアを開ける」という決まった結び付きになる。', [
+        'open the door で「ドアを開ける」。閉じている物を開くことを open で表す。',
+        'cut the door は「ドアを切る」で、開ける意味にならない。',
+        'wash the door は「ドアを洗う」で、開ける意味にならない。',
+        'wear the door では意味が通らない。',
+      ]],
+    ],
+    choice: [
       ['be動詞の文には aren’t you', 'You are from Australia, ___ you?', ['aren’t', 'don’t', 'isn’t', 'won’t'], 'aren’t', 'あなたはオーストラリア出身ですよね。', '付加疑問は前の文と同じ種類の語を使う。be動詞 are の文なので aren’t you? を付ける。', [
         'are の文なので、否定の短縮形 aren’t を使って aren’t you? とする。',
         'don’t は一般動詞の文に付ける形で、be動詞 are の文には合わない。',
@@ -339,6 +457,26 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['複数の名詞には a を付けない', 'What tall buildings those are!', 'あれらはなんて高い建物なのでしょう。', 'What の後ろの名詞が複数のときは a・an を付けない。〈What＋形容詞＋複数名詞＋主語＋動詞〉の順になる。'],
     ],
     usage: [
+      ['verbNoun', '景色は view', 'What a wonderful ___ this is!', ['view', 'face', 'voice', 'sound'], 'view', 'これはなんてすばらしい景色なのでしょう。', '高い所などから見わたす景色は view で表す。顔や声を表す face・voice とは指す物がちがう。', [
+        'view は高い所などから見わたした景色を表す語。a wonderful view で「すばらしい景色」となる。',
+        'face は「顔」で、景色を表さない。',
+        'voice は「声」で、目に見える景色を表さない。',
+        'sound は「音」で、目に見える景色を表さない。',
+      ]],
+      ['confusable', '速さは fast', 'How ___ that boy runs!', ['fast', 'tall', 'long', 'high'], 'fast', 'あの男の子はなんて速く走るのでしょう。', '走る速さは fast で表す。fast は形も副詞も同じ形で使う。', [
+        'run fast で「速く走る」。速さを表す語は fast。',
+        'tall は背の高さを表す語で、走る速さを表さない。',
+        'long は長さを表す語で、走る速さを表さない。',
+        'high は位置の高さを表す語で、走る速さを表さない。',
+      ]],
+      ['verbNoun', 'よい天気の日は a nice day', 'What a nice ___ we are having today!', ['day', 'hour', 'week', 'month'], 'day', '今日はなんてよい天気なのでしょう。', 'その日の天気のよさは a nice day で表す。時間の単位を表す hour・week・month とは指す物がちがう。', [
+        'a nice day で「よい天気の日」。have a nice day の形でその日の天気を言う。',
+        'a nice hour という言い方はふつう使わない。',
+        'a nice week では「よい1週間」となり、今日の天気を言う文に合わない。',
+        'a nice month では「よい1か月」となり、今日の天気を言う文に合わない。',
+      ]],
+    ],
+    choice: [
       ['名詞があれば What', '___ a nice day it is today!', ['What', 'How', 'Very', 'So'], 'What', '今日はなんてよい日なのでしょう。', '後ろに名詞（day）があるので What で始める。形容詞・副詞だけを強めるときは How を使う。', [
         '後ろに a nice day という名詞のまとまりがあるので What で始める。',
         'How のあとには形容詞・副詞だけを置く。名詞 day が続くこの文には合わない。',
@@ -367,23 +505,31 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
       ['There used to be で昔あった物を言う', 'There used to be a post office here.', '以前はここに郵便局がありました。', 'There used to be 〜 で「以前は〜があった」。There is 〜. の be動詞の前に used to を置いた形になる。'],
     ],
     usage: [
-      ['疑問文では use to に戻す', 'Did you ___ to live near the sea?', ['use', 'used', 'using', 'uses'], 'use', '以前は海の近くに住んでいましたか。', 'Did の疑問文では Did が過去を表すので、そのあとは use to に戻す。', [
-        'Did のあとなので、過去を表す d を落として use to にする。',
-        'used to のままにすると、Did と重ねて過去を二重に表すことになる。',
-        'using to という形はない。疑問文では use to にする。',
-        'uses は3人称単数のときの現在形で、Did の疑問文には合わない。',
-      ]],
-      ['used to のあとは動詞の原形', 'Ken used to ___ tennis every weekend.', ['play', 'plays', 'playing', 'played'], 'play', 'ケンは以前、毎週末にテニスをしていました。', 'used to のあとの動詞はいつも原形にして play とする。used が過去を表すので、後ろの動詞は過去形にしない。', [
+      ['setPhrase', 'used to のあとは動詞の原形', 'Ken used to ___ tennis every weekend.', ['play', 'plays', 'playing', 'played'], 'play', 'ケンは以前、毎週末にテニスをしていました。', 'used to のあとの動詞はいつも原形にして play とする。used が過去を表すので、後ろの動詞は過去形にしない。', [
         'used to のあとは動詞の原形なので play を置く。',
         'plays は3人称単数のときの現在形で、to のあとには置けない。',
         'playing は to のあとに置けない。used to＋原形の形で覚える。',
         'played と過去形にすると過去を二重に表すことになる。used が過去を表している。',
       ]],
-      ['以前あった物は There used to be', 'There used ___ be a big tree here.', ['to', 'for', 'of', 'at'], 'to', '以前はここに大きな木がありました。', 'used to は2語で1つのまとまり。「以前は〜があった」は There used to be 〜 とする。', [
+      ['setPhrase', '以前あった物は There used to be', 'There used ___ be a big tree here.', ['to', 'for', 'of', 'at'], 'to', '以前はここに大きな木がありました。', 'used to は2語で1つのまとまり。「以前は〜があった」は There used to be 〜 とする。', [
         'used to be で「以前は〜だった」。used のあとには必ず to を置く。',
         'used for 〜 は「〜のために使われる」という別の意味になる。',
         'used of 〜 という結び付きはない。',
         'used at 〜 という結び付きはなく、以前の状態を表せない。',
+      ]],
+      ['verbNoun', '歩いて通うは walk to', 'My grandfather used to ___ to school every day.', ['walk', 'wear', 'wash', 'write'], 'walk', '祖父は毎日歩いて学校へ通っていました。', 'walk to 〜 で「歩いて〜へ行く」。交通手段を使わずに行くことを表す。', [
+        'walk to school で「歩いて学校へ通う」。歩いて行くことを walk で表す。',
+        'wear to 〜 という結び付きはない。wear は身に着けることを表す。',
+        'wash to 〜 という結び付きはない。',
+        'write to 〜 は「〜に手紙を書く」で、学校へ通う意味にならない。',
+      ]],
+    ],
+    choice: [
+      ['疑問文では use to に戻す', 'Did you ___ to live near the sea?', ['use', 'used', 'using', 'uses'], 'use', '以前は海の近くに住んでいましたか。', 'Did の疑問文では Did が過去を表すので、そのあとは use to に戻す。', [
+        'Did のあとなので、過去を表す d を落として use to にする。',
+        'used to のままにすると、Did と重ねて過去を二重に表すことになる。',
+        'using to という形はない。疑問文では use to にする。',
+        'uses は3人称単数のときの現在形で、Did の疑問文には合わない。',
       ]],
     ],
   },

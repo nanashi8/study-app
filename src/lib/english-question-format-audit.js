@@ -230,10 +230,10 @@ export function auditEnglishQuestionFormats() {
   if (GRAMMAR_FORMAT_EXPANSION.length !== 105) {
     addIssue('grammar-format-expansion-total', 'grammar', GRAMMAR_FORMAT_EXPANSION.length)
   }
-  if (GRAMMAR_UNIT_FORMATS.length !== 696) {
+  if (GRAMMAR_UNIT_FORMATS.length !== 875) {
     addIssue('grammar-unit-format-total', 'grammar', GRAMMAR_UNIT_FORMATS.length)
   }
-  if (GRAMMAR_PRACTICE.length !== 4251) addIssue('grammar-practice-total', 'grammar', GRAMMAR_PRACTICE.length)
+  if (GRAMMAR_PRACTICE.length !== 4430) addIssue('grammar-practice-total', 'grammar', GRAMMAR_PRACTICE.length)
   if (new Set(expansionIds).size !== expansionIds.length) addIssue('duplicate-format-expansion-id', 'grammar')
   if (new Set(allGrammarIds).size !== allGrammarIds.length) addIssue('duplicate-grammar-practice-id', 'grammar')
   if (new Set(GRAMMAR_PRACTICE.map((item) => item.sentence.en)).size !== GRAMMAR_PRACTICE.length) {

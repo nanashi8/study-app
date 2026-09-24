@@ -12,7 +12,7 @@ import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 
 const choiceQuestions = GRAMMAR_PRACTICE.filter((item) => grammarQuestionType(item) !== 'word-order')
 
-test('選択式の英文法3,870問は、出題する4つの選択肢すべてに問題ごとの解説を持つ', () => {
+test('選択式の英文法4,049問は、出題する4つの選択肢すべてに問題ごとの解説を持つ', () => {
   let noteCount = 0
   for (const item of choiceQuestions) {
     for (const choice of item.choices) {
@@ -20,8 +20,8 @@ test('選択式の英文法3,870問は、出題する4つの選択肢すべて�
       noteCount += 1
     }
   }
-  assert.equal(choiceQuestions.length, 3_870)
-  assert.equal(noteCount, 15_480)
+  assert.equal(choiceQuestions.length, 4_049)
+  assert.equal(noteCount, 16_196)
 })
 
 test('自動生成の問題は問題データが、それ以外は台帳が説明を持ち、台帳に古い選択肢が残らない', () => {

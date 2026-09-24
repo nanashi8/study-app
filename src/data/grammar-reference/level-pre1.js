@@ -42,6 +42,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['You cannot be too careful when you drive.', '運転するときは、いくら注意してもしすぎることはありません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'ought のあとに to を落とさない／おそらく〜は may well／いくら〜してもしすぎない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['You ought to have consulted us first.', 'あなたはまず私たちに相談すべきでした。'],
+          ['You may well be right about the cause.', '原因についてはあなたの言うとおりかもしれません。'],
+          ['You cannot be too careful when you handle chemicals.', '薬品をあつかうときは、いくら注意してもしすぎることはありません。'],
+        ],
+      },
     ],
     mistakes: [
       ['You ought to consulted us.', 'You ought to have consulted us.', '過去のことを言うときは ought to have＋過去分詞。'],
@@ -107,6 +118,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['The doctor suggested that he take a rest.', '医者は彼が休むよう勧めました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '万一を表す were to／提案の that 節は原形／It is vital that の中も原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['If the project were to fail, we would need a backup plan.', '万一その事業が失敗したら、私たちは予備の計画が必要になるでしょう。'],
+          ['The doctor suggested that he take a complete rest.', '医者は彼が完全に休養をとるよう提案しました。'],
+          ['It is vital that every document be kept safely.', 'すべての書類が安全に保管されることが極めて重要です。'],
+        ],
+      },
     ],
     mistakes: [
       ['If I have known, I would have told you.', 'Had I known, I would have told you.', '過去の仮定は had＋過去分詞。if を省くなら Had I known。'],
@@ -156,6 +178,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['The rule is subject to review every year.', 'その規則は毎年見直しの対象になります。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '〜を受けるは be subject to／見込みを表す be subject to／責任があるは be responsible for。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The rule is subject to review every year.', 'その規則は毎年見直しの対象となります。'],
+          ['The contract is subject to change without notice.', 'その契約は予告なく変更されることがあります。'],
+          ['Each member is to be responsible for one section of the report.', '各委員は報告書の1章ずつを担当することになっています。'],
+        ],
+      },
     ],
     mistakes: [
       ['If you are succeed, you must work hard.', 'If you are to succeed, you must work hard.', '「成功したいなら」は If you are to succeed。to を落とさない。'],
@@ -203,6 +236,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         examples: [
           ['The proposal is believed to have reduced waste.', 'その提案はむだを減らしたと考えられています。', { reduced: ['reduce', '減らした（reduce の過去分詞）'] }],
           ['He is said to be the best player on the team.', '彼はチームでいちばんの選手だと言われています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'tell＋人＋to＋原形／deny のあとは動名詞／be said to have＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He told me to be careful on the icy road.', '彼は私に凍った道では気をつけるように言いました。'],
+          ['She denied copying the file without permission.', '彼女は許可なくそのファイルをコピーしたことを否定しました。'],
+          ['The policy is believed to have reduced waste in the city.', 'その政策は市のごみを減らしたと考えられています。'],
         ],
       },
     ],
@@ -256,6 +300,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['Generally speaking, the committee should revise the proposal.', '一般的に言えば、委員会は提案を修正すべきです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'speaking は形を変えない／「天気が許せば」は weather permitting／急いでは in haste。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Strictly speaking, this is not a new idea.', '厳密に言えば、これは新しい考えではありません。'],
+          ['Weather permitting, the concert will take place in the park.', '天気がよければ、そのコンサートは公園で行われます。'],
+          ['Having been written in haste, the letter contained errors.', '急いで書かれたので、その手紙には誤りがありました。'],
+        ],
+      },
     ],
     mistakes: [
       ['Generally spoken, the system works well.', 'Generally speaking, the system works well.', '決まった言い方は generally speaking。'],
@@ -296,6 +351,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         examples: [
           ['All things considered, the project was a success.', 'すべてを考えると、その計画は成功でした。'],
           ['The data collected, the team began its analysis.', 'データが集まると、チームは分析を始めました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '結論に達するは reach a decision／取りかかるは set about／その場を去るは leave。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['There being no objections, the committee reached a decision quickly.', '反対がなかったので、委員会はすばやく結論に達しました。'],
+          ['The data collected, the team set about its analysis.', 'データが集まったので、チームは分析に取りかかりました。'],
+          ['The meeting being over, the audience left the hall quietly.', '会議が終わったので、聴衆は静かにホールを出ました。'],
         ],
       },
     ],
@@ -348,6 +414,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['He walked in with a book in his hand.', '彼は本を手に持って入ってきました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '付帯状況を表すのは with／腕を組むは fold one’s arms／手に持ってはin one’s hand。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['He walked in with a book in his hand.', '彼は本を手に持って入ってきました。'],
+          ['She stood there with her arms folded across her chest.', '彼女は胸の前で腕を組んで立っていました。'],
+          ['She walked in with a letter in her hand.', '彼女は手紙を手に持って入ってきました。'],
+        ],
+      },
     ],
     mistakes: [
       ['She stood with her arms folding.', 'She stood with her arms folded.', '腕は「組まれた」状態なので過去分詞。'],
@@ -389,6 +466,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         examples: [
           ['Who do you think will win the game?', 'だれが試合に勝つと思いますか。'],
           ['This is the method that experts say is most reliable.', 'これは専門家が最も信頼できると言う方法です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '「だれが〜と思うか」は Who do you think／問題を解決するは solve a problem／選び出すは select。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Who do you think will win the final game?', 'だれが決勝戦に勝つと思いますか。'],
+          ['He is the person who I think can solve this puzzle.', '彼はこの難問を解決できると私が思う人です。'],
+          ['This is the applicant whom I believe the committee will select.', 'これは委員会が選ぶだろうと私が思う応募者です。'],
         ],
       },
     ],
@@ -438,6 +526,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['Give the ticket to whoever wants it.', 'ほしい人ならだれにでもチケットをあげてください。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'no matter＋疑問詞に言いかえる／利用できるは have access to／少なくともは at least。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['No matter how hard it rains, the train will run.', 'どんなに激しく雨が降っても、電車は運行します。'],
+          ['Whoever needs the data may have access to it.', 'そのデータを必要とする人はだれでも、それを利用できます。'],
+          ['Whichever plan you choose, allow at least three days.', 'どちらの計画を選ぶにしても、少なくとも3日は見ておきなさい。'],
+        ],
+      },
     ],
     rewrites: [
       ['However difficult the task is, we will continue.', 'No matter how difficult the task is, we will continue.', '譲歩の however は no matter how で言いかえられる（whatever は no matter what）。'],
@@ -481,6 +580,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         ],
         examples: [
           ['You can come whenever you like.', '好きなときにいつでも来ていいですよ。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '時なら whenever／自由に〜してくださいは feel free to／support は前置詞を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['You can come whenever you like.', 'あなたは好きなときにいつでも来てよいです。'],
+          ['Feel free to take whatever you like today.', '今日は何でも好きなものを自由に取ってください。'],
+          ['Whatever happens, I will support your choice.', '何が起ころうとも、私はあなたの選択を支えます。'],
         ],
       },
     ],
@@ -533,6 +643,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         examples: [
           ['It depends on whether we have enough time.', 'それは十分な時間があるかどうかしだいです。'],
           ['I can’t decide whether to go or not.', '行くかどうか決められません。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'to 不定詞と組むのは whether／〜次第だは depend on／衝撃を与えるは shock。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I cannot decide whether to go or not.', '私は行くべきかどうか決められません。'],
+          ['It depends on whether we have enough money.', 'それは私たちに十分なお金があるかどうかによります。'],
+          ['The fact that he lied shocked the whole class.', '彼がうそをついたという事実は、クラス全体に衝撃を与えました。'],
         ],
       },
     ],
@@ -594,6 +715,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['Marie Curie, a pioneering scientist, won two Nobel Prizes.', '先駆的な科学者であるマリー・キュリーは、ノーベル賞を2度受賞しました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '同格の that をとる名詞／疑いの余地がないは there is no doubt／deserve は前置詞を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The assumption that longer hours improve results is now questioned.', '長時間働けば成果が上がるという想定は、今では疑問視されています。'],
+          ['There is no doubt that she is right.', '彼女が正しいことは疑いありません。'],
+          ['Her belief that everyone deserves a second chance guided her decision.', 'だれもがやり直す機会に値するという信念が、彼女の決定を導きました。'],
+        ],
+      },
     ],
     mistakes: [
       ['The news which the factory would close shocked us.', 'The news that the factory would close shocked us.', '後ろの文が欠けていないので同格の that。which は使えない。'],
@@ -641,6 +773,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         ],
         examples: [
           ['Although the sample was small, the pattern was clear.', '標本は少なかったけれど、傾向ははっきりしていました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'no matter how に言いかえる／much as で譲歩を表す／respect は前置詞を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['No matter how carefully you check, mistakes may remain.', 'どんなに注意深く確かめても、誤りは残りえます。'],
+          ['Much as I admire his work, I cannot agree here.', '彼の仕事を大いに賞賛してはいますが、ここでは賛成できません。'],
+          ['Much as I respect him, I cannot accept this plan.', '彼を大いに尊敬してはいますが、この計画は受け入れられません。'],
         ],
       },
     ],
@@ -707,6 +850,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['Not only was he late, but he was also rude.', '彼は遅れただけでなく、失礼でもありました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '危険を冒すは take a risk／明るみに出るは come to light／experience は前置詞を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Under no circumstances should you take such a risk.', 'どんな事情があっても、そのような危険を冒してはいけません。'],
+          ['Only later did the truth come to light.', 'あとになって初めて、真実が明るみに出ました。'],
+          ['Never before had the city experienced such a severe storm.', 'その市はそれほど激しい嵐を経験したことがありませんでした。'],
+        ],
+      },
     ],
     mistakes: [
       ['Never I have seen such a sight.', 'Never have I seen such a sight.', '否定の語句を前に出したら「助動詞＋主語」。'],
@@ -750,6 +904,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         examples: [
           ['I do appreciate your patience.', 'あなたのがまん強さに本当に感謝しています。'],
           ['The committee indeed did revise the proposal.', '委員会は実際に提案を修正しました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'appreciate は物事を目的語に取る／〜のおかげでは thanks to／見直すは revise。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I do appreciate your help in this matter.', 'この件でのご助力に、本当に感謝しています。'],
+          ['It was thanks to her advice that we finished on time.', '時間どおりに終えられたのは、彼女の助言のおかげでした。'],
+          ['The committee did revise the proposal last month.', '委員会は先月、確かに提案を見直しました。'],
         ],
       },
     ],
@@ -799,6 +964,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['He seldom, if ever, goes out.', '彼は外出することがあるとしても、めったにありません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'if のあとの主語と be動詞を省く／もしあってもは if any／めったにないは seldom, if ever。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Call me later if necessary.', '必要ならあとで電話してください。'],
+          ['There are few errors, if any, in this report.', 'この報告書には、あるとしてもほとんど誤りはありません。'],
+          ['He seldom, if ever, goes out on weekdays.', '彼は平日に外出することは、あるとしてもめったにありません。'],
+        ],
+      },
     ],
     mistakes: [
       ['Call me if it necessary.', 'Call me if necessary.', '省くなら it と is の両方を省く（if it is necessary / if necessary）。'],
@@ -842,6 +1018,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         ],
         examples: [
           ['Ten years is a long time to wait.', '10年は待つには長い時間です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '質は quality、量は quantity／express an opinion で意見を述べる／〜とともには along with。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The quality of the evidence is more important than the number.', '証拠の質は、その数よりも重要です。'],
+          ['Each member expressed a different opinion at the meeting.', '委員はそれぞれ会議で異なる意見を述べました。'],
+          ['The manager, along with the staff, was interviewed.', '支配人は職員とともに取材を受けました。'],
         ],
       },
     ],
@@ -900,6 +1087,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['The proposal falls short of the required standard.', 'その提案は求められる水準に届いていません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '達しないは fall short of／数えられる名詞には fewer／AというよりむしろB。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The proposal falls short of the required standard.', 'その提案は必要な基準に達していません。'],
+          ['No fewer than fifty people attended the ceremony.', '50人もの人がその式典に出席しました。'],
+          ['The issue is not so much cost as fairness.', 'その問題は費用というよりむしろ公平さです。'],
+        ],
+      },
     ],
     mistakes: [
       ['No less than fifty people attended.', 'No fewer than fifty people attended.', '数えられる名詞（people）には no fewer than が正式。'],
@@ -939,6 +1137,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
         ],
         examples: [
           ['She is no less talented than her sister is.', '彼女は姉に負けないくらい才能があります。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '打ち消すのは no more／no less＋名詞＋than／〜に基づくは be based on。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['A feeling is no more an argument than a wish is.', '感情が論証でないのは、願望が論証でないのと同じです。'],
+          ['Her contribution is no less important than his.', '彼女の貢献は彼の貢献に劣らず重要です。'],
+          ['A claim is no more reliable than the evidence it is based on.', '主張は、それが基づく証拠以上に信頼できるものにはなりません。'],
         ],
       },
     ],
@@ -987,6 +1196,17 @@ export const GRAMMAR_REFERENCE_PRE1 = [
           ['The new rule is subject to review every year.', '新しい規則は毎年見直しの対象になります。'],
           ['Social media has a strong impact on young people.', 'ソーシャルメディアは若者に強い影響を与えています。'],
           ['The city changed the plan in response to public concern.', '市は人々の不安に応じて計画を変えました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '疑問を投げかけるは cast doubt on／〜のせいだは be attributable to／食いちがうは be at odds with。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The report casts doubt on the original claim.', 'その報告は当初の主張に疑いを投げかけます。'],
+          ['The result is attributable to several factors.', 'その結果はいくつかの要因によるものです。'],
+          ['The two accounts are at odds with each other.', '二つの説明は互いに食い違っています。'],
         ],
       },
     ],

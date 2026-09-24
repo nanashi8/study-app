@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T02:23:17.248Z",
+  "auditedAt": "2026-09-24T03:54:33.202Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 18,
-    "learningItemCount": 17073,
-    "quizItemCount": 17191,
+    "learningItemCount": 17252,
+    "quizItemCount": 17370,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "f8e6be9296b564859a24e670b500f54d19990ad698a8f83ab61986a868778a0e"
+    "overallContentSha256": "a9e95f33be7df1d23ba166623e5480d05793df99293226c7b8adf90531e33c70"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "14625afe3f6287887237587dec690b55fe3a446081e8eb13463e345c12feda41",
+    "sha256": "603d334cb6e686c782085954356f93d585b5ef5fc59afd56210b26204f1885c4",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -199,6 +199,7 @@
       "tests/grammar-reference.test.mjs",
       "tests/grammar-strand.test.mjs",
       "tests/grammar-unit-formats.test.mjs",
+      "tests/grammar-usage-quality.test.mjs",
       "tests/heteronyms.test.mjs",
       "tests/homograph-headwords.test.mjs",
       "tests/homograph-words.test.mjs",
@@ -349,11 +350,11 @@
       "label": "英文法",
       "learningUnit": "問",
       "quizUnit": "問",
-      "learningItemCount": 4251,
-      "quizItemCount": 4251,
-      "learningIdOrderSha256": "2362c13ce700ca637b0094ef535ace283d9b0f2dea0435fa94037c0e2675eb8a",
-      "quizIdOrderSha256": "2362c13ce700ca637b0094ef535ace283d9b0f2dea0435fa94037c0e2675eb8a",
-      "contentSha256": "0233a89fae903ec7f40da125ab8261ddbadd2c7bf538f922abc9d8e759b8224a",
+      "learningItemCount": 4430,
+      "quizItemCount": 4430,
+      "learningIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
+      "quizIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
+      "contentSha256": "c43e648d481ed10c8a1e6ece4efac3d38ff08672aa8e96dfcec87ff2f4fdeb08",
       "auditGateIds": [
         "inventory",
         "coreData",

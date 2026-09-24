@@ -44,6 +44,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['This is the first time the issue has been raised publicly.', 'その問題が公に取り上げられたのはこれが初めてです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'This is the first time のあとは現在完了／調査を完了するは complete the survey／意見の一致が生まれるは emerge。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This is the first time I have visited this city.', '私がこの都市を訪れたのは、これが初めてです。'],
+          ['By next spring, the team will have completed the study.', '来年の春までに、チームは研究を完了しているでしょう。'],
+          ['Experts have studied the problem for decades, but no consensus has emerged.', '専門家たちは何十年もその問題を研究してきましたが、意見の一致は生まれていません。'],
+        ],
+      },
     ],
     mistakes: [
       ['This is the first time I visit Kyoto.', 'This is the first time I have visited Kyoto.', 'This is the first time の後ろは現在完了。'],
@@ -100,6 +111,17 @@ export const GRAMMAR_REFERENCE_1 = [
         examples: [
           ['People tend to value information that confirms their beliefs.', '人は自分の考えを裏づける情報を重く見る傾向があります。'],
           ['The findings suggest that the policy may reduce inequality.', 'その結果は、政策が不平等を減らす可能性を示しています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'need not have＋過去分詞／控えめに述べる suggest／誤解するは misunderstand。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The letter need not have been so long; a note would have sufficed.', 'その手紙はあれほど長くする必要はなかったのに。短いメモで十分でした。'],
+          ['The findings suggest that the policy may reduce inequality.', 'その調査結果は、その政策が不平等を減らす可能性を示唆しています。'],
+          ['Given the noise, he may well have misunderstood the question.', 'さわがしかったことを考えると、彼が質問を誤解したのももっともです。'],
         ],
       },
     ],
@@ -168,6 +190,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['If need be, the deadline can be extended.', '必要なら、締め切りは延ばせます。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'It is essential that の中は原形／Were I to do の倒置／It is high time＋過去形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['It is essential that every student be present at the ceremony.', 'すべての生徒が式典に出席していることが不可欠です。'],
+          ['Were I to start over, I would choose another field.', '一からやり直すとしたら、私は別の分野を選ぶでしょう。'],
+          ['It is high time the old rule was reconsidered.', 'その古い規則はそろそろ見直されてよいころです。'],
+        ],
+      },
     ],
     mistakes: [
       ['The doctor suggested that he takes a rest.', 'The doctor suggested that he take a rest.', '提案の that 節は原形。'],
@@ -217,6 +250,17 @@ export const GRAMMAR_REFERENCE_1 = [
         examples: [
           ['God bless you!', '神のお恵みがありますように。'],
           ['May the new year bring you happiness!', '新しい年があなたに幸せをもたらしますように。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '祈願の May は文の先頭／Long live は原形のまま／God bless も原形。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['May you both be happy together!', 'お二人がともに幸せでありますように。'],
+          ['Long live the queen!', '女王万歳。'],
+          ['God bless you and your family!', 'あなたとご家族に神の祝福がありますように。'],
         ],
       },
     ],
@@ -282,6 +326,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['Had the evidence been examined earlier, the error might have been found.', 'もっと早く証拠が調べられていれば、誤りは見つかっていたかもしれません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '決して〜ないは on no account／規模は scale／公表するは disclose。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['On no account should visitors enter this area.', 'どんなことがあっても訪問者はこの区域に入ってはいけません。'],
+          ['Only when the audit ended did the scale of the damage become clear.', '監査が終わって初めて、被害の規模がはっきりしました。'],
+          ['On no account should such records be disclosed.', 'そのような記録を決して公表してはいけません。'],
+        ],
+      },
     ],
     mistakes: [
       ['Not until then I realized the truth.', 'Not until then did I realize the truth.', 'Not until を前に出したら did＋主語＋原形。'],
@@ -324,6 +379,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['That is the very thing I wanted.', 'それこそまさに私がほしかった物です。'],
           ['Little did the public know how the data had been altered.', 'データがどう書き換えられていたのか、人々は少しも知りませんでした。'],
           ['So complex was the system that few users understood it.', 'その仕組みはあまりに複雑だったので、理解できる利用者はほとんどいませんでした。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '名詞を強めるのは the very／欠けていることは the lack of／反対するは object to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['That is the very thing I wanted to ask about.', 'それこそ、私が聞きたかったことです。'],
+          ['It was the lack of evidence that weakened the report.', 'その報告書を弱めたのは、証拠の欠如でした。'],
+          ['What the board objects to is not the cost but the timing.', '理事会が反対しているのは、費用ではなく時期です。'],
         ],
       },
     ],
@@ -374,6 +440,17 @@ export const GRAMMAR_REFERENCE_1 = [
         ],
         examples: [
           ['What little evidence remained was purely circumstantial.', 'わずかに残っていた証拠は、すべて状況証拠にすぎませんでした。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'what little＋名詞／どの程度かは the extent to which／危険を挙げるは list risks。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['What little money remained was spent on repairs.', 'わずかに残っていたお金は、すべて修理に使われました。'],
+          ['The extent to which the rules were ignored remains unclear.', '規則がどの程度無視されたのかは、はっきりしないままです。'],
+          ['The paper lists twelve risks, several of which are avoidable.', 'その論文は12の危険を挙げており、そのうちいくつかは避けられます。'],
         ],
       },
     ],
@@ -430,6 +507,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['There is no more reason to doubt her account than his.', '彼の説明を疑う理由がないのと同じく、彼女の説明を疑う理由もありません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'superior は than ではなく to／all the＋比較級／打ち消しをそろえる no more A than B。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['This approach is superior to the previous one in accuracy.', 'この方法は正確さで前の方法より優れています。'],
+          ['The loss is all the more painful because it was avoidable.', '避けられたことなので、その損失はなおさらつらいものです。'],
+          ['There is no more reason to trust this source than that one.', 'あの情報源を信じる理由がないのと同じで、この情報源を信じる理由もありません。'],
+        ],
+      },
     ],
     mistakes: [
       ['The new method is superior than the old one.', 'The new method is superior to the old one.', 'superior は than ではなく to。'],
@@ -483,6 +571,17 @@ export const GRAMMAR_REFERENCE_1 = [
           ['A number of experts have revised the proposal already.', '多くの専門家がすでに提案を修正しています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '異議が出されるは be raised／辞退するは withdraw／改革が失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['A number of questions have been raised at the hearing.', '公聴会では多くの質問が出されました。'],
+          ['More than one member has withdrawn from the committee.', '選考から辞退した応募者は1人ではありません。'],
+          ['Many a promising plan has failed without public support.', '有望な計画の多くが、人々の支持がないまま失敗してきました。'],
+        ],
+      },
     ],
     mistakes: [
       ['More than one applicant have withdrawn.', 'More than one applicant has withdrawn.', 'more than one＋単数名詞は単数動詞。'],
@@ -529,6 +628,17 @@ export const GRAMMAR_REFERENCE_1 = [
         ],
         examples: [
           ['Seldom, if ever, does one solution satisfy everyone.', '1つの解決策が全員を満足させることは、あるとしてもめったにありません。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '代案は alternative／利点があるは have advantages／anticipate は前置詞を置かない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Each of the alternatives carries a serious risk.', 'どの代案にも深刻な危険があります。'],
+          ['Both methods have advantages, but neither is sufficient alone.', 'どちらのやり方にも利点がありますが、どちらも単独では十分ではありません。'],
+          ['Few, if any, experts anticipated the sudden change.', '急な変化を予想した専門家は、いたとしてもごくわずかでした。'],
         ],
       },
     ],
@@ -585,6 +695,17 @@ export const GRAMMAR_REFERENCE_1 = [
         ],
         examples: [
           ['The program aims to reduce costs, improve access, and protect privacy.', 'その計画は費用を減らし、利用しやすくし、プライバシーを守ることを目指しています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '比べる名詞は that / those／提出するは submit／効力を持つは take effect。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The population of this city is larger than that of the capital.', 'この都市の人口は首都の人口より多いです。'],
+          ['She promised to submit the form but failed to do so.', '彼女はその書類を提出すると約束しましたが、できませんでした。'],
+          ['If approved, the rule will take effect immediately.', '承認されれば、その規則はただちに効力を持ちます。'],
         ],
       },
     ],
@@ -679,6 +800,19 @@ export const GRAMMAR_REFERENCE_1 = [
         examples: [
           ['The filter removed practically nothing from the polluted water.', 'そのフィルターは汚れた水からほとんど何も取り除きませんでした。'],
           ['The committee decided to revise the rule.', '委員会はその規則を改めることを決めました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '持ちこたえるは withstand／〜次第だは be contingent on／光を当てるは shed light on／高めるは enhance／〜の余地があるは be open to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['The evidence does not withstand close examination.', 'その証拠は綿密な検討に耐えません。'],
+          ['The decision is contingent on future funding.', 'その決定は今後の資金次第です。'],
+          ['The article sheds light on a hidden cost.', 'その記事は隠れた費用を明らかにします。'],
+          ['The measure is intended to enhance accountability.', 'その措置は説明責任を高めることを意図しています。'],
+          ['The claim is open to challenge.', 'その主張には異議を唱える余地があります。'],
         ],
       },
     ],

@@ -66,6 +66,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['Are you busy now? — No, I’m not.', 'あなたは今忙しいですか。— いいえ、忙しくありません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '出身は be動詞＋from／遅れるは be動詞＋late for／準備ができているは be動詞＋ready for。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['My parents are from Okinawa.', '両親は沖縄の出身です。'],
+          ['My brother is always late for dinner.', '兄はいつも夕食に遅れます。'],
+          ['We are ready for the school festival.', '私たちは学園祭の準備ができています。'],
+        ],
+      },
     ],
     mistakes: [
       ['I am play tennis.', 'I play tennis.', 'play は一般動詞なので be動詞を重ねない。「テニスをしている」と言うなら I am playing tennis.'],
@@ -151,6 +162,18 @@ export const GRAMMAR_REFERENCE_5 = [
           ['Tom brushes his teeth before bed.', 'トムは寝る前に歯をみがきます。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '宿題をするは do one’s homework／写真を撮るは take a picture／英語を勉強するは study English／歯をみがくは brush one’s teeth。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I do my homework after dinner.', '私は夕食後に宿題をします。'],
+          ['Please take a picture of our class.', '私たちのクラスの写真を撮ってください。'],
+          ['We study English after lunch.', '私たちは昼食後に英語を勉強します。'],
+          ['Tom brushes his teeth before bed.', 'トムは寝る前に歯を磨きます。'],
+        ],
+      },
     ],
     mistakes: [
       ['He play tennis every day.', 'He plays tennis every day.', '主語 He は3人称単数なので、今の文では plays。'],
@@ -215,6 +238,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['ふつうの文', 'She is busy.', 'She plays tennis.'],
           ['否定文', 'She is not busy.', 'She does not play tennis.'],
           ['疑問文', 'Is she busy?', 'Does she play tennis?'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'まったく〜ないは not ... at all／起きるは get up／シャワーを浴びるは take a shower。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I do not like natto at all.', '私は納豆がまったく好きではありません。'],
+          ['My sister does not get up early on Sundays.', '姉は日曜日には早く起きません。'],
+          ['Do you take a shower in the morning?', 'あなたは朝にシャワーを浴びますか。'],
         ],
       },
     ],
@@ -297,6 +331,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['How many pens do you have? — I have five.', 'あなたはペンを何本持っていますか。— 5本持っています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '数えられる名詞の数は How many／液体は a glass of で数える／2つで1組の物は a pair of。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['How many eggs do we need for the cake?', 'そのケーキには卵がいくつ必要ですか。'],
+          ['I drink a glass of milk every morning.', '私は毎朝コップ1杯の牛乳を飲みます。'],
+          ['I need a pair of shoes for the trip.', '私は旅行のために靴が1足必要です。'],
+        ],
+      },
     ],
     mistakes: [
       ['I have three box.', 'I have three boxes.', '2つ以上なら複数形。x で終わる語は es。'],
@@ -373,6 +418,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['I go to school by bus.', '私はバスで学校へ行きます。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '楽器は play the ＋楽器／食事の名前に冠詞は付けない／go to school は冠詞を付けない。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Emi can play the piano very well.', 'エミはとても上手にピアノをひけます。'],
+          ['We have breakfast at seven every morning.', '私たちは毎朝7時に朝食を食べます。'],
+          ['My sister goes to school by bike.', '姉は自転車で学校へ通っています。'],
+        ],
+      },
     ],
     mistakes: [
       ['I have a apple.', 'I have an apple.', 'apple は母音の音で始まるので an。'],
@@ -446,6 +502,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['It’s very cute.', 'それはとてもかわいいです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '教えるは teach／tell は人を直接置く／呼びかけは Excuse me。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Our teacher teaches us science on Mondays.', '先生は金曜日に私たちに音楽を教えます。'],
+          ['Please tell me your phone number.', 'あなたの電話番号を私に教えてください。'],
+          ['Excuse me. Is this your notebook?', 'すみません。これはあなたのノートですか。'],
+        ],
+      },
     ],
     mistakes: [
       ['I know he.', 'I know him.', '動詞の後ろ（目的語）は目的格。'],
@@ -513,6 +580,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['It is sunny today.', '今日は晴れです。'],
           ['What time is it? — It’s seven.', '何時ですか。— 7時です。'],
           ['It’s Monday today.', '今日は月曜日です。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '電話で名乗るのは This is 〜／曜日をたずねるのは What day／すすめるときは How about。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Hello. This is Emi speaking.', 'もしもし。こちらはエミです。'],
+          ['What day is it today? It is Tuesday.', '今日は何曜日ですか。火曜日です。'],
+          ['How about this blue one?', 'この青いのはどうですか。'],
         ],
       },
     ],
@@ -593,6 +671,17 @@ export const GRAMMAR_REFERENCE_5 = [
         examples: [
           ['Who plays the piano? — Emi does.', 'だれがピアノをひきますか。— エミです。'],
           ['Who cooks dinner in your family?', 'あなたの家族ではだれが夕食を作りますか。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '値段は How much／年齢は How old／回数をたずねるのは How often。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['How much is this cap?', 'この帽子はいくらですか。'],
+          ['How old is your brother? He is twelve.', 'あなたの弟は何歳ですか。12歳です。'],
+          ['How often do you go to the library? Twice a month.', 'あなたはどのくらいの回数で図書館へ行きますか。月に2回です。'],
         ],
       },
     ],
@@ -681,6 +770,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['This is a present for you.', 'これはあなたへのプレゼントです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '学校へ行くは go to school／月の前は in／〜の近くには near。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['She goes to school by bus.', '彼女はバスで学校へ行きます。'],
+          ['Our school festival is in October.', '私たちの学園祭は10月にあります。'],
+          ['My house is near the station.', '私の家は駅の近くにあります。'],
+        ],
+      },
     ],
     mistakes: [
       ['I get up on seven.', 'I get up at seven.', '時刻には at。'],
@@ -753,6 +853,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['They are having lunch now.', '彼らは今、昼食を食べています。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'know は進行形にしない／have は「食べる」なら進行形にできる／夕食を作るは make dinner。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I know his phone number.', '私は彼の電話番号を知っています。'],
+          ['They are having lunch in the cafeteria now.', '彼らは今、食堂で昼食を食べています。'],
+          ['My mother is making dinner in the kitchen now.', '母は今、台所で夕食を作っています。'],
+        ],
+      },
     ],
     mistakes: [
       ['He watching TV now.', 'He is watching TV now.', 'ing 形だけでは進行形にならない。主語に合う be動詞が必要。'],
@@ -809,6 +920,17 @@ export const GRAMMAR_REFERENCE_5 = [
         examples: [
           ['Can I open the window? — Sure.', '窓を開けてもいいですか。— いいですよ。', { Sure: 'いいですよ・もちろん' }],
           ['Can you help me? — OK.', '手伝ってくれますか。— いいですよ。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '許可を求める Can I 〜?／手伝うは help＋人＋with／自転車に乗るは ride a bike。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Can I use your eraser? Sure.', 'あなたの消しゴムを使ってもいいですか。いいですよ。'],
+          ['Can you help me with my homework?', '宿題を手伝ってくれませんか。'],
+          ['My sister can ride a bike very well.', '姉はとても上手に自転車に乗れます。'],
         ],
       },
     ],
@@ -880,6 +1002,17 @@ export const GRAMMAR_REFERENCE_5 = [
           ['Let’s play tennis. — Yes, let’s.', 'テニスをしましょう。— ええ、そうしましょう。'],
           ['Let’s not forget our tickets.', 'チケットを忘れないようにしましょう。'],
           ['Let’s not waste time.', '時間をむだにするのはやめましょう。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '手を洗うは wash one’s hands／シートベルトを締めるは wear a seat belt／あきらめるは give up。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Wash your hands before lunch.', '昼食の前に手を洗いなさい。'],
+          ['Always wear your seat belt in the car.', '車の中ではいつもシートベルトを締めなさい。'],
+          ['Never give up on your goal.', '決して目標をあきらめないで。'],
         ],
       },
     ],

@@ -19,12 +19,15 @@ const choiceItem = (questionType, [
   answer,
   ja,
   explain,
+  usageKind = null,
+  focus = null,
 ]) => {
   const en = q.replace('___', answer)
   return Object.freeze({
     id,
     level,
     topic,
+    ...(usageKind ? { usageKind, focus } : {}),
     questionType,
     q,
     choices: Object.freeze(choices),
@@ -152,55 +155,56 @@ const ORDER_ROWS = [
   ['gr_format_order_1_05', '1', '省略・代用', 'No matter how carefully designed, every measure has limits.', 'どれほど慎重に設計されても、どの対策にも限界があります。', 'No matter how + 副詞 + 過去分詞の省略節を先に置き、主節 every measure has limits を続ける。'],
 ]
 
+// 語法問題は、英検で実際に問われる語法の型（grammar-usage-kinds.js）を1つずつ持つ。
 const USAGE_ROWS = [
   // 5級
-  ['gr_format_usage_5_01', '5', '一般動詞・3単現', 'I ___ my homework after dinner.', ['do', 'make', 'take', 'play'], 'do', '私は夕食後に宿題をします。', 'do one’s homework が「宿題をする」の決まった語の結び付きである。'],
-  ['gr_format_usage_5_02', '5', '一般動詞・3単現', 'Please ___ a picture of our class.', ['take', 'make', 'do', 'play'], 'take', '私たちのクラスの写真を撮ってください。', 'take a picture で「写真を撮る」。make a picture では通常この意味にならない。'],
-  ['gr_format_usage_5_03', '5', '前置詞', 'She goes ___ school by bus.', ['to', 'at', 'on', 'for'], 'to', '彼女はバスで学校へ行きます。', 'go to + 場所で「〜へ行く」となるため、school の前は to を使う。'],
-  ['gr_format_usage_5_04', '5', '一般動詞・3単現', 'We ___ English after lunch.', ['study', 'play', 'open', 'carry'], 'study', '私たちは昼食後に英語を勉強します。', 'study English で教科として英語を学ぶことを表し、目的語を直接取る。'],
-  ['gr_format_usage_5_05', '5', '一般動詞・3単現', 'Tom ___ his teeth before bed.', ['brushes', 'opens', 'carries', 'visits'], 'brushes', 'トムは寝る前に歯を磨きます。', 'brush one’s teeth が「歯を磨く」の自然な語の組み合わせである。'],
+  ['gr_format_usage_5_01', '5', '一般動詞・3単現', 'I ___ my homework after dinner.', ['do', 'make', 'take', 'play'], 'do', '私は夕食後に宿題をします。', 'do one’s homework が「宿題をする」の決まった語の結び付きである。', 'verbNoun', '宿題をするは do one’s homework'],
+  ['gr_format_usage_5_02', '5', '一般動詞・3単現', 'Please ___ a picture of our class.', ['take', 'make', 'do', 'play'], 'take', '私たちのクラスの写真を撮ってください。', 'take a picture で「写真を撮る」。make a picture では通常この意味にならない。', 'verbNoun', '写真を撮るは take a picture'],
+  ['gr_format_usage_5_03', '5', '前置詞', 'She goes ___ school by bus.', ['to', 'at', 'on', 'for'], 'to', '彼女はバスで学校へ行きます。', 'go to + 場所で「〜へ行く」となるため、school の前は to を使う。', 'preposition', '学校へ行くは go to school'],
+  ['gr_format_usage_5_04', '5', '一般動詞・3単現', 'We ___ English after lunch.', ['study', 'play', 'open', 'carry'], 'study', '私たちは昼食後に英語を勉強します。', 'study English で教科として英語を学ぶことを表し、目的語を直接取る。', 'verbNoun', '英語を勉強するは study English'],
+  ['gr_format_usage_5_05', '5', '一般動詞・3単現', 'Tom ___ his teeth before bed.', ['brushes', 'opens', 'carries', 'visits'], 'brushes', 'トムは寝る前に歯を磨きます。', 'brush one’s teeth が「歯を磨く」の自然な語の組み合わせである。', 'verbNoun', '歯をみがくは brush one’s teeth'],
 
   // 4級
-  ['gr_format_usage_4_01', '4', '未来表現', 'We will ___ a picnic if it is sunny.', ['have', 'do', 'make', 'play'], 'have', '晴れたら私たちはピクニックをします。', 'have a picnic で「ピクニックをする」。行事を行う have の語法を使う。'],
-  ['gr_format_usage_4_02', '4', '過去形', 'My aunt ___ me a useful book.', ['gave', 'said', 'told', 'borrowed'], 'gave', '叔母は私に役立つ本をくれました。', 'give + 人 + 物で「人に物を与える」。me と a book の二つを目的語に取る。'],
-  ['gr_format_usage_4_03', '4', '不定詞', 'Please ___ care of this plant.', ['take', 'make', 'do', 'get'], 'take', 'この植物の世話をしてください。', 'take care of ... で「〜の世話をする」という固定表現になる。'],
-  ['gr_format_usage_4_04', '4', '前置詞', 'I am looking ___ my lost key.', ['for', 'at', 'after', 'up'], 'for', '私はなくした鍵を探しています。', 'look for ... は「〜を探す」。look at や look after とは目的が異なる。'],
-  ['gr_format_usage_4_05', '4', '過去形', 'The train ___ at nine yesterday.', ['arrived', 'reached', 'visited', 'entered'], 'arrived', 'その電車は昨日9時に到着しました。', 'arrive は自動詞で、この文では目的語を取らず時刻 at nine と結び付く。'],
+  ['gr_format_usage_4_01', '4', '未来表現', 'We will ___ a picnic if it is sunny.', ['have', 'do', 'make', 'play'], 'have', '晴れたら私たちはピクニックをします。', 'have a picnic で「ピクニックをする」。行事を行う have の語法を使う。', 'verbNoun', 'ピクニックをするは have a picnic'],
+  ['gr_format_usage_4_02', '4', '過去形', 'My aunt ___ me a useful book.', ['gave', 'said', 'told', 'borrowed'], 'gave', '叔母は私に役立つ本をくれました。', 'give + 人 + 物で「人に物を与える」。me と a book の二つを目的語に取る。', 'confusable', '人に物をあげるは give'],
+  ['gr_format_usage_4_03', '4', '不定詞', 'Please ___ care of this plant.', ['take', 'make', 'do', 'get'], 'take', 'この植物の世話をしてください。', 'take care of ... で「〜の世話をする」という固定表現になる。', 'phrasal', '世話をするは take care of'],
+  ['gr_format_usage_4_04', '4', '前置詞', 'I am looking ___ my lost key.', ['for', 'at', 'after', 'up'], 'for', '私はなくした鍵を探しています。', 'look for ... は「〜を探す」。look at や look after とは目的が異なる。', 'phrasal', '探すは look for'],
+  ['gr_format_usage_4_05', '4', '過去形', 'The train ___ at nine yesterday.', ['arrived', 'reached', 'visited', 'entered'], 'arrived', 'その電車は昨日9時に到着しました。', 'arrive は自動詞で、この文では目的語を取らず時刻 at nine と結び付く。', 'confusable', '到着するは arrive'],
 
   // 3級
-  ['gr_format_usage_3_01', '3', '現在完了', 'She has ___ a cold since Monday.', ['had', 'caught', 'taken', 'made'], 'had', '彼女は月曜日からずっと風邪をひいています。', 'have a cold で風邪の状態を表し、since と現在完了で継続を示す。'],
-  ['gr_format_usage_3_02', '3', '受動態', 'This tool is used ___ cutting paper.', ['for', 'by', 'to', 'with'], 'for', 'この道具は紙を切るために使われます。', 'be used for + 動名詞で「〜するために使われる」と用途を表す。'],
-  ['gr_format_usage_3_03', '3', '不定詞応用', 'My teacher ___ me to check the source.', ['advised', 'said', 'explained', 'spoke'], 'advised', '先生は私に出典を確認するよう助言しました。', 'advise + 人 + to do で「人に〜するよう助言する」。said はこの形を取らない。'],
-  ['gr_format_usage_3_04', '3', '動詞と不定詞・動名詞', 'We look forward to ___ from you.', ['hearing', 'hear', 'to hear', 'heard'], 'hearing', 'ご連絡を楽しみにしています。', 'look forward to の to は前置詞なので、後ろには動名詞 hearing を置く。'],
-  ['gr_format_usage_3_05', '3', '前置詞', 'The rain prevented us ___ playing outside.', ['from', 'of', 'to', 'for'], 'from', '雨のため私たちは外で遊べませんでした。', 'prevent + 人 + from doing で「人が〜するのを妨げる」と表す。'],
+  ['gr_format_usage_3_01', '3', '現在完了', 'She has ___ a cold since Monday.', ['had', 'caught', 'taken', 'made'], 'had', '彼女は月曜日からずっと風邪をひいています。', 'have a cold で風邪の状態を表し、since と現在完了で継続を示す。', 'verbNoun', '風邪をひいているは have a cold'],
+  ['gr_format_usage_3_02', '3', '受動態', 'This tool is used ___ cutting paper.', ['for', 'by', 'to', 'with'], 'for', 'この道具は紙を切るために使われます。', 'be used for + 動名詞で「〜するために使われる」と用途を表す。', 'adjPrep', '〜に使われるは be used for'],
+  ['gr_format_usage_3_03', '3', '不定詞応用', 'My teacher ___ me to check the source.', ['advised', 'said', 'explained', 'spoke'], 'advised', '先生は私に出典を確認するよう助言しました。', 'advise + 人 + to do で「人に〜するよう助言する」。said はこの形を取らない。', 'verbForm', '人に助言するは advise＋人＋to'],
+  ['gr_format_usage_3_04', '3', '動詞と不定詞・動名詞', 'We look forward to ___ from you.', ['hearing', 'hear', 'to hear', 'heard'], 'hearing', 'ご連絡を楽しみにしています。', 'look forward to の to は前置詞なので、後ろには動名詞 hearing を置く。', 'verbForm', '楽しみにするは look forward to＋動名詞'],
+  ['gr_format_usage_3_05', '3', '前置詞', 'The rain prevented us ___ playing outside.', ['from', 'of', 'to', 'for'], 'from', '雨のため私たちは外で遊べませんでした。', 'prevent + 人 + from doing で「人が〜するのを妨げる」と表す。', 'verbForm', '〜できないようにするは prevent＋人＋from'],
 
   // 準2級
-  ['gr_format_usage_pre2_01', 'pre2', '前置詞', 'Please ___ attention to the final paragraph.', ['pay', 'borrow', 'charge', 'spend'], 'pay', '最後の段落に注意を払ってください。', 'pay attention to ... が「〜に注意を払う」の固定した語法である。'],
-  ['gr_format_usage_pre2_02', 'pre2', '前置詞', 'The new rule will come ___ effect next month.', ['into', 'in', 'to', 'for'], 'into', '新しい規則は来月発効します。', 'come into effect で法律や規則が「発効する・実施される」と表す。'],
-  ['gr_format_usage_pre2_03', 'pre2', '前置詞', 'Our results were consistent ___ the earlier study.', ['with', 'to', 'for', 'from'], 'with', '私たちの結果は先の研究と一致していました。', 'be consistent with ... で「〜と一致している・矛盾しない」となる。'],
-  ['gr_format_usage_pre2_04', 'pre2', '動名詞の慣用', 'She is capable ___ solving the problem alone.', ['of', 'to', 'for', 'with'], 'of', '彼女は一人でその問題を解く力があります。', 'be capable of doing で「〜する能力がある」。of の後ろは動名詞になる。'],
-  ['gr_format_usage_pre2_05', 'pre2', '前置詞', 'The committee took the evidence ___ account.', ['into', 'on', 'by', 'at'], 'into', '委員会はその証拠を考慮に入れました。', 'take ... into account で「〜を考慮に入れる」という固定表現になる。'],
+  ['gr_format_usage_pre2_01', 'pre2', '前置詞', 'Please ___ attention to the final paragraph.', ['pay', 'borrow', 'charge', 'spend'], 'pay', '最後の段落に注意を払ってください。', 'pay attention to ... が「〜に注意を払う」の固定した語法である。', 'verbNoun', '注意を向けるは pay attention to'],
+  ['gr_format_usage_pre2_02', 'pre2', '前置詞', 'The new rule will come ___ effect next month.', ['into', 'in', 'to', 'for'], 'into', '新しい規則は来月発効します。', 'come into effect で法律や規則が「発効する・実施される」と表す。', 'setPhrase', '効力を持つは come into effect'],
+  ['gr_format_usage_pre2_03', 'pre2', '前置詞', 'Our results were consistent ___ the earlier study.', ['with', 'to', 'for', 'from'], 'with', '私たちの結果は先の研究と一致していました。', 'be consistent with ... で「〜と一致している・矛盾しない」となる。', 'adjPrep', '〜と一致するは be consistent with'],
+  ['gr_format_usage_pre2_04', 'pre2', '動名詞の慣用', 'She is capable ___ solving the problem alone.', ['of', 'to', 'for', 'with'], 'of', '彼女は一人でその問題を解く力があります。', 'be capable of doing で「〜する能力がある」。of の後ろは動名詞になる。', 'adjPrep', '〜できるは be capable of'],
+  ['gr_format_usage_pre2_05', 'pre2', '前置詞', 'The committee took the evidence ___ account.', ['into', 'on', 'by', 'at'], 'into', '委員会はその証拠を考慮に入れました。', 'take ... into account で「〜を考慮に入れる」という固定表現になる。', 'setPhrase', '考えに入れるは take 〜 into account'],
 
   // 2級
-  ['gr_format_usage_2_01', '2', '無生物主語', 'The policy gave ___ to public concern.', ['rise', 'raise', 'growth', 'up'], 'rise', 'その政策は市民の懸念を生みました。', 'give rise to ... で「〜を引き起こす」。rise はここでは名詞として使われる。'],
-  ['gr_format_usage_2_02', '2', '接続詞', 'We should distinguish facts ___ opinions.', ['from', 'with', 'by', 'for'], 'from', '私たちは事実と意見を区別すべきです。', 'distinguish A from B で「AとBを区別する」と二項を結ぶ。'],
-  ['gr_format_usage_2_03', '2', '無生物主語', 'The plan is likely to ___ resistance.', ['meet', 'look', 'take', 'carry'], 'meet', 'その計画は反対に遭う可能性が高いです。', 'meet resistance で「抵抗・反対に遭う」という自然な語の結び付きになる。'],
-  ['gr_format_usage_2_04', '2', '前置詞', 'The new system places a burden ___ small schools.', ['on', 'at', 'to', 'by'], 'on', '新しい制度は小規模校に負担をかけます。', 'place a burden on ... で「〜に負担をかける」と表す。'],
-  ['gr_format_usage_2_05', '2', '接続詞', 'His explanation accounts ___ the difference.', ['for', 'to', 'of', 'with'], 'for', '彼の説明によってその違いを説明できます。', 'account for ... で「〜を説明する・〜の割合を占める」となる。'],
+  ['gr_format_usage_2_01', '2', '無生物主語', 'The policy gave ___ to public concern.', ['rise', 'raise', 'growth', 'up'], 'rise', 'その政策は市民の懸念を生みました。', 'give rise to ... で「〜を引き起こす」。rise はここでは名詞として使われる。', 'setPhrase', '引き起こすは give rise to'],
+  ['gr_format_usage_2_02', '2', '接続詞', 'We should distinguish facts ___ opinions.', ['from', 'with', 'by', 'for'], 'from', '私たちは事実と意見を区別すべきです。', 'distinguish A from B で「AとBを区別する」と二項を結ぶ。', 'verbForm', 'AとBを区別するは distinguish A from B'],
+  ['gr_format_usage_2_03', '2', '無生物主語', 'The plan is likely to ___ resistance.', ['meet', 'look', 'take', 'carry'], 'meet', 'その計画は反対に遭う可能性が高いです。', 'meet resistance で「抵抗・反対に遭う」という自然な語の結び付きになる。', 'verbNoun', '抵抗に出あうは meet resistance'],
+  ['gr_format_usage_2_04', '2', '前置詞', 'The new system places a burden ___ small schools.', ['on', 'at', 'to', 'by'], 'on', '新しい制度は小規模校に負担をかけます。', 'place a burden on ... で「〜に負担をかける」と表す。', 'verbNoun', '負担をかけるは place a burden on'],
+  ['gr_format_usage_2_05', '2', '接続詞', 'His explanation accounts ___ the difference.', ['for', 'to', 'of', 'with'], 'for', '彼の説明によってその違いを説明できます。', 'account for ... で「〜を説明する・〜の割合を占める」となる。', 'phrasal', '説明するは account for'],
 
   // 準1級
-  ['gr_format_usage_pre1_01', 'pre1', '前置詞', 'The report casts doubt ___ the original claim.', ['on', 'for', 'to', 'with'], 'on', 'その報告は当初の主張に疑いを投げかけます。', 'cast doubt on ... で「〜に疑いを投げかける」という語法になる。'],
-  ['gr_format_usage_pre1_02', 'pre1', '前置詞', 'The result is attributable ___ several factors.', ['to', 'for', 'with', 'from'], 'to', 'その結果はいくつかの要因によるものです。', 'be attributable to ... で「〜に起因する・〜のおかげである」と表す。'],
-  ['gr_format_usage_pre1_03', 'pre1', '比較構文', 'The proposal falls short ___ the required standard.', ['of', 'to', 'from', 'at'], 'of', 'その提案は必要な基準に達していません。', 'fall short of ... で「〜に達しない・不足する」という固定表現になる。'],
-  ['gr_format_usage_pre1_04', 'pre1', '前置詞', 'The two accounts are at odds ___ each other.', ['with', 'to', 'for', 'of'], 'with', '二つの説明は互いに食い違っています。', 'be at odds with ... で「〜と食い違う・対立する」と表す。'],
-  ['gr_format_usage_pre1_05', 'pre1', 'be to構文', 'The rule is subject ___ review every year.', ['to', 'for', 'with', 'by'], 'to', 'その規則は毎年見直しの対象となります。', 'be subject to ... で「〜の対象となる・〜を受ける可能性がある」となる。'],
+  ['gr_format_usage_pre1_01', 'pre1', '前置詞', 'The report casts doubt ___ the original claim.', ['on', 'for', 'to', 'with'], 'on', 'その報告は当初の主張に疑いを投げかけます。', 'cast doubt on ... で「〜に疑いを投げかける」という語法になる。', 'verbNoun', '疑問を投げかけるは cast doubt on'],
+  ['gr_format_usage_pre1_02', 'pre1', '前置詞', 'The result is attributable ___ several factors.', ['to', 'for', 'with', 'from'], 'to', 'その結果はいくつかの要因によるものです。', 'be attributable to ... で「〜に起因する・〜のおかげである」と表す。', 'adjPrep', '〜のせいだは be attributable to'],
+  ['gr_format_usage_pre1_03', 'pre1', '比較構文', 'The proposal falls short ___ the required standard.', ['of', 'to', 'from', 'at'], 'of', 'その提案は必要な基準に達していません。', 'fall short of ... で「〜に達しない・不足する」という固定表現になる。', 'phrasal', '達しないは fall short of'],
+  ['gr_format_usage_pre1_04', 'pre1', '前置詞', 'The two accounts are at odds ___ each other.', ['with', 'to', 'for', 'of'], 'with', '二つの説明は互いに食い違っています。', 'be at odds with ... で「〜と食い違う・対立する」と表す。', 'adjPrep', '食いちがうは be at odds with'],
+  ['gr_format_usage_pre1_05', 'pre1', 'be to構文', 'The rule is subject ___ review every year.', ['to', 'for', 'with', 'by'], 'to', 'その規則は毎年見直しの対象となります。', 'be subject to ... で「〜の対象となる・〜を受ける可能性がある」となる。', 'adjPrep', '〜を受けるは be subject to'],
 
   // 1級
-  ['gr_format_usage_1_01', '1', '高度語法', 'The evidence does not ___ close examination.', ['withstand', 'prevent', 'avoid', 'refuse'], 'withstand', 'その証拠は綿密な検討に耐えません。', 'withstand scrutiny / examination で「精査に耐える」という語の結び付きになる。'],
-  ['gr_format_usage_1_02', '1', '高度語法', 'The decision is contingent ___ future funding.', ['on', 'to', 'for', 'with'], 'on', 'その決定は今後の資金次第です。', 'be contingent on ... で「〜を条件とする・〜次第である」と表す。'],
-  ['gr_format_usage_1_03', '1', '高度語法', 'The article ___ light on a hidden cost.', ['sheds', 'spends', 'borrows', 'divides'], 'sheds', 'その記事は隠れた費用を明らかにします。', 'shed light on ... で「〜を明らかにする・解明する」という固定表現になる。'],
-  ['gr_format_usage_1_04', '1', '高度語法', 'The measure is intended to ___ accountability.', ['enhance', 'rise', 'occur', 'happen'], 'enhance', 'その措置は説明責任を高めることを意図しています。', 'enhance accountability で「説明責任を高める」という自然な政策表現になる。'],
-  ['gr_format_usage_1_05', '1', '高度語法', 'The claim is open ___ challenge.', ['to', 'at', 'by', 'with'], 'to', 'その主張には異議を唱える余地があります。', 'be open to challenge で「異議を受ける余地がある」と表す。'],
+  ['gr_format_usage_1_01', '1', '高度語法', 'The evidence does not ___ close examination.', ['withstand', 'prevent', 'avoid', 'refuse'], 'withstand', 'その証拠は綿密な検討に耐えません。', 'withstand scrutiny / examination で「精査に耐える」という語の結び付きになる。', 'confusable', '持ちこたえるは withstand'],
+  ['gr_format_usage_1_02', '1', '高度語法', 'The decision is contingent ___ future funding.', ['on', 'to', 'for', 'with'], 'on', 'その決定は今後の資金次第です。', 'be contingent on ... で「〜を条件とする・〜次第である」と表す。', 'adjPrep', '〜次第だは be contingent on'],
+  ['gr_format_usage_1_03', '1', '高度語法', 'The article ___ light on a hidden cost.', ['sheds', 'spends', 'borrows', 'divides'], 'sheds', 'その記事は隠れた費用を明らかにします。', 'shed light on ... で「〜を明らかにする・解明する」という固定表現になる。', 'verbNoun', '光を当てるは shed light on'],
+  ['gr_format_usage_1_04', '1', '高度語法', 'The measure is intended to ___ accountability.', ['enhance', 'rise', 'occur', 'happen'], 'enhance', 'その措置は説明責任を高めることを意図しています。', 'enhance accountability で「説明責任を高める」という自然な政策表現になる。', 'confusable', '高めるは enhance'],
+  ['gr_format_usage_1_05', '1', '高度語法', 'The claim is open ___ challenge.', ['to', 'at', 'by', 'with'], 'to', 'その主張には異議を唱える余地があります。', 'be open to challenge で「異議を受ける余地がある」と表す。', 'adjPrep', '〜の余地があるは be open to'],
 ]
 
 export const GRAMMAR_FORMAT_EXPANSION = Object.freeze([

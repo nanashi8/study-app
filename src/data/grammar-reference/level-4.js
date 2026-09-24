@@ -98,6 +98,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['I met him two days ago.', '私は2日前に彼に会いました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '人に物をあげるは give／到着するは arrive／参加するは take part in。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['My aunt gave me a useful book.', '叔母は私に役立つ本をくれました。'],
+          ['The train arrived at nine yesterday.', 'その電車は昨日9時に到着しました。'],
+          ['We took part in the school festival last year.', '私たちは昨年、学校の祭りに参加しました。'],
+        ],
+      },
     ],
     mistakes: [
       ['Did you watched the game?', 'Did you watch the game?', 'Did の後ろは動詞の原形。'],
@@ -155,6 +166,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['She was cooking when I came home.', '私が帰宅したとき、彼女は料理をしていました。'],
           ['What were you doing at eight last night?', '昨夜8時に何をしていましたか。'],
           ['I met Emi while I was walking in the park.', '公園を歩いている間に、エミに会いました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'そのときは at that time／know は過去進行形にしない／〜している間には while＋主語＋動詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Ken was studying at that time.', 'ケンはそのとき勉強していました。'],
+          ['I knew his name then.', '私はそのとき彼の名前を知っていました。'],
+          ['While I was cooking, the phone rang.', '私が料理をしている間に、電話が鳴りました。'],
         ],
       },
     ],
@@ -223,6 +245,17 @@ export const GRAMMAR_REFERENCE_4 = [
         examples: [
           ['We will have a picnic if it is sunny.', '晴れたらピクニックをします。'],
           ['I am going to see a movie next Saturday.', '次の土曜日に映画を見るつもりです。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'ピクニックをするは have a picnic／出かけるは go out／家にいるは stay home。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['We will have a picnic if it is sunny.', '晴れたら私たちはピクニックをします。'],
+          ['We will go out for dinner tonight.', '私たちは今夜、夕食に出かけます。'],
+          ['If it snows tomorrow, I will stay home.', '明日雪が降ったら、私は家にいます。'],
         ],
       },
     ],
@@ -305,6 +338,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['Could you open the window? — Sure.', '窓を開けていただけますか。— いいですよ。', { Sure: 'いいですよ・もちろん' }],
           ['Shall I carry your bag? — Yes, please.', 'かばんを運びましょうか。— はい、お願いします。'],
           ['Would you like some tea?', 'お茶はいかがですか。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '許可を求める May I 〜?／申し出る Shall I 〜?／医者にみてもらうは see a doctor。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['May I use your pen? Sure.', 'あなたのペンを使ってもよいですか。いいですよ。'],
+          ['Shall I carry your bag? Yes, please.', 'かばんをお持ちしましょうか。はい、お願いします。'],
+          ['You should see a doctor about that cough.', 'そのせきについては医者にみてもらったほうがいいですよ。'],
         ],
       },
     ],
@@ -398,6 +442,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['When I got home, my mother was cooking.', '私が家に帰ったとき、母は料理をしていました。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '乗り遅れるは miss the bus／風邪をひくは catch a cold／道路をわたるは cross the street。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Hurry up, or you will miss the bus.', '急がないとバスに乗り遅れますよ。'],
+          ['Wear a coat, or you will catch a cold.', 'コートを着ないと風邪をひきますよ。'],
+          ['Look both ways when you cross the street.', '道路をわたるときは左右をよく見なさい。'],
+        ],
+      },
     ],
     mistakes: [
       ['If it will rain tomorrow, I will stay home.', 'If it rains tomorrow, I will stay home.', 'if の中は未来のことでも現在形。'],
@@ -453,6 +508,17 @@ export const GRAMMAR_REFERENCE_4 = [
         ],
         examples: [
           ['My bag is on the desk.', '私のかばんは机の上にあります。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'この近くには near here／パンは a loaf of で数える／席につくは take a seat。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Is there a bank near here?', 'この近くに銀行はありますか。'],
+          ['There is a loaf of bread on the table.', 'テーブルの上にパンが1かたまりあります。'],
+          ['There are many seats. Please take a seat.', '席はたくさんあります。どうぞおかけください。'],
         ],
       },
     ],
@@ -513,6 +579,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['Ken joined the tennis club to practice every week.', 'ケンは毎週練習するためにテニス部に入りました。'],
           ['I went home early to take care of my dog.', '犬の世話をするために早く家に帰りました。'],
           ['I am glad to see you.', 'あなたに会えてうれしいです。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '世話をするは take care of／〜してうれしいは be glad to／「何か飲む物」は something to drink。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Please take care of this plant.', 'この植物の世話をしてください。'],
+          ['I am glad to see you again.', 'また会えてうれしいです。'],
+          ['I need something to drink in this heat.', 'この暑さの中で、私は何か飲む物が必要です。'],
         ],
       },
     ],
@@ -585,6 +662,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['Swimming in the sea is exciting.', '海で泳ぐことはわくわくします。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '得意だは be good at＋動名詞／How about のあとは動名詞／finish のあとは動名詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['My sister is good at making sweets.', '姉はお菓子を作るのが得意です。'],
+          ['How about going to the zoo tomorrow?', '明日、動物園へ行くのはどうですか。'],
+          ['I finished reading the book last night.', '私は昨夜その本を読み終えました。'],
+        ],
+      },
     ],
     rewrites: [
       ['Let’s go to the zoo.', 'How about going to the zoo?', '「〜しましょう」は How about 〜ing?（〜するのはどうですか）でも言える。'],
@@ -637,6 +725,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['Please tell me how to use this camera.', 'このカメラの使い方を教えてください。'],
           ['She showed me where to buy the ticket.', '彼女は私にどこで切符を買えばよいかを教えてくれました。'],
           ['My grandfather knows how to use the computer.', '祖父はコンピューターの使い方を知っています。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'tell のあとは〈人＋内容〉の順／切符を買うは buy a ticket／機械を使うは use。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Please tell me how to use it.', 'それの使い方を私に教えてください。'],
+          ['He told me where to buy the ticket.', '彼はどこで切符を買えばよいか教えてくれました。'],
+          ['My grandfather knows how to use this camera.', '祖父はこのカメラの使い方を知っています。'],
         ],
       },
     ],
@@ -725,6 +824,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['I like cats better than dogs.', '私は犬よりネコが好きです。'],
           ['Which do you like better, summer or winter? — I like summer better.', '夏と冬ではどちらが好きですか。— 夏のほうが好きです。'],
           ['I like spring the best of all seasons.', '私はすべての季節の中で春がいちばん好きです。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '好みを比べるのは like A better than B／値段が高いは expensive／年上は older。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I like tea better than coffee.', '私はコーヒーより紅茶のほうが好きです。'],
+          ['This bag is more expensive than that one.', 'このかばんはあのかばんより値段が高いです。'],
+          ['My brother is two years older than I am.', '兄は私より2歳年上です。'],
         ],
       },
     ],
@@ -825,6 +935,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['It is about two kilometers from here to the station.', 'ここから駅まで約2キロです。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '自由に取っては help yourself to／each のあとは単数の名詞／同じ種類の別の1つは one。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Please help yourself to the cookies.', 'クッキーを自由に取って食べてください。'],
+          ['Each student has a tablet.', '生徒はそれぞれタブレットを持っています。'],
+          ['I lost my eraser, so I bought a new one.', '消しゴムをなくしたので、新しいのを買いました。'],
+        ],
+      },
     ],
     mistakes: [
       ['Everyone like him.', 'Everyone likes him.', 'everyone は単数として扱う。'],
@@ -904,6 +1025,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['The shop is between the bank and the park.', 'その店は銀行と公園の間にあります。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '探すは look for／到着するは arrive at／音楽を聞くは listen to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['I am looking for my lost key.', '私はなくした鍵を探しています。'],
+          ['We arrived at the airport early.', '私たちは早く空港に着きました。'],
+          ['We listen to music every night.', '私たちは毎晩音楽を聞きます。'],
+        ],
+      },
     ],
     mistakes: [
       ['I am looking my key.', 'I am looking for my key.', '「〜を探す」は look for 〜。'],
@@ -965,6 +1097,17 @@ export const GRAMMAR_REFERENCE_4 = [
           ['You don’t like coffee, do you? — No, I don’t.', 'コーヒーは好きではないですよね。— はい、好きではありません。'],
         ],
       },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'テニスをするは play tennis／家に帰るは go home／ドアを開けるは open the door。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Ken plays tennis every Sunday, doesn’t he?', 'ケンは毎週日曜日にテニスをしますよね。'],
+          ['Let’s go home early, shall we?', 'もう家に帰りましょうよ。'],
+          ['Please open the door, will you?', 'ドアを開けてくれませんか。'],
+        ],
+      },
     ],
     mistakes: [
       ['He plays the guitar, isn’t he?', 'He plays the guitar, doesn’t he?', '一般動詞の文には do / does / did を使う。'],
@@ -1013,6 +1156,17 @@ export const GRAMMAR_REFERENCE_4 = [
         examples: [
           ['What a nice day!', 'なんていい天気でしょう。'],
           ['How cute!', 'なんてかわいいのでしょう。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          '景色は view／速さは fast／よい天気の日は a nice day。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['What a wonderful view this is!', 'これはなんてすばらしい景色なのでしょう。'],
+          ['How fast that boy runs!', 'あの男の子はなんて速く走るのでしょう。'],
+          ['What a nice day we are having today!', '今日はなんてよい天気なのでしょう。'],
         ],
       },
     ],
@@ -1066,6 +1220,17 @@ export const GRAMMAR_REFERENCE_4 = [
         ],
         examples: [
           ['My grandfather used to walk to school.', '祖父は以前、歩いて学校に通っていました。'],
+        ],
+      },
+      {
+        title: '語と語の決まった結び付き',
+        text: [
+          'used to のあとは動詞の原形／以前あった物は There used to be／歩いて通うは walk to。文の形といっしょに、この結び付きをまとまりで覚える。',
+        ],
+        examples: [
+          ['Ken used to play tennis every weekend.', 'ケンは以前、毎週末にテニスをしていました。'],
+          ['There used to be a big tree here.', '以前はここに大きな木がありました。'],
+          ['My grandfather used to walk to school every day.', '祖父は毎日歩いて学校へ通っていました。'],
         ],
       },
     ],

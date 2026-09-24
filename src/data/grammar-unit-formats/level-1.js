@@ -10,12 +10,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['This is the first time＋現在完了', 'This is the first time the plan has been discussed openly.', 'その計画が公に話し合われたのは、これが初めてです。', 'This is the first time のあとは現在完了にして、今までの経験とのつながりを表す。'],
     ],
     usage: [
-      ['This is the first time のあとは現在完了', 'This is the first time I ___ this city.', ['have visited', 'visit', 'visited', 'am visiting'], 'have visited', '私がこの都市を訪れたのは、これが初めてです。', 'This is the first time のあとは、今までの経験とのつながりを表す現在完了 have visited にする。', [
+      ['setPhrase', 'This is the first time のあとは現在完了', 'This is the first time I ___ this city.', ['have visited', 'visit', 'visited', 'am visiting'], 'have visited', '私がこの都市を訪れたのは、これが初めてです。', 'This is the first time のあとは、今までの経験とのつながりを表す現在完了 have visited にする。', [
         'This is the first time のあとは現在完了にして、今までの経験を表す。',
         'visit と現在形にすると、これまでの経験とのつながりを表せない。',
         'visited は過去のある時点のことを表すだけで、この形には合わない。',
         'am visiting は今まさにしていることを表し、経験の回数を表せない。',
       ]],
+      ['verbNoun', '調査を完了するは complete the survey', 'By next spring, the team will have ___ the study.', ['completed', 'ended', 'closed', 'stopped'], 'completed', '来年の春までに、チームは研究を完了しているでしょう。', 'complete the study で「研究を完了する」。最後までやり遂げることを complete で表す。完了形・受け身の形なので過去分詞 completed にする。', [
+        'complete the study で「研究を完了する」。最後まで終えることを表す。',
+        'end the study では「研究を打ち切る」という響きになり、やり遂げた意味にならない。',
+        'close the study は「（部屋を）閉じる」などの別の意味になる。',
+        'stop the study は「研究を中断する」で、完了した意味にならない。',
+      ]],
+      ['confusable', '意見の一致が生まれるは emerge', 'Experts have studied the problem for decades, but no consensus has ___.', ['emerged', 'solved', 'avoided', 'reduced'], 'emerged', '専門家たちは何十年もその問題を研究してきましたが、意見の一致は生まれていません。', 'emerge は「（考えや事実が）現れてくる」。自分で現れることを表し、目的語を取らない。完了形・受け身の形なので過去分詞 emerged にする。', [
+        'emerge は「現れてくる」。意見の一致が生まれることを表す。',
+        'solve は「解決する」で、目的語が必要になる。',
+        'avoid は「避ける」で、目的語が必要になる。',
+        'reduce は「減らす」で、目的語が必要になる。',
+      ]],
+    ],
+    choice: [
       ['未来の基準までの継続', 'By April, she ___ on the board for eight years.', ['will have been serving', 'will be serving', 'has been serving', 'is serving'], 'will have been serving', '4月で、彼女は8年間理事を務めていることになります。', '未来の基準までの続きを表すので will have been serving とする。will be＋ing では続いた長さを表せない。', [
         '未来の基準 by April までの続きなので will have been serving にする。',
         'will be serving はその時点でしている最中であることを表すだけで、8年の積み重ねを表せない。',
@@ -38,23 +52,31 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['tend to で傾向を述べる', 'People tend to value information that confirms their beliefs.', '人は自分の信念を裏づける情報を重んじる傾向があります。', 'tend to＋原形で「〜する傾向がある」と、一般的な傾向を控えめに述べる。'],
     ],
     usage: [
-      ['may well have＋過去分詞', 'Given the noise, he may well ___ missed the announcement.', ['have', 'has', 'had', 'having'], 'have', 'さわがしかったことを考えると、彼が知らせを聞き逃したのももっともです。', 'may well have＋過去分詞で「〜したのももっともだ」を表す。助動詞のあとは原形 have にする。', [
-        '助動詞 may のあとは原形 have を置き、may well have＋過去分詞とする。',
-        'may has という形はない。助動詞のあとは原形にする。',
-        'may had という形もない。助動詞のあとは原形にする。',
-        'may having という形もない。',
-      ]],
-      ['need not have＋過去分詞', 'The letter ___ have been so long; a note would have sufficed.', ['need not', 'must not', 'cannot', 'should'], 'need not', 'その手紙はあれほど長くする必要はなかったのに。短いメモで十分でした。', 'need not have＋過去分詞で「〜する必要はなかったのに（してしまった）」を表す。', [
+      ['setPhrase', 'need not have＋過去分詞', 'The letter ___ have been so long; a note would have sufficed.', ['need not', 'must not', 'cannot', 'should'], 'need not', 'その手紙はあれほど長くする必要はなかったのに。短いメモで十分でした。', 'need not have＋過去分詞で「〜する必要はなかったのに（してしまった）」を表す。', [
         'need not have＋過去分詞で「〜する必要はなかったのに」を表す。',
         'must not have been という言い方はふつうしない。禁止は must not＋原形で表す。',
         'cannot have been so long は「長かったはずがない」となり、後ろの文と合わない。',
         'should have been so long では「長くすべきだった」となり、意味が逆になる。',
       ]],
-      ['控えめに述べる suggest', 'The findings ___ that the policy may reduce inequality.', ['suggest', 'prove', 'insist', 'declare'], 'suggest', 'その調査結果は、その政策が不平等を減らす可能性を示唆しています。', 'suggest は「〜を示唆する」と、断定を避けて述べるときに使う。証拠が十分なら prove を使う。', [
+      ['confusable', '控えめに述べる suggest', 'The findings ___ that the policy may reduce inequality.', ['suggest', 'prove', 'insist', 'declare'], 'suggest', 'その調査結果は、その政策が不平等を減らす可能性を示唆しています。', 'suggest は「〜を示唆する」と、断定を避けて述べるときに使う。証拠が十分なら prove を使う。', [
         'suggest は断定を避けて「〜を示唆する」と述べるときに使う。',
         'prove は「証明する」で、may とつり合わないほど強い言い方になる。',
         'insist は人が強く主張することを表し、調査結果を主語にするには合わない。',
         'declare も人が公に宣言することを表し、調査結果には合わない。',
+      ]],
+      ['confusable', '誤解するは misunderstand', 'Given the noise, he may well have ___ the question.', ['misunderstood', 'mistaken', 'misled', 'missed'], 'misunderstood', 'さわがしかったことを考えると、彼が質問を誤解したのももっともです。', 'misunderstand は「意味を取りちがえる」。人をあざむく mislead と使い分ける。完了形・受け身の形なので過去分詞 misunderstood にする。', [
+        'misunderstand the question で「質問を誤解する」。意味を取りちがえることを表す。',
+        'mistake は mistake A for B の形で「AをBと取りちがえる」を表す。',
+        'mislead は「人を誤った方へ導く」で、自分が誤解する意味にならない。',
+        'miss the question は「質問を聞きのがす」で、誤解した意味にならない。',
+      ]],
+    ],
+    choice: [
+      ['may well have＋過去分詞', 'Given the noise, he may well ___ missed the announcement.', ['have', 'has', 'had', 'having'], 'have', 'さわがしかったことを考えると、彼が知らせを聞き逃したのももっともです。', 'may well have＋過去分詞で「〜したのももっともだ」を表す。助動詞のあとは原形 have にする。', [
+        '助動詞 may のあとは原形 have を置き、may well have＋過去分詞とする。',
+        'may has という形はない。助動詞のあとは原形にする。',
+        'may had という形もない。助動詞のあとは原形にする。',
+        'may having という形もない。',
       ]],
     ],
   },
@@ -65,19 +87,19 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['「〜がなかったら」は Had it not been for', 'Had it not been for her warning, we would have continued.', '彼女の警告がなかったら、私たちは続けていたでしょう。', 'If it had not been for 〜 の if を省くと、Had を先頭に出した語順になる。'],
     ],
     usage: [
-      ['It is essential that の中は原形', 'It is essential that every student ___ present at the ceremony.', ['be', 'is', 'was', 'being'], 'be', 'すべての生徒が式典に出席していることが不可欠です。', 'It is essential / vital that 〜 の that 節の中は、主語に関係なく動詞を原形にして be とする。', [
+      ['adjPrep', 'It is essential that の中は原形', 'It is essential that every student ___ present at the ceremony.', ['be', 'is', 'was', 'being'], 'be', 'すべての生徒が式典に出席していることが不可欠です。', 'It is essential / vital that 〜 の that 節の中は、主語に関係なく動詞を原形にして be とする。', [
         '必要性を述べる that 節の中は原形なので be を置く。',
         'is とすると事実を述べる形になり、必要性を述べるこの言い方に合わない。',
         'was は過去の事実を述べる形で、これから求めることを表さない。',
         'being では that 節の動詞にならない。',
       ]],
-      ['Were I to do の倒置', '___ I to start over, I would choose another field.', ['Were', 'Was', 'If', 'Had'], 'Were', '一からやり直すとしたら、私は別の分野を選ぶでしょう。', 'If I were to do 〜 の if を省くと Were を先頭に出した語順になる。Was にはしない。', [
+      ['setPhrase', 'Were I to do の倒置', '___ I to start over, I would choose another field.', ['Were', 'Was', 'If', 'Had'], 'Were', '一からやり直すとしたら、私は別の分野を選ぶでしょう。', 'If I were to do 〜 の if を省くと Were を先頭に出した語順になる。Was にはしない。', [
         'If I were to start 〜 の if を省くと、Were を先頭に出す。',
         'Was は仮定法では使わない。主語が何でも were にする。',
         'If を置くなら If I were to start 〜 と were が必要になる。',
         'Had I to start という形ではこの仮定を表せない。',
       ]],
-      ['It is high time＋過去形', 'It is high time the old rule ___ reconsidered.', ['was', 'is', 'will be', 'be'], 'was', 'その古い規則はそろそろ見直されてよいころです。', 'It is high time のあとは、今のことでも過去形 was にして「もう〜してよいころだ」を表す。', [
+      ['setPhrase', 'It is high time＋過去形', 'It is high time the old rule ___ reconsidered.', ['was', 'is', 'will be', 'be'], 'was', 'その古い規則はそろそろ見直されてよいころです。', 'It is high time のあとは、今のことでも過去形 was にして「もう〜してよいころだ」を表す。', [
         'It is high time のあとは過去形にするので was を置く。',
         'is とすると、この決まった言い方にならない。',
         'will be もこの決まった言い方には合わない。',
@@ -93,19 +115,19 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['May＋主語＋原形で祝う', 'May the new year bring you happiness!', '新しい年があなたに幸せをもたらしますように。', 'May で始める祈願文。主語のあとの動詞は原形 bring のまま置く。'],
     ],
     usage: [
-      ['祈願の May は文の先頭', '___ you both be happy together!', ['May', 'Can', 'Will', 'Do'], 'May', 'お二人がともに幸せでありますように。', '願いを表す祈願文は May＋主語＋原形の形にする。can や will ではこの意味にならない。', [
+      ['setPhrase', '祈願の May は文の先頭', '___ you both be happy together!', ['May', 'Can', 'Will', 'Do'], 'May', 'お二人がともに幸せでありますように。', '願いを表す祈願文は May＋主語＋原形の形にする。can や will ではこの意味にならない。', [
         'May＋主語＋原形で「〜しますように」と願いを表す。',
         'Can you both be happy? は「幸せでいられますか」とたずねる文になる。',
         'Will you both be happy? も願いではなく、たずねる文になる。',
         'Do you both be happy という形はない。',
       ]],
-      ['Long live は原形のまま', 'Long ___ the queen!', ['live', 'lives', 'lived', 'living'], 'live', '女王万歳。', 'Long live 〜! は May を省いた祈願文なので、動詞は原形 live のまま置く。s は付けない。', [
+      ['setPhrase', 'Long live は原形のまま', 'Long ___ the queen!', ['live', 'lives', 'lived', 'living'], 'live', '女王万歳。', 'Long live 〜! は May を省いた祈願文なので、動詞は原形 live のまま置く。s は付けない。', [
         'May を省いた祈願文なので、動詞は原形 live のままにする。',
         'lives と s を付けると、ふつうの現在の文になってしまう。',
         'lived は過去形で、願いを表す形にならない。',
         'living は ing 形で、文の動詞にならない。',
       ]],
-      ['God bless も原形', 'God ___ you and your family!', ['bless', 'blesses', 'blessed', 'blessing'], 'bless', 'あなたとご家族に神の祝福がありますように。', 'God bless 〜! も May を省いた祈願文なので、動詞は原形のまま置く。', [
+      ['setPhrase', 'God bless も原形', 'God ___ you and your family!', ['bless', 'blesses', 'blessed', 'blessing'], 'bless', 'あなたとご家族に神の祝福がありますように。', 'God bless 〜! も May を省いた祈願文なので、動詞は原形のまま置く。', [
         'May God bless 〜 の May を省いた形なので、原形 bless のままにする。',
         'blesses と s を付けると、ふつうの現在の文になってしまう。',
         'blessed は過去形・過去分詞で、祈願文の形にならない。',
@@ -120,6 +142,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['On no account＋助動詞＋主語', 'On no account should these files be copied.', 'これらのファイルを複写することは決して許されません。', 'On no account という強い否定の語句を先頭に出すと、後ろが〈助動詞＋主語＋動詞〉の語順になる。'],
     ],
     usage: [
+      ['setPhrase', '決して〜ないは on no account', '___ no account should visitors enter this area.', ['On', 'In', 'At', 'By'], 'On', 'どんなことがあっても訪問者はこの区域に入ってはいけません。', 'on no account で「決して〜ない」という強い打ち消しの決まった言い方になる。', [
+        'on no account で「決して〜ない」。文頭に出すと後ろが倒置になる。',
+        'in no account という言い方はない。',
+        'at no account という言い方もない。',
+        'by no account という言い方もない。',
+      ]],
+      ['confusable', '規模は scale', 'Only when the audit ended did the ___ of the damage become clear.', ['scale', 'speed', 'length', 'weight'], 'scale', '監査が終わって初めて、被害の規模がはっきりしました。', 'scale は「規模・大きさ」。損失や被害の大きさを表すときに使う。', [
+        'the scale of the damage で「被害の規模」。どれほど大きいかを表す。',
+        'speed は「速さ」で、損失の大きさを表さない。',
+        'length は「長さ」で、損失の大きさを表さない。',
+        'weight は「重さ」で、損失の大きさを表さない。',
+      ]],
+      ['confusable', '公表するは disclose', 'On no account should such records be ___.', ['disclosed', 'discovered', 'discussed', 'dismissed'], 'disclosed', 'そのような記録を決して公表してはいけません。', 'disclose は「（秘密を）公表する・明かす」。見つける discover と使い分ける。完了形・受け身の形なので過去分詞 disclosed にする。', [
+        'disclose は隠されていた情報を明かすことを表す。',
+        'discover は「発見する」で、公表する意味にならない。',
+        'discuss は「話し合う」で、公表する意味にならない。',
+        'dismiss は「退ける・解雇する」で、公表する意味にならない。',
+      ]],
+    ],
+    choice: [
       ['Only when のあとの主節が倒置', 'Only when the report arrived ___ the problem become clear.', ['did', 'was', 'had', 'has'], 'did', '報告書が届いて初めて、その問題がはっきりしました。', 'Only＋語句を先頭に出すと、倒置が起こるのは後ろの主節で、did＋主語＋動詞の原形 になる。', [
         '主節を〈did＋主語＋動詞の原形〉にするので did を置く。',
         'was のあとに動詞の原形 become は続けられない。',
@@ -147,6 +189,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['It is 〜 that … で焦点を前に', 'It was the sudden price rise that provoked public anger.', '人々の怒りを招いたのは、急な値上げでした。', '強めたい語句を It was と that の間にはさみ、残りの文を that の後ろに置く。'],
     ],
     usage: [
+      ['setPhrase', '名詞を強めるのは the very', 'That is the ___ thing I wanted to ask about.', ['very', 'much', 'more', 'own'], 'very', 'それこそ、私が聞きたかったことです。', 'the very＋名詞で「まさにその〜」と名詞そのものを強める。', [
+        'the very＋名詞で「まさにその〜」と名詞を強める。',
+        'the much thing という言い方はない。much は量を表す語。',
+        'the more thing という言い方もない。more は比較級を作る語。',
+        'the own thing という言い方はしない。own は my own のように所有格と組にする。',
+      ]],
+      ['noun', '欠けていることは the lack of', 'It was the ___ of evidence that weakened the report.', ['lack', 'loss', 'miss', 'fail'], 'lack', 'その報告書を弱めたのは、証拠の欠如でした。', 'the lack of 〜 で「〜の欠如」。もともと足りないことを表し、失った loss と使い分ける。', [
+        'the lack of evidence で「証拠の欠如」。足りないことを表す。',
+        'loss は「失うこと」で、もともと足りない状態を表さない。',
+        'miss は名詞では「失敗・のがすこと」を表し、この形では使わない。',
+        'fail は動詞で、the fail of 〜 という名詞の形では使わない。',
+      ]],
+      ['phrasal', '反対するは object to', 'What the board ___ to is not the cost but the timing.', ['objects', 'opposes', 'refuses', 'denies'], 'objects', '理事会が反対しているのは、費用ではなく時期です。', 'object to 〜 で「〜に反対する」。前置詞を置かない oppose と使い分ける。主語が3人称単数なので objects にする。', [
+        'object to 〜 で「〜に反対する」。反対する相手は to で示す。',
+        'oppose は前置詞を置かずに目的語を取るので、to とは組にしない。',
+        'refuse も前置詞を置かずに目的語を取る。',
+        'deny も前置詞を置かずに目的語を取る。',
+      ]],
+    ],
+    choice: [
       ['焦点を後ろに置くのは What', '___ the committee needs is more evidence.', ['What', 'That', 'Which', 'It'], 'What', '委員会が必要としているのは、より多くの証拠です。', 'needs の目的語が欠けているので、先行詞をふくむ What を使って主語のまとまりを作る。', [
         'needs の目的語が欠けているので、先行詞をふくむ What を使う。',
         'That the committee needs 〜 では needs の目的語が足りず、文として成り立たない。',
@@ -159,12 +221,6 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
         'which one は「どちらか」を表し、この形には入らない。',
         'when は時を説明する語で、強調構文の that の代わりにはならない。',
       ]],
-      ['名詞を強めるのは the very', 'That is the ___ thing I wanted to ask about.', ['very', 'much', 'more', 'own'], 'very', 'それこそ、私が聞きたかったことです。', 'the very＋名詞で「まさにその〜」と名詞そのものを強める。', [
-        'the very＋名詞で「まさにその〜」と名詞を強める。',
-        'the much thing という言い方はない。much は量を表す語。',
-        'the more thing という言い方もない。more は比較級を作る語。',
-        'the own thing という言い方はしない。own は my own のように所有格と組にする。',
-      ]],
     ],
   },
   {
@@ -175,6 +231,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['前の文全体を受ける , which', 'The trial was postponed, which surprised the participants.', '裁判は延期され、そのことが関係者を驚かせました。', 'コンマ＋which は、前の文全体を受けて「そのことが〜」と続ける働きをする。'],
     ],
     usage: [
+      ['confusable', 'what little＋名詞', 'What ___ money remained was spent on repairs.', ['little', 'few', 'small', 'less'], 'little', 'わずかに残っていたお金は、すべて修理に使われました。', 'what little＋数えられない名詞で「わずかながらあるすべての〜」を表す。', [
+        'money は数えられない名詞なので、what little money とする。',
+        'few は数えられる名詞に使う語で、money には合わない。',
+        'what small money という言い方はしない。',
+        'less は比較級で、この決まった言い方には入らない。',
+      ]],
+      ['setPhrase', 'どの程度かは the extent to which', 'The ___ to which the rules were ignored remains unclear.', ['extent', 'speed', 'weight', 'length'], 'extent', '規則がどの程度無視されたのかは、はっきりしないままです。', 'the extent to which 〜 で「どの程度〜か」という決まった言い方になる。', [
+        'the extent to which 〜 で「どの程度〜か」。程度を表す決まった形。',
+        'the speed to which という言い方はない。',
+        'the weight to which という言い方もない。',
+        'the length to which という言い方もない。',
+      ]],
+      ['verbNoun', '危険を挙げるは list risks', 'The paper ___ twelve risks, several of which are avoidable.', ['lists', 'writes', 'says', 'tells'], 'lists', 'その論文は12の危険を挙げており、そのうちいくつかは避けられます。', 'list＋名詞で「〜を列挙する」。書きつらねることを list で表す。主語が3人称単数なので lists にする。', [
+        'list twelve risks で「12の危険を挙げる」。並べて示すことを表す。',
+        'write twelve risks では「危険を書く」となり、挙げるという意味が弱い。',
+        'say は言った内容を目的語に取る語で、paper を主語にして risks を並べる意味にならない。',
+        'tell は人に伝えることを表し、この形では使わない。',
+      ]],
+    ],
+    choice: [
       ['前置詞のあとは which', 'The extent to ___ the rule was applied remains unclear.', ['which', 'that', 'what', 'where'], 'which', 'その規則がどの程度適用されたのかは、はっきりしないままです。', '前置詞 to のすぐ後ろには that を置けない。物を受けるので which を使う。', [
         '前置詞 to の後ろなので which を使い、the extent to which 〜 とする。',
         '前置詞のすぐ後ろに that は置けない。',
@@ -187,12 +263,6 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
         '前置詞 of の後ろに that は置けない。',
         'what は先行詞をふくむ語で、この形には入らない。',
       ]],
-      ['what little＋名詞', 'What ___ money remained was spent on repairs.', ['little', 'few', 'small', 'less'], 'little', 'わずかに残っていたお金は、すべて修理に使われました。', 'what little＋数えられない名詞で「わずかながらあるすべての〜」を表す。', [
-        'money は数えられない名詞なので、what little money とする。',
-        'few は数えられる名詞に使う語で、money には合わない。',
-        'what small money という言い方はしない。',
-        'less は比較級で、この決まった言い方には入らない。',
-      ]],
     ],
   },
   {
@@ -203,19 +273,19 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['「〜より優れている」は superior to', 'This engine is superior to the previous model in speed.', 'このエンジンは速さで前の型より優れています。', 'superior は比べる相手を than ではなく to で示す。この形の語には inferior・senior・prior などがある。'],
     ],
     usage: [
-      ['superior は than ではなく to', 'This approach is superior ___ the previous one in accuracy.', ['to', 'than', 'from', 'over'], 'to', 'この方法は正確さで前の方法より優れています。', 'superior・inferior・senior・junior・prior は、比べる相手を to で示す。than は使わない。', [
+      ['adjPrep', 'superior は than ではなく to', 'This approach is superior ___ the previous one in accuracy.', ['to', 'than', 'from', 'over'], 'to', 'この方法は正確さで前の方法より優れています。', 'superior・inferior・senior・junior・prior は、比べる相手を to で示す。than は使わない。', [
         'superior は比べる相手を to で示す。superior to 〜 の形で覚える。',
         'superior than という言い方はしない。than は比較級と組にする語。',
         'superior from という結び付きはない。',
         'superior over という結び付きもない。',
       ]],
-      ['all the＋比較級', 'The loss is all the ___ painful because it was avoidable.', ['more', 'most', 'much', 'very'], 'more', '避けられたことなので、その損失はなおさらつらいものです。', 'all the＋比較級＋because 〜 の形なので、painful の比較級を作る more を置く。', [
+      ['setPhrase', 'all the＋比較級', 'The loss is all the ___ painful because it was avoidable.', ['more', 'most', 'much', 'very'], 'more', '避けられたことなので、その損失はなおさらつらいものです。', 'all the＋比較級＋because 〜 の形なので、painful の比較級を作る more を置く。', [
         'all the more painful で「なおさらつらい」を表す。比較級を使う。',
         'all the most painful という言い方はしない。最上級は使わない。',
         'all the much painful という言い方もない。',
         'all the very painful という言い方もない。',
       ]],
-      ['打ち消しをそろえる no more A than B', 'There is no ___ reason to trust this source than that one.', ['more', 'less', 'better', 'further'], 'more', 'あの情報源を信じる理由がないのと同じで、この情報源を信じる理由もありません。', 'no more A than B で「BがAでないのと同じく、AもそうではないB」と強く打ち消す。', [
+      ['setPhrase', '打ち消しをそろえる no more A than B', 'There is no ___ reason to trust this source than that one.', ['more', 'less', 'better', 'further'], 'more', 'あの情報源を信じる理由がないのと同じで、この情報源を信じる理由もありません。', 'no more A than B で「BがAでないのと同じく、AもそうではないB」と強く打ち消す。', [
         'no more 〜 than … で、than の後ろと同じように打ち消す。',
         'no less 〜 than … は「…に劣らず〜だ」と、どちらもそうであることを表す。',
         'no better than 〜 は「〜も同然だ」という別の意味になる。',
@@ -227,10 +297,30 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
     unit: 'gref_1_agreement',
     order: [
       ['neither A nor B は B に合わせる', 'Neither the teacher nor the students were ready to leave.', '先生も生徒たちも帰る用意ができていませんでした。', 'neither A nor B が主語のときは、動詞を近いほうの B（the students）に合わせる。'],
-      ['more than one＋単数名詞は単数扱い', 'More than one applicant has withdrawn from the selection.', '選考から辞退した応募者は1人ではありません。', 'more than one＋単数名詞は、意味は複数でも形の上では単数として扱う。'],
+      ['more than one＋単数名詞は単数扱い', 'More than one applicant has withdrawn from the selection.', '委員会から身を引いた委員は1人ではありません。', 'more than one＋単数名詞は、意味は複数でも形の上では単数として扱う。'],
       ['many a＋単数名詞も単数扱い', 'Many a young writer has struggled before finding success.', '多くの若い作家が、成功する前に苦労してきました。', 'many a＋単数名詞は「多くの〜」を表すが、動詞は単数に合わせる。'],
     ],
     usage: [
+      ['confusable', '異議が出されるは be raised', 'A number of questions have been ___ at the hearing.', ['raised', 'risen', 'arisen', 'aroused'], 'raised', '公聴会では多くの質問が出されました。', 'raise a question で「質問を出す」。受け身にすると be raised になる。自動詞の rise・arise と区別する。', [
+        'raise は「〜を上げる・（問題を）持ち出す」で、受け身にできる。',
+        'rise は自動詞で目的語を取らないため、受け身にできない。',
+        'arise も自動詞で、受け身にできない。',
+        'arouse は「（感情を）かき立てる」で、質問には使わない。',
+      ]],
+      ['confusable', '辞退するは withdraw', 'More than one member has ___ from the committee.', ['withdrawn', 'wandered', 'worried', 'wondered'], 'withdrawn', '選考から辞退した応募者は1人ではありません。', 'withdraw from 〜 で「〜から身を引く・辞退する」。from と組にして使う。完了形・受け身の形なので過去分詞 withdrawn にする。', [
+        'withdraw from 〜 で「〜から辞退する」。途中で身を引くことを表す。',
+        'wander は「さまよう」で、辞退する意味にならない。',
+        'worry は「心配する」で、辞退する意味にならない。',
+        'wonder は「〜だろうかと思う」で、辞退する意味にならない。',
+      ]],
+      ['confusable', '改革が失敗するは fail', 'Many a promising plan has ___ without public support.', ['failed', 'lost', 'missed', 'dropped'], 'failed', '有望な計画の多くが、人々の支持がないまま失敗してきました。', 'fail は「うまくいかない」。目的語を置かずに使える点で lose・miss とちがう。完了形・受け身の形なので過去分詞 failed にする。', [
+        'fail は「失敗する」。目的語を置かずに使える。',
+        'lose は「失う」で、目的語が必要になる。',
+        'miss は「のがす」で、目的語が必要になる。',
+        'drop は「落とす」で、目的語が必要になる。',
+      ]],
+    ],
+    choice: [
       ['a number of は複数扱い', 'A number of objections ___ been raised at the meeting.', ['have', 'has', 'is', 'was'], 'have', '会議では多くの反対意見が出されました。', 'a number of＋複数名詞は「多くの〜」で複数扱いなので have にする。the number of との違いに気をつける。', [
         'a number of objections は「多くの反対意見」で複数なので have を使う。',
         'has は単数の主語に使う形。the number of 〜 なら has になる。',
@@ -259,6 +349,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['both は複数扱い', 'Both approaches have advantages, but neither is sufficient alone.', 'どちらの方法にも利点がありますが、どちらも単独では十分ではありません。', 'both＋複数名詞は複数扱いで have、neither は1つずつを指すので単数扱いで is になる。'],
     ],
     usage: [
+      ['confusable', '代案は alternative', 'Each of the ___ carries a serious risk.', ['alternatives', 'answers', 'questions', 'problems'], 'alternatives', 'どの代案にも深刻な危険があります。', 'alternative は「代わりの案」。答えを表す answer や問題そのものを表す problem と使い分ける。Each of のあとは複数形なので alternatives にする。', [
+        'alternative は「代わりの案」。選べる別の案を指す。',
+        'answer は「答え」で、選べる案を表さない。',
+        'question は「問い」で、案を表さない。',
+        'problem は「問題」そのもので、案を表さない。',
+      ]],
+      ['verbNoun', '利点があるは have advantages', 'Both methods have ___, but neither is sufficient alone.', ['advantages', 'arguments', 'agreements', 'amounts'], 'advantages', 'どちらのやり方にも利点がありますが、どちらも単独では十分ではありません。', 'have advantages で「利点がある」。欠点を表す drawbacks と対にして使う。', [
+        'have advantages で「利点がある」。よい点を表す。',
+        'arguments は「議論・主張」で、よい点を表さない。',
+        'agreements は「合意」で、よい点を表さない。',
+        'amounts は「量」で、よい点を表さない。',
+      ]],
+      ['verbForm', 'anticipate は前置詞を置かない', 'Few, if any, experts ___ the sudden change.', ['anticipated', 'waited', 'hoped', 'longed'], 'anticipated', '急な変化を予想した専門家は、いたとしてもごくわずかでした。', 'anticipate は目的語を直接置く動詞。wait・hope・long は前置詞が必要になる。過去の文なので anticipated にする。', [
+        'anticipate the change で「変化を予想する」。前置詞を置かずに目的語を取る。',
+        'wait は wait for 〜 の形にする。',
+        'hope は hope for 〜 の形にする。',
+        'long は long for 〜 の形にする。',
+      ]],
+    ],
+    choice: [
       ['all the＋名詞の語順', '___ the students agreed with the new schedule.', ['All', 'The all', 'All of', 'Every'], 'All', 'すべての生徒が新しい予定に賛成しました。', 'all は the の前に置いて all the＋名詞の語順にする。the all という語順にはしない。', [
         'all は the の前に置くので、All the students という語順になる。',
         'The all students という語順にはしない。',
@@ -286,12 +396,26 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['do so で動作を受ける', 'She agreed to call the office but forgot to do so.', '彼女は事務所に電話すると約束しましたが、忘れてしまいました。', '前に出た動作をくり返すかわりに do so を置く。do such とは言わない。'],
     ],
     usage: [
-      ['比べる名詞は that / those', 'The population of this city is larger than ___ of the capital.', ['that', 'it', 'one', 'those'], 'that', 'この都市の人口は首都の人口より多いです。', '比べる相手の名詞をくり返すかわりに that を置く。population は単数なので that を使う。', [
+      ['confusable', '比べる名詞は that / those', 'The population of this city is larger than ___ of the capital.', ['that', 'it', 'one', 'those'], 'that', 'この都市の人口は首都の人口より多いです。', '比べる相手の名詞をくり返すかわりに that を置く。population は単数なので that を使う。', [
         'population は数えられない名詞として単数で受けるので that を使う。',
         'it は前に出た物そのものを指し、比べる相手を表せない。',
         'one は数えられる名詞を受ける語で、population には使わない。',
         'those は複数の名詞を受ける形で、単数の population には合わない。',
       ]],
+      ['confusable', '提出するは submit', 'She promised to ___ the form but failed to do so.', ['submit', 'subtract', 'substitute', 'subscribe'], 'submit', '彼女はその書類を提出すると約束しましたが、できませんでした。', 'submit＋書類 で「（書類を）提出する」。似た形の subtract・substitute と意味がちがう。', [
+        'submit the form で「書類を提出する」。差し出すことを表す。',
+        'subtract は「引き算する」で、提出する意味にならない。',
+        'substitute は「代わりに用いる」で、提出する意味にならない。',
+        'subscribe は「定期購読する・署名する」で、提出する意味にならない。',
+      ]],
+      ['verbNoun', '効力を持つは take effect', 'If approved, the rule will ___ effect immediately.', ['take', 'make', 'do', 'put'], 'take', '承認されれば、その規則はただちに効力を持ちます。', 'take effect で「効力を持つ・実施される」という決まった結び付きになる。', [
+        'take effect で「効力を持つ」。規則や薬が働き始めることを表す。',
+        'make effect という結び付きはない。',
+        'do effect という結び付きもない。',
+        'put effect という結び付きもない。',
+      ]],
+    ],
+    choice: [
       ['副詞節の主語＋be動詞を省く', 'If ___, the new rule will take effect in April.', ['accepted', 'accept', 'accepting', 'it accept'], 'accepted', '受け入れられれば、その新しい規則は4月に実施されます。', 'If it is accepted の〈主語＋be動詞〉を省いた形。修正案は「受け入れられる」側なので過去分詞にする。', [
         'If it is accepted の〈主語＋be動詞〉を省くので、過去分詞 accepted を置く。規則は受け入れられる側。',
         'accept と原形にすると、省略した形として成り立たない。',
@@ -312,6 +436,7 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
       ['lest＋主語＋原形', 'She wrote clearly lest her note be misread.', 'メモを読みちがえられないように、彼女ははっきり書きました。', 'lest＋主語＋(should)＋原形で「〜しないように」を表す。lest 自体が打ち消しをふくむ。'],
       ['Notwithstanding＋名詞', 'Notwithstanding the delays, the team finished the project.', '遅れがあったにもかかわらず、チームはその事業を終えました。', 'notwithstanding は前置詞なので、後ろに名詞のまとまりを置く。文を続けるときは although を使う。'],
     ],
-    usage: [],
+    usage: [
+    ],
   },
 ])
