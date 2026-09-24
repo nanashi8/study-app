@@ -11,8 +11,8 @@ test('全教材監査台帳は18カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.failureCount, 0)
   assert.equal(ledger.scope.categoryCount, 18)
   assert.equal(ledger.categories.length, 18)
-  assert.equal(ledger.scope.learningItemCount, 16_377)
-  assert.equal(ledger.scope.quizItemCount, 16_495)
+  assert.equal(ledger.scope.learningItemCount, 17_073)
+  assert.equal(ledger.scope.quizItemCount, 17_191)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
