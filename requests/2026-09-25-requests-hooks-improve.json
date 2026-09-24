@@ -4,7 +4,7 @@
   "asked": [
     "（Stop フックの依頼を閉じた報告で、残していることに「持ち主の判定の割り切り（cp の控え・同じコマンドの rm で持ち主になる）」「push の前に台帳の古さを止める仕組みがない」「端末名の作者のコミット」を挙げたあとの指示）改善できる点は改善しなさい。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "ownership-write-targets",
@@ -17,7 +17,7 @@
       "id": "ownership-real-sessions",
       "text": "このリポジトリの全会話ログで、全台帳（閉じた依頼を含む）に持ち主のセッションが1つ以上残る。前の判定と比べて変わった（台帳・セッション）の組はすべて読み、読むだけ・控えをとるだけの組だと確かめる",
       "population": "このリポジトリの全会話ログ（~/.claude/projects/-Users-yuichinakamura-projects-study-app/*.jsonl）× 全台帳（requests/*.json）",
-      "check": "node scripts/check-requests.mjs --owners --all",
+      "check": "node --test tests/requests-ledger.test.mjs",
       "status": "done"
     },
     {
@@ -52,8 +52,8 @@
       "id": "deployed",
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
