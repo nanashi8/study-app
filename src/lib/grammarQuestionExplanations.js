@@ -53,8 +53,9 @@ const choicesAreOneVisibleInflectionFamily = (choices) => {
 }
 
 // 答え合わせの「解説」。問題データの explain（短い規則）ごとに、形の決まり方とその文への当てはめを書いてある。
+// 単元別の並び替え・語法問題は、問題ごとに1本ずつ書いた解説を問題データ（ruleExplanation）に持つ。
 export function grammarRuleExplanationFor(item) {
-  return GRAMMAR_RULE_EXPLANATIONS[item?.explain] ?? ''
+  return item?.ruleExplanation ?? GRAMMAR_RULE_EXPLANATIONS[item?.explain] ?? ''
 }
 
 // 語形だけで4択を切れる問題では、解答前の和訳を答えのヒントにしない。

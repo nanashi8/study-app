@@ -5,6 +5,7 @@ import {
   GRAMMAR_FORMAT_EXPANSION,
   grammarQuestionType,
 } from './grammar-format-expansion.js'
+import { GRAMMAR_UNIT_FORMATS } from './grammar-unit-formats/index.js'
 
 // 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
 // IDや並び順は変えず、出題時だけ同じ variationGroup として重複を抑える。
@@ -444,9 +445,14 @@ export const grammarByLevel = (level) => GRAMMAR.filter((g) => g.level === level
 export const grammarByTopic = (level, topic) => GRAMMAR.filter((g) => g.level === level && g.topic === topic)
 export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((g) => g.topic))]
 
-// 既存3,450問は教材・説明監査の母数として維持し、形式拡充105問を
-// 実際の文法テスト在庫へ加える。既存IDのSRS履歴と各種固定件数を壊さない。
-export const GRAMMAR_PRACTICE = Object.freeze([...GRAMMAR, ...GRAMMAR_FORMAT_EXPANSION])
+// 既存3,450問は教材・説明監査の母数として維持し、形式拡充105問と
+// 単元別の並び替え・語法696問を実際の文法テスト在庫へ加える。
+// 既存IDのSRS履歴と各種固定件数を壊さない。
+export const GRAMMAR_PRACTICE = Object.freeze([
+  ...GRAMMAR,
+  ...GRAMMAR_FORMAT_EXPANSION,
+  ...GRAMMAR_UNIT_FORMATS,
+])
 export const grammarPracticeByLevel = (level, questionType = 'mixed') =>
   GRAMMAR_PRACTICE.filter((item) =>
     item.level === level

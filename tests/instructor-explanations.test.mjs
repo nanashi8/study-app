@@ -172,7 +172,7 @@ test('長文の内容理解と学習診断の読解は、根拠の解説と選�
 })
 
 // 英文法は、決まり文句の4段解説をやめ、規則ごとに書いた解説を出す（形の決まり方と、その文への当てはめ）。
-test('英文法3,555問は規則ごとの解説を出し、決まり文句の講師解説を使わない', async () => {
+test('英文法4,251問は規則ごとの解説を出し、決まり文句の講師解説を使わない', async () => {
   const source = await readFile(new URL('../src/screens/GrammarQuiz.jsx', import.meta.url), 'utf8')
   assert.doesNotMatch(source, /InstructorExplanation/, 'GrammarQuiz.jsx: 決まり文句の講師解説が戻っています')
   assert.match(source, /\{grammarRuleExplanationFor\(item\)\}/, 'GrammarQuiz.jsx: 規則ごとの解説がありません')
@@ -188,9 +188,9 @@ test('英文法3,555問は規則ごとの解説を出し、決まり文句の講
     )
     explanations.add(value)
   }
-  assert.equal(GRAMMAR_PRACTICE.length, 3555)
-  // 規則654件と形式別の問題105問に1つずつ。別の規則と同じ文を使い回していない。
-  assert.equal(explanations.size, 759)
+  assert.equal(GRAMMAR_PRACTICE.length, 4251)
+  // 規則654件と、形式別の問題105問・単元別の並び替え語法689問に1つずつ。別の規則と同じ文を使い回していない。
+  assert.equal(explanations.size, 1448)
 
   // 学習診断の文法問題も、同じ規則の解説を出す。
   const grammarById = new Map(GRAMMAR.map((item) => [item.id, item]))

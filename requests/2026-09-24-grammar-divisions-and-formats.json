@@ -1,0 +1,59 @@
+{
+  "id": "2026-09-24-grammar-divisions-and-formats",
+  "title": "文法の入口を「級別・単元別」の2区分にそろえ、並び替え・語法を全単元に行き渡らせる",
+  "asked": [
+    "・文法問題の区分けを、級別・単元別として、入口のレイアウト統一感を持たせて、ぱっと切り替えられるようにしなさい。\n・文法問題の並び替えと語法が、選択に比べて極端に少なくないか？\n・並び替えと語法の問題で習得を促せるものが、各級の学習内容にあるのではないか？"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "entry-two-divisions",
+      "text": "文法の入口が「級別」「単元別」の2区分になり、どちらも同じ並び（区分の切り替え→タブ→まとめのカード→単元の行）・同じ部品（LearningEntryCard）で出る。切り替えは画面遷移なしで、テストの問題の種類の選択も持ち越す。級をまたぐ学習（系統）は別画面ではなく単元別の区分として同じ入口に入る",
+      "population": "文法の入口画面1つ＝級別の7タブ（級）と単元別の25タブ（系統）の全32タブ",
+      "check": "node --test tests/grammar-entry-divisions.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "units-covered-by-both-divisions",
+      "text": "参考書の全単元が、級別からも単元別からも入口を持つ（いまは 4級・2級・準1級の「前置詞」3単元が系統に分類されておらず、単元別から入れない）",
+      "population": "文法の参考書の全127単元（5級12・4級15・3級16・準2級26・2級26・準1級20・1級12）",
+      "check": "node --test tests/grammar-entry-divisions.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "word-order-every-unit",
+      "text": "全単元が並び替え問題を3問以上持つ（選択問題の単元最低数 GRAMMAR_TOPIC_MINIMUM=3 と同じ基準）。いまは127単元中35単元に1問ずつしかなく、92単元は0問。どの級でも並び替えだけのテストが1回分（20問）に足りる",
+      "population": "文法の参考書の全127単元＝7級すべて",
+      "check": "node --test tests/grammar-unit-formats.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-every-unit",
+      "text": "全単元が語法問題を3問以上持つ。いまは127単元中20単元にしかなく、107単元は0問。どの級でも語法だけのテストが1回分（20問）に足りる",
+      "population": "文法の参考書の全127単元＝7級すべて",
+      "check": "node --test tests/grammar-unit-formats.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "formats-match-unit-content",
+      "text": "追加した並び替え・語法の1問ずつが、その単元の参考書ページで学ぶ形を問う。各問題は単元（unitId）と「その問題で習得させる形」（focus）を持ち、unitId は参考書の単元に解決し、級・単元名が問題と一致し、同じ単元・同じ形式の3問は別々の形を問う",
+      "population": "追加する並び替え346問・語法350問の計696問と、その行き先の全127単元",
+      "check": "node --test tests/grammar-unit-formats.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "added-questions-pass-existing-audits",
+      "text": "追加した696問が、既存の出題監査の規則をすべて満たす（語法は空所1つ・選択肢4つ・正解がちょうど1つ・完成文を組み直せる・4選択肢すべてに問題ごとの日本語の説明、並び替えは単語カード5〜12枚・最初から解けていない・日本語の指示文、全問で完成文の重複なし、混合テストで3形式が均等に出る）",
+      "population": "追加する696問（語法350問×4選択肢＝1,400通りの選択肢説明を含む）と、既存を合わせた文法在庫4,251問",
+      "check": "npm run audit:question-formats && node --test tests/english-question-formats.test.mjs tests/grammar-choice-notes.test.mjs tests/grammar-deck.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "all-content-green-and-deployed",
+      "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）を通し、クリーンな clone で確かめてから main へ push し、公開版で級別・単元別の切り替えと並び替え・語法のテストを見る",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   GRAMMAR_QUESTION_TYPES,
   grammarQuestionType,
 } from '../data/grammar-format-expansion.js'
+import { GRAMMAR_UNIT_FORMATS } from '../data/grammar-unit-formats/index.js'
 import { PASSAGES } from '../data/passages.js'
 import { CORE_READING_PRACTICE_QUESTIONS } from '../data/reading-core-practice-questions.js'
 import { CURRENT_AFFAIRS_PASSAGES } from '../data/reading-current-affairs-passages.js'
@@ -229,7 +230,10 @@ export function auditEnglishQuestionFormats() {
   if (GRAMMAR_FORMAT_EXPANSION.length !== 105) {
     addIssue('grammar-format-expansion-total', 'grammar', GRAMMAR_FORMAT_EXPANSION.length)
   }
-  if (GRAMMAR_PRACTICE.length !== 3555) addIssue('grammar-practice-total', 'grammar', GRAMMAR_PRACTICE.length)
+  if (GRAMMAR_UNIT_FORMATS.length !== 696) {
+    addIssue('grammar-unit-format-total', 'grammar', GRAMMAR_UNIT_FORMATS.length)
+  }
+  if (GRAMMAR_PRACTICE.length !== 4251) addIssue('grammar-practice-total', 'grammar', GRAMMAR_PRACTICE.length)
   if (new Set(expansionIds).size !== expansionIds.length) addIssue('duplicate-format-expansion-id', 'grammar')
   if (new Set(allGrammarIds).size !== allGrammarIds.length) addIssue('duplicate-grammar-practice-id', 'grammar')
   if (new Set(GRAMMAR_PRACTICE.map((item) => item.sentence.en)).size !== GRAMMAR_PRACTICE.length) {
@@ -257,7 +261,7 @@ export function auditEnglishQuestionFormats() {
 
   let grammarChoicePathCount = 0
   let grammarWrongChoicePathCount = 0
-  for (const item of GRAMMAR_FORMAT_EXPANSION) {
+  for (const item of [...GRAMMAR_FORMAT_EXPANSION, ...GRAMMAR_UNIT_FORMATS]) {
     const type = grammarQuestionType(item)
     if (getGrammar(item.id) !== item) addIssue('unresolved-grammar-format-item', item.id)
     if (!hasJapanese(item.sentence.ja) || !hasJapanese(item.explain)) {
@@ -335,6 +339,7 @@ export function auditEnglishQuestionFormats() {
     readingRuleCount,
     legacyGrammarQuestionCount: GRAMMAR.length,
     grammarFormatQuestionCount: GRAMMAR_FORMAT_EXPANSION.length,
+    grammarUnitFormatQuestionCount: GRAMMAR_UNIT_FORMATS.length,
     grammarPracticeQuestionCount: GRAMMAR_PRACTICE.length,
     grammarFormatTypeCounts: Object.freeze(grammarTypeCounts),
     grammarFormatLevelCounts: Object.freeze(grammarLevelCounts),

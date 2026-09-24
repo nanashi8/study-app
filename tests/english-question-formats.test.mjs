@@ -7,6 +7,7 @@ import {
   GRAMMAR_QUESTION_TYPES,
   grammarQuestionType,
 } from '../src/data/grammar-format-expansion.js'
+import { GRAMMAR_UNIT_FORMATS } from '../src/data/grammar-unit-formats/index.js'
 import { ALL_READING_PRACTICE_QUESTIONS } from '../src/data/reading-current-affairs-practice-questions.js'
 import { auditEnglishQuestionFormats } from '../src/lib/english-question-format-audit.js'
 import {
@@ -37,23 +38,26 @@ test('文法追加105問は7級の選択・並び替え・語法に35問ずつ�
   const audit = auditEnglishQuestionFormats()
   assert.equal(audit.legacyGrammarQuestionCount, 3450)
   assert.equal(audit.grammarFormatQuestionCount, 105)
-  assert.equal(audit.grammarPracticeQuestionCount, 3555)
+  assert.equal(audit.grammarUnitFormatQuestionCount, 696)
+  assert.equal(audit.grammarPracticeQuestionCount, 4251)
   assert.deepEqual(audit.grammarFormatTypeCounts, {
     choice: 35,
     usage: 35,
     'word-order': 35,
   })
   assert.ok(Object.values(audit.grammarFormatLevelCounts).every((count) => count === 15))
-  assert.equal(audit.grammarChoicePathCount, 280)
-  assert.equal(audit.grammarWrongChoicePathCount, 210)
+  // 形式拡充105問と単元別696問のうち、選択肢を出す420問×4択。
+  assert.equal(audit.grammarChoicePathCount, 1680)
+  assert.equal(audit.grammarWrongChoicePathCount, 1260)
 })
 
 test('並び替えは完成文選択ではなく、全問で直接押せる単語カードを使う', async () => {
   const orderItems = [
     ...ALL_READING_PRACTICE_QUESTIONS.filter((item) => item.questionType === 'word-order'),
     ...GRAMMAR_FORMAT_EXPANSION.filter((item) => grammarQuestionType(item) === 'word-order'),
+    ...GRAMMAR_UNIT_FORMATS.filter((item) => grammarQuestionType(item) === 'word-order'),
   ]
-  assert.equal(orderItems.length, 73)
+  assert.equal(orderItems.length, 419)
   for (const item of orderItems) {
     const tokens = writingWordTokens(item.answer)
     const shuffled = shuffledWritingTokens(item.answer, item.id)

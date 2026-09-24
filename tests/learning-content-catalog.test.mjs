@@ -35,7 +35,7 @@ const DAY_MS = 86_400_000
 const EXPECTED_COUNTS = Object.freeze({
   vocab: 8929,
   usage: 2104,
-  grammar: 3555,
+  grammar: 4251,
   listening: 160,
   dictation: 140,
   etymology: 339,
@@ -95,9 +95,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全18教材・16,377項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全18教材・17,073項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 18)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 16_377)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 17_073)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
