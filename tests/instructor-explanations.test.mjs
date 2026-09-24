@@ -190,7 +190,7 @@ test('英文法4,251問は規則ごとの解説を出し、決まり文句の講
   }
   assert.equal(GRAMMAR_PRACTICE.length, 4251)
   // 規則654件と、形式別の問題105問・単元別の並び替え語法689問に1つずつ。別の規則と同じ文を使い回していない。
-  assert.equal(explanations.size, 1448)
+  assert.equal(explanations.size, 1451)
 
   // 学習診断の文法問題も、同じ規則の解説を出す。
   const grammarById = new Map(GRAMMAR.map((item) => [item.id, item]))

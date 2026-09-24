@@ -51,7 +51,7 @@ export function grammarCandidates(source = {}) {
   if (source.type === 'grammarStrand') {
     const strand = getGrammarStrand(source.strandId)
     if (!strand) return []
-    return grammarStrandQuestions(strand, source.level ?? null)
+    return grammarStrandQuestions(strand, source.level ?? null, source.questionType ?? 'mixed')
   }
   if (source.questionType) {
     if (source.topic) {

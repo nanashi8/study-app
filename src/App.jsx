@@ -81,7 +81,6 @@ const GrammarStrandReferenceScreen = lazyScreen(
   () => import('./screens/GrammarStrandReference.jsx'),
   'GrammarStrandReferenceScreen',
 )
-const GrammarStrandsScreen = lazyScreen(() => import('./screens/GrammarStrands.jsx'), 'GrammarStrandsScreen')
 const WritingScreen = lazyScreen(() => import('./screens/Writing.jsx'), 'WritingScreen')
 const WritingPlayScreen = lazyScreen(() => import('./screens/WritingPlay.jsx'), 'WritingPlayScreen')
 const WritingExamScreen = lazyScreen(() => import('./screens/WritingExam.jsx'), 'WritingExamScreen')
@@ -181,7 +180,6 @@ const SCREENS = {
   grammarQuiz: GrammarQuizScreen,
   grammarReference: GrammarReferenceScreen,
   grammarStrandReference: GrammarStrandReferenceScreen,
-  grammarStrands: GrammarStrandsScreen,
   writing: WritingScreen,
   writingPlay: WritingPlayScreen,
   writingExam: WritingExamScreen,

@@ -28,7 +28,7 @@ test('共通完了画面7経路は、終了済みの学習・クイズではな�
     [{ engine: 'phrase', replayScreen: 'phraseQuiz' }, 'phrases'],
     [{ engine: 'listening', replayScreen: 'listeningQuiz' }, 'listening'],
     [{ engine: 'dictation', replayScreen: 'dictationPlay' }, 'dictation'],
-    [{ engine: 'grammar', replayScreen: 'grammarQuiz', source: { type: 'grammarStrand' } }, 'grammarStrands'],
+    [{ engine: 'grammar', replayScreen: 'grammarQuiz', source: { type: 'grammarStrand', strandId: 'comparison' } }, 'grammar'],
   ]
 
   for (const [params, expected] of cases) {
@@ -145,7 +145,6 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
     ['src/screens/Grammar.jsx', 'grammar', 3],
     ['src/screens/GrammarReference.jsx', 'grammarReference', 1],
     ['src/screens/GrammarStrandReference.jsx', 'grammarStrandReference', 1],
-    ['src/screens/GrammarStrands.jsx', 'grammarStrands', 1],
     ['src/screens/Listening.jsx', 'listening', 1],
     ['src/screens/Dictation.jsx', 'dictation', 1],
     ['src/screens/ReadingPrep.jsx', 'readingPrep', 2],

@@ -68,11 +68,12 @@ test('級をまたいだ25系統のページは、系統の段（級・単元）
     )
     for (const step of reference.steps) assert.ok(grammarReferenceFor(step.level, step.topic), `${strand.id} ${step.topic}`)
   }
-  // 系統に入っていない前置詞の単元は、前置詞の系統ページから「つながる単元」として読める。
+  // 前置詞は6つの級すべてが段に入っている（4級・2級・準1級が段の外に残らない）。
   assert.deepEqual(
-    grammarStrandReferenceFor('preposition').related.map((item) => `${item.level}:${item.topic}`),
-    ['4:前置詞', '2:前置詞', 'pre1:前置詞'],
+    grammarStrandReferenceFor('preposition').steps.map((step) => `${step.level}:${step.topic}`),
+    ['5:前置詞', '4:前置詞', '3:前置詞', 'pre2:前置詞', '2:前置詞', 'pre1:前置詞'],
   )
+  assert.deepEqual(grammarStrandReferenceFor('preposition').related, [])
 })
 
 test('例文の英単語はすべてタップで意味が出る。文脈に合わない辞書の意味は例文ごとの意味で上書きする', () => {
@@ -184,19 +185,15 @@ test('文法の各級の目次は、級と単元ごとに「学習」と「テ�
   assert.match(grammar, /data-grammar-unit=\{unit\.id\}/)
   assert.match(grammar, /studyLabel="学習"/)
   assert.match(grammar, /onStudy=\{\(\) => onRead\(unit\.id\)\}/)
-  assert.match(grammar, /onQuiz=\{\(\) => onTestUnit\(unit\.topic\)\}/)
-  assert.match(grammar, /navigate\('grammarQuiz', \{ source: \{ type: 'grammar', level, topic, questionType \}/)
+  assert.match(grammar, /onTest=\{\(\) => onTestUnit\(unit\.topic\)\}/)
+  assert.match(grammar, /source: \{ type: 'grammar', level: topicLevel, topic, questionType \}/)
   assert.match(grammar, /navigate\('grammarReference', \{ unitId \}\)/)
   // 目次の各単元に、いちばん新しい結果と学習日の履歴、級には「理解した／まだまだ／未学習」の帯。
   assert.match(grammar, /<StudyHistory history=\{history\} limit=\{HISTORY_SHOWN\}/)
   assert.match(grammar, /learningStatusKind="reference"/)
-  assert.match(grammar, /navigate\('grammarStrands'\)/)
-
-  const strands = read('src/screens/GrammarStrands.jsx')
-  assert.doesNotMatch(strands, /data-grammar-strand-modes|useScreenParam\('mode'/)
-  assert.match(strands, /data-grammar-strand-learn=\{strand\.id\}/)
-  assert.match(strands, /data-grammar-strand-test=\{strand\.id\}/)
-  assert.match(strands, /onLearn=\{\(\) => navigate\('grammarStrandReference', \{ strandId: overview\.strand\.id \}\)\}/)
+  // 級をまたぐ学習（系統）は別画面ではなく、同じ入口の「単元別」の区分に入る。
+  assert.match(grammar, /onLearnStrand=\{\(\) => navigate\('grammarStrandReference', \{ strandId: overview\.strand\.id \}\)\}/)
+  assert.doesNotMatch(grammar, /navigate\('grammarStrands'\)/)
 
   // ページの末尾で「まだまだ」「理解した」を押すと、その日の結果が学習記録に残る。テストは同じ級・単元の3種類。
   const reference = read('src/screens/GrammarReference.jsx')

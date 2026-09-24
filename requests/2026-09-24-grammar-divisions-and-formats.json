@@ -11,14 +11,14 @@
       "text": "文法の入口が「級別」「単元別」の2区分になり、どちらも同じ並び（区分の切り替え→タブ→まとめのカード→単元の行）・同じ部品（LearningEntryCard）で出る。切り替えは画面遷移なしで、テストの問題の種類の選択も持ち越す。級をまたぐ学習（系統）は別画面ではなく単元別の区分として同じ入口に入る",
       "population": "文法の入口画面1つ＝級別の7タブ（級）と単元別の25タブ（系統）の全32タブ",
       "check": "node --test tests/grammar-entry-divisions.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "units-covered-by-both-divisions",
       "text": "参考書の全単元が、級別からも単元別からも入口を持つ（いまは 4級・2級・準1級の「前置詞」3単元が系統に分類されておらず、単元別から入れない）",
       "population": "文法の参考書の全127単元（5級12・4級15・3級16・準2級26・2級26・準1級20・1級12）",
       "check": "node --test tests/grammar-entry-divisions.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "word-order-every-unit",

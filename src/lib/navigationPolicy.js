@@ -72,9 +72,12 @@ export function completedSessionDestination(params = {}) {
     return { screen: 'dictation', params: {} }
   }
   if (engine === 'grammar' || replayScreen === 'grammarQuiz') {
+    // 文法の入口は1つ。系統のテストからは「単元別」の区分へ戻す。
     return {
-      screen: source.type === 'grammarStrand' ? 'grammarStrands' : 'grammar',
-      params: {},
+      screen: 'grammar',
+      params: source.type === 'grammarStrand'
+        ? { view: 'strand', strand: source.strandId }
+        : {},
     }
   }
 

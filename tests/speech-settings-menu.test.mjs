@@ -322,7 +322,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     ],
     phrases: ['screens/Phrases', 'screens/PhraseStudy', 'screens/PhraseQuiz'],
     grammar: [
-      'screens/Grammar', 'screens/GrammarReference', 'screens/GrammarStrandReference', 'screens/GrammarQuiz', 'screens/GrammarStrands',
+      'screens/Grammar', 'screens/GrammarReference', 'screens/GrammarStrandReference', 'screens/GrammarQuiz',
       'components/GrammarReferenceParts',
     ],
     listening: ['screens/Listening', 'screens/ListeningQuiz'],

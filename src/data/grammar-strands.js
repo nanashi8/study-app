@@ -5,10 +5,11 @@
 // 「比較を下の級から順に鍛える」学習ができないので、ここで単元名を系統へ束ねる。
 //
 // topics は [級, 単元名] のタプルを易→難の順に並べる。単元名は grammar.js の
-// topic と完全一致していなければならず、GRAMMAR に実在する全ての(級,単元)の組を
-// 過不足なく1系統ずつ持つことを check-data.mjs が強制する（分類漏れ＝学習漏れのため）。
+// topic と完全一致していなければならず、出題在庫（GRAMMAR_PRACTICE）に実在する
+// 全ての(級,単元)の組を過不足なく1系統ずつ持つことを check-data.mjs が強制する
+// （分類漏れ＝単元別の入口からの学習漏れになるため）。
 
-import { GRAMMAR, grammarByTopic } from './grammar.js'
+import { GRAMMAR_PRACTICE, grammarPracticeByTopic } from './grammar.js'
 import { LEVELS } from './levels.js'
 
 const LEVEL_ORDER = LEVELS.map((level) => level.id)
@@ -83,11 +84,14 @@ export const GRAMMAR_STRANDS = Object.freeze([
     id: 'preposition',
     name: '前置詞',
     emoji: '📍',
-    summary: '時と場所の基本から、by / until の対比、despite など句を作る前置詞まで',
+    summary: '時と場所の基本から、動詞との組み合わせ、by / until の対比、論説でよく使う組み合わせまで',
     topics: [
       ['5', '前置詞'],
+      ['4', '前置詞'],
       ['3', '前置詞'],
       ['pre2', '前置詞'],
+      ['2', '前置詞'],
+      ['pre1', '前置詞'],
     ],
   },
   {
@@ -341,7 +345,7 @@ export const GRAMMAR_STRANDS = Object.freeze([
 ])
 
 // 単元名は「関係代名詞 what」「used to / be used to」のように空白を含むため、
-// (級,単元)のキーは空白ではなくNUL区切りで一本化する。分類表とGRAMMAR側で
+// (級,単元)のキーは空白ではなくNUL区切りで一本化する。分類表と出題在庫側で
 // 別々に組み立てると突き合わせが静かに失敗するので、必ずこの関数を通す。
 export const grammarTopicKey = (level, topic) => `${level}\u0000${topic}`
 
@@ -367,16 +371,18 @@ export function grammarStrandLevels(strand) {
 }
 
 // 系統×級の問題。級を省くとその系統の全問題。
-export function grammarStrandQuestions(strand, level = null) {
+// 出題の種類（選択・並び替え・語法）を渡すと、その形式だけに絞る。
+export function grammarStrandQuestions(strand, level = null, questionType = 'mixed') {
   if (!strand) return []
   return strand.topics
     .filter(([topicLevel]) => level == null || topicLevel === level)
-    .flatMap(([topicLevel, topic]) => grammarByTopic(topicLevel, topic))
+    .flatMap(([topicLevel, topic]) => grammarPracticeByTopic(topicLevel, topic, questionType))
 }
 
 export const GRAMMAR_STRAND_COUNT = GRAMMAR_STRANDS.length
 
-// 分類漏れ検出用。GRAMMAR に実在する(級,単元)の全組。
+// 分類漏れ検出用。出題在庫に実在する(級,単元)の全組。
+// 単元別の入口はここから作るので、問題のある単元が1つでも漏れると学習漏れになる。
 export function grammarTopicPairs() {
-  return [...new Set(GRAMMAR.map((item) => grammarTopicKey(item.level, item.topic)))]
+  return [...new Set(GRAMMAR_PRACTICE.map((item) => grammarTopicKey(item.level, item.topic)))]
 }

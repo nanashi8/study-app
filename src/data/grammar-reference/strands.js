@@ -107,17 +107,15 @@ export const GRAMMAR_STRAND_REFERENCES = [
     ],
     steps: [
       ['5', '前置詞', '時刻 at・曜日 on・月 in。場所は in（中）・on（くっついて上）・under（下）。', 'The class starts on Monday morning.', '授業は月曜日の朝に始まります。'],
+      ['4', '前置詞', 'look for・wait for・listen to のように、動詞と組んで1つの意味を作る形を覚える。', 'They waited for the train in the rain.', '彼らは雨の中で電車を待ちました。'],
       ['3', '前置詞', 'by（〜までに）と until（〜までずっと）、during（前置詞）と while（接続詞）を区別する。', 'Ken must return the library book by next Monday.', 'ケンは次の月曜日までに図書館の本を返さなければなりません。'],
       ['pre2', '前置詞', 'despite・during の後ろは名詞。pay attention to・take 〜 into account などの組み合わせを使う。', 'Despite the heavy traffic, we arrived on time.', 'ひどい渋滞にもかかわらず、私たちは時間どおりに着きました。'],
+      ['2', '前置詞', 'place a burden on・have an effect on のように、名詞・動詞と決まった前置詞の組みで覚える。', 'Music has a strong effect on our mood.', '音楽は私たちの気分に強い影響を与えます。'],
+      ['pre1', '前置詞', 'cast doubt on・be attributable to など、論説文でよく使う組み合わせまで広げる。', 'The new report casts doubt on the original claim.', '新しい報告書は、もとの主張に疑問を投げかけています。'],
     ],
     links: [
       '前置詞の後ろは名詞（か動名詞）、接続詞の後ろは「主語＋動詞」。because of the rain / because it was raining。',
       '前置詞の意味は基本のイメージとつなげると整理しやすい（on＝接触・のしかかる、to＝向かう先、with＝相手・道具）。',
-    ],
-    related: [
-      ['4', '前置詞'],
-      ['2', '前置詞'],
-      ['pre1', '前置詞'],
     ],
   }),
 
