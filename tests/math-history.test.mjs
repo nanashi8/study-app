@@ -22,7 +22,7 @@ import {
 } from '../src/data/math-history.js'
 import { toKanjiNumeral, toRomanNumeral } from '../src/data/math-history/controls.js'
 import { MATH_UNITS } from '../src/data/math.js'
-import { checkChapters, checkFacts } from '../scripts/checks/math-history.mjs'
+import { checkBasics, checkChapters, checkFacts, checkUnits } from '../scripts/checks/math-history.mjs'
 import { contrastRatio, readableMathAccent } from '../src/lib/mathVisualColors.js'
 import {
   appendMathStoryLog,
@@ -383,6 +383,46 @@ test('図の数は操作値と数学的に一致する（高校：波・微分�
   // フィボナッチ：F_n と、となりとの比。
   assert.match(render('mh-fibonacci', { n: 12 }), /data-fib-value="144" data-fib-ratio="1.61806"/)
   assert.match(render('mh-fibonacci', { n: 6 }), /data-fib-value="8" data-fib-ratio="1.625"/)
+})
+
+test('図の数は操作値と数学的に一致する（高校：正規分布・検定・ベクトル・だ円・放物線・極限）', () => {
+  // 平均±1・±2標準偏差に入る確率（回数をふやすと 68.3%・95.4% に近づく）。
+  const band = (n, which) => Number(render('mh-normal', { n, band: which }).match(/data-normal-band="([\d.]+)"/)[1])
+  assert.deepEqual([4, 16, 64, 256].map((n) => band(n, 'sd1')), [87.5, 79, 74, 71.2])
+  assert.deepEqual([4, 16, 64, 256].map((n) => band(n, 'sd2')), [100, 97.9, 96.7, 96.1])
+  assert.match(render('mh-normal', { n: 16, band: 'none' }), /data-normal-band="none"/)
+
+  // 紅茶：k 杯以上当たる選び方（70通りのうち）。
+  assert.deepEqual([0, 1, 2, 3, 4].map((hits) => Number(render('mh-tea', { hits }).match(/data-tea-count="(\d+)"/)[1])), [70, 69, 53, 17, 1])
+  const tea = render('mh-tea', { hits: 3 })
+  assert.equal((tea.match(/data-tea-picked="yes"/g) ?? []).length, 4)
+
+  // ベクトル：直角なら三平方、同じ向きならたし算、反対向きならひき算。
+  assert.match(render('mh-vector', { a: 3, b: 4, angle: 90 }), /data-vector-length="5"/)
+  assert.match(render('mh-vector', { a: 3, b: 2, angle: 0 }), /data-vector-length="5"/)
+  assert.match(render('mh-vector', { a: 3, b: 3, angle: 180 }), /data-vector-length="0"/)
+
+  // だ円：焦点からの距離の和はいつも 2a＝10。
+  for (let e = 0; e <= 0.9; e += 0.3) {
+    for (const t of [0, 60, 150, 270]) {
+      assert.match(render('mh-ellipse', { e: Number(e.toFixed(1)), t }), /data-ellipse-sum="10"/, `e=${e} t=${t}`)
+    }
+  }
+
+  // 放物線：はね返った点から焦点まで＝準線まで＝y＋p。
+  assert.match(render('mh-parabola', { p: 1, ray: 2 }), /data-parabola-distance="2"/)
+  assert.match(render('mh-parabola', { p: 0.5, ray: 3 }), /data-parabola-distance="5"/)
+
+  // 無限等比級数の部分和。
+  assert.match(render('mh-limit', { series: 'half', n: 10 }), /data-zeno-sum="0.999023"/)
+  assert.match(render('mh-limit', { series: 'achilles', n: 3 }), /data-zeno-sum="111"/)
+})
+
+test('算数の基本33項目と、数学の45単元のすべてに、つながる話がある', () => {
+  assert.deepEqual(checkBasics(), [])
+  assert.deepEqual(checkUnits(), [])
+  assert.ok(MATH_HISTORY_CHAPTERS.length >= 70, `話の数 ${MATH_HISTORY_CHAPTERS.length}`)
+  assert.ok(MATH_HISTORY_QUESTIONS.length >= 210, `問題の数 ${MATH_HISTORY_QUESTIONS.length}`)
 })
 
 test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
