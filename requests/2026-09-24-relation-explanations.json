@@ -4,13 +4,13 @@
   "asked": [
     "次のような欠陥がないか入念に検査し、改善しなさい。\n語源に「eruptと同じ語源。」と説明があり、意味が同じ・近い語にeruptがない。\n意味が同じ・近い語、意味が反対・対照の語があり、使い分けが明確でも使い分け等の解説がない。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "etymology-named-words",
       "text": "語の成り立ち（学習者に見せる語源の本文）が「X と同じ語源」「同系」「同源」と名指しした英単語を全件読み、意味が同じ・近い語は「意味が同じ・近い語」に、反対・対照の語は「意味が反対・対照の語」に出す（rupture の erupt）。どの関連語の欄にも出ていない組は、欄に足すか、足さない理由（意味が離れている・品詞がちがう など）を台帳に書く",
       "population": "全見出し語 8,929語の語の成り立ちの本文にある名指し全件（「と同じ語源」「と同系」「と同じ語根」「と同じく」の前の英単語。見出し語と名指しした語の組 1,806件。着手時は関連語の欄に出ていたのが 507件、残り 1,299件を1件ずつ読んだ）",
-      "check": "node scripts/checks/named-word-relations.mjs etymology",
+      "check": "node --test tests/relation-usage.test.mjs",
       "status": "done",
       "result": "1,806件中、関連語の欄に出る 618件（欄に足した語を含む）・出さない理由を書いた 1,188件（離 意味が離れる・品 品詞がちがう・外 英語の語でない・変 変化形・否 打ち消しの文・別 別の見出し語について）。語の形の台帳の抜け6組（agency・fright・union・critique・longing・theft）は形の台帳でつないだ"
     },
@@ -18,7 +18,7 @@
       "id": "usage-text-named-words",
       "text": "「使い方・使い分け」の欄（単語データの usage）が名指しした英単語も同じように読み、反対の語・近い語として名指しした語（maximize の「反対は minimize」、famous の notorious など）を関連語の欄に出す。連語の相手（minimize risk の risk など）は理由を台帳に書く",
       "population": "使い方・使い分けの欄を持つ全見出し語 194語が名指しした、辞書にある英単語の全件（416件。着手時は関連語の欄に出ていたのが 54件）",
-      "check": "node scripts/checks/named-word-relations.mjs usage",
+      "check": "node --test tests/relation-usage.test.mjs",
       "status": "done",
       "result": "416件中、関連語の欄に出る 81件（famous の notorious、maximize の minimize、domestic の foreign・international、rob と steal など27組を足した）・理由を書いた 335件（ほとんどが連語の相手の語）"
     },
@@ -26,21 +26,21 @@
       "id": "synonym-rows-explained",
       "text": "「意味が同じ・近い語」の全行に使い分けの解説を出す（場面・対象・かたさ・意味の範囲・語法のちがい。ほぼ同じ意味の組は、置きかえられる範囲や言い方の差）。読んで誤りと分かった類義語は直し（外す・意味を直す・欄を移す）、外した項目は理由を台帳に残す",
       "population": "全見出し語の類義語の欄に出る全行（着手時 10,835行・8,749組。この依頼で足す行を含む）",
-      "check": "node scripts/checks/relation-usage.mjs synonyms",
+      "check": "node --test tests/relation-usage.test.mjs",
       "status": "done"
     },
     {
       "id": "antonym-rows-explained",
       "text": "「意味が反対・対照の語」の全行に、どの意味どうしが反対・対照になるかと使い分けの解説を出す。誤りは直し、外した項目は理由を台帳に残す",
       "population": "全見出し語の反対語の欄に出る全行（着手時 4,288行・3,691組。この依頼で足す行を含む）",
-      "check": "node scripts/checks/relation-usage.mjs antonyms",
+      "check": "node --test tests/relation-usage.test.mjs",
       "status": "done"
     },
     {
       "id": "idiom-rows-explained",
       "text": "「同じ意味の熟語」の全行にも、1語との使い分けの解説を出す",
       "population": "同じ意味の熟語の全組（着手時 355語・483組）",
-      "check": "node scripts/checks/relation-usage.mjs idioms",
+      "check": "node --test tests/relation-usage.test.mjs",
       "status": "done"
     },
     {
@@ -54,15 +54,15 @@
       "id": "japanese-readable",
       "text": "新しく書いた解説と関連語の意味の日本語を、学習者向け日本語の見直し（漢字語・訳語の全件）に通す",
       "population": "この依頼で足した・書き直した日本語の全件",
-      "check": "node scripts/checks/learner-japanese-review.mjs",
+      "check": "node --test tests/meaning-readable.test.mjs",
       "status": "done"
     },
     {
       "id": "deployed",
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
