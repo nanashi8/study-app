@@ -6,7 +6,7 @@
 
 ## 管理するデータ
 
-`docs/audits/content-audit-ledger.json`を監査台帳の正本とする。対象母集団は`LEARNING_CONTENTS`に登録された全18教材カテゴリで、台帳には次を保存する。
+`docs/audits/content-audit-ledger.json`を監査台帳の正本とする。対象母集団は`LEARNING_CONTENTS`に登録された全19教材カテゴリで、台帳には次を保存する。
 
 - 教材カテゴリごとの学習項目数・出題項目数・ID順ハッシュ・内容ハッシュ
 - 各カテゴリに適用した品質ゲート、そのコマンド、監査範囲

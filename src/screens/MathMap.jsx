@@ -8,6 +8,8 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Check, ArrowRight, Link as LinkIcon, Lightbulb, ChevronLeft } from '../components/Icons.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
+import { MATH_HISTORY_CHAPTERS } from '../data/math-history.js'
+import { studyLogStatusCounts } from '../lib/studyLog.js'
 
 const MATH_ITEMS = Object.freeze(Object.values(MATH_PROBLEMS).flat())
 
@@ -31,7 +33,9 @@ export function MathMapScreen() {
   const mathDone = useStore((s) => s.mathDone)
   const mathMastery = useStore((s) => s.mathMastery)
   const contentQuizResults = useStore((s) => s.contentQuizResults)
+  const mathStoryLog = useStore((s) => s.mathStoryLog)
   const strands = strandsWithUnits()
+  const storyCounts = studyLogStatusCounts(mathStoryLog, MATH_HISTORY_CHAPTERS.map((chapter) => chapter.id))
   const mathProgress = summarizeCompletionItems({
     items: MATH_ITEMS,
     completedIds: mathDone,
@@ -75,6 +79,29 @@ export function MathMapScreen() {
           <Stat label="クリア問題" value={`${totalDone}`} sub={`/ ${totalProblems}`} />
           <Stat label="平均正答率" value={`${avgMastery}`} sub="%" />
         </div>
+      </div>
+
+      {/* 数学の歴史をたどって、数えることから学び直すコース */}
+      <div className="px-4 pt-4">
+        <button
+          type="button"
+          onClick={() => navigate('mathHistory')}
+          className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-card transition-transform active:scale-[0.98]"
+          data-math-history-entry
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-2xl" aria-hidden="true">🧭</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-extrabold text-sky-700">はじめから学び直す</span>
+            <span className="block font-display text-base font-extrabold text-ink">数学の歴史をたどる</span>
+            <span className="mt-0.5 block text-xs font-bold leading-relaxed text-ink/55">
+              {`数えることから微分・積分まで全${MATH_HISTORY_CHAPTERS.length}話。発見の話を読み、図を動かして確かめる`}
+            </span>
+            <span className="mt-1 block text-[11px] font-extrabold text-emerald-700">
+              {`理解した ${storyCounts.understood}/${MATH_HISTORY_CHAPTERS.length}話`}
+            </span>
+          </span>
+          <ArrowRight size={20} className="shrink-0 text-sky-700" />
+        </button>
       </div>
 
       <div className="px-4 pt-4">

@@ -139,7 +139,7 @@ export function MyLearningScreen() {
 
   return (
     <div className="pb-6" data-my-learning-screen>
-      <ScreenHeader title="暗記・テストの記録" subtitle="18教材の一覧を確認し、結果を見直す" />
+      <ScreenHeader title="暗記・テストの記録" subtitle="19教材の一覧を確認し、結果を見直す" />
 
       <div className="space-y-5 px-4">
         <Card className="rounded-xl border-slate-300 p-4 shadow-none" data-learning-record-summary>

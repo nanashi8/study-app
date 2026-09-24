@@ -16,6 +16,7 @@ import { KANBUN_CULTURE_CATEGORIES } from '../data/kanbun-culture.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { LITERATURE_KIND_META } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../data/math.js'
+import { mathHistoryPart } from '../data/math-history.js'
 import {
   contentQuizKey,
   learningStatusForSrsEntry,
@@ -212,6 +213,14 @@ function presentationFor(contentId, item) {
       level: item.level || '',
     }
   }
+  if (contentId === 'math-history') {
+    return {
+      title: item.title,
+      subtitle: item.headline,
+      field: item.theme,
+      level: mathHistoryPart(item.part)?.title ?? '',
+    }
+  }
   if (contentId === 'math') {
     const unit = MATH_ITEM_META.get(item.id)
     return {
@@ -266,9 +275,22 @@ function srsReviewState(entry, options) {
   }
 }
 
+// 1項目に複数の問題がある教材（数学の歴史）は、その項目の問題の結果をまとめて見る。
+const quizIdsForItem = (content, item) => (
+  content.id === 'math-history' ? item.quiz.map((question) => question.id) : [item.id]
+)
+
 function completionReviewState(content, item, state, normalizedQuiz) {
   const completedIds = new Set(content.completedIds(state) ?? [])
-  const result = normalizedQuiz[contentQuizKey(content.quizDomain, item.id)]
+  const results = quizIdsForItem(content, item)
+    .map((id) => normalizedQuiz[contentQuizKey(content.quizDomain, id)])
+    .filter(Boolean)
+  const result = results.length
+    ? {
+        lastResult: results.some((entry) => entry.lastResult === 'wrong') ? 'wrong' : 'correct',
+        lastAt: Math.max(...results.map((entry) => entry.lastAt ?? 0)) || null,
+      }
+    : null
   const completed = completedIds.has(item.id)
   const wrong = result?.lastResult === 'wrong'
   const learningAt = content.id === 'writing'
@@ -379,6 +401,7 @@ export const LEARNING_CONTENT_CATALOG_ACTIONS = Object.freeze({
   'kanbun-kundoku': { selection: 'many', verb: '問題へ' },
   literature: { selection: 'one', verb: '読む' },
   math: { selection: 'one', verb: '解く' },
+  'math-history': { selection: 'one', verb: '読む' },
 })
 
 export function learningContentCatalogLaunch(
@@ -477,6 +500,9 @@ export function learningContentCatalogLaunch(
   }
   if (content.id === 'literature') {
     return { screen: 'literatureReader', params: { workId: ids[0], returnTo } }
+  }
+  if (content.id === 'math-history') {
+    return { screen: 'mathStory', params: { chapterId: ids[0], returnTo } }
   }
   if (content.id === 'math') {
     return {

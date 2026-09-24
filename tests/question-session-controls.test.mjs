@@ -14,6 +14,7 @@ const QUIZ_SCREENS = [
   'src/screens/KotenInterpretationQuiz.jsx',
   'src/screens/KotenQuiz.jsx',
   'src/screens/ListeningQuiz.jsx',
+  'src/screens/MathStoryQuiz.jsx',
   'src/screens/PhraseQuiz.jsx',
   'src/screens/VocabQuiz.jsx',
 ]
@@ -28,9 +29,9 @@ const STUDY_SCREENS = [
   'src/screens/WritingGrammarReview.jsx',
 ]
 
-test('問題数を選べる全18画面で、前へ・進捗・次へを一つの共通表示にする', () => {
+test('問題数を選べる全19画面で、前へ・進捗・次へを一つの共通表示にする', () => {
   const allScreens = [...QUIZ_SCREENS, ...STUDY_SCREENS]
-  assert.equal(allScreens.length, 18)
+  assert.equal(allScreens.length, 19)
   for (const path of allScreens) {
     const source = read(path)
     assert.match(source, /QuestionSessionControls/, `${path}: 前後移動がない`)
@@ -41,8 +42,8 @@ test('問題数を選べる全18画面で、前へ・進捗・次へを一つの
   }
 })
 
-test('正誤をすぐ示す全11テストで、正解後の自動送りを切り替えられる', () => {
-  assert.equal(QUIZ_SCREENS.length, 11)
+test('正誤をすぐ示す全12テストで、正解後の自動送りを切り替えられる', () => {
+  assert.equal(QUIZ_SCREENS.length, 12)
   for (const path of QUIZ_SCREENS) {
     const source = read(path)
     assert.match(source, /showAutoAdvance/, `${path}: 自動送り切替がない`)
@@ -74,13 +75,13 @@ const ETYMOLOGY_SCREENS = [
   'src/screens/EtymologyStudy.jsx',
 ]
 
-test('暗記・テストの全20画面は上部を1本のバーにまとめ、数字進捗も中に入れ、「×」を置かない', () => {
+test('暗記・テストの全21画面は上部を1本のバーにまとめ、数字進捗も中に入れ、「×」を置かない', () => {
   const controls = read('src/components/QuestionSessionControls.jsx')
   // 途中でやめる操作は上部バーの共通「戻る」が受け持つ。バー側に終了の差し込み口を残さない。
   assert.doesNotMatch(controls, /leadingAction/)
 
   const screens = [...QUIZ_SCREENS, ...STUDY_SCREENS, ...ETYMOLOGY_SCREENS]
-  assert.equal(screens.length, 20)
+  assert.equal(screens.length, 21)
   for (const path of screens) {
     const source = read(path)
     // バーは画面の先頭。上に「×」や「2/10」だけの行を戻さない。

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
+import { MATH_HISTORY_QUESTIONS } from '../src/data/math-history.js'
 import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
 import { EXTENDED_PASSAGE_READING_APPROACHES } from '../src/data/reading-extended-approaches.js'
@@ -66,7 +67,7 @@ const GATE_CATALOG = Object.freeze({
   },
   routesAndProgress: {
     command: 'npm run audit:content-progress && npm run audit:links',
-    coverage: '全18教材の公開導線、母数、暗記・テスト記録、参照リンク',
+    coverage: '全19教材の公開導線、母数、暗記・テスト記録、参照リンク',
   },
   english: {
     command: 'npm run audit:english',
@@ -116,6 +117,10 @@ const GATE_CATALOG = Object.freeze({
     command: 'node scripts/check-data.mjs && npm test',
     coverage: '問題、答え、解法手順、注意点、出題・記録の回帰',
   },
+  mathHistory: {
+    command: 'node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs',
+    coverage: '数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画',
+  },
 })
 
 const COMMON_GATES = ['inventory', 'coreData', 'behavior', 'learnerCopy', 'routesAndProgress']
@@ -138,6 +143,7 @@ const CATEGORY_SPECIFIC_GATES = Object.freeze({
   'kanbun-kundoku': ['classicsKanbun'],
   literature: ['literature'],
   math: ['math'],
+  'math-history': ['mathHistory'],
 })
 
 const itemId = (item, index) => String(item?.id ?? `index:${index}`)
@@ -351,6 +357,16 @@ function buildQuestionBanks() {
       choiceRationalesFor: (item) => item.fill.tiles.map((_, index) => mathFillNoteFor(item.id, index)),
       expectedChoiceCounts: [2, 3, 4],
     }),
+    // 数学の歴史の話のテスト。3択（＋わからない）で、選択肢と同じ順の説明（notes）を全択に持つ。
+    auditQuestionBank({
+      id: 'math-history',
+      label: '数学の歴史',
+      items: MATH_HISTORY_QUESTIONS,
+      answerMatches: (item, choices) => (Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0),
+      rationaleFor: (item) => item.explanation,
+      choiceRationalesFor: (item) => item.notes,
+      expectedChoiceCounts: [3],
+    }),
   ]
 }
 
@@ -535,7 +551,7 @@ async function buildLedger(auditedAt) {
       overallContentSha256: overallContentHash,
     },
     completionCriteria: [
-      '全18教材カテゴリのID・母数・重複・内容ハッシュが一致する',
+      '全19教材カテゴリのID・母数・重複・内容ハッシュが一致する',
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
       `英語長文と学習診断の読解の正解・全誤答・わからない${readingAnswerPaths.answerPathCount.toLocaleString('en-US')}経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',

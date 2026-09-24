@@ -55,7 +55,7 @@ export const CONTENTS = [
   {
     id: 'math-quest',
     title: '数学アプリ',
-    subtitle: '中学〜高校数III・学習マップで理解度確認',
+    subtitle: '数えることから数IIIまで・歴史をたどり図を動かして学ぶ',
     emoji: '📐',
     color: '#7c3aed',
     screen: 'mathMap',

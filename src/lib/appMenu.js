@@ -127,7 +127,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', 'コンテンツのメモ・単語帳・履歴'),
-    screenItem('myLearning', '暗記・テストの記録', '全18教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
+    screenItem('myLearning', '暗記・テストの記録', '全19教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),

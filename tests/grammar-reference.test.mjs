@@ -210,7 +210,7 @@ test('文法の各級の目次は、級と単元ごとに「学習」と「テ�
   // 記録は端末・進捗コード・クラウドに残り、リセットでは「学習を終えた記録」に入る。
   assert.match(read('src/store/useStore.js'), /grammarReferenceLog: normalizeGrammarReferenceLog\(payload\.grammarReferenceLog\)/)
   assert.match(read('src/lib/cloudSync.js'), /grammarReferenceLog: normalizeGrammarReferenceLog\(data\.grammarReferenceLog \?\? current\.grammarReferenceLog\)/)
-  assert.match(read('src/lib/progressReset.js'), /\['writingProgress', 'readingsDone', 'grammarReferenceLog', 'mathDone', 'mathMastery'\]/)
+  assert.match(read('src/lib/progressReset.js'), /\['writingProgress', 'readingsDone', 'grammarReferenceLog', 'mathDone', 'mathMastery', 'mathStoryLog'\]/)
 
   const app = read('src/App.jsx')
   assert.match(app, /grammarReference: GrammarReferenceScreen/)

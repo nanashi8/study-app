@@ -121,7 +121,7 @@ test('問題数を変える画面はすべて、減らしても答えた分の�
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
-  assert.equal(screens.length, 20)
+  assert.equal(screens.length, 21)
   for (const path of screens) {
     const source = read(path)
     const handler = /onResize=\{\(size, \{ restart \}\) => \{[\s\S]*?\n {8,12}\}\}/.exec(source)?.[0]
@@ -176,7 +176,7 @@ test('問題数を出す全画面が、実際の番号と総数を表示する',
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
-  assert.equal(screens.length, 20)
+  assert.equal(screens.length, 21)
   // 表示の作り方は1か所（sessionCounterDisplay）だけ。画面ごとに数字を組み立てない。
   const sizes = read('src/components/SessionSize.jsx')
   assert.match(sizes, /sessionCounterDisplay\(\{ index, total, remaining, position \}\)/)

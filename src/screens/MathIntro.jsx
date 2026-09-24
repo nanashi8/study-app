@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { introForUnit } from '../data/math-intros.js'
 import { problemsForUnit, unitById } from '../data/math.js'
+import { chaptersForUnit } from '../data/math-history.js'
 import { MathVisual } from '../components/MathVisual.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -9,7 +10,7 @@ import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { rangeProgress, stepRangeValue } from '../lib/mathVisualControls.js'
 import { readableMathAccent } from '../lib/mathVisualColors.js'
 import {
-  ArrowRight, ChevronLeft, ChevronRight, Eye, Lightbulb, Sparkles,
+  ArrowRight, BookOpen, ChevronLeft, ChevronRight, Eye, Lightbulb, Sparkles,
 } from '../components/Icons.jsx'
 import './MathIntro.css'
 
@@ -23,6 +24,7 @@ export function MathIntroScreen() {
   const unit = unitById(params.unitId)
   const intro = introForUnit(params.unitId)
   const problemCount = problemsForUnit(params.unitId).length
+  const stories = chaptersForUnit(params.unitId)
   const defaults = useMemo(() => defaultsFor(intro), [intro])
   const [session, setSession] = useState(() => ({ unitId: params.unitId, values: defaults }))
   const values = session.unitId === params.unitId ? session.values : defaults
@@ -169,6 +171,34 @@ export function MathIntroScreen() {
               </div>
             </div>
           </section>
+
+          {/* この単元の中心の考えが生まれた話（数学の歴史のコース）へ */}
+          {stories.length > 0 && (
+            <section className="mt-3 rounded-2xl bg-white px-4 py-3.5 shadow-card" data-math-intro-stories>
+              <div className="flex items-center gap-2">
+                <BookOpen size={17} className="shrink-0 text-violet-700" />
+                <p className="text-xs font-extrabold tracking-wide text-violet-700">この考えが生まれた話</p>
+              </div>
+              <div className="mt-2 space-y-2">
+                {stories.map((chapter) => (
+                  <button
+                    key={chapter.id}
+                    type="button"
+                    onClick={() => navigate('mathStory', { chapterId: chapter.id })}
+                    className="flex w-full items-center gap-3 rounded-xl bg-paper px-3 py-2.5 text-left active:bg-violet-50"
+                    data-math-intro-story={chapter.id}
+                  >
+                    <span className="text-xl" aria-hidden="true">{chapter.emoji}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-extrabold text-ink">{chapter.title}</span>
+                      <span className="block text-[11px] font-bold text-ink/55">{`${chapter.era}・${chapter.place}`}</span>
+                    </span>
+                    <ArrowRight size={16} className="shrink-0 text-violet-600" />
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
           <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-ink/70">
             <Chip color={accent}>{unit.desc}</Chip>

@@ -34,8 +34,8 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'completion',
     '学習を終えた記録',
-    '英作文、長文、数学の完了・理解度、文法の参考書の学習記録',
-    ['writingProgress', 'readingsDone', 'grammarReferenceLog', 'mathDone', 'mathMastery'],
+    '英作文、長文、数学の完了・理解度、文法の参考書と数学の歴史の学習記録',
+    ['writingProgress', 'readingsDone', 'grammarReferenceLog', 'mathDone', 'mathMastery', 'mathStoryLog'],
     ['results'],
   ),
   resetGroup(

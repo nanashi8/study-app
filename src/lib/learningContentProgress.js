@@ -17,6 +17,12 @@ import { KANBUN_KUNDOKU_EXERCISES } from '../data/kanbun-kundoku.js'
 import { PUBLIC_DOMAIN_LITERATURE } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS } from '../data/math.js'
 import {
+  MATH_HISTORY_CHAPTERS,
+  MATH_HISTORY_QUESTIONS,
+  MATH_HISTORY_QUIZ_DOMAIN,
+} from '../data/math-history.js'
+import { notYetMathStories, understoodMathStories } from './mathStoryLog.js'
+import {
   summarizeCompletionItems,
   summarizeQuizItems,
   summarizeSrsItems,
@@ -47,6 +53,8 @@ const srsContent = (id, group, label, unit, screen, items, store, quiz = {}) => 
   hasQuiz: quiz.enabled !== false,
 })
 
+// 1項目に複数の問題がある教材（数学の歴史：1話に3〜4問）は、quiz に問題の一覧と単位を渡す。
+// reviewingIds は「まだまだ」のように、学んだが理解しきれていない項目（復習中として数える）。
 const completionContent = (
   id,
   group,
@@ -56,17 +64,19 @@ const completionContent = (
   items,
   completedIds,
   quizDomain = id,
+  { quizItems = null, quizUnit = unit, reviewingIds = null } = {},
 ) => Object.freeze({
   id,
   group,
   label,
   unit,
-  quizUnit: unit,
+  quizUnit,
   screen,
   kind: 'completion',
   items,
   completedIds,
-  quizItems: null,
+  reviewingIds,
+  quizItems,
   quizDomain,
   hasQuiz: true,
 })
@@ -140,6 +150,22 @@ export const LEARNING_CONTENTS = Object.freeze([
     MATH_ITEMS,
     (state) => state.mathDone,
   ),
+  // 数学の歴史：学習は話ごとの「理解した」、テストは問題ごとの結果で数える。
+  completionContent(
+    'math-history',
+    'other',
+    '数学の歴史',
+    '話',
+    'mathHistory',
+    MATH_HISTORY_CHAPTERS,
+    (state) => understoodMathStories(state.mathStoryLog),
+    MATH_HISTORY_QUIZ_DOMAIN,
+    {
+      quizItems: MATH_HISTORY_QUESTIONS,
+      quizUnit: '問',
+      reviewingIds: (state) => notYetMathStories(state.mathStoryLog),
+    },
+  ),
 ])
 
 export function buildLearningContentProgress(state = {}) {
@@ -152,6 +178,7 @@ export function buildLearningContentProgress(state = {}) {
       : summarizeCompletionItems({
           items: content.items,
           completedIds: content.completedIds(state) ?? [],
+          reviewingIds: content.reviewingIds?.(state) ?? [],
           quizResults: state.contentQuizResults,
           quizDomain: content.quizDomain,
         })

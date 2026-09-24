@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T07:00:49.184Z",
+  "auditedAt": "2026-09-24T07:17:38.931Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
   "failures": [],
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
-    "categoryCount": 18,
-    "learningItemCount": 17564,
-    "quizItemCount": 17682,
-    "storedAndGeneratedQuestionPathCount": 4946,
-    "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "08468aeec762905894ddeb29e47769b6d6fc790ee0ea0cdbfef4333f57a06fe3"
+    "categoryCount": 19,
+    "learningItemCount": 17595,
+    "quizItemCount": 17791,
+    "storedAndGeneratedQuestionPathCount": 5055,
+    "storedAndGeneratedChoicePathCount": 19680,
+    "overallContentSha256": "a5161b98f1968ebf8a00c01788681caff1a0194d794e3ccfeec7dbb8f7d8f578"
   },
   "completionCriteria": [
-    "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
+    "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
     "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
@@ -52,7 +52,7 @@
     },
     "routesAndProgress": {
       "command": "npm run audit:content-progress && npm run audit:links",
-      "coverage": "全18教材の公開導線、母数、暗記・テスト記録、参照リンク"
+      "coverage": "全19教材の公開導線、母数、暗記・テスト記録、参照リンク"
     },
     "english": {
       "command": "npm run audit:english",
@@ -101,10 +101,14 @@
     "math": {
       "command": "node scripts/check-data.mjs && npm test",
       "coverage": "問題、答え、解法手順、注意点、出題・記録の回帰"
+    },
+    "mathHistory": {
+      "command": "node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs",
+      "coverage": "数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画"
     }
   },
   "auditImplementation": {
-    "sha256": "89276a78e59ccd292a5f5484e0a5a3bd4e6884615fddadc32a285955cc8e6da2",
+    "sha256": "b394e6c27fb59fcd3c7abc0f9bef38f51a405419a53bff6c5c9598b4238295d9",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -226,6 +230,7 @@
       "tests/literature-vocabulary.test.mjs",
       "tests/literature.test.mjs",
       "tests/long-sentence-translations.test.mjs",
+      "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
       "tests/meaning-readable.test.mjs",
@@ -721,6 +726,29 @@
       "result": "pass",
       "failureCount": 0,
       "failures": []
+    },
+    {
+      "id": "math-history",
+      "group": "other",
+      "label": "数学の歴史",
+      "learningUnit": "話",
+      "quizUnit": "問",
+      "learningItemCount": 31,
+      "quizItemCount": 109,
+      "learningIdOrderSha256": "2a49b1fe511d0d7e912ccdb7a5629dd7a6ac5a0542c3a6e0ac8d6b062e92bcf1",
+      "quizIdOrderSha256": "214ce0ceee45d3a8d5b7206615813a155c7ebb3699596b6e11efc4e8ec1d1319",
+      "contentSha256": "59262d01e171119cece5d558082027d65ab89ade81ce92eca1fcd7ec339a3b33",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "mathHistory"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
     }
   ],
   "questionBanks": [
@@ -864,6 +892,18 @@
       "generalRationaleCount": 440,
       "choiceSpecificRationaleCount": 1745,
       "questionSetSha256": "14c2c1b7e2dff80d00358e61ef148e0f33bfe4ca78a9a439b9541c997b4ded69",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "math-history",
+      "label": "数学の歴史",
+      "questionCount": 109,
+      "choiceCount": 327,
+      "generalRationaleCount": 109,
+      "choiceSpecificRationaleCount": 327,
+      "questionSetSha256": "b11bd242e8c9af23ffab85dc21465a65ea0fa709650899c35b451ab207ffd62d",
       "result": "pass",
       "failureCount": 0,
       "failures": []

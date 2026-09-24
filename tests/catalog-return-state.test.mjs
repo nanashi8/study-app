@@ -98,7 +98,7 @@ test('一覧から学習へ移るときは、戻り先に一覧の見え方を�
   )
 })
 
-test('単語と18教材の一覧は、語の詳細や学習へ移る前に見え方を残し、戻ったら読み戻す', () => {
+test('単語と19教材の一覧は、語の詳細や学習へ移る前に見え方を残し、戻ったら読み戻す', () => {
   const decks = read('../src/screens/VocabDecks.jsx')
   const catalog = read('../src/components/LearningContentCatalog.jsx')
   const myLearning = read('../src/screens/MyLearning.jsx')

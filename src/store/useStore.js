@@ -125,6 +125,7 @@ import {
 } from '../lib/contentSettings.js'
 import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
 import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/grammarReferenceLog.js'
+import { appendMathStoryLog, normalizeMathStoryLog } from '../lib/mathStoryLog.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -280,6 +281,8 @@ export const createInitialLearningState = () => ({
   grammarReferenceLog: {},
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
+  // 数学の歴史の話の学習日と「理解した／まだまだ」。{ 話ID: [{ day, result }, …] }（古い順・1日1件）
+  mathStoryLog: {},
   contentQuizResults: {}, // SRS外教材の教材ID別・直近テスト結果
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
@@ -580,6 +583,7 @@ export function progressStateFromPayload(payload = {}) {
     grammarReferenceLog: normalizeGrammarReferenceLog(payload.grammarReferenceLog),
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
+    mathStoryLog: normalizeMathStoryLog(payload.mathStoryLog),
     contentQuizResults: normalizeContentQuizResults(payload.contentQuizResults),
     skillStats: payload.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(payload.learningAnalytics),
@@ -1139,6 +1143,11 @@ export const useStore = create(
       recordGrammarReference: (pageId, result) =>
         set((st) => ({
           grammarReferenceLog: appendGrammarReferenceLog(st.grammarReferenceLog, pageId, result, today()),
+        })),
+
+      recordMathStory: (pageId, result) =>
+        set((st) => ({
+          mathStoryLog: appendMathStoryLog(st.mathStoryLog, pageId, result, today()),
         })),
 
       markMathDone: (id) =>

@@ -27,7 +27,7 @@ export const APP_HOMES = [
     id: 'math',
     screen: 'mathMap',
     label: '数学アプリ',
-    screens: ['mathMap', 'mathUnits', 'mathIntro', 'mathSolve'],
+    screens: ['mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz'],
   },
   {
     id: 'literature',
