@@ -11,6 +11,7 @@ import { MATH_HISTORY_BASIC_DATA } from './math-history/basic-data.js'
 import { MATH_HISTORY_JUNIOR } from './math-history/junior.js'
 import { MATH_HISTORY_JUNIOR_MORE } from './math-history/junior-more.js'
 import { MATH_HISTORY_SENIOR } from './math-history/senior.js'
+import { MATH_HISTORY_SENIOR_CALCULUS } from './math-history/senior-calculus.js'
 
 export const MATH_HISTORY_PARTS = Object.freeze([
   {
@@ -114,6 +115,7 @@ export const MATH_HISTORY_CHAPTERS = Object.freeze([
   ...MATH_HISTORY_JUNIOR,
   ...MATH_HISTORY_JUNIOR_MORE,
   ...MATH_HISTORY_SENIOR,
+  ...MATH_HISTORY_SENIOR_CALCULUS,
 ])
 
 // テストの問題（話ごとの quiz を1列に並べ、どの話の問題かを持たせる）。

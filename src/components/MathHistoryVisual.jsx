@@ -5,6 +5,7 @@ import { DATA_SCENES } from './math-history/data-scenes.jsx'
 import { JUNIOR_SCENES } from './math-history/junior-scenes.jsx'
 import { JUNIOR_MORE_SCENES } from './math-history/junior-more-scenes.jsx'
 import { SENIOR_SCENES } from './math-history/senior-scenes.jsx'
+import { SENIOR_CALCULUS_SCENES } from './math-history/senior-calculus-scenes.jsx'
 
 // 数学の歴史の話の「動かしてみよう」の図。話のデータの visual.scene で図を選び、
 // 操作の値（values）に合わせて描き直す。図は src/components/math-history/ に分野ごとに置く。
@@ -17,6 +18,7 @@ export const MATH_HISTORY_SCENES = Object.freeze({
   ...JUNIOR_SCENES,
   ...JUNIOR_MORE_SCENES,
   ...SENIOR_SCENES,
+  ...SENIOR_CALCULUS_SCENES,
 })
 
 export function MathHistoryVisual({ visual, values, color, label }) {

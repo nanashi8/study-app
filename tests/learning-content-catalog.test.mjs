@@ -51,7 +51,7 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-kundoku': 40,
   literature: 12,
   math: 274,
-  'math-history': 58,
+  'math-history': 65,
 })
 
 const contentById = (id) => LEARNING_CONTENTS.find((content) => content.id === id)
@@ -96,9 +96,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全19教材・17,678項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全19教材・17,685項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 19)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 17_678)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 17_685)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,

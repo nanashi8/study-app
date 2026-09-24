@@ -351,6 +351,40 @@ test('図の数は操作値と数学的に一致する（高校：集合・三�
   assert.match(render('mh-compound', { n: 8760 }), /data-compound-value="2.71813"/)
 })
 
+test('図の数は操作値と数学的に一致する（高校：波・微分・積分・基本定理・最大最小・数列の和・フィボナッチ）', () => {
+  // フーリエ級数：四角い波は x＝π/2 で 1 に、のこぎりの波は π/4 に近づく。
+  const squarePeak = Number(render('mh-waves', { shape: 'square', terms: 10, theta: 60 }).match(/data-fourier-peak="([-\d.]+)"/)[1])
+  assert.ok(Math.abs(squarePeak - 1) < 0.1, `四角い波 ${squarePeak}`)
+  const sawPeak = Number(render('mh-waves', { shape: 'saw', terms: 10, theta: 60 }).match(/data-fourier-peak="([-\d.]+)"/)[1])
+  assert.ok(Math.abs(sawPeak - Math.PI / 4) < 0.1, `のこぎりの波 ${sawPeak}`)
+  assert.match(render('mh-waves', { shape: 'square', terms: 1, theta: 90 }), /data-fourier-peak="1.273"/)
+
+  // 微分：2点の傾き 2x＋h と接線の傾き 2x。
+  assert.match(render('mh-derivative', { x: 1, h: 0.1 }), /data-secant-slope="2.1" data-tangent-slope="2"/)
+  assert.match(render('mh-derivative', { x: -1.5, h: 1 }), /data-secant-slope="-2" data-tangent-slope="-3"/)
+
+  // 積分：x² の長方形の和（右はしは上から、左はしは下から 1/3 に近づく）。
+  assert.match(render('mh-integral', { n: 4, side: 'right' }), /data-riemann-sum="0.4688"/)
+  assert.match(render('mh-integral', { n: 4, side: 'left' }), /data-riemann-sum="0.2188"/)
+  assert.match(render('mh-integral', { n: 32, side: 'right' }), /data-riemann-sum="0.3491"/)
+
+  // 基本定理：S(x) と、その傾き＝f(x)。
+  assert.match(render('mh-ftc', { f: 'x', x: 2 }), /data-area-s="2" data-area-slope="2"/)
+  assert.match(render('mh-ftc', { f: 'x2', x: 3 }), /data-area-s="9" data-area-slope="9"/)
+
+  // 箱の体積：x＝2 で最大 128、傾き 0。
+  assert.match(render('mh-optimization', { x: 2 }), /data-box-volume="128" data-box-slope="0"/)
+  assert.match(render('mh-optimization', { x: 1 }), /data-box-volume="100" data-box-slope="60"/)
+
+  // 等差数列の和：階段のます目と、2つ組み合わせた長方形。
+  assert.match(render('mh-sum', { n: 6, view: 'stairs' }), /data-staircase-sum="21" data-staircase-cells="21"/)
+  assert.match(render('mh-sum', { n: 6, view: 'double' }), /data-staircase-sum="21" data-staircase-cells="42"/)
+
+  // フィボナッチ：F_n と、となりとの比。
+  assert.match(render('mh-fibonacci', { n: 12 }), /data-fib-value="144" data-fib-ratio="1.61806"/)
+  assert.match(render('mh-fibonacci', { n: 6 }), /data-fib-value="8" data-fib-ratio="1.625"/)
+})
+
 test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
   const ids = MATH_HISTORY_QUESTIONS.map((question) => question.id)
   assert.equal(new Set(ids).size, ids.length)
