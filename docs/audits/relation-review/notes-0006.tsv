@@ -1,0 +1,258 @@
+N	barrel|drum	drum は「太鼓」のほか、油などを入れる金属の「ドラム缶」。barrel は木の「たる」や、石油の量の単位「バレル」
+N	aridity|dryness	dryness は「乾燥」のふつうの語。aridity は土地や気候が「ひどく乾燥していること」の学問の語
+N	dryness|moisture	dryness は「乾燥」、moisture は「湿り気・水分」
+N	dumb|mute	dumb は話し言葉で「ばかな」（失礼な言い方）。mute は「声を出さない・無言の」で、dumb のもとの意味「口がきけない」に近い
+N	dumb|stupid	dumb も stupid も「ばかな」。dumb はアメリカの話し言葉でよく使い、どちらも人に言うと失礼
+N	clever|dumb	clever は「利口な」、dumb は「ばかな」
+N	dye|tint	dye は布や髪を「染める」。tint は「うっすら色をつける」
+N	color|dye	dye は染料で「染める」。color は「色をつける・色を塗る」と広く言う
+N	bleach|dye	dye は「染める」、bleach は「漂白する・色を抜く」
+N	earn|gain	earn は働いて「稼ぐ」や、努力で「得る」。gain は「得る・増す」と広く言う
+N	earn|make	earn は「(働いて)稼ぐ」。make も話し言葉で「稼ぐ」（make money）
+N	earn|lose	earn は「稼ぐ・得る」、lose は「失う」
+N	easily|hardly	easily は「簡単に・楽に」、hardly は「ほとんど〜ない」。hard（一生懸命に）の副詞は hardly ではなく hard
+I	easily|curr_idm_2_with_ease	with ease は「楽々と」の少しかたい言い方。easily は「簡単に」のふつうの語
+N	easy|effortless	easy は「簡単な」と広く言う。effortless は上手なので「苦労なく見える・楽々とした」
+N	effortless|laborious	effortless は「楽々とした」、laborious は「骨の折れる・手間のかかる」
+N	crisis|emergency	emergency はすぐ対応が要る「緊急事態」。crisis は重大な分かれ目となる「危機」
+N	emergency|urgency	emergency は「緊急事態」という出来事。urgency は「急を要すること・切迫」という性質
+N	emergency|routine	emergency は「緊急事態」、routine は「いつもの手順・日常」
+N	equal|identical	equal は数量や価値が「等しい」。identical は細部まで「全く同じ」
+N	equal|equivalent	equal は「等しい」（equal to）。equivalent は価値や意味が「同等の・相当する」（be equivalent to）
+N	equal|unequal	equal は「平等な・等しい」、unequal は「不平等な・等しくない」
+I	equal|curr_idm_pre1_be_equivalent_to	be equivalent to は価値や意味が「〜に相当する」。equal は数量が「等しい」、動詞で「〜に等しい」（Two plus two equals four.）
+N	escape|flee	escape は危険や閉じ込められた所から「逃げる・逃れる」。flee は危険から「急いで逃げ去る」かたい語
+I	escape|curr_idm_pre2_get_away	get away は「逃げる・離れる」の話し言葉（get away from）。escape は「逃れる」のやや改まった語
+I	escape|curr_idm_3_run_away	run away は走って「逃げる・家出する」。escape は閉じ込められた所から「逃げ出す」
+N	even|still	even は比較級の前で「さらに・いっそう」（even better）。still も比較級を強めるが、「まだ」の意味が中心
+I	everywhere|curr_idm_3_all_over	all over は all over the world のように「〜じゅうに」。everywhere は単独で「どこでも」
+N	evil|wickedness	evil は「悪」と広く言う（good and evil）。wickedness は人の「邪悪さ・よこしまさ」
+N	evil|sin	evil は「悪」全体。sin は宗教や道徳上の「罪」
+N	evil|good	evil は名詞で「悪」、good は名詞で「善」（good and evil＝善と悪）
+N	exact|precise	exact は「ちょうどの・正確な」（the exact time）。precise は細かいところまで「精密な」
+N	accurate|exact	exact は「ぴったりの・厳密な」。accurate は情報や測定が「正確な」
+N	approximate|exact	exact は「正確な」、approximate は「おおよその」
+N	excite|thrill	excite は「興奮させる」と広く言う。thrill は「ぞくぞく・わくわくさせる」と強く言う
+N	excite|stimulate	excite は気持ちを「興奮させる」。stimulate は成長や興味などを「刺激する・促す」
+N	calm|excite	excite は「興奮させる」、calm は動詞で「落ち着かせる」
+N	excuse|forgive	excuse は軽い失礼を「許す」（Excuse me.）。forgive は大きな過ちや罪を「許す」
+N	excuse|pardon	excuse は「許す・大目に見る」。pardon は罪を「許す・赦免する」かたい語で、Pardon? は聞き返し
+N	blame|excuse	excuse は「許す・言い訳する」、blame は「責める」
+N	accuse|excuse	excuse は責めないで「許す」、accuse は人を「責める・告発する」。どちらもラテン語 causa（理由・訴え）から
+N	exit|way out	exit は「出口」の少しかたい語で、表示によく使う。way out はイギリス英語の話し言葉で「出口」
+N	departure|exit	exit は「出口・退出」。departure は「出発」（arrivals and departures）
+N	entrance|exit	entrance は「入り口」、exit は「出口」
+N	experiment|trial	experiment は仮説を確かめる「実験」。trial は新しい物を実際に使ってみる「試行・試験」
+N	experiment|test	experiment は科学の「実験」。test は性能や能力を調べる「検査・試験」
+N	describe|explain	explain は理由や仕組みを「説明する」（explain why）。describe は様子を「描写する・言葉で述べる」
+I	explain|idm_account_for	account for は理由を「説明する」のほか、割合を「占める」（account for 30%）の意味もある。explain は「説明する」のふつうの語
+N	additional|extra	extra は「余分の・追加の」（an extra charge）。additional は「追加の」のかたい語
+N	extra|spare	extra は「追加の」。spare は使わずにとっておく「予備の・余分の」（a spare key）
+N	extra|standard	extra は「追加の・特別の」、standard は「標準の」
+N	fair|just	fair は分け方などが「公平な」。just は道理にかなった「正しい・公正な」かたい語
+N	fair|impartial	fair は「公正な」のふつうの語。impartial はどちらの側にもつかない「公平な」かたい語
+N	fair|unfair	fair は「公平な」、unfair は「不公平な」
+N	belief|faith	faith は理由を問わず信じ切る「信頼・信仰」。belief は正しいと思う「信念・考え」
+N	faith|trust	faith は「(強い)信頼・信仰」。trust は人や物への「信頼」と広く言う
+N	doubt|faith	faith は「信頼」、doubt は「疑い」
+N	counterfeit|fake	fake は「偽の」と広く言う。counterfeit はお金やブランド品が「偽造の」
+N	fake|false	fake は物が「偽物の」（a fake watch）。false は内容が「間違った・うその」（false information）
+N	fake|genuine	fake は「偽の」、genuine は「本物の」
+N	false|untrue	false は「間違った・偽の」。untrue は「事実でない」と、少しやわらかく言う
+N	elaborate|fancy	fancy は「凝った・高級な」の話し言葉。elaborate は細部まで「念入りに作られた」
+N	fancy|lavish	fancy は「高級な・凝った」。lavish はお金をかけて「ぜいたくな・豪華な」
+N	fancy|plain	fancy は「凝った・飾りの多い」、plain は「飾りのない・質素な」
+N	fantastic|wonderful	fantastic と wonderful はどちらも「すばらしい」。fantastic は話し言葉で強い感動を言い、「空想的な」の意味もある
+N	fantastic|marvelous	fantastic は「すばらしい」の話し言葉。marvelous は「驚くほどすばらしい」と、やや古めかしい語
+N	fantastic|ordinary	fantastic は「すばらしい・途方もない」、ordinary は「平凡な」
+N	fare|fee	fare は乗り物の「運賃」。fee は入場料や手数料などの「料金」（entrance fee）
+N	charge|fare	fare は乗り物の「運賃」。charge はサービスの「料金・代金」と広く言う
+N	fat|plump	fat は「太った」（失礼に聞こえやすい）。plump は「ふっくらした」と、やわらかい言い方
+N	fat|slim	fat は「太った」、slim は「ほっそりした」
+N	favor|kindness	favor は人のためにする「親切な行い・お願い」（Can I ask you a favor?）。kindness は「親切・やさしさ」という性質
+N	favor|goodwill	favor は「好意・親切な行い」。goodwill は相手のためを思う「善意・好意」
+N	disfavor|favor	favor は「好意・支持」、disfavor は「不興・嫌われること」
+N	barrier|fence	fence は家や畑の周りの「柵・塀」。barrier は通れないようにする「障壁・柵」
+N	fence|railing	fence は周りを囲う「柵・塀」。railing は階段などの「手すり」
+N	feast|festival	festival は町などで行う「祭り」。feast は食べ物がたくさん出る「祝宴・ごちそう」
+N	file|submit	file は書類を正式に「提出する」（file a report）。submit は宿題や書類を「提出する」と広く言う
+N	file|lodge	file は書類を「提出する」。lodge は苦情などを正式に「申し立てる」（lodge a complaint）
+N	concluding|final	final は「最後の・最終の」と広く言う。concluding は話や会の「締めくくりの」
+N	final|initial	final は「最後の」、initial は「最初の」
+I	finally|curr_idm_3_at_last	at last は待ちに待って「ついに・ようやく」。finally は「ついに」のほか、順番の「最後に」の意味もある
+I	finally|curr_idm_pre1_at_length	at length は「長々と・詳しく」の意味が中心で、「ついに」は古い言い方。finally は「ついに・最後に」
+N	fist|knuckle	fist は握った「こぶし」。knuckle は指の「関節」
+N	fist|palm	fist は握った「こぶし」、palm は開いた「手のひら」
+N	flow|run	flow は水などが「流れる」のふつうの語。run も川や水が「流れる」（The river runs through the town.）
+N	flow|stagnate	flow は「流れる」、stagnate は水が「よどむ」や、経済が「停滞する」
+N	concentrate|focus	focus は注意を1点に「集中させる・焦点を合わせる」。concentrate は「集中する」のほか、液体を「濃縮する」
+N	disciple|follower	follower は人や考えに「従う人・支持者」と広く言う。disciple は師から直接学ぶ「弟子」
+N	following|subsequent	following は「次の・以下の」（the following day）。subsequent は「その後の」のかたい語
+N	following|previous	following は「次の」、previous は「前の」
+N	formally|officially	formally は儀式などを「正式に・形式どおりに」。officially は役所などが「公式に」
+N	formally|informally	formally は「正式に・改まって」、informally は「略式に・打ち解けて」
+N	former|previous	former は「元の・前の」（a former teacher）で、今はちがう立場のことを言う。previous は「(1つ)前の」
+N	former|prior	former は「以前の」。prior は「事前の・前の」（prior to＝〜より前に）
+N	former|latter	former は「前者（の）」、latter は「後者（の）」。2つを順に指すときに使う
+N	freedom|liberty	freedom は「自由」のふつうの語。liberty は権利としての「自由」や、「解放」のかたい語
+N	freedom|independence	freedom は「自由」。independence は他に頼らない「独立・自立」
+N	freedom|oppression	freedom は「自由」、oppression は「抑圧・圧政」
+N	frozen|icy	frozen は「凍った・冷凍の」（frozen food）。icy は道などが「氷の張った」や、態度が「冷ややかな」
+N	frozen|iced	frozen は「凍った・冷凍の」。iced は飲み物が「氷で冷やした」（iced tea）
+N	frozen|thawed	frozen は「凍った」、thawed は「解けた・解凍された」
+I	further|curr_idm_pre1_in_addition	in addition は「その上・さらに」と情報を足すときの言い方。further は「さらに（進んで）」で、距離や程度にも使う
+I	further|curr1900_idm_pre1_what_is_more	what is more は「さらに・その上」と、より大事なことを付け足す言い方。further は「さらに・もっと」
+N	gallery|museum	museum は「博物館・美術館」と広く言う。gallery は絵を見せる「美術館・画廊」
+N	exhibition|gallery	gallery は絵を展示する「場所（画廊）」。exhibition は作品の「展覧会・展示」という催し
+N	assemble|gather	gather は「集める・集まる」と広く言う。assemble は人が決まった場所に「集合する」や、部品を「組み立てる」
+N	gather|scatter	gather は「集める・集まる」、scatter は「まき散らす・散らばる」
+I	gather|curr_idm_3_get_together	get together は友人などが「集まる・会う」話し言葉。gather は「集まる・集める」と広く言う
+N	gentleness|kindness	gentleness は態度や声の「優しさ・穏やかさ」。kindness は人のためにする「親切」
+N	gentleness|harshness	gentleness は「優しさ・穏やかさ」、harshness は「厳しさ・きつさ」
+N	goods|merchandise	goods は「商品・品物」と広く言う。merchandise は店で売る「商品」のかたい語で、数えない
+N	goods|product	goods は売り買いする「品物」（複数形で使う）。product は工場などで作った「製品」
+N	grand|magnificent	grand は建物や行事が「壮大な・堂々とした」。magnificent は見た人が驚くほど「壮麗な・見事な」
+N	grand|majestic	grand は「壮大な」。majestic は山や王者のように「威厳のある・荘厳な」
+N	grand|modest	grand は「壮大な・豪華な」、modest は「控えめな・質素な」
+N	expansion|growth	growth は自然に大きくなる「成長」。expansion は範囲や規模の「拡大・拡張」
+N	growth|increase	growth は「成長・増大」。increase は数量の「増加」
+N	decline|growth	growth は「成長」、decline は「衰退・減少」
+N	direction|guidance	guidance は「指導・助言」。direction は「指示・指図」や、映画などの「監督」
+N	counsel|guidance	guidance は「指導・案内」と広く言う。counsel は専門家の「助言」のかたい語
+N	guilty|innocent	guilty は「有罪の」や「罪悪感のある」（feel guilty）、innocent は「無罪の」
+N	gum|rubber	gum は「ガム」や、植物から出る「ゴム（樹脂）」。rubber は「ゴム」や「消しゴム」
+N	gymnasium|sports hall	gymnasium は学校などの「体育館」（gym と略す）。sports hall はイギリス英語の「体育館」
+N	handle|manage	handle は問題や物を「扱う・処理する」。manage は「管理する」や、何とか「うまくやる」
+I	handle|idm_deal_with	deal with は問題や人に「対処する」。handle は問題や物を「扱う」と広く言う
+N	hardware|software	hardware は機械そのもの「ハードウェア」、software はその上で動くプログラム「ソフトウェア」
+N	damage|harm	harm は人や物への「害・危害」（do harm）。damage は物に与えた「損害・被害」
+N	harm|injury	harm は「害」と広く言う。injury は体の「けが・負傷」
+N	benefit|harm	harm は「害」、benefit は「利益・恩恵」
+N	falcon|hawk	hawk は「タカ」。falcon は速く飛ぶ「ハヤブサ」
+N	dove|hawk	hawk は「タカ」で、政治では「強硬派」。dove は「ハト」で、「穏健派・平和派」
+N	fodder|hay	hay は干した草「干し草」。fodder は家畜のえさ全体「かいば」
+N	encourage|hearten	encourage は「励ます・促す」と広く言う。hearten は知らせなどが人を「元気づける」少しかたい語
+N	cheer|hearten	cheer は声で「元気づける」（cheer up）。hearten は知らせなどが「勇気づける」
+N	dishearten|hearten	hearten は「元気づける」、dishearten は「落胆させる」
+I	hearten|curr1900_idm_2_cheer_up	cheer up は「元気を出す・元気づける」の話し言葉（Cheer up!）。hearten は「元気づける」のかたい語
+N	callous|heartless	heartless は「思いやりのない・無情な」。callous は人の痛みに「無神経な・冷淡な」
+N	cruel|heartless	cruel は人や動物を苦しめる「残酷な」。heartless は「思いやりのない・無情な」
+N	compassionate|heartless	heartless は「無情な」、compassionate は「思いやりのある」
+N	back of the foot|heel	heel は足の「かかと」や、靴の「ヒール」
+N	heel|toe	heel は「かかと」、toe は「つま先・足の指」
+N	headgear|helmet	helmet は頭を守る「ヘルメット」。headgear は帽子などの「かぶり物」全体
+N	concealed|hidden	hidden は「隠れた・見えない」のふつうの語。concealed は人が「意図して隠した」
+N	hidden|visible	hidden は「隠れた」、visible は「目に見える」
+N	conceal|hide	hide は「隠す・隠れる」のふつうの語。conceal は「隠す」のかたい語で、自動詞には使わない
+N	hide|reveal	hide は「隠す」、reveal は「明らかにする・見せる」
+N	ghastly|hideous	hideous は見た目が「ぞっとするほど醜い」。ghastly は「ぞっとする・恐ろしい」や、顔が「青ざめた」
+N	grotesque|hideous	hideous は「醜悪な」。grotesque は形が「異様な・ゆがんだ」
+N	beautiful|hideous	hideous は「ぞっとするほど醜い」、beautiful は「美しい」
+N	clue|hint	hint は答えのための「ヒント・ほのめかし」。clue は謎や事件を解く「手がかり」
+N	hint|tip	hint は答えに近づく「ヒント」。tip は役に立つ「こつ・助言」
+N	employ|hire	hire は「雇う」の話し言葉。employ は「雇用する」のかたい語で、「用いる」の意味もある
+N	hire|recruit	hire は人を「雇う」。recruit は新しい人を「募集する・採用する」
+I	hire|curr_idm_2_take_on	take on は人を「雇う」や、仕事を「引き受ける」。hire は「雇う」と広く言う
+N	honesty|integrity	honesty は「正直さ」。integrity は信念を曲げない「誠実さ・高潔さ」
+N	honesty|sincerity	honesty はうそをつかない「正直さ」。sincerity は気持ちに偽りのない「誠実さ・真心」
+N	dishonesty|honesty	honesty は「正直」、dishonesty は「不正直」
+N	hook|peg	hook は物を引っかける「かぎ・フック」。peg は壁などに打った「掛けくぎ」や、テントの「くい」
+N	clasp|hook	hook は引っかける「フック」。clasp はネックレスなどの「留め金」
+N	hopeful|optimistic	hopeful は「希望をもった」。optimistic は物事を「楽観的に考える」性格を言う
+N	hopeful|promising	hopeful は人が「希望をもった」。promising は物事や人が「前途有望な・見込みのある」
+N	hopeful|hopeless	hopeful は「希望に満ちた」、hopeless は「望みのない・絶望的な」
+N	hopefulness|optimism	hopefulness は「希望を持っていること」。optimism は物事をよいほうに考える「楽観・楽観主義」
+N	despair|hopefulness	hopefulness は「希望」、despair は「絶望」
+N	desperate|hopeless	hopeless は「望みのない」。desperate は「必死の」や、状況が「絶望的な」
+N	futile|hopeless	hopeless は「見込みのない」。futile は努力などが「むだな・効果のない」
+N	buzz|hum	hum は口を閉じて「鼻歌を歌う」や、機械が「ブーンとうなる」。buzz は虫や機械が「ブンブン・ブーッと鳴る」
+N	hum|murmur	hum は「鼻歌を歌う・うなる」。murmur は小さな声で「つぶやく・ささやく」
+N	human|mortal	human は「人間の」のふつうの語。mortal は「いつか死ぬ運命の」で、神などに対する「人間」
+N	divine|human	human は「人間の」、divine は「神の・神聖な」
+N	hero|idol	idol はあこがれの「アイドル・偶像」。hero は勇気ある行いをした「英雄」や、物語の「主人公」
+N	icon|idol	idol はファンが熱中する「アイドル・崇拝の対象」。icon は時代や分野を代表する「象徴」や、画面の「アイコン」
+N	ailment|illness	illness は「病気」のふつうの語。ailment は軽い「不調・病気」
+N	health|illness	health は「健康」、illness は「病気」
+N	envision|imagine	imagine は「想像する」のふつうの語。envision は将来のことを「思い描く」
+N	imagine|picture	imagine は「想像する」。picture は動詞で、頭の中に絵のように「思い浮かべる」
+N	enhance|improve	improve は悪い所を「改善する・上達する」。enhance はよいものを「さらに高める」
+N	improve|worsen	improve は「よくなる・よくする」、worsen は「悪くなる・悪化させる」
+N	grow|increase	increase は数量が「増える」。grow は「成長する」のほか、数量が「増える」（grow by 5%）
+N	decrease|increase	increase は「増える・増やす」、decrease は「減る・減らす」
+N	increase|reduce	increase は「増やす」、reduce は「減らす」
+N	autonomy|independence	independence は国や人の「独立・自立」。autonomy は自分たちで決める「自治・自律」
+N	data|information	information は「情報」全般で、数えない名詞。data は調べて集めた「データ・資料」（数値など）
+N	fact|information	information は「情報」。fact は確かめられる「事実」
+N	dye|ink	ink は書いたり印刷したりする「インク」。dye は布などを染める「染料」
+N	hotel|inn	hotel は「ホテル」。inn は古い、小さな「宿屋・旅館」
+N	inn|lodge	inn は「宿屋」。lodge は山などの「山小屋・ロッジ」
+N	instructor|teacher	teacher は学校などの「先生」。instructor はスキー・運転などの技術を教える「指導員」
+N	instructor|trainer	instructor は技術を教える「指導員」。trainer は体を鍛えさせる「トレーナー」
+I	introduce|curr_idm_pre2_bring_in	bring in は新しい制度などを「導入する」の話し言葉。introduce は「紹介する」のほか「導入する」
+I	invent|idm_come_up_with	come up with は考えや答えを「思いつく」。invent は新しい物を「発明する」
+N	innovative|inventive	inventive は人が「発明の才のある・工夫に富む」。innovative は考えや製品が「革新的な・斬新な」
+N	inventive|unimaginative	inventive は「工夫に富んだ」、unimaginative は「想像力に欠ける・平凡な」
+N	creator|inventor	inventor は新しい物を発明した「発明者」。creator は作品などを「生み出した人・作者」
+N	designer|inventor	inventor は新しい物を「発明した人」。designer は服や製品の「デザイナー・設計者」
+N	invitation|summons	invitation は来てほしいと「招くこと・招待状」。summons は来るように命じる「呼び出し」や、裁判所の「召喚状」
+N	itch|tingle	itch は「かゆい・かゆみ」。tingle は「ひりひり・ぞくぞくする」
+N	clog|jam	jam は機械などが「詰まって動かなくなる」。clog は管などが「詰まる」
+N	cram|jam	jam はすき間に「ぎゅっと押し込む」。cram は入りきらないほど「詰め込む」
+N	clear|jam	jam は「詰まらせる」、clear は動詞で詰まった物を「取り除く」
+N	jar|pot	jar はジャムなどを入れる「広口びん」。pot は「なべ」や「つぼ・鉢」
+N	container|jar	jar は「広口びん」。container は「入れ物・容器」全体
+N	jam|jelly	jam は果物を煮て形が残る「ジャム」（押しつぶすの jam から来たとされる）。jelly は果汁を固めた「ゼリー」で、アメリカではジャムの一種も言う
+N	gel|jelly	jelly は食べ物の「ゼリー」。gel は髪の「ジェル」など、ゼリー状のもの
+N	aircraft|jet	jet はジェットエンジンで飛ぶ「ジェット機」。aircraft は飛行機やヘリコプターなど「航空機」全体
+N	jet|stream	jet は細い穴から勢いよく出る「噴流」。stream は水などの「流れ」と広く言う
+N	job|work	job は数えられる「仕事・勤め口」（a job）。work は数えない「仕事・作業」と広く言う
+N	job|occupation	job は「仕事」のふつうの語。occupation は書類に書く「職業」
+N	job|task	job は「仕事」全体。task は1つ1つの「作業・課題」
+N	jog|run	run は「走る」と広く言う。jog は健康のためにゆっくり「ジョギングする」
+N	jog|trot	jog は「ジョギングする」。trot は「小走りする」や、馬の「速歩」
+N	journey|voyage	journey は陸路を含む長い「旅」。voyage は船や宇宙船での長い「航海・旅」
+N	happy|joyful	happy は「幸せな・うれしい」と広く言う。joyful は喜びがあふれて「うれしそうな」少しかたい語
+N	joyful|jubilant	joyful は「喜びに満ちた」。jubilant は勝利などで「歓喜にわいた」
+N	joyful|sorrowful	joyful は「喜びに満ちた」、sorrowful は「悲しげな」
+N	gleefully|joyfully	joyfully は「喜んで・楽しげに」。gleefully は「大喜びで」で、人の失敗を喜ぶような意地悪な感じにもなる
+N	joyfully|sadly	joyfully は「楽しげに」、sadly は「悲しげに」
+N	judge|referee	judge は裁判の「裁判官」や、コンテストの「審査員」。referee はサッカーなどの試合の「審判」
+N	assess|judge	judge は「判断する・裁く」。assess は数値などをもとに「評価する・査定する」
+N	judgment|verdict	judgment は「判断」や裁判官の「判決」。verdict は陪審員の出す「評決」や、ものごとの「判定」
+N	assessment|judgment	judgment は「判断」と広く言う。assessment は基準にもとづく「評価・査定」
+N	joint|knee	knee は「ひざ」。joint は体の「関節」全体や、物の「つなぎ目」
+N	crouch|kneel	kneel は「ひざまずく」。crouch はひざを曲げて体を低く「かがむ・しゃがむ」
+N	bow|kneel	kneel は「ひざまずく」。bow は頭や上半身を曲げて「お辞儀する・かがむ」
+N	kneel|stand	kneel は「ひざまずく」、stand は「立つ」
+N	knit|weave	knit は毛糸を針で「編む」。weave は機で糸を縦横に「織る」
+N	crochet|knit	knit は2本の棒針で「編む」。crochet はかぎ針で「編む」
+N	knock|tap	knock はドアなどを「こんこんたたく」。tap は指で「軽くたたく」
+N	bang|knock	knock は「こんこんたたく」。bang は「ドンドン強くたたく」や、ドアを「バタンと閉める」
+N	label|tag	label は瓶などに貼る「ラベル」。tag は値段などを書いてつける「札・タグ」
+N	label|sticker	label は内容を示す「ラベル」。sticker は貼って飾る「ステッカー・シール」
+N	cord|lace	lace は靴の「ひも」（shoelace）や、布の「レース」。cord は「ひも・コード」と広く言う
+N	lace|string	lace は靴などの「ひも」。string は細い「ひも・糸」や、楽器の「弦」
+N	lack|shortage	lack は「欠けていること・不足」と広く言う（lack of sleep）。shortage は必要な量に対する「不足」（water shortage）
+N	absence|lack	lack は「不足」。absence は「(まったく)ないこと」や、人の「不在・欠席」
+N	abundance|lack	lack は「不足」、abundance は「豊富・多量」
+N	lane|path	lane は田舎の「細い道」や、道路の「車線」。path は歩いてできた「小道」
+N	lane|track	lane は「車線」や「細い道」。track は陸上の「トラック」や、踏みならされた「道」
+N	circuit|lap	lap は競技場の「一周」。circuit は「一周」のほか、電気の「回路」
+I	lately|curr1900_idm_4_these_days	these days は「近ごろは」（昔とくらべて）。lately は「最近」で、現在完了の文でよく使う
+N	laundry|washing	laundry は「洗濯物・洗濯」のふつうの語。washing はイギリス英語で「洗濯物」
+N	grass|lawn	grass は「草・芝」と広く言う。lawn は家の庭などで刈り込んだ「芝生」
+N	lawn|turf	lawn は庭の「芝生」。turf は根ごと切り取った「芝」や、競馬場などの「芝地」
+N	attorney|lawyer	lawyer は「弁護士」のふつうの語。attorney はアメリカ英語で「弁護士・代理人」
+N	lawyer|solicitor	lawyer は「弁護士」全体。solicitor はイギリスで書類などを扱う「事務弁護士」
+N	leak|seep	leak はすき間から「漏れる」。seep は液体が少しずつ「にじみ出る・しみ込む」
+N	drip|leak	leak はすき間から「漏れる」。drip はしずくが「ぽたぽた垂れる」
+N	leak|seal	leak は「漏れる」、seal はすき間を「ふさぐ・密閉する」
+N	lean|tilt	lean は体を「傾ける・もたれる」（lean against）。tilt は物を「傾ける」
+N	incline|lean	lean は「傾く・寄りかかる」。incline は「傾ける」のかたい語で、「〜したい気にさせる」の意味もある
+N	lean|straighten	lean は「傾く」、straighten は「まっすぐにする」
+N	least|minimum	least は「最も少ない（量）」（at least）。minimum は決められた「最小限・最低限」（the minimum wage）
+N	least|smallest	least は量が「最も少ない」。smallest は大きさが「最も小さい」
+N	legal|legitimate	legal は法律にかなった「合法の」や「法律の」。legitimate は「合法の」のほか、理由などが「正当な」
+N	illegal|legal	legal は「合法の」、illegal は「違法の」
+N	legend|myth	legend は昔から語り継がれた「伝説」（実在の人物のことも）。myth は神々の「神話」や、根拠のない「俗説」
+N	folklore|legend	legend は1つ1つの「伝説」。folklore は民間に伝わる話や習わし全体「民間伝承」

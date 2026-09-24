@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['rigidity', '名', '1', '硬直性・厳格さ', 'The rigidity of the steel frame keeps the tower from bending in strong winds.', '鉄骨の骨組みの硬直性のおかげで、その塔は強風でも曲がらない。', 'rigid(硬い)+ -ity', { fam: [{ w: 'rigid', m: '硬い' }], syn: [{ w: 'stiffness', m: '硬さ' }, { w: 'inflexibility', m: '融通のきかなさ' }], ant: [{ w: 'flexibility', m: '柔軟性' }], field: '性質・状態' }],
   ['chew', '動', 'pre1', 'かむ・かみ砕く', 'Our puppy likes to chew my old shoes.', 'うちの子犬は私の古い靴をかむのが好きだ。', '古英語 ceowan(かむ)。', { syn: [{ w: 'munch', m: 'もぐもぐ食べる' }, { w: 'gnaw', m: 'かじる' }], ant: [{ w: 'swallow', m: '飲み込む' }], field: '一般' }],
-  ['racket', '名', 'pre1', 'ラケット', 'She bought a new tennis racket.', '彼女は新しいテニスラケットを買った。', 'おそらく擬音語(16世紀)。', { syn: [{ w: 'din', m: '騒音' }, { w: 'clamor', m: '喧噪' }], ant: [{ w: 'silence', m: '静寂' }], field: '一般' }],
+  ['racket', '名', 'pre1', 'ラケット', 'She bought a new tennis racket.', '彼女は新しいテニスラケットを買った。', 'おそらく擬音語(16世紀)。', { field: '一般' }],
   ['becoming', '形', 'pre1', '似合う・ふさわしい', 'That new haircut is very becoming on you.', 'その新しい髪型はあなたにとてもよく似合っている。', 'become(似合う)+ -ing。', { syn: [{ w: 'flattering', m: '引き立てる' }, { w: 'suitable', m: '適した' }], ant: [{ w: 'unbecoming', m: '似合わない' }], fam: [{ w: 'become', m: '似合う' }], field: '一般' }],
   ['borough', '名', '1', '自治区・行政区', 'Brooklyn is one of the five boroughs of New York City.', 'ブルックリンはニューヨーク市の5つの行政区の一つだ。', '古英語 burg(城塞・町)。', { syn: [{ w: 'district', m: '地区' }, { w: 'township', m: '区' }], field: '政治' }],
   ['brains', '名', 'pre1', '知力・頭脳', 'She has the brains to become a great scientist.', '彼女には偉大な科学者になれるだけの頭脳がある。', 'brain(脳)の複数。', { syn: [{ w: 'intellect', m: '知性' }, { w: 'wits', m: '知恵' }], ant: [{ w: 'brawn', m: '腕力' }], fam: [{ w: 'brain', m: '脳' }], field: '一般' }],

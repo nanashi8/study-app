@@ -1,11 +1,14 @@
-// 類義語・反対語の欄を、単語データ（words*.js など）の外で直す台帳（人が1件ずつ読んで決めたもの）。
-// 単語データを読みこむとき（vocab.js の normalize）に当てるので、辞書ページ・暗記カード・検索のどこでも同じ中身になる。
+// 類義語・反対語の欄を直した台帳（人が1件ずつ読んで決めたもの）。
 //
 // RELATION_ADDITIONS … 足す項目 [見出し語 id, 'syn'|'ant', 英単語, 意味, 足した理由]
 //   語の成り立ちや使い方の欄が名指しした語で、意味が近い・反対なのに欄になかったもの（rupture の erupt など）。
-// RELATION_REMOVALS  … 外す項目 [見出し語 id, 'syn'|'ant', 英単語, 外した理由]
-//   読んで、意味が同じ・近い語／反対・対照の語とは言えないと分かったもの。欄を移すときは外して足す。
-// RELATION_MEANING_FIXES … 添えた意味を直す項目 [見出し語 id, 'syn'|'ant', 英単語, 直した意味]
+//   単語データを読みこむとき（vocab.js の normalize）に当てるので、辞書ページ・暗記カード・検索のどこでも同じ中身になる。
+// RELATION_REMOVALS  … 外した項目 [見出し語 id, 'syn'|'ant', 英単語, 外した意味, 外した理由]
+//   読んで、意味が同じ・近い語／反対・対照の語とは言えないと分かったもの。単語データ（words*.js など）からは消してあり、
+//   ここは何をなぜ外したかの記録（確認スクリプトが、消した項目が単語データに戻っていないかを見る）。
+// RELATION_MEANING_FIXES … 添えた意味を直した項目 [見出し語 id, 'syn'|'ant', 英単語, もとの意味, 直した意味]
+//   単語データは直してあり、ここは記録。
+// 外す・直すは scripts/relation-review-apply.mjs の D・M 行が単語データのファイルを書き換える。
 export const RELATION_ADDITIONS = [
   ['accomplish', 'syn', 'complete', '完成させる', '語の成り立ちで同じ語源と名指しした、意味の近い語'],
   ['accretion', 'syn', 'increase', '増加・増える', '語の成り立ちで同じ語源と名指しした、意味の近い語'],
@@ -143,6 +146,13 @@ export const RELATION_ADDITIONS = [
 ]
 
 export const RELATION_REMOVALS = [
+  ['cage', 'syn', 'pen', '囲い', '囲いの意味の pen はペンの pen と由来のちがう別の語で見出し語がなく、つづりで引くとペンへ飛ぶ'],
+  ['din', 'syn', 'racket', '騒ぎ', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
+  ['noise', 'syn', 'racket', '騒ぎ', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
+  ['racket', 'ant', 'silence', '静寂', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
+  ['racket', 'syn', 'clamor', '喧噪', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
+  ['racket', 'syn', 'din', '騒音', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
+  ['sausage', 'syn', 'frank', 'フランクフルト', 'フランクフルトの frank（frankfurter の略）は、率直なの frank と由来のちがう別の語で見出し語がなく、つづりで引くと「率直な」へ飛ぶ'],
 ]
 
 export const RELATION_MEANING_FIXES = [
@@ -151,30 +161,21 @@ export const RELATION_MEANING_FIXES = [
 const lower = (text) => String(text ?? '').trim().toLowerCase()
 const KINDS = { syn: 'synonyms', ant: 'antonyms' }
 
-const EDITS = new Map()
-const editsFor = (id, kind) => {
-  if (!EDITS.has(id)) EDITS.set(id, {})
-  const byKind = EDITS.get(id)
-  if (!byKind[kind]) byKind[kind] = { add: [], remove: new Map(), fix: new Map() }
-  return byKind[kind]
+const ADDITIONS = new Map()
+for (const [id, kind, w, m] of RELATION_ADDITIONS) {
+  const key = `${id}|${kind}`
+  if (!ADDITIONS.has(key)) ADDITIONS.set(key, [])
+  ADDITIONS.get(key).push({ w, m })
 }
-for (const [id, kind, w, m] of RELATION_ADDITIONS) editsFor(id, kind).add.push({ w, m })
-for (const [id, kind, w, reason] of RELATION_REMOVALS) editsFor(id, kind).remove.set(lower(w), reason)
-for (const [id, kind, w, m] of RELATION_MEANING_FIXES) editsFor(id, kind).fix.set(lower(w), m)
 
-// 当てる先が単語データに見つからなかった「外す」「意味を直す」の項目（台帳が古くなった印）。確認スクリプトが読む。
+// 足す項目のうち、単語データにもうあった項目（台帳が古くなった印）。確認スクリプトが読む。
 export const UNMATCHED_RELATION_EDITS = []
 
-/** 見出し語 id の類義語（'syn'）・反対語（'ant'）の欄に、台帳の直しを当てた項目を返す。 */
+/** 見出し語 id の類義語（'syn'）・反対語（'ant'）の欄に、台帳で足した項目を加えて返す。 */
 export function applyRelationEdits(id, kind, items) {
-  const edits = EDITS.get(id)?.[kind]
-  if (!edits) return items
+  const added = ADDITIONS.get(`${id}|${kind}`)
+  if (!added) return items
   const present = new Set(items.map((item) => lower(item?.w)))
-  for (const w of edits.remove.keys()) if (!present.has(w)) UNMATCHED_RELATION_EDITS.push(`${id} の${KINDS[kind]}に ${w} がない（外す）`)
-  for (const w of edits.fix.keys()) if (!present.has(w) || edits.remove.has(w)) UNMATCHED_RELATION_EDITS.push(`${id} の${KINDS[kind]}に ${w} がない（意味を直す）`)
-  for (const item of edits.add) if (present.has(lower(item.w)) && !edits.remove.has(lower(item.w))) UNMATCHED_RELATION_EDITS.push(`${id} の${KINDS[kind]}に ${item.w} がもうある（足す）`)
-  const kept = items
-    .filter((item) => !edits.remove.has(lower(item?.w)))
-    .map((item) => (edits.fix.has(lower(item?.w)) ? { ...item, m: edits.fix.get(lower(item.w)) } : item))
-  return [...kept, ...edits.add]
+  for (const item of added) if (present.has(lower(item.w))) UNMATCHED_RELATION_EDITS.push(`${id} の${KINDS[kind]}に ${item.w} がもうある（足す）`)
+  return [...items, ...added]
 }

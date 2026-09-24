@@ -1,0 +1,235 @@
+N	bite|chew	bite は歯で「かむ・かみつく」（一度かむ）。chew は口の中で何度も「かみ砕く」
+N	bite|nip	bite は「かむ・かみつく」。nip は歯やはさみで「軽くかむ・つねる」
+N	bitter|harsh	bitter は言葉が「辛辣な・恨みのこもった」。harsh は「厳しい・きつい」（harsh words）や、音が「耳ざわりな」
+N	bitterness|resentment	bitterness は「苦々しさ・恨み」。resentment は不当な扱いへの「憤り・恨み」
+N	bitterness|sweetness	bitterness は「苦さ・苦々しさ」、sweetness は「甘さ・やさしさ」
+N	blank|empty	empty は中身がない「空の」。blank は書くところが「空白の」や、表情が「ぽかんとした」
+N	blank|vacant	blank は紙などが「空白の」。vacant は席や部屋が「空いている」、表情が「うつろな」
+N	blank|filled	blank は「空白の」、filled は「埋まった・満たされた」
+N	bleed|hemorrhage	bleed は「出血する」のふつうの語。hemorrhage は医学の言葉で「大出血（する）」
+N	bless|consecrate	bless は神が人を「祝福する・恵む」。consecrate は建物や物を儀式で「神聖なものにする」
+N	bless|curse	bless は「祝福する」、curse は「呪う・ののしる」
+N	blind|dazzle	blind は動詞で強い光が「目をくらませる」。dazzle は光や美しさで「まぶしくさせる・目をくらませる」
+N	blind|sighted	blind は「目の見えない」、sighted は「目の見える」
+N	blink|wink	blink は両目で思わず「まばたきする」。wink は片目をつぶって「ウインクする」
+N	blink|flicker	blink は光が「点滅する」。flicker は炎や光が「ちらちら揺れる」
+N	block|obstruct	block は道などを「ふさぐ」のふつうの語。obstruct は進行や視界を「妨げる」かたい語
+N	block|clog	block は「ふさぐ」と広く言う。clog は管などが汚れで「詰まる・詰まらせる」
+N	block|clear	block は「ふさぐ」、clear は動詞で道などの邪魔物を「取り除く」
+N	bloom|blossom	bloom は花が「咲く」と広く言う。blossom は主に果樹の花が「咲く」
+N	bloom|flourish	bloom は「咲く・花開く」。flourish は植物や商売が「よく育つ・栄える」
+N	bloom|wither	bloom は「咲く」、wither は「枯れる・しおれる」
+N	blow|gust	blow は風が「吹く」と広く言う。gust は名詞で「突風」、動詞で風が急に「強く吹く」
+N	blush|flush	blush は恥ずかしさで顔が「赤くなる」。flush は熱や怒りなどでも顔が「赤くなる」と広く言い、「(トイレの水を)流す」の意味もある
+N	blush|redden	blush は恥ずかしくて「赤面する」。redden は物や顔が「赤くなる」と広く言う
+N	blush|pale	blush は顔が「赤くなる」、pale は「青ざめる・青白い」
+N	boil|simmer	boil はぐらぐら「煮立たせる・ゆでる」。simmer は弱火で「ことこと煮る」
+N	boil|seethe	boil は湯が「沸騰する」。seethe は怒りで「煮えくり返る」の比ゆでよく使う
+N	boil|freeze	boil は「沸騰する」、freeze は「凍る」
+N	border|boundary	border は国と国の「国境・境」。boundary は土地や分野の「境界（線）」
+N	border|frontier	border は「国境」。frontier は国境に近い「辺境」や、学問などの「最先端」
+N	border|center	border は「縁・へり」、center は「中心」
+N	bore|tire	bore は同じことで「退屈させる」。tire は「疲れさせる・飽きさせる」と広く言う
+N	bore|interest	bore は「退屈させる」、interest は動詞で「興味を持たせる」
+N	bounce|rebound	bounce はボールが「弾む」。rebound はぶつかって「跳ね返る」や、値が「持ち直す」
+N	bounce|spring	bounce は「弾む」。spring は動詞で人や動物が「ぴょんと跳ぶ」
+N	bend|bow	bow は頭や体を曲げて「お辞儀する」。bend は体や物を「曲げる」と広く言う
+N	bow|nod	bow は体を曲げて「お辞儀する」。nod は首だけで「うなずく・会釈する」
+I	bow|curr_idm_pre2_give_in	give in は相手に負けて「屈する・降参する」。bow は bow to の形で圧力に「屈する」、かたい言い方
+I	bow|curr1900_idm_pre1_submit_to	submit to は規則や権力に「従う・服従する」。bow to は圧力に「屈する」
+N	bride|newlywed	bride は結婚式の「花嫁」。newlywed は結婚したばかりの「新婚の人」（男女とも）
+N	bride|groom	bride は「花嫁」、groom は「花婿」（bridegroom とも言う）
+N	brief|concise	brief は時間や話が「短い」。concise は言葉が少なく要点をまとめた「簡潔な」
+N	brief|lengthy	brief は「短い・簡潔な」、lengthy は「長たらしい」
+N	brighten|lighten	brighten は「明るくする」、気持ちを「明るくする」にも使う。lighten も「明るくする」だが、「軽くする」の意味もある
+N	brighten|darken	brighten は「明るくする」、darken は「暗くする」
+N	brightness|radiance	brightness は光の「明るさ」。radiance は顔や光の「輝き」と、美しさをほめる語
+N	brightness|darkness	brightness は「明るさ」、darkness は「暗さ」
+N	broad|extensive	broad は幅や範囲が「広い」。extensive は範囲や量が「広範囲にわたる・大規模な」
+N	broaden|widen	widen は道などの幅を「広げる」。broaden は知識や経験を「広げる」によく使う（broaden your horizons）
+N	broaden|expand	broaden は範囲を「広げる」。expand は大きさや量を「拡大する・ふくらませる」
+N	broaden|narrow	broaden は「広げる」、narrow は動詞で「狭める」
+N	broadly|generally	broadly は broadly speaking（大まかに言えば）の形でよく使う。generally は「一般に・たいてい」
+N	broom|brush	broom は柄の長い「ほうき」。brush は柄の短い「ブラシ・はけ」
+N	bubble|foam	bubble は1つ1つの「泡」。foam は細かい泡が集まった「泡・あぶく」
+N	bubble|froth	bubble は1つの「泡」。froth はビールなどの上にできる「泡」
+N	bucket|pail	bucket は「バケツ」のふつうの語。pail は小さめの「手おけ」
+N	bucket|tub	bucket は取っ手のある「バケツ」。tub は大きくて丸い「おけ」や「浴槽」
+N	bullet|shot	bullet は銃の「弾丸」。shot は「発砲・1発」
+N	bullet|round	bullet は「弾丸」。round は名詞で「(弾の)1発」
+N	bun|roll	bun は甘いものも多い「丸パン」。roll は食事で出す「ロールパン」
+N	burst|explode	burst は風船などが「破裂する」。explode は爆弾などが「爆発する」と、より激しい
+N	burst|rupture	burst は風船やタイヤが内側からの力で「破裂する」ふつうの語。rupture は水道管・血管などが「裂けて破れる」かたい語で、関係の「決裂」にも使う
+N	bury|inter	bury は「埋める・葬る」と広く言う。inter は遺体を「埋葬する」かたい語
+N	bury|conceal	bury は土の中に「埋めて隠す」。conceal は「隠す」と広く言う
+N	bury|unearth	bury は「埋める」、unearth は「掘り出す」や、秘密を「明るみに出す」
+D	cage	syn	pen	囲いの意味の pen はペンの pen と由来のちがう別の語で見出し語がなく、つづりで引くとペンへ飛ぶ
+N	cage|enclosure	cage は動物を入れる「おり・かご」。enclosure は塀などで囲った「囲い地」
+N	cage|freedom	cage は「おり」（閉じ込めるもの）、freedom は「自由」
+N	calculate|compute	calculate は「計算する」のふつうの語。compute はコンピュータなどで「算出する」かたい語
+N	calculate|reckon	calculate は「計算する」。reckon は「だいたい見積もる」や「〜と思う」（イギリスの話し言葉）
+I	calculate|exam_idm_work_out	work out は答えを「計算して出す・解く」の話し言葉。calculate は「計算する」のふつうの語
+N	calculation|computation	calculation は「計算」のふつうの語。computation はコンピュータなどによる「計算・算出」のかたい語
+N	career|profession	career は仕事を続けてきた「経歴・職業人生」。profession は医者・弁護士などの「専門職」
+N	career|occupation	career は「経歴・生涯の仕事」。occupation は書類に書く「職業」
+N	careless|sloppy	careless は「不注意な」。sloppy は仕事や身なりが「ずさんな・だらしない」
+N	cart|wagon	cart は手で押す「カート・荷車」。wagon は馬などが引く大きな「荷馬車・ワゴン」
+N	cart|trolley	cart はアメリカ英語で店の「カート」。trolley はイギリス英語で「手押し車・カート」
+N	case|instance	case は「場合・事例」（in case of）。instance は1つの「例」（for instance＝たとえば）
+N	case|lawsuit	case は裁判の「訴訟事件」。lawsuit は「訴訟」のかたい語
+N	cast|throw	throw は「投げる」のふつうの語。cast は釣り糸や網を「投げる」、影や視線を「投げかける」
+N	cast|hurl	cast は「投げる」。hurl は力いっぱい「投げつける」
+N	central|main	central は「中心の・中央の」。main は「主な・いちばん大事な」
+N	central|key	central は「中心的な」。key は名詞の前で「鍵となる・重要な」（a key factor）
+N	central|peripheral	central は「中心の」、peripheral は「周辺の・重要でない」
+N	certainly|definitely	certainly は「確かに・もちろん」。definitely は「間違いなく・絶対に」と、さらに強く言う
+I	certainly|curr1900_idm_2_for_sure	for sure は「確かに・きっと」の話し言葉（I know for sure.）。certainly は返事の「もちろん」にも使う
+I	certainly|exam_idm_of_course	of course は「もちろん」と当然のことを言う。certainly は「確かに・承知しました」と、ていねいな返事にも使う
+N	chat|talk	talk は「話す」と広く言う。chat は気楽に「おしゃべりする」
+N	chat|gossip	chat は「おしゃべり（する）」。gossip は人の「うわさ話（をする）」
+N	cheat|deceive	cheat はお金や試験で「ずるをする・だます」。deceive は人を「欺く・思い違いさせる」
+N	cheat|swindle	cheat は「だます・ずるをする」。swindle はお金を「だまし取る」
+N	cheat|play fair	cheat は「ずるをする」、play fair は「正々堂々とやる」
+N	applaud|cheer	cheer は「歓声を上げる・声援を送る」。applaud は手をたたいて「拍手する・称賛する」
+N	cheer|encourage	cheer は声で「元気づける・応援する」（cheer up）。encourage は「励ます・促す」
+N	cheer|jeer	cheer は「声援を送る」、jeer は「やじる」
+N	cheerful|merry	cheerful は性格や表情が「明るい・陽気な」。merry は楽しくて「陽気な」（Merry Christmas）
+N	cheerful|lively	cheerful は「明るい・陽気な」。lively は「元気な・活気のある」
+N	cheerful|gloomy	cheerful は「明るい」、gloomy は「陰気な・暗い」
+N	chin|jaw	chin は「あご先」。jaw は「あご（の骨）」全体
+N	choice|option	choice は「選ぶこと・選んだもの」。option は選べる「選択肢」の1つ
+N	choice|selection	choice は「選択」。selection は選び抜いた「品ぞろえ」や、「選抜」
+N	chop|cut	cut は「切る」と広く言う。chop は包丁やおので「ぶつ切りにする・たたき切る」
+N	chop|mince	chop は「刻む」。mince は肉や野菜を「細かく刻む・ひき肉にする」
+N	assert|claim	claim は「(事実だと)主張する」。assert は強く「断言する」かたい語
+N	claim|demand	claim は当然の権利として「要求する」（claim a prize）。demand は強く「要求する」
+N	claim|deny	claim は「主張する」、deny は「否定する」
+N	clay|mud	clay は焼き物などに使う「粘土」。mud は水でぬかるんだ「泥」
+N	clay|earth	clay は「粘土」。earth は「土」と広く言う
+N	coach|trainer	coach はスポーツの「コーチ・監督」。trainer は体を鍛える「トレーナー」や、動物の「調教師」
+N	coach|instructor	coach は選手を「指導する人」。instructor は技術を教える「指導員・講師」
+N	collar|neckband	collar は服の「襟」や、犬の「首輪」。neckband は服の「首回りの部分」
+N	collect|gather	collect は目的をもって「集める・収集する」（collect stamps）。gather は人や物を1か所に「集める・集まる」
+N	accumulate|collect	collect は「集める」。accumulate は少しずつ「たまる・ためる」
+N	collect|scatter	collect は「集める」、scatter は「まき散らす・散らばる」
+N	comb|groom	comb は「くしでとかす」。groom は髪や動物の毛を「手入れする・身なりを整える」
+N	comb|search	comb は動詞で、ある場所を「くまなく捜す」。search は「探す・捜索する」と広く言う
+N	common|usual	common は多くの人や物に「よくある・ありふれた」。usual は「いつもの・通常の」
+N	common|unusual	common は「よくある」、unusual は「珍しい」
+N	commonly|generally	commonly は「よく・普通に」（commonly used）。generally は「概して・一般に」
+N	commonly|rarely	commonly は「よく」、rarely は「めったに〜ない」
+I	commonly|curr_idm_pre2_in_general	in general は「一般に・全体として」で、文の頭や名詞の後ろに置く（people in general）。commonly は「よく・普通に」
+N	competition|rivalry	competition は「競争・競技会」。rivalry は特定の相手との「張り合い・対抗意識」
+N	complicated|intricate	complicated は「ややこしい・複雑な」。intricate は細かい部分が「入り組んだ・精巧な」
+N	bewilder|confuse	confuse は「混乱させる・混同する」。bewilder はわけが分からず「すっかり当惑させる」
+N	confuse|muddle	confuse は「混乱させる」。muddle は物や考えを「ごちゃごちゃにする」
+N	clarify|confuse	confuse は「混乱させる」、clarify は「はっきりさせる」
+N	compliment|congratulate	congratulate は成功やお祝いごとを「祝う」（congratulate 人 on）。compliment は人の良いところを「ほめる」
+N	condole|congratulate	congratulate は「お祝いを言う」、condole は「お悔やみを言う」（かたい語）
+I	contact|curr1900_idm_2_get_in_touch_with	get in touch with は「〜と連絡を取る」の話し言葉。contact は「連絡する」のやや改まった語で、前置詞なしで続ける（contact me）
+N	continue|persist	continue は「続ける・続く」と広く言う。persist は困難があっても「しつこく続ける・持続する」
+N	continue|stop	continue は「続ける」、stop は「やめる・止まる」
+I	continue|curr_idm_3_carry_on	carry on は「(止めずに)続ける」の話し言葉（carry on with）。continue は「続ける」のやや改まった語
+I	continue|curr_idm_3_go_on	go on は「続く・続ける」の話し言葉（go on 〜ing）。continue は「続ける」と広く言う
+I	continue|exam_idm_keep_on	keep on は「(しつこく)〜し続ける」（keep on 〜ing）。continue は「続ける」と広く言う
+N	bronze|copper	copper は「銅」。bronze は銅とすずを混ぜた「青銅・ブロンズ」
+N	corn|maize	corn はアメリカ英語で「トウモロコシ」（イギリス英語では「穀物」）。maize はイギリス英語などでの「トウモロコシ」
+N	corn|grain	corn は「トウモロコシ」。grain は米・麦などの「穀物」や「粒」
+N	cost|price	price は物についている「値段」。cost は何かにかかる「費用」
+N	cost|expense	cost は「費用・かかる額」。expense は出ていく「出費・経費」（at one's expense）
+N	costly|pricey	costly は「高くつく・犠牲の大きい」（a costly mistake）。pricey は値段が「高い」の話し言葉
+N	cheap|costly	costly は「高価な・高くつく」、cheap は「安い」
+N	cotton|fabric	cotton は「綿・木綿」。fabric は「布・生地」全体
+N	bold|courageous	courageous は「勇気のある」。bold は「大胆な・思い切った」で、「ずうずうしい」の意味もある
+N	courageous|cowardly	courageous は「勇敢な」、cowardly は「臆病な」
+N	course|route	course は船や飛行機の「進路」。route は決まった「経路・ルート」
+N	course|path	course は進んでいく「進路・道筋」。path は歩く「小道」や、人生の「道」
+N	collision|crash	crash は車や飛行機の「衝突・墜落」。collision は2つの物が「ぶつかること」のかたい語
+N	crash|wreck	crash は「衝突・墜落」。wreck は事故で壊れた「残骸」や、「難破」
+N	crisp|crunchy	crisp はうすくて「パリッとした」（crisp potato chips）。crunchy は「カリカリ・ポリポリした」
+N	brisk|crisp	crisp は空気が「すがすがしい」。brisk は風が「冷たくさわやかな」や、動きが「きびきびした」
+N	crisp|soggy	crisp は「パリッとした」、soggy は水を吸って「ふやけた」
+N	crowded|packed	crowded は「混んだ」のふつうの語。packed は「ぎゅうぎゅう詰めの・満員の」と強く言う
+N	congested|crowded	crowded は人が多くて「混んだ」。congested は道路が「渋滞した」や、鼻が「詰まった」
+N	crowded|empty	crowded は「混んだ」、empty は「すいた・空の」
+N	brutal|cruel	cruel は「残酷な」のふつうの語。brutal は暴力的で「残忍な・容赦ない」
+N	cruel|merciless	cruel は「残酷な」。merciless は「情け容赦のない」
+N	brutally|cruelly	cruelly は「残酷に」。brutally は「残忍に・容赦なく」（brutally honest＝容赦なく正直な）
+N	curious|inquisitive	curious は「好奇心の強い」。inquisitive は何でも「知りたがる」で、「詮索好きな」の悪い意味にもなる
+N	coil|curl	curl は髪などが「くるくる巻く」。coil はロープなどを「ぐるぐる巻く」
+N	curl|twist	curl は「丸まる・巻く」。twist は「ねじる・ひねる」
+N	curl|straighten	curl は「巻き毛にする・丸める」、straighten は「まっすぐにする」
+N	arc|curve	curve は道や線が「曲がる・カーブ」。arc は円の一部の「弧（を描く）」
+N	curve|straighten	curve は「曲がる・曲げる」、straighten は「まっすぐにする」
+N	cushion|pad	cushion は座る「クッション」や衝撃を「和らげる物」。pad は当てて保護する「当て物・パッド」
+N	buffer|cushion	cushion は「クッション・緩衝物」。buffer は衝撃や対立を和らげる「緩衝物・緩衝地帯」
+N	circle|cycle	cycle はくり返す「周期・循環」。circle は「円」や、仲間の「輪」
+N	cycle|rotation	cycle は「周期・循環」。rotation は「回転」や、順番の「交代」
+N	creamery|dairy	dairy は牛乳から作る「乳製品」や「酪農場」。creamery は乳製品を作る「工場」
+N	barrier|dam	dam は川の水をせき止める「ダム」。barrier は通れないようにする「障壁・柵」
+N	dam|dike	dam は川をせき止める「ダム」。dike は洪水を防ぐ「堤防」
+N	danger|risk	danger は「危険」と広く言う。risk は損をしたり危ない目にあったりする「おそれ・リスク」（take a risk）
+N	danger|hazard	danger は「危険」。hazard は危険のもとになる「危険物・障害」（a fire hazard）
+N	dangerous|risky	dangerous は「危険な」。risky は失敗や損の「リスクがある」
+N	dangerous|safe	dangerous は「危険な」、safe は「安全な」
+N	dare|venture	dare は勇気を出して「あえて〜する」。venture は危険を承知で「思い切って〜する・出かける」
+N	challenge|dare	dare は「やれるならやってみろ」と挑む。challenge は相手に「挑戦する」や、「異議を唱える」
+N	dare|fear	dare は「あえて〜する」、fear は「恐れる」
+N	dash|sprint	dash は「急いで走る・突進する」。sprint は短い距離を「全力で走る」
+N	dawn|daybreak	dawn は「夜明け」のふつうの語。daybreak も「夜明け」だが、やや文学的な語
+N	dawn|sunrise	dawn は空が白む「夜明け」。sunrise は太陽が昇る「日の出」
+N	dawn|dusk	dawn は「夜明け」、dusk は「夕暮れ」
+N	deaf|hearing-impaired	deaf は「耳が聞こえない」。hearing-impaired は「聴覚障害の」と、ていねいに言う言い方
+N	deaf|hearing	deaf は「耳が聞こえない」、hearing は形容詞で「耳が聞こえる」
+N	decide|determine	decide は「決める」のふつうの語。determine は「(正式に)決定する」や、原因などを「突き止める」
+I	decide|idm_make_up_mind	make up one's mind は迷ったすえに「決心する」の話し言葉。decide は「決める」と広く言う
+N	deck|platform	deck は船の「甲板」や家の外の「デッキ」。platform は駅の「ホーム」や、演説の「演壇」
+N	adorn|decorate	decorate は部屋などを「飾る」のふつうの語。adorn は美しく「飾る」かたい語
+N	decorate|embellish	decorate は「飾る」。embellish は飾りを「付け足す」や、話を「大げさにする」
+N	decorate|strip	decorate は「飾る」、strip は「はぎ取る・取り去る」
+N	delay|postpone	delay は予定より「遅らせる・遅れる」（事故などで）。postpone は予定を後の日に「延期する」（わざと決める）
+N	delay|hasten	delay は「遅らせる」、hasten は「早める・急がせる」
+I	delay|curr_idm_pre1_set_back	set back は計画などを「遅らせる・後退させる」。delay は「遅らせる」と広く言う
+N	deliver|distribute	deliver は決まった人に「届ける・配達する」。distribute は大勢に「配る・分配する」
+N	convey|deliver	deliver は物や手紙を「届ける」。convey は考えや気持ちを「伝える」や、物を「運ぶ」かたい語
+N	collect|deliver	deliver は「配達する」、collect は「集めに来る・回収する」
+N	dental|oral	dental は「歯の・歯科の」。oral は「口の」や、「口頭の」（an oral exam）
+I	depend|curr_idm_2_count_on	count on は「当てにする・頼りにする」の話し言葉。depend on は「頼る」のほか「〜次第である」の意味もある
+I	depend|curr_idm_pre2_rely_on	rely on は信頼して「頼る」。depend on は「頼る」のほか「〜次第である」（It depends on the weather.）
+N	dependence|independence	dependence は「依存」、independence は「独立・自立」
+N	demon|devil	devil は「悪魔」のふつうの語。demon は「悪霊・鬼」
+N	devil|fiend	devil は「悪魔」。fiend は「悪魔・鬼」のかたい語で、話し言葉では「〜狂」（a fitness fiend）
+N	angel|devil	devil は「悪魔」、angel は「天使」
+N	call|dial	call は「電話する」のふつうの語。dial は番号を「ダイヤルする・押す」
+I	dial|curr_idm_3_call_up	call up は「電話をかける」の話し言葉。dial は番号を「押してかける」
+N	diaper|nappy	diaper はアメリカ英語の「おむつ」、nappy はイギリス英語の「おむつ」
+N	difference|distinction	difference は「違い」のふつうの語。distinction は2つを分ける「区別」や、「優秀さ」（with distinction）
+N	difference|discrepancy	difference は「違い」。discrepancy は数字や話の「食い違い・不一致」
+N	difficulty|hardship	difficulty は「難しさ・困難」。hardship はお金などに困る生活の「苦難」
+N	difficulty|obstacle	difficulty は「困難」。obstacle は進むのを妨げる「障害（物）」
+N	difficulty|ease	difficulty は「難しさ」、ease は「容易さ」（with ease＝楽々と）
+N	dig|excavate	dig は「掘る」のふつうの語。excavate は遺跡などを「発掘する」かたい語
+N	burrow|dig	dig は「掘る」。burrow は動物が「穴を掘ってすむ」
+N	dig|fill	dig は穴を「掘る」、fill は穴を「埋める」
+N	dip|immerse	dip はちょっと「浸す」。immerse は全体を「沈める・浸す」や、何かに「没頭させる」
+N	dip|dunk	dip は「ちょっと浸す」。dunk はパンなどを飲み物に「浸して食べる」
+N	dip|raise	dip は「少し下げる・下がる」、raise は「上げる」
+N	direct|straight	direct は途中によらず「直接の・まっすぐな」。straight は形が「まっすぐな」
+N	direct|frank	direct は言い方が「率直な・ずばり言う」。frank は隠さず「率直な」
+N	direct|indirect	direct は「直接の」、indirect は「間接的な・遠回しの」
+N	disappear|vanish	disappear は「消える・見えなくなる」のふつうの語。vanish は突然「消えうせる」
+N	disappear|fade	disappear は「消える」。fade は色や音が「少しずつ薄れる」
+N	defy|disobey	disobey は命令に「従わない」。defy は公然と「反抗する・無視する」
+N	disobey|rebel	disobey は「従わない」。rebel は権力に「反抗する・反乱を起こす」
+N	disobey|obey	disobey は「従わない」、obey は「従う」
+N	dive|plunge	dive は頭から水に「飛び込む」。plunge は勢いよく「突っ込む」や、値が「急落する」
+N	division|section	division は会社などの大きな「部門」。section は全体を分けた「部分・区画・課」
+N	division|union	division は「分割・分裂」、union は「結合・連合」
+N	dizzy|giddy	dizzy は「目が回る・めまいがする」。giddy も「めまいがする」だが、「浮かれた」の意味もある
+N	dizzy|lightheaded	dizzy は「目が回る」。lightheaded は頭が「ふらふらする」
+N	dizzy|steady	dizzy は「ふらふらする」、steady は「しっかりした・安定した」
+N	drama|play	play は舞台で演じる「劇」のふつうの語。drama は「劇・ドラマ」や、劇のような「出来事」
+N	drama|theater	drama は1つ1つの「劇」。theater は「劇場」や、「演劇」というジャンル
+N	drown|submerge	drown は水に落ちて「おぼれ死ぬ」。submerge は物を「水中に沈める・水没させる」
+N	drown|flood	drown は「水浸しにする」の意味もある。flood は動詞で洪水で「水浸しにする」、人が「殺到する」
+N	drown|rescue	drown は「おぼれ死ぬ」、rescue はおぼれている人などを「救助する」

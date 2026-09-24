@@ -35,7 +35,7 @@ const RAW = [
   ['next', '形', 'pre1', '次の・隣の', 'Please get off at the next station.', '次の駅で降りてください。', '古英語 niehst(最も近い)→ nigh と同系。', { syn: [{ w: 'following', m: '次の' }, { w: 'subsequent', m: 'その後の' }], ant: [{ w: 'previous', m: '前の' }], field: '一般' }],
   ['nibble', '動', 'pre1', '少しずつかじる・ついばむ', 'A little mouse nibbled at the cheese in the kitchen.', '小さなネズミが台所でチーズを少しずつかじった。', '低地ドイツ nibbelen(つつく)。', { syn: [{ w: 'gnaw', m: 'かじる' }, { w: 'munch', m: 'もぐもぐ食べる' }], ant: [{ w: 'gobble', m: 'がつがつ食べる' }], field: '一般' }],
   ['nighttime', '名', 'pre1', '夜間・夜', 'In the desert, temperatures drop sharply during the nighttime.', '砂漠では、夜間に気温が急激に下がる。', 'night(夜)+time(時)。', { syn: [{ w: 'night', m: '夜' }, { w: 'darkness', m: '暗闇' }], ant: [{ w: 'daytime', m: '昼間' }], field: '一般' }],
-  ['noise', '名', 'pre1', '騒音・雑音', 'The noise from the construction woke me up.', '工事の騒音で目が覚めた。', 'ラテン nausea(船酔い)→不快な音。', { syn: [{ w: 'din', m: '騒音' }, { w: 'racket', m: '騒ぎ' }], ant: [], fam: [{ w: 'noisy', m: '騒がしい' }], field: '一般' }],
+  ['noise', '名', 'pre1', '騒音・雑音', 'The noise from the construction woke me up.', '工事の騒音で目が覚めた。', 'ラテン nausea(船酔い)→不快な音。', { syn: [{ w: 'din', m: '騒音' }], ant: [], fam: [{ w: 'noisy', m: '騒がしい' }], field: '一般' }],
 ]
 
 export const WORDS_MORE73 = RAW.map(expandCompact)

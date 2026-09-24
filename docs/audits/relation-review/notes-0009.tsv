@@ -1,0 +1,224 @@
+N	activate|trigger	activate はスイッチなどで機械を「作動させる」。trigger は出来事や装置を「引き起こす・作動させる」きっかけになる
+N	activate|start	activate は機能を「働かせる・有効にする」かたい語。start は「始める・始動させる」と広く言う
+N	activate|deactivate	activate は「作動させる・有効にする」、deactivate は「停止させる・無効にする」
+N	adapt|adjust	adapt は新しい環境に「適応する・合わせて変える」。adjust は少し「調整する・慣れる」
+N	addition|inclusion	addition は「加えること・追加」。inclusion は仲間や一覧に「含めること」
+N	addition|supplement	addition は「追加（したもの）」。supplement は足りない分を補う「補足・補助食品」
+N	addition|subtraction	addition は「足し算・追加」、subtraction は「引き算」
+N	adjust|modify	adjust は少し動かして「調整する」。modify は一部を「修正する・変更する」
+N	adjustment|modification	adjustment は小さな「調整」。modification は仕組みなどの「修正・変更」
+N	admiration|esteem	admiration はすばらしいと思う「感心・称賛」。esteem は長く続く「尊敬・高い評価」のかたい語
+N	admiration|respect	admiration は才能などへの「感心・あこがれ」。respect は人への「敬意・尊重」
+N	admiration|contempt	admiration は「称賛」、contempt は「軽蔑」
+I	admire|idm_look_up_to	look up to は目上の人を「尊敬する」。admire は才能や行いに「感心する・称賛する」
+I	admit|curr_idm_1_own_up_to	own up to は悪いことをしたと「白状する」話し言葉。admit は「認める」と広く言う
+N	advertise|promote	advertise は広告を出して「宣伝する」。promote は売り出すために「販売促進する」や、人を「昇進させる」
+N	advertise|market	advertise は「広告する」。market は動詞で商品を「売り込む・市場に出す」
+N	advertisement|commercial	advertisement は新聞などの「広告」全体。commercial はテレビ・ラジオの「CM」
+N	affordable|inexpensive	affordable は買える程度に「手ごろな」。inexpensive は「値段が安い」と、cheap のていねいな言い方
+N	affordable|reasonable	affordable は「無理なく買える」。reasonable は値段が「妥当な・手ごろな」
+N	affordable|expensive	affordable は「手ごろな」、expensive は「高価な」
+N	alarming|disturbing	alarming は心配になるほど「憂慮すべき」（an alarming rate）。disturbing は気持ちを「動揺させる・不安にさせる」
+N	alarming|worrying	alarming は「ぎょっとするほど心配な」。worrying は「気がかりな」と、少し弱い言い方
+N	alarming|reassuring	alarming は「不安にさせる」、reassuring は「安心させる」
+N	alert|watchful	alert は危険にすぐ気づけるよう「油断のない・機敏な」。watchful は注意して「見守っている」
+N	alert|attentive	alert は「油断なく注意している」。attentive は人の話などに「よく注意を払う・気配りのある」
+N	alert|drowsy	alert は「頭がはっきりした・油断のない」、drowsy は「眠い」
+N	alien|foreign	foreign は「外国の」。alien は「異質な・なじめない」と、違和感を強く言う
+N	alien|unfamiliar	unfamiliar は「なじみのない」。alien は「まったく異質な」と強く言う
+N	alien|familiar	alien は「異質な・なじみのない」、familiar は「なじみのある」
+N	alike|similar	alike は「似ている」で、名詞の前には置かない（They look alike.）。similar は a similar idea のように名詞の前にも置ける
+N	alike|identical	alike は「よく似ている」。identical は「全く同じ・そっくりの」
+N	alike|different	alike は「似ている」、different は「異なる」
+N	allow|permit	allow は「許す・させておく」の話し言葉。permit は規則などで「許可する」かたい語
+N	allow|forbid	allow は「許す」、forbid は「禁じる」
+N	allow|ban	allow は「許す」、ban は法律などで「禁止する」
+N	allowance|stipend	allowance は子どもの「おこづかい」や仕事の「手当」。stipend は研修生などに払う決まった「手当・給付金」
+N	amateur|professional	amateur は仕事でなく好きでやる「アマチュア」、professional はそれを仕事にする「プロ」
+N	amazing|astonishing	amazing は「驚くほどすばらしい」話し言葉。astonishing は「びっくりするほどの」と、驚きを強く言う
+N	amazing|incredible	amazing は「驚くべき」。incredible は「信じられないほどの」
+N	amazing|ordinary	amazing は「驚くべき」、ordinary は「平凡な」
+N	amount|sum	amount は「量・額」と広く言う。sum はお金の「金額」や「合計」
+N	amuse|entertain	amuse は人を「面白がらせる・笑わせる」。entertain は人を「楽しませる・もてなす」
+N	amuse|delight	amuse は「面白がらせる」。delight は「大喜びさせる」
+N	amuse|bore	amuse は「楽しませる」、bore は「退屈させる」
+N	amusement|boredom	amusement は「楽しみ・面白さ」、boredom は「退屈」
+N	ancient|old	old は「古い」と広く言う。ancient は何千年も前の「古代の」（ancient Rome）
+N	announcement|declaration	announcement は情報を知らせる「発表・告知」。declaration は立場などをはっきり示す「宣言」
+N	announcement|notice	announcement は口頭などでの「発表」。notice は紙に書いて貼る「掲示・通知」
+N	annoy|irritate	annoy は「いらだたせる」のふつうの語。irritate は「いらいらさせる」と強く言い、肌を「ひりひりさせる」の意味もある
+N	annoy|bother	annoy は人を「いらだたせる」。bother は「困らせる・邪魔する」（Sorry to bother you.）
+N	annoy|please	annoy は「いらだたせる」、please は動詞で「喜ばせる」
+N	annoyance|irritation	annoyance は「いらだち・迷惑」。irritation は「いらいら」のほか、肌の「炎症」
+N	annoyance|nuisance	annoyance は「いらだち・迷惑なもの」。nuisance は「迷惑な人・物・厄介なこと」
+N	annoyed|irritated	annoyed は「いらだった」のふつうの語。irritated は「いらいらした」と、少し強い
+N	annoyed|exasperated	annoyed は「いらだった」。exasperated は我慢の限界で「憤慨した」
+N	annoyed|pleased	annoyed は「いらだった」、pleased は「喜んだ」
+N	annoying|irritating	annoying は「うっとうしい・迷惑な」。irritating は「しゃくにさわる」と強く言う
+N	annoying|bothersome	annoying は「迷惑な」。bothersome は「厄介な・面倒な」
+N	annoying|pleasant	annoying は「迷惑な」、pleasant は「快い」
+N	appetite|hunger	appetite は食べたいと思う「食欲」。hunger は体が食べ物を求める「空腹・飢え」
+N	appetite|desire	appetite は「食欲」や、何かを求める気持ち（an appetite for knowledge）。desire は「欲求・願望」と広く言う
+N	applause|clapping	applause はほめるための「拍手・称賛」。clapping は手をたたく動作そのもの「拍手」
+N	applause|ovation	applause は「拍手」。ovation は立ち上がって送るような「大喝采」（a standing ovation）
+N	applause|booing	applause は「拍手」、booing は「ブーイング・やじ」
+N	appoint|name	appoint は役職に正式に「任命する」。name は「(〜に)指名する」の話し言葉（be named captain）
+N	appoint|designate	appoint は人を役職に「任命する」。designate は人や場所を正式に「指定する」
+N	approval|consent	approval は計画などへの「承認・賛成」。consent は本人や親の「同意・承諾」
+N	approval|endorsement	approval は「承認」。endorsement は公の「支持・推薦」
+N	approval|disapproval	approval は「承認・賛成」、disapproval は「不賛成」
+N	article|piece	article は新聞や雑誌の「記事」。piece も「記事・作品」の意味で使う（a piece on education）
+N	artistic|creative	artistic は「芸術の・芸術的な」。creative は新しいものを生む「創造的な」
+N	aesthetic|artistic	artistic は「芸術の・芸術の才能のある」。aesthetic は「美しさに関する・美的な」
+N	ashamed|embarrassed	ashamed は悪いことをして「恥じている」。embarrassed は人前で「きまりが悪い・恥ずかしい」
+N	ashamed|humiliated	ashamed は自分の行いを「恥じている」。humiliated は人前で「恥をかかされた」
+N	assess|evaluate	assess と evaluate はどちらも「評価する」。assess は税額や被害などを「査定する」ことにも使う
+I	assess|curr_idm_1_size_up	size up は人や状況を「見定める」話し言葉。assess は「評価する」のかたい語
+N	aide|assistant	assistant は仕事の「助手」と広く言う。aide は政治家などの「補佐官・側近」
+N	associate|connect	associate は頭の中で2つを「結びつけて考える」（associate A with B）。connect は物や考えを「つなぐ」
+N	associate|link	associate は「連想する・関連づける」。link は「つなぐ・関連づける」の話し言葉
+I	assume|curr_idm_2_take_on	take on は仕事や責任を「引き受ける」。assume も責任などを「引き受ける」の意味があるが、「仮定する」の意味が中心
+N	appealing|attractive	attractive は見た目などが「魅力的な」。appealing は「心をひかれる・興味をそそる」
+N	attractive|charming	attractive は「魅力的な」と広く言う。charming は人柄や場所が「感じのよい・かわいらしい」
+N	attractive|repulsive	attractive は「魅力的な」、repulsive は「ひどく不快な」
+N	await|expect	await は来るものを「待ち受ける」かたい語で、前置詞なしで使う。expect は「予期する・当然と思う」
+N	anticipate|await	await は「待つ」。anticipate は起こることを「予想して備える」
+N	awful|dreadful	awful と dreadful はどちらも「ひどい」。dreadful は少し古めかしい言い方
+N	ban|prohibit	ban は「禁止する」の話し言葉で、新聞でもよく使う。prohibit は法律などで「禁止する」かたい語
+N	ban|forbid	ban は法律などで「禁止する」。forbid は親などが「禁じる」（forbid 人 to do）
+N	ban|permit	ban は「禁止する」、permit は「許可する」
+N	bargain|deal	bargain は安く買えた「お買い得品」。deal は「取引」（a good deal＝お得な取引）
+N	bargain|good buy	bargain は「掘り出し物・お買い得品」。good buy は「買ってよかったもの」と説明する言い方
+N	barn|shed	barn は農場の大きな「納屋・家畜小屋」。shed は庭などの小さな「物置小屋」
+N	basically|essentially	basically は「基本的に・要するに」の話し言葉。essentially は「本質的に」のかたい語
+N	believable|credible	believable は話などが「信じられる」。credible は証拠などが「信用できる」かたい語
+N	believable|unbelievable	believable は「信じられる」、unbelievable は「信じられない」
+N	believer|skeptic	believer は「信じる人・信者」、skeptic は「疑い深い人」
+I	besides|curr_idm_pre2_apart_from	apart from は「〜を除いて」と「〜に加えて」の両方の意味がある。besides は「〜に加えて」
+I	besides|curr1900_idm_pre2_aside_from	aside from は「〜は別として」（アメリカ英語で多い）。besides は「〜に加えて」
+I	besides|exam_idm_in_addition_to	in addition to は「〜に加えて」の少しかたい言い方。besides は話し言葉でもよく使う
+N	bind|fasten	bind はひもで「縛る・束ねる」。fasten はベルトやボタンを「留める」
+N	bind|untie	bind は「縛る」、untie は「ほどく」
+N	blend|mixture	blend はうまく混ざり合った「ブレンド・調合」。mixture は混ぜ合わせたもの「混合物」と広く言う
+N	blend|combination	blend は混ざって1つになったもの。combination は別々のまま組み合わせたもの「組み合わせ」
+N	blow|stroke	blow は「(強い)一撃」や、心の「ショック」。stroke は「一撃・ひとかき」や「脳卒中」
+N	audacity|boldness	boldness は「大胆さ」。audacity は「(あきれるほどの)大胆さ・ずうずうしさ」
+N	boldness|timidity	boldness は「大胆さ」、timidity は「臆病さ・気の弱さ」
+N	bond|tie	bond は人と人の深い「きずな」。tie は家族や仕事の「つながり・関係」（family ties）
+N	bond|connection	bond は心の「きずな」。connection は物事や人の「つながり・関係」
+N	boost|increase	boost は数値や気分を「押し上げる・高める」。increase は「増やす」と広く言う
+N	boost|enhance	boost は「押し上げる」の話し言葉。enhance は質などを「高める」かたい語
+N	boost|reduce	boost は「高める」、reduce は「減らす」
+N	boring|dull	boring は「退屈な」のふつうの語。dull は「つまらない」のほか、刃が「鈍い」、色が「くすんだ」
+N	boring|tedious	boring は「退屈な」。tedious は同じことが続いて「うんざりする」
+I	bother|curr1900_idm_pre2_take_the_trouble_to_do	take the trouble to do は手間をかけて「わざわざ〜する」。bother to do も同じ意味で、否定文でよく使う（Don't bother to call.）
+N	bound|destined	bound は乗り物が「〜行きの」（bound for Osaka）。destined は「〜行きの」のほか「運命づけられた」
+N	bound|obliged	bound は be bound to do で「きっと〜する」や「〜する義務がある」。obliged は「(〜する)義務がある・恩を感じる」
+N	branch|diverge	branch は道が「枝分かれする」。diverge は道や意見が「分かれていく」かたい語
+N	branch|merge	branch は「枝分かれする」、merge は「合流する」
+N	breed|raise	breed は動物を「繁殖させる」。raise は子どもや家畜を「育てる」
+N	breed|reproduce	breed は人が動物を「繁殖させる」。reproduce は生物が「子を産んで増える」や、「複製する」
+N	briefly|concisely	briefly は「短い時間で・手短に」。concisely は言葉が「簡潔に」
+N	at length|briefly	briefly は「手短に」、at length は「長々と・詳しく」
+N	brilliant|dazzling	brilliant は「輝かしい・優秀な」。dazzling は目がくらむほど「まばゆい」
+N	brilliant|ingenious	brilliant は人や考えが「すばらしく優れた」。ingenious は仕組みや考えが「巧みで独創的な」
+N	brilliant|dull	brilliant は「すばらしい・輝く」、dull は「くすんだ・退屈な」
+N	broadcast|transmit	broadcast は番組を「放送する」。transmit は信号やデータを「送信する」や、病気を「うつす」
+N	bug|glitch	bug はコンピュータの「不具合」や「虫」。glitch は一時的な小さな「故障・不具合」
+N	bump|collision	bump は軽く「ぶつかること」。collision は車などの「衝突」
+N	bump|lump	bump はぶつけてできた「こぶ」や道の「でこぼこ」。lump は「かたまり・しこり」
+N	bunch|cluster	bunch は花などの「束」やぶどうの「房」。cluster はかたまって集まったもの「群れ・集団」
+N	bunch|bundle	bunch は同じ種類をまとめた「束・房」。bundle はひもなどで束ねた「包み」
+N	cable|cord	cable は太い「ケーブル・電線」。cord は電気器具の細い「コード」
+I	cancel|idm_call_off	call off は予定していた催しを「中止する」話し言葉。cancel は「取り消す・中止する」と広く言う
+I	capable|idm_be_able_to	be capable of 〜ing は「〜する能力がある」。be able to do は「〜できる」で、形がちがう
+N	casual|informal	casual は服や態度が「気楽な・カジュアルな」。informal は場や言葉が「形式ばらない・くだけた」
+N	casual|relaxed	casual は「気楽な・普段着の」。relaxed は人や雰囲気が「くつろいだ」
+N	casual|formal	casual は「くだけた」、formal は「正式な」
+N	casually|informally	casually は「何気なく・気軽に」。informally は「形式ばらずに・略式に」
+N	casually|offhandedly	casually は「何気なく」。offhandedly は「ぞんざいに・そっけなく」
+N	casually|formally	casually は「気軽に」、formally は「正式に」
+N	category|class	category は分類の「区分・部門」。class は「種類・部類」や「授業・学級」
+I	cause|idm_bring_about	bring about は変化などを「もたらす」。cause は悪いことを「引き起こす」によく使う
+I	cause|exam_idm_lead_to	lead to は「(結果として)〜につながる」。cause は直接の「原因となる」
+N	caution|recklessness	caution は「用心・慎重さ」、recklessness は「無謀さ」
+N	celebration|festivity	celebration は「お祝い・祝賀会」。festivity は「祭りの楽しさ・祝いの行事」
+N	celebrity|star	celebrity はテレビなどに出る「有名人」。star は映画・音楽などの「スター・人気者」
+N	celebrity|fame	celebrity は「有名人」や「名声」。fame は「名声・有名であること」
+N	certain|uncertain	certain は「確かな・確信して」、uncertain は「不確かな・自信のない」
+N	captivating|charming	charming は「感じのよい・かわいらしい」。captivating は心を奪うほど「魅惑的な」
+N	charming|delightful	charming は人や場所が「魅力的な」。delightful は「とても楽しい・愉快な」
+N	charming|repulsive	charming は「魅力的な」、repulsive は「ひどく不快な」
+N	chase|pursue	chase は走って「追いかける」。pursue は「追跡する」や、目標を「追い求める」かたい語
+N	chase|follow	chase は捕まえようと「追いかける」。follow は後ろから「ついていく」
+N	chew|munch	chew は「かむ・かみ砕く」。munch は音を立てて「もぐもぐ食べる」
+N	chew|gnaw	chew は「かむ」。gnaw は固い物を「かじる」
+N	chew|swallow	chew は「かむ」、swallow は「飲み込む」
+N	chill|coldness	chill は肌に感じる「ひんやりした冷気」。coldness は「冷たさ」や、態度の「冷たさ」
+N	chill|shiver	chill は「寒気・悪寒」。shiver は寒さや恐怖での「震え」
+N	chill|cold	chill は「ひんやりした冷気・寒け」。cold は「寒さ」と広く言い、名詞で「かぜ」も表す
+N	chilly|warm	chilly は「肌寒い」、warm は「暖かい」
+N	choir|chorus	choir は教会などの「聖歌隊・合唱団」（人の集まり）。chorus は「合唱」や歌の「サビ」
+N	chorus|refrain	chorus は歌の「サビ」。refrain は歌や詩で何度も繰り返す部分（「くり返し」）
+N	civil|polite	civil は「最低限の礼儀を守った」。polite は「礼儀正しい・ていねいな」
+N	civil|military	civil は軍でない「民間の・市民の」、military は「軍の」
+N	applaud|clap	clap は手を「たたく」。applaud は拍手して「称賛する」
+N	boo|clap	clap は「拍手する」、boo は「ブーッとやじる」
+N	clarify|explain	explain は「説明する」と広く言う。clarify は分かりにくい点を「はっきりさせる」
+N	classic|timeless	classic は長く評価される「名作の・定番の」。timeless は時代が変わっても色あせない「不朽の」
+N	classic|typical	classic は「典型的な」（a classic example）。typical は「いつもの・典型的な」
+N	categorize|classify	classify は基準にしたがって「分類する」。categorize は「区分けする」とほぼ同じ意味で、少しくだけた語
+N	client|customer	customer は店の「客」。client は弁護士などの専門家の「依頼人」
+N	climax|peak	climax は話や出来事の「最高潮・山場」。peak は数値などの「頂点」
+N	climax|culmination	climax は「山場」。culmination は長い努力などの「最高点・集大成」
+N	anticlimax|climax	climax は「最高潮」、anticlimax は期待したのに「あっけない結末」
+N	cloth|fabric	cloth は「布」のふつうの語（数えない）。fabric は織り方や質を言う「生地・織物」
+N	cloth|material	cloth は「布」。material は服などの「素材」や「材料」と広く言う
+N	awkward|clumsy	clumsy は動きが「不器用な」。awkward は動作が「ぎこちない」や、場が「気まずい」
+N	clumsy|graceful	clumsy は「不器用な」、graceful は「優雅な」
+N	coastal|seaside	coastal は「沿岸の」と地域を言う（coastal areas）。seaside は行楽地の「海辺の」
+N	coastal|maritime	coastal は「海岸の」。maritime は「海事の・海運の」
+N	coastal|inland	coastal は「沿岸の」、inland は「内陸の」
+I	collapse|exam_idm_break_down	break down は機械が「故障する」や、話し合いが「決裂する」。collapse は建物などが「崩れ落ちる」
+I	collapse|curr_idm_2_fall_apart	fall apart は物が「ばらばらになる」や、計画が「うまくいかなくなる」。collapse は「崩壊する・倒れる」
+I	collapse|curr_idm_pre2_fall_down	fall down は人や物が「倒れる・転ぶ」。collapse は建物が「崩れる」や、人が「倒れる」
+N	colleague|coworker	colleague は仕事の「同僚」のかたい語。coworker は同じ職場で働く「同僚」の話し言葉
+N	comfort|discomfort	comfort は「快適さ・慰め」、discomfort は「不快さ」
+N	chief|commander	commander は軍の「指揮官・司令官」。chief は組織の「長」と広く言う
+N	commander|subordinate	commander は「指揮官」、subordinate は「部下」
+N	commit|perpetrate	commit は罪を「犯す」のふつうの語。perpetrate は悪いことを「しでかす」かたい語
+N	commit|pledge	commit は責任をもって「約束する・専念する」。pledge は「誓約する・固く約束する」
+N	communication|correspondence	communication は「伝え合うこと」全体。correspondence は手紙やメールの「やり取り・文通」
+N	communication|contact	communication は「意思の伝え合い」。contact は人との「連絡・接触」
+N	companion|comrade	companion は一緒にいる「連れ・仲間」。comrade は同じ目的の「同志・戦友」
+N	companion|partner	companion は旅などの「連れ」。partner は仕事や生活を共にする「相棒・配偶者」
+N	comparable|similar	comparable は比べられるくらい「同等の」（comparable to）。similar は「似ている」
+N	comparable|incomparable	comparable は「比べられる・同等の」、incomparable は「比べものにならないほど優れた」
+N	competitive|rival	competitive は「競争の・負けず嫌いの」。rival は形容詞的に「ライバルの・競合する」（a rival company）
+N	competitive|cooperative	competitive は「競争の」、cooperative は「協力的な」
+N	complaint|grievance	complaint は店などへの「苦情」。grievance は不公平な扱いへの「不満」
+N	complaint|protest	complaint は「苦情・不平」。protest は公に「抗議すること」
+N	completely|totally	completely は「完全に」。totally は「まったく」の話し言葉（totally different）
+N	completely|partly	completely は「完全に」、partly は「部分的に」
+N	completion|finish	completion は仕事や工事の「完成・完了」。finish は「終わり・仕上げ」
+N	component|element	component は機械などの「部品・構成要素」。element は物事の「要素」と広く言う
+N	component|whole	component は「構成要素」、whole は「全体」
+I	conceal|curr_idm_2_keep_back	keep back は情報などを「言わずにおく」や、人を「近づけない」。conceal は「隠す」のかたい語
+N	concentrate|dilute	concentrate は液体を「濃縮する」、dilute は「薄める」
+N	concentration|focus	concentration は「集中力・集中」。focus は注意の「焦点」
+N	concentration|distraction	concentration は「集中」、distraction は「気を散らすもの」
+N	anxious|concerned	concerned は他の人や社会のことを「心配している」。anxious は先のことが「不安な」
+N	concerned|unconcerned	concerned は「気にかけている」、unconcerned は「気にしない・無関心な」
+N	abstract|concrete	concrete は形容詞で「具体的な」、abstract は「抽象的な」
+N	conductor|insulator	conductor は電気や熱を通す「導体」、insulator は通さない「絶縁体」
+N	admit|confess	admit は事実を「認める」。confess は悪いことや秘密を「告白する・白状する」
+N	confidence|faith	confidence は根拠のある「信頼・自信」。faith は理由を問わず信じ切る「信頼・信仰」
+N	confusing|puzzling	confusing は「分かりにくい・紛らわしい」。puzzling は「なぜだろうと考えさせる・謎めいた」
+N	baffling|confusing	confusing は「分かりにくい」。baffling は「まったく訳が分からない」と強く言う
+N	clear|confusing	confusing は「分かりにくい」、clear は「分かりやすい・明快な」
+N	chaos|confusion	confusion は「混乱・取り違え」。chaos は収拾がつかない「大混乱」
+N	confusion|disorder	confusion は頭や場の「混乱」。disorder は「無秩序・乱雑」や、体の「不調」
+N	confusion|order	confusion は「混乱」、order は「秩序」
+N	agreement|consent	consent は本人などの「同意・承諾」（without consent）。agreement は話し合いでの「合意」
+N	consent|refusal	consent は「同意」、refusal は「拒否」
+N	consumer|producer	consumer は物を「使う人・消費者」、producer は作る人「生産者」

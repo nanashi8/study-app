@@ -1,0 +1,230 @@
+N	bitter|sweet	sweet は「甘い」、bitter は「苦い」。bitter は「つらい」（a bitter experience）の意味でも sweet と対になる
+N	thick|thin	thick は「厚い・太い・濃い」、thin は「薄い・細い」。スープなどの「濃い」「薄い」にも使う
+N	fat|thin	thin は人が「やせた」、fat は「太った」。fat は失礼に聞こえやすいので、人には overweight などを使うことが多い
+N	real|true	true は話や情報が「本当の・事実どおりの」（a true story）。real は物が「本物の」、また「現実の」
+N	false|true	true は「本当の・正しい」、false は「偽の・間違った」。問題の○×は true or false と言う
+N	ugly|unsightly	ugly は「醜い」と広く言う。unsightly は建物やごみなどが「見苦しい・目ざわりな」
+N	hideous|ugly	ugly は「醜い」。hideous は「ぞっとするほど醜い」と、強く言う
+I	want|curr1900_idm_4_would_like_to	want to は「〜したい」とそのまま言う。would like to はていねいな言い方で、店や人に頼むときに使う
+N	feeble|weak	weak は「弱い」と広く言う。feeble は病気や年で「弱々しい」、言い訳などが「説得力のない」
+N	what|which	what は範囲を決めずに「何」と聞く。which は決まった中から「どれ・どちら」と選ばせる（Which do you like, A or B?）
+N	marvelous|wonderful	wonderful は「すばらしい」のふつうの語。marvelous は「驚くほどすばらしい」と感動を強く言う
+N	splendid|wonderful	wonderful は「すばらしい」。splendid は景色や出来ばえが「見事な・立派な」と、ややかたい語
+N	awful|wonderful	wonderful は「すばらしい」、awful は「ひどい」
+N	laborer|worker	worker は「働く人」と広く言う。laborer は工事現場などで体を使って働く「肉体労働者」
+N	employee|worker	worker は「働く人・作業員」。employee は会社などに「雇われている人・従業員」
+N	employer|worker	employer は人を「雇う人・雇い主」、worker は「働く人」。employer と employee（雇われる人）が対の語
+N	incorrect|wrong	wrong は「間違った」のふつうの語で、道徳的に「悪い」の意味もある。incorrect は答えや情報が「不正確な」と、ややかたい語
+N	mistaken|wrong	wrong は答えや行いが「間違った」。mistaken は人の考えが「誤った・思い違いをした」（You are mistaken.）
+N	about|concerning	about は「〜について」のふつうの語。concerning は「〜に関して」と、書き言葉で使うかたい語
+N	about|approximately	about は数の前で「約」と話し言葉でよく使う。approximately は「おおよそ」と、書き言葉や説明で使うかたい語
+N	active|energetic	active は「活動的な・積極的な」。energetic は「精力的な・元気いっぱいの」と、エネルギーの強さを言う
+N	active|lively	active は活動していて「活発な」。lively は雰囲気や人が「生き生きした・にぎやかな」
+N	active|inactive	active は「活動的な・活動中の」、inactive は in- がついて「活動していない・不活発な」
+N	activity|inactivity	activity は「活動」、inactivity は「活動していないこと・運動不足」
+N	add|append	add は「加える」と広く言う。append は文書の終わりに「付け加える」かたい語
+N	add|attach	add は数や量を「加える」。attach はファイルや部品を「添える・取り付ける」
+N	add|subtract	add は「足す」、subtract は「引く」。足し算は addition、引き算は subtraction
+N	age|era	age は「時代」の意味では the Stone Age（石器時代）のように使い、「年齢」の意味が中心。era は区切られた「時代・年代」（a new era）
+I	almost|curr_idm_2_all_but	all but は「ほとんど〜」（all but impossible＝ほとんど不可能）のかたい言い方で、「〜以外すべて」の意味にもなる。almost はふつうの語
+I	almost|curr1900_idm_3_just_about	just about は話し言葉で「ほとんど・だいたい」。almost は「ほとんど・もう少しで」のふつうの語
+N	appear|emerge	appear は「現れる」と広く言う。emerge は隠れていた所から「出てくる・浮かび上がる」
+N	appear|disappear	appear は「現れる」、disappear は dis- がついて「消える・見えなくなる」
+I	appear|curr_idm_3_show_up	show up は話し言葉で、人が約束の場所に「姿を見せる」。appear は「現れる」のかたい言い方
+I	appear|curr_idm_3_turn_up	turn up は人や物が思いがけず「現れる・見つかる」くだけた言い方で、「音量を上げる」の意味もある
+N	arrive|reach	arrive は自動詞で arrive at／in のように前置詞が要る。reach は他動詞で、reach the station と直接つなぐ
+N	arrive|land	arrive は「到着する」と広く言う。land は飛行機が「着陸する」、船から「上陸する」
+N	arrive|depart	arrive は「到着する」、depart は「出発する」。駅や空港の表示では arrivals（到着）と departures（出発）
+I	arrive|curr_idm_3_get_in	get in は話し言葉で電車などが「到着する」（The train gets in at six.）。arrive は「到着する」のふつうの語
+I	arrive|idm_get_to	get to は「〜に着く」の話し言葉。arrive at／in とちがい、場所をすぐ後ろに置ける（get to school）
+N	artist|painter	artist は絵や音楽などの「芸術家」と広く言う。painter は「画家」や、壁などの「ペンキ職人」
+N	artist|creator	artist は「芸術家」。creator は作品や物を「生み出す人・作者」と広く言う
+N	assault|attack	attack は「攻撃する」と広く言う。assault は人に「暴行する・襲いかかる」ことで、法律でよく使う
+N	attack|strike	attack は「攻撃する」と広く言う。strike は「打つ・襲う」で、軍が一撃を加えることにも使う
+N	attack|defend	attack は「攻撃する」、defend は「守る」。スポーツでも attack（攻める）と defend（守る）
+N	aunt|uncle	aunt は「おば」、uncle は「おじ」
+N	autumn|spring	autumn は「秋」、spring は「春」。「秋」はアメリカ英語では fall とも言う
+N	back|forward	back は「後ろへ・戻って」、forward は「前へ・先へ」
+I	before|curr1900_idm_pre2_ahead_of	ahead of は時間や順番で「〜より前に・〜の先に」（ahead of schedule＝予定より早く）。before は「〜の前に」のふつうの語
+I	before|curr_idm_pre1_prior_to	prior to は「〜より前に」の、書き言葉で使うかたい言い方。before はふつうの語
+N	beginning|start	beginning は「始まり・初め」の部分。start は「始まり・出発」で、「始める」という動詞の意味が中心
+N	beginning|inception	beginning は「始まり」のふつうの語。inception は組織や計画の「発端・設立」のかたい語
+N	beginning|end	beginning は「始まり」、end は「終わり」。from beginning to end で「始めから終わりまで」
+I	bit|curr_idm_4_a_little	a bit は a little とほぼ同じ「少し」で、話し言葉でよく使う（a bit tired）
+N	body|figure	body は「体」と広く言う。figure は目で見た「体つき・スタイル」や「人の姿」
+N	body|mind	body は「体・肉体」、mind は「心・精神」。body and mind で「心身」
+N	borrow|rent	borrow は無料で「借りる」。rent はお金を払って「借りる」、また「貸す」
+N	borrow|lend	borrow は「借りる」（borrow A from B）、lend は「貸す」（lend A to B）。向きが反対なので取り違えに注意
+N	base|bottom	bottom は物の「底・いちばん下」。base は物を支える「土台・基部」で、「基地」の意味もある
+N	bottom|foot	bottom は「底・最下部」。foot は山や階段の「ふもと・下の端」（the foot of the mountain）
+N	bottom|top	top は「頂上・いちばん上」、bottom は「底・いちばん下」
+N	brave|courageous	brave は「勇敢な」のふつうの語。courageous も「勇気のある」だが、ややかたい語
+N	bold|brave	brave は危険を恐れず「勇敢な」。bold は「大胆な・思い切った」で、「ずうずうしい」の意味や、字の「太字の」の意味もある
+N	brave|cowardly	brave は「勇敢な」、cowardly は「臆病な・卑怯な」
+N	bright|clever	bright は子どもなどが「頭のよい・利口な」（明るいの意味から）。clever は「利口な」のほか「巧妙な・ずる賢い」の意味もある
+N	brush|sweep	brush は「ブラシをかける・払う」。sweep はほうきで床などを「掃く」
+N	brush|graze	brush は「軽く触れる・かすめる」。graze は「かすめる」のほか、「(動物が)草を食べる」の意味が中心
+I	build|curr_idm_3_put_up	put up は話し言葉で建物やテントを「建てる・立てる」（put up a tent）。build は「建てる・築く」のふつうの語
+N	can|tin	can はアメリカ英語で「缶」、イギリス英語では tin とも言う。tin は金属の「すず・ブリキ」の意味もある
+N	captain|chief	captain は船・飛行機・チームの「長」。chief は組織の「長」（police chief）で、形容詞で「主要な」
+N	attention|care	care は「注意・世話」（take care of）。attention は「注意・注目」（pay attention to）で、意識を向けることを言う
+N	care|caution	care は「注意」と広く言う。caution は危険に対する「用心・警戒」で、「警告」の意味もある
+N	care|neglect	care は「世話・注意」、neglect は世話や義務を「怠ること・放っておくこと」
+N	careful|careless	careful は「注意深い」、careless は「不注意な」。-ful と -less の対の語
+I	change|curr_idm_pre2_turn_into	turn into は「〜に変わる・変える」（turn into ice）。change は「変える・変わる」と広く言い、「〜に変わる」なら change into
+N	canal|channel	canal は人が造った「運河」（the Suez Canal）。channel は自然の「水路・海峡」（the English Channel）や、テレビの「チャンネル」
+N	cheap|expensive	cheap は「安い」、expensive は「高価な」。cheap は「安っぽい」と悪い意味にもなるので、low-priced などと言うこともある
+I	check|curr_idm_2_go_over	go over は書類や答えを「よく調べる・見直す」。check は「確認する」と広く言う
+N	chimney|flue	chimney は屋根の上に出た「煙突」。flue は煙が通る管の中の「煙道」
+N	chimney|smokestack	chimney は家の「煙突」。smokestack は工場や船の「大きな煙突」
+N	chapel|church	church は「教会」。chapel は学校・病院などにある小さな「礼拝堂」
+N	cathedral|church	church は「教会」。cathedral は司教がいる大きな「大聖堂」
+N	clear|obvious	clear は「はっきりした・分かりやすい」。obvious は「(だれが見ても)明らかな・見え見えの」
+N	clear|transparent	clear は水やガラスが「澄んだ・透明な」。transparent は「透き通った」のかたい語で、「(やり方が)分かりやすい・隠しごとのない」の意味もある
+N	clear|unclear	clear は「明らかな・はっきりした」、unclear は un- がついて「はっきりしない・不明瞭な」
+N	clearly|plainly	clearly は「はっきりと・明らかに」。plainly は「率直に・飾らずに」や、「明白に」とかたい語
+N	clearly|vaguely	clearly は「はっきりと」、vaguely は「ぼんやりと・あいまいに」（I vaguely remember it.）
+N	clever|smart	smart はアメリカ英語で「頭のよい」のふつうの語で、イギリス英語では「身なりのよい」。clever は「利口な」のほか「ずる賢い」の意味もある
+N	clever|ingenious	clever は「利口な・巧妙な」。ingenious は仕組みや考えが「独創的で巧みな」（an ingenious idea）
+N	clever|foolish	clever は「利口な」、foolish は「愚かな・ばかげた」
+N	ascend|climb	climb は手足を使って「登る」ふつうの語。ascend は「上がる・のぼる」のかたい語で、エレベーターや道にも使う
+N	climb|scale	climb は「登る」と広く言う。scale は動詞で、壁やがけを「よじ登る」
+N	climb|descend	climb は「登る」、descend は「下る・降りる」（かたい語）
+N	comfortable|uncomfortable	comfortable は「快適な・心地よい」、uncomfortable は「心地の悪い・気まずい」
+N	contest|tournament	contest は歌やスピーチなどの「コンテスト・競技」と広く言う。tournament は勝ち抜きで争う「トーナメント・選手権」
+N	cooking|cuisine	cooking は「料理（すること）」。cuisine は国や地域の「料理（の仕方）」（Japanese cuisine）のかたい語
+N	copy|imitate	copy は「写す・まねる」と広く言う。imitate は人の話し方や動きを「まねる・見習う」
+N	copy|duplicate	copy は「写し・写す」のふつうの語。duplicate は書類などを「そっくり複製する」かたい語で、「二重にする」の意味もある
+N	correct|right	right は「正しい」と広く言い、「右の」の意味もある。correct は答えなどが「正確で誤りがない」とややかたい語
+N	correct|wrong	correct は「正しい」、wrong は「間違った」。答えの○×でもよく使う
+N	accurately|correctly	correctly は答えやりかたが「正しく」。accurately は数値や表現が「正確に・精密に」
+N	correctly|wrongly	correctly は「正しく」、wrongly は「間違って・不当に」
+N	country|state	country は「国」と広く言う。state は政治の単位としての「国家」や、アメリカなどの「州」
+N	city|country	city は「都市」、country は the country の形で「田舎」。この意味では「都会」と「田舎」の対
+N	conceal|cover	cover は「覆う」と広く言う。conceal は人に見られないように「隠す」かたい語
+N	cover|span	cover は範囲に「及ぶ」（cover a wide area）。span は時間や空間に「またがる・及ぶ」（span three centuries）
+N	cover|uncover	cover は「覆う・隠す」、uncover は「覆いを取る」や、秘密を「暴く」
+N	create|produce	create は新しいものを「生み出す・創造する」。produce は品物や作物を「生産する・作り出す」
+N	create|generate	create は「生み出す」と広く言う。generate は電気・熱・利益などを「発生させる」
+N	create|destroy	create は「生み出す・創造する」、destroy は「破壊する」
+N	creative|inventive	creative は「創造的な」と広く言う。inventive は新しい物や方法を考え出す「発明の才のある」
+N	creative|original	creative は「創造力のある」。original は「独創的な」のほか「もとの・最初の」の意味もある
+N	creative|unimaginative	creative は「創造的な」、unimaginative は「想像力に欠ける・平凡な」
+N	darkness|gloom	darkness は「暗さ・闇」のふつうの語。gloom は「薄暗さ」のほか、気分の「憂うつ」の意味もある
+N	darkness|light	darkness は「暗さ・闇」、light は「光・明かり」
+I	die|curr_idm_3_pass_away	pass away は「亡くなる」と、死を遠回しにていねいに言う言い方。die は「死ぬ」とそのまま言う
+N	divide|split	divide は「分ける・分割する」と広く言う。split は縦に「割る」や、お金などを「分け合う」、グループが「分裂する」
+N	divide|separate	divide は1つのものをいくつかに「分ける」。separate はくっついているものを「引き離す・区別する」
+N	divide|unite	divide は「分ける」、unite は「1つにまとめる・団結させる」
+N	doubt|question	doubt は「疑う・本当ではないと思う」。question は動詞で、正しいかどうかを「疑問に思う・問いただす」
+N	distrust|doubt	doubt はことがらを「疑う」。distrust は人を「信用しない」（distrust politicians）
+N	doubt|trust	doubt は「疑う」、trust は「信頼する」
+N	city center|downtown	downtown はアメリカ英語で「中心街・繁華街」。city center はイギリス英語でよく使う言い方
+N	downtown|suburb	downtown は町の「中心街」、suburb は住宅が多い「郊外」
+N	compartment|drawer	drawer は机やたんすの「引き出し」。compartment は箱やかばんの「仕切り（の部分）」や、列車の「個室」
+N	drop|fall	fall は自然に「落ちる・倒れる」。drop は「(うっかり)落とす」のほか、「落ちる・下がる」にも使う
+N	decline|drop	drop は数や量が急に「下がる」ことも言うくだけた語。decline は「(ゆるやかに)減る・衰える」のかたい語
+N	drop|raise	drop は「落とす・下げる」、raise は「上げる」（raise your hand）
+N	dry|wet	dry は「乾いた」、wet は「ぬれた」。天気では dry は「雨の少ない」、wet は「雨の」
+N	earth|ground	earth は「地球」や「土」。ground は足もとの「地面」（sit on the ground）
+N	earth|soil	earth も soil も「土」を表す。soil は作物が育つ「土壌」の意味でよく使う
+N	elder|old	old の比較級は older がふつう。elder は家族の「年上の」（my elder sister）で名詞の前だけに使い、than を続けない
+N	enemy|foe	enemy は「敵」のふつうの語。foe は物語や新聞で使う古い・かたい言い方
+N	enemy|opponent	enemy は争い合う「敵」。opponent は試合や議論の「相手・対戦相手」で、憎み合うとは限らない
+N	ally|enemy	ally は「味方・同盟国」、enemy は「敵」
+N	enjoyable|pleasant	enjoyable は時間や経験が「楽しい」。pleasant は「快い・感じのよい」で、天気や人にも使う
+N	delightful|enjoyable	enjoyable は「楽しめる」。delightful は「とても楽しい・うっとりさせる」と強く言う
+N	enjoyable|unpleasant	enjoyable は「楽しい」、unpleasant は「不快な・嫌な」
+N	enter|go in	enter は「入る」の少しかたい語で、enter the room と直接つなぐ（enter into とは言わない）。go in は話し言葉
+N	enter|penetrate	enter は「入る」と広く言う。penetrate は壁などを「突き抜けて入る」や、光・水が「しみ込む」
+N	enter|exit	enter は「入る」、exit は「出る・退出する」（名詞で「出口」）
+N	error|fault	error は計算や判断の「誤り」。fault は「欠点」や、責任としての「過失」（It's my fault.）
+N	accuracy|error	accuracy は「正確さ」、error は「誤り」
+N	excellent|outstanding	excellent は「優れた」。outstanding は他より「ずば抜けた・傑出した」で、「未払いの」の意味もある
+N	excellent|superb	excellent は「優れた」のふつうの語。superb は「見事な・最高の」と、さらに強くほめる語
+N	excellent|poor	excellent は「優れた」、poor は出来が「劣った・下手な」。poor には「貧しい」の意味もある
+N	expensive|pricey	expensive は「高価な」のふつうの語。pricey は「値の張る」の話し言葉
+N	fail|flop	fail は「失敗する」のふつうの語。flop は映画や商品が「大失敗する・こける」くだけた語
+N	fail|succeed	fail は「失敗する」、succeed は「成功する」（succeed in）
+N	dread|fear	fear は「恐怖・恐れ」のふつうの語。dread はこれから起こることを「ひどく恐れる・心配する」
+N	fear|terror	fear は「恐れ」と広く言う。terror は体がすくむほどの「激しい恐怖」
+N	courage|fear	courage は「勇気」、fear は「恐れ」
+N	feed|nourish	feed は人や動物に「食べ物を与える」。nourish は栄養を与えて「養う・育む」かたい語
+N	feed|supply	feed は機械にデータや材料を「送り込む」の意味もある。supply は必要なものを「供給する」と広く言う
+N	feed|starve	feed は「食べさせる・養う」、starve は「飢えさせる・飢える」
+N	fiction|nonfiction	fiction は作られた話「小説・フィクション」、nonfiction は事実にもとづく「ノンフィクション」
+N	battle|fight	fight は「戦う・けんかする」と広く言う。battle は軍隊どうしの大きな「戦い・戦闘」
+N	combat|fight	fight は「戦う」と広く言う。combat は軍の「戦闘」や、病気・犯罪と「闘う」かたい語
+N	fight|surrender	fight は「戦う」、surrender は「降伏する・引き渡す」
+N	fill|load	fill は容器を「満たす・いっぱいにする」。load は車や船に荷を「積む」、機械に「入れる」
+N	fill|stuff	fill は「満たす」。stuff は動詞で、かばんなどに「ぎゅうぎゅう詰め込む」
+N	empty|fill	empty は動詞で「空にする」、fill は「満たす・いっぱいにする」
+N	excellent|fine	fine は「良い・申し分ない」。excellent は「非常に優れた」と強くほめる
+N	delicate|fine	fine は糸や粒が「細かい・細い」。delicate は「繊細な・こわれやすい」
+N	coarse|fine	fine は粒などが「細かい」、coarse は「粗い」。coarse は言葉づかいが「下品な」の意味もある
+N	dismiss|fire	fire は動詞で「(人を)くびにする」話し言葉。dismiss は「解雇する」のかたい語で、考えを「退ける」の意味もある
+N	fire|shoot	fire は動詞で銃などを「発射する・発砲する」。shoot は「撃つ」のふつうの語で、「撮影する」の意味もある
+N	fire|hire	fire は「くびにする」、hire は「雇う」
+N	fit|healthy	healthy は「健康な」と広く言う。fit は運動をして体が「引きしまって元気な」（keep fit）
+N	fit|suitable	fit は目的に「合った・ふさわしい」（fit for）。suitable は「適切な・ふさわしい」のふつうの語
+N	fit|unfit	fit は「健康な・適した」、unfit は「体調が悪い・不適格な」
+N	fix|repair	fix は話し言葉で「直す」。repair は機械や建物を「修理する」少し改まった語
+N	fix|mend	fix は「直す」と広く言う。mend は服や道具を「つくろう・直す」
+N	break|fix	break は「壊す」、fix は「直す」
+N	follow|lead	lead は先に立って「導く」、follow は後から「ついていく・従う」
+N	fool|idiot	fool は「ばか・愚か者」。idiot は「大ばか・まぬけ」と、強く見下す言い方
+N	dimwit|fool	fool は「ばか」。dimwit は「のろま・間抜け」のくだけた言い方
+N	fool|genius	fool は「ばか」、genius は「天才」
+N	form|shape	shape は目に見える「形」。form は「形」のほか、「形式・種類」（a form of energy）の意味もある
+N	form|structure	form は外から見た「形・形式」。structure は中の組み立て「構造」
+N	acquire|gain	gain は「得る・増す」（gain weight）。acquire は知識や技術を「身につける」、物を「手に入れる」かたい語
+N	gain|obtain	gain は努力や時間とともに「得る・増す」。obtain は必要なものを「手に入れる」かたい語
+N	gain|lose	gain は「得る・増す」、lose は「失う・減る」（gain weight と lose weight）
+N	garden|yard	garden は花や野菜を植えた「庭・庭園」。yard はアメリカ英語で家の周りの「庭」（芝生など）で、イギリス英語では「中庭」
+N	gas|vapor	gas は「気体・ガス」と広く言う。vapor は水などが蒸発してできた「蒸気・湯気」
+N	fuel|gas	fuel は燃やす「燃料」と広く言う。gas は「ガス」のほか、アメリカ英語で「ガソリン」
+N	gas|solid	gas は「気体」、solid は「固体」。「液体」は liquid
+N	gentle|mild	gentle は人や動作が「優しい・穏やかな」。mild は天気や味が「穏やかな・きつくない」
+N	gentle|tender	gentle は「優しい・穏やかな」。tender は「愛情のこもった」や、肉などが「柔らかい」、けがが「触ると痛い」
+N	gentle|rough	gentle は「優しい・穏やかな」、rough は「荒い・乱暴な」
+N	glad|pleased	glad は「うれしい」と気持ちを言い、名詞の前には置かない。pleased は「満足した・喜んだ」（be pleased with）
+N	glad|sad	glad は「うれしい」、sad は「悲しい」
+N	aim|goal	goal は最終的にめざす「目標・ゴール」。aim は「ねらい・目的」で、動詞で「ねらう」にもなる
+N	goal|objective	goal は「目標」のふつうの語。objective は仕事などの具体的な「目標」のかたい語で、形容詞で「客観的な」
+N	cluster|group	group は「集団」と広く言う。cluster は花・星・家などが「かたまって集まったもの」
+N	group|team	group は「集団・グループ」と広く言う。team は同じ目的で協力する「チーム」
+N	group|individual	group は「集団」、individual は「個人・個々の」
+N	estimate|guess	guess は根拠なしに「推測する・当てる」。estimate は数字などを根拠をもとに「見積もる」
+I	happen|curr_idm_pre2_come_about	come about はどうして「起こったか・生じたか」を言うときによく使う（How did it come about?）。happen は「起こる」のふつうの語
+I	happen|idm_take_place	take place は行事などが「行われる」、予定されたことが「起こる」。happen は偶然「起こる」
+N	barely|hardly	hardly は「ほとんど〜ない」と否定の意味。barely は「かろうじて〜する」で、できたことを言う
+N	hardly|scarcely	hardly と scarcely はほぼ同じ「ほとんど〜ない」。scarcely のほうがかたい語
+N	healthy|well	healthy はいつも「健康な」。well は形容詞で「(今)体調がよい」（I'm well.）の意味で、名詞の前には置かない
+N	healthy|unhealthy	healthy は「健康な・健康によい」、unhealthy は「不健康な・体に悪い」
+N	heat|warmth	heat は「熱・暑さ」。warmth は心地よい「暖かさ」や、人の「温かさ」
+N	heat|temperature	heat は「熱・暑さ」そのもの。temperature は「温度・気温」と、数値で表す高さ
+N	cold|heat	heat は「暑さ・熱」、cold は名詞で「寒さ」
+N	hit|strike	hit は「打つ・当たる」のふつうの語。strike は「打つ」のかたい語で、雷や災害が「襲う」の意味もある
+N	hit|punch	hit は「打つ」と広く言う。punch はこぶしで「殴る」
+N	hit|miss	hit は「当たる・命中する」、miss は「外す・当たらない」
+N	holder|owner	owner は物の「持ち主・所有者」。holder は記録や資格などを「持っている人」（record holder）や「入れ物」
+N	bearer|holder	holder は「持っている人」と広く言う。bearer は手紙や小切手を「持ってくる人」や、悪い知らせを「伝える人」
+N	home|residence	home は「家・家庭」と気持ちを込めて言う。residence は「住居・居住」のかたい語
+N	dwelling|home	home は「家・わが家」。dwelling は「住まい・住居」のかたい語
+N	dishonest|honest	honest は「正直な」、dishonest は dis- がついて「不正直な・ずるい」
+N	enormous|huge	huge と enormous はどちらも「巨大な」。enormous は数量が「莫大な」にもよく使う
+N	huge|immense	huge は「巨大な」。immense は「計り知れないほど大きい」と、広さや程度にも使うかたい語
+N	huge|tiny	huge は「巨大な」、tiny は「ごく小さい」
+N	hurry|rush	hurry は「急ぐ」のふつうの語。rush は「大急ぎで行く・突進する」と強く言う
+N	hasten|hurry	hurry は「急ぐ」。hasten は物事を「早める・急がせる」かたい語
+N	delay|hurry	hurry は「急ぐ」、delay は「遅らせる・遅れ」
+N	hurt|injure	hurt は「けがをさせる・痛む」と広く言い、心を「傷つける」にも使う。injure は事故などで「負傷させる」
+N	ache|hurt	hurt は「痛む」（My leg hurts.）。ache は頭や歯が「ずきずき痛む」ことで、名詞で「痛み」（headache）
+N	heal|hurt	hurt は「傷つける」、heal は「治す・癒やす」
+N	ill|unwell	ill は「病気の」（イギリス英語で多い）。unwell は一時的に「具合が悪い」ていねいな言い方
+N	healthy|ill	healthy は「健康な」、ill は「病気の」。ill は名詞の前には置かない（a sick child とは言うが an ill child とはふつう言わない）
+N	creativity|imagination	imagination は頭の中で思い描く「想像力」。creativity は新しいものを「作り出す力・創造性」
+N	bug|insect	insect は「昆虫」のふつうの語。bug は話し言葉の「虫」で、コンピュータの「不具合」の意味もある
+N	inside|interior	inside は「内側・中」のふつうの語。interior は建物や車の「内部・室内」のかたい語で、「内陸」の意味もある
+N	core|inside	inside は「内側」。core は果物の「芯」や、ものごとの「中心・核心」
+N	inside|outside	inside は「内側・中に」、outside は「外側・外に」

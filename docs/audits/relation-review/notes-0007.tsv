@@ -1,0 +1,237 @@
+N	extent|length	length は物の「長さ」。extent は広がりの「範囲・程度」（to some extent＝ある程度）
+N	distance|length	length は物そのものの「長さ」。distance は2つの地点の間の「距離」
+N	archivist|librarian	librarian は図書館で本を扱う「司書」。archivist は古い記録や文書を保管する「記録保管人」
+N	cover|lid	lid はなべや箱の「ふた」。cover は「覆い・カバー」と広く言う
+N	cap|lid	lid はなべや箱の「ふた」。cap はペンや瓶の小さな「キャップ」
+N	lift|raise	lift は重い物を「持ち上げる」。raise は手や旗・値段などを「上げる」
+N	lift|lower	lift は「持ち上げる」、lower は「下げる・降ろす」
+N	drop|lift	lift は「持ち上げる」、drop は「落とす」
+N	likely|probable	likely は「〜しそうな」（be likely to do）。probable は「(可能性が)ありそうな」のかたい語で、人を主語にしない
+N	likely|plausible	likely は「起こりそうな」。plausible は説明などが「もっともらしい・ありそうに聞こえる」
+N	likely|unlikely	likely は「ありそうな」、unlikely は「ありそうにない」
+N	boundary|limit	limit はこれ以上は許されない「限界・制限」。boundary は土地や分野の「境界（線）」
+N	limit|restrict	limit は数量などに「上限を設ける」。restrict は行動や範囲を「制限する」
+N	boundless|limitless	limitless と boundless はどちらも「限りない」。boundless は喜びなどの気持ちにもよく使う
+N	infinite|limitless	limitless は「限りのない」。infinite は数学などの「無限の」や、「計り知れない」
+N	limited|limitless	limitless は「果てしない」、limited は「限られた」
+N	bread|loaf	bread は「パン」全体で数えない。loaf は焼いたパンの「ひとかたまり」（a loaf of bread）
+N	find|locate	find は「見つける」のふつうの語。locate は場所を「突き止める」や、建物などを「置く」（be located in）
+N	locate|position	locate は場所を「突き止める・置く」。position は物をある位置に「配置する」
+N	locate|lose	locate は「見つけ出す」、lose は「見失う」
+N	cabinet|locker	locker は鍵のかかる個人用の「ロッカー」。cabinet は棚のある「戸棚」や、国の「内閣」
+N	compartment|locker	locker は「ロッカー」。compartment は箱やかばんの「仕切り（の部分）」
+N	defeat|loss	loss は試合の「負け」や「損失」。defeat は戦いや試合での「敗北」
+N	deprivation|loss	loss は「失うこと・損失」。deprivation は必要なものを「奪われていること・欠乏」
+N	gain|loss	gain は「得ること・増加」、loss は「失うこと・損失」
+N	lost|missing	lost は「なくなった・道に迷った」。missing は見つからなくて「行方不明の・欠けている」
+N	lost|mislaid	lost は「なくした」。mislaid はどこかに「置き忘れた」
+N	found|lost	lost は「なくなった」、found は「見つかった」
+N	mainly|mostly	mainly は「主に」（中心となるものを言う）。mostly は「たいてい・大部分は」（量や回数が多いことを言う）
+N	chiefly|mainly	mainly は「主に」のふつうの語。chiefly は「主として」のかたい語
+I	mainly|curr1900_idm_pre2_for_the_most_part	for the most part は「大部分は・たいていは」。mainly は「主に」
+I	mainly|curr_idm_pre1_to_a_large_extent	to a large extent は「かなりの程度まで・大部分は」のかたい言い方。mainly は「主に」
+N	march|stride	march は列を組んで「行進する」。stride は大またで「さっさと歩く」
+N	march|sneak	march は堂々と「行進する」、sneak は「こっそり動く」
+N	expert|master	expert は知識や技術の「専門家」。master は技を極めた「名人・達人」
+N	issue|matter	matter は「事柄・問題」と広く言う（What's the matter?）。issue は議論の的になる「問題・争点」
+N	matter|problem	problem は解決が必要な「問題・困りごと」。matter は「事柄」と広く言い、困りごととは限らない
+N	means|method	means は目的のための「手段」（a means of transport）。method は順序立てた「方法」
+N	means|way	means は「手段」のかたい語。way は「方法・やり方」と広く言う
+N	mend|repair	mend は服などを「つくろう・直す」。repair は機械や建物を「修理する」
+N	break|mend	break は「壊す」、mend は「直す」
+N	jolly|merry	merry と jolly はどちらも「陽気な・楽しい」。jolly はイギリスの話し言葉で「とても」の意味もある
+N	gloomy|merry	merry は「陽気な」、gloomy は「陰気な」
+N	messy|untidy	messy は「散らかった・汚れた」の話し言葉。untidy は「きちんとしていない」
+N	cluttered|messy	messy は「散らかった」。cluttered は物が多すぎて「ごちゃごちゃした」
+N	messy|neat	messy は「散らかった」、neat は「きちんとした」
+N	gnat|mosquito	mosquito は血を吸う「蚊」。gnat は小さな虫「ブヨ」
+N	insect|mosquito	insect は「昆虫」全体。mosquito はそのうちの「蚊」
+N	mire|mud	mud は「泥」のふつうの語。mire は足をとられる深い「ぬかるみ」
+N	mud|sludge	mud は「泥」。sludge はどろどろした「ヘドロ・汚泥」
+N	increase|multiply	increase は「増える・増やす」と広く言う。multiply は数が「どんどん増える」や、計算の「掛ける」
+N	divide|multiply	multiply は「掛ける」、divide は「割る」（掛け算と割り算）
+N	mustache|whiskers	mustache は「口ひげ」。whiskers は「ほおひげ」や、猫などの「ひげ」
+N	naked|nude	naked は「裸の」のふつうの語。nude は絵や写真の「裸体の」
+N	clothed|naked	naked は「裸の」、clothed は「服を着た」
+N	napkin|serviette	napkin は食事の「ナプキン」。serviette はイギリス英語の「ナプキン」
+N	neat|orderly	neat は「きちんとした・こぎれいな」。orderly は「整然とした・規律正しい」
+N	needle|pin	needle は糸を通す「縫い針」や注射の「針」。pin は布などを留める「ピン・留め針」
+N	courage|nerve	nerve は「神経」のほか、話し言葉で「度胸」（have the nerve to）。courage は「勇気」のふつうの語
+N	den|nest	nest は鳥の「巣」。den はキツネなどの獣の「巣穴」
+N	nest|roost	nest は卵を産む「巣」。roost は鳥が夜にとまる「ねぐら」
+N	network|web	network は線や人が網の目のようにつながった「ネットワーク」。web は「クモの巣」や「ウェブ」
+N	network|system	network は「つながりの網」。system は部分が組み合わさった「しくみ・体系」
+N	nod|signal	nod は首を縦にふって「うなずく」。signal は手などで「合図する」
+N	nod|shake	nod は「うなずく」（賛成）、shake one's head は「首を横にふる」（反対）
+N	noun|substantive	noun は「名詞」のふつうの語。substantive は文法の古い言い方の「名詞（実詞）」
+N	noun|verb	noun は「名詞」、verb は「動詞」
+N	nowadays|today	nowadays は昔とくらべて「近ごろは」。today も「今日では」の意味で使うが、「今日（きょう）」の意味が中心
+N	currently|nowadays	nowadays は昔とくらべた「近ごろ」。currently は「現在（のところ）」と、今の状態を言う
+N	formerly|nowadays	nowadays は「近ごろは」、formerly は「以前は」
+N	daycare|nursery	nursery は幼い子の「保育園・託児所」（イギリス英語）。daycare はアメリカ英語の「保育所」
+N	crèche|nursery	nursery は「保育園」。crèche はイギリス英語で職場などにある「託児所」
+N	oak|timber	oak は「オーク（樫）の木」。timber は建物に使う「材木」全体
+N	operation|surgery	operation は1回の「手術」（have an operation）。surgery は「外科・手術」と広く言う
+N	operation|procedure	operation は「手術」。procedure は医療の「処置」や、仕事の「手順・手続き」
+N	idea|opinion	opinion は物事への「意見・考え」。idea は「考え・アイデア・思いつき」
+N	contrary|opposite	opposite は向きや位置が「反対の・向かいの」。contrary は考えなどが「逆の」（on the contrary）
+N	opposite|reverse	opposite は「反対側の」。reverse は順番や向きが「逆の」（in reverse order）
+N	opposite|same	opposite は「反対の」、same は「同じ」
+N	alternative|option	option は選べる「選択肢」。alternative は今のものに代わる「別の案・代わり」
+N	obligation|option	option は「選べること・選択肢」、obligation は「(しなければならない)義務」
+N	ordinary|usual	ordinary は「普通の・平凡な」。usual は「いつもの」
+N	ordinary|special	ordinary は「普通の」、special は「特別な」
+N	extraordinary|ordinary	ordinary は「普通の」、extraordinary は extra-（外の）がついて「並外れた」
+N	origin|source	origin は物事の「起源・始まり」。source は情報などの「出どころ・源」
+N	origin|root	origin は「起源」。root は問題などの「根本・根源」（the root of the problem）
+N	origin|outcome	origin は「始まり」、outcome は「結果・結末」
+N	oven|stove	oven は中で焼く「オーブン」。stove は上でなべを温める「こんろ」や「ストーブ」
+N	kiln|oven	oven は料理用の「オーブン」。kiln は焼き物を焼く「窯」
+N	foreign|overseas	overseas は「海外の・海外へ」で、副詞にもなる。foreign は「外国の」で、名詞の前に置く
+N	domestic|overseas	overseas は「海外の」、domestic は「国内の」
+N	packet|sachet	packet は小さな「袋・包み」（a packet of seeds）。sachet は砂糖などの「小袋」
+N	hand|palm	hand は「手」全体。palm は「手のひら」
+N	alarm|panic	panic はうろたえる「パニック」。alarm は危険を知った「驚き・不安」や、「警報」
+N	hysteria|panic	panic は「うろたえること」。hysteria は大勢が興奮する「異常な騒ぎ」
+N	calm|panic	panic は「うろたえること」、calm は「落ち着き・平静」
+N	package|parcel	parcel はイギリス英語の「小包」。package はアメリカ英語の「小包」のほか、「ひとまとめのもの」（a package tour）
+N	bundle|parcel	parcel は郵便の「小包」。bundle はひもで束ねた「束・包み」
+N	forgive|pardon	forgive は人の過ちを「許す」ふつうの語。pardon は罪を公に「許す・恩赦を与える」かたい語で、Pardon? は聞き返し
+N	pardon|punish	pardon は「許す」、punish は「罰する」
+N	passport|travel document	passport は国が出す「旅券・パスポート」。travel document は旅に使う公的な書類全体「渡航文書」
+N	glue|paste	glue は強力な「接着剤・のり」。paste はでんぷんなどで作った「のり」や、どろどろの「ペースト」
+N	adhesive|paste	paste は紙を貼る「のり」。adhesive は「接着剤」全体を言うかたい語
+N	path|route	path は歩いてできた「小道」。route は目的地までの「経路・ルート」
+N	calm|peaceful	peaceful は争いがなく「平和な・穏やかな」。calm は天気や人が「静かな・落ち着いた」
+N	peaceful|tranquil	peaceful は「平和な・穏やかな」。tranquil は景色が「静かで落ち着いた」かたい語
+N	peaceful|violent	peaceful は「平和な」、violent は「暴力的な」
+N	peacefully|violently	peacefully は「平和に・安らかに」、violently は「激しく・暴力的に」
+N	gem|pearl	pearl は貝の中にできる「真珠」。gem は磨いた「宝石」全体
+N	jewel|pearl	pearl は「真珠」。jewel は身につける「宝石・宝飾品」全体
+N	pare|peel	peel は手で「皮をむく」ふつうの語。pare はナイフで「薄く皮をむく・削る」
+N	peel|skin	peel は果物や野菜の「皮をむく」。skin は動詞で動物の「皮をはぐ」
+N	fragrance|perfume	perfume は体につける「香水」。fragrance は花などの「よい香り」
+N	perfume|scent	perfume は「香水」。scent は「香り・におい」と広く言い、動物の「においの跡」の意味もある
+N	perfume|stench	perfume は「よい香り・香水」、stench は「ひどい悪臭」
+N	expression|phrase	phrase は「言い回し・語句」。expression は言葉による「表現」や、顔の「表情」
+N	phrase|wording	phrase は短い「語句・言い回し」。wording は文章全体の「言葉の選び方・言葉づかい」
+N	heap|pile	pile はきちんと「積み重ねた山」。heap は乱雑に「積み上げた山」
+N	pile|stack	pile は「積み重ね」と広く言う。stack は本や皿などを「きちんと積み重ねたもの」
+N	cushion|pillow	pillow は寝るときの「枕」。cushion はいすなどの「クッション」
+N	pinch|squeeze	pinch は指で「つねる・つまむ」。squeeze は手で「ぎゅっと握る・絞る」
+N	nip|pinch	pinch は「つねる・つまむ」。nip は「軽くかむ・はさむ」
+N	pipe|tube	pipe は水やガスを運ぶ「管・パイプ」。tube は細い「管」や、歯みがきなどの「チューブ」
+N	pity|sympathy	pity はかわいそうだと思う「哀れみ」。sympathy は相手の気持ちを分かち合う「同情・共感」
+N	compassion|pity	pity は「哀れみ」。compassion は助けたいと思う「思いやり」
+N	modest|plain	plain は見た目が「飾りのない・地味な」。modest は「控えめな・謙虚な」で、人の態度にも使う
+N	abundance|plenty	plenty は「たくさん・十分」（plenty of）。abundance は「豊富・あり余るほど」のかたい語
+N	ample|plenty	plenty は名詞で「十分な量」。ample は形容詞で「十分な・たっぷりの」
+N	plenty|scarcity	plenty は「たくさん」、scarcity は「不足・乏しいこと」
+I	plenty|curr1900_idm_4_a_lot	a lot は「たくさん」の話し言葉（a lot of）。plenty は「(必要なだけ)十分に」
+N	plot|storyline	plot は話の「筋」。storyline は映画やドラマの「筋書き」
+N	plot|scheme	plot は悪いことをたくらむ「陰謀」。scheme は「計画」のほか、「悪だくみ」
+N	plug|stopper	plug は電気の「プラグ」や、流しの「栓」。stopper は瓶の「栓」
+N	plug|socket	plug は差し込む側の「プラグ」、socket は差し込まれる側の「コンセント・差し込み口」
+N	plug|unplug	plug は「差し込む」、unplug は「プラグを抜く」
+N	poem|verse	poem は1つ1つの「詩」。verse は「韻文」や、歌や詩の「節」
+N	poison|toxin	poison は「毒」のふつうの語。toxin は生物が出す「毒素」
+N	poison|venom	poison は飲んだりして体に入る「毒」。venom はヘビなどがかんで入れる「毒液」
+N	antidote|poison	poison は「毒」、antidote は「解毒剤」
+N	pole|post	pole は細長い「棒・さお」（a flagpole）。post は地面に立てた「柱・くい」（a fence post）
+N	pole|rod	pole は長い「棒・さお」。rod は細い「棒」や、釣りの「さお」
+N	courtesy|politeness	politeness は「礼儀正しさ」。courtesy は相手を思う「礼儀・親切」
+N	politeness|rudeness	politeness は「礼儀正しさ」、rudeness は「無礼」
+N	meat|pork	meat は「肉」全体。pork はそのうちの「豚肉」
+N	location|position	position は「位置」や、人の「立場・地位」。location は地図の上の「所在地・場所」
+N	position|stance	position は「立場・考え」。stance は問題への「姿勢・態度」
+N	pour|spill	pour は液体をわざと「注ぐ」。spill はうっかり「こぼす」
+N	pour|stream	pour は「どっと流れ出る」。stream は動詞で「ぞろぞろ・次々に流れ出る」
+N	drip|pour	pour は「どっと注ぐ・流れ出る」、drip は「ぽたぽた垂れる」
+N	force|power	power は物事を動かす「力・権力」と広く言う。force は物理的な「力・強制」や、軍隊
+N	authority|power	power は「権力・力」と広く言う。authority は正式に認められた「権限・権威」
+N	dignity|pride	pride は自分を誇る「誇り・自尊心」。dignity は人としての「尊厳・威厳」
+N	pride|self-respect	pride は「誇り」（高慢の意味にもなる）。self-respect は自分を大切にする「自尊心」
+N	pride|shame	pride は「誇り」、shame は「恥」
+N	clergyman|priest	priest はカトリックなどの「司祭・聖職者」。clergyman はキリスト教の「聖職者」全体
+N	minister|priest	priest はカトリックの「司祭」。minister はプロテスタントの「牧師」で、「大臣」の意味もある
+N	layman|priest	priest は「聖職者」、layman は聖職者でない「一般の信徒・しろうと」
+N	jail|prison	prison は刑が決まった人が入る「刑務所」。jail は裁判を待つ人などが入る「拘置所」
+I	probably|curr_idm_1_in_all_likelihood	in all likelihood は「十中八九」のかたい言い方。probably は「たぶん」のふつうの語
+N	issue|problem	problem は困った「問題」。issue は話し合うべき「問題・論点」（an environmental issue）
+N	problem|trouble	problem は解決すべき「問題」（数えられる）。trouble は「困った状況・面倒」（数えない）
+I	produce|curr_idm_2_turn_out	turn out は品物を「(大量に)作り出す」のほか、「〜だと分かる」。produce は「生産する」のふつうの語
+N	defensive|protective	protective は危険から「守るための」（protective clothing）。defensive は攻撃に対して「防御の」や、態度が「身構えた」
+N	private|public	public は「公の・公共の」、private は「私的な・個人の」
+N	draw|pump	pump はポンプで液体を「くみ出す・送る」。draw は井戸から水を「くむ」
+N	inflate|pump	pump は「ポンプで送る」。inflate は空気で「ふくらませる」
+N	clean|pure	pure は「混じりけのない・純粋な」。clean は「汚れのない・清潔な」
+N	pure|unmixed	pure は「純粋な」。unmixed は「混ぜていない」と説明する言い方
+N	impure|pure	pure は「純粋な」、impure は「不純な」
+N	aim|purpose	purpose は物事の「目的・意図」。aim は「ねらい・目標」
+N	intention|purpose	purpose は「目的」。intention は人の「意図・〜するつもり」
+N	purse|wallet	purse はアメリカ英語で「ハンドバッグ」、イギリス英語で女性の「小銭入れ」。wallet は札入れの「財布」
+N	handbag|purse	purse はアメリカ英語で「ハンドバッグ」。handbag はイギリス英語の「ハンドバッグ」
+N	baffle|puzzle	puzzle は「頭を悩ませる」。baffle は「まったく分からなくさせる」と強く言う
+N	perplex|puzzle	puzzle は「当惑させる」。perplex は「困惑させる」のかたい語
+N	amount|quantity	amount は数えられない物の「量・金額」。quantity は数えられる物にも使う「分量・数量」
+N	rarely|seldom	rarely と seldom はどちらも「めったに〜ない」。seldom のほうがかたい語
+N	frequently|rarely	rarely は「めったに〜ない」、frequently は「頻繁に」
+N	reasonable|sensible	reasonable は「筋の通った・手ごろな」。sensible は判断が「分別のある・賢明な」
+N	fair|reasonable	reasonable は値段が「手ごろな」や、考えが「もっともな」。fair は扱いが「公平な」
+N	reasonable|unreasonable	reasonable は「理にかなった」、unreasonable は「不当な・理不尽な」
+I	recently|curr1900_idm_2_of_late	of late は「最近」のかたい言い方。recently は「最近」のふつうの語で、過去形の文でも使う
+N	decrease|reduce	reduce は他動詞で「減らす」。decrease は「減る」のほか「減らす」
+N	cut|reduce	reduce は「減らす」のふつうの語。cut は「削減する」の話し言葉（cut costs）
+N	expand|reduce	reduce は「減らす・縮小する」、expand は「拡大する」
+I	reduce|curr_idm_3_cut_down	cut down は「(量を)減らす」（cut down on sugar）や木を「切り倒す」。reduce は「減らす」のかたい語
+N	refund|repayment	refund は買った物の代金の「払い戻し」。repayment は借りたお金の「返済」
+N	free|release	release は閉じ込めていたものを「放す・解放する」。free は動詞で「自由にする」
+N	publish|release	release は映画や音楽を「公開する・発売する」。publish は本などを「出版する・公表する」
+N	detain|release	release は「釈放する」、detain は「拘束する」
+N	comment|remark	comment は物事についての「意見・論評」。remark は何気なく言った「一言・発言」
+N	observation|remark	remark は口にした「発言」。observation は観察にもとづく「所見・意見」
+I	remove|curr_idm_1_clear_away	clear away は食器などを「片づける」。remove は「取り除く」と広く言う
+I	remove|curr_idm_pre2_take_away	take away は物を「持ち去る・取り上げる」。remove は「取り除く」のかたい語
+I	remove|curr_idm_pre2_get_rid_of	get rid of はいらない物を「処分する・取り除く」話し言葉。remove は「取り除く・外す」
+N	lease|rental	rental は「賃貸・レンタル料」。lease は長い期間の「賃貸借契約」
+N	hire|rental	rental は「レンタル（料）」。hire はイギリス英語で「賃借り」（car hire）
+N	purchase|rental	rental は「借りること・レンタル」、purchase は「購入」
+N	reply|respond	reply は手紙や質問に「返事する」（reply to）。respond は「応答する」のほか、刺激に「反応する」
+N	answer|reply	answer は「答える」のふつうの語で、前置詞なし（answer the question）。reply は「返事する」で reply to の形
+N	journalist|reporter	reporter はニュースを取材する「記者」。journalist は記事を書く人全体「ジャーナリスト」
+N	correspondent|reporter	reporter は「記者」。correspondent は外国などから記事を送る「特派員」
+I	respect|idm_look_up_to	look up to は目上の人を「尊敬する」の話し言葉。respect は「尊敬する」のほか、考えなどを「尊重する」
+N	react|respond	respond は「応える・返答する」。react は刺激や出来事に「反応する」
+N	ignore|respond	respond は「返事をする・反応する」、ignore は「無視する」
+N	remainder|rest	rest は the rest で「残り」。remainder は「残り」のかたい語で、割り算の「余り」
+N	outcome|result	result は「結果」のふつうの語。outcome は話し合いや選挙などの「成り行き・結果」
+N	consequence|result	result は「結果」。consequence はよくないことが多い「(行いの)結果・影響」
+N	prize|reward	reward は行いへの「ほうび・報酬」。prize は競争で勝ち取る「賞・賞品」
+N	compensation|reward	reward は「ほうび・報い」。compensation は損害の「補償」や、仕事の「報酬」
+N	punishment|reward	reward は「ほうび」、punishment は「罰」
+N	hazard|risk	risk は「危険の可能性・リスク」。hazard は危険のもととなる「危険物・障害」
+N	opponent|rival	rival は同じ目標を争う「ライバル」。opponent は試合や議論の「相手」
+N	ally|rival	rival は「競争相手」、ally は「味方・同盟者」
+N	impolite|rude	rude は「失礼な」のふつうの語で、強い言い方。impolite は「無作法な」と、少しやわらかい言い方
+N	polite|rude	rude は「失礼な」、polite は「礼儀正しい」
+N	impoliteness|rudeness	rudeness は「無礼」のふつうの語。impoliteness は「無作法」と、少しやわらかい言い方
+N	carpet|rug	carpet は床いっぱいに敷く「じゅうたん」。rug は床の一部に敷く小さな「敷物」
+N	mat|rug	rug は部屋に敷く「敷物」。mat は玄関などの小さな「マット」
+N	gossip|rumor	rumor は本当か分からない「うわさ」。gossip は他人についての「うわさ話・おしゃべり」
+N	corrode|rust	rust は鉄が「さびる」。corrode は金属が薬品などで「腐食する」
+N	oxidize|rust	rust は鉄が「さびる」。oxidize は化学の言葉で「酸化する」
+N	corroded|rusty	rusty は「さびた」のふつうの語。corroded は「腐食した」
+N	out of practice|rusty	rusty は話し言葉で技能が「なまった」（My English is rusty.）。out of practice は「練習不足で」
+N	polished|rusty	rusty は「さびた・腕がなまった」、polished は「磨かれた・洗練された」
+N	holy person|saint	saint はキリスト教などの「聖人」。holy person は「聖なる人」と説明する言い方
+N	saint|sinner	saint は「聖人」、sinner は「罪人」
+N	benefit|sake	sake は for the sake of の形で「〜のために」。benefit は「利益・ためになること」
+N	purpose|sake	sake は for the sake of（〜のために）の形だけで使う。purpose は「目的」
+N	fish|salmon	fish は「魚」全体。salmon はそのうちの「サケ」
+N	sandal|slipper	sandal は外で履く「サンダル」。slipper は室内で履く「スリッパ・室内ばき」
+N	please|satisfy	please は動詞で人を「喜ばせる」。satisfy は必要や望みを「満たす・満足させる」
+N	fulfill|satisfy	satisfy は人や条件を「満足させる」。fulfill は約束や夢を「果たす・実現する」
+N	disappoint|satisfy	satisfy は「満足させる」、disappoint は「がっかりさせる」
+N	dressing|sauce	sauce は料理にかける「ソース」。dressing はサラダにかける「ドレッシング」
+N	gravy|sauce	sauce は「ソース」全体。gravy は肉汁で作る「グレービーソース」
+D	sausage	syn	frank	フランクフルトの frank（frankfurter の略）は、率直なの frank と由来のちがう別の語で見出し語がなく、つづりで引くと「率直な」へ飛ぶ

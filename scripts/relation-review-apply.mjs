@@ -6,8 +6,8 @@
 //   N! a|b  解説                       … 書いてある解説を書き直す
 //   I  見出し語id|熟語id  解説          … 同じ意味の熟語の行の解説（WORD_IDIOM_NOTES）。I! で書き直す
 //   A  見出し語id  syn|ant  英単語  意味  理由   … 欄に足す（src/data/word-relation-edits.js の RELATION_ADDITIONS）
-//   D  見出し語id  syn|ant  英単語  理由        … 欄から外す（RELATION_REMOVALS）
-//   M  見出し語id  syn|ant  英単語  意味        … 添えた意味を直す（RELATION_MEANING_FIXES）
+//   D  見出し語id  syn|ant  英単語  理由        … 欄から外す。単語データのファイルから消し、RELATION_REMOVALS に記録する
+//   M  見出し語id  syn|ant  英単語  意味        … 添えた意味を直す。単語データのファイルを直し、RELATION_MEANING_FIXES に記録する
 //   E  見出し語id>語  略号                     … 語の成り立ちが名指しした語を欄に出さない理由（docs/audits/named-word-relations.json）
 //   U  見出し語id>語  略号                     … 使い方の欄が名指しした語を欄に出さない理由
 // 略号は scripts/checks/named-word-relations.mjs の NAMED_WORD_REASONS。
@@ -16,6 +16,7 @@ import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { WORD_IDIOM_NOTES, WORD_RELATION_NOTES } from '../src/data/word-relation-notes.js'
 import { RELATION_ADDITIONS, RELATION_MEANING_FIXES, RELATION_REMOVALS } from '../src/data/word-relation-edits.js'
 import { NAMED_WORD_LEDGER_PATH, NAMED_WORD_REASONS } from './checks/named-word-relations.mjs'
+import { createSourceEditor } from './relation-source-edit.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 const files = process.argv.slice(2)
@@ -42,6 +43,11 @@ const checkNote = (text, at) => {
   else if (/\t/.test(text)) errors.push(`${at}: 解説にタブがある`)
 }
 const itemsOf = (id, kind) => (getWord(id)?.[KIND[kind]] ?? []).map((item) => lower(item.w))
+const itemOf = (id, kind, w) => (getWord(id)?.[KIND[kind]] ?? []).find((item) => lower(item.w) === lower(w))
+
+// 外す・意味を直すは、単語データのファイルを書き換える（relation-source-edit.mjs）。
+const sourceEditor = createSourceEditor(new URL('src/data/', ROOT))
+const editSource = (id, kind, w, newMeaning) => sourceEditor.edit(id, kind, w, newMeaning)
 
 for (const file of files) {
   const lines = readFileSync(file, 'utf8').split('\n')
@@ -80,18 +86,24 @@ for (const file of files) {
       if (!KIND[kind] || !w || !reason) { errors.push(`${at}: D は 見出し語id・syn|ant・英単語・理由`); return }
       const addedHere = additions.findIndex((row) => row[0] === id && row[1] === kind && lower(row[2]) === lower(w))
       if (addedHere >= 0) { additions.splice(addedHere, 1); return }
-      if (!itemsOf(id, kind).includes(lower(w))) { errors.push(`${at}: ${id} の ${kind} に ${w} がない`); return }
-      removals.push([id, kind, w, reason])
+      const item = itemOf(id, kind, w)
+      if (!item) { errors.push(`${at}: ${id} の ${kind} に ${w} がない`); return }
+      const problem = editSource(id, kind, item.w, null)
+      if (problem) { errors.push(`${at}: ${problem}`); return }
+      removals.push([id, kind, item.w, item.m, reason])
     } else if (base === 'M') {
       const [id, kind, w, m] = cols
       if (!ids.has(id)) { errors.push(`${at}: 見出し語 ${id} が辞書にない`); return }
       if (!KIND[kind] || !w || !m) { errors.push(`${at}: M は 見出し語id・syn|ant・英単語・意味`); return }
       const added = additions.find((row) => row[0] === id && row[1] === kind && lower(row[2]) === lower(w))
       if (added) { added[3] = m; return }
-      if (!itemsOf(id, kind).includes(lower(w))) { errors.push(`${at}: ${id} の ${kind} に ${w} がない`); return }
+      const item = itemOf(id, kind, w)
+      if (!item) { errors.push(`${at}: ${id} の ${kind} に ${w} がない`); return }
+      const problem = editSource(id, kind, item.w, m)
+      if (problem) { errors.push(`${at}: ${problem}`); return }
       const existing = fixes.find((row) => row[0] === id && row[1] === kind && lower(row[2]) === lower(w))
-      if (existing) existing[3] = m
-      else fixes.push([id, kind, w, m])
+      if (existing) existing[4] = m
+      else fixes.push([id, kind, item.w, item.m, m])
     } else if (base === 'E' || base === 'U') {
       const [key, code] = cols
       if (!NAMED_WORD_REASONS[code]) { errors.push(`${at}: 略号がちがう（${code}）`); return }
@@ -125,6 +137,8 @@ notesSource = replaceBlock(notesSource, 'export const WORD_RELATION_NOTES = {\n'
 notesSource = replaceBlock(notesSource, 'export const WORD_IDIOM_NOTES = {\n', '}\n',
   sortedEntries(idiomNotes).map(([key, note]) => `  ${q(key)}: ${q(note)},\n`).join(''))
 writeFileSync(notesPath, notesSource)
+
+sourceEditor.save()
 
 const editsPath = new URL('src/data/word-relation-edits.js', ROOT)
 let editsSource = readFileSync(editsPath, 'utf8')

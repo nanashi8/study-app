@@ -1,0 +1,246 @@
+N	curiosity|interest	interest は「興味・関心」と広く言う（an interest in music）。curiosity は知りたくてたまらない「好奇心」
+N	concern|interest	interest は楽しさを感じる「興味」。concern は気にかかる「関心・心配」で、悪いことを気にする感じがある
+N	boredom|interest	interest は「興味」、boredom は「退屈」
+N	interesting|intriguing	interesting は「面白い・興味深い」と広く言う。intriguing は謎めいていて「好奇心をそそる」
+N	boring|interesting	interesting は「面白い」、boring は「退屈な・つまらない」。人の気持ちは interested・bored と -ed で言う
+N	iron|metal	metal は「金属」全体。iron は金属のうちの「鉄」で、「アイロン」の意味もある
+N	article|item	item はリストの「項目・品目」と広く言う。article は「品物・物品」や新聞の「記事」、文法の「冠詞」
+N	entry|item	item は「項目・品目」。entry は辞書や名簿に書き込まれた「記載項目」や、「入場・参加」
+N	gem|jewel	jewel は身につける「宝石・宝飾品」。gem は磨いた「宝石」のほか、比ゆ的に「逸品・すぐれたもの」
+N	jewel|treasure	jewel は「宝石」。treasure は金銀や宝石を集めた「財宝・宝物」と広く言う
+N	delight|joy	joy は心がはずむ「喜び」。delight は思いがけない「大喜び・楽しさ」で、動詞で「大喜びさせる」にもなる
+N	joy|sorrow	joy は「喜び」、sorrow は「(深い)悲しみ」
+N	jungle|rainforest	jungle は草木がびっしり茂った「密林・ジャングル」。rainforest は雨の多い地域の「熱帯雨林」で、地理や環境の話で使う
+N	jungle|wilderness	jungle は熱帯の「密林」。wilderness は人の手が入っていない「荒野・原野」
+N	just|only	only は「〜だけ」のふつうの語。just は「ただ〜だけ」とくだけた言い方で、「ちょうど・たった今」の意味もある
+N	just|merely	just は「ただ〜だけ」。merely は「単に〜にすぎない」と、書き言葉で使うかたい語
+I	keep|curr_idm_2_hold_on_to	hold on to は手放さないように「しっかり持っておく」。keep は「保つ・取っておく」と広く言う
+N	generosity|kindness	kindness は「親切・優しさ」。generosity は物やお金を惜しまない「気前のよさ」や、人を許す「寛大さ」
+N	compassion|kindness	kindness は「親切」と広く言う。compassion は苦しむ人への「思いやり・同情」
+N	cruelty|kindness	kindness は「親切」、cruelty は「残酷さ」
+N	king|monarch	king は「王」。monarch は王や女王をまとめて言う「君主」のかたい語
+N	king|sovereign	king は「王」。sovereign は国を治める「君主・主権者」のかたい語で、形容詞で「主権のある」
+N	king|subject	subject は「科目・主題」のほか、王に治められる「臣民・国民」の意味もあり、この意味で king と対になる
+N	ladder|steps	ladder は立てかけて使う「はしご」。steps は「段・踏み段」や小さな「階段」
+N	ladder|stairway	ladder は「はしご」。stairway は建物の「階段」
+N	land|touch down	land は飛行機が「着陸する」ふつうの語。touch down は車輪が地面に「着く」瞬間を言うくだけた言い方
+N	land|take off	land は「着陸する」、take off は「離陸する」
+N	law|rule	rule は「規則・決まり」と広く言う（school rules）。law は国が定める「法律」や、自然の「法則」
+N	law|statute	law は「法律」と広く言う。statute は議会が定めた「制定法・法令」のかたい語
+N	idle|lazy	lazy は「怠け者の」と人の性質を言う。idle は「何もしていない・使われていない」（idle machines）で、怠けているとは限らない
+N	indolent|lazy	lazy は「怠惰な」のふつうの語。indolent は「無精な・怠惰な」のかたい語
+N	diligent|lazy	lazy は「怠惰な」、diligent は「勤勉な・まじめに努力する」
+N	guide|lead	lead は先頭に立って「導く・連れて行く」。guide は道や場所を「案内する」（guide a tour）
+N	direct|lead	lead は先に立って「導く」。direct は人や組織を「指揮する」、道を「教える」
+N	chief|leader	leader は集団を引っぱる「指導者・リーダー」。chief は組織の「長」（fire chief）
+N	commander|leader	leader は「指導者」と広く言う。commander は軍や部隊の「指揮官・司令官」
+N	follower|leader	leader は「指導者」、follower は「従う人・支持者」で、SNS の「フォロワー」にも使う
+I	leave|curr_idm_2_set_off	set off は旅などに「出発する」。leave は「(場所を)去る・出発する」で、leave Tokyo のように場所を後ろに置ける
+I	leave|curr_idm_2_set_out	set out は目的をもって旅に「出発する」、また仕事に「取りかかる」。leave は「去る・出発する」と広く言う
+N	lend|loan	lend は物やお金を「貸す」ふつうの語。loan は名詞で「貸付・ローン」、動詞ではお金や美術品を「貸す」ときに使う
+N	fewer|less	fewer は数えられる名詞に使う（fewer books）。less は数えられない名詞に使う（less water）
+N	less|lower	less は量が「より少ない」。lower は高さ・値段などが「より低い」（a lower price）
+N	even|level	level は「水平な・平らな」。even は「平らな」のほか、数が「偶数の」、得点が「互角の」
+N	level|uneven	level は「平らな・水平な」、uneven は「でこぼこの・むらのある」
+N	falsehood|lie	lie は「うそ」のふつうの語。falsehood は「虚偽・偽り」のかたい語
+N	fib|lie	lie は「うそ」。fib は子どもがつくような「たわいないうそ」
+N	lie|truth	lie は「うそ」、truth は「真実」。tell a lie と tell the truth
+N	line|row	line は人や物の「列」（a line of people）。row は横に並んだ「列」や、座席の「列」（the front row）
+N	line|stripe	line は「線」と広く言う。stripe は布などの「しま模様・筋」
+N	connect|link	link は2つを「関連づける・つなぐ」。connect は線や機械を「接続する」ことにも使うふつうの語
+N	join|link	link は「つなげる・関連づける」。join は人が集まりに「加わる」や、2つの物を「つなぐ」
+N	link|separate	link は「つなぐ・関連づける」、separate は「分ける・切り離す」
+N	enumerate|list	list は「一覧にする・並べる」のふつうの語。enumerate は1つずつ「列挙する・数え上げる」かたい語
+N	itemize|list	list は「一覧にする」。itemize は請求書などを「項目ごとに書き出す・明細にする」
+N	load|pack	load は車や船に荷を「積む」。pack はかばんや箱に物を「詰める・荷造りする」
+N	load|unload	load は荷を「積む」、unload は荷を「降ろす」
+N	lonely|solitary	lonely は「寂しい」と気持ちを言う。solitary は「ひとりきりの・単独の」と様子を言い、寂しいとは限らない
+N	isolated|lonely	lonely は「寂しい」。isolated は場所や人が「孤立した・離れた」と状態を言う
+N	lonely|sociable	lonely は「孤独な・寂しい」、sociable は人と付き合うのが好きな「社交的な」
+N	fortune|luck	luck は「運」のふつうの語（good luck）。fortune は「運・幸運」のかたい語で、「財産・富」の意味もある
+N	chance|luck	luck は「運」。chance は「偶然・機会・見込み」（by chance＝偶然に）
+N	luck|misfortune	luck は「運・幸運」、misfortune は「不運・災難」
+N	fortunate|lucky	lucky は「運がよい」のふつうの語。fortunate は「恵まれた・幸運な」の、ややかたい語
+N	lucky|unlucky	lucky は「運のよい」、unlucky は「運の悪い」
+N	mail|post	mail はアメリカ英語の「郵便」、post はイギリス英語の「郵便」。mail は e-mail の意味でも使う
+N	correspondence|mail	mail は「郵便・郵便物」。correspondence は手紙のやり取り「通信・文通」のかたい語
+N	male|masculine	male は生物学上の性別の「男性の・雄の」（動物にも使う）。masculine は「男らしい・男性的な」という性質
+N	director|manager	manager は店や部署の「経営者・管理者」。director は会社の「取締役」や、映画の「監督」
+N	manager|supervisor	manager は部署を「管理する人」。supervisor は現場で働く人を「監督する人・上司」
+N	manager|subordinate	manager は「管理者」、subordinate は下で働く「部下」
+N	mark|sign	mark は物についた「印・跡」。sign は情報を伝える「標識・合図・兆し」
+N	mark|spot	mark は「印・しみ」と広く言う。spot は「斑点・点」や「場所・地点」
+N	correspond|match	match は色や形が「合う・釣り合う」。correspond は内容が「一致する・対応する」かたい語で、「文通する」の意味もある
+N	fit|match	fit はサイズや形が「ぴったり合う」。match は色や柄が「調和する・似合う」
+N	clash|match	match は「調和する」、clash は色などが「ぶつかり合う・合わない」
+N	meaning|sense	meaning は語や文の「意味」。sense は「感覚」が中心で、in a sense（ある意味で）のように「意味」でも使う
+N	meaning|significance	meaning は「意味」。significance は物事の「重要性・意義」
+N	disorder|mess	mess は部屋などが「散らかった状態」の話し言葉。disorder は「無秩序・混乱」のかたい語で、体の「不調・障害」の意味もある
+N	chaos|mess	mess は「散らかり・めちゃくちゃ」。chaos は社会や場が「大混乱」している状態
+N	mess|order	mess は「散らかった状態」、order は「整頓・秩序」（in order＝整って）
+N	might|power	power は「力・権力」と広く言う。might は with all one's might（全力で）のように使う「力強さ」のかたい語
+N	might|strength	strength は体や物の「強さ・力」。might は「強大な力」のかたい語
+N	might|weakness	might は「力強さ」、weakness は「弱さ」
+N	minute|tiny	minute は形容詞では /maɪˈnut/ と読み「微小な・細かい」。tiny は「ごく小さい」のふつうの語
+N	detailed|minute	detailed は「詳しい」のふつうの語。minute は形容詞（/maɪˈnut/）で「細部まで綿密な」（in minute detail）
+N	huge|minute	minute は形容詞（/maɪˈnut/）で「微小な」、huge は「巨大な」
+N	miss|overlook	miss は「見逃す・聞きもらす」と広く言う。overlook はうっかり「見落とす」や、「大目に見る」
+N	long for|miss	miss は「(いなくて)さびしく思う」（I miss you.）。long for は手に入らないものを「強く望む・恋しがる」
+N	catch|miss	catch は電車などに「間に合う」、miss は「乗り遅れる」
+N	blunder|mistake	mistake は「間違い」のふつうの語。blunder は不注意による「大失敗・へま」
+N	accuracy|mistake	accuracy は「正確さ」、mistake は「間違い」
+N	blend|mix	mix は「混ぜる」のふつうの語。blend は味や色がなじむように「うまく混ぜ合わせる」
+N	combine|mix	mix は「混ぜる」。combine は2つ以上を「組み合わせる・結合する」
+N	mix|separate	mix は「混ぜる」、separate は「分ける・分離する」
+N	example|model	example は「例・手本」。model は見ならうべき「手本・模範」（a role model）や「模型」
+N	model|prototype	model は「模型・手本・型」。prototype は製品化の前に作る「試作品・原型」
+N	ancient|modern	ancient は「古代の」、modern は「現代の・近代の」
+N	modern|old	modern は「現代的な・最新の」、old は「古い・昔からの」
+N	mama|mom	mom はアメリカで「お母さん」。mama は小さい子どもの言い方「ママ」
+N	instant|moment	moment は「ちょっとの間・時点」。instant は名詞で「瞬間」と、さらに短い一瞬を強く言う
+N	moment|point	moment は「時点・瞬間」。point は at this point（この時点で）のように、話や出来事の中の「時点・段階」
+N	eternity|moment	moment は「一瞬」、eternity は「永遠」
+N	motion|movement	movement は体や物の「動き」や、社会の「運動」。motion は物理の「運動」や、動いている状態
+N	campaign|movement	movement は社会を変えようとする「運動」。campaign は目的を決めて行う「運動・キャンペーン」
+N	movement|stillness	movement は「動き」、stillness は「静止・静けさ」
+N	narrow|wide	narrow は幅が「狭い」、wide は「広い」。部屋の「広い・狭い」には large・small を使う
+N	broad|narrow	broad は「幅広い・広範な」、narrow は「狭い」。broad は「おおまかな」（a broad idea）の意味もある
+N	national|nationwide	national は「国の・国家の」（a national holiday）。nationwide は「全国的な・全国規模の」と広がりを言う
+N	national|state	national は「国の」。state は形容詞的に「国家の・州の」（a state school）
+N	local|national	local は「地元の・地方の」、national は「国全体の・国の」
+N	innate|natural	natural は「自然の・生まれつきの」と広く言う。innate は才能などが「生まれつき備わった」かたい語
+N	natural|spontaneous	natural は「自然な」。spontaneous は計画せずに「自然に起こる・とっさの」
+N	artificial|natural	natural は「自然の」、artificial は「人工の・不自然な」
+N	close|near	near は「近い」のふつうの語。close も「近い」だが、人の関係が「親しい」（a close friend）の意味もある
+N	nephew|relative	relative は「親戚」全体。nephew はそのうち兄弟姉妹の息子「おい」
+N	nephew|niece	nephew は「おい」、niece は「めい」
+N	calm|nervous	nervous は「緊張した・落ち着かない」、calm は「落ち着いた・穏やかな」
+N	niece|relative	relative は「親戚」全体。niece はそのうち兄弟姉妹の娘「めい」
+N	din|noise	noise は「騒音・雑音」のふつうの語。din は長く続く「やかましい騒音」のかたい語
+D	noise	syn	racket	騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ
+N	loud|noisy	loud は音や声そのものが「大きい」。noisy は場所や人が「騒がしい・うるさい」
+N	noisy|rowdy	noisy は「騒がしい」。rowdy は人が「騒々しくて乱暴な」
+N	normal|typical	normal は「普通の・正常な」。typical はその種類らしい「典型的な・いつもの」
+N	abnormal|normal	normal は「正常な」、abnormal は「異常な」
+N	notice|observe	notice はふと「気づく」。observe は注意して「観察する」
+N	notice|spot	notice は「気づく」。spot は動詞で、探していたものを「見つける」（spot a mistake）
+N	note|notice	notice は目や耳で「気づく」ふつうの語。note は動詞で「(注意して)気づく・書き留める」の、少しかたい語
+N	notice|overlook	notice は「気づく」、overlook は「見落とす」
+N	fiction|novel	novel は1冊の長い「小説」。fiction は作られた話全体「フィクション・小説」で、数えない名詞
+N	new|novel	novel は形容詞で「目新しい・斬新な」（a novel idea）。new は「新しい」と広く言う
+N	onion|shallot	onion は「玉ねぎ」。shallot は小さな玉ねぎの仲間「エシャロット」
+N	order|sequence	order は「順序」。sequence は出来事の「つながった順番・連続」
+N	command|order	order は「命令」のふつうの語で、「注文・順序」の意味もある。command は軍などの「指令・命令」で、「指揮」の意味もある
+N	chaos|order	order は「秩序」、chaos は「大混乱・無秩序」
+N	owner|proprietor	owner は「持ち主」と広く言う。proprietor は店やホテルの「経営者・所有者」のかたい語
+N	owner|tenant	owner は家の「持ち主」、tenant は借りて住む「借家人・テナント」
+N	cram|pack	pack は「詰める・荷造りする」。cram は入りきらないほど「ぎゅうぎゅう詰め込む」で、「一夜漬けする」の意味もある
+N	pack|stuff	pack はかばんに「きちんと詰める」。stuff は動詞で「無造作に詰め込む」
+N	pack|unpack	pack は「荷造りする・詰める」、unpack は「荷をほどく・中身を出す」
+N	ache|pain	pain は「痛み」と広く言う。ache は頭や歯などが「ずきずき続く鈍い痛み」
+N	pain|suffering	pain は体の「痛み」。suffering は長く続く「苦しみ・苦難」
+N	pain|pleasure	pain は「痛み・苦しみ」、pleasure は「楽しみ・快さ」
+N	part|portion	part は「一部」と広く言う。portion は分けられた「分け前・一人前」
+N	component|part	part は「部分・部品」と広く言う。component は機械やしくみを作る「構成要素・部品」のかたい語
+N	part|whole	part は「一部」、whole は「全体」
+N	approve|pass	pass は議会で法案が「可決される」。approve は計画などを「承認する・賛成する」
+N	fail|pass	pass は試験に「合格する」、fail は「落ちる・不合格になる」
+I	pass|curr_idm_2_go_by	go by は時間が「過ぎる」。pass も時間が「過ぎる」（Time passes quickly.）が、「通り過ぎる・渡す」など意味が広い
+N	impatient|patient	patient は「忍耐強い」、impatient は「待ちきれない・せっかちな」
+N	era|period	period は「期間・時代」と広く言う。era は特色のある「時代」（the Meiji era）
+N	period|span	period は「期間」。span は始まりから終わりまでの「長さ・期間」（a short attention span）
+N	fragment|piece	piece は「1切れ・1つ」と広く言う。fragment は割れた「かけら・断片」
+N	piece|portion	piece は「1切れ」（a piece of cake）。portion は分けた「一人前・分け前」
+N	piece|whole	piece は「一部・1切れ」、whole は「全体」
+N	location|place	place は「場所」のふつうの語。location は地図上の「位置・所在地」のかたい語
+N	place|spot	place は「場所」と広く言う。spot は特定の小さな「地点・スポット」
+N	delight|pleasure	pleasure は「楽しみ・喜び」。delight は「大喜び」と、さらに強い喜び
+N	enjoyment|pleasure	pleasure は「楽しみ・喜び」。enjoyment は何かを「楽しむこと」
+N	pond|pool	pond は自然の「池」。pool は泳ぐ「プール」や、雨の「水たまり」
+N	lake|pond	lake は大きな「湖」、pond は小さな「池」
+N	needy|poor	poor は「貧しい」のふつうの語。needy は生活に必要な物が足りない「困窮した」
+N	poor|rich	poor は「貧しい」、rich は「裕福な」。rich は「豊かな・たっぷりの」の意味もある
+N	popular|public	public は「公の・公共の」（public library）。popular は「人気のある」のほか「一般の人々の」（popular opinion＝世論）
+N	popular|unpopular	popular は「人気のある」、unpopular は「人気のない・嫌われている」
+N	mighty|powerful	powerful は「強力な」のふつうの語。mighty は「強大な・巨大な」と、物語などで使うやや古い語
+N	powerful|weak	powerful は「強力な」、weak は「弱い」
+I	prepare|curr_idm_5_get_ready	get ready は話し言葉で「準備する・支度する」（get ready for school）。prepare は「準備する」のややかたい語
+N	appropriate|proper	proper は「きちんとした・正式な」。appropriate は場面に「ふさわしい・適切な」
+N	proper|suitable	proper は「正式な・適切な」。suitable は目的や人に「合った・ふさわしい」
+N	improper|proper	proper は「適切な・礼儀にかなった」、improper は「不適切な・無作法な」
+N	defend|protect	protect は危険から「守る」と広く言う。defend は攻撃に対して「防ぐ・守る」や、法廷で「弁護する」
+N	guard|protect	protect は「守る」。guard は動詞で、見張って「警備する・守る」
+N	ashamed|proud	proud は「誇りに思う」（be proud of）、ashamed は「恥じて」（be ashamed of）
+N	query|question	question は「質問」のふつうの語。query は確かめるための「問い合わせ・疑問」
+N	inquiry|question	question は「質問」。inquiry は窓口などへの「問い合わせ」や、公式な「調査」
+N	answer|question	question は「質問」、answer は「答え」
+N	dash|race	race は「競走する・急いで走る」。dash は短い距離を「さっと突進する」
+N	race|sprint	race は「競走する」。sprint は短い距離を「全力で走る」
+N	crawl|race	race は「疾走する」、crawl は「這う・のろのろ進む」
+N	rainbow|spectrum	rainbow は空の「虹」。spectrum は光を分けた色の並び「スペクトル」や、意見などの「範囲」
+N	rare|uncommon	rare は「まれな・珍しい」。uncommon は「あまり見かけない」と、rare より弱い言い方
+N	common|rare	common は「ありふれた」、rare は「まれな・珍しい」
+N	rate|ratio	rate は「率・割合」（birth rate）や「速度」。ratio は2つの数の「比・比率」（a ratio of 2 to 1）
+N	pace|rate	rate は数値で表す「速度・割合」。pace は歩いたり進んだりする「ペース・歩調」
+N	raw|uncooked	raw は「生の」のふつうの語。uncooked は「加熱していない」と説明する言い方
+N	raw|unprocessed	raw は食べ物が「生の」、材料が「未加工の」。unprocessed は「加工されていない」と説明する言い方
+N	cooked|raw	raw は「生の」、cooked は「加熱した・調理した」
+N	receive|send	send は「送る」、receive は「受け取る」
+N	record|register	record は「記録する・録音する」。register は名簿に「登録する」
+N	log|record	record は「記録する」と広く言う。log は日誌や記録簿に「(時間ごとに)記録する」
+N	erase|record	record は「記録する・録音する」、erase は「消去する」
+N	relax|unwind	relax は「くつろぐ」のふつうの語。unwind は仕事のあとなどに「緊張をほぐす」くだけた語
+N	loosen|relax	relax は体や気持ちを「緩める・くつろぐ」。loosen はねじやひもを「緩める」
+N	relax|tense	relax は「くつろぐ・緩める」、tense は「緊張した・張りつめた」
+N	relax|rest	rest は動かずに「休む・休息する」。relax は気持ちをゆるめて「くつろぐ」
+N	repose|rest	rest は「休む」のふつうの語。repose は「休息・安らぎ」のかたい語
+N	labor|rest	labor は「働く・労働」、rest は「休む・休息」
+I	rest|curr_idm_3_take_a_break	take a break は仕事や勉強の途中で「ひと休みする」。rest は「休む・休息する」と広く言う
+I	return|curr_idm_4_get_back	get back は話し言葉で「戻る」や「取り戻す」。return は「戻る・返す」のやや改まった語
+I	return|exam_idm_give_back	give back は借りた物を「返す」話し言葉。return は「返す」のやや改まった語で、「戻る」の意味もある
+I	return|curr_idm_4_take_back	take back は買った物を店に「返品する」や、言ったことを「取り消す」。return は「返す・戻る」と広く言う
+N	critique|review	review は本や映画の「評論・レビュー」や「見直し」。critique は作品や考えを詳しく論じる「批評」のかたい語
+N	inspection|review	review は計画などの「見直し・点検」。inspection は規則どおりか調べる「検査・点検」
+N	ascend|rise	rise は太陽などが「上がる・昇る」ふつうの語。ascend は「上昇する」のかたい語
+N	increase|rise	rise は自動詞で「上がる・増える」。increase は「増える」のほか、他動詞で「増やす」にもなる
+N	fall|rise	rise は「上がる」、fall は「下がる・落ちる」。物価や気温にも使う
+I	rise|idm_get_up	get up はベッドから「起きる」。rise も「起きる」の意味があるが、かたい言い方
+I	rise|idm_stand_up	stand up は座っていた人が「立ち上がる」。rise も「立ち上がる」の意味があるが、かたい言い方
+N	cord|rope	rope は太い「縄・ロープ」。cord は細い「ひも・コード」
+N	line|rope	rope は「縄・ロープ」。line は洗濯物をかける「綱」や、釣り糸などの「糸」
+N	regulation|rule	rule は「規則」と広く言う。regulation は役所などが定めた細かい「規則・規制」
+N	govern|rule	rule は王などが「支配する」。govern は政府が国を「治める・統治する」
+N	monarch|ruler	ruler は国を治める「支配者」と広く言う。monarch は王や女王などの「君主」
+N	ruler|sovereign	ruler は「支配者」。sovereign は国の「君主・主権者」のかたい語
+N	ruler|subject	ruler は「支配者」、subject は治められる「臣民・国民」
+N	dash|rush	rush は「急ぐ・突進する」。dash は短い距離を「さっと走る」
+N	dawdle|rush	rush は「急ぐ」、dawdle は「ぐずぐずする・のろのろする」
+N	safe|secure	safe は危険がなく「安全な」。secure は守られていて「安心な・しっかりした」（a secure job）
+N	safely|securely	safely は「安全に・無事に」。securely は外れないように「しっかりと」
+N	dangerously|safely	safely は「安全に」、dangerously は「危険なほど」
+N	cruise|sail	sail は船で「航海する・帆走する」。cruise は船で観光して「遊覧する」
+N	sail|voyage	sail は「航海する」のふつうの語。voyage は名詞で長い「船旅・航海」
+N	greens|salad	salad は「サラダ」。greens は葉物野菜をまとめて言う「青物・野菜」
+N	plate|saucer	plate は料理をのせる「皿」。saucer はカップの下に置く「受け皿」
+N	dish|saucer	dish は料理を入れる「皿・料理」。saucer はカップ用の「受け皿」
+N	scarf|shawl	scarf は首や頭に巻く「スカーフ・マフラー」。shawl は肩にかける大きな「ショール」
+N	muffler|scarf	scarf は首に巻く布を広く言う。muffler は冬用の厚い「マフラー」（古い言い方）
+N	frightening|scary	scary は話し言葉で「怖い」。frightening は「ぞっとするほど恐ろしい」と、書き言葉でも使う
+N	creepy|scary	scary は「怖い」と広く言う。creepy は「不気味な・ぞっとする」
+N	comforting|scary	scary は「怖い」、comforting は「ほっとさせる・心がなごむ」
+N	scissors|shears	scissors は「はさみ」。shears は庭の手入れなどに使う「大ばさみ」
+N	hidden|secret	secret は人に知らせない「秘密の」。hidden は見えない所に「隠れた」
+N	confidential|secret	secret は「秘密の」のふつうの語。confidential は仕事の「内密の・機密の」（confidential documents）
+N	public|secret	secret は「秘密の」、public は「公の・公開の」
+N	condemn|sentence	sentence は動詞で「判決を下す・刑を言い渡す」（be sentenced to）。condemn は「非難する」や、刑を「宣告する」
+N	convict|sentence	convict は「有罪と判決する」。sentence は有罪の人に「刑を言い渡す」（有罪のあとに刑の重さを決める）
+N	acquit|sentence	sentence は「刑を言い渡す」、acquit は「無罪にする」
+N	grave|serious	serious は「深刻な・真剣な」のふつうの語。grave は「重大な・厳粛な」のかたい語
+N	earnest|serious	serious は「真剣な・まじめな」。earnest は「熱心で真剣な」と、気持ちのこもったことを言う
+N	serious|trivial	serious は「深刻な・重大な」、trivial は「ささいな」
+N	collection|set	set は道具などの「一式・ひとそろい」。collection は集めた「収集品・コレクション」
+N	kit|set	set は「一式・ひとそろい」と広く言う。kit は組み立て用品や救急箱などの「道具一式・キット」
+N	shade|shadow	shadow は光が当たって物の後ろにできる形のある「影」。shade は日の当たらない涼しい「日陰」
+N	shake|tremble	shake は「振る・揺れる」と広く言う。tremble は恐怖や寒さで体が「震える」
+N	quiver|shake	shake は「揺れる・震える」。quiver は声や葉が「小刻みに震える」
+N	figure|shape	shape は「形」のふつうの語。figure は「人の姿・体つき」や「図形」

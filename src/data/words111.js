@@ -37,7 +37,7 @@ const RAW = [
   ['sandal', '名', '3', 'サンダル', 'Jenny took off her sandals and walked on the warm sand.', 'ジェニーはサンダルを脱いで、温かい砂の上を歩いた。', 'ギリシャ sandalon(履物)。', { syn: [{ w: 'slipper', m: 'スリッパ' }], field: '一般' }],
   ['sauce', '名', '3', 'ソース・たれ', 'Would you like more sauce on your spaghetti?', 'スパゲッティにソースをもっとかけますか？', 'ラテン salsus(塩漬けの)→ salt と同系。', { syn: [{ w: 'dressing', m: 'ドレッシング' }, { w: 'gravy', m: '肉汁ソース' }], field: '料理' }],
   ['saucer', '名', '3', '受け皿', 'She put the cup back on its saucer.', '彼女はカップを受け皿に戻した。', 'sauce(ソース)+ -er(ソース入れ)。', { syn: [{ w: 'plate', m: '皿' }, { w: 'dish', m: '小皿' }], field: '一般' }],
-  ['sausage', '名', '3', 'ソーセージ', 'At the camp, our leader cooked sausages over the fire.', 'キャンプで、リーダーがたき火でソーセージを焼いてくれた。', 'ラテン salsus(塩漬けの)。', { syn: [{ w: 'frank', m: 'フランクフルト' }], field: '料理' }],
+  ['sausage', '名', '3', 'ソーセージ', 'At the camp, our leader cooked sausages over the fire.', 'キャンプで、リーダーがたき火でソーセージを焼いてくれた。', 'ラテン salsus(塩漬けの)。', { syn: [], field: '料理' }],
   ['scent', '名', 'pre1', '香り・におい・気配', 'The dog followed the scent of the lost hiker through the forest.', '犬は、行方不明の登山者のにおいをたどって森の中を進んだ。', 'ラテン sentire(感じる)→ sense と同系。', { syn: [{ w: 'aroma', m: '芳香' }, { w: 'fragrance', m: '香り' }], ant: [{ w: 'stench', m: '悪臭' }], field: '一般' }],
   ['scissors', '名', '3', 'はさみ', 'Cut the paper with these scissors.', 'このはさみで紙を切って。', 'ラテン cisorium(切る道具)。', { syn: [{ w: 'shears', m: '大ばさみ' }], field: '一般' }],
   ['scold', '動', '3', 'しかる・小言を言う', 'The teacher scolded Max for running in the hallway.', '先生は廊下を走ったことでマックスをしかった。', '古ノルド skald(詩人・嘲り)。', { syn: [{ w: 'rebuke', m: '叱責する' }, { w: 'reprimand', m: '戒める' }], ant: [{ w: 'praise', m: '褒める' }], field: '社会' }],

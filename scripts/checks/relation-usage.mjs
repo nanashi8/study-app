@@ -43,15 +43,21 @@ export function relationUsageGaps() {
     ...UNMATCHED_RELATION_EDITS,
   ]
   const ledgerProblems = []
+  const byId = new Map(ALL_WORDS.map((word) => [word.id, word]))
+  const itemIn = (id, kind, w) => (byId.get(id)?.[kind === 'syn' ? 'synonyms' : 'antonyms'] ?? [])
+    .find((item) => String(item.w).toLowerCase() === String(w).toLowerCase())
   for (const [id, kind, w, m, reason] of RELATION_ADDITIONS) {
-    if (!['syn', 'ant'].includes(kind) || !w || !m || !reason) ledgerProblems.push(`足す項目 ${id} ${kind} ${w}: 欄・語・意味・理由が要る`)
-    if (!ALL_WORDS.some((word) => word.id === id)) ledgerProblems.push(`足す項目の見出し語 ${id} が辞書にない`)
+    if (!['syn', 'ant'].includes(kind) || !w || !m || !reason) ledgerProblems.push(`足した項目 ${id} ${kind} ${w}: 欄・語・意味・理由が要る`)
+    if (!byId.has(id)) ledgerProblems.push(`足した項目の見出し語 ${id} が辞書にない`)
   }
-  for (const [id, kind, w, reason] of RELATION_REMOVALS) {
-    if (!['syn', 'ant'].includes(kind) || !w || !reason) ledgerProblems.push(`外す項目 ${id} ${kind} ${w}: 欄・語・理由が要る`)
+  // 外した項目・直した意味は単語データを書き換えてある。台帳は記録なので、データが台帳どおりかを見る。
+  for (const [id, kind, w, m, reason] of RELATION_REMOVALS) {
+    if (!['syn', 'ant'].includes(kind) || !w || !m || !reason) ledgerProblems.push(`外した項目 ${id} ${kind} ${w}: 欄・語・外した意味・理由が要る`)
+    else if (itemIn(id, kind, w)) ledgerProblems.push(`外した項目 ${id} の ${kind} の ${w} が、単語データに残っている`)
   }
-  for (const [id, kind, w, m] of RELATION_MEANING_FIXES) {
-    if (!['syn', 'ant'].includes(kind) || !w || !m) ledgerProblems.push(`意味を直す項目 ${id} ${kind} ${w}: 欄・語・意味が要る`)
+  for (const [id, kind, w, before, after] of RELATION_MEANING_FIXES) {
+    if (!['syn', 'ant'].includes(kind) || !w || !before || !after) ledgerProblems.push(`意味を直した項目 ${id} ${kind} ${w}: 欄・語・もとの意味・直した意味が要る`)
+    else if (itemIn(id, kind, w)?.m !== after) ledgerProblems.push(`意味を直した項目 ${id} の ${kind} の ${w} が「${after}」になっていない`)
   }
   const result = {}
   for (const kind of RELATION_USAGE_KINDS) {

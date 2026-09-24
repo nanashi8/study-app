@@ -1,0 +1,215 @@
+N	shout|yell	shout は「大声を出す・叫ぶ」と広く言う。yell は怒りや興奮で「わめく・怒鳴る」
+N	cry out|shout	shout は「大声で叫ぶ」。cry out は痛みや驚きで思わず「叫び声を上げる」
+N	shout|whisper	shout は「叫ぶ」、whisper は「ささやく」
+N	shrine|temple	日本では shrine は「神社」、temple は「寺」。shrine は聖人などをまつる「聖堂」にも使う
+N	sanctuary|shrine	shrine は神などをまつる「神社・聖堂」。sanctuary は神聖な「聖域」や、動物の「保護区」
+N	noisy|silent	silent は「静まり返った・無言の」、noisy は「騒がしい」
+N	loud|silent	silent は「音のしない・無言の」、loud は音が「大きい・うるさい」
+N	plain|simple	simple は「簡単な・単純な」。plain は飾りのない「質素な・無地の」や、「分かりやすい」
+N	complex|simple	simple は「単純な」、complex は部分が多く絡み合って「複雑な」
+N	complicated|simple	simple は「簡単な」、complicated は手順や事情が「複雑でややこしい」
+N	ability|skill	ability は何かができる「能力」全般。skill は練習で身につけた「技能・腕前」
+N	expertise|skill	skill は「技能」。expertise は専門家が持つ高度な「専門技能・専門知識」
+N	intelligent|smart	smart は話し言葉で「頭のよい」。intelligent は「知的な・知能の高い」と少し改まった語
+N	foolish|smart	smart は「賢い」、foolish は「愚かな」
+N	ground|soil	soil は植物が育つ「土・土壌」。ground は足もとの「地面」
+N	soldier|warrior	soldier は軍隊の「兵士」。warrior は昔の「戦士・武人」や、勇敢に戦う人
+I	someday|curr_idm_4_one_day	someday は未来の「いつか」。one day は未来の「いつか」のほか、過去の「ある日」にも使う
+N	classify|sort	sort は動詞で「分ける・整理する」の話し言葉。classify は基準にしたがって「分類する」かたい語
+N	arrange|sort	sort は種類ごとに「分ける」。arrange は見やすく「並べる・整える」や、「手配する」
+N	arachnid|spider	spider は「クモ」。arachnid はクモやサソリをまとめて言う「クモ類」の学問の語
+N	soul|spirit	spirit は「精神・元気・霊」と広く言う。soul は体に宿る「魂」で、心の奥深くの感じ
+N	spirit|vigor	spirit は「元気・気力」（in high spirits＝上機嫌で）。vigor は体や心の「活力・精力」
+N	body|spirit	body は「肉体」、spirit は「精神・霊」
+N	separate|split	split は縦に「割る」や、グループが「分裂する」。separate はくっついているものを「分ける・引き離す」
+N	split|unite	split は「分裂する・分ける」、unite は「1つにまとめる・団結する」
+N	detect|spot	spot は動詞で、目で「見つける」話し言葉。detect は機械や調査で「感知する・発見する」
+N	overlook|spot	spot は「見つける」、overlook は「見落とす」
+N	extend|spread	spread は「広がる・広める」と広く言う。extend は長さや期間を「延ばす・広げる」
+N	disperse|spread	spread は「広がる・広げる」。disperse は群衆などを「散らす・分散させる」
+N	contain|spread	spread は病気や火が「広がる」、contain は広がらないように「封じ込める」
+N	arena|stadium	stadium は屋根のない大きな「競技場・スタジアム」。arena は屋内の「アリーナ」や、争いの「場」
+N	ground|stadium	stadium は観客席のある「スタジアム」。ground は grounds の形などで「グラウンド・用地」
+N	stair|step	stair は階段の「一段」（ふつう stairs で「階段」）。step は「一歩」や、踏み段の「段」
+N	stair|staircase	stairs は「階段」と広く言う。staircase は手すりなどを含めた、建物の中の「階段（全体）」
+N	seal|stamp	stamp は「切手」や押して付ける「印・スタンプ」。seal は書類に押す公式の「印章・印」や、「封」
+N	mark|stamp	stamp は押して付ける「スタンプ・印」。mark は「印・跡」と広く言う
+I	start|curr_idm_2_set_off	set off は旅に「出発する」。start は「始める・出発する」と広く言う
+I	start|curr_idm_2_set_out	set out は目的をもって「出発する・取りかかる」。start は「始める」と広く言う
+N	condition|state	state は「状態」と広く言う（a state of shock）。condition は物や体の「具合・状態」や、「条件」
+N	nation|state	nation は国民のまとまりとしての「国家・国民」。state は政治のしくみとしての「国家」や、アメリカなどの「州」
+N	remain|stay	stay は「とどまる・滞在する」の話し言葉。remain は「残る・〜のままである」のかたい語
+N	lodge|stay	stay は「泊まる・滞在する」と広く言う。lodge は一時的に「宿泊する」かたい語で、「(苦情を)申し立てる」の意味もある
+N	leave|stay	stay は「とどまる」、leave は「去る・出発する」
+N	iron|steel	iron は「鉄」。steel は鉄を強くした「鋼鉄・はがね」
+N	inventory|stock	stock は店の「在庫」（out of stock＝品切れ）。inventory は「在庫」や、在庫の「目録・一覧」
+N	stock|supply	stock は店や家にある「在庫・蓄え」。supply は必要に応じて出せる「供給（量）・蓄え」
+N	rock|stone	rock は大きな「岩」や岩石。stone は手で持てるくらいの「石」や、材料としての「石」
+I	stop|idm_give_up	give up は途中で「あきらめる・やめる」。stop は「止める・やめる」と広く言う
+N	odd|strange	strange は「奇妙な」のふつうの語。odd は「変な・おかしな」と少しくだけた語で、「奇数の」「片方の」の意味もある
+N	strange|unfamiliar	strange は「奇妙な」のほか「見知らぬ」。unfamiliar は「なじみのない・慣れていない」
+N	familiar|strange	familiar は「なじみの」、strange は「見知らぬ・なじみのない」
+N	acquaintance|stranger	stranger は「見知らぬ人」、acquaintance は顔を知っている程度の「知り合い」
+N	hay|straw	straw は麦などの茎を干した「わら」。hay は家畜のえさにする「干し草」
+N	flow|stream	stream は「小川・流れ」。flow は動詞で「流れる」、名詞で水などの「流れ」
+N	broadcast|stream	stream は動詞で動画や音楽をネットで「配信する」。broadcast はテレビ・ラジオで「放送する」
+N	cram|stuff	stuff は動詞で「詰め込む」。cram は入りきらないほど「ぎゅうぎゅうに詰め込む」
+N	empty|stuff	stuff は「詰め込む」、empty は動詞で「空にする」
+N	foolish|stupid	stupid は「ばかな」と強く言い、失礼に聞こえる。foolish は「愚かな」と少しやわらかい言い方
+N	idiotic|stupid	stupid は「ばかな」。idiotic は「ばかげた・まぬけな」と、あきれた気持ちを強く言う
+N	intelligent|stupid	intelligent は「知的な」、stupid は「ばかな」
+N	successful|unsuccessful	successful は「成功した」、unsuccessful は「うまくいかなかった」
+N	fit|suit	suit は動詞で服や色が人に「似合う」。fit はサイズや形が「ぴったり合う」
+N	become|suit	suit は動詞で「似合う」のふつうの語。become も「似合う」の意味があるが、古くかたい言い方
+I	surprise|curr_idm_1_take_aback	be taken aback は「(不意をつかれて)面くらう」と受け身で使う。surprise は「驚かせる」と広く言う
+N	perspiration|sweat	sweat は「汗」のふつうの語。perspiration は「発汗・汗」のかたい語
+N	sway|swing	swing はぶら下がった物が大きく「揺れる・振る」。sway は木などがゆっくり「揺れる」や、人の考えを「左右する」
+N	oscillate|swing	swing は「揺れる・振る」。oscillate は振り子のように「規則正しく振動する」学問の語
+N	gift|talent	talent は「才能」のふつうの語。gift は生まれつき授かった「天賦の才」（have a gift for）
+N	aptitude|talent	talent は目立つ「才能」。aptitude は何かに向いている「素質・適性」
+N	ineptitude|talent	talent は「才能」、ineptitude は「不器用さ・無能」
+N	awful|terrible	terrible と awful はどちらも「ひどい」。awful のほうが話し言葉でよく使う
+N	dreadful|terrible	terrible は「ひどい・恐ろしい」。dreadful も「ひどい」だが、少し古めかしい言い方
+N	terrible|wonderful	terrible は「ひどい」、wonderful は「すばらしい」
+N	exam|test	test は「試験・検査」と広く言う。exam は examination を短くした語で、学期末などの大きな「試験」
+N	test|trial	test は「試験・検査」。trial は新しい物を試す「試用・試験」や、法廷の「裁判」
+N	peak|top	top は「いちばん上・頂上」と広く言う。peak はとがった山の「頂」や、数値の「最高点」
+N	summit|top	top は「頂上」。summit は山の「山頂」のかたい語で、国の首脳の「首脳会談」の意味もある
+N	complete|total	total は数を合わせた「合計の」や「全くの」（total failure）。complete は欠けたところのない「完全な」
+N	entire|total	total は「合計の・全体の」。entire は「全体の・まるごとの」（the entire day）
+N	partial|total	total は「全くの・全体の」、partial は「部分的な」
+N	cloth|towel	towel は体や手をふく「タオル」。cloth は「布・生地」と広く言う
+N	customary|traditional	traditional は昔から続く「伝統的な」。customary はいつもそうする「慣例の・習慣の」
+N	modern|traditional	traditional は「伝統的な」、modern は「現代的な」
+N	path|trail	path は「小道」と広く言う。trail は山や森の「踏み分け道」や、通った「跡」
+N	track|trail	trail は人や動物が通った「跡」。track は「足跡・通った跡」や、陸上の「トラック」
+N	lead|trail	lead は試合で「リードする」、trail は「負けている・追いかける」（trail by two goals）
+I	travel|exam_idm_take_a_trip	take a trip は短い「旅行をする」。travel は「旅行する・移動する」と広く言い、長い旅にも使う
+N	stumble|trip	trip は動詞で、何かに足を引っかけて「つまずく」（trip over）。stumble はよろけて「つまずく」
+N	believe|trust	believe は話や考えを「本当だと信じる」。trust は人や物を「信頼する」
+N	fact|truth	truth は「真実・本当のこと」（tell the truth）。fact は確かめられる1つ1つの「事実」
+N	reality|truth	truth は「真実」。reality は想像ではない「現実」
+N	passage|tunnel	tunnel は山や地下を通る「トンネル」。passage は人が通る「通路」と広く言う
+N	tunnel|underpass	tunnel は山を抜ける長い「トンネル」。underpass は道路の下をくぐる「地下道」
+N	tortoise|turtle	turtle はアメリカ英語でカメ全般、イギリス英語ではふつう「ウミガメ」。tortoise は陸にすむ「リクガメ」
+N	subterranean|underground	underground は「地下の」のふつうの語。subterranean は「地中の」のかたい語
+N	subway|underground	underground はイギリス英語で「地下鉄」（ロンドンの地下鉄）。subway はアメリカ英語の「地下鉄」
+N	overground|underground	underground は「地下の」、overground は「地上の」
+N	miserable|unhappy	unhappy は「不幸な・不満な」。miserable は「みじめな・ひどく不幸な」と強く言う
+N	distinctive|unique	unique は「唯一の・他にない」。distinctive はほかと区別できる「独特の・特徴的な」
+N	singular|unique	unique は「唯一の」。singular は「並外れた」のかたい語で、文法の「単数の」の意味もある
+N	common|unique	unique は「ほかにない・独特の」、common は「ありふれた」
+N	distressed|upset	upset は「動揺した・取り乱した」のふつうの語。distressed はひどく「苦しんだ・悩んだ」
+N	disturb|upset	upset は動詞で人の気持ちを「動揺させる」。disturb は「邪魔する・乱す」や、「不安にさせる」
+N	calm|upset	upset は「動揺した」、calm は「落ち着いた」
+N	practical|useful	useful は「役に立つ」と広く言う。practical は実際に使える「実用的な・現実的な」
+N	useful|useless	useful は「役に立つ」、useless は「役に立たない」
+N	customary|usual	usual は「いつもの」のふつうの語。customary は「慣例の・習慣になった」のかたい語
+N	unusual|usual	usual は「いつもの・ふつうの」、unusual は「珍しい・ふつうでない」
+N	peak|valley	peak は山の「頂」、valley は「谷」
+N	opinion|view	opinion は「意見」のふつうの語。view は「見方・考え」（in my view）で、「眺め」の意味もある
+N	scene|view	view は窓などから見える「眺め」。scene は目の前の「光景・場面」
+I	wait|curr_idm_3_hold_on	hold on は電話などで「(少し)待つ」話し言葉（Hold on, please.）。wait は「待つ」と広く言う
+N	conflict|war	war は国どうしの「戦争」。conflict は「対立・紛争」と広く言い、戦争より小さい争いにも使う
+N	combat|war	war は「戦争」全体。combat は実際に戦う「戦闘」
+N	peace|war	war は「戦争」、peace は「平和」
+N	method|way	way は「方法・やり方」と広く言う。method は順序立てた「方法・方式」
+N	route|way	way は「道・行き方」と広く言う。route は決まった「経路・ルート」
+N	measure|weigh	weigh は「重さを量る」。measure は長さ・量などを「測る・計る」と広く言う
+N	consider|weigh	weigh は良い点と悪い点を「比べてよく考える」。consider は「よく考える・考慮する」と広く言う
+N	greet|welcome	welcome は「歓迎する」。greet はあいさつして「迎える」
+N	receive|welcome	welcome は喜んで「歓迎する」。receive は客などを「迎え入れる」のかたい言い方
+N	reject|welcome	welcome は「歓迎する」、reject は「拒む」
+N	complete|whole	whole は「全体の・まるごとの」（the whole day）。complete は欠けたところのない「完全な・全部そろった」
+N	partial|whole	whole は「全体の」、partial は「部分的な」
+N	tame|wild	wild は「野生の」、tame は動物が「飼いならされた・おとなしい」
+N	turbine|windmill	windmill は風で回る「風車」。turbine は風や水の力で発電機を回す「タービン」
+N	clean|wipe	wipe は布で「ふく・ぬぐう」。clean は「きれいにする」と広く言う
+N	mop|wipe	wipe は布で「ふく」。mop はモップで床を「ふく」
+N	smear|wipe	wipe は「ふき取る」、smear は「塗りつける・汚す」
+N	sensible|wise	wise は経験や知識があって「賢明な」。sensible は常識があって「分別のある」
+N	prudent|wise	wise は「賢明な」。prudent は先のことを考えて「慎重な」
+N	foolish|wise	wise は「賢い」、foolish は「愚かな」
+N	sorcerer|wizard	wizard は物語の「魔法使い」。sorcerer は悪い魔法を使うことが多い「魔術師」
+N	expert|wizard	expert は「専門家」。wizard は話し言葉で、何かがとても上手な「名人」（a computer wizard）
+N	novice|wizard	wizard は「名人」、novice は「初心者」
+N	awe|wonder	wonder は「驚き・不思議に思う気持ち」。awe は偉大なものへの「畏れ敬う気持ち」
+N	marvel|wonder	wonder は「驚異・不思議」。marvel はすばらしいもの「驚異」のかたい語で、動詞で「驚く」
+N	timber|wood	wood は材料としての「木・木材」や「森」。timber は建物に使う「材木」
+N	lumber|wood	wood は「木材」と広く言う。lumber はアメリカ英語で切りそろえた「材木」
+N	concerned|worried	worried は「心配した」のふつうの語。concerned は「気にかけている・懸念している」のかたい語で、「関係している」の意味もある
+N	carefree|worried	worried は「心配した」、carefree は「心配のない・気楽な」
+N	injury|wound	wound は刃物や銃などによる「傷」。injury は事故などによる「けが」と広く言う
+N	cut|wound	wound は「傷・負傷」。cut は刃物による「切り傷」
+N	scream|yell	yell は怒りなどで「怒鳴る」。scream は恐怖や痛みで「悲鳴を上げる」
+N	whisper|yell	yell は「怒鳴る」、whisper は「ささやく」
+N	absent|missing	absent は授業などを「欠席の・不在の」。missing は物や人が「見当たらない・行方不明の」
+N	absent|present	present は形容詞で「出席している」、absent は「欠席の」。present は名詞で「贈り物・現在」の意味もある
+N	accept|refuse	accept は「受け入れる」、refuse は申し出などを「断る」
+N	accept|reject	accept は「受け入れる」、reject は提案や応募を「拒否する・却下する」
+N	acceptable|unacceptable	acceptable は「受け入れられる・まずまずの」、unacceptable は「受け入れられない」
+N	accident|crash	accident は「事故」と広く言う。crash は車や飛行機の「衝突・墜落」
+N	act|behave	act は「行動する」。behave は人前で「ふるまう・行儀よくする」（behave yourself）
+N	act|perform	act は劇で「演じる」。perform は劇や音楽を「上演する・演奏する」や、仕事を「行う」
+N	action|deed	action は「行動」と広く言う。deed は良い・悪い「行い」（a good deed）のかたい語
+N	action|move	action は「行動」。move は「(次の)一手・行動」（a smart move）の話し言葉
+N	action|inaction	action は「行動」、inaction は「何もしないこと・無策」
+N	actual|genuine	actual は予想に対して「実際の」。genuine は偽物でない「本物の」や、気持ちが「心からの」
+N	ad|commercial	ad は新聞などの「広告」と広く言う。commercial はテレビやラジオの「コマーシャル」
+N	adolescent|adult	adult は「大人・成人」、adolescent は大人になる途中の「思春期の若者」
+N	adventurer|explorer	adventurer はわくわくする体験を求める「冒険家」。explorer は知られていない土地を調べる「探検家」
+N	advise|recommend	advise は「助言する・忠告する」（advise 人 to do）。recommend は物や方法を「勧める・推薦する」
+N	advise|counsel	advise は「助言する」のふつうの語。counsel は専門家が「相談にのって助言する」かたい語
+N	agent|representative	agent は本人の代わりに手続きをする「代理人」（travel agent）。representative は団体を「代表する人」
+N	agent|broker	agent は「代理人」と広く言う。broker は売り買いの間に入る「仲介人・ブローカー」
+N	accord|agreement	agreement は「合意・協定」のふつうの語。accord は国どうしの「協定・合意」のかたい語
+N	agreement|consensus	agreement は「合意」。consensus は集団の全員がおおむね一致した「総意」
+N	agreement|disagreement	agreement は「一致・合意」、disagreement は「意見の違い・不一致」
+I	alone|exam_idm_by_oneself	by oneself は「(ほかに誰もいなくて)一人で」や「自力で」。alone は「一人で」と広く言う
+N	amaze|astonish	amaze は「驚かせる」のふつうの語。astonish は「びっくり仰天させる」と、さらに強い
+N	amaze|astound	amaze は「驚かせる」。astound は「信じられないほど驚かせる」と強く言う
+I	amaze|curr_idm_1_take_aback	be taken aback は「(不意をつかれて)面くらう」と受け身で使う。amaze は感心するような「驚き」を与える
+I	anyway|curr1900_idm_pre2_all_the_same	all the same は「それでもやはり」。anyway は「とにかく・それでも」と話し言葉で広く使う
+I	anyway|curr_idm_pre2_at_any_rate	at any rate は「とにかく・いずれにせよ」の少しかたい言い方。anyway は話し言葉でよく使う
+N	apology|excuse	apology は「謝罪」。excuse は失敗をごまかす「言い訳」
+N	apology|regret	apology は「謝罪」の言葉。regret は「後悔・遺憾」の気持ちで、動詞の意味が中心
+N	approach|method	approach は問題への「取り組み方・考え方」。method は具体的な「方法・手順」
+N	approach|near	approach は「近づく」のふつうの語。near は動詞で「(時や場所が)近づく」の少しかたい言い方
+N	approach|retreat	approach は「近づく」、retreat は「退く・退却する」
+N	apron|pinafore	apron は「エプロン」。pinafore は子どもなどが服の上に着る「エプロンドレス」
+N	army|troops	army は「軍隊・陸軍」全体。troops は実際に動く「兵士たち・部隊」
+N	army|force	army は「陸軍」。force は forces の形で「軍・部隊」、また「力」
+N	arrest|detain	arrest は警察が「逮捕する」。detain は「引き留める・拘留する」
+N	arrest|capture	arrest は法律にもとづいて「逮捕する」。capture は逃げる人や動物を「捕らえる」
+N	arrest|release	arrest は「逮捕する」、release は「釈放する」
+N	arrow|dart	arrow は弓で射る「矢」。dart は手で投げる「ダーツの矢」
+N	arrow|pointer	arrow は「矢・矢印」。pointer は指し示す「指示棒」や画面の「ポインター」
+N	avoid|evade	avoid は「避ける」のふつうの語。evade は質問や責任をうまく「かわす・逃れる」
+N	alert|awake	awake は「目が覚めて」。alert は「油断なく注意している」
+N	awake|conscious	awake は眠っていなくて「目が覚めて」。conscious は気を失っていなくて「意識がある」
+N	asleep|awake	awake は「目が覚めて」、asleep は「眠って」。どちらも名詞の前には置かない
+N	bake|roast	bake はパンやケーキをオーブンで「焼く」。roast は肉などをオーブンや火で「焼く」
+N	bald|hairless	bald は頭が「はげた」。hairless は体に「毛がない」と広く言う
+N	bald|hairy	bald は「はげた」、hairy は「毛深い」
+N	bandage|dressing	bandage は巻く「包帯」。dressing は傷口に当てる「当て布」
+N	bandage|wrap	bandage は「包帯」。wrap は「包むもの・巻くもの」と広く言う
+N	bare|naked	naked は体が「裸の」。bare は体の一部が「むき出しの」（bare feet）や、「飾りのない」
+N	bare|exposed	bare は「むき出しの」。exposed は日光や危険に「さらされた」
+N	bare|covered	bare は「むき出しの」、covered は「覆われた」
+N	bark|yelp	bark は犬が「ワンとほえる」。yelp は痛みで「キャンと鳴く」
+N	bark|snap	bark は人が「どなる」。snap は「かみつくように言う」（snap at）
+N	base|foundation	base は物の「土台・基部」や「基地」。foundation は建物の「基礎」や、考えの「根拠」、団体の「財団」
+N	base|top	base は「底の部分・土台」、top は「いちばん上」
+N	basic|fundamental	basic は「基本的な・初歩の」。fundamental は物事の根本にかかわる「根本的な」
+N	basic|elementary	basic は「基本的な」。elementary は学習の「初歩の・初級の」（elementary school＝小学校）
+N	advanced|basic	basic は「基本の・初歩の」、advanced は「高度な・上級の」
+N	beard|whiskers	beard は「あごひげ」。whiskers は「ほおひげ」や、猫などの「ひげ」
+N	beg|plead	beg は「頼みこむ・物ごいする」。plead は必死に「嘆願する」や、法廷で「申し立てる」
+N	beg|implore	beg は「頼みこむ」。implore は「哀願する」のかたい語
+N	beg|demand	beg は下手に出て「頼みこむ」、demand は当然として「要求する」
+N	bend|curve	bend は物を「曲げる・曲がる」。curve は線や道が「曲線を描く・カーブする」
+N	bend|straighten	bend は「曲げる」、straighten は「まっすぐにする」
+N	bet|wager	bet は「賭ける」のふつうの語。wager は「賭ける」のかたい語
+N	bet|gamble	bet は1つの結果に「賭ける」。gamble はお金をかけて「ばくちをする」や、危険を承知で「賭けに出る」
+N	bin|container	bin は「ごみ箱」や大きな「入れ物」。container は物を入れる「容器・コンテナ」と広く言う
+N	basket|bin	bin は「ごみ箱・大箱」。basket は編んで作った「かご」

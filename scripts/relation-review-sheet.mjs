@@ -63,8 +63,12 @@ if (mode === 'notes') {
         if (item.usageNote || printed.has(key)) continue
         printed.add(key)
         const other = getWord(item.id ?? toId(item.w))
-        const both = [...(shownFrom.get(key) ?? [])].some((id) => id !== word.id) ? ' ⇄' : ''
-        lines.push(`${mark} ${key}\t${item.w}「${item.m}」${other ? ` = ${describe(other)}` : '（辞書にない）'}${both}`)
+        const from = [...(shownFrom.get(key) ?? [])].filter((id) => id !== word.id)
+        const both = from.length ? ' ⇄' : ''
+        // 同じつづりの別の見出し語の欄にも同じ組が出るときは、両方の意味に合う解説にする。
+        const twin = from.filter((id) => relationsById.has(id) && ALL_WORDS.find((w) => w.id === id)?.word.toLowerCase() === word.word.toLowerCase())
+        const twinMark = twin.length ? ` ⚠同じつづりの別の語 ${twin.join(',')} にも出る` : ''
+        lines.push(`${mark} ${key}\t${item.w}「${item.m}」${other ? ` = ${describe(other)}` : '（辞書にない）'}${both}${twinMark}`)
       }
     }
     for (const phrase of relations.idioms) {

@@ -1,0 +1,245 @@
+N	extent|scale	scale は物事の「規模」（on a large scale）。extent は及ぶ「範囲・程度」（to some extent）
+N	magnitude|scale	scale は全体の「規模」。magnitude は物事の「大きさ・重大さ」や、地震の「マグニチュード」
+N	frighten|scare	scare は「怖がらせる」の話し言葉。frighten は「おびえさせる」の少しかたい語
+N	scare|startle	scare は「怖がらせる」。startle は急に「びっくりさせる」（怖がらせるとは限らない）
+N	reassure|scare	scare は「怖がらせる」、reassure は「安心させる」
+N	landscape|scenery	scenery は目に入る景色全体（数えない名詞）。landscape は1つの「風景」や、土地の「景観」
+N	scenery|view	scenery は自然の「景色」全体。view はある場所から見える「眺め」（a room with a view）
+N	rebuke|scold	scold は子どもなどを「しかる」。rebuke は「厳しくとがめる」かたい語
+N	reprimand|scold	scold は「しかる」。reprimand は上司などが正式に「戒める・叱責する」
+N	praise|scold	scold は「しかる」、praise は「ほめる」
+N	scrape|scratch	scratch は爪などで「ひっかく」。scrape は表面を「こする・こすり取る」
+N	claw|scratch	scratch は「ひっかく」と広く言う。claw は動物が「爪で引っかく」
+N	close|seal	seal はすき間なく「密閉する・封をする」。close は「閉じる」と広く言う
+N	fasten|seal	seal は「封をする・密閉する」。fasten はベルトなどを「留める」
+N	open|seal	seal は「封をする」、open は「開ける」
+N	grain|seed	seed は植える「種」。grain は米・麦などの「穀物の粒」
+N	kernel|seed	seed は「種」。kernel は種や木の実の中の「芯・仁」や、話の「核心」
+N	sew|stitch	sew は「縫う」のふつうの語。stitch はひと針ずつ「縫う」や、「縫い目」
+N	mend|sew	sew は針と糸で「縫う」。mend は破れた服などを「繕う・直す」
+N	rip|sew	sew は「縫う」、rip は「(びりっと)裂く」
+N	shade|tint	shade は色の「濃淡・色合い」。tint は白を混ぜた「淡い色合い」
+N	light|shade	shade は「日陰」、light は「光・明かり」
+N	embarrassment|shame	shame は悪いことをした「恥」。embarrassment は人前での「気まずさ・恥ずかしさ」
+N	disgrace|shame	shame は自分の感じる「恥」。disgrace は人に知られた「不名誉・恥さらし」
+N	disgraceful|shameful	shameful と disgraceful はどちらも「恥ずべき」。disgraceful は「みっともない・ひどい」と非難する感じが強い
+N	honorable|shameful	shameful は「恥ずべき」、honorable は「立派な・名誉ある」
+N	sharply|steeply	sharply は「急に・鋭く」（prices rose sharply）。steeply は坂などが「急に・険しく」
+N	abruptly|sharply	sharply は数値などが「急激に」。abruptly は「突然・前触れなく」
+N	gradually|sharply	sharply は「急激に」、gradually は「徐々に」
+N	protect|shield	shield は盾のように「前に立ってかばう」。protect は「守る」と広く言う
+N	guard|shield	shield は「かばう・覆って守る」。guard は見張って「警備する」
+N	expose|shield	shield は「かばう・覆い隠す」、expose は「さらす・むき出しにする」
+N	glow|shine	shine は太陽や光が「輝く」。glow は炎や顔などが「ぼうっと赤く光る」
+N	shine|sparkle	shine は「輝く」。sparkle は宝石や目が「きらきら光る」
+N	coast|shore	shore は海や湖の「岸」。coast は地図で見た「海岸（沿岸の地域）」
+N	beach|shore	shore は「岸・海岸」と広く言う。beach は砂や小石の「浜辺・ビーチ」
+N	sea|shore	shore は「岸」、sea は「海」
+N	prawn|shrimp	shrimp は「小エビ」。prawn はそれより大きい「クルマエビ」（イギリスではエビ全体を言うことも多い）
+N	illness|sickness	sickness は「病気」のほか「吐き気」（car sickness）。illness は「病気」のふつうの語
+N	disease|sickness	sickness は「病気・体調の悪さ」。disease は病名のつく「病気・疾患」
+N	health|sickness	sickness は「病気」、health は「健康」
+N	breathe out|sigh	sigh はがっかりしたり安心したりして「ため息をつく」。breathe out は「息を吐く」と広く言う
+N	merely|simply	simply は「単に・ただ」のほか「簡単に」「まったく」。merely は「ほんの・単に」のかたい語
+N	just|simply	simply は「単に・ただ」。just は「ただ〜だけ」の話し言葉
+N	elaborately|simply	simply は「簡単に・質素に」、elaborately は「念入りに・凝って」
+N	sip|taste	sip は少しずつ「すする」。taste は味を「みる・味わう」
+N	gulp|sip	sip は「ちびちび飲む」、gulp は「ごくごく飲む」
+N	hop|skip	skip は片足ずつ「スキップする」。hop は片足やうさぎのように「ぴょんと跳ぶ」
+N	omit|skip	skip は話し言葉で「抜かす・とばす」（skip breakfast）。omit は文書などから「省く」かたい語
+N	attend|skip	skip は授業などを「さぼる」、attend は「出席する」
+I	skip|curr_idm_pre2_leave_out	leave out は「(入れるべきものを)抜かす・入れない」。skip は順番の途中を「とばす」
+N	master|slave	master は「主人」、slave は「奴隷」
+N	cuff|sleeve	sleeve は「袖」全体。cuff は「袖口」
+N	piece|slice	slice はパンなどの「薄切り1枚」。piece は「1切れ・1個」と広く言う
+N	portion|slice	slice は「薄切り」。portion は分けた「一人前・分け前」
+N	glide|slide	slide は表面を「すべる」。glide は鳥や飛行機が「すうっと滑空する」
+N	slide|slip	slide はわざと「すべる・すべらせる」。slip はうっかり「すべって転ぶ」
+N	slender|slim	slim は「ほっそりした」の話し言葉。slender は「すらりとした」と、美しさをほめる感じがある
+N	slim|thin	slim は魅力的に「ほっそりした」。thin は「細い・やせた」で、やせすぎの悪い意味にもなる
+N	slim|stout	slim は「ほっそりした」、stout は「がっしりした・太った」
+N	slip|stumble	slip は足がすべって「転ぶ」。stumble は足を引っかけて「つまずく」
+N	cough|sneeze	sneeze は「くしゃみ（をする）」、cough は「せき（をする）」
+N	lunar|solar	solar は「太陽の」、lunar は「月の」（solar eclipse＝日食、lunar eclipse＝月食）
+N	answer|solution	solution は問題を解決する「解決策」や、計算の「答え」。answer は質問への「答え」と広く言う
+N	remedy|solution	solution は「解決策」。remedy は病気の「治療法」や、悪い状況の「改善策」
+N	grief|sorrow	sorrow は「悲しみ」のかたい語。grief は人の死などによる「深い悲しみ」
+N	sadness|sorrow	sadness は「悲しみ」のふつうの語。sorrow は長く続く「深い悲しみ」のかたい語
+N	reserve|spare	spare は「予備の」（a spare key）。reserve は名詞で「予備・蓄え」（in reserve）
+N	essential|spare	spare は「予備の・余分の」、essential は「なくてはならない」
+N	spark|trigger	spark は出来事を「引き起こすきっかけになる」（spark a debate）。trigger は反応などを「引き起こす・誘発する」
+N	ignite|spark	spark は「火花を散らす・火をつける」。ignite は燃料などに「点火する」
+N	extinguish|spark	spark は「火花を散らす」、extinguish は火を「消す」
+I	spark|idm_bring_about	bring about は変化などを「もたらす」。spark は議論などの「きっかけを作る」
+N	speedy|swift	speedy は仕事などが「迅速な」。swift は動きが「すばやい」のやや文学的な語
+N	rapid|speedy	speedy は「速い・迅速な」。rapid は変化などが「急速な」
+N	sluggish|speedy	speedy は「速い」、sluggish は「動きが鈍い」
+N	spatter|splash	splash は水を「バシャッとはねかける」。spatter は液体を「点々と飛び散らす」
+N	splash|sprinkle	splash は「はねかける」。sprinkle は水や粉を「ぱらぱらまく」
+N	soil|stain	stain はしみを「つける」。soil は動詞で服などを「汚す」
+N	blemish|stain	stain は「しみをつける」。blemish は評判などに「傷をつける」
+N	cleanse|stain	stain は「汚す」、cleanse は「きれいにする・清める」
+N	stable|steady	steady は「一定の・着実な」（a steady pace）。stable は「安定して動かない」
+N	constant|steady	steady は「むらなく一定の」。constant は「絶え間ない・一定の」
+N	shaky|steady	steady は「しっかりした・安定した」、shaky は「ぐらつく」
+N	rob|steal	steal は物を「盗む」（steal 物 from 人）。rob は人や場所から「奪う」（rob 人 of 物）で、目的語が逆
+N	steam|vapor	steam は湯がわいてできる「湯気・蒸気」。vapor は霧のような「水蒸気」と広く言う
+N	mist|steam	steam は「湯気」。mist は「霧・もや」
+N	adhesive|sticky	sticky は「ねばねばした」。adhesive はテープなどが「粘着性の」
+N	gluey|sticky	sticky は「ねばねばした」。gluey は「のりのような」
+N	dry|sticky	sticky は「べたべたした」、dry は「乾いた」
+N	mix|stir	stir はスプーンなどで「かき混ぜる」。mix は2つ以上を「混ぜ合わせる」
+N	arouse|stir	stir は気持ちを「かき立てる」。arouse は感情や興味を「呼び起こす」かたい語
+N	socks|stocking	stocking はひざ上まである「ストッキング・長靴下」。socks はくるぶしなどまでの短い「靴下」
+N	hose|stocking	stocking は「ストッキング」。hose は古い言い方で「長靴下」（今は「ホース」の意味がふつう）
+N	seat|stool	stool は背もたれのない「腰かけ・スツール」。seat は「座席」と広く言う
+N	bench|stool	stool は1人用の「腰かけ」。bench は数人がすわれる「長いす・ベンチ」
+N	cooker|stove	stove はアメリカ英語で料理の「こんろ」。cooker はイギリス英語の「調理器」
+N	heater|stove	stove は「こんろ」のほか、昔の暖房の「ストーブ」。heater は「暖房器具」
+N	curved|straight	straight は「まっすぐな」、curved は「曲がった」
+N	align|straighten	straighten は曲がった物を「まっすぐにする」。align は物を一列に「そろえる」
+N	power|strength	strength は体や物の「強さ・力」や「長所」。power は物事を動かす「力・権力」
+N	strength|weakness	strength は「強さ・長所」、weakness は「弱さ・弱点」
+N	cord|string	string は細い「ひも」や楽器の「弦」。cord は string より太い「ひも・コード」
+N	string|thread	string は物を縛る「ひも」。thread は縫い物に使う「糸」
+N	failure|success	success は「成功」、failure は「失敗」
+N	draw|suck	suck は口で「吸う」。draw はポンプなどで「吸い上げる」や、息を「吸い込む」
+N	absorb|suck	suck は口で「吸う」。absorb はスポンジなどが「吸収する」
+N	blow|suck	suck は「吸う」、blow は「吹く」
+N	gradual|sudden	sudden は「突然の」、gradual は「徐々の」
+I	suddenly|curr_idm_pre2_all_at_once	all at once は「突然」のほか「一斉に」の意味もある。suddenly は「突然」のふつうの語
+I	suddenly|curr1900_idm_pre2_all_of_a_sudden	all of a sudden は「突然」の話し言葉で、驚きを強く言う
+I	suggest|curr_idm_2_bring_forward	bring forward は案を「出す」のほか、予定を「前倒しする」。suggest は「提案する」のふつうの語
+I	suggest|curr_idm_pre1_put_forward	put forward は案を正式に「出す・提案する」。suggest は「提案する」のほか「それとなく示す」
+N	back|support	support は「支える・支持する」。back は動詞で計画や人を「後押しする・支持する」
+N	oppose|support	support は「支持する」、oppose は「反対する」
+I	support|curr_idm_2_stand_by	stand by は困ったときに人の「味方でいる」や、「待機する」。support は「支える・支持する」と広く言う
+N	advocate|supporter	supporter は「支持者・ファン」。advocate は考えを広める「擁護者・提唱者」
+N	opponent|supporter	supporter は「支持者」、opponent は「反対者・相手」
+N	assume|suppose	suppose は「(たぶん)〜だと思う」。assume は証拠なしに「〜と決めてかかる・仮定する」
+N	guess|suppose	suppose は「〜だと思う」。guess は話し言葉で「(当て推量で)〜だと思う」（I guess so.）
+I	surprisingly|curr_idm_pre2_to_ones_surprise	to one's surprise は「(その人が)驚いたことに」（to my surprise）。surprisingly は「意外にも」
+N	blade|sword	sword は「剣・刀」全体。blade は刃物の「刃」の部分
+N	saber|sword	sword は「剣」全体。saber は曲がった「サーベル」
+N	molasses|syrup	syrup は甘い液体の「シロップ」。molasses は砂糖を作るときにできる黒い「糖蜜」
+N	structure|system	system は部分が組み合わさって働く「しくみ・体系」。structure は組み立て方の「構造」
+N	scheme|system	system は「制度・体系」。scheme はイギリス英語で公的な「計画・制度」や、「たくらみ」
+N	sticker|tag	tag は物につける「札・タグ」。sticker は貼って飾る「シール」
+N	bronze|tan	tan は日光で肌が「日焼けする」。bronze は動詞で肌を「こんがり日焼けさせる」
+N	pale|tan	tan は肌が「日焼けする」、pale は肌が「青白い」
+N	pat|tap	tap は指先で「こつこつたたく」。pat は手のひらで「やさしくぽんとたたく」
+N	thread|yarn	thread は縫うための細い「糸」。yarn は編み物の「毛糸」
+N	strand|thread	thread は「糸」。strand は糸や髪の「1本」
+N	electrify|thrill	thrill は「わくわくさせる」。electrify は観客などを「熱狂させる」
+N	bore|thrill	thrill は「わくわくさせる」、bore は「退屈させる」
+N	digit|thumb	thumb は「親指」。digit は手足の「指」を言う学問の語で、「数字（0〜9）」の意味もある
+N	current|tide	tide は海の「潮（満ち引き）」。current は海や川の「流れ・海流」
+N	tide|trend	tide は世の中の「流れ・風潮」。trend は「傾向・流行」
+N	bind|tie	tie はひもで「結ぶ」。bind はしっかり「縛る」や、人を「結びつける」
+N	fasten|tie	tie は「結ぶ」。fasten はベルトなどを「留める」
+N	tie|untie	tie は「結ぶ」、untie は「ほどく」
+N	digit|toe	toe は「足の指・つま先」。digit は手足の「指」を言う学問の語
+N	platter|tray	tray は物をのせて運ぶ「お盆・トレー」。platter は料理を盛る「大皿」
+N	award|trophy	trophy は優勝の記念の「トロフィー」。award は「賞」全体
+N	prize|trophy	trophy は形のある「優勝カップ・トロフィー」。prize は「賞品・賞金」
+N	cylinder|tube	tube は細長い「管・チューブ」。cylinder は「円柱・円筒」の形
+N	flower|tulip	flower は「花」全体。tulip はそのうちの「チューリップ」
+N	bloom|tulip	tulip は花の種類「チューリップ」。bloom は咲いている「花」
+N	fish|tuna	fish は「魚」全体。tuna はそのうちの「マグロ」
+N	kind|type	type は「型・種類」（blood type）。kind は「種類」の話し言葉（what kind of）
+N	category|type	type は「種類・型」。category は分類の「区分・部門」
+N	hurricane|typhoon	どちらも強い熱帯低気圧で、typhoon は北西太平洋の「台風」、hurricane は大西洋などの「ハリケーン」
+N	cyclone|typhoon	typhoon は北西太平洋の「台風」。cyclone はインド洋などの「サイクロン」
+N	breeze|typhoon	typhoon は「台風」、breeze は「そよ風」
+N	grasp|understand	understand は「理解する」のふつうの語。grasp は考えなどを「しっかり把握する」
+N	comprehend|understand	understand は「理解する」。comprehend は「理解する」のかたい語で、難しい内容によく使う
+N	misunderstand|understand	understand は「理解する」、misunderstand は「誤解する」
+I	understand|curr_idm_pre2_figure_out	figure out は考えて「分かる・解き明かす」。understand は「理解している」状態を言う
+I	understand|curr_idm_2_make_out	make out は聞き取りにくいもの・見えにくいものを「なんとか分かる」。understand は「理解する」
+I	understand|curr_idm_2_take_in	take in は情報を「のみこむ・理解する」のほか「だます」の意味もある。understand は「理解する」
+N	undergarment|underwear	underwear は「下着」のふつうの語。undergarment は「肌着」のかたい語
+N	unfair|unjust	unfair は「不公平な」のふつうの語。unjust は法や道理に反して「不当な」かたい語
+N	biased|unfair	unfair は扱いが「不公平な」。biased は考えが「偏った・先入観のある」
+N	open|unfold	unfold はたたんだものを「広げる」。open は「開ける・開く」と広く言う
+N	develop|unfold	unfold は話や出来事が「展開する・明らかになる」。develop は「発展する・発達させる」
+N	fold|unfold	unfold は「広げる」、fold は「折りたたむ」
+N	alliance|union	union は結びついた「連合・組合」（the European Union）。alliance は国や組織の「同盟・協力関係」
+N	component|unit	unit は全体を作る「単位・1つのまとまり」。component は機械などの「構成要素・部品」
+N	module|unit	unit は「単位」。module は組み合わせて使う「構成単位・モジュール」
+N	combine|unite	unite は人や国が「団結する・1つになる」。combine は2つ以上を「組み合わせる」
+N	join|unite	unite は「団結する・統合する」。join は人が集まりに「加わる」や、物を「つなぐ」
+N	undo|untie	untie は結び目を「ほどく」。undo はボタンやひもを「外す・ほどく」や、操作を「元に戻す」
+N	loosen|untie	untie は「ほどく」。loosen は「ゆるめる」（完全にはほどかない）
+N	renew|update	update は情報などを「最新のものにする」。renew は契約などを「更新する」や、「新しくする」
+N	modernize|update	update は「最新にする」。modernize は設備などを「近代化する」
+N	outdate|update	update は「最新にする」、outdate は「時代遅れにする」
+N	futile|useless	useless は「役に立たない」のふつうの語。futile は努力などが「むだな」
+N	useless|worthless	useless は「役に立たない」。worthless は「価値がない」
+I	usually|curr1900_idm_1_more_often_than_not	more often than not は「たいてい・大抵の場合」のかたい言い方。usually は「たいてい」のふつうの語
+I	usually|curr1900_idm_pre2_as_a_rule	as a rule は「原則として・概して」。usually は「たいてい」
+N	truck|van	van は人や荷物を運ぶ箱型の「バン」。truck は荷物を運ぶ大きな「トラック」
+N	van|vehicle	van は「バン」。vehicle は車・バスなど「乗り物」全体
+N	differ|vary	vary は「変わる・さまざまである」（vary by region）。differ は2つのものが「異なる」（differ from）
+N	fluctuate|vary	vary は「変化する・さまざまである」。fluctuate は数値が「上下する・変動する」
+N	pot|vase	vase は花を生ける「花瓶」。pot は植木の「鉢」や「つぼ・なべ」
+N	jar|vase	vase は「花瓶」。jar はジャムなどを入れる「広口びん」
+N	vest|waistcoat	vest はアメリカ英語で「ベスト・チョッキ」（イギリス英語では「肌着」）。waistcoat はイギリス英語の「チョッキ」
+N	offender|victim	victim は「被害者」、offender は法律を破った「加害者・犯人」
+N	elect|vote	vote は「投票する」。elect は投票で人を「選出する」
+N	ballot|vote	vote は「投票する」のふつうの語。ballot は無記名の「投票・投票用紙」
+I	vote|curr1900_idm_pre2_go_to_the_polls	go to the polls は選挙で「投票に行く」。vote は「投票する」のふつうの語
+N	carriage|wagon	wagon は荷物を運ぶ「荷車・ワゴン」。carriage は人を乗せる「馬車」や列車の「客車」
+N	midriff|waist	waist は「腰・ウエスト」。midriff は胸と腰の間の「腹部」
+N	squander|waste	waste は「むだにする」のふつうの語。squander はお金や機会を「浪費する」と強く言う
+N	misuse|waste	waste は「むだに使う」。misuse は「使い方を誤る・悪用する」
+N	save|waste	waste は「むだにする」、save は「節約する」
+N	flaw|weakness	weakness は「弱さ・弱点」。flaw は物や計画の「欠陥・きず」
+N	frailty|weakness	weakness は「弱さ」と広く言う。frailty は年や病気による体の「もろさ・弱さ」
+N	riches|wealth	wealth は「富・財産」のふつうの語。riches は「富」の古めかしい言い方で、複数形で使う
+N	fortune|wealth	wealth は「富」全体。fortune は「大きな財産」（make a fortune）や「運」
+N	poverty|wealth	wealth は「富」、poverty は「貧困」
+N	grain|wheat	wheat は「小麦」。grain は米・麦などの「穀物」全体
+N	corn|wheat	wheat は「小麦」。corn はアメリカ英語で「トウモロコシ」、イギリス英語で「穀物」
+N	breadth|width	width は「幅」のふつうの語。breadth は「幅」のかたい語で、知識の「幅広さ」にも使う
+N	span|width	width は「横幅」。span は橋などの「端から端までの長さ」や「期間」
+N	length|width	width は「幅・横」、length は「長さ・縦」
+N	flicker|wink	wink は「ウインクする」や、光が「またたく」。flicker は炎や光が「ちらちらする」
+N	cable|wire	wire は「針金・電線」。cable は太い「ケーブル」や、ロープ
+N	insight|wisdom	wisdom は経験からくる「知恵・賢明さ」。insight は物事の本質を見抜く「洞察（力）」
+N	sagacity|wisdom	wisdom は「知恵」。sagacity は「賢明さ・洞察力」のかたい語
+N	folly|wisdom	wisdom は「知恵・賢明さ」、folly は「愚かさ・愚行」
+N	maggot|worm	worm は「ミミズ」などの細長い虫。maggot はハエの幼虫「うじ虫」
+N	larva|worm	worm は「ミミズ・虫」。larva は昆虫の「幼虫」の学問の語
+N	valuable|worth	worth は be worth の形で「〜の価値がある」（名詞の前に置かない）。valuable は「高価な・貴重な」
+N	deserving|worth	worth は「〜の価値がある」（worth a visit）。deserving は「(ほめられたり助けられたりするのに)ふさわしい」
+N	joint|wrist	wrist は「手首」。joint は体の「関節」全体
+N	equine|zebra	zebra は「シマウマ」。equine はウマの仲間「ウマ科の動物」を言う学問の語
+N	fasten|zip	zip は「ファスナーを閉める」（zip up）。fasten は「留める」と広く言う
+N	whiz|zip	zip は「勢いよく進む」。whiz は「ひゅっと猛スピードで進む」
+N	unzip|zip	zip は「ファスナーを閉める」、unzip は「ファスナーを開ける」
+N	absence|presence	absence は「不在・ないこと」、presence は「存在・出席」
+N	absolute|complete	absolute は「絶対の・まったくの」（absolute power）。complete は欠けたところのない「完全な」
+N	absolute|total	absolute は「絶対の」。total は「まったくの・完全な」（a total stranger）
+N	absolute|relative	absolute は「絶対的な」、relative は「相対的な」
+N	abuse|misuse	misuse は「誤った使い方をする」。abuse は力や薬などを「乱用する」や、人を「虐待する」と強く言う
+N	abuse|mistreat	abuse は「虐待する」と強く言う。mistreat は人や動物を「ひどく扱う」
+N	abuse|respect	abuse は「乱用する・虐待する」、respect は「尊重する」
+N	accent|stress	accent は話し方の「なまり」や、語の「アクセント」。stress は語や文の「強勢」
+N	accent|dialect	accent は発音の「なまり」。dialect は単語や文法もちがう「方言」
+N	accidentally|unintentionally	accidentally は「うっかり・偶然に」。unintentionally は「わざとではなく」
+N	accidentally|deliberately	accidentally は「うっかり」、deliberately は「わざと」
+I	accidentally|curr_idm_pre2_by_chance	by chance は「偶然に」（良いことにも使う）。accidentally はうっかり「誤って」の意味が強い
+I	accidentally|exam_idm_by_accident	by accident は「偶然に・うっかり」で、accidentally とほぼ同じ
+N	accompany|escort	accompany は「一緒に行く・同行する」。escort は安全のために「付き添う・護衛する」
+I	accompany|curr1900_idm_2_go_with	go with は「一緒に行く」のほか、料理や服が「〜に合う」。accompany は「同行する」のかたい語で、料理などが「添えられる」の意味もある
+N	accord|pact	accord は国や団体の「合意・協定」。pact は約束としての「協定・盟約」
+N	accord|discord	accord は「一致・合意」、discord は「不和・不一致」
+N	accuracy|precision	accuracy は正しい値に近い「正確さ」。precision は細かいところまでの「精密さ」
+N	accuracy|exactness	accuracy は「正確さ」のふつうの語。exactness は「ぴったりであること」
+N	accuracy|inaccuracy	accuracy は「正確さ」、inaccuracy は「不正確さ・誤り」
+N	accuse|charge	accuse は人を「責める・告発する」（accuse 人 of）。charge は警察が「起訴する」（charge 人 with）
+N	accuse|blame	accuse は罪を「告発する・責める」（accuse 人 of）。blame は失敗などを「人のせいにする」（blame 人 for）
+N	accuse|defend	accuse は「告発する」、defend は「弁護する」
+N	ache|soreness	ache は続く「鈍い痛み」。soreness は筋肉などの「ひりひりする痛み」
+N	accomplishment|achievement	achievement は努力による「達成・業績」。accomplishment は「成し遂げたこと」や、身につけた「たしなみ」
+N	acid|alkali	acid は「酸」、alkali は「アルカリ」
