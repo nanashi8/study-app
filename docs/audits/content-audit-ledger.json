@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T03:54:33.202Z",
+  "auditedAt": "2026-09-24T07:00:49.184Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 18,
-    "learningItemCount": 17252,
-    "quizItemCount": 17370,
+    "learningItemCount": 17564,
+    "quizItemCount": 17682,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "a9e95f33be7df1d23ba166623e5480d05793df99293226c7b8adf90531e33c70"
+    "overallContentSha256": "08468aeec762905894ddeb29e47769b6d6fc790ee0ea0cdbfef4333f57a06fe3"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "603d334cb6e686c782085954356f93d585b5ef5fc59afd56210b26204f1885c4",
+    "sha256": "89276a78e59ccd292a5f5484e0a5a3bd4e6884615fddadc32a285955cc8e6da2",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -165,6 +165,11 @@
       "tests/catalog-return-state.test.mjs",
       "tests/character-talk.test.mjs",
       "tests/character-visual-continuity.test.mjs",
+      "tests/classics-koten-vocab-background.test.mjs",
+      "tests/classics-koten-vocab-conjugation.test.mjs",
+      "tests/classics-koten-vocab-groups.test.mjs",
+      "tests/classics-koten-vocab-kanji-level.test.mjs",
+      "tests/classics-koten-vocab-master.test.mjs",
       "tests/companion-story-album.test.mjs",
       "tests/completion-navigation.test.mjs",
       "tests/confusables-survey.test.mjs",
@@ -493,11 +498,11 @@
       "label": "古典単語",
       "learningUnit": "語",
       "quizUnit": "問",
-      "learningItemCount": 300,
-      "quizItemCount": 300,
-      "learningIdOrderSha256": "5539c4564633b1e835f620a900591fc45b41a2867d4747c0d68129113c8f6d3b",
-      "quizIdOrderSha256": "5539c4564633b1e835f620a900591fc45b41a2867d4747c0d68129113c8f6d3b",
-      "contentSha256": "c66aa54b2a2c3ef62529e0decfa6ffefd6efca07fb0d6e7d473b6faf0925ffec",
+      "learningItemCount": 612,
+      "quizItemCount": 612,
+      "learningIdOrderSha256": "80b3cde1bf3cc31ccf1f2cefed88b5c2a1600f936fae970f8c244a0919421d8f",
+      "quizIdOrderSha256": "80b3cde1bf3cc31ccf1f2cefed88b5c2a1600f936fae970f8c244a0919421d8f",
+      "contentSha256": "b7b9d5546f83bf9a91e803ab3eea38b3c493a00bd1c564fa7208f8ad21683866",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -197,7 +197,7 @@ test('1項目に複数問ある教材は、テストだけ出題数を母数に�
   assert.equal(byId['koten-culture'].progress.total, 56)
   assert.equal(byId['koten-culture'].progress.quizTotal, KOTEN_CULTURE_QUESTIONS.length)
   assert.equal(byId['koten-culture'].progress.quizTotal, 112)
-  assert.equal(byId['koten-vocab'].progress.quizTotal, 300)
+  assert.equal(byId['koten-vocab'].progress.quizTotal, 612)
 
   // 数え方が違う分、単位まで揃えて表示できるようにしておく。
   assert.equal(byId['koten-grammar'].unit, '項目')

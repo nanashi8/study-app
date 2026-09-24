@@ -7,6 +7,11 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
+  KotenBackground,
+  KotenWordConjugation,
+  KotenWordGroups,
+} from '../components/KotenWordExtras.jsx'
+import {
   Close,
   Check,
   ArrowRight,
@@ -269,7 +274,7 @@ export function KotenQuizScreen() {
               rows={options.map((option) => ({
                 id: option.id,
                 heading: <KotenWord word={option} />,
-                body: <KotenText>{option.meanings.join('・')}</KotenText>,
+                body: <>{option.kanji && <span className="mr-1 text-ink/50">{`（${option.kanji}）`}</span>}<KotenText>{option.meanings.join('・')}</KotenText></>,
                 correct: option.id === word.id,
                 chosen: selected === option.id,
               }))}
@@ -277,6 +282,12 @@ export function KotenQuizScreen() {
             <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200" data-koten-word-note>
               <p className="mb-1 text-sm font-extrabold text-amber-700">覚え方・ポイント</p>
               <p className="text-sm font-bold leading-relaxed text-ink"><KotenText>{word.note}</KotenText></p>
+            </div>
+            {/* 正解の語の活用表・仲間と使い分け・時代背景（暗記カードの裏と同じ中身）。 */}
+            <div className="mt-3 space-y-3 text-left">
+              <KotenWordConjugation word={word} />
+              <KotenWordGroups word={word} compact />
+              <KotenBackground text={word.background} />
             </div>
           </div>
         )}

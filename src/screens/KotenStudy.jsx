@@ -4,6 +4,12 @@ import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
+import {
+  KotenBackground,
+  KotenKanjiLine,
+  KotenWordConjugation,
+  KotenWordGroups,
+} from '../components/KotenWordExtras.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -313,6 +319,7 @@ export function KotenStudyScreen() {
                 <div className="mt-0.5 font-display text-xl font-extrabold text-ink">
                   <KotenText>{word.meanings.join('・')}</KotenText>
                 </div>
+                <KotenKanjiLine word={word} className="mt-2" />
               </div>
 
               {/* ポイント */}
@@ -339,6 +346,11 @@ export function KotenStudyScreen() {
                   </p>
                 </div>
               )}
+
+              {/* 活用表・仲間と使い分け・時代背景（辞書ページと同じ中身）。 */}
+              <KotenWordConjugation word={word} />
+              <KotenWordGroups word={word} compact />
+              <KotenBackground text={word.background} />
             </div>
           )}
         </div>

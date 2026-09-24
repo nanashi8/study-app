@@ -1,0 +1,3681 @@
+{
+ "readMe": [
+  "古典・漢文の「必修範囲」の台帳。依頼 requests/2026-09-24-classics-enrich.json の母集団で、tests/classics-enrichment.test.mjs が全件を教材データと突き合わせる。",
+  "kotenVocab は古典単語の必修語（既存300語＋2026-09-24に足した312語）。section は依頼の文に挙げた分類（心情・評価・人柄・程度と呼応の副詞・動作・敬語動詞・時と暦・住まいと宮廷・恋愛と結婚・仏教と信仰・死と出家の言い方・連語と慣用表現・助動詞と助詞）。",
+  "語を足すときは、先にここへ書いてから教材へ入れる（ここにない語は教材に置かない）。"
+ ],
+ "kotenVocab": [
+  {
+   "word": "あはれなり",
+   "pos": "形動",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "をかし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "うれし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "かなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "うし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "わびし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころうし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころもとなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "おぼつかなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "うしろめたし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "うしろやすし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころづきなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "ねたし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "くちをし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "つれなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "すさまじ",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "さうざうし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "つれづれなり",
+   "pos": "形動",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "わりなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "せちなり",
+   "pos": "形動",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "めでたし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "めづらし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あらまほし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "よし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "よろし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "わろし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "うつくし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "うるはし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "きよげなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "なまめかし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "えんなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いまめかし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あてなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いやし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いみじ",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "ゆゆし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あさまし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あやし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "おどろおどろし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "はづかし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "こころにくし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "ゆかし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "なつかし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "らうたし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "らうらうじ",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "さかし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "かしこし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "まめなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "あだなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "すきずきし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "けやけし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "こちなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "おいらかなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "いと",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "いとど",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "げに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "さすがに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "なかなか",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "やうやう",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "やや",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "すべて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "え",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "をさをさ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "つゆ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "さらに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "よに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "いかで",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "などか",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "おどろく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "おぼゆ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "おぼす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おもほゆ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ながむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ねんず",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "わぶ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "かこつ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "まどふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ありく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ゐる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "たまふ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "たてまつる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まうす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "はべり",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "さぶらふ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "きこゆ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "ごらんず",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おはす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "あした",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "つとめて",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "ゆふべ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "よもすがら",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "ひねもす",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "いつしか",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "やがて",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "すなはち",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "ありつる",
+   "pos": "連体",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "いにしへ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "ためし",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "をりふし",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "けしき",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ありさま",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "よし",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ゆゑ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "こころざし",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ほい",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ついで",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "せうそこ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ふみ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "やうだい",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ほど",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "わざ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "な…そ",
+   "pos": "呼応",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "ばや",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "もがな",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "なむ",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "まほし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "まじ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "べし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "らむ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "けむ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "なり",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "めり",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "いさ",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "existing"
+  },
+  {
+   "word": "え…ず",
+   "pos": "呼応",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "よし…とも",
+   "pos": "呼応",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "ありがたし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "やんごとなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "かたはらいたし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "あいなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "あぢきなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "あたらし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "めざまし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "ものうし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "いぶせし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "つらし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "いとほし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころぐるし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "びんなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "はしたなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "むげなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "かひなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "ゆくりなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あやなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "つきづきし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "めやすし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いとけなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "いはけなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "おとなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "なめし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "おほけなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "ひがひがし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "たいだいし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "こちたし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "ところせし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "すごし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "わづらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ののしる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "かしづく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "めづ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "しのぶ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ぐす",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "かづく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "とぶらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "かたらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ちぎる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "うつろふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "にほふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "あく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "たのむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "まうづ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まかる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "のたまふ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まゐる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まうく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "おこなふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "あからさまなり",
+   "pos": "形動",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "にはかなり",
+   "pos": "形動",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "としごろ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "まだき",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "とみに",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "やをら",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "あまた",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "いたく",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "さらなり",
+   "pos": "形動",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "なほ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "なべて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "おほかた",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "さながら",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "existing"
+  },
+  {
+   "word": "いたづらなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "おぼろけなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "かたし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "よろづ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ほだし",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "うつつ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "おぼえ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "たより",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "かぎり",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "だに",
+   "pos": "助詞",
+   "section": "連語と慣用表現",
+   "since": "existing"
+  },
+  {
+   "word": "よも",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "existing"
+  },
+  {
+   "word": "むつかし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "かたじけなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "おもしろし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころやすし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "こころづよし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "やるかたなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "なやまし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "やさし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "けうとし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "たけし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "をこなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "すずろなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "あながちなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "ねんごろなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "しるし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "かたくななり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "たのもし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "こころぼそし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "ことごとし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "はかなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "うたてし",
+   "pos": "形",
+   "section": "心情",
+   "since": "existing"
+  },
+  {
+   "word": "いぎたなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "さがなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "existing"
+  },
+  {
+   "word": "あへなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "なのめなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "おろかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いうなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "こまやかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "きよらなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "さうなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "existing"
+  },
+  {
+   "word": "いぬ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ものす",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "たづぬ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "みる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "みゆ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "あふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ならふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "まもる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ねびゆく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "やる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "おこたる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "あきらむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "いらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "いそぐ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "たゆむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "あらがふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "ときめく",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "かる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "わたる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "うす",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "おくる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "さはる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "たばかる",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "もてなす",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "つつむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "existing"
+  },
+  {
+   "word": "のたまはす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おほす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "きこえさす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まゐらす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "います",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おはします",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "きこしめす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "まかづ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "たまはる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "うけたまはる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おぼしめす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "しろしめす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "めす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "そうす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "けいす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "おほとのごもる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "existing"
+  },
+  {
+   "word": "あけぼの",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "よひ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "existing"
+  },
+  {
+   "word": "かげ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "うへ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "おほやけ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "みかど",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "おとど",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "にようばう",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "かんだちめ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ざえ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "ちぎり",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "はらから",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "わらは",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "きは",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "existing"
+  },
+  {
+   "word": "けり",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "き",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "つ・ぬ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "たり・り",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "ず",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "る・らる",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "す・さす・しむ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "む",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "まし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "じ",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "らし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "ごとし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "で",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "やは",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "existing"
+  },
+  {
+   "word": "かく",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "existing"
+  },
+  {
+   "word": "いぶかし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ものし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "からし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つつまし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おもなし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まばゆし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ものぐるほし",
+   "pos": "形",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "くんず",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あくがる",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うれふ",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うとむ",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あきる",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むつかる",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はづ",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こふ",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うらむ",
+   "pos": "動",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころづくし",
+   "pos": "名",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころおとり",
+   "pos": "名",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころまさり",
+   "pos": "名",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころときめき",
+   "pos": "名",
+   "section": "心情",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あかず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むねつぶる",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころにもあらず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いたし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "くまなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "そこはかとなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よしなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "せんなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "えうなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まさなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つきなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はかばかし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むくつけし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "らうがはし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しどけなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかめし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ものものし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いふかひなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かひがひし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かしがまし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うるさし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "きたなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いまいまし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "とし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ほどなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こよなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "になし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たぐひなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かぎりなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "またなし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "をこがまし",
+   "pos": "形",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たまさかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なかなかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あやにくなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ふびんなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひたぶるなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あえかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことわりなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けざやかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さやかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まほなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かたほなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みそかなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あらはなり",
+   "pos": "形動",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けしからず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ただならず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いはむかたなし",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "えもいはず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いへばさらなり",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さるべき",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころばへ",
+   "pos": "名",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころばせ",
+   "pos": "名",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なさけなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "をさなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うひうひし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あはつけし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かろがろし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おもおもし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けぢかし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けどほし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うとし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むつまし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひとわろし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひとげなし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まめまめし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あだあだし",
+   "pos": "形",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たをやかなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すくよかなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おほどかなり",
+   "pos": "形動",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なまめく",
+   "pos": "動",
+   "section": "人柄",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すき",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いろごのみ",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みやび",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころあり",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひとやりならず",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うたて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "せめて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "わざと",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひとへに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ゆめ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たえて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あへて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かまへて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ここら",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "そこら",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いくばく",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかばかり",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さばかり",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かばかり",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おのづから",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みづから",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかが",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むべ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さこそ",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ほとほと",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はた",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いささか",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かへすがへす",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つくづく",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ふと",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かつて",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なじかは",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかでか",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かたみに",
+   "pos": "副",
+   "section": "程度と呼応の副詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あそぶ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いたはる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うそぶく",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おきつ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おとなふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かなふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けしきばむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことわる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こぼつ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "そそのかす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たがふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ためらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ながらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なづむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なやむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ぬ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ねぶ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まねぶ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あつかふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あなづる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うかがふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かきくらす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かしこまる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こころす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さすらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すかす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すまふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つくろふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なぐさむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ふる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まどろむ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "もよほす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "やすらふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おこす",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いつく",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うしろみる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "もちゐる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "わきまふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ける",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "く",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "す",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あり",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "をり",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しぬ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "う",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ふ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うう",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おゆ",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すむ",
+   "pos": "動",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かよふ",
+   "pos": "動",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よばふ",
+   "pos": "動",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いとふ",
+   "pos": "動",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "やつす",
+   "pos": "動",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "やつる",
+   "pos": "動",
+   "section": "動作",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かくる",
+   "pos": "動",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みまかる",
+   "pos": "動",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たえいる",
+   "pos": "動",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はかなくなる",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いたづらになる",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むなしくなる",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よをそむく",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よをすつ",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さまをかふ",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かしらおろす",
+   "pos": "連語",
+   "section": "死と出家の言い方",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たぶ",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あそばす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つかうまつる",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まうでく",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いまそかり",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たまはす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おもほす",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ぞんず",
+   "pos": "動",
+   "section": "敬語動詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あかつき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しののめ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あさぼらけ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たそかれ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よは",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひごろ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つきごろ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こぞ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こよひ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひとひ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ありし",
+   "pos": "連体",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ゆくすゑ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "こしかた",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つごもり",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ついたち",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ありあけ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "もちづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いざよひ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "とく",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しばし",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かねて",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はや",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いま",
+   "pos": "副",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むつき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "きさらぎ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "やよひ",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さつき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みなづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ふみづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "はづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ながつき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かんなづき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しもつき",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しはす",
+   "pos": "名",
+   "section": "時と暦",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うち",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "くもゐ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "きんだち",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "てんじやうびと",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ずりやう",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "きたのかた",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "めのと",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みゆき",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みやづかへ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つぼね",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "みす",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "おまへ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うしろみ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あそび",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さうぞく",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "せんざい",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いほり",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "やど",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あるじ",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "まらうと",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "わたくし",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かいまみ",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "けさう",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "きぬぎぬ",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "つま",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よ",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なさけ",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かへりごと",
+   "pos": "名",
+   "section": "恋愛と結婚",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひじり",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "もののけ",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すくせ",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "のちのよ",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "うきよ",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しるし",
+   "pos": "名",
+   "section": "仏教と信仰",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いとま",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かたち",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かち",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ここち",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ことわり",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "そらごと",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "て",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なごり",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "ひま",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "よすが",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "とが",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "とく",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あらまし",
+   "pos": "名",
+   "section": "評価",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "せうと",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いもうと",
+   "pos": "名",
+   "section": "住まいと宮廷",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あなかしこ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "あな",
+   "pos": "感",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いざ",
+   "pos": "感",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いで",
+   "pos": "感",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さればよ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さるは",
+   "pos": "接",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しか",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さ",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かかり",
+   "pos": "動",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さり",
+   "pos": "動",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "しかり",
+   "pos": "動",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "いかがはせむ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さもあらばあれ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さらぬ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かくて",
+   "pos": "副",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "もぞ・もこそ",
+   "pos": "連語",
+   "section": "連語と慣用表現",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "てしがな",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かし",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "かは",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "すら",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "さへ",
+   "pos": "助詞",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "むず",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たし",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "なり（断定）",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  },
+  {
+   "word": "たり（断定）",
+   "pos": "助動",
+   "section": "助動詞と助詞",
+   "since": "2026-09-24"
+  }
+ ]
+}

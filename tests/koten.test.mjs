@@ -19,8 +19,8 @@ import {
 const BASE_WORD_COUNT = 126
 const categoryIds = new Set(KOTEN_CATEGORIES.map((category) => category.id))
 
-test('古典単語300語は連番idと学習に必要な項目を持つ', () => {
-  assert.equal(KOTEN_WORDS.length, 300)
+test('古典単語612語は連番idと学習に必要な項目を持つ', () => {
+  assert.equal(KOTEN_WORDS.length, 612)
   assert.equal(new Set(KOTEN_WORDS.map((word) => word.id)).size, KOTEN_WORDS.length)
   assert.equal(new Set(KOTEN_WORDS.map((word) => `${word.word}\u0000${word.pos}`)).size, KOTEN_WORDS.length)
 
@@ -77,7 +77,7 @@ test('既存200語の章境界idは拡充後も変わらない', () => {
   assert.equal(getKoten('k300')?.word, 'かく')
 })
 
-test('古典の章は全300語を重複なく分類する', () => {
+test('古典の章は全612語を重複なく分類する', () => {
   const tocWords = KOTEN_TOC.flatMap(({ words }) => words)
   assert.equal(KOTEN_TOC.length, KOTEN_CATEGORIES.length)
   assert.equal(tocWords.length, KOTEN_WORDS.length)

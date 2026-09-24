@@ -23,9 +23,12 @@ export function KotenText({ children, readings = [] }) {
   )
 }
 
+// 見出し語の読みが、区切りの記号（・…）や意味の添え書き（断定）を除いた見出し語と同じなら、ルビは付けない。
+const bareHeadword = (text) => String(text).replace(/（[^）]*）/gu, '').replace(/[・…]/gu, '')
+
 export function KotenWord({ word }) {
   if (!word) return null
   const readings =
-    word.kana && word.kana !== word.word ? [[word.word, word.kana]] : []
+    word.kana && word.kana !== word.word && word.kana !== bareHeadword(word.word) ? [[word.word, word.kana]] : []
   return <KotenText readings={readings}>{word.word}</KotenText>
 }

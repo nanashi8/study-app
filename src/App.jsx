@@ -93,6 +93,7 @@ const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'D
 const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
 const KotenStudyScreen = lazyScreen(() => import('./screens/KotenStudy.jsx'), 'KotenStudyScreen')
 const KotenQuizScreen = lazyScreen(() => import('./screens/KotenQuiz.jsx'), 'KotenQuizScreen')
+const KotenWordDetailScreen = lazyScreen(() => import('./screens/KotenWordDetail.jsx'), 'KotenWordDetailScreen')
 const KotenInterpretationListScreen = lazyScreen(
   () => import('./screens/KotenInterpretationList.jsx'),
   'KotenInterpretationListScreen',
@@ -189,6 +190,7 @@ const SCREENS = {
   kotenList: KotenListScreen,
   kotenStudy: KotenStudyScreen,
   kotenQuiz: KotenQuizScreen,
+  kotenWordDetail: KotenWordDetailScreen,
   kotenInterpretationList: KotenInterpretationListScreen,
   kotenInterpretationPrep: KotenInterpretationPrepScreen,
   kotenInterpretationQuiz: KotenInterpretationQuizScreen,

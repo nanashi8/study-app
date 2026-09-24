@@ -1,5 +1,7 @@
 import { isDue, todayIndex, useScreenParam, useStore } from '../store/useStore.js'
-import { KOTEN_TOC, KOTEN_WORDS } from '../data/koten.js'
+import { KOTEN_TOC, KOTEN_WORDS, KOTEN_WORD_LEVELS } from '../data/koten.js'
+import { KOTEN_GROUPS, KOTEN_GROUP_TOC } from '../lib/kotenWordGroups.js'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   KOTEN_CURRICULUM_BY_ID,
   KOTEN_CURRICULUM_LEVELS,
@@ -16,6 +18,7 @@ import {
   ContentMenuSection,
 } from '../components/ContentMenu.jsx'
 import {
+  ChooserTile,
   ChooserTiles,
   ReviewTodayRow,
   TodayCard,
@@ -24,7 +27,7 @@ import {
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice, readOpen } from '../lib/screenParams.js'
+import { readChoice, readOpen, readOpenId } from '../lib/screenParams.js'
 import {
   Book,
   BookOpen,
@@ -32,6 +35,7 @@ import {
   Lightbulb,
   Scroll,
   Search,
+  Sprout,
 } from '../components/Icons.jsx'
 
 function CategoryCard({ cat, words, srs, onStudy, onQuiz, onCatalog }) {
@@ -56,10 +60,60 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz, onCatalog }) {
   )
 }
 
+// 仲間（まとめて暗記する組）の入口。暗記・テストは仲間の語だけで行い、
+// 「使い分けの解説」を開くと、仲間の中での各語の意味と解説が読める（語を押すと辞書ページへ）。
+function GroupCard({ group, srs, open, onToggle, onStudy, onQuiz, onOpenWord }) {
+  const words = group.entries.map((entry) => entry.word)
+  const status = summarizeSrsItems(words, srs)
+  return (
+    <LearningEntryCard
+      data-koten-group={group.id}
+      emoji={group.typeInfo?.emoji}
+      accentColor="#0d9488"
+      title={group.title}
+      countLabel={`${words.length}語`}
+      subtitle={words.map((word) => word.word).join('・')}
+      status={status}
+      units={{ learning: '語', quiz: '問' }}
+      studyAriaLabel={`仲間「${group.title}」をまとめて暗記`}
+      onStudy={onStudy}
+      quizAriaLabel={`仲間「${group.title}」をテスト`}
+      onQuiz={onQuiz}
+      browseLabel={open ? '解説を閉じる' : '使い分けの解説'}
+      browseIcon={<Lightbulb size={15} />}
+      browseAriaLabel={`仲間「${group.title}」の使い分けの解説を${open ? '閉じる' : '読む'}`}
+      browseProps={{ 'aria-expanded': open, 'data-koten-group-toggle': group.id }}
+      onBrowse={onToggle}
+    >
+      {open && (
+        <div className="mt-3 space-y-2 rounded-2xl bg-teal-50/70 p-3 ring-1 ring-teal-100" data-koten-group-detail={group.id}>
+          <p className="text-sm font-bold leading-relaxed text-ink/75"><KotenText>{group.explain}</KotenText></p>
+          <ul className="space-y-1">
+            {group.entries.map((entry) => (
+              <li key={entry.word.id}>
+                <button
+                  type="button"
+                  onClick={() => onOpenWord(entry.word.id)}
+                  className="flex w-full items-baseline gap-2 rounded-xl bg-white px-2.5 py-1.5 text-left"
+                  aria-label={`${entry.word.word}の辞書ページを開く`}
+                >
+                  <span className="shrink-0 text-sm font-extrabold text-ink"><KotenWord word={entry.word} /></span>
+                  <span className="min-w-0 text-xs font-bold leading-relaxed text-ink/60"><KotenText>{entry.role}</KotenText></span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </LearningEntryCard>
+  )
+}
+
 // 古典アプリは、英語アプリと同じく「ホーム（学ぶ内容を選ぶ）→ コンテンツのトップ」の2段にする。
 // 古典単語のトップはこの画面の view 'vocab'。ホームから入ると履歴に積まれ、上部の「戻る」でホームへ戻る。
 // 表示・コース・一覧の分野は params に置き、暗記・テストから戻ったときも同じ見え方から続ける。
-const readView = readChoice(['home', 'vocab', 'list'], 'home')
+const readView = readChoice(['home', 'vocab', 'list', 'groups'], 'home')
+const readGroupType = readChoice(['all', ...KOTEN_GROUP_TOC.map(({ type }) => type.id)], 'all')
 const readCourse = readChoice(KOTEN_CURRICULUM_LEVELS.map((level) => level.id), 'middle')
 const readListCategory = readChoice(['all', ...KOTEN_TOC.map(({ category }) => category.id)], 'all')
 
@@ -70,6 +124,8 @@ export function KotenListScreen() {
   const [view, setView] = useScreenParam('view', readView)
   const [listCategory, setListCategory] = useScreenParam('category', readListCategory)
   const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
+  const [groupType, setGroupType] = useScreenParam('groupType', readGroupType)
+  const [openGroupId, setOpenGroupId] = useScreenParam('openGroup', readOpenId)
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)
@@ -86,6 +142,73 @@ export function KotenListScreen() {
   }
   const listEntry = KOTEN_TOC.find(({ category }) => category.id === listCategory)
   const listWords = listEntry ? listEntry.words : KOTEN_WORDS
+  const openWordDetail = (id) => navigate('kotenWordDetail', { id })
+  const openGroups = () => {
+    scrollScreenToTop()
+    setView('groups')
+  }
+
+  // 仲間でまとめて暗記。似た意味・反対の意味・同じ語から生まれた語などの組で、使い分けといっしょに暗記する。
+  if (view === 'groups') {
+    const shownToc = KOTEN_GROUP_TOC.filter(({ type }) => groupType === 'all' || type.id === groupType)
+    return (
+      <div className="pb-6" data-koten-groups-view={groupType}>
+        <ScreenHeader
+          title="仲間でまとめて暗記"
+          subtitle={`${KOTEN_GROUPS.length}組・全${KOTEN_WORDS.length}語`}
+          compact
+        />
+        <div className="space-y-3 px-4 pt-3">
+          <p className="px-1 text-xs font-bold leading-relaxed text-ink/50">
+            {'似た意味・反対の意味・同じ語から生まれた語などの組で、使い分けの解説といっしょに暗記します。'}
+          </p>
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
+            <button
+              type="button"
+              onClick={() => setGroupType('all')}
+              aria-pressed={groupType === 'all'}
+              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                groupType === 'all' ? 'bg-teal-700 text-white' : 'bg-white text-ink/50'
+              }`}
+            >
+              すべて {KOTEN_GROUPS.length}
+            </button>
+            {KOTEN_GROUP_TOC.map(({ type, groups }) => (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => setGroupType(type.id)}
+                aria-pressed={groupType === type.id}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                  groupType === type.id ? 'bg-teal-700 text-white' : 'bg-white text-ink/50'
+                }`}
+                data-koten-group-type={type.id}
+              >
+                {type.emoji} {type.label} {groups.length}
+              </button>
+            ))}
+          </div>
+          {shownToc.map(({ type, groups }) => (
+            <section key={type.id} className="space-y-3" data-koten-group-section={type.id}>
+              <h2 className="px-1 pt-1 font-display text-base font-extrabold text-ink/80">{type.emoji} {type.label}</h2>
+              {groups.map((group) => (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  srs={kotenSrs}
+                  open={openGroupId === group.id}
+                  onToggle={() => setOpenGroupId((current) => current === group.id ? null : group.id)}
+                  onStudy={() => study(group.entries.map((entry) => entry.word.id), group.title)}
+                  onQuiz={() => quiz(group.entries.map((entry) => entry.word.id), group.title)}
+                  onOpenWord={openWordDetail}
+                />
+              ))}
+            </section>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   // 「一覧を確認」からは、古典単語の全項目を学習・テスト別に見直す。
   if (view === 'list') {
@@ -147,9 +270,9 @@ export function KotenListScreen() {
             contentId="koten-vocab"
             items={listWords}
             unit="語"
-            onOpen={(item) => study([item.id], item.word)}
-            openLabel="この単語を暗記する"
-            openHint="暗記"
+            onOpen={(item) => openWordDetail(item.id)}
+            openLabel="この単語の辞書ページを開く"
+            openHint="辞書"
             emptyMessage="表示できる古典単語はありません。"
           />
         </div>
@@ -184,6 +307,16 @@ export function KotenListScreen() {
             />
           </TodayCard>
           <ChooserTiles data-koten-vocab-choosers>
+            <ChooserTile
+              onClick={openGroups}
+              data-koten-groups-entry
+              aria-label={`仲間でまとめて暗記。${KOTEN_GROUPS.length}組`}
+              icon={<Sprout size={19} />}
+              iconClassName="bg-teal-100 text-teal-700"
+              label="仲間で暗記"
+            >
+              {`${KOTEN_GROUPS.length}組`}
+            </ChooserTile>
             <WordBookTile domain="kotenVocab" returnTo={{ screen: 'kotenList', params: { view: 'vocab' } }} />
           </ChooserTiles>
 
@@ -206,6 +339,27 @@ export function KotenListScreen() {
             catalogAriaLabel="古典単語の全項目を一覧で確認する"
             onCatalog={() => openVocabCatalog('all')}
           />
+
+          <h2 className="px-1 pt-2 font-display text-base font-extrabold text-ink/80">レベルから選ぶ</h2>
+          {KOTEN_WORD_LEVELS.map((level) => {
+            const levelWords = KOTEN_WORDS.filter((word) => word.level === level.id)
+            return (
+              <LearningEntryCard
+                key={level.id}
+                data-koten-level={level.id}
+                emoji={level.shortLabel.slice(0, 1)}
+                accentColor={level.color}
+                title={level.label}
+                countLabel={`${levelWords.length}語`}
+                status={summarizeSrsItems(levelWords, kotenSrs)}
+                units={{ learning: '語', quiz: '問' }}
+                studyAriaLabel={`${level.label}の古典単語を暗記`}
+                onStudy={() => study(levelWords.map((word) => word.id), `古典単語・${level.label}`)}
+                quizAriaLabel={`${level.label}の古典単語をテスト`}
+                onQuiz={() => quiz(levelWords.map((word) => word.id), `古典単語・${level.label}`)}
+              />
+            )
+          })}
 
           <h2 className="px-1 pt-2 font-display text-base font-extrabold text-ink/80">分野から選ぶ</h2>
           {KOTEN_TOC.map(({ category, words }) => (

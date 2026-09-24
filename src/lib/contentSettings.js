@@ -46,7 +46,7 @@ export const SCOPE_SCREENS = Object.freeze({
   diagnostic: ['diagnostic'],
   dictation: ['dictation', 'dictationPlay'],
   kotenList: [
-    'kotenList', 'kotenQuiz',
+    'kotenList', 'kotenQuiz', 'kotenWordDetail',
     'kotenInterpretationList', 'kotenInterpretationPrep', 'kotenInterpretationQuiz',
     'kotenGrammar', 'kotenGrammarStudy', 'kotenGrammarQuiz',
     'kotenCulture', 'kotenCultureStudy', 'kotenCultureQuiz',

@@ -39,7 +39,7 @@ import { APP_MENU_SCREEN_DESTINATIONS } from '../src/lib/appMenu.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
 
 const exactCounts = {
-  kotenWords: 300,
+  kotenWords: 612,
   kotenGrammar: 74,
   kotenGrammarQuestions: 136,
   kotenCulture: 56,
@@ -255,7 +255,7 @@ for (const [file, needles] of [
 }
 
 console.log('古典・漢文全件監査: PASS')
-console.log('  古典: 暗記430項目 / 選択問題548問相当（出題は3択） / 短文読解36問 / 5段階')
+console.log(`  古典: 暗記${KOTEN_WORDS.length + KOTEN_GRAMMAR.length + KOTEN_CULTURE.length}項目 / 選択問題${KOTEN_WORDS.length + KOTEN_GRAMMAR_QUESTIONS.length + KOTEN_CULTURE_QUESTIONS.length}問相当（出題は3択） / 短文読解${KOTEN_INTERPRETATIONS.length}問 / 5段階`)
 console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / 5段階`)
 console.log(`  用例の訓点: ${markedExampleCount}例文に返り点${exampleReturnMarkCount}個・送り仮名を付けた字${exampleOkuriganaCount} / 訓読文は全件が書き下し文と一字残らず一致`)
 console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)

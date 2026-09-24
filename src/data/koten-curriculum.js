@@ -1,37 +1,42 @@
-import { KOTEN_WORDS } from './koten.js'
+import { KOTEN_WORD_LEVELS, KOTEN_WORDS } from './koten.js'
 import { KOTEN_GRAMMAR } from './koten-grammar.js'
 import { KOTEN_CULTURE } from './koten-culture.js'
 
 // 同じ教材を学年別に重複コピーせず、既存の安定IDを保ったまま段階的に広げる。
-// 各分野はカテゴリを一巡ずつ選ぶため、初級でも語彙・文法・背景知識が偏らない。
+// 古典単語は語ごとの重要度（KOTEN_WORD_LEVELS）でその段までの語を積み上げる。
+// 文法・常識はカテゴリを一巡ずつ選ぶため、初級でも偏らない。
+
+// 重要度の段の順番（中学→最難関）。コースの段と同じ id を使う。
+const VOCAB_LEVEL_RANK = Object.fromEntries(KOTEN_WORD_LEVELS.map((level, index) => [level.id, index]))
+const vocabUpTo = (rank) => KOTEN_WORDS.filter((word) => VOCAB_LEVEL_RANK[word.level] <= rank).length
 export const KOTEN_CURRICULUM_LEVELS = [
   {
     id: 'middle',
     label: '中学入門',
     shortLabel: '中学',
     description: '現代語との違い、基本語、助動詞の入口、古人の暮らしをつかむ',
-    targets: { vocab: 64, grammar: 18, culture: 14 },
+    targets: { vocab: vocabUpTo(0), grammar: 18, culture: 14 },
   },
   {
     id: 'basic',
     label: '高校基礎',
     shortLabel: '基礎',
     description: '頻出語義・活用と接続・敬語・古典常識を一通り固める',
-    targets: { vocab: 120, grammar: 34, culture: 28 },
+    targets: { vocab: vocabUpTo(1), grammar: 34, culture: 28 },
   },
   {
     id: 'standard',
     label: '共通テスト・中堅大',
     shortLabel: '標準',
     description: '多義語と識別、和歌、人物関係を本文の根拠から判断する',
-    targets: { vocab: 190, grammar: 50, culture: 42 },
+    targets: { vocab: vocabUpTo(2), grammar: 50, culture: 42 },
   },
   {
     id: 'advanced',
     label: '難関大学',
     shortLabel: '難関',
     description: '紛らわしい語義・複合文法・文学史を長文読解へ接続する',
-    targets: { vocab: 250, grammar: 64, culture: 50 },
+    targets: { vocab: vocabUpTo(3), grammar: 64, culture: 50 },
   },
   {
     id: 'elite',
@@ -72,9 +77,10 @@ const ORDERED = {
   culture: balancedOrder(KOTEN_CULTURE),
 }
 
-export const KOTEN_CURRICULUM_PATHS = KOTEN_CURRICULUM_LEVELS.map((level) => ({
+export const KOTEN_CURRICULUM_PATHS = KOTEN_CURRICULUM_LEVELS.map((level, index) => ({
   ...level,
-  vocabIds: ORDERED.vocab.slice(0, level.targets.vocab).map((item) => item.id),
+  // その段までの重要度の語を、分野が偏らない順に並べる。
+  vocabIds: ORDERED.vocab.filter((item) => VOCAB_LEVEL_RANK[item.level] <= index).map((item) => item.id),
   grammarIds: ORDERED.grammar.slice(0, level.targets.grammar).map((item) => item.id),
   cultureIds: ORDERED.culture.slice(0, level.targets.culture).map((item) => item.id),
 }))

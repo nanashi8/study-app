@@ -8,12 +8,32 @@
 //   meanings  … 現代語訳（重要な順に複数）
 //   note      … 覚え方・語義のポイント（任意）
 //   category  … 分類id（CATEGORIES）
-//   example   … { ja: 古文の用例, gendai: 現代語訳 }（任意）
+//   example   … { ja: 古文の用例, gendai: 現代語訳 }
+//   kanji     … 漢字表記（慣用の漢字がない語は ''）
+//   conj      … 活用の種類（src/lib/kotenConjugation.js で活用表にする。活用しない語は持たない）
+//   level     … 重要度（KOTEN_WORD_LEVELS。英単語の「級」に当たる軸）
+//   background… 時代背景の解説（背景が意味に関わらない語は null）
 //
-// 級は無いので、英単語の「級」に当たる軸は category（意味分野）で代用する。
+// k001〜k300 の kanji・conj・level・background は koten-word-details.js に、
+// k301 以降（koten-added-*.js）は本体に直接書いている。
 
 import { KOTEN_EXPANSION } from './koten-expanded.js'
 import { KOTEN_ADVANCED } from './koten-advanced.js'
+import { KOTEN_ADDED_1 } from './koten-added-1.js'
+import { KOTEN_ADDED_2 } from './koten-added-2.js'
+import { KOTEN_ADDED_3 } from './koten-added-3.js'
+import { KOTEN_ADDED_4 } from './koten-added-4.js'
+import { KOTEN_WORD_DETAILS } from './koten-word-details.js'
+
+// 重要度。英単語の「級」と同じく、易しい段から順に積み上げる（学年・目標別コースもこの段で組む）。
+export const KOTEN_WORD_LEVELS = [
+  { id: 'middle', label: '中学入門', shortLabel: '中学', color: '#10b981' },
+  { id: 'basic', label: '高校基礎', shortLabel: '基礎', color: '#0ea5e9' },
+  { id: 'standard', label: '共通テスト・中堅大', shortLabel: '標準', color: '#f59e0b' },
+  { id: 'advanced', label: '難関大学', shortLabel: '難関', color: '#e11d48' },
+  { id: 'elite', label: '最難関大学', shortLabel: '最難関', color: '#7c3aed' },
+]
+export const KOTEN_WORD_LEVEL_BY_ID = Object.fromEntries(KOTEN_WORD_LEVELS.map((level) => [level.id, level]))
 
 export const KOTEN_CATEGORIES = [
   { id: 'kanjo', label: '心情・気持ち', emoji: '💗', color: '#f43f5e' },
@@ -35,7 +55,7 @@ const RAW = [
   { word: 'をかし', kana: 'おかし', pos: '形', category: 'kanjo',
     meanings: ['趣がある', 'おもしろい', '美しい', 'こっけいだ'],
     note: '明るく知的に「いいなあ」と感じる美。「あはれ」より理知的。',
-    example: { ja: '月のいとをかし', gendai: '月がたいそう趣深い' } },
+    example: { ja: '雨など降るもをかし。', gendai: '雨などが降るのも趣がある。' } },
   { word: 'うれし', kana: 'うれし', pos: '形', category: 'kanjo',
     meanings: ['うれしい', 'ありがたい'],
     note: '現代と近いが、相手の好意に対する「ありがたい」も。',
@@ -533,7 +553,7 @@ const RAW = [
   { word: 'めり', kana: 'めり', pos: '助動', category: 'kotoba',
     meanings: ['…ように見える', '…ようだ'],
     note: '目で見ての推定（視覚推定）。',
-    example: { ja: '人の来るめり', gendai: '人が来るようだ' } },
+    example: { ja: '簾少し上げて、花奉るめり。', gendai: 'すだれを少し上げて、（仏に）花をお供えしているようだ。' } },
   { word: 'いさ', kana: 'いさ', pos: '副', category: 'kotoba',
     meanings: ['さあ（どうだか）', 'さあ知らない'],
     note: '「いさ知らず」で「さあ、どうだか分からない」。',
@@ -550,12 +570,19 @@ const RAW = [
 
 // id を機械的に付与（'k001'…）。
 // 既存語の後ろにだけ拡充分を連結し、保存済みの学習履歴との対応を保つ。
-const ALL_RAW = [...RAW, ...KOTEN_EXPANSION, ...KOTEN_ADVANCED]
-export const KOTEN_WORDS = ALL_RAW.map((w, i) => ({
-  id: `k${String(i + 1).padStart(3, '0')}`,
-  ...w,
-  meaning: w.meanings[0] ?? '',
-}))
+const ALL_RAW = [...RAW, ...KOTEN_EXPANSION, ...KOTEN_ADVANCED, ...KOTEN_ADDED_1, ...KOTEN_ADDED_2, ...KOTEN_ADDED_3, ...KOTEN_ADDED_4]
+export const KOTEN_WORDS = ALL_RAW.map((w, i) => {
+  const id = `k${String(i + 1).padStart(3, '0')}`
+  const { add = [], ...detail } = KOTEN_WORD_DETAILS[id] ?? {}
+  const meanings = [...w.meanings, ...add]
+  return {
+    id,
+    ...w,
+    ...detail,
+    meanings,
+    meaning: meanings[0] ?? '',
+  }
+})
 
 export const KOTEN_BY_ID = Object.fromEntries(KOTEN_WORDS.map((w) => [w.id, w]))
 

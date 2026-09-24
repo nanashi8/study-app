@@ -8,7 +8,7 @@ export const APP_HOMES = [
     screen: 'kotenList',
     label: '古典アプリ',
     screens: [
-      'kotenList', 'kotenStudy', 'kotenQuiz',
+      'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenWordDetail',
       'kotenInterpretationList', 'kotenInterpretationPrep', 'kotenInterpretationQuiz',
       'kotenGrammar', 'kotenGrammarStudy', 'kotenGrammarQuiz',
       'kotenCulture', 'kotenCultureStudy', 'kotenCultureQuiz',
