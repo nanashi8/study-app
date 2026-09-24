@@ -110,6 +110,17 @@ export function checkChapters() {
     for (const key of ['emoji', 'title', 'headline', 'era', 'place', 'question']) {
       if (!hasText(chapter[key])) fail(`${key} がない`)
     }
+    // 数式として描かない欄（目次・見出し・操作の名前など）に、数式の書き方を入れない。
+    const plain = [
+      chapter.title, chapter.headline, chapter.era, chapter.place, ...(chapter.people ?? []),
+      chapter.visual?.instruction, ...(chapter.visual?.controls ?? []).flatMap((control) => [
+        control.label, ...(control.options ?? []).map((option) => option.label),
+      ]),
+      ...(chapter.uses ?? []).map((use) => use.title),
+    ]
+    for (const text of plain) {
+      if (typeof text === 'string' && /[$\\]/.test(text)) fail(`数式として描かない欄に $ や \\ がある：${text}`)
+    }
     if (!Number.isFinite(chapter.year)) fail('year（年代順に並べる年）が数でない')
     if (!Array.isArray(chapter.people) || chapter.people.some((person) => !hasText(person))) fail('people は人物名の配列')
     if (!Array.isArray(chapter.story) || chapter.story.length < 3 || chapter.story.some((paragraph) => !hasText(paragraph))) {

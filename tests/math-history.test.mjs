@@ -158,6 +158,75 @@ test('図の数は操作値と数学的に一致する（数える・位取り�
   assert.equal(zero.visual.formula({ op: 'add', a: 7 }), '7+0=7')
 })
 
+test('図の数は操作値と数学的に一致する（中学：負の数・方程式・座標・球・連立・速さ・地球・球面・合同）', () => {
+  const count = (markup, pattern) => (markup.match(pattern) ?? []).length
+  // 負の数：+3 と -5 は3組が打ち消し合い、黒が2本残る。
+  const rods = render('mh-negative', { a: 3, b: -5 })
+  assert.equal(count(rods, /data-rod-row="a" data-rod-sign="pos"/g), 3)
+  assert.equal(count(rods, /data-rod-row="b" data-rod-sign="neg"/g), 5)
+  assert.equal(count(rods, /data-rod-pair=/g), 3)
+  assert.equal(count(rods, /data-rod-row="sum" data-rod-sign="neg"/g), 2)
+  assert.equal(count(render('mh-negative', { a: 2, b: 4 }), /data-rod-pair=/g), 0)
+  assert.match(render('mh-negative', { a: 4, b: -4 }), /算木なし（0）/)
+
+  // 一次方程式：2x-3=x+5 → x=8。確かめで両辺が13。
+  const moved = render('mh-equation', { c: 3, d: 5, step: 2 })
+  assert.match(moved, /data-pan="right" data-pan-boxes="0" data-pan-units="8"/)
+  assert.match(moved, /data-pan="left" data-pan-boxes="1"/)
+  const checked = render('mh-equation', { c: 3, d: 5, step: 3 })
+  assert.match(checked, /2×8 − 3 ＝ 13/)
+  assert.match(checked, /8 ＋ 5 ＝ 13/)
+  const equation = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-equation')
+  for (let c = 1; c <= 5; c += 1) {
+    for (let d = 1; d <= 9; d += 1) assert.match(equation.visual.insight({ c, d, step: 3 }), new RegExp(`左も右も${c + 2 * d}`))
+  }
+
+  // 座標：式を満たす点。
+  assert.match(render('mh-coordinates', { curve: 'parabola', x: -1.5 }), /data-point-x="-1.5" data-point-y="2.25"/)
+  assert.match(render('mh-coordinates', { curve: 'line', x: 2.5 }), /data-point-y="5"/)
+  assert.match(render('mh-coordinates', { curve: 'circle', x: 0 }), /data-point-y="3"/)
+
+  // 球：高さ h の切り口は、半球も「円柱−円すい」も π(25−h²)。
+  for (const h of [0, 1.5, 3, 4.5, 5]) {
+    const markup = render('mh-sphere', { h })
+    const area = String(Number((25 - h * h).toFixed(2)))
+    assert.match(markup, new RegExp(`data-slice-disk="${area}"`), `h=${h}`)
+    assert.match(markup, new RegExp(`data-slice-ring="${area}"`), `h=${h}`)
+  }
+
+  // つるかめ算：頭10・足32 はかめ6匹。
+  const tsurukame = render('mh-simultaneous', { legs: 32, t: 6 })
+  assert.match(tsurukame, /data-legs-now="32"/)
+  assert.equal(count(tsurukame, /data-animal="turtle"/g), 6)
+  assert.equal(count(tsurukame, /data-animal="crane"/g), 4)
+  assert.match(tsurukame, /目標の32本とぴったり/)
+  const simultaneous = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-simultaneous')
+  for (const legs of [24, 28, 32, 36]) {
+    const turtles = (legs - 20) / 2
+    assert.match(simultaneous.visual.insight({ legs, t: turtles }), /これが答え/)
+  }
+
+  // 速さのグラフ：台形の面積＝真ん中の速さ×時間。
+  const oresme = render('mh-linear-graph', { v0: 1, a: 2, t: 4 })
+  assert.match(oresme, /data-oresme-area="20"/)
+  assert.match(oresme, /data-oresme-mean="5"/)
+
+  // 地球：7.2度・800km → 一周 40000km。
+  assert.match(render('mh-earth', { theta: 7.2, d: 800 }), /data-earth-circumference="40000"/)
+  assert.match(render('mh-earth', { theta: 9, d: 900 }), /data-earth-circumference="36000"/)
+
+  // 球面の三角形：90+90+λ。
+  assert.match(render('mh-non-euclid', { lambda: 60 }), /data-angle-sum="240"/)
+  assert.match(render('mh-non-euclid', { lambda: 180 }), /data-angle-sum="360"/)
+
+  // 合同：3つの合同条件は1つに決まり、2辺と間でない角は2つ、3つの角は大きさが決まらない。
+  for (const condition of ['sss', 'sas', 'asa']) {
+    assert.match(render('mh-proof', { condition }), /data-congruence-unique="yes" data-congruence-count="1"/, condition)
+  }
+  assert.match(render('mh-proof', { condition: 'ssa' }), /data-congruence-unique="no" data-congruence-count="2"/)
+  assert.match(render('mh-proof', { condition: 'aaa' }), /data-congruence-unique="no" data-congruence-count="2"/)
+})
+
 test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
   const ids = MATH_HISTORY_QUESTIONS.map((question) => question.id)
   assert.equal(new Set(ids).size, ids.length)
