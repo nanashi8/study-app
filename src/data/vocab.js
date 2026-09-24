@@ -161,6 +161,7 @@ import {
 } from './etymology-history.js'
 import { quizMeaning, quizMeaningKey, splitMeanings } from './compact.js'
 import { WORD_SENSES } from './word-senses.js'
+import { applyRelationEdits } from './word-relation-edits.js'
 import { HOMOGRAPH_WORDS } from './homograph-words.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
@@ -205,8 +206,9 @@ const normalize = (w) => {
     meanings,
     meaning,
     phonetic,
-    synonyms: w.synonyms ?? [],
-    antonyms: w.antonyms ?? [],
+    // 類義語・反対語は、読んで直した台帳（word-relation-edits.js）を当てる。
+    synonyms: applyRelationEdits(w.id, 'syn', w.synonyms ?? []),
+    antonyms: applyRelationEdits(w.id, 'ant', w.antonyms ?? []),
     derivatives: w.derivatives ?? [],
     family: w.family ?? [],
     usage: w.usage ?? '',

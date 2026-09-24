@@ -38,13 +38,14 @@ function toRows(items) {
   })
 }
 
-// 関連語どうしの使い分け（word-usage-notes.js）。行の下に参考として出す。
+// 関連語どうしの使い分け（word-usage-notes.js・word-relation-notes.js）。行の下に参考として出す。
+// 難しい語には意味の欄と同じく（よみ）を添える。
 function UsageNote({ text }) {
   if (!text) return null
   return (
     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-amber-900/85 ring-1 ring-amber-100" data-word-usage-note>
       <span className="mr-1 font-extrabold text-amber-700">使い分け</span>
-      {text}
+      <MeaningText>{text}</MeaningText>
     </p>
   )
 }
@@ -181,7 +182,7 @@ export function AntonymSection({ items, onWord, showPhonetic }) {
   )
 }
 
-/** 1語と同じ意味で言いかえられる熟語。熟語ごとに発音ボタンをつける。 */
+/** 1語と同じ意味で言いかえられる熟語。熟語ごとに発音ボタンと、1語との使い分けをつける。 */
 export function IdiomEquivalentSection({ phrases }) {
   if (!phrases.length) return null
   return (
@@ -194,6 +195,7 @@ export function IdiomEquivalentSection({ phrases }) {
             <div className="min-w-0 flex-1">
               <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
               <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+              <UsageNote text={phrase.usageNote} />
             </div>
           </li>
         ))}

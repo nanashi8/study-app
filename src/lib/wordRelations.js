@@ -3,6 +3,7 @@
 // - 意味が同じ・近い語（単語データの類義語欄）
 // - 意味が反対の語（単語データの反意語欄）
 // - 同じ意味の熟語（人が読んで決めた word-idiom-equivalents.js）
+// 類義語・反対語・同じ意味の熟語の行には、人が1組ずつ書いた解説（word-relation-notes.js）を添える。
 // - つづりが似ていて間違えやすい語（spelling-confusables.js）
 // - 日本語に定着したカタカナ語（loanword-hints.js）
 // 自作単語は辞書の台帳に載らないので、類義語欄だけを見る。
@@ -14,6 +15,7 @@ import { LOANWORD_HINTS } from '../data/loanword-hints.js'
 import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES, WORD_FORM_SENSES } from '../data/word-forms.js'
 import { WORD_SENSES } from '../data/word-senses.js'
 import { WORD_USAGE_NOTES } from '../data/word-usage-notes.js'
+import { WORD_IDIOM_NOTES, WORD_RELATION_NOTES } from '../data/word-relation-notes.js'
 
 // 強勢記号や区切りを除いて、発音記号が同じかを比べる。
 const IPA_MARKS = /[ˈˌ/.\s]/gu
@@ -73,6 +75,23 @@ export function usageNoteBetween(a, b) {
 
 const withUsage = (base, item, text) => {
   const note = usageNoteBetween(base, text)
+  return note ? { ...item, usageNote: note } : item
+}
+
+/**
+ * 類義語・反対語の行に添える解説。使い分けの台帳（word-usage-notes.js）に書いた組はそれを、
+ * なければ類義語・反対語の解説の台帳（word-relation-notes.js）を返す。なければ空文字。
+ */
+export function relationNoteBetween(a, b) {
+  const x = String(a ?? '').toLowerCase()
+  const y = String(b ?? '').toLowerCase()
+  if (!x || !y || x === y) return ''
+  const key = [x, y].sort().join('|')
+  return WORD_USAGE_NOTES[key] ?? WORD_RELATION_NOTES[key] ?? ''
+}
+
+const withRelationNote = (base, item, text) => {
+  const note = relationNoteBetween(base, text)
   return note ? { ...item, usageNote: note } : item
 }
 
@@ -214,7 +233,7 @@ export function synonymWordsFor(word, { exclude = [] } = {}) {
     const key = text.toLowerCase()
     if (!text || seen.has(key)) continue
     seen.add(key)
-    items.push(withUsage(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
+    items.push(withRelationNote(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
   }
   return items
 }
@@ -228,14 +247,21 @@ export function antonymWordsFor(word) {
     const key = text.toLowerCase()
     if (!text || seen.has(key)) continue
     seen.add(key)
-    items.push(withUsage(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
+    items.push(withRelationNote(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
   }
   return items
 }
 
+/** 同じ意味の熟語。1語との使い分け（word-relation-notes.js の WORD_IDIOM_NOTES）があれば usageNote に持たせる。 */
 export function idiomEquivalentsFor(word) {
   if (!word?.id || word.custom) return []
-  return (WORD_IDIOM_EQUIVALENTS[word.id] ?? []).map((id) => getPhrase(id)).filter(Boolean)
+  return (WORD_IDIOM_EQUIVALENTS[word.id] ?? [])
+    .map((id) => getPhrase(id))
+    .filter(Boolean)
+    .map((phrase) => {
+      const note = WORD_IDIOM_NOTES[`${word.id}|${phrase.id}`]
+      return note ? { ...phrase, usageNote: note } : phrase
+    })
 }
 
 export function confusablesFor(word) {

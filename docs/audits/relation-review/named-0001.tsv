@@ -1,0 +1,151 @@
+E	friend>free	離
+E	happy>happen	離
+E	nature>native	離
+E	nature>nation	離
+E	picture>paint	品
+E	time>tide	離
+E	city>civil	離
+E	story>history	離
+E	popular>people	離
+E	kitchen>cook	離
+E	culture>agriculture	離
+E	health>whole	離
+E	message>mission	離
+E	local>location	品
+E	communicate>common	離
+E	consequence>sequence	離
+E	notion>notice	離
+E	diminish>minor	品
+E	genius>gignere	外
+E	hospital>hotel	離
+E	science>conscience	離
+E	history>story	離
+E	determine>terminal	離
+E	establish>stable	離
+E	occur>current	離
+E	restrict>strict	品
+E	prevail>value	離
+E	flower>flora	離
+E	car>carry	離
+E	courage>cordial	離
+E	common>community	離
+E	native>nature	離
+E	ordinary>order	離
+E	mental>mind	品
+E	influence>fluent	離
+E	mechanism>machine	離
+E	allocate>local	離
+E	foster>food	離
+E	consensus>sense	離
+E	plausible>applaud	離
+E	candid>candle	離
+E	inherent>adhere	離
+E	usually>use	離
+E	together>gather	離
+E	only>one	離
+E	perhaps>happen	離
+E	probably>prove	離
+E	furthermore>forth	離
+E	between>two	離
+E	during>endure	離
+E	despite>spite	離
+E	along>long	離
+E	experience>expert	離
+E	advice>vis	外
+E	attitude>apt	離
+E	integrity>integer	離
+E	proximity>approximate	品
+E	appreciate>price	離
+E	arrange>rank	離
+E	avoid>void	離
+E	blame>blaspheme	離
+E	confirm>firm	離
+E	convince>victory	離
+E	declare>clear	離
+E	deny>negative	品
+E	indicate>dictate	離
+E	mention>mind	離
+E	accurate>care	離
+E	adapt>apt	離
+E	adequate>equal	離
+E	apparent>appear	品
+E	collaborate>labor	離
+E	comply>complete	離
+E	condemn>damage	離
+E	conform>form	離
+E	constitute>statue	離
+E	contemporary>temporal	離
+E	crucial>cross	離
+E	endure>durable	品
+E	exclude>close	離
+E	exhibit>habit	離
+E	fundamental>found	離
+E	adhere>coherent	離
+E	affinity>final	離
+E	censure>census	離
+E	commence>initial	品
+E	cordial>courage	離
+E	corroborate>robust	離
+E	credulous>credit	離
+E	prove>probe	離
+E	regard>guard	離
+E	repair>prepare	離
+E	search>circle	離
+E	trade>tread	離
+E	trust>true	離
+E	design>sign	離
+E	explain>plain	離
+E	kind>kin	離
+E	free>friend	離
+E	sure>secure	離
+E	heavy>heave	離
+E	safe>save	品
+E	desk>disc	離
+E	prudent>provide	離
+E	tangible>contact	離
+E	deter>terror	離
+E	disrupt>rupture	離
+E	dubious>double	離
+E	feasible>fact	離
+E	hinder>behind	離
+E	impede>pedal	離
+E	imperative>emperor	離
+E	ingenious>engine	離
+E	notorious>notice	離
+E	people>popular	離
+E	hotel>hospital	離
+E	market>merchant	離
+E	price>appreciate	離
+E	admire>miracle	離
+E	amount>mountain	離
+E	audience>audio	離
+E	aware>beware	離
+E	check>chess	離
+E	chief>capital	離
+E	citizen>city	離
+E	community>common	離
+E	compare>pair	離
+E	constant>stand	離
+E	context>textile	離
+E	account>count	離
+E	adopt>option	離
+E	aim>estimate	離
+E	approve>prove	離
+E	assemble>similar	離
+E	assign>sign	離
+E	assure>sure	品
+E	authority>author	離
+A	public	syn	popular	人気のある・一般の人々の	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	popular	syn	public	公の・一般の人々の	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	cold	syn	cool	涼しい	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	cool	syn	cold	寒い・冷たい	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	garden	syn	yard	(家の)庭	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	festival	syn	feast	祝宴	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	similar	syn	same	同じ	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	redundant	syn	abundant	豊富な・あり余る	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	never	ant	ever	これまでに・一度でも	語の成り立ちで同じ語源と名指しした、意味が反対・対照の語
+A	month	syn	moon	(空の)月	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	moon	syn	month	(暦の)月	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	reveal	ant	veil	覆い隠す	語の成り立ちで同じ語源と名指しした、意味が反対・対照の語
+A	accomplish	syn	complete	完成させる	語の成り立ちで同じ語源と名指しした、意味の近い語
+A	apathy	ant	sympathy	同情・共感	語の成り立ちで同じ語源と名指しした、意味が反対・対照の語
