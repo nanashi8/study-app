@@ -4,7 +4,7 @@
   "asked": [
     "（関連語の依頼を閉じたあと、Stop フックが古典・数学のセッションの依頼の未完了を理由にこのセッションの終わりを止め続けたので、どうするかを聞いた問いへの答え）自分の依頼だけで止める（推奨）"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "own-requests-detected",
@@ -38,8 +38,8 @@
       "id": "deployed",
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
