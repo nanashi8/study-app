@@ -4,7 +4,7 @@
   "asked": [
     "テストの1回の問題数が見切れて表示されないので改善しなさい。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "counter-shows-real-numbers",
@@ -22,11 +22,10 @@
     },
     {
       "id": "deployed",
-      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する（commit 0b83e96 のデプロイ成功を確かめ、公開版の英検5級の単語テストで上部バーが「1/10」と出るのを見た）",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "waiting",
-      "waitingFor": "commit 0b83e96 の GitHub Pages デプロイ（.github/workflows/deploy.yml）の完了。再開したら `node scripts/checks/deployed-matches-head.mjs` を実行し、成功していれば done にして依頼を閉じる。公開版 https://nanashi8.github.io/study-app/ の単語テストで上部バーが「1/10」と出ることも見る"
+      "status": "done"
     }
   ]
 }
