@@ -1,0 +1,5 @@
+#!/bin/sh
+# git commit の前の確認（依頼台帳の書き方・done にした条件の check・コミットの名前）。
+# pre-commit ではなくこのフックに置くのは、--no-verify でも飛ばないから（git の決まり）。
+# .claude/settings.json の env（core.hooksPath=scripts/git-hooks）で、全セッションの git から呼ばれる。
+exec node "$(git rev-parse --show-toplevel)/scripts/check-requests.mjs" --git-commit

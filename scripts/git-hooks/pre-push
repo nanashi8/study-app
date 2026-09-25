@@ -1,0 +1,4 @@
+#!/bin/sh
+# git push の前の確認（依頼台帳の書き方・done にした条件の check・push するコミットの名前と全教材監査台帳）。
+# git が push するコミットを標準入力で渡す。.claude/settings.json の env（core.hooksPath=scripts/git-hooks）で呼ばれる。
+exec node "$(git rev-parse --show-toplevel)/scripts/check-requests.mjs" --git-pre-push "$@"

@@ -1,0 +1,63 @@
+{
+  "id": "2026-09-25-history-and-git-hooks",
+  "title": "履歴の作者を nanashi8 に書き換え、残っていた枝を片付ける・commit と push の確認を git のフックに移す・依頼の持ち主は台帳に書く",
+  "asked": [
+    "・なんでmainを書き換えないのか？必要なことをしなさい。\n・中を読めない書き方とあるが、中を確認できる一般的な方法はないのか。何を余計なことをしているのか？今までそんな報告はなかったのではないか？\n・スクリプトについては、一般的な方法のとおりにしたらいいのではないか。",
+    "このプロジェクトは個人開発の一直線なのでブランチはないはずですよ。"
+  ],
+  "sessions": [
+    "24b71a88-813b-4371-90c8-b30fd2904911"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "history-authors",
+      "text": "main の全コミットの作者・コミッターを nanashi8 <nanashi8@users.noreply.github.com> にそろえ（日時・中身・コミットの文は変えない）、書き換えた main を GitHub へ push し直す",
+      "population": "main の全コミット（書き換え前 376件、うち端末名から作った名前 40件）と、GitHub の main",
+      "check": "node scripts/checks/history-authors.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "branches-cleared",
+      "text": "一直線の決まりに反して残っていた枝を片付け、ローカルと GitHub の枝を main だけにする。GitHub の claude/remove-word-mode-bottom-buttons-zwu3m9、ローカルの codex/… 9本、設定から外したリモートの参照 5本、なくなった作業ツリーの登録 5件。main に入っていないコミットは消さずに refs/backup/2026-09-25/ に控え、報告で知らせる",
+      "population": "ローカルの全参照（refs/heads 10本・refs/remotes の origin 以外 5本）・作業ツリーの登録 6件・GitHub の全枝 2本",
+      "check": "node scripts/checks/history-authors.mjs --branches",
+      "status": "todo"
+    },
+    {
+      "id": "history-references",
+      "text": "書き換えで番号が変わったコミットを名指ししている記載を、新しい番号に置き換える（コミットの文・追跡しているファイル・記憶）",
+      "population": "コミットの番号を名指しした全記載（書き換え前に数えて、コミットの文 8件・9か所、追跡しているファイル 8件・14か所、記憶 28件・75か所）",
+      "check": "node scripts/checks/history-authors.mjs --references",
+      "status": "todo"
+    },
+    {
+      "id": "hooks-git-native",
+      "text": "commit・push の前の確認（done にした条件の check・コミットの名前・push するコミットの全教材監査台帳）を git のフック（scripts/git-hooks の prepare-commit-msg・pre-push）で行い、.claude/settings.json の env（core.hooksPath）で全セッションの git から呼ぶ。commit の確認は --no-verify でも飛ばない prepare-commit-msg に置く。コマンドの文を読む確認（Bash の前のフック）と、コマンドを読む部品（scripts/lib/shell-commands.mjs）はなくす",
+      "population": "commit・push の起こし方（作業ツリー・clone・下のフォルダー・sh スクリプトの中・eval・xargs・bash -c・git -C・$( ) で書いた場所・--author・--no-verify・-n）× 確かめること（done にした条件の check・名前・push するコミットの台帳）",
+      "check": "node --test tests/requests-gate.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "ownership-declared",
+      "text": "依頼台帳に持ち主のセッション（sessions）を書き、Stop・利用者の発言ごとの一覧・変更の前の確認・--owners はそれで判定する。会話ログやコマンドの文からの推測はなくす。利用者の発言ごとに、そのセッションの id を見せる。開いている依頼に sessions がなければ台帳の誤りにする",
+      "population": "持ち主の全場合（そのセッションの依頼・ほかのセッションの依頼・sessions のない開いた依頼・session_id が渡らないとき）× フック（Stop・利用者の発言・src/tests/scripts の変更の前・--owners）",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "rules-updated",
+      "text": "CLAUDE.md（依頼台帳の書き方・フックが強制すること）を新しい仕組みに合わせて書き直し、置き換えた前の依頼台帳（2026-09-24-stop-own-requests・2026-09-25-requests-hooks-improve）に、どの条件を何で置き換えたかを書く",
+      "population": "CLAUDE.md の「依頼台帳」「フックが強制すること」の全項目と、置き換えた前の依頼台帳2件",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}

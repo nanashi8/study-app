@@ -41,5 +41,7 @@
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done"
     }
-  ]
+  ],
+  "supersededBy": "2026-09-25-history-and-git-hooks",
+  "supersededNote": "持ち主の割り出し（会話ログの Write・Edit と Bash の書き込みから推し量る。own-requests-detected・real-sessions）は、依頼台帳の sessions に書く形に置き換えた。Stop フックがそのセッションの依頼だけで止める動き（stop-own-only）は、sessions で判定して続けている。"
 }

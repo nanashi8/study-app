@@ -55,5 +55,7 @@
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done"
     }
-  ]
+  ],
+  "supersededBy": "2026-09-25-history-and-git-hooks",
+  "supersededNote": "持ち主の判定（ownership-write-targets・ownership-real-sessions）は依頼台帳の sessions に、commit・push の前の確認（push-ledger-current・commit-identity）はコマンドの文を読む Bash の前のフックから git のフック（scripts/git-hooks の pre-commit・pre-push）に置き換えた。push を単独のコマンドで行う決まりはなくした。名前を env で渡すこと（commit-identity）と、ほかのセッションの依頼を1行に畳むこと（prompt-own-first）は続けている。"
 }

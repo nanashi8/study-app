@@ -3,7 +3,10 @@
     "GIT_AUTHOR_NAME": "nanashi8",
     "GIT_AUTHOR_EMAIL": "nanashi8@users.noreply.github.com",
     "GIT_COMMITTER_NAME": "nanashi8",
-    "GIT_COMMITTER_EMAIL": "nanashi8@users.noreply.github.com"
+    "GIT_COMMITTER_EMAIL": "nanashi8@users.noreply.github.com",
+    "GIT_CONFIG_COUNT": "1",
+    "GIT_CONFIG_KEY_0": "core.hooksPath",
+    "GIT_CONFIG_VALUE_0": "scripts/git-hooks"
   },
   "hooks": {
     "UserPromptSubmit": [
@@ -26,17 +29,6 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-requests.mjs\" --edit",
             "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-requests.mjs\" --gate",
-            "timeout": 900,
-            "statusMessage": "完了にした条件を確認中"
           }
         ]
       }
