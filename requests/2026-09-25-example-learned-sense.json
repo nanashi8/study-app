@@ -7,7 +7,7 @@
   "sessions": [
     "749f6d96-a8c2-4110-aa0f-cbf5573fd647"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "preliminary-example",
@@ -46,10 +46,10 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content を通し、クリーンな clone で確かめてから main へ push し、公開版のデプロイが成功したことを確かめ、公開版の preliminary の辞書ページ・暗記カードに新しい例文が出ることを見る",
+      "text": "npm run audit:all-content をクリーンな clone で通し（2回。どちらもテスト1,000件・全監査・ビルドが通過）、main へ push する（commit bf4a34a と dbf3410）。両方のデプロイ（GitHub Actions deploy.yml の run 36083446957 と run 36084321488）の成功を確かめ、公開版で preliminary の辞書ページと暗記カードに新しい例文（本調査の前に、私たちは10人の生徒で予備調査を行った。）が出ることを見た（暗記カードを開くために端末内の単語帳へ入れた1語は、確かめたあと外した）",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
