@@ -6,12 +6,14 @@
     "・何度もまだ・不正解を繰り返すが、最上位にならない問題がある。\n・何度も覚えた・正解を繰り返すか、連続で覚えた・正解となったが、後回しにならない問題がある。\n何度やっても覚えないものがしつこく表示されないと覚えられないのではないか、また理解度の傾向が変わってきたら表示頻度を変えていくべきではないか。",
     "許可します。",
     "nanashi8.github.ioを許可するドメインに加えなさい。",
-    "ネットワークを設定しました。"
+    "ネットワークを設定しました。",
+    "閉じなさい。",
+    "最適な方法で進めなさい。"
   ],
   "sessions": [
     "d24b467f-728a-5870-9cb1-3b4909d2d1b8"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "unified-recent",
@@ -78,19 +80,19 @@
     },
     {
       "id": "allow-public-host",
-      "text": "環境のネットワーク設定で、許可するドメイン（Allowed domains）に nanashi8.github.io を加え、セッションから公開版を開けるようにする。npm などの既定の許可（Trusted の一覧）は残す",
-      "population": "このアカウントのクラウド環境の全2つ（どちらも「Default」：env_0152i3sku8bwXHhMhTF52Ak4・env_01Nz9Y9VcVGZMA9MEzPkhrhT）。それぞれの環境で、設定のあとに立てたセッションから確かめる",
-      "check": "curl -sS -o /dev/null -w '%{http_code}' --max-time 30 https://nanashi8.github.io/study-app/ | grep -qx 200",
-      "status": "needs-user",
-      "question": "設定のあと、このセッションの環境（「Default」env_0152i3sku8bwXHhMhTF52Ak4）からは公開版につながるようになりました（curl で 200）。もう1つの「Default」（env_01Nz9Y9VcVGZMA9MEzPkhrhT）は、設定のあとに立てたセッション（session_01EC5SpCPKZqQq6LSQ4GY7uc）からもまだ403で、許可が入っていません（環境2つ中1つ）。そちらの環境も使うなら、同じ手順（Network access を Custom、Allowed domains に nanashi8.github.io、既定の一覧も含めるにチェックして保存）で加えてください。使わない環境なら、対象をこのセッションの環境だけにしてよいかを教えてください。"
+      "text": "環境のネットワーク設定で、許可するドメイン（Allowed domains）に nanashi8.github.io を加え、セッションから公開版を開けるようにする。npm などの既定の許可（Trusted の一覧）は残す。設定はセッションからは変えられないので利用者が環境の編集画面で行い、設定のあとにセッションから公開版につながることを確かめる",
+      "population": "この依頼の作業に使った環境（このセッションの「Default」env_0152i3sku8bwXHhMhTF52Ak4）。もう1つの「Default」（env_01Nz9Y9VcVGZMA9MEzPkhrhT）は、設定のあとに立てたセッションからも403で許可が入っていないが、セッションからは設定を変えられず、利用者から最適な方法で進めるよう指示を受けたため対象から外した（使うときは同じ手順で加える）",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-09-25 15:30（UTC）以降、このセッションから curl で https://nanashi8.github.io/study-app/ が 200（16:20 にも 200）。もう1つの環境は 15:38 に立てたセッションから 403（対象外）"
     },
     {
       "id": "public-site-check",
-      "text": "公開版 https://nanashi8.github.io/study-app/ をブラウザで開き、英検5級で何度も「まだ」と答えた語が暗記のいちばん先に出ることを確かめる",
-      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "text": "公開版 https://nanashi8.github.io/study-app/ が、今回の変更を含むコードを配っていることを確かめる。公開版が 200 で開け、配っている JS（index.html からたどれる全ファイル）に、今回の変更で初めて入ったコード（答えの傾向の定義 REVIEW_TREND、一覧の札「くり返しまちがえている」）がある。ふるまいは、同じソースのビルドをブラウザで開いて確かめる（条件 deployed：何度も「まだ」と答えた語が暗記の先頭、今日1回だけの語は先頭に出ない）。公開版の URL をブラウザで直接開く確認はしない。この環境ではプロキシが証明書を発行し直し、ブラウザ（Chromium）はそれを信頼せず（ブラウザ用の証明書ストアが空）、ブラウザの証明書の設定を変える操作は安全のための自動判定で止められたため。利用者から最適な方法で進めるよう指示を受けて、この確かめ方にした",
+      "population": "公開版 https://nanashi8.github.io/study-app/ の index.html と、そこからたどれる JS 全152ファイル（2026-09-25 16:20 UTC、commit 743944d のデプロイ run 36158444704 のあと）",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "needs-user",
-      "question": "ブラウザで公開版を開く確認は、まだできていません。この環境の通信はプロキシが証明書を発行し直していて、ブラウザ（Chromium）はその証明書を信頼しないため、公開版の URL を開くと証明書のエラー（ERR_CERT_AUTHORITY_INVALID）になります。環境の説明ではブラウザ用の証明書ストア（~/.pki/nssdb）にプロキシの証明書が入っている前提ですが、中は空でした。そこへプロキシの証明書を加える操作は、安全のための自動判定（TLS/Auth Weaken）で止められました。代わりに確かめたこと：(1) 公開版は 200 で開ける（curl）。(2) 公開版が配っている JS に、今回の変更で初めて入った目印（札「くり返しまちがえている」、苦手・立て直し中の判定）がある。(3) 同じソースのビルドをブラウザで開き、何度も「まだ」の語（late）が先頭、1回だけの語（old）は先頭に出ないことを確かめ済み。これで足りるなら、そう言っていただければ依頼を閉じます。公開版の URL をブラウザで直接開いて確かめる必要があるなら、ブラウザ用の証明書ストアにプロキシの証明書を加える操作（certutil）を許可するかどうかを決めてください。お手元の公開版で、何度も「まだ」と答えた語が次の暗記の先頭に出るかを見ていただくこともできます。"
+      "status": "done",
+      "verifiedBy": "curl で index.html が 200、JS 152ファイルを取得（エラーページなし）。Icons-USCcpAKF.js に REVIEW_TREND の定義（struggling・recovering・stable）、MyLearning-DZmVS1W7.js に札の定義（struggling の label「くり返しまちがえている」）がある。変更前（b7f31b1）のソースでは、struggling・recovering は英文の例文にしか出てこない。デプロイは fe65a59（run 36113477998）から 743944d（run 36158444704）まで成功。公開版のビルドは GitHub Actions の npm install で入る版のビルド道具で作られ、ファイル名（ハッシュ）は手元のビルドと違う（ソースは同じ）"
     }
   ]
 }
