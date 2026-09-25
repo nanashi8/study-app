@@ -69,7 +69,7 @@ function project() {
   return { dir, remote }
 }
 
-// 中身だけを変えて、台帳を作り直さずにコミットする（b714344 で起きた形）。
+// 中身だけを変えて、台帳を作り直さずにコミットする（f4745e9 で起きた形）。
 function commitStale(dir) {
   writeFileSync(join(dir, 'content.txt'), `changed ${Math.random()}`)
   git(dir, ['commit', '-q', '-am', 'change the content only'])

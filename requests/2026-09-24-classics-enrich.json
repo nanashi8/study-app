@@ -140,7 +140,7 @@
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done",
-      "result": "クリーンな clone で全983テスト・全監査を通して 4ec212c を push。監査台帳を作り直した 3e3afd2 のデプロイが成功し、公開版で漢語の仲間74組・全293語を確かめた。"
+      "result": "クリーンな clone で全983テスト・全監査を通して eb186b7 を push。監査台帳を作り直した 1b20af5 のデプロイが成功し、公開版で漢語の仲間74組・全293語を確かめた。"
     }
   ]
 }
