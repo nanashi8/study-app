@@ -7,7 +7,7 @@
   "sessions": [
     "a788e4bb-3f5f-4b1f-8cbd-04897d2a8a77"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "session-changes-deployed",
@@ -46,10 +46,10 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、デプロイの成功と、公開版の暗記カードの下部に「まだ」「覚えた」だけが出ることを確かめる",
+      "text": "npm run audit:all-content をクリーンな clone で通し（テスト 1,007件・全監査・ビルドが通過）、main へ push する（commit 3c5fc1d）。デプロイ（GitHub Actions deploy.yml の run 36094519683、build・deploy とも success）を確かめ、公開版の8画面の JS（VocabStudy・PhraseStudy・KotenStudy・KotenGrammarStudy・KotenCultureStudy・KanbunStudy・EtymologyStudy・名作の本文語彙を含む LiteratureReader）が複製のビルドとバイト単位で同じことを見た。公開版で英単語の暗記カード（wheel）を開き、閉じたまま下部に「まだ🤔」「覚えた👍」だけが出ることを見た（公開版では答えを記録しないよう押していない）。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
