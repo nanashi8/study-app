@@ -7,7 +7,7 @@
   "sessions": [
     "a788e4bb-3f5f-4b1f-8cbd-04897d2a8a77"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "no-phrase-grammar-label",
@@ -39,10 +39,10 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、デプロイの成功と、公開版の一文の構文解説に「フレーズ内の文法」が出ないことを確かめる",
+      "text": "npm run audit:all-content をクリーンな clone で通し（テスト 1,006件・全監査・ビルドが通過）、main へ push する（commit cc9551b）。デプロイ（GitHub Actions deploy.yml の run 36091987282、build・deploy とも success）を確かめ、公開版で「A Notebook for Rina」の6文目の一文の構文解説を開き、「フレーズ内の文法」が出ず、3フレーズすべてに説明の本文が出ることを見た。公開版の構文解説の JS（Reader-foDFpJlw.js）は複製のビルドと同じで、見出しの文字列を含まない",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
