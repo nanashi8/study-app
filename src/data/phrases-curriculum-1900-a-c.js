@@ -64,7 +64,7 @@ at issue	1	問題となっている	The policy at issue affects every school.	�
 at large	2	全体として・逃走中で	The suspect is still at large.	容疑者はまだ逃走中だ。	idiom	「全体として」は名詞の後ろに置く（society at large）。「逃走中」は犯人などを主語にする。	at(〜の状態で)＋large(広い・自由な)。広い所に自由にいることから「逃走中で」、広く全体を見ることから「全体として」。
 at short notice	pre1	急な知らせで	Thank you for coming at short notice.	急なお願いなのに来てくれてありがとう。	idiom	急な依頼に応じてくれたことへの感謝によく使う。米国では on short notice も使う。	at(〜で)＋short notice(短い予告)。前もって知らせる期間が短いことから「急な知らせで」。
 at that time	4	その時	I lived in Osaka at that time.	私はその時大阪に住んでいた。	preposition	過去の文でよく使う。then と同じ意味で、文頭にも文末にも置ける。	at(〜の時点で)＋that time(その時)。話に出たその時点でということから「その時」。
-at the mercy of	2	〜のなすがままで	The boat was at the mercy of the waves.	その船は波のなすがまだった。	idiom	嵐・波・天候・強い相手など、逆らえない力を of の後ろに置く。	at(〜の状態で)＋the mercy(慈悲)＋of(〜の)。〜の慈悲次第でしか助からない状態にあることから「〜のなすがままで」。
+at the mercy of	2	〜のなすがままで	The boat was at the mercy of the waves.	その船は波のなすがままだった。	idiom	嵐・波・天候・強い相手など、逆らえない力を of の後ろに置く。	at(〜の状態で)＋the mercy(慈悲)＋of(〜の)。〜の慈悲次第でしか助からない状態にあることから「〜のなすがままで」。
 at the moment	2	今のところ・今	She is busy at the moment.	彼女は今忙しい。	preposition	現在の状態を言う文で使う。過去の話で「その時」なら at that moment。	at(〜の時点で)＋the moment(この瞬間)。今この瞬間の時点でということから「今のところ・今」。
 at the sight of	2	〜を見て	The child smiled at the sight of the puppy.	その子は子犬を見て笑顔になった。	preposition	見た瞬間の感情や反応を表す（smiled at the sight of the puppy）。	at(〜をきっかけに)＋the sight(見ること)＋of(〜を)。〜を目にしたことをきっかけにということから「〜を見て」。
 at the wheel	pre2	運転して	Do not use a phone at the wheel.	運転中に電話を使ってはいけない。	idiom	車・船の運転中を表す（fall asleep at the wheel）。behind the wheel も同じ意味。	at(〜の所に)＋the wheel(ハンドル)。ハンドルの所に座っていることから「運転して」。

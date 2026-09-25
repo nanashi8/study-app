@@ -50,7 +50,7 @@ const RAW = [
   ['defy', '動', '1', '反抗する・無視する', 'He defied his parents.', '彼は両親に逆らった。', 'ラテン dis+fidere(信じる)→不信→ faith と同系。', { syn: [{ w: 'resist', m: '抵抗する' }, { w: 'disobey', m: '従わない' }], ant: [{ w: 'obey', m: '従う' }], field: '動作・行為' }],
   ['rebel', '動', '1', '反逆する・反抗する', 'The people rebelled against the king.', '民衆は王に反逆した。', 'ラテン re+bellum(戦争)→再び戦う。', { syn: [{ w: 'revolt', m: '反乱を起こす' }], field: '政治' }],
   ['persevere', '動', '1', '辛抱強く続ける・粘る', 'She persevered despite failure.', '彼女は失敗にもめげず粘った。', 'ラテン per+severus(厳しい)→ severe と同系。', { syn: [{ w: 'persist', m: 'やり通す' }, { w: 'endure', m: '耐える' }], ant: [{ w: 'quit', m: 'やめる' }], field: '動作・行為' }],
-  ['indulge', '動', '1', 'ふける・甘やかす', 'He indulged in sweets.', '彼は甘い物をたらふく食べた。', 'ラテン indulgere(寛大である)。', { syn: [{ w: 'pamper', m: '甘やかす' }], field: '動作・行為' }],
+  ['indulge', '動', '1', 'ふける・甘やかす', 'On weekends, he indulges in reading comics all day.', '週末になると、彼は一日中、漫画を読みふける。', 'ラテン indulgere(寛大である)。', { syn: [{ w: 'pamper', m: '甘やかす' }], field: '動作・行為' }],
 ]
 
 export const WORDS_MORE28 = RAW.map(expandCompact)

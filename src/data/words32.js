@@ -40,7 +40,7 @@ const RAW = [
   ['franchise', '名', '1', 'フランチャイズ・営業権', 'They bought a fast-food franchise.', '彼らはファストフードの加盟権を買った。', '古フランス franc(自由な)→ frank と同系。', { field: 'ビジネス' }],
   // 任命・派遣の動詞
   ['appoint', '動', 'pre1', '任命する・(日時を)指定する', 'They appointed her as manager.', '彼らは彼女を部長に任命した。', '古フランス apointer(整える)→ point と同系。', { syn: [{ w: 'name', m: '指名する' }, { w: 'designate', m: '指定する' }], field: '動作・行為' }],
-  ['nominate', '動', '1', '指名する・推薦する', 'She was nominated for an award.', '彼女は賞にノミネートされた。', 'ラテン nominare(名づける)→ name と同源。', { syn: [{ w: 'propose', m: '推薦する' }], field: '政治' }],
+  ['nominate', '動', '1', '指名する・推薦する', 'She was nominated for an award.', '彼女は賞の候補に推薦された。', 'ラテン nominare(名づける)→ name と同源。', { syn: [{ w: 'propose', m: '推薦する' }], field: '政治' }],
   ['delegate', '動', '1', '委任する・代表(名)', 'A good leader delegates tasks.', '良い指導者は仕事を任せる。', 'ラテン de+legare(任命する)。', { syn: [{ w: 'assign', m: '委任する' }, { w: 'entrust', m: '任せる' }], field: '動作・行為' }],
   ['deploy', '動', '1', '配置する・展開する', 'They deployed troops to the area.', '彼らはその地域に部隊を配置した。', 'フランス deployer(広げる)→ display と同系。', { syn: [{ w: 'position', m: '配置する' }], field: '軍事' }],
   ['dispatch', '動', '1', '発送する・派遣する・急派(名)', 'They dispatched a rescue team.', '彼らは救助隊を派遣した。', 'イタリア dispacciare(急いで送る)。', { syn: [{ w: 'send', m: '送る' }], field: '動作・行為' }],

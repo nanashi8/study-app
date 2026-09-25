@@ -45,7 +45,7 @@ const RAW = [
   ["omit","動","pre1","省く・抜かす","You omitted an important detail.","君は重要な点を省いた。","ラテン ob+mittere(送る)→ miss と同源。",{"field":"動作・行為"}],
   ["overcome","動","pre1","克服する・打ち勝つ","She overcame many difficulties.","彼女は多くの困難を克服した。","over(超えて)+come(来る)。",{"field":"動作・行為"}],
   ["overlook","動","pre1","見落とす・見渡す","I overlooked a small mistake.","私は小さな誤りを見落とした。","over（上から）＋look（見る）。上から見渡すことと、見渡して見落とすことを表す。",{"field":"動作・行為"}],
-  ["overwhelm","動","pre1","圧倒する","She was overwhelmed with joy.","彼女は喜びでいっぱいになった。","over+中英語 whelmen(覆す)。",{"field":"動作・行為"}],
+  ["overwhelm","動","pre1","圧倒する","The number of questions overwhelmed the new teacher.","質問の多さに、新しい先生は圧倒された。","over+中英語 whelmen(覆す)。",{"field":"動作・行為"}],
   ["perceive","動","pre1","知覚する・気づく","I perceived a change in his mood.","私は彼の気分の変化に気づいた。","ラテン per+capere(つかむ)→ cept と同源。",{"field":"心理"}],
   ["persist","動","pre1","固執する・持続する","He persisted in his opinion.","彼は自分の意見に固執した。","ラテン per+sistere(立つ)。",{"field":"動作・行為"}],
   ["portray","動","pre1","描く・表現する","The novel portrays rural life.","その小説は田舎の生活を描く。","古フランス portraire(描き出す)→ portrait。",{"field":"動作・行為"}],

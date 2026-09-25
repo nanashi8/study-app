@@ -43,7 +43,7 @@ const RAW = [
   ['intensify', '動', '1', '強める・激化する', 'The storm intensified at night.', '嵐は夜に激しくなった。', 'intense(激しい)+ -ify→ tend と同系。', { syn: [{ w: 'strengthen', m: '強める' }, { w: 'increase', m: '増す' }], ant: [], field: '動作・行為' }],
   ['nurture', '動', '1', '育てる・育む', 'Good teachers nurture talent.', '良い教師は才能を育む。', 'ラテン nutrire(養う)→ nutrition と同系。', { syn: [{ w: 'foster', m: '育てる' }, { w: 'cultivate', m: '育成する' }], ant: [{ w: 'neglect', m: '怠る' }], field: '動作・行為' }],
   ['precede', '動', '1', '先行する・〜に先立つ', 'A short talk preceded the meal.', '短い講話が食事に先立った。', 'ラテン prae+cedere(行く)→ cess と同源。', { ant: [{ w: 'follow', m: '続く' }], field: '動作・行為' }],
-  ['presume', '動', '1', '推定する・仮定する', 'I presume you agree.', '君は賛成だと思う。', 'ラテン prae+sumere(取る)→ assume と同系。', { syn: [{ w: 'assume', m: '仮定する' }, { w: 'suppose', m: '思う' }], field: '動作・行為' }],
+  ['presume', '動', '1', '推定する・仮定する', 'The police presume that the thief came in through the window.', '警察は、泥棒が窓から入ったと推定している。', 'ラテン prae+sumere(取る)→ assume と同系。', { syn: [{ w: 'assume', m: '仮定する' }, { w: 'suppose', m: '思う' }], field: '動作・行為' }],
   ['surpass', '動', '1', '上回る・しのぐ', 'Sales surpassed expectations.', '売上は予想を上回った。', 'フランス sur(超えて)+passer(過ぎる)→ pass と同系。', { syn: [{ w: 'exceed', m: '超える' }, { w: 'outdo', m: 'しのぐ' }], field: '動作・行為' }],
   ['trigger', '動', 'pre1', '引き起こす・引き金(名)', 'The news triggered panic.', 'その知らせは恐慌を引き起こした。', 'オランダ trekker(引くもの)。', { syn: [{ w: 'cause', m: '引き起こす' }, { w: 'set off', m: '誘発する' }], field: '動作・行為' }],
   ['withstand', '動', '1', '耐える・持ちこたえる', 'The bridge can withstand storms.', 'その橋は嵐に耐えられる。', 'with(逆らって)+stand(立つ)。', { syn: [{ w: 'endure', m: '耐える' }, { w: 'resist', m: '抵抗する' }], field: '動作・行為' }],

@@ -33,7 +33,7 @@ const RAW = [
   ['sour', '形', 'pre1', '酸っぱい・不機嫌な', 'This lemon is too sour to eat.', 'このレモンは酸っぱすぎて食べられない。', '古英語 sur(酸っぱい)。', { syn: [{ w: 'tart', m: '酸味のある' }, { w: 'bitter', m: '苦い' }], ant: [{ w: 'sweet', m: '甘い' }], field: '料理' }],
   ['steady', '形', 'pre1', '安定した・着実な', 'My brother finally found a steady job at a bank.', '兄はついに銀行で安定した仕事を見つけた。', '古英語 stede(場所)→ stead と同系。', { syn: [{ w: 'stable', m: '安定した' }, { w: 'constant', m: '一定の' }], ant: [{ w: 'shaky', m: 'ぐらつく' }], field: '性質・状態' }],
   ['strike', '動', 'pre1', '打つ・襲う・ストライキ(名)', 'Lightning struck the tree.', '雷が木を直撃した。', '古英語 strican(なでる・打つ)。', { syn: [{ w: 'hit', m: '打つ' }, { w: 'attack', m: '襲う' }], field: '動作・行為' }],
-  ['surely', '副', '4', '確かに・きっと', 'Surely you are joking.', 'まさか冗談でしょう。', 'sure(確かな)+ -ly', { fam: [{ w: 'sure', m: '確かな' }], syn: [{ w: 'certainly', m: '確かに' }, { w: 'definitely', m: '間違いなく' }], field: '副詞' }],
+  ['surely', '副', '4', '確かに・きっと', 'Surely you are joking.', 'きっと冗談でしょう。', 'sure(確かな)+ -ly', { fam: [{ w: 'sure', m: '確かな' }], syn: [{ w: 'certainly', m: '確かに' }, { w: 'definitely', m: '間違いなく' }], field: '副詞' }],
   ['tender', '形', 'pre1', '優しい・柔らかい・敏感な', 'The mother gave her baby a tender kiss on the cheek.', '母親は赤ちゃんのほおに優しくキスをした。', 'ラテン tener(柔らかい)。', { syn: [{ w: 'gentle', m: '穏やかな' }, { w: 'soft', m: '柔らかい' }], ant: [{ w: 'tough', m: '硬い' }], field: '性質・状態' }],
   ['test', '名', 'pre1', '試験・検査・試す(動)', 'We have an English test tomorrow.', '明日英語の試験がある。', 'ラテン testum(土の容器)。', { syn: [{ w: 'exam', m: '試験' }, { w: 'trial', m: '試し' }], field: '一般' }],
   ['timidity', '名', 'pre1', '臆病・小心', 'He overcame his timidity.', '彼は臆病さを克服した。', 'timid(臆病な)+ -ity', { fam: [{ w: 'timid', m: '臆病な' }], syn: [{ w: 'shyness', m: '内気' }], ant: [{ w: 'boldness', m: '大胆さ' }], field: '心理' }],

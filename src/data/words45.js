@@ -36,7 +36,7 @@ const RAW = [
   ['main', '形', '3', '主要な・主な', 'Rice is the main food in Japan.', '米は日本の主な食べ物だ。', '古英語 mægen(力・強さ)→「主要な」。ラテン magnus とは別語。', { syn: [{ w: 'chief', m: '主要な' }], ant: [{ w: 'minor', m: '副次的な' }], fam: [{ w: 'mainly', m: '主に' }], field: '性質・状態' }],
   ['mainly', '副', '3', '主に・大部分は', 'It is mainly rural.', 'そこは主に農村だ。', 'main(主な)+ -ly。', { syn: [{ w: 'mostly', m: 'たいてい' }, { w: 'chiefly', m: '主に' }], fam: [{ w: 'main', m: '主要な' }], field: '副詞' }],
   ['manners', '名', 'pre2', '作法・行儀', 'Talking with your mouth full is bad manners.', '口に食べ物を入れたまま話すのは行儀が悪い。', 'manner(やり方)の複数。', { syn: [{ w: 'etiquette', m: '礼儀' }, { w: 'courtesy', m: '礼儀正しさ' }], field: '社会' }],
-  ['master', '名', '3', '親方・主人・習得する(動)', 'He is a master of chess.', '彼はチェスの名人だ。', 'ラテン magister(長)。', { syn: [{ w: 'expert', m: '熟達者' }], ant: [], field: '一般' }],
+  ['master', '名', '3', '親方・主人・習得する(動)', 'The dog waited at the door for its master.', 'その犬は玄関で主人を待っていた。', 'ラテン magister(長)。', { syn: [{ w: 'expert', m: '熟達者' }], ant: [], field: '一般' }],
   ['memorial', '名', 'pre1', '記念碑・記念の(形)', 'A memorial to the famous poet stands in the park.', '公園には、その有名な詩人の記念碑が立っている。', 'memory(記憶)+ -ial。', { syn: [{ w: 'monument', m: '記念碑' }], fam: [{ w: 'memory', m: '記憶' }], field: '歴史' }],
   ['migration', '名', 'pre1', '移住・渡り', 'Each autumn, people come to the lake to watch the migration of swans.', '毎年秋になると、ハクチョウの渡りを見に人々が湖へやって来る。', 'migrate(移住する)+ -ation', { fam: [{ w: 'migrate', m: '移住する' }], field: '社会' }],
   ['occasionally', '副', 'pre2', '時々', 'We occasionally meet.', '私たちは時々会う。', 'occasional(時折の)+ -ly', { fam: [{ w: 'occasional', m: '時折の' }], syn: [{ w: 'sometimes', m: '時々' }], ant: [{ w: 'frequently', m: '頻繁に' }], field: '副詞' }],

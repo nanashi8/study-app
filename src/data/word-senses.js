@@ -658,7 +658,7 @@ export const WORD_SENSES = Object.freeze({
   visit: Object.freeze([
     Object.freeze({
       pos: '名', level: '4', meaning: '訪問・見物',
-      example: Object.freeze({ en: 'This is my first visit to Kyoto.', ja: '京都に来るのはこれが初めてだ。' }),
+      example: Object.freeze({ en: 'This is my first visit to Kyoto.', ja: 'これが私の初めての京都訪問だ。' }),
     }),
   ]),
   contrary: Object.freeze([

@@ -36,7 +36,7 @@ const RAW = [
   ["singer","名","4","歌手","She is a popular singer.","彼女は人気の歌手だ。","sing(歌う)+er→「歌手」。",{"field":"一般"}],
   ["dancer","名","4","ダンサー・踊り手","He is a great dancer.","彼は素晴らしいダンサーだ。","dance(古フランス dancier)+er→「踊り手」。",{"field":"一般"}],
   ["writer","名","4","作家・筆者","The writer lives in Kyoto.","その作家は京都に住んでいる。","write(古英語 wrītan=刻む)+er→「筆者」。",{"field":"一般"}],
-  ["cook","名","4","料理人・料理する(動)","My mother is a good cook.","私の母は料理が上手だ。","ラテン coquus(料理人)→「料理人」。kitchen と同源。",{"field":"食・生活"}],
+  ["cook","名","4","料理人・料理する(動)","My uncle works as a cook at a hotel.","おじはホテルで料理人として働いている。","ラテン coquus(料理人)→「料理人」。kitchen と同源。",{"field":"食・生活"}],
   ["driver","名","4","運転手","The bus driver was friendly.","バスの運転手は親切だった。","drive(古英語 drīfan=駆る)+er→「運転手」。",{"field":"一般"}],
   ["player","名","4","選手・演奏者","He is a soccer player.","彼はサッカー選手だ。","play(遊ぶ・演じる)+er→「選手・演奏者」。",{"field":"スポーツ"}],
   ["dentist","名","4","歯医者","I went to the dentist.","私は歯医者に行った。","ラテン dens(歯)+ist→「歯医者」。dental と同源。",{"field":"医学"}],

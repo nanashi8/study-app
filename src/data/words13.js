@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ["economical","形","pre1","節約的な・無駄のない","A small car is more economical.","小型車のほうが経済的(燃費がよい)だ。","economy(経済・節約)+ -al →「節約的な」。economic(経済の)と意味が分かれる。",{"syn":[{"w":"thrifty","m":"倹約な"},{"w":"frugal","m":"質素な"}],"usage":"「節約的な・無駄のない」。economic(経済の)と意味が分かれる。","field":"性質・状態"}],
+  ["economical","形","pre1","節約的な・無駄のない","A small car is more economical.","小型車のほうが燃料に無駄がなく経済的だ。","economy(経済・節約)+ -al →「節約的な」。economic(経済の)と意味が分かれる。",{"syn":[{"w":"thrifty","m":"倹約な"},{"w":"frugal","m":"質素な"}],"usage":"「節約的な・無駄のない」。economic(経済の)と意味が分かれる。","field":"性質・状態"}],
   ["industrious","形","pre1","勤勉な","She is an industrious student.","彼女は勤勉な学生だ。","ラテン industria(勤勉)→「勤勉な」。industry(産業)と意味が分かれる。",{"syn":[{"w":"diligent","m":"勤勉な"},{"w":"hardworking","m":"勤勉な"}],"ant":[{"w":"lazy","m":"怠惰な"}],"usage":"industry(産業)とは別の意味「勤勉な」。","field":"性質・状態"}],
   ["respectable","形","pre1","立派な・まともな","He has a respectable job.","彼はまともな職に就いている。","respect(尊敬)+ -able → 尊敬に値する→「立派な」。",{"syn":[{"w":"decent","m":"きちんとした"}],"usage":"respectable(立派な) / respectful(礼儀正しい) / respective(それぞれの) は意味が分かれる。","field":"性質・状態"}],
   ["respectful","形","pre1","礼儀正しい・敬意を払う","Be respectful to elderly people.","年配の人には礼儀正しくしなさい。","respect + -ful → 敬意に満ちた→「礼儀正しい」。",{"ant":[{"w":"rude","m":"失礼な"}],"usage":"be respectful to/toward ～（～に敬意を払う）。","field":"性質・状態"}],

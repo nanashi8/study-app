@@ -53,7 +53,7 @@ living	形	4	生きている・生活の	The forest is a living system.	その�
 lock	動	pre2	鍵を掛ける・固定する	Remember to lock the door when you leave.	出るときは忘れずにドアに鍵を掛けてください。	古英語 loc（締める仕掛け）から名詞と動詞の両方が発達した。	動作・行為
 mainstream	名	2	主流・多数派の考え	The idea gradually entered the mainstream.	その考えは次第に主流に入った。	main（主要な）＋stream（流れ）から、社会の大きな流れを比喩的に表す。	社会
 makeup	名	pre2	化粧・構成	The course examines the chemical makeup of soil.	その講座は土壌の化学的構成を調べる。	make up（組み立てる・化粧する）が一語の名詞になった形。	一般
-mall	名	pre2	ショッピングモール	The new mall includes a public library.	その新しい商業施設には公共図書館が入っている。	pall-mall という球技の遊歩道名を経て、並木道や歩行者向け商業施設を表すようになった。	社会
+mall	名	pre2	ショッピングモール	The new mall includes a public library.	その新しいショッピングモールには公共図書館が入っている。	pall-mall という球技の遊歩道名を経て、並木道や歩行者向け商業施設を表すようになった。	社会
 marker	名	4	印・目印・マーカー	Use a marker to label each box.	それぞれの箱にマーカーで表示を書いてください。	mark（印を付ける）＋道具・人を表す -er。	一般
 masculine	形	pre1	男性の・男性的な・文法上の男性形の	The adjective has a masculine ending in Spanish.	その形容詞はスペイン語で男性形の語尾を持つ。	ラテン語 masculus（男性）をもとにした形容詞。	言語
 maternal	形	pre1	母親の・母方の	The child receives support from her maternal grandparents.	その子は母方の祖父母から支援を受けている。	ラテン語 mater（母）＋-nal から、「母に関する」を表す。	家族・人

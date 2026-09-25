@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-25T01:09:37.116Z",
+  "auditedAt": "2026-09-25T01:41:52.572Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 18279,
     "storedAndGeneratedQuestionPathCount": 5326,
     "storedAndGeneratedChoicePathCount": 20621,
-    "overallContentSha256": "7f49d43e3dfd0a22cadb59770b5de4f775d6ab1132bb5a089ccfe649273f7a12"
+    "overallContentSha256": "57bd9c8a66ceb746d3ccc4a092ce278bd7281148dccb630b1e7075e352833c1e"
   },
   "completionCriteria": [
     "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "330641480444cf4c585e124e5cfed396de4232891606853794a5026b03ceaf9d",
+    "sha256": "0c96ff0cd5df24ad7d50d2077cca28a6447410ba5876bdd8953c44011e2a4415",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -206,6 +206,7 @@
       "tests/etymology-progress.test.mjs",
       "tests/etymology-source-completion.test.mjs",
       "tests/exam-dictionary.test.mjs",
+      "tests/example-learned-sense.test.mjs",
       "tests/extended-reading.test.mjs",
       "tests/feature-upgrades.test.mjs",
       "tests/game-retirement.test.mjs",
@@ -325,7 +326,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "cc26b3911af8cb3165540aa37a833dc036b731b5455a83630442422b1b378e86",
+      "contentSha256": "d7481485b868a0201f72111fbe8586f63fd4ffc02fa0266a0c664e8dcd5b53d7",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -350,7 +351,7 @@
       "quizItemCount": 2104,
       "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
       "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
-      "contentSha256": "d794d750384f2446d551443c6ef3c91658462cc359bdea3d20baa43f36b7125a",
+      "contentSha256": "b9e9c0715c2f9c125a0f54e1be09e0bc1ecb4761e67a3d7e60de740acc750544",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -470,7 +471,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "42eadfee844ac851a56f46403a3f30bd029b17c80bff9772e845fe2b174afa5d",
+      "contentSha256": "75f0a833b342b7892206d5a441e9d0cae25c595ace2ff8a235a0084697429868",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -975,12 +976,12 @@
     "targetVocabularyCount": 1484,
     "baselineCoveredVocabulary": 1942,
     "baselineCoveragePercent": 21.75,
-    "combinedCoveredVocabulary": 3943,
-    "combinedCoveragePercent": 44.16,
-    "coverageGain": 2001,
+    "combinedCoveredVocabulary": 3944,
+    "combinedCoveragePercent": 44.17,
+    "coverageGain": 2002,
     "dictionarySize": 8929,
-    "extendedTokenCount": 18891,
-    "resolvedExtendedTokenCount": 18891,
+    "extendedTokenCount": 18914,
+    "resolvedExtendedTokenCount": 18914,
     "unresolvedExtendedTokenCount": 0,
     "contentQuestionCount": 16,
     "practiceQuestionCount": 12,
@@ -1018,9 +1019,9 @@
         "total": 701,
         "before": 360,
         "beforePercent": 51.36,
-        "after": 573,
-        "afterPercent": 81.74,
-        "gain": 213
+        "after": 574,
+        "afterPercent": 81.88,
+        "gain": 214
       },
       "5": {
         "total": 609,
@@ -1053,7 +1054,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "0c4335ae269f691f9dce7ba52028361fe5feb85e78a88e70a116e759d4f6ff9f"
+    "contentSha256": "3c4769cbd56fb7dd1fb44911ff68c14a931d3d87918ad8d0461f364cf6849e95"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,

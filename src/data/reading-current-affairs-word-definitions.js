@@ -25,5 +25,5 @@ export const CURRENT_AFFAIRS_READING_WORD_DEFINITIONS = Object.freeze([
   { id: 'synthetic', pos: '形', level: '1', meaning: '合成の・人工的に作られた', field: '技術' },
   { id: 'metadata', pos: '名', level: '1', meaning: '付随情報・メタデータ', field: '情報', phonetic: '/ˈmɛtəˌdeɪtə/' },
   { id: 'provenance', pos: '名', level: '1', meaning: '来歴・出所', field: '情報', phonetic: '/ˈpɹɑvənəns/' },
-  { id: 'custody', pos: '名', level: '1', meaning: '管理・保管', field: '法律' },
+  { id: 'custody', pos: '名', level: '1', meaning: '管理・保管', field: '法律', example: { en: 'The museum has custody of the ancient letters.', ja: 'その博物館が古い手紙の保管を担っている。' } },
 ])

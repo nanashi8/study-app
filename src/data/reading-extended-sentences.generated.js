@@ -69,7 +69,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The government has a clear mandate.",
-        "ja": "政府は明確な負託を得ている。",
+        "ja": "政府は国民から明確な権限を与えられている。",
         "targetId": "mandate",
         "targetWord": "mandate",
         "field": "政治",
@@ -225,7 +225,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "She was nominated for an award.",
-        "ja": "彼女は賞にノミネートされた。",
+        "ja": "彼女は賞の候補に推薦された。",
         "targetId": "nominate",
         "targetWord": "nominate",
         "field": "政治",
@@ -707,7 +707,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The ticket entitles you to entry.",
-        "ja": "その券で入場できる。",
+        "ja": "その券があれば、入場する権利が与えられる。",
         "targetId": "entitle",
         "targetWord": "entitle",
         "field": "法律",
@@ -2591,7 +2591,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "Please behave well in class.",
-        "ja": "授業中は行儀よくして。",
+        "ja": "授業中は行儀よく振る舞って。",
         "targetId": "behave",
         "targetWord": "behave",
         "field": "動作・行為",
@@ -3070,8 +3070,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "She was overwhelmed with joy.",
-        "ja": "彼女は喜びでいっぱいになった。",
+        "en": "The number of questions overwhelmed the new teacher.",
+        "ja": "質問の多さに、新しい先生は圧倒された。",
         "targetId": "overwhelm",
         "targetWord": "overwhelm",
         "field": "動作・行為",
@@ -3950,8 +3950,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "We meet on a weekly basis.",
-        "ja": "私たちは毎週会う。",
+        "en": "Her argument has no basis in fact.",
+        "ja": "彼女の主張には事実の根拠がない。",
         "targetId": "basis",
         "targetWord": "basis",
         "field": "一般",
@@ -4384,8 +4384,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "He works for a law firm.",
-        "ja": "彼は法律事務所で働く。",
+        "en": "My sister works for a small design firm.",
+        "ja": "姉は小さなデザイン会社で働いている。",
         "targetId": "firm",
         "targetWord": "firm",
         "field": "ビジネス",
@@ -4601,7 +4601,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The speech used powerful rhetoric but offered few details.",
-        "ja": "その演説は力強い言辞を用いたが、具体策はほとんど示さなかった。",
+        "ja": "その演説は力強い修辞を用いたが、具体策はほとんど示さなかった。",
         "targetId": "rhetoric",
         "targetWord": "rhetoric",
         "field": "言語",
@@ -5179,7 +5179,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "A small car is more economical.",
-        "ja": "小型車のほうが経済的(燃費がよい)だ。",
+        "ja": "小型車のほうが燃料に無駄がなく経済的だ。",
         "targetId": "economical",
         "targetWord": "economical",
         "field": "性質・状態",
@@ -5419,7 +5419,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "She has a desire for success.",
-        "ja": "彼女は成功を望んでいる。",
+        "ja": "彼女には成功への願望がある。",
         "targetId": "desire",
         "targetWord": "desire",
         "field": "一般",
@@ -5431,7 +5431,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The new mall includes a public library.",
-        "ja": "その新しい商業施設には公共図書館が入っている。",
+        "ja": "その新しいショッピングモールには公共図書館が入っている。",
         "targetId": "mall",
         "targetWord": "mall",
         "field": "社会",
@@ -6530,7 +6530,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "She is vocal about her opinions.",
-        "ja": "彼女は自分の意見をはっきり言う。",
+        "ja": "彼女は自分の意見を声高に主張する。",
         "targetId": "vocal",
         "targetWord": "vocal",
         "field": "性質・状態",
@@ -6805,8 +6805,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "Please be discreet about this.",
-        "ja": "この件は内密にして。",
+        "en": "She wore a discreet black dress to the ceremony.",
+        "ja": "彼女は式に控えめな黒いドレスを着ていった。",
         "targetId": "discreet",
         "targetWord": "discreet",
         "field": "性質・状態",
@@ -7046,7 +7046,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The watch has an intricate design.",
-        "ja": "その時計は精巧な作りだ。",
+        "ja": "その時計は複雑で精巧な作りだ。",
         "targetId": "intricate",
         "targetWord": "intricate",
         "field": "性質・状態",
@@ -8670,7 +8670,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "She has a cynical view of politics.",
-        "ja": "彼女は政治に冷めた見方をする。",
+        "ja": "彼女は政治を皮肉な目で見ている。",
         "targetId": "cynical",
         "targetWord": "cynical",
         "field": "心理",
@@ -9092,7 +9092,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "They advocate for human rights.",
-        "ja": "彼らは人権を擁護する。",
+        "ja": "彼らは人権を守るべきだと主張している。",
         "targetId": "advocate",
         "targetWord": "advocate",
         "field": "動作・行為",
@@ -9861,8 +9861,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "The bike has six gears.",
-        "ja": "その自転車は6段変速だ。",
+        "en": "Please pack your camping gear before Friday.",
+        "ja": "金曜日までにキャンプの道具を荷造りしてください。",
         "targetId": "gear",
         "targetWord": "gear",
         "field": "技術",
@@ -10175,8 +10175,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "The speaker set forth three reasons for the change.",
-        "ja": "話し手は変更の理由を三つ提示した。",
+        "en": "The runners stepped forth when their names were called.",
+        "ja": "名前を呼ばれると、走者たちは前へ進み出た。",
         "targetId": "forth",
         "targetWord": "forth",
         "field": "副詞",
@@ -12173,7 +12173,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "I feel ambivalent about moving.",
-        "ja": "引っ越しには複雑な思いだ。",
+        "ja": "引っ越しについて、私は相反する感情を持っている。",
         "targetId": "ambivalent",
         "targetWord": "ambivalent",
         "field": "心理",
@@ -13074,8 +13074,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "Please subscribe to our channel.",
-        "ja": "私たちのチャンネルを登録してください。",
+        "en": "My father subscribes to a science magazine.",
+        "ja": "父は科学雑誌を定期購読している。",
         "targetId": "subscribe",
         "targetWord": "subscribe",
         "field": "動作・行為",
@@ -14169,7 +14169,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "Risk is inherent in any business.",
-        "ja": "リスクはどんな事業にも付き物だ。",
+        "ja": "リスクはどんな事業にも本来備わっている。",
         "targetId": "inherent",
         "targetWord": "inherent",
         "field": "性質・状態",
@@ -15262,8 +15262,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "My mother is a good cook.",
-        "ja": "私の母は料理が上手だ。",
+        "en": "My uncle works as a cook at a hotel.",
+        "ja": "おじはホテルで料理人として働いている。",
         "targetId": "cook",
         "targetWord": "cook",
         "field": "食・生活",
@@ -16046,8 +16046,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "I have no notion of his plan.",
-        "ja": "彼の計画は見当もつかない。",
+        "en": "The notion of time differs from one culture to another.",
+        "ja": "時間の概念は文化によって異なる。",
         "targetId": "notion",
         "targetWord": "notion",
         "field": "一般",
@@ -16383,7 +16383,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "Smoking is a health hazard.",
-        "ja": "喫煙は健康に害がある。",
+        "ja": "喫煙は健康にとって危険だ。",
         "targetId": "hazard",
         "targetWord": "hazard",
         "field": "一般",
@@ -17587,7 +17587,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The dam supplies hydroelectric power to nearby towns.",
-        "ja": "そのダムは近隣の町に水力電力を供給する。",
+        "ja": "そのダムは近くの町に水力発電の電気を供給している。",
         "targetId": "hydroelectric",
         "targetWord": "hydroelectric",
         "field": "環境",
@@ -17611,7 +17611,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The frequency of buses increased.",
-        "ja": "バスの本数が増えた。",
+        "ja": "バスの運行の頻度が上がった。",
         "targetId": "frequency",
         "targetWord": "frequency",
         "field": "科学",
@@ -17899,7 +17899,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "We changed one parameter at a time.",
-        "ja": "私たちは一度に一つのパラメーターだけを変えた。",
+        "ja": "私たちは一度に一つの変数だけを変えた。",
         "targetId": "parameter",
         "targetWord": "parameter",
         "field": "測定",
@@ -17982,8 +17982,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "He postulated a new theory.",
-        "ja": "彼は新理論を提唱した。",
+        "en": "Scientists postulated that the planet once had water.",
+        "ja": "科学者たちは、その惑星にはかつて水があったと仮定した。",
         "targetId": "postulate",
         "targetWord": "postulate",
         "field": "科学",

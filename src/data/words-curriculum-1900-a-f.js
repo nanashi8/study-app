@@ -140,7 +140,7 @@ folk	名	pre2	人々・民間の(形)	Local folk shared stories about the mounta
 forever	副	pre2	永遠に・ずっと	The decision changed the town forever.	その決定は町を永遠に変えた。	for（〜の間）＋ever（いつまでも）の結び付きからできた語。	副詞
 format	名	pre2	形式・書式	Save the image in a common file format.	画像を一般的なファイル形式で保存してください。	ラテン語 forma（形）をもとにしたフランス語 format から、寸法や形式を表すようになった。	情報
 formation	名	pre2	形成・編成・構造	Cloud formation depends on temperature and moisture.	雲の形成は気温と水分に左右される。	form（形作る）＋-ation（過程・結果）から、「形ができること」を表す。	科学
-forth	副	pre2	前へ・外へ	The speaker set forth three reasons for the change.	話し手は変更の理由を三つ提示した。	古英語 forth（前方へ・外へ）にさかのぼる副詞。	副詞
+forth	副	pre2	前へ・外へ	The runners stepped forth when their names were called.	名前を呼ばれると、走者たちは前へ進み出た。	古英語 forth（前方へ・外へ）にさかのぼる副詞。	副詞
 fortunately	副	3	幸いにも	Fortunately, nobody was hurt in the accident.	幸いにも、その事故でけが人はいなかった。	fortunate（幸運な）＋副詞を作る -ly。	副詞
 forty	形	5	40の・40個の	About forty people joined the workshop.	約40人がその講習会に参加した。	four（4）＋-ty（十のまとまり）から「4つの十」を表す。綴りは fourty ではない。	時間・数量
 fourteen	形	5	14の・14個の	My brother is fourteen years old.	私の弟は14歳だ。	four（4）＋-teen（10を加えた数）の複合語。	時間・数量

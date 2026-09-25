@@ -116,8 +116,8 @@ test('熟語は見出し、構文は完成した例文を読み、同じ文を�
   ])
   // 構文の見出しの音声は例文そのものなので、見出しのあとに同じ英文を読み直さない。
   assert.deepEqual(spoken(phraseItems('syn_too_to', 'example', true)), [
-    ['en-US:It is too hot to walk outside.', 'ja-JP:すぎてできない、あまりにでできない', 'ja-JP:外を歩くには暑すぎる。'],
-    ['en-US:It is too hot to walk outside.', 'ja-JP:外を歩くには暑すぎる。'],
+    ['en-US:It is too hot to walk outside.', 'ja-JP:すぎてできない、あまりにでできない', 'ja-JP:暑すぎて外を歩くことができない。'],
+    ['en-US:It is too hot to walk outside.', 'ja-JP:暑すぎて外を歩くことができない。'],
   ])
   // 文法の例文は、意味が例文の和訳そのものなので1度だけ読む。
   const sentence = 'Neither the chair nor the members were willing to compromise.'

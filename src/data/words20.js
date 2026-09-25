@@ -16,7 +16,7 @@ const RAW = [
   ["welfare","名","pre1","福祉・幸福","They care about public welfare.","彼らは公共の福祉を気にかける。","well(よく)+fare(やっていく)。",{"syn":[{"w":"well-being","m":"幸福"}],"field":"一般"}],
   ["grief","名","pre1","深い悲しみ","She was filled with grief.","彼女は深い悲しみに沈んだ。","ラテン gravis(重い)→ grave と同源。",{"syn":[{"w":"sorrow","m":"悲しみ"}],"ant":[{"w":"joy","m":"喜び"}],"field":"心理"}],
   ["hardship","名","pre1","苦難","They endured great hardship.","彼らは大変な苦難に耐えた。","hard(つらい)+ -ship。",{"syn":[{"w":"difficulty","m":"困難"},{"w":"adversity","m":"逆境"}],"field":"一般"}],
-  ["hazard","名","pre1","危険・障害","Smoking is a health hazard.","喫煙は健康に害がある。","アラビア az-zahr(さいころ)→賭け→危険。",{"syn":[{"w":"danger","m":"危険"},{"w":"risk","m":"危険"}],"field":"一般"}],
+  ["hazard","名","pre1","危険・障害","Smoking is a health hazard.","喫煙は健康にとって危険だ。","アラビア az-zahr(さいころ)→賭け→危険。",{"syn":[{"w":"danger","m":"危険"},{"w":"risk","m":"危険"}],"field":"一般"}],
   ["heritage","名","pre1","遺産・伝統","The town has a rich heritage.","その町は豊かな伝統をもつ。","ラテン heres(相続人)→ inherit と同源。",{"syn":[{"w":"legacy","m":"遺産"},{"w":"tradition","m":"伝統"}],"field":"芸術"}],
   ["incentive","名","pre1","動機・刺激","Money is a strong incentive.","お金は強い動機になる。","ラテン incinere(歌いかける)→駆り立てる。",{"syn":[{"w":"motive","m":"動機"},{"w":"motivation","m":"動機づけ"}],"field":"心理"}],
   ["mercy","名","pre1","慈悲・情け","He showed no mercy.","彼は情け容赦なかった。","ラテン merces(報酬・恵み)。",{"syn":[{"w":"compassion","m":"思いやり"},{"w":"pity","m":"哀れみ"}],"ant":[{"w":"cruelty","m":"残酷"}],"field":"一般"}],

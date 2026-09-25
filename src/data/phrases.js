@@ -273,7 +273,7 @@ const CORE_PHRASES = [
   // ── 3級 ──
   { id: 'syn_too_to', kind: 'syntax', level: '3', phrase: 'too ... to do', meaning: '…すぎて〜できない',
     meanings: ['…すぎて〜できない', 'あまりに…で〜できない'],
-    example: { en: 'It is too hot to walk outside.', ja: '外を歩くには暑すぎる。' },
+    example: { en: 'It is too hot to walk outside.', ja: '暑すぎて外を歩くことができない。' },
     origin: 'too(過度に)＋to do(その結果)。程度が過度で、結果その動作に至れない。',
     note: 'too＋形容詞＋to＋動詞の原形。= so ... that ~ can\'t。' },
   { id: 'syn_as_soon_as', kind: 'syntax', level: '3', phrase: 'as soon as ~', meaning: '〜するとすぐに',
@@ -322,7 +322,7 @@ const CORE_PHRASES = [
   // ── 2級 ──
   { id: 'syn_enough_to', kind: 'syntax', level: '2', phrase: '... enough to do', meaning: '〜するほど十分…',
     meanings: ['〜するほど十分…', '十分…なので〜できる'],
-    example: { en: 'He is old enough to drive.', ja: '彼は運転できる年齢だ。' },
+    example: { en: 'He is old enough to drive.', ja: '彼は十分な年齢なので運転できる。' },
     origin: 'enough(十分)＋to do(その結果)。十分な程度で、結果その動作ができる。',
     note: '形容詞/副詞＋enough＋to（語順注意：enough は後ろ）。' },
   { id: 'syn_not_only', kind: 'syntax', level: '2', phrase: 'not only A but also B', meaning: 'AだけでなくBも',

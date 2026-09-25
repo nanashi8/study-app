@@ -58,7 +58,7 @@ const RAW = [
   ["ancient","形","pre2","古代の","We studied ancient Egypt.","私たちは古代エジプトを学んだ。","ラテン ante(前に)→昔の→「古代の」。",{"syn":[{"w":"old","m":"古い"}],"ant":[{"w":"modern","m":"現代の"}],"field":"性質・状態"}],
   ["ordinary","形","pre2","普通の","It was an ordinary day.","普通の一日だった。","ラテン ordo(順序)→決まった通り→「普通の」。order と同源。",{"syn":[{"w":"common","m":"普通の"},{"w":"usual","m":"いつもの"}],"ant":[{"w":"special","m":"特別な"},{"w":"extraordinary","m":"並外れた"}],"field":"性質・状態"}],
   ["mental","形","pre2","精神の・心の","Mental health is important.","心の健康は大切だ。","ラテン mens(心)→「精神の」。mind と同源。",{"ant":[{"w":"physical","m":"身体の"}],"field":"性質・状態"}],
-  ["physical","形","pre2","身体の・物理的な","Physical exercise is good for you.","運動は体に良い。","ギリシャ physis(自然)→「身体の・物理的な」。",{"ant":[{"w":"mental","m":"精神の"}],"field":"科学"}],
+  ["physical","形","pre2","身体の・物理的な","Swimming is good for your physical health.","水泳は身体の健康に良い。","ギリシャ physis(自然)→「身体の・物理的な」。",{"ant":[{"w":"mental","m":"精神の"}],"field":"科学"}],
   ["aspect","名","2","側面・観点","Consider every aspect of the plan.","計画のあらゆる側面を考えなさい。",{"parts":[{"t":"a","kind":"prefix","gloss":"〜へ"},{"t":"spect","kind":"root","gloss":"見る","root":"spect"}],"note":"〜へ(a=ad)目を向けた(spect)見え方→「側面・観点」。"},{"field":"一般"}],
   ["factor","名","2","要因・要素","Cost is an important factor.","費用は重要な要因だ。",{"parts":[{"t":"fact","kind":"root","gloss":"なす","root":"fact"},{"t":"or","kind":"suffix","gloss":"〜するもの"}],"note":"結果をなす(fact)もの→「要因」。"},{"field":"一般"}],
   ["concept","名","2","概念","It is a difficult concept.","それは難しい概念だ。",{"parts":[{"t":"con","kind":"prefix","gloss":"共に"},{"t":"cept","kind":"root","gloss":"取る","root":"cept"}],"note":"心に取り込んだ(con+cept)もの→「概念」。"},{"field":"一般"}],
@@ -77,7 +77,7 @@ const RAW = [
   ["tendency","名","pre1","傾向","He has a tendency to be late.","彼は遅刻する傾向がある。",{"parts":[{"t":"tend","kind":"root","gloss":"伸ばす・向かう","root":"tend"},{"t":"ency","kind":"suffix","gloss":"〜の性質"}],"note":"ある方へ向かう(tend)性質→「傾向」。"},{"field":"一般"}],
   ["capacity","名","pre1","容量・収容力・能力","The hall has a large capacity.","そのホールは収容力が大きい。",{"parts":[{"t":"cap","kind":"root","gloss":"受け止める","root":"cept"},{"t":"acity","kind":"suffix","gloss":"〜できる力"}],"note":"受け止める(cap)力→「容量・能力」。"},{"field":"一般"}],
   ["framework","名","pre1","枠組み・骨組み","We built a legal framework.","私たちは法的枠組みを作った。","frame(枠)+work(組み)→「枠組み」。",{"field":"医学"}],
-  ["dimension","名","pre1","次元・規模・側面","The problem has a new dimension.","その問題は新たな局面を迎えた。","ラテン di(完全に)+metiri(測る)→測った広がり→「次元」。",{"field":"一般"}],
+  ["dimension","名","pre1","次元・規模・側面","The problem has a new dimension.","その問題には新たな側面がある。","ラテン di(完全に)+metiri(測る)→測った広がり→「次元」。",{"field":"一般"}],
   ["phenomenon","名","pre1","現象","It is a natural phenomenon.","それは自然現象だ。","ギリシャ phainein(現れる)→現れるもの→「現象」。",{"field":"一般"}],
   ["mechanism","名","pre1","仕組み・機構","The mechanism is complex.","その仕組みは複雑だ。","ギリシャ mēkhanē(仕掛け)→「仕組み」。machine と同源。",{"field":"技術"}],
   ["implication","名","pre1","影響・含み","Consider the implications of the change.","その変化の影響をよく考えなさい。","ラテン im(中に)+plicare(折る)→折り込まれたもの→「含み・影響」。",{"field":"一般"}],
@@ -103,7 +103,7 @@ const RAW = [
   ["succinct","形","1","簡潔な","Please give a succinct answer.","簡潔に答えてください。","ラテン sub(下に)+cingere(帯を締める)→引き締まった→「簡潔な」。",{"field":"性質・状態"}],
   ["arbitrary","形","1","恣意的な・任意の","The decision seemed arbitrary.","その決定は恣意的に見えた。","ラテン arbiter(裁定者)→裁定者の気分次第→「恣意的な」。",{"field":"性質・状態"}],
   ["candid","形","1","率直な","I want your candid opinion.","率直な意見が欲しい。","ラテン candidus(白い・純粋な)→隠しのない→「率直な」。candle と同源。",{"field":"性質・状態"}],
-  ["inherent","形","1","本来備わっている","Risk is inherent in any business.","リスクはどんな事業にも付き物だ。","ラテン in(中に)+haerere(くっつく)→本来くっついた→「本来の」。adhere と同源。",{"field":"性質・状態"}],
+  ["inherent","形","1","本来備わっている","Risk is inherent in any business.","リスクはどんな事業にも本来備わっている。","ラテン in(中に)+haerere(くっつく)→本来くっついた→「本来の」。adhere と同源。",{"field":"性質・状態"}],
 ]
 
 export const WORDS_MORE5 = RAW.map(expandCompact)

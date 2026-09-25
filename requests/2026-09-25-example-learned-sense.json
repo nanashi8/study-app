@@ -1,0 +1,55 @@
+{
+  "id": "2026-09-25-example-learned-sense",
+  "title": "例文を、カードで学ぶ意味で使われている一文にする（preliminary の例文が「暫定の」で使われていた）",
+  "asked": [
+    "preliminary 意味は予備の・準備のだが、例文がThese are preliminary resultsで、暫定の、で使われているが、学習した意味で使われている例文にした方が良いのではないか。"
+  ],
+  "sessions": [
+    "749f6d96-a8c2-4110-aa0f-cbf5573fd647"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "preliminary-example",
+      "text": "preliminary の例文を、カードの意味「予備の・準備の」で使われている一文に書き換え、和訳に「予備」か「準備」が入るようにする。古い例文 These are preliminary results. を引いている説明（関連語の使い分けの initial|preliminary にある「（preliminary results）」）も新しい例文に合わせる。新しい例文は Before the main survey, we did a preliminary study with ten students.／本調査の前に、私たちは10人の生徒で予備調査を行った。",
+      "population": "preliminary のカード（暗記カード・辞書ページ・テストの答え合わせ・単語一覧・読み上げに出る例文）と、その例文を引いているすべてのデータ",
+      "check": "node --test tests/example-learned-sense.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "word-examples-learned-sense",
+      "text": "英単語の全見出し語の例文が、カードの意味（意味欄の訳語のどれか。別の品詞の印 (名)(動)(形)(副) を付けた訳語は除く）で使われ、和訳でその意味が読み取れる。和訳に意味の訳語が入っていない例文は1件ずつ読み、別の意味で使っている例文は英文と和訳を書き直し（和訳の言い換えで意味が見えなくなっているだけなら和訳を直し）、同じ意味を言い換えた和訳は docs/audits/example-sense-review.json に「和訳の語=意味の訳語」を残す。見出し語や例文を足し・変えたら、読むまでこの確認は通らない",
+      "population": "英単語の全見出し語 8,929語の例文。和訳に意味の訳語がない候補 1,046語を全件読み、46語は英文と和訳を書き直し、50語は和訳を書き直し、950語は同じ意味の言い換えとして台帳に残した",
+      "check": "node --test tests/example-learned-sense.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "other-sense-examples-learned-sense",
+      "text": "ほかの意味（word-senses.js）の例文も、その意味で使われ、和訳でその意味が読み取れる（見出し語と同じ決まり・同じ台帳）",
+      "population": "ほかの意味の例文 113件。候補 16件を全件読み、1件は和訳を書き直し、15件は台帳に残した",
+      "check": "node --test tests/example-learned-sense.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phrase-examples-learned-sense",
+      "text": "熟語・構文の例文も、カードの意味で使われ、和訳でその意味が読み取れる（見出し語と同じ決まり・同じ台帳）",
+      "population": "熟語・構文 2,104件（熟語 1,754・構文 350）の例文。候補 460件（熟語 434・構文 26）を全件読み、4件は和訳を書き直し、456件は台帳に残した",
+      "check": "node --test tests/example-learned-sense.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "copies-follow",
+      "text": "書き換えた例文を写している・引いているデータが新しい例文と合い、既存の監査・テストがすべて通る。語彙強化長文の重点語ケース 28行を差し替え（長文は作り直さない）、辞書で引けない語（gray）を避け、長文辞書語 7語は長文の本文を変えずにその語の定義に例文を書く。読み上げのテスト（構文 too…to の和訳）、学習者の日本語の見直し台帳、全教材監査台帳の長文の語彙カバー（3,943→3,944語）を合わせる。新しい例文がほかのカードと似すぎたもの（every と同じ文になった morning、場面が重なった contribute・authority・farm・architecture）は書き直した",
+      "population": "書き換えた例文 101件（英単語 96・ほかの意味 1・熟語と構文 4）と、それを写している・引いているすべてのデータ（語彙強化長文・関連語の使い分け解説・読み上げのテスト・学習者の日本語の見直し台帳・全教材監査台帳）",
+      "check": "node --test tests/example-learned-sense.test.mjs tests/extended-reading.test.mjs tests/card-speech-range.test.mjs tests/learner-japanese-audit.test.mjs tests/content-audit-ledger.test.mjs && npm run audit:japanese-review && npm run audit:extended-reading",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめてから main へ push し、公開版のデプロイが成功したことを確かめ、公開版の preliminary の辞書ページ・暗記カードに新しい例文が出ることを見る",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

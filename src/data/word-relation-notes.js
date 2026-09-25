@@ -8990,7 +8990,7 @@ export const WORD_RELATION_NOTES = {
   'initially|originally': 'initially は「最初は（その後変わった）」。originally は「もとは・元来」',
   'initial|opening': 'initial は「最初の・初めの」。opening は「始めの・開会の」（opening ceremony）',
   'initial|original': 'original は「もとの・元来の」。initial は「最初の」',
-  'initial|preliminary': 'preliminary は本番の前の「予備の・準備の」（preliminary results）。initial は「最初の」',
+  'initial|preliminary': 'preliminary は本番の前の「予備の・準備の」（a preliminary study）。initial は「最初の」',
   'initial|terminal': 'terminal は「終わりの」、initial は「初めの」',
   'initiate|launch': 'launch は計画や商品を「始める・売り出す」。initiate は正式に「開始する」',
   'initiative|lead': 'initiative は自分から動く「主導・自発性」（take the initiative）。lead は「先頭・主導」',
