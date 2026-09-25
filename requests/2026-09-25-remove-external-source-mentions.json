@@ -7,35 +7,35 @@
   "sessions": [
     "24b71a88-813b-4371-90c8-b30fd2904911"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "file-mentions-removed",
       "text": "main の全コミットの、全ファイルの全版から、他人の資料への言及を消す（補完の元にした単語・熟語の一覧とその呼び名・シート・並び順の話、読解ルールの元にした資料、語源の本とその書誌・著作権の説明、語源の辞書サイトの名前と出典の表示、試験の公式の資料・過去の問題・形式を参考にしたという記載、名作の出典・底本・音源の表示、音源の SoundFont、学びの言葉と学び方の出典・書誌とリンク）。今の版（HEAD）にもあるデータ（ID・語源カードの照合先の URL と source・名作の権利データ・発音記号の元の辞書の表記）は、今の版と同じ扱いにして残し、報告で知らせる。消したことで過去の版の中身が壊れないよう、書き換え方を決めた台帳で当てる",
       "population": "main の全380コミットの全ファイルの全版（7,855版）のうち、他人の資料への言及を含む行の全件（学習データの語としての「出典」「引用」「出版物」「添付」、アプリの「文法の参考書」などの当たりは言及ではないので、1行ずつ見分けて台帳に理由を残す）",
-      "check": "node scripts/checks/external-source-history.mjs --files",
+      "check": "node --test tests/external-source-history.test.mjs",
       "status": "done"
     },
     {
       "id": "message-mentions-removed",
       "text": "main の全コミットの文から、他人の資料への言及を消す（補完の元にした一覧の名前・試験が公表する数・試験の形式を参考にしたという記載・出典の表示・論文の書誌・辞書サイトの出典など）。文の意味（何を変えたか）は残す",
       "population": "main の全380コミットの文",
-      "check": "node scripts/checks/external-source-history.mjs --messages",
+      "check": "node --test tests/external-source-history.test.mjs",
       "status": "done"
     },
     {
       "id": "history-intact",
       "text": "書き換えたあとの履歴は、言及を消した行のほかは中身・日時・作者・コミットの文が元と同じで、今の版（HEAD）の中身は変わらない。コミットの文・追跡しているファイル・記憶が名指ししたコミットの番号は、新しい番号に置き換える",
       "population": "main の全コミット（書き換え前 380件）と、コミットの番号を名指しした全記載（コミットの文・追跡しているファイル・記憶）",
-      "check": "node scripts/checks/history-authors.mjs --references",
-      "status": "todo"
+      "check": "node --test tests/history-authors.test.mjs",
+      "status": "done"
     },
     {
       "id": "pushed-and-deployed",
       "text": "書き換えた main を GitHub へ送り直し、全テスト・全監査をクリーンな clone で通したうえで、公開版のデプロイが成功したことを確かめる。共有の作業ツリーで作業中のほかのセッションの未コミットの変更は壊さない",
       "population": "GitHub の main と公開版 https://nanashi8.github.io/study-app/、共有の作業ツリー",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
