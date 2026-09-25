@@ -76,7 +76,7 @@
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done",
-      "result": "クリーンな clone で npm run audit:all-content を通して main へ push した（36bee3a・e6d8d93・7639e55・bdc9c95・cf3b588・beb5e2c）。beb5e2c のデプロイ成功を確かめ、公開版 https://nanashi8.github.io/study-app/ で数学の歴史のコース（全71話・252問）と最後の話が開くことを確かめた。"
+      "result": "クリーンな clone で npm run audit:all-content を通して main へ push した（9ed455f・dccaab4・f07fa4a・2379fb5・55d451c・d9c205e）。d9c205e のデプロイ成功を確かめ、公開版 https://nanashi8.github.io/study-app/ で数学の歴史のコース（全71話・252問）と最後の話が開くことを確かめた。"
     }
   ]
 }

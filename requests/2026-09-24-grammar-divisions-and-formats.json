@@ -50,7 +50,7 @@
     },
     {
       "id": "all-content-green-and-deployed",
-      "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）を通し、クリーンな clone で確かめてから main へ push し、公開版で級別・単元別の切り替えと並び替え・語法のテストを見る（commit e908522 のデプロイ成功を確かめ、公開版の文法で級別・単元別の切り替えと、単元別の語法テストが開くのを見た）",
+      "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）を通し、クリーンな clone で確かめてから main へ push し、公開版で級別・単元別の切り替えと並び替え・語法のテストを見る（commit 0006e15 のデプロイ成功を確かめ、公開版の文法で級別・単元別の切り替えと、単元別の語法テストが開くのを見た）",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done"

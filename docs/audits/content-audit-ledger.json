@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-25T01:56:51.346Z",
+  "auditedAt": "2026-09-25T02:10:16.435Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "d4e367aec855e70f1ea46e7de0d38fae2e726262d5fb99c5e1ae18750e1ef20d",
+    "sha256": "9d869429432fddcc5e6da7219e96d2971ee242de5d45d96c9cf5c1386a15e37b",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -208,6 +208,7 @@
       "tests/exam-dictionary.test.mjs",
       "tests/example-learned-sense.test.mjs",
       "tests/extended-reading.test.mjs",
+      "tests/external-source-history.test.mjs",
       "tests/feature-upgrades.test.mjs",
       "tests/game-retirement.test.mjs",
       "tests/grammar-choice-notes.test.mjs",

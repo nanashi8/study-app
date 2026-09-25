@@ -43,7 +43,7 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content を通し、クリーンな clone で確かめてから main へ push し、公開版で語法の学習ページと語法テストを見る（commit 1106c2b のデプロイ成功を確かめ、公開版の5級 be動詞の参考書に「語と語の決まった結び付き」が出ること、語法テストが wear a seat belt を問う本物の語法問題を出すことを見た）",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめてから main へ push し、公開版で語法の学習ページと語法テストを見る（commit 7e4dca1 のデプロイ成功を確かめ、公開版の5級 be動詞の参考書に「語と語の決まった結び付き」が出ること、語法テストが wear a seat belt を問う本物の語法問題を出すことを見た）",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done"
