@@ -1,7 +1,8 @@
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getRoot, getWord } from '../data/vocab.js'
 import { etymologyGlanceNote } from '../lib/etymologyGlance.js'
-import { summarizeVocabularySrsItems, vocabularyLearningStatus } from '../lib/vocabScheduler.js'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
+import { nextWordsForRoot } from '../lib/etymologyProgress.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
@@ -37,11 +38,8 @@ export function RootDetailScreen() {
 
   const words = card.studyIds.map(getWord).filter(Boolean)
   const wordProgress = summarizeVocabularySrsItems(words, srs)
-  const nextWords = [
-    ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'reviewing'),
-    ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'unlearned'),
-    ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'learned'),
-  ].slice(0, batchSize)
+  // 何度もまちがえている語 → 復習する語 → まだ学んでいない語 → 覚えた語の順に、次に学ぶ語を選ぶ。
+  const nextWords = nextWordsForRoot(words, srs, batchSize)
 
   // 語根1つだけを覚え直しても身につかないため、この画面からは紐づく単語を、
   // いつもの単語の暗記・テストで学ぶ。

@@ -193,14 +193,19 @@ test('未修の枠は未修が尽きたら 覚えた・正解 を出題順に、
     const entries = {
       missed: recorded([[3, miss], [1, miss]]),
       due: recorded([[5, hit], [3, hit]]),
-      steady: steadyRecorded(hit),
+      // 続けて覚えた・正解した語（定着）。きのう3回続けて成功し、まだ忘れかけていない。
+      steady: recorded([[1, hit], [1, hit], [1, hit]]),
+      // 長期に入ったあと復習日を大きく過ぎ、忘れかけた語。
+      lapsed: steadyRecorded(hit),
       today: recorded([[0, hit]]),
     }
     // 連続で成功して復習日を大きく過ぎた語は、今日が復習日の語より点数が低い。
     assert.ok(
-      scoreOf(entries.steady) < scoreOf(entries.due) && scoreOf(entries.due) < scoreOf(entries.today),
+      scoreOf(entries.lapsed) < scoreOf(entries.due) && scoreOf(entries.due) < scoreOf(entries.today),
       `${purpose}: 素材の点数`,
     )
+    assert.equal(vocabularyReviewMetrics(entries.steady, { now, day }).steady, true, `${purpose}: 定着の確認`)
+    assert.equal(vocabularyReviewMetrics(entries.lapsed, { now, day }).steady, false, `${purpose}: 忘れかけた定着`)
 
     // 未修のない級：まだ15語、復習日が来た覚えた語5語、連続で覚えた語5語、残りは今日覚えた語。
     const kinds = new Map()
@@ -226,15 +231,23 @@ test('未修の枠は未修が尽きたら 覚えた・正解 を出題順に、
     assert.equal(missedCount(build(srs, 'fresh-only')), 0, `${purpose}: 未修だけ`)
     assert.equal(missedCount(build(srs, 'review-heavy')), 8, `${purpose}: 復習寄り`)
     assert.equal(missedCount(build(srs, 'review-only')), 10, `${purpose}: 復習だけ`)
-    // 未修の枠の覚えた・正解は出題順：復習日が来た語、次に連続で覚えた・正解した語の確認。
+    // 未修の枠の覚えた・正解は出題順：復習日が来た語、次に定着の確認（続けて覚えた・正解した語）。
     assert.deepEqual(
       kindsOf(build(srs, 'fresh-only')),
       [...Array(5).fill('due'), ...Array(5).fill('steady')],
       `${purpose}: 未修の枠は出題順`,
     )
+    // 定着の語を忘れかけた記録にすると、復習日が来た語と同じ段で点数の低い順（先に出る）。
+    // （kindsOf は語の役の名前を返すので、忘れかけた記録を持つ語も 'steady' と数える。）
+    const withLapsed = srsFor({ steady: 'lapsed' })
+    assert.deepEqual(
+      kindsOf(build(withLapsed, 'fresh-only')),
+      [...Array(5).fill('steady'), ...Array(5).fill('due')],
+      `${purpose}: 忘れかけた定着は復習と同じ`,
+    )
 
     // まだ・不正解がない級（まだの語も今日覚えた語にする）：復習の枠は覚えた・正解を点数の低い順に。
-    const noMissed = srsFor({ missed: 'today' })
+    const noMissed = srsFor({ missed: 'today', steady: 'lapsed' })
     assert.deepEqual(
       kindsOf(build(noMissed, 'review-only')),
       [...Array(5).fill('steady'), ...Array(5).fill('due')],

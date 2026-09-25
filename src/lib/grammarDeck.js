@@ -65,7 +65,9 @@ export function grammarCandidates(source = {}) {
 
 // 既存の選択問題が3,450問あっても、混合テストではその在庫差で
 // 並び替え・語法が押し出されないよう、出題順の同じ段の中で形式を巡回する。
-// 今日間違えた問題（2段）だけは、形式の巡回より点数の低い順を優先する。
+// 何度も間違えている問題（0段）と今日間違えた問題（3段）は、形式の巡回より点数の低い順を優先する。
+const IN_ORDER_STAGES = new Set([STUDY_ORDER_STAGE.struggling, STUDY_ORDER_STAGE.missedToday])
+
 function balanceQuestionTypes(items, stageOf) {
   const result = []
   for (const stage of Object.values(STUDY_ORDER_STAGE)) {
@@ -73,7 +75,7 @@ function balanceQuestionTypes(items, stageOf) {
       stageOf.get(item.id) === stage
       && GRAMMAR_QUESTION_TYPES.includes(grammarQuestionType(item))
     ))
-    if (stage === STUDY_ORDER_STAGE.missedToday) {
+    if (IN_ORDER_STAGES.has(stage)) {
       result.push(...stageItems)
       continue
     }
@@ -130,8 +132,8 @@ function spreadTopicsKeepingOrder(items, previous = null) {
   return ordered
 }
 
-// 出題順の段ごとに単元を散らす。まだ答えていない問題（1段）は単元の偏りだけを見て散らし、
-// 今日間違えた問題（2段）は点数の低い順のまま、ほかの段は点数の低い順をなるべく保つ。
+// 出題順の段ごとに単元を散らす。まだ答えていない問題（2段）は単元の偏りだけを見て散らし、
+// 何度も間違えている問題（0段）と今日間違えた問題（3段）は点数の低い順のまま、ほかの段は点数の低い順をなるべく保つ。
 // 段をまたいで順番を入れ替えない。
 function spreadTopicsByStage(items, stageOf) {
   const result = []
@@ -144,7 +146,7 @@ function spreadTopicsByStage(items, stageOf) {
     const previous = result.at(-1)?.topic ?? null
     result.push(...(stage === STUDY_ORDER_STAGE.fresh
       ? spreadTopics(group, previous)
-      : stage === STUDY_ORDER_STAGE.missedToday
+      : IN_ORDER_STAGES.has(stage)
         ? group
         : spreadTopicsKeepingOrder(group, previous)))
     start = end
@@ -172,7 +174,7 @@ export function buildGrammarDeck(
   if (source?.type === 'grammarDue') {
     pool = pool.filter((item) => srs[item.id]?.due <= day)
   }
-  // 文法はテストだけの教材なので、まだ答えていない問題を1段に数える。
+  // 文法はテストだけの教材なので、まだ答えていない問題を2段（未回答）に数える。
   const ranked = rankForStudy(
     pool,
     (item) => studyOrderKey(srs[item.id], { purpose: 'quiz', now, day }),

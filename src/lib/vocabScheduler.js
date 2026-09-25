@@ -2,9 +2,12 @@ import {
   learningStatusForSrsEntry,
   quizStatusForSrsEntry,
 } from './contentProgress.js'
-import { reviewMarksForEntry } from './reviewHistory.js'
 import {
-  LONG_TERM_SRS_BOX,
+  REVIEW_TREND,
+  reviewMarksForEntry,
+  reviewTrendForEntry,
+} from './reviewHistory.js'
+import {
   MAINTENANCE_SRS_BOX,
   MAX_SRS_BOX,
   SRS_INTERVAL_DAYS,
@@ -15,6 +18,9 @@ export const MAX_VOCAB_REVIEW_BOX = MAX_SRS_BOX
 
 const DAY_MS = 86_400_000
 const MIN_RECALL = 0.1
+// 忘れかけの目安。定着の見込み（retention）がこれを下回った項目は、復習日の前でも復習に入れ、
+// 続けて覚えた・正解した項目（定着）の後回しもここで終える。
+export const RETENTION_REVIEW_THRESHOLD = 0.56
 const MAX_REVIEW_INTERVAL_DAYS = SRS_INTERVAL_DAYS.at(-1)
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
@@ -119,6 +125,10 @@ export function vocabularyReviewMetrics(
       due: false,
       needsReview: false,
       steady: false,
+      trend: null,
+      struggling: false,
+      recovering: false,
+      stable: false,
       shouldAutoAppear: true,
       coolingDown: false,
       learningStatus: 'unlearned',
@@ -152,13 +162,20 @@ export function vocabularyReviewMetrics(
   const reviewedToday = Number.isFinite(entry?.lastAt)
     ? localDayIndex(entry.lastAt) === day
     : entry?.last === day
-  const coolingDown = failedLatest && reviewedToday
+  // 暗記とテストを通した直近の答えの傾向（reviewHistory.js の reviewTrend）。
+  const trend = reviewTrendForEntry(entry).kind
+  const struggling = trend === REVIEW_TREND.struggling
+  const recovering = trend === REVIEW_TREND.recovering
+  const stable = trend === REVIEW_TREND.stable
+  // 1回まちがえた直後は、同じ日の通常の回へすぐには戻さない（翌日に復習する）。
+  // 何度もまちがえている項目（苦手）だけは、同じ日でも次の回の先頭に出す。
+  const coolingDown = failedLatest && reviewedToday && !struggling
   // 旧保存で期限が長すぎる語も、1日以上経ち定着予測が十分低ければ拾う。
-  const retentionDue = elapsedDays >= 1 && retention < 0.56
+  const retentionDue = elapsedDays >= 1 && retention < RETENTION_REVIEW_THRESHOLD
   const needsReview = failedLatest || scheduledDue || retentionDue
-  // 復習日が来た語のうち、取りこぼさずに連続で「覚えた」「正解」を重ねてきた語。
-  // 忘れかけの語と同じ最優先では出さず、確認として後ろの順番で出す。
-  const steady = needsReview && !failedLatest && box >= LONG_TERM_SRS_BOX
+  // 復習日が来た項目のうち、何度も・続けて「覚えた」「正解」になった項目（定着）。
+  // 定着の見込みが忘れかけの目安を下回るまでは、確認として後回しにする（下回ったらほかの復習と同じに戻す）。
+  const steady = needsReview && stable && retention >= RETENTION_REVIEW_THRESHOLD
   const daysUntilDue = Number.isFinite(entry?.due)
     ? Math.max(0, Math.floor(entry.due - day))
     : 0
@@ -173,22 +190,30 @@ export function vocabularyReviewMetrics(
     due: scheduledDue,
     needsReview,
     steady,
-    // 「まだ」の直後は明示的な復習では扱えるが、通常学習へ同日に
-    // 自動再投入しない。翌日には再び通常の復習候補へ戻る。
-    // 連続で覚えた・正解した語の確認（steady）も、今日の候補には数えない。
+    trend,
+    struggling,
+    recovering,
+    stable,
+    // 1回「まだ」の直後は明示的な復習では扱えるが、通常学習へ同日に
+    // 自動再投入しない。翌日には再び通常の復習候補へ戻る。何度もまちがえている項目（苦手）は同じ日でも出す。
+    // 定着の確認（steady）は、今日の候補には数えない。
     // 「復習する」から入ったときは、これまでどおり復習日の来た語として出す。
-    shouldAutoAppear: learningStatus === 'unlearned' || (needsReview && !coolingDown && !steady),
+    shouldAutoAppear: learningStatus === 'unlearned'
+      || struggling
+      || (needsReview && !coolingDown && !steady),
     coolingDown,
     learningStatus,
-    reason: learningStatus === 'unlearned'
-      ? 'unlearned'
-      : failedLatest
-        ? 'recent-failure'
-        : scheduledDue
-          ? 'scheduled'
-          : retentionDue
-            ? 'retention'
-            : 'waiting',
+    reason: struggling
+      ? 'struggling'
+      : learningStatus === 'unlearned'
+        ? 'unlearned'
+        : failedLatest
+          ? 'recent-failure'
+          : scheduledDue
+            ? 'scheduled'
+            : retentionDue
+              ? 'retention'
+              : 'waiting',
   }
 }
 
@@ -239,8 +264,12 @@ export function summarizeVocabularySrsItems(
 }
 
 /**
- * 英単語だけに使う適応間隔。
+ * 全教材の箱と次の復習日（英単語・熟語・構文・文法・リスニング・書き取り・語源・古典・漢文の全10種類の記録）。
  * 同日連打の成功は記録へ残すが、十分な間隔が無ければ box と期限を進めない。
+ * 答えの傾向（updatedEntry の直近の答え。reviewHistory.js の reviewTrend）で間隔を変える。
+ *   苦手（何度もまちがえている）になった答え → 箱0・今日のうちにもう一度
+ *   立て直し中（苦手のあとの成功で、まだ3回続けて成功していない） → 箱1まで・毎日
+ *   1回のまちがい → 「まだ」「わからない」は箱0・今日、「不正解」は1段下げて翌日（維持復習は次の予定日を保つ）
  */
 export function scheduleVocabularyReview({
   previousEntry = {},
@@ -260,8 +289,13 @@ export function scheduleVocabularyReview({
     || !Number.isFinite(previousEntry?.due)
     || previousEntry.due <= day
   const canPromote = !hadEvidence || dueReached || enoughSpacing
+  const trend = reviewTrendForEntry(updatedEntry).kind
 
   if (!successful) {
+    // 何度もまちがえている項目は、箱を0にして今日のうちにもう一度出す（出す順でもいちばん先）。
+    if (trend === REVIEW_TREND.struggling) {
+      return { box: 0, due: day, promoted: false, spacingCredited: true }
+    }
     const box = result === 'wrong' ? Math.max(0, previousBox - 1) : 0
     return {
       box,
@@ -273,19 +307,31 @@ export function scheduleVocabularyReview({
     }
   }
 
-  const box = canPromote
+  const promotedBox = canPromote
     ? Math.min(MAX_VOCAB_REVIEW_BOX, previousBox + 1)
     : previousBox
 
-  if (!canPromote) {
+  // 苦手から立て直している項目は、3回続けて成功するまで箱を1までにとどめ、毎日出す。
+  if (trend === REVIEW_TREND.recovering) {
+    const box = Math.min(promotedBox, 1)
     return {
       box,
+      due: day + 1,
+      promoted: box > previousBox,
+      spacingCredited: canPromote,
+    }
+  }
+
+  if (!canPromote) {
+    return {
+      box: promotedBox,
       due: Math.max(day + 1, Number(previousEntry?.due) || day + 1),
       promoted: false,
       spacingCredited: false,
     }
   }
 
+  const box = promotedBox
   const scoredEntry = { ...updatedEntry, box }
   const { responseAccuracy } = vocabularyReviewMetrics(scoredEntry, { now: timestamp, day })
   const overdueDays = Number.isFinite(previousEntry?.due)

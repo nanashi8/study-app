@@ -11,6 +11,7 @@ import {
 import { ETYMOLOGY_ORIGIN_FAMILIES } from '../data/etymology-origin-families.js'
 import {
   ETYMOLOGY_STATUS_META,
+  etymologyCardPriorityRank,
   etymologyKnowledgeStatus,
   etymologyProgress,
   etymologyWordProgress,
@@ -59,13 +60,8 @@ const statusPresentation = (card, etymologySrs) => {
   return { label: '未学習', className: 'bg-slate-100 text-slate-600' }
 }
 
-const priorityRank = (card, etymologySrs) => {
-  if (isEtymologyDue(etymologySrs[card.id])) return 0
-  const status = etymologyKnowledgeStatus(etymologySrs[card.id])
-  if (status === 'unstarted') return 1
-  if (status === 'learning') return 2
-  return 3
-}
+// 何度もまちがえているカード → 復習待ち → 未着手 → 学習中 → 習得。
+const priorityRank = (card, etymologySrs) => etymologyCardPriorityRank(etymologySrs[card.id])
 
 const searchText = (card) => [
   card.rootForm,

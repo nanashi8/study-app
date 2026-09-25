@@ -619,6 +619,7 @@ export function buildStudyCompletionReport({
       elapsedDays: metrics.elapsedDays,
       vocabularyScore: metrics.score,
       reviewReason: metrics.reason,
+      struggling: metrics.struggling,
     }
   })
   const dueInDays = (row) => Number.isFinite(row.entry?.due)
@@ -648,9 +649,13 @@ export function buildStudyCompletionReport({
     return row.box >= LONG_TERM_SRS_BOX && (before == null || before < LONG_TERM_SRS_BOX)
   }).length
 
+  // 何度もまちがえている項目 → 今回「まだ」 → 今日復習する → 日を空けて練習 → そのほか。
+  const priorityRank = (row) => (
+    row.struggling ? 0 : reviewSet.has(row.id) ? 1 : row.due ? 2 : row.box < LONG_TERM_SRS_BOX ? 3 : 4
+  )
   const priorityRows = [...rows].sort((a, b) => {
-    const aRank = reviewSet.has(a.id) ? 0 : a.due ? 1 : a.box < LONG_TERM_SRS_BOX ? 2 : 3
-    const bRank = reviewSet.has(b.id) ? 0 : b.due ? 1 : b.box < LONG_TERM_SRS_BOX ? 2 : 3
+    const aRank = priorityRank(a)
+    const bRank = priorityRank(b)
     if (aRank !== bRank) return aRank - bRank
     if (a.vocabularyScore !== b.vocabularyScore) return a.vocabularyScore - b.vocabularyScore
     const retentionDifference = a.predictedRetention - b.predictedRetention
@@ -665,14 +670,16 @@ export function buildStudyCompletionReport({
       title: row.title,
       subtitle: row.subtitle,
       dueInDays: dueInDays(row),
-      needsReviewNow: reviewSet.has(row.id) || row.due,
-      reason: reviewSet.has(row.id)
-        ? '今回「まだ」'
-        : row.due
-          ? '今日復習する'
-          : spacedPracticeCount > 0
-            ? `あと${spacedPracticeCount}回、日を空けて練習`
-            : '間を空けて復習',
+      needsReviewNow: row.struggling || reviewSet.has(row.id) || row.due,
+      reason: row.struggling
+        ? '何度もまちがえている'
+        : reviewSet.has(row.id)
+          ? '今回「まだ」'
+          : row.due
+            ? '今日復習する'
+            : spacedPracticeCount > 0
+              ? `あと${spacedPracticeCount}回、日を空けて練習`
+              : '間を空けて復習',
     }
   })
   // 「4日後以降」へまとめず、項目ごとの実際の期限日数で直接分ける。

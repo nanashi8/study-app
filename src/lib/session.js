@@ -317,25 +317,46 @@ function manualVocabMixShares(
   return { review: reviewPicked, fresh: freshPicked }
 }
 
-function automaticVocabularyBuckets(pool, srs, day, purpose) {
-  const due = pool.filter((word) => (
-    Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day
+// day だけを渡されたときの基準時刻（その日の正午）。定着の見込みは時刻で、復習日は日で見るので、2つをそろえる。
+function timestampForDay(day) {
+  const noon = day * 86_400_000 + 12 * 3_600_000
+  return noon + new Date(noon).getTimezoneOffset() * 60_000
+}
+
+function automaticVocabularyBuckets(pool, srs, day, purpose, now = timestampForDay(day)) {
+  const stageOf = new Map(pool.map((word) => [
+    word.id,
+    studyOrderKey(srs[word.id], { purpose, now, day }).stage,
+  ]))
+  const hasDue = (word) => Number.isFinite(srs[word.id]?.due)
+  // 何度もまちがえている語（苦手）は、復習の枠のいちばん先に置く。
+  const struggling = pool.filter((word) => stageOf.get(word.id) === STUDY_ORDER_STAGE.struggling)
+  // 復習日が来ている語と、復習日の前でも復習の段に入った語（忘れかけの語）。
+  const scheduled = pool.filter((word) => (
+    stageOf.get(word.id) !== STUDY_ORDER_STAGE.struggling
+    && ((hasDue(word) && srs[word.id].due <= day) || stageOf.get(word.id) === STUDY_ORDER_STAGE.review)
   ))
+  const due = [...struggling, ...scheduled]
   const failedSameDay = due.filter((word) => failedToday(srs[word.id], day))
   const failedSameDayIds = new Set(failedSameDay.map((word) => word.id))
-  const spacedDue = due.filter((word) => !failedSameDayIds.has(word.id))
-  // 同日失敗語と、間隔を空けた期限語を両方扱う。一方だけならそのまま使う。
-  const review = interleaveGroups(failedSameDay, spacedDue)
-  const unlearned = pool.filter((word) => !Number.isFinite(srs[word.id]?.due))
-  const waiting = pool.filter((word) => (
-    Number.isFinite(srs[word.id]?.due) && srs[word.id].due > day
-  ))
+  const spacedDue = scheduled.filter((word) => !failedSameDayIds.has(word.id))
+  // 苦手の語を先に出し切り、そのあと同日失敗語と、間隔を空けた期限語を両方扱う。一方だけならそのまま使う。
+  const review = [
+    ...struggling,
+    ...interleaveGroups(
+      scheduled.filter((word) => failedSameDayIds.has(word.id)),
+      spacedDue,
+    ),
+  ]
+  const dueIds = new Set(due.map((word) => word.id))
+  const unlearned = pool.filter((word) => !dueIds.has(word.id) && !hasDue(word))
+  const waiting = pool.filter((word) => !dueIds.has(word.id) && hasDue(word))
   // 暗記は未学習語を先に、テストは学習済みの別の語を先にする。
   // 期限前の安定語は、優先側の在庫が足りないときだけ補充に使う。
   const variety = purpose === 'quiz'
     ? [...waiting, ...unlearned]
     : [...unlearned, ...waiting]
-  return { due, failedSameDay, review, unlearned, waiting, variety }
+  return { due, struggling, failedSameDay, review, unlearned, waiting, variety }
 }
 
 /**
@@ -353,6 +374,7 @@ export function automaticVocabSessionPlan(
     size = SESSION_SIZE,
     purpose = 'study',
     freshShareOverride = null,
+    now = timestampForDay(day),
   } = {},
 ) {
   // 学習者が下部のバーで割合を指定した日は、その割合をそのまま使う。
@@ -374,7 +396,7 @@ export function automaticVocabSessionPlan(
     }
   }
 
-  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose, now)
   const recent = recentPerformance(
     pool,
     srs,
@@ -383,7 +405,7 @@ export function automaticVocabSessionPlan(
   )
   if (manualShare !== null) {
     // 手で指定した割合は、buildDeck と同じ枠の組み方（manualVocabMixShares）で数える。
-    const shares = manualVocabMixShares(pool, srs, { size, freshShare: manualShare, day })
+    const shares = manualVocabMixShares(pool, srs, { size, freshShare: manualShare, now, day })
     return {
       profile: 'manual',
       freshShare: manualShare,
@@ -452,9 +474,10 @@ function balancedAutomaticDeck(
   size,
   purpose,
   completedIds = [],
+  now = timestampForDay(day),
 ) {
-  const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose })
-  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
+  const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose, now })
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose, now)
   const cycleIds = new Set(Array.isArray(completedIds) ? completedIds : [])
   const orderedReview = unseenFirst(buckets.review, cycleIds)
   const availableVariety = cycleIds.size
@@ -463,6 +486,7 @@ function balancedAutomaticDeck(
   const selectedReview = orderedReview.slice(0, plan.reviewCount)
   const selectedVariety = availableVariety.slice(0, plan.varietyCount)
   let remaining = plan.targetSize - selectedReview.length - selectedVariety.length
+  const strugglingIds = new Set(buckets.struggling.map((word) => word.id))
 
   // 未出の別語が足りない場合だけ、復習が必要な語で設定数へ近づける。
   // 期限前の安定語や単なる既出語を、数合わせのために繰り返すことはしない。
@@ -475,7 +499,14 @@ function balancedAutomaticDeck(
     remaining -= extraReview.length
   }
 
-  return interleaveProportionally(selectedReview, selectedVariety)
+  // 何度もまちがえている語は、新しい語・別の語と混ぜる前に、いちばん先へまとめて出す。
+  return [
+    ...selectedReview.filter((word) => strugglingIds.has(word.id)),
+    ...interleaveProportionally(
+      selectedReview.filter((word) => !strugglingIds.has(word.id)),
+      selectedVariety,
+    ),
+  ]
 }
 
 /**
@@ -540,15 +571,19 @@ export function buildDeck(
   if (source.type === 'deck' && source.preserveOrder === true) {
     return size ? stock.slice(0, size) : stock
   }
-  // それ以外は全教材共通の出題順（studyOrder.js）：今日の候補（取りこぼしている復習語・未学習／未回答の語）
-  // → 今日「まだ」「不正解」になった語 → 連続で覚えた・正解した語の確認 → そのほか。
+  // それ以外は全教材共通の出題順（studyOrder.js）：何度もまちがえている語 → 今日の候補（復習する語・未学習／未回答の語）
+  // → 今日1回「まだ」「不正解」になった語 → 何度も・続けて覚えた・正解した語の確認 → そのほか。
   // 同じ段の中は点数の低い順。
   const keys = new Map(stock.map((word) => [
     word.id,
     studyOrderKey(srs[word.id], { purpose, now, day }),
   ]))
+  const isStruggling = (word) => keys.get(word.id).stage === STUDY_ORDER_STAGE.struggling
   const pool = shuffle(stock).sort((a, b) => {
     if (source.type === 'review') {
+      // 先取り復習は次の復習日が近い順。ただし何度もまちがえている語はその前に出す。
+      const strugglingDifference = Number(isStruggling(b)) - Number(isStruggling(a))
+      if (strugglingDifference !== 0) return strugglingDifference
       const dueDifference = (srs[a.id]?.due ?? Infinity) - (srs[b.id]?.due ?? Infinity)
       if (dueDifference !== 0) return dueDifference
     }
@@ -562,11 +597,19 @@ export function buildDeck(
     const shares = manualVocabMixShares(pool, srs, {
       size, freshShare: freshShareOverride, cycleIds, now, day,
     })
-    return interleaveProportionally(shares.review, shares.fresh)
+    // 何度もまちがえている語は、未修の語と混ぜる前に、いちばん先へまとめて出す。
+    return [
+      ...shares.review.filter(isStruggling),
+      ...shares.fresh.filter(isStruggling),
+      ...interleaveProportionally(
+        shares.review.filter((word) => !isStruggling(word)),
+        shares.fresh.filter((word) => !isStruggling(word)),
+      ),
+    ]
   }
 
-  // 自動のときは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語、
-  // 連続で覚えた・正解した語の確認、復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
+  // 自動のときは「今日の候補」（出題順の0〜2段：苦手・復習・未学習／未回答）から組み、苦手の語をいちばん先に出す。
+  // 今日1回「まだ」「不正解」になった語、定着の確認、復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
   const candidates = pool.filter((word) => (
     keys.get(word.id).stage <= STUDY_ORDER_STAGE.fresh
   ))
@@ -576,9 +619,9 @@ export function buildDeck(
     return [...candidates, ...pool.filter((word) => !candidateIds.has(word.id))]
   }
 
-  const deck = balancedAutomaticDeck(candidates, srs, day, size, purpose, cycleIds)
-  // 今日の候補で足りない分は、同じ教材の残りを出題順（今日「まだ」「不正解」になった語を点数の低い順に、
-  // そのあと連続で覚えた・正解した語の確認、最後に復習日前の語）で続けて出す。
+  const deck = balancedAutomaticDeck(candidates, srs, day, size, purpose, cycleIds, now)
+  // 今日の候補で足りない分は、同じ教材の残りを出題順（今日1回「まだ」「不正解」になった語を点数の低い順に、
+  // そのあと定着の確認、最後に復習日前の語）で続けて出す。
   // 今日の候補を学び終えた日も、次の復習日を待たずにくり返せる。
   if (deck.length < size) {
     const used = new Set([

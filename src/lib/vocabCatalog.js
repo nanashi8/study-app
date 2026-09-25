@@ -43,12 +43,17 @@ const activityTimestamp = (entry, activity) => (
   Number.isFinite(entry?.[activity]?.lastAt) ? entry[activity].lastAt : null
 )
 
+// 何度もまちがえている語（苦手）の重み。ほかのどの語の重み（最大450）よりも上に置く。
+const STRUGGLING_REVIEW_WEIGHT = 500
+
 const reviewWeightFromMetrics = (metrics) => {
+  // 苦手の語は、暗記をまだしていない（テストだけで何度もまちがえた）語でも先頭へ寄せる。
+  if (metrics.struggling) return STRUGGLING_REVIEW_WEIGHT + (100 - metrics.score)
   if (metrics.learningStatus === 'unlearned') return 0
 
   // 数値自体は学習者へ見せない。復習が必要な語を大きく分けたうえで、
   // 直近の失敗、復習日の到来、現在の定着度を使って級内の順番だけを決める。
-  // 連続で「覚えた」「正解」を重ねてきた語の復習（metrics.steady）は、忘れかけの語より下に置く。
+  // 何度も・続けて「覚えた」「正解」になった語の確認（metrics.steady）は、忘れかけの語より下に置く。
   return 20
     + (metrics.needsReview ? (metrics.steady ? 40 : 200) : 0)
     + (metrics.reason === 'recent-failure' ? 100 : 0)
@@ -61,6 +66,7 @@ export function vocabularyReviewWeight(entry, options = {}) {
 }
 
 export function vocabularyCatalogPriority(metrics) {
+  if (metrics.struggling) return 'struggling'
   if (metrics.learningStatus === 'unlearned') return 'unlearned'
   if (metrics.reason === 'recent-failure') return 'retry'
   if (metrics.steady) return 'steady'

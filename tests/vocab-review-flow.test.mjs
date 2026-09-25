@@ -491,7 +491,7 @@ test('単語暗記とテストは参考画面を往復しても同じ問題・�
   assert.match(history, /label="テスト"/)
 })
 
-test('「まだ」は同日中の通常学習を占有せず、翌日は支援配分の7対3で混ざる', () => {
+test('「まだ」1回は同日中の通常学習を占有せず、何度も「まだ」の語は同じ日でも先頭にまとめ、翌日も支援配分の7対3で混ざる', () => {
   assert.equal(AUTOMATIC_VOCAB_REVIEW_SHARE, 0.6)
   const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
   const day = todayIndex(now)
@@ -510,40 +510,56 @@ test('「まだ」は同日中の通常学習を占有せず、翌日は支援�
     lastAt: now,
     memory: { passes: 5, remembered: 5, forgot: 0, lastAt: now, lastJudgment: 'remembered', marks: [1, 1, 1, 1, 1] },
   }
-  const srs = Object.fromEntries(words.map((word) => [word.id, stableEntry]))
-  for (const word of unseen) delete srs[word.id]
-  for (const word of failed) {
-    srs[word.id] = {
-      box: 0,
-      correct: 0,
-      wrong: 2,
-      due: day,
-      last: day,
-      lastAt: now,
-      memory: { passes: 2, remembered: 0, forgot: 2, lastAt: now, lastJudgment: 'forgot', marks: [0, 0] },
-    }
+  const missedEntry = (marks) => ({
+    box: 0,
+    correct: 0,
+    wrong: marks.length,
+    due: day,
+    last: day,
+    lastAt: now,
+    memory: { passes: marks.length, remembered: 0, forgot: marks.length, lastAt: now, lastJudgment: 'forgot', marks },
+  })
+  const srsWith = (marks) => {
+    const srs = Object.fromEntries(words.map((word) => [word.id, stableEntry]))
+    for (const word of unseen) delete srs[word.id]
+    for (const word of failed) srs[word.id] = missedEntry(marks)
+    return srs
   }
 
+  // 今日1回だけ「まだ」：同じ日の通常の回には戻さない（翌日に復習する）。
+  const once = srsWith([0])
   for (const word of failed) {
-    const metrics = vocabularyReviewMetrics(srs[word.id], { now, day })
+    const metrics = vocabularyReviewMetrics(once[word.id], { now, day })
     assert.equal(metrics.needsReview, true)
     assert.equal(metrics.coolingDown, true)
     assert.equal(metrics.shouldAutoAppear, false)
   }
-  const sameDay = buildDeck(
-    { type: 'level', levelId: '3' },
-    { srs, size: 10, purpose: 'study', now, day },
-  )
-  assert.equal(sameDay.length, 10)
-  assert.equal(sameDay.every((word) => unseenIds.has(word.id)), true)
+  const onceSameDay = buildDeck({ type: 'level', levelId: '3' }, { srs: once, size: 10, purpose: 'study', now, day })
+  assert.equal(onceSameDay.length, 10)
+  assert.equal(onceSameDay.every((word) => unseenIds.has(word.id)), true)
 
-  const nextDayNow = now + 86_400_000
-  const nextDay = buildDeck(
-    { type: 'level', levelId: '3' },
-    { srs, size: 10, purpose: 'study', now: nextDayNow, day: day + 1 },
-  )
-  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 7)
-  assert.equal(nextDay.filter((word) => unseenIds.has(word.id)).length, 3)
+  // 今日2回「まだ」：何度もまちがえている語は、同じ日でも次の回の先頭にまとめて出す（新しい語も3語混ぜる）。
+  const twice = srsWith([0, 0])
+  for (const word of failed) {
+    const metrics = vocabularyReviewMetrics(twice[word.id], { now, day })
+    assert.equal(metrics.struggling, true)
+    assert.equal(metrics.coolingDown, false)
+    assert.equal(metrics.shouldAutoAppear, true)
+  }
+  const sameDay = buildDeck({ type: 'level', levelId: '3' }, { srs: twice, size: 10, purpose: 'study', now, day })
+  assert.equal(sameDay.length, 10)
+  assert.equal(sameDay.slice(0, 7).every((word) => failedIds.has(word.id)), true, '苦手の語が先頭')
+  assert.equal(sameDay.slice(7).every((word) => unseenIds.has(word.id)), true, '新しい語も混ぜる')
+
+  for (const srs of [once, twice]) {
+    const nextDayNow = now + 86_400_000
+    const nextDay = buildDeck(
+      { type: 'level', levelId: '3' },
+      { srs, size: 10, purpose: 'study', now: nextDayNow, day: day + 1 },
+    )
+    assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 7)
+    assert.equal(nextDay.filter((word) => unseenIds.has(word.id)).length, 3)
+  }
 })
 
 test('通常テストも苦手語だけで埋めず、支援配分でも10語中3語を別の語にする', () => {

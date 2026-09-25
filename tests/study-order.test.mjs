@@ -25,7 +25,7 @@ import { recordContentQuizResult } from '../src/lib/contentProgress.js'
 import { LONG_TERM_SRS_BOX } from '../src/lib/srs.js'
 import { buildGrammarDeck, grammarVariationKey } from '../src/lib/grammarDeck.js'
 import { buildDeck, buildPhraseDeck, wordsForSource } from '../src/lib/session.js'
-import { orderForStudy, studyOrderKey } from '../src/lib/studyOrder.js'
+import { STUDY_ORDER_STAGE, orderForStudy, studyOrderKey } from '../src/lib/studyOrder.js'
 import { vocabularyReviewMetrics } from '../src/lib/vocabScheduler.js'
 import { todayIndex, useStore } from '../src/store/useStore.js'
 
@@ -79,17 +79,23 @@ function steadyRecorded(result, { skill = null, startDaysAgo = 40 } = {}) {
 
 const scoreOf = (entry) => vocabularyReviewMetrics(entry, { now: NOW, day: DAY }).score
 
+// 続けて覚えた・正解した（定着）記録。daysAgo 日前に3回続けて成功し、1日後の今は復習日を迎えたばかり（まだ忘れかけていない）。
+function stableRecorded(result, { skill = null, daysAgo = 1 } = {}) {
+  return recorded([result, result, result], { at: NOW - daysAgo * DAY_MS, skill })
+}
+
 // 同じ日に学び終えかけた教材の記録。暗記は「覚えた／まだ」、テストは「正解／不正解」で答える。
-// fresh は未学習（暗記）・未回答（テスト）、missed は今日間違えた項目（点数の低い順）、rest は今日覚えた・正解した項目。
+// struggling は何度もまちがえている項目、fresh は未学習（暗記）・未回答（テスト）、
+// missed は今日1回まちがえた項目（点数の低い順）、rest は今日覚えた・正解した項目。
 function sameDayRoles(purpose, skill = null) {
   const miss = purpose === 'quiz' ? 'wrong' : 'forgot'
   const hit = purpose === 'quiz' ? 'correct' : 'remembered'
   // もう片方の活動だけ済ませた項目は、この活動ではまだ手をつけていない。
   const otherOnly = purpose === 'quiz' ? 'remembered' : 'correct'
   return {
+    struggling: [recorded([miss, miss, miss], { skill })],
     fresh: [null, recorded([otherOnly], { skill })],
     missed: [
-      recorded([miss, miss, miss], { skill }),
       recorded([hit, miss], { skill }),
       recorded([hit, hit, hit, miss], { skill }),
     ],
@@ -100,7 +106,7 @@ function sameDayRoles(purpose, skill = null) {
 // 実在する項目IDへ、sameDayRoles の記録を先頭から割り当てる。
 function assignRoles(ids, purpose, skill = null) {
   const roles = sameDayRoles(purpose, skill)
-  const count = roles.fresh.length + roles.missed.length + roles.rest.length
+  const count = roles.struggling.length + roles.fresh.length + roles.missed.length + roles.rest.length
   assert.ok(ids.length >= count, '素材の項目数')
   const srs = {}
   let at = 0
@@ -109,45 +115,59 @@ function assignRoles(ids, purpose, skill = null) {
     if (entry) srs[id] = entry
     return id
   })
+  const struggling = take(roles.struggling)
   const fresh = take(roles.fresh)
   const missed = take(roles.missed)
   const rest = take(roles.rest)
-  return { ids: ids.slice(0, count), srs, fresh, missed, rest }
+  return { ids: ids.slice(0, count), srs, struggling, fresh, missed, rest }
 }
 
-function assertStudyOrder(orderedIds, { fresh, missed, rest }, label) {
+function assertStudyOrder(orderedIds, { struggling, fresh, missed, rest }, label) {
   assert.deepEqual(
-    new Set(orderedIds.slice(0, fresh.length)),
+    orderedIds.slice(0, struggling.length),
+    struggling,
+    `${label}: 何度もまちがえている項目がいちばん先`,
+  )
+  const afterStruggling = orderedIds.slice(struggling.length)
+  assert.deepEqual(
+    new Set(afterStruggling.slice(0, fresh.length)),
     new Set(fresh),
-    `${label}: 未学習・未回答から出す`,
+    `${label}: 次に未学習・未回答`,
   )
   assert.deepEqual(
-    orderedIds.slice(fresh.length, fresh.length + missed.length),
+    afterStruggling.slice(fresh.length, fresh.length + missed.length),
     missed,
-    `${label}: 今日の「まだ」「不正解」は点数の低い順`,
+    `${label}: 今日1回の「まだ」「不正解」は点数の低い順`,
   )
   assert.deepEqual(
-    new Set(orderedIds.slice(fresh.length + missed.length)),
+    new Set(afterStruggling.slice(fresh.length + missed.length)),
     new Set(rest),
     `${label}: 覚えた・正解は最後`,
   )
 }
 
-test('出題の段は、取りこぼしの復習 → 未学習・未回答 → 今日の「まだ」「不正解」 → 定着の確認 → そのほか', () => {
+test('出題の段は、苦手 → 復習 → 未学習・未回答 → 今日1回の「まだ」「不正解」 → 定着の確認 → そのほか', () => {
+  const S = STUDY_ORDER_STAGE
   const cases = [
-    { label: '記録なし', entry: undefined, study: 1, quiz: 1 },
-    { label: '前の日に「まだ」', entry: recorded(['forgot'], { at: NOW - DAY_MS }), study: 0, quiz: 0 },
-    { label: '前の日に「不正解」', entry: recorded(['wrong'], { at: NOW - DAY_MS }), study: 0, quiz: 0 },
-    { label: '今日「まだ」（テストは未回答）', entry: recorded(['forgot']), study: 2, quiz: 1 },
-    { label: '今日「不正解」（暗記は未学習）', entry: recorded(['wrong']), study: 1, quiz: 2 },
-    { label: '今日「わからない」', entry: recorded(['unknown']), study: 1, quiz: 2 },
-    { label: '今日「覚えた」→「不正解」', entry: recorded(['remembered', 'wrong']), study: 2, quiz: 2 },
-    { label: '今日「まだ」→「正解」', entry: recorded(['forgot', 'correct']), study: 2, quiz: 2 },
-    { label: '今日「覚えた」（テストは未回答）', entry: recorded(['remembered']), study: 4, quiz: 1 },
-    { label: '今日「覚えた」→「正解」', entry: recorded(['remembered', 'correct']), study: 4, quiz: 4 },
-    // 連続で成功を重ねた項目は、復習日が来ても最優先では出さない。
-    { label: '連続「覚えた」で復習日が来た', entry: steadyRecorded('remembered'), study: 3, quiz: 1 },
-    { label: '連続「正解」で復習日が来た', entry: steadyRecorded('correct'), study: 1, quiz: 3 },
+    { label: '記録なし', entry: undefined, study: S.fresh, quiz: S.fresh },
+    { label: '前の日に「まだ」', entry: recorded(['forgot'], { at: NOW - DAY_MS }), study: S.review, quiz: S.review },
+    { label: '前の日に「不正解」', entry: recorded(['wrong'], { at: NOW - DAY_MS }), study: S.review, quiz: S.review },
+    { label: '今日「まだ」（テストは未回答）', entry: recorded(['forgot']), study: S.missedToday, quiz: S.fresh },
+    { label: '今日「不正解」（暗記は未学習）', entry: recorded(['wrong']), study: S.fresh, quiz: S.missedToday },
+    { label: '今日「わからない」', entry: recorded(['unknown']), study: S.fresh, quiz: S.missedToday },
+    { label: '今日「覚えた」→「不正解」', entry: recorded(['remembered', 'wrong']), study: S.missedToday, quiz: S.missedToday },
+    { label: '今日「まだ」→「正解」', entry: recorded(['forgot', 'correct']), study: S.missedToday, quiz: S.missedToday },
+    { label: '今日「覚えた」（テストは未回答）', entry: recorded(['remembered']), study: S.rest, quiz: S.fresh },
+    { label: '今日「覚えた」→「正解」', entry: recorded(['remembered', 'correct']), study: S.rest, quiz: S.rest },
+    // 何度もまちがえている項目は、今日でも、暗記でもテストでもいちばん先。
+    { label: '今日「まだ」を2回', entry: recorded(['forgot', 'forgot']), study: S.struggling, quiz: S.struggling },
+    { label: '前の日から「不正解」を2回', entry: recorded(['wrong', 'wrong'], { at: NOW - DAY_MS }), study: S.struggling, quiz: S.struggling },
+    // 続けて覚えた・正解した項目は、復習日が来ても後回し。もう一方の活動でも未学習・未回答にしない。
+    { label: '続けて「覚えた」で復習日が来た', entry: stableRecorded('remembered'), study: S.steady, quiz: S.steady },
+    { label: '続けて「正解」で復習日が来た', entry: stableRecorded('correct'), study: S.steady, quiz: S.steady },
+    // 後回しは忘れかける前まで。
+    { label: '続けて「覚えた」あと忘れかけた', entry: stableRecorded('remembered', { daysAgo: 4 }), study: S.review, quiz: S.review },
+    { label: '長期に入って復習日を過ぎた', entry: steadyRecorded('correct'), study: S.review, quiz: S.review },
   ]
   for (const { label, entry, study, quiz } of cases) {
     assert.equal(studyOrderKey(entry, { purpose: 'study', now: NOW, day: DAY }).stage, study, `暗記・${label}`)
@@ -155,30 +175,31 @@ test('出題の段は、取りこぼしの復習 → 未学習・未回答 → �
   }
 })
 
-test('連続で覚えた・正解した項目の復習は、今日の「まだ」「不正解」より後ろに出す', () => {
+test('続けて覚えた・正解した項目の確認は、今日1回の「まだ」「不正解」より後ろ、忘れかけたら復習と同じに戻す', () => {
   for (const purpose of ['study', 'quiz']) {
     const hit = purpose === 'quiz' ? 'correct' : 'remembered'
     const miss = purpose === 'quiz' ? 'wrong' : 'forgot'
     const srs = {
+      struggling: recorded([miss, miss]),
       overdue: recorded([miss], { at: NOW - DAY_MS }),
       missed: recorded([miss]),
-      steady: steadyRecorded(hit),
+      steady: stableRecorded(hit),
+      lapsed: stableRecorded(hit, { daysAgo: 4 }),
     }
-    const items = ['steady', 'missed', 'fresh', 'overdue'].map((id) => ({ id }))
+    const items = ['steady', 'missed', 'fresh', 'lapsed', 'overdue', 'struggling'].map((id) => ({ id }))
     for (let run = 1; run <= 20; run += 1) {
-      assert.deepEqual(
-        idsOf(orderForStudy(items, srs, { purpose, now: NOW, day: DAY })),
-        ['overdue', 'fresh', 'missed', 'steady'],
-        `${purpose}・${run}回目`,
-      )
+      const ordered = idsOf(orderForStudy(items, srs, { purpose, now: NOW, day: DAY }))
+      assert.equal(ordered[0], 'struggling', `${purpose}・${run}回目: 苦手がいちばん先`)
+      assert.deepEqual(new Set(ordered.slice(1, 3)), new Set(['overdue', 'lapsed']), `${purpose}・${run}回目: 復習`)
+      assert.deepEqual(ordered.slice(3), ['fresh', 'missed', 'steady'], `${purpose}・${run}回目`)
     }
   }
 })
 
-test('今日の「まだ」「不正解」は、間違えた回数が多く点数の低い項目から出す', () => {
+test('今日1回の「まだ」「不正解」は、間違えた回数が多く点数の低い項目から出し、何度もまちがえた項目はいちばん先', () => {
   for (const purpose of ['study', 'quiz']) {
     const scores = sameDayRoles(purpose).missed.map(scoreOf)
-    assert.ok(scores[0] < scores[1] && scores[1] < scores[2], `${purpose}: 素材の点数 ${scores.join(' < ')}`)
+    assert.ok(scores[0] < scores[1], `${purpose}: 素材の点数 ${scores.join(' < ')}`)
 
     const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'].map((id) => ({ id }))
     const assigned = assignRoles(idsOf(items), purpose)
@@ -198,10 +219,10 @@ function smallChapter() {
       if (words.length >= 14 && words.length <= 30) return { source, words }
     }
   }
-  throw new Error('監査に使う14〜30語の級別分野が見つからない')
+  throw new Error('14〜30語の級別分野が見つからない')
 }
 
-test('英単語の暗記・テストも、今日の候補を出し切ってから今日の「まだ」「不正解」を点数の低い順に出す', () => {
+test('英単語の暗記・テストも、苦手 → 今日の候補を出し切ってから、今日1回の「まだ」「不正解」を点数の低い順に出す', () => {
   const { source, words } = smallChapter()
   for (const purpose of ['study', 'quiz']) {
     const assigned = assignRoles(idsOf(words), purpose, 'vocab')
@@ -221,50 +242,50 @@ test('英単語の暗記・テストも、今日の候補を出し切ってか�
       assigned,
       `英単語・${purpose}・${words.length}語`,
     )
-    // 未学習・未回答の語が残るうちは、今日の「まだ」「不正解」を混ぜない（テストも暗記と同じ）。
+    // 未学習・未回答の語が残るうちは、今日1回の「まだ」「不正解」を混ぜない（テストも暗記と同じ）。
+    const candidates = [...assigned.struggling, ...assigned.fresh]
+    const today = idsOf(buildDeck(source, { ...options, size: candidates.length }))
+    assert.equal(today[0], assigned.struggling[0], `${purpose}: 苦手がいちばん先`)
+    assert.deepEqual(new Set(today), new Set(candidates), `${purpose}: 今日の候補で足りる回`)
     assert.deepEqual(
-      new Set(idsOf(buildDeck(source, { ...options, size: 2 }))),
-      new Set(assigned.fresh),
-      `${purpose}: 今日の候補で足りる回`,
-    )
-    assert.deepEqual(
-      idsOf(buildDeck(source, { ...options, size: 3 })).slice(2),
+      idsOf(buildDeck(source, { ...options, size: candidates.length + 1 })).slice(candidates.length),
       assigned.missed.slice(0, 1),
       `${purpose}: 今日の候補のすぐ後は、いちばん点数の低い語`,
     )
   }
 })
 
-test('英単語の今日の候補に、連続で覚えた・正解した語の復習は混ぜない', () => {
+test('英単語の今日の候補に、定着の確認は混ぜず、忘れかけた定着は復習として混ぜる', () => {
   const { source, words } = smallChapter()
   for (const purpose of ['study', 'quiz']) {
     const hit = purpose === 'quiz' ? 'correct' : 'remembered'
     const ids = idsOf(words)
     const fresh = ids.slice(0, 2)
     const steady = ids.slice(2, 5)
-    const steadyEntry = steadyRecorded(hit, { skill: 'vocab' })
+    const lapsed = ids.slice(5, 7)
     const srs = {}
-    for (const id of steady) srs[id] = steadyEntry
-    // 残りは今日学び終えた語にして、今日の候補が未学習・未回答の2語だけになるようにする。
-    for (const id of ids.slice(5)) srs[id] = recorded([hit], { skill: 'vocab' })
+    for (const id of steady) srs[id] = stableRecorded(hit, { skill: 'vocab' })
+    for (const id of lapsed) srs[id] = stableRecorded(hit, { skill: 'vocab', daysAgo: 4 })
+    // 残りは今日学び終えた語にして、今日の候補が未学習・未回答の2語と忘れかけた2語だけになるようにする。
+    for (const id of ids.slice(7)) srs[id] = recorded([hit], { skill: 'vocab' })
     const options = { srs, purpose, now: NOW, day: DAY }
 
     assert.deepEqual(
-      new Set(idsOf(buildDeck(source, { ...options, size: 2 }))),
-      new Set(fresh),
+      new Set(idsOf(buildDeck(source, { ...options, size: 4 }))),
+      new Set([...fresh, ...lapsed]),
       `${purpose}: 今日の候補だけで足りる回`,
     )
     const all = idsOf(buildDeck(source, { ...options, size: 0 }))
-    assert.deepEqual(new Set(all.slice(0, 2)), new Set(fresh), `${purpose}: 未学習・未回答から出す`)
+    assert.deepEqual(new Set(all.slice(0, 4)), new Set([...fresh, ...lapsed]), `${purpose}: 今日の候補から出す`)
     assert.deepEqual(
-      new Set(all.slice(2, 5)),
+      new Set(all.slice(4, 7)),
       new Set(steady),
       `${purpose}: 定着の確認は今日の候補の後`,
     )
   }
 })
 
-test('熟語・文法・リスニング・書き取り・漢文・返り点も同じ順番で出す', () => {
+test('熟語・文法・リスニング・書き取り・漢文・返り点も同じ順番（苦手 → 未学習・未回答 → 今日1回のまちがい → 覚えた）で出す', () => {
   for (const purpose of ['study', 'quiz']) {
     const phrase = assignRoles(idsOf(PHRASES), purpose)
     assertStudyOrder(
@@ -345,7 +366,7 @@ test('熟語・文法・リスニング・書き取り・漢文・返り点も�
   )
 })
 
-test('リスニングの級別テストは、形式の配分より先に未回答 → 今日の不正解（点数の低い順）を守る', () => {
+test('リスニングの級別テストは、形式の配分より先に 苦手 → 未回答 → 今日1回の不正解（点数の低い順）を守る', () => {
   const items = listeningByLevel('3')
   const assigned = assignRoles(idsOf(items), 'quiz')
   for (const id of idsOf(items).slice(assigned.ids.length)) {
@@ -358,12 +379,13 @@ test('リスニングの級別テストは、形式の配分より先に未回�
   ))
   assert.equal(deck.length, 10)
   assert.equal(new Set(deck).size, 10)
-  assert.deepEqual(new Set(deck.slice(0, 2)), new Set(assigned.fresh), '未回答から出す')
-  assert.deepEqual(deck.slice(2, 5), assigned.missed, '今日の不正解は点数の低い順')
+  assert.equal(deck[0], assigned.struggling[0], '何度も間違えた問題がいちばん先')
+  assert.deepEqual(new Set(deck.slice(1, 3)), new Set(assigned.fresh), '次に未回答')
+  assert.deepEqual(deck.slice(3, 5), assigned.missed, '今日1回の不正解は点数の低い順')
   assert.ok(deck.slice(5).every((id) => assigned.rest.includes(id)), '残りは正解した問題')
 })
 
-test('古典文法・古典常識のテストは、問題ごとの結果で未回答を先に、今日間違えた問題を扱う項目の点数の低い順に出す', () => {
+test('古典文法・古典常識のテストは、問題ごとの結果で、扱う項目が苦手な間違えた問題 → 未回答 → 今日間違えた問題を扱う項目の点数の低い順に出す', () => {
   const cases = [
     {
       label: '古典文法',
@@ -414,17 +436,20 @@ test('古典文法・古典常識のテストは、問題ごとの結果で未�
       [primaryOf(wrong[2])]: recorded(['correct', 'wrong']),
       [primaryOf(wrong[0])]: recorded(['correct', 'correct', 'correct', 'wrong']),
     }
-    const expectedWrong = idsOf([wrong[1], wrong[2], wrong[0]])
+    // wrong[1] の項目は3回続けてまちがえている（苦手）ので、その問題をいちばん先に出す。
+    const strugglingId = wrong[1].id
+    const expectedWrong = idsOf([wrong[2], wrong[0]])
     const itemIds = [...new Set(questions.flatMap(itemIdsOf))]
 
     for (const size of [5, 12]) {
       const deck = pick(itemIds, { size, srs, quizResults, now: NOW })
       const ids = idsOf(deck)
       assert.equal(ids.length, size, `${label}・${size}問`)
-      assert.deepEqual(new Set(ids.slice(0, 4)), unansweredIds, `${label}・${size}問: 未回答から出す`)
+      assert.equal(ids[0], strugglingId, `${label}・${size}問: 苦手な項目の間違えた問題がいちばん先`)
+      assert.deepEqual(new Set(ids.slice(1, 5)), unansweredIds, `${label}・${size}問: 次に未回答`)
       assert.deepEqual(
-        ids.slice(4, Math.min(size, 7)),
-        expectedWrong.slice(0, size - 4),
+        ids.slice(5, Math.min(size, 7)),
+        expectedWrong.slice(0, Math.max(0, size - 5)),
         `${label}・${size}問: 今日間違えた問題は点数の低い順`,
       )
       if (size === 12) {

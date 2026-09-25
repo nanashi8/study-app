@@ -40,24 +40,32 @@ test('今日の候補を学び終えても、暗記は「次回待ち」で止�
     Date.now = () => now
     useStore.setState({ srs: {} })
 
-    // 級・分野カードの「暗記」から、同じ日に10枚ずつ何度も学ぶ。1枚おきに
-    // 「まだ」と答えるので、覚えた語と今日「まだ」と答えた語が混ざっていく。
+    // 級・分野カードの「暗記」から、同じ日に10枚ずつ学ぶ。はじめて出た語は1枚おきに「まだ」と答え、
+    // 今日すでに答えた語は「覚えた」と答えるので、覚えた語と今日1回「まだ」と答えた語が混ざっていく。
+    // （同じ語を2回まちがえると苦手として今日の候補に残る。それは tests/study-priority-trend.test.mjs で確かめる。）
     const rounds = Math.ceil(count / 10) + 3
     let roundWithoutCandidates = null
     for (let round = 1; round <= rounds; round++) {
       const srs = useStore.getState().srs
       if (roundWithoutCandidates === null && wordProgress(words, srs).ready === 0) {
         roundWithoutCandidates = round
+        break
       }
       const deck = buildDeck(source, { srs, size: 10, purpose: 'study', now, day })
       assert.equal(deck.length, 10, `${label}・${round}回目も10枚そろう`)
       assert.equal(new Set(idsOf(deck)).size, 10, `${label}・${round}回目に同じ語を重ねない`)
       deck.forEach((word, index) => {
-        useStore.getState().review(word.id, index % 2 ? 'forgot' : 'remembered', 'vocab')
+        const first = !srs[word.id]
+        useStore.getState().review(word.id, first && index % 2 ? 'forgot' : 'remembered', 'vocab')
       })
     }
     // 途中で今日の候補（未学習・復習どき）が尽きる。以前はここで「次回待ち」になっていた。
     assert.ok(roundWithoutCandidates !== null, `${label}は同じ日に今日の候補を学び終える`)
+    // 今日の候補を学び終えたあとも、10枚ずつそろう。
+    for (let round = 1; round <= 2; round++) {
+      const deck = buildDeck(source, { srs: useStore.getState().srs, size: 10, purpose: 'study', now, day })
+      assert.equal(deck.length, 10, `${label}・今日の候補のあと${round}回目も10枚そろう`)
+    }
 
     const srs = useStore.getState().srs
     assert.equal(wordProgress(words, srs).ready, 0)

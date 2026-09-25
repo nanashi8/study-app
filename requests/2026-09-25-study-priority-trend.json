@@ -1,0 +1,77 @@
+{
+  "id": "2026-09-25-study-priority-trend",
+  "title": "暗記・テストで出す順と間隔を、答えの傾向で決める（何度もまちがえる項目は最上位でしつこく、続けて覚えた項目は後回し、傾向が変われば間隔も変える）",
+  "asked": [
+    "暗記・テストの優先度を見直したいが良い案はあるか？",
+    "・何度もまだ・不正解を繰り返すが、最上位にならない問題がある。\n・何度も覚えた・正解を繰り返すか、連続で覚えた・正解となったが、後回しにならない問題がある。\n何度やっても覚えないものがしつこく表示されないと覚えられないのではないか、また理解度の傾向が変わってきたら表示頻度を変えていくべきではないか。"
+  ],
+  "sessions": [
+    "d24b467f-728a-5870-9cb1-3b4909d2d1b8"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "unified-recent",
+      "text": "項目ごとに、暗記とテストを通した直近5回の答え（覚えた・正解＝1、まだ・不正解・わからない＝0）を答えた順に記録する（recent）。この記録がない以前の記録は、暗記・テストそれぞれの直近の○×から組み立てて読む。選び直し（reviseReview）・進捗コード・クラウド同期でも保たれる。1項目に複数の問題がある教材の問題ごとの結果（contentQuizResults）にも、直近5回の○×を残す",
+      "population": "学習記録の全10種類（srs・etymologySrs・kotenSrs・kotenGrammarSrs・kotenCultureSrs・kotenInterpretationSrs・kanbunVocabSrs・kanbunGrammarSrs・kanbunCultureSrs・kanbunKundokuSrs）へ書く、ストアの全8操作（review・reviewEtymology・reviewKoten・reviewKotenGrammar・reviewKotenCulture・reviewKotenInterpretation・reviewKanbun の3種類・reviewKanbunKundoku）と、問題ごとの結果の書き込み口（recordContentQuizResult）",
+      "check": "node --test --test-name-pattern=\"直近の答え\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "struggling-top",
+      "text": "何度も「まだ」「不正解」をくり返している項目（苦手＝最後の答えがまちがいで、直近5回のうち2回以上まちがえた項目）を、暗記・テストの全画面でいちばん先に出す。今日まちがえた直後でも、次の回の先頭に出す（翌日まで待たせない）。形式の配分（リスニング・古典文法・古典常識）、単元の散らし方と形式の巡回（文法）、英単語の新しい語との混ぜ方より先に出す。並び順を指定して始める回（preserveOrder：一覧で選んで並べた項目、語源カードに紐づく単語のカードの並び）はその順のまま、出題バランスの目盛りの「未修だけ」は「まだ」「不正解」の語を出さない設定なので、この2つは対象外",
+      "population": "暗記・テストの全21画面（tests/study-order.test.mjs が数える21画面）の出題口すべて。英単語は、級・分野・品詞・全語などの自動の回、出題バランスの目盛りの「復習だけ」「復習寄り」「半々」「未修寄り」、今日の復習（due）、先取り復習（review）、語根・単語帳",
+      "check": "node --test --test-name-pattern=\"最上位\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "struggling-persistent",
+      "text": "苦手の項目はしつこく出す。苦手になった答えのあとは、段階を0、復習日を今日にする。正解しても、直近5回に2回以上のまちがいが残り、まだ3回続けて覚えた・正解していないあいだ（立て直し中）は、段階を1までにして次の復習日を翌日にし、毎日出す",
+      "population": "学習記録の全10種類（ストアの全8操作から書く）",
+      "check": "node --test --test-name-pattern=\"しつこく\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "stable-deferred",
+      "text": "何度も・連続で「覚えた」「正解」になった項目（定着＝最後の答えが成功で、3回以上続けて成功、または直近5回のうち4回以上成功）は、暗記・テストの全画面で後回しにする（未学習・未回答の項目と、今日1回まちがえた項目より後ろ）。テストだけで続けて正解した項目を暗記で「未学習」として先に出したり、暗記だけで続けて覚えた項目をテストで「未回答」として先に出したりしない",
+      "population": "暗記・テストの全21画面の出題口すべて（最上位の条件と同じ）",
+      "check": "node --test --test-name-pattern=\"後回し\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "stable-returns",
+      "text": "後回しは忘れかける前まで。定着の項目も、答えの記録から出す定着の見込みが56%（いまも「忘れかけ」の判定に使っている値）を下回ったら復習の段に戻し、ほかの復習と同じように、未学習・未回答の項目より先に出す。英単語の自動の回の「復習のたまり具合」にも数える。いまの決まりでは、長期に入った語（段階4以上）は未学習の語が残るかぎり通常の回に一度も出ない（準2級・毎日暗記10枚とテスト10問・180日で0回）。同じ試算で、長期に入った語が通常の回に出るようにする",
+      "population": "暗記・テストの全21画面の出題順と、英単語の自動の回の配分",
+      "check": "node --test --test-name-pattern=\"忘れかける前\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "trend-frequency",
+      "text": "答えの傾向が変われば出す間隔も変える。成功が続けば間隔をのばし（同じ日のくり返しでは段階を上げない）、1回のまちがいはこれまでどおり（「まだ」「わからない」は段階0、「不正解」は1段下げて翌日に確かめる。維持復習の「不正解」は1段下げて次の予定日を保つ）、2回目のまちがい（苦手）で段階0・今日からやり直し、立て直し中は毎日、3回続けて成功したら間隔をのばし直す。これまで英単語だけだった決め方（同じ日のくり返しでは段階を上げない・正答の傾向で間隔を伸び縮みさせる）を全教材にそろえる",
+      "population": "学習記録の全10種類（英単語・熟語・構文・英文法・リスニング・書き取り・語源・古文単語・古典文法・古典常識・古文解釈・漢語・漢文法・漢文常識・返り点）",
+      "check": "node --test --test-name-pattern=\"間隔\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "related-views",
+      "text": "出す順を見せる画面も同じ傾向で並べる。単語の一覧と、わたしの学習の一覧の「確認のおすすめ順」は苦手を先頭にし、状態の札を「くり返しまちがえている」にする（数学の歴史のように問題ごとに記録する教材は、何度もまちがえている問題があれば苦手）。定着の札「定着の確認」は、定着の項目で復習日が来て、まだ忘れかけていないものだけに付ける。語源の一覧（語根）のおすすめ順、語根の画面で次に学ぶ単語の選び方、学び終えたときの学習結果の優先順も、苦手を先頭にする",
+      "population": "単語の一覧（vocabCatalog）、わたしの学習の一覧（learningContentCatalog の全教材）、語源の一覧（Roots の etymologyCardPriorityRank）、語根の画面の次に学ぶ単語（RootDetail）、学習結果の優先順（buildStudyCompletionReport）",
+      "check": "node --test --test-name-pattern=\"一覧と学習結果\" tests/study-priority-trend.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "rules-rewritten",
+      "text": "これまでの出題順・復習日のテストと説明（studyOrder.js・vocabScheduler.js・session.js のコメント、docs/learner-facing-quality-contract.md の英単語の暗記の入口）を新しい決まりに書き直し、npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）が通る",
+      "population": "出題順・復習日を確かめている既存のテストのうち、新しい決まりで書き直したもの全部（study-order 8件・vocab-review-flow 1件・vocab-mix-and-word-lists 1件・vocab-repeat-study 1件、学習者向け日本語の件数 1件）と、全テスト・全監査",
+      "check": "node --test --test-concurrency=1 tests/study-priority-trend.test.mjs tests/study-order.test.mjs tests/vocab-review-flow.test.mjs tests/vocab-mix-and-word-lists.test.mjs tests/vocab-session-progression.test.mjs tests/vocab-repeat-study.test.mjs tests/wrong-review.test.mjs tests/srs-maintenance-review.test.mjs tests/learner-japanese-audit.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、デプロイ（GitHub Actions の deploy.yml）の成功を確かめ、公開版で、何度もまちがえた語が暗記のいちばん先に出ることを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

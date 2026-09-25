@@ -19,10 +19,12 @@ import { MATH_PROBLEMS, MATH_UNITS } from '../data/math.js'
 import { mathHistoryPart } from '../data/math-history.js'
 import {
   contentQuizKey,
+  contentQuizMarks,
   learningStatusForSrsEntry,
   normalizeContentQuizResults,
   quizStatusForSrsEntry,
 } from './contentProgress.js'
+import { REVIEW_TREND, reviewTrend } from './reviewHistory.js'
 import { vocabularyReviewMetrics } from './vocabScheduler.js'
 import { learningContentPlanEntry } from './learningContentPlan.js'
 
@@ -239,6 +241,9 @@ function presentationFor(contentId, item) {
   }
 }
 
+// 何度もまちがえている項目（苦手）の重み。ほかのどの項目の重み（最大450）よりも上に置く。
+const STRUGGLING_REVIEW_WEIGHT = 500
+
 function srsReviewState(entry, options) {
   const metrics = vocabularyReviewMetrics(entry, options)
   const learningStatus = learningStatusForSrsEntry(entry)
@@ -246,14 +251,17 @@ function srsReviewState(entry, options) {
   const failed = entry?.memory?.lastJudgment === 'forgot'
     || entry?.test?.lastResult === 'wrong'
     || entry?.test?.lastResult === 'unknown'
-  // 連続で「覚えた」「正解」を重ねてきた語の復習（metrics.steady）は、忘れかけの語より下に置く。
-  const weight = learningStatus === 'unlearned' && testStatus === 'unanswered'
-    ? 0
-    : 20
-      + (metrics.needsReview ? (metrics.steady ? 40 : 200) : 0)
-      + (failed ? 100 : 0)
-      + (metrics.due ? 30 : 0)
-      + (100 - metrics.score)
+  // 何度もまちがえている項目（苦手）はいちばん上に置く。
+  // 何度も・続けて「覚えた」「正解」になった項目の確認（metrics.steady）は、忘れかけの項目より下に置く。
+  const weight = metrics.struggling
+    ? STRUGGLING_REVIEW_WEIGHT + (100 - metrics.score)
+    : learningStatus === 'unlearned' && testStatus === 'unanswered'
+      ? 0
+      : 20
+        + (metrics.needsReview ? (metrics.steady ? 40 : 200) : 0)
+        + (failed ? 100 : 0)
+        + (metrics.due ? 30 : 0)
+        + (100 - metrics.score)
   return {
     memoryAt: finiteTimestamp(entry?.memory?.lastAt),
     testAt: finiteTimestamp(entry?.test?.lastAt),
@@ -262,15 +270,17 @@ function srsReviewState(entry, options) {
     learningRecorded: learningStatus !== 'unlearned',
     testRecorded: testStatus !== 'unanswered',
     needsReview: metrics.needsReview,
-    priority: failed
-      ? 'retry'
-      : metrics.steady
-        ? 'steady'
-        : metrics.needsReview
-          ? 'due'
-          : learningStatus !== 'unlearned' || testStatus !== 'unanswered'
-            ? 'waiting'
-            : 'unlearned',
+    priority: metrics.struggling
+      ? 'struggling'
+      : failed
+        ? 'retry'
+        : metrics.steady
+          ? 'steady'
+          : metrics.needsReview
+            ? 'due'
+            : learningStatus !== 'unlearned' || testStatus !== 'unanswered'
+              ? 'waiting'
+              : 'unlearned',
     weight,
   }
 }
@@ -293,6 +303,11 @@ function completionReviewState(content, item, state, normalizedQuiz) {
     : null
   const completed = completedIds.has(item.id)
   const wrong = result?.lastResult === 'wrong'
+  // 最後に間違えた問題を、直近5回のうち2回以上間違えている（何度もまちがえている）。
+  const struggling = results.some((entry) => (
+    entry.lastResult === 'wrong'
+    && reviewTrend(contentQuizMarks(entry)).kind === REVIEW_TREND.struggling
+  ))
   const learningAt = content.id === 'writing'
     ? localDayTimestamp(state.writingProgress?.[item.id]?.lastDay)
     : null
@@ -302,8 +317,8 @@ function completionReviewState(content, item, state, normalizedQuiz) {
     learningRecorded: completed,
     testRecorded: Boolean(result),
     needsReview: wrong,
-    priority: wrong ? 'retry' : completed || result ? 'waiting' : 'unlearned',
-    weight: wrong ? 320 : completed || result ? 20 : 0,
+    priority: struggling ? 'struggling' : wrong ? 'retry' : completed || result ? 'waiting' : 'unlearned',
+    weight: struggling ? STRUGGLING_REVIEW_WEIGHT + 100 : wrong ? 320 : completed || result ? 20 : 0,
   }
 }
 

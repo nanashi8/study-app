@@ -108,6 +108,7 @@ import {
 } from '../lib/contentProgress.js'
 import {
   appendReviewMark,
+  recentMarksForEntry,
   reviewMarksForEntry,
 } from '../lib/reviewHistory.js'
 import {
@@ -128,18 +129,10 @@ import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/
 import { appendMathStoryLog, normalizeMathStoryLog } from '../lib/mathStoryLog.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
-// Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
+// 箱（段階）で間隔をのばす間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
+// 箱と次の復習日は、全教材で vocabScheduler.js の scheduleVocabularyReview が答えの傾向から決める。
 const INTERVALS = SRS_INTERVAL_DAYS
 const MAX_BOX = MAX_SRS_BOX
-
-// 回答結果ごとの box 変化。学習評価はSRSと正誤記録だけで扱う。
-const RESULTS = {
-  correct: { box: +1 }, // テスト正解
-  wrong: { box: -1 }, // テスト誤答
-  unknown: { box: 'reset' }, // 「わからない」
-  remembered: { box: +1 }, // カードで「覚えた」
-  forgot: { box: 'reset' }, // カードで「まだ」
-}
 
 const DAY_MS = 86400000
 
@@ -336,9 +329,7 @@ function applyReview(
   wordId,
   result,
   timestamp = Date.now(),
-  { adaptiveVocabulary = false } = {},
 ) {
-  const def = RESULTS[result] ?? RESULTS.unknown
   const day = localDayIndexAt(timestamp)
   const prev = srs[wordId] ?? { box: 0, correct: 0, wrong: 0, due: day, last: null }
   const activity = result === 'remembered' || result === 'forgot' ? 'memory' : 'test'
@@ -366,9 +357,6 @@ function applyReview(
       : null,
     marks: previousMarks.test,
   }
-  let box
-  if (def.box === 'reset') box = 0
-  else box = Math.max(0, Math.min(MAX_BOX, (Number(prev.box) || 0) + def.box))
 
   const nextMemory = activity === 'memory'
     ? {
@@ -395,7 +383,6 @@ function applyReview(
 
   const updatedEntry = {
     ...prev,
-    box,
     correct: Math.max(0, Number(prev.correct) || 0) + (remembered ? 1 : 0),
     wrong: Math.max(0, Number(prev.wrong) || 0) + (remembered ? 0 : 1),
     last: day,
@@ -403,21 +390,22 @@ function applyReview(
     firstAt: Number.isFinite(prev.firstAt) ? prev.firstAt : timestamp,
     memory: nextMemory,
     test: nextTest,
+    // 暗記とテストを通した直近の答え。何度もまちがえているか・続けて覚えているか（傾向）を読む。
+    recent: appendReviewMark(recentMarksForEntry(prev), remembered),
   }
-  const adaptiveSchedule = adaptiveVocabulary
-    ? scheduleVocabularyReview({
-        previousEntry: prev,
-        updatedEntry,
-        result,
-        timestamp,
-        day,
-      })
-    : null
-  if (adaptiveSchedule) box = adaptiveSchedule.box
+  // 箱と次の復習日は全教材で同じ決め方（同じ日のくり返しでは箱を上げない・答えの傾向で間隔を変える）。
+  const schedule = scheduleVocabularyReview({
+    previousEntry: prev,
+    updatedEntry,
+    result,
+    timestamp,
+    day,
+  })
+  const box = schedule.box
   const next = {
     ...updatedEntry,
     box,
-    due: adaptiveSchedule?.due ?? day + INTERVALS[box],
+    due: schedule.due,
   }
 
   // ── stats / streak / 今日のカウント ──
@@ -454,7 +442,7 @@ const isCorrectResult = (result) => result === 'correct' || result === 'remember
  * 暗記・テストの1回答を記録し、あとで選び直すときの控え（receipt）も作る。
  * 控えには、答える前の記録（before）・答えた時刻・学習分析へ入れた内容を持たせる。
  */
-function recordReviewState(st, { field, itemId, result, skill, adaptiveVocabulary = false }) {
+function recordReviewState(st, { field, itemId, result, skill }) {
   const timestamp = Date.now()
   const { srs, stats, reviewMeta } = applyReview(
     st[field],
@@ -462,7 +450,6 @@ function recordReviewState(st, { field, itemId, result, skill, adaptiveVocabular
     itemId,
     result,
     timestamp,
-    { adaptiveVocabulary },
   )
   const correct = isCorrectResult(result)
   const event = { skill, inputs: 1, scored: 1, correct: correct ? 1 : 0, ...reviewMeta }
@@ -479,7 +466,6 @@ function recordReviewState(st, { field, itemId, result, skill, adaptiveVocabular
       result,
       correct,
       at: timestamp,
-      adaptiveVocabulary,
       event,
     },
   }
@@ -750,7 +736,6 @@ export const useStore = create(
             itemId: wordId,
             result,
             skill: learningSkillForItem(wordId, skillHint),
-            adaptiveVocabulary: skillHint === 'vocab',
           })
           receipt = recorded.receipt
           return recorded.patch
@@ -773,7 +758,6 @@ export const useStore = create(
             receipt.itemId,
             result,
             Date.now(),
-            { adaptiveVocabulary: receipt.adaptiveVocabulary },
           )
           const correct = isCorrectResult(result)
           const delta = (correct ? 1 : 0) - (receipt.correct ? 1 : 0)

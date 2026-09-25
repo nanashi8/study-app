@@ -1,4 +1,4 @@
-import { vocabularyReviewMetrics } from './vocabScheduler.js'
+import { vocabularyLearningStatus, vocabularyReviewMetrics } from './vocabScheduler.js'
 
 export const ETYMOLOGY_MASTER_BOX = 4
 export const ETYMOLOGY_SESSION_SIZE = 10
@@ -97,6 +97,35 @@ export function etymologyWordProgress(packs = [], wordSrs = {}, options = {}) {
   }
 
   return result
+}
+
+/**
+ * 語根の画面で次に学ぶ単語。何度もまちがえている語 → 復習する語 → まだ学んでいない語 → 覚えた語の順に size 語まで。
+ */
+export function nextWordsForRoot(words = [], wordSrs = {}, size = Infinity) {
+  const struggling = words.filter((word) => vocabularyReviewMetrics(wordSrs[word.id]).struggling)
+  const strugglingIds = new Set(struggling.map((word) => word.id))
+  const others = words.filter((word) => !strugglingIds.has(word.id))
+  const withStatus = (status) => others.filter((word) => vocabularyLearningStatus(wordSrs[word.id]) === status)
+  return [
+    ...struggling,
+    ...withStatus('reviewing'),
+    ...withStatus('unlearned'),
+    ...withStatus('learned'),
+  ].slice(0, size)
+}
+
+/**
+ * 語源の一覧（語根）で「おすすめ順」に並べるときの順位（小さいほど先）。
+ * 何度もまちがえているカード → 復習待ち → 未着手 → 学習中 → 習得。
+ */
+export function etymologyCardPriorityRank(entry, day = localDay()) {
+  if (vocabularyReviewMetrics(entry).struggling) return -1
+  if (isEtymologyDue(entry, day)) return 0
+  const status = etymologyKnowledgeStatus(entry)
+  if (status === 'unstarted') return 1
+  if (status === 'learning') return 2
+  return 3
 }
 
 export function etymologyKnowledgeStatus(entry) {

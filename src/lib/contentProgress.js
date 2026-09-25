@@ -1,3 +1,5 @@
+import { appendReviewMark, normalizeReviewMarks } from './reviewHistory.js'
+
 const isRecord = (value) => (
   !!value && typeof value === 'object' && !Array.isArray(value)
 )
@@ -127,13 +129,26 @@ export function normalizeContentQuizResults(value) {
     const lastResult = result.lastResult === 'correct' && correct === total
       ? 'correct'
       : 'wrong'
+    // 直近の○×（古い順。1＝正解）。何度もまちがえている問題を先に出すために持つ。以前の保存にはない。
+    const marks = normalizeReviewMarks(result.marks)
     return [[key, {
       correct,
       total,
       lastResult,
       lastAt: Number.isFinite(result.lastAt) ? result.lastAt : null,
+      ...(marks.length ? { marks } : {}),
     }]]
   }))
+}
+
+/** 問題ごとの直近の○×（古い順）。○×を持たない以前の保存は、最後の結果だけを1件として読む。 */
+export function contentQuizMarks(result) {
+  if (!isRecord(result)) return []
+  const marks = normalizeReviewMarks(result.marks)
+  if (marks.length) return marks
+  if (result.lastResult === 'correct') return [1]
+  if (result.lastResult === 'wrong') return [0]
+  return []
 }
 
 export function recordContentQuizResult(
@@ -144,13 +159,15 @@ export function recordContentQuizResult(
   const normalizedTotal = nonNegativeInteger(total)
   if (!key || normalizedTotal <= 0) return normalizeContentQuizResults(current)
   const normalizedCorrect = Math.min(normalizedTotal, nonNegativeInteger(correct))
+  const normalized = normalizeContentQuizResults(current)
   return {
-    ...normalizeContentQuizResults(current),
+    ...normalized,
     [key]: {
       correct: normalizedCorrect,
       total: normalizedTotal,
       lastResult: normalizedCorrect === normalizedTotal ? 'correct' : 'wrong',
       lastAt: Number.isFinite(timestamp) ? timestamp : Date.now(),
+      marks: appendReviewMark(contentQuizMarks(normalized[key]), normalizedCorrect === normalizedTotal),
     },
   }
 }
