@@ -362,9 +362,13 @@ export function ReadingSentenceDetail({
                           {phraseItem.ja}
                         </p>
                       </div>
+                      {/* 全フレーズに同じ見出しが並ぶと冗長なので、説明の本文だけを出す。 */}
                       {phraseGrammar && (
-                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                          フレーズ内の文法：{phraseGrammar}
+                        <p
+                          className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65"
+                          data-reading-phrase-grammar
+                        >
+                          {phraseGrammar}
                         </p>
                       )}
                     </article>

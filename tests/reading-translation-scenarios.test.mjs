@@ -307,7 +307,9 @@ test('長文画面は意味フレーズの表示を保ち、講師音声機能�
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
   assert.match(source, /\{phraseItem\.displayEn\}/)
   assert.match(source, /\{phraseItem\.ja\}/)
-  assert.match(source, /フレーズ内の文法：\{phraseGrammar\}/)
+  // フレーズごとの文法の説明は本文だけを出す（「フレーズ内の文法：」が全フレーズに並ぶのは冗長、2026-09-25）。
+  assert.match(source, /data-reading-phrase-grammar\s*>\s*\{phraseGrammar\}/)
+  assert.doesNotMatch(source, /フレーズ内の文法/)
   assert.match(source, /title:\s*'長文・全文'/)
   assert.match(source, /<SpeakerWave size=\{14\} \/> 全文を読み上げ/)
   assert.match(source, /<SpeakButton text=\{sentence\.en\} size="sm" \/>/)

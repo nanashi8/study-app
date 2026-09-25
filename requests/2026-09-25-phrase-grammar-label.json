@@ -1,0 +1,48 @@
+{
+  "id": "2026-09-25-phrase-grammar-label",
+  "title": "一文の構文解説で、フレーズごとに繰り返し出る「フレーズ内の文法：」の見出しを消す",
+  "asked": [
+    "一文の構文解説の、「フレーズ内の文法」と繰り返し表示されるのは冗長的なので削除しなさい。"
+  ],
+  "sessions": [
+    "a788e4bb-3f5f-4b1f-8cbd-04897d2a8a77"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "no-phrase-grammar-label",
+      "text": "一文の構文解説（受験長文と語彙強化ロングリーディングで共通の部品 ReadingSentenceDetail）の意味フレーズの欄で、フレーズごとの文法の説明の前に付いていた「フレーズ内の文法：」を出さない。直す前は全文で 4,825回出ていた",
+      "population": "一文の構文解説を開ける全長文 42本（受験長文 38本・語彙強化ロングリーディング 4本）の全 1,518文と、その意味フレーズ全 4,825件",
+      "check": "node --test tests/reading-sentence-detail-phrase-grammar.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "explanations-kept",
+      "text": "見出しだけを消し、フレーズごとの文法の説明の本文（構造台帳の説明と notes）は 1件も消さない。全フレーズで説明の本文が、フレーズの英語と日本語のすぐ下に今までどおり出る",
+      "population": "全 1,518文の意味フレーズ全 4,825件（直す前に文法の説明があったのは 4,825件すべて）",
+      "check": "node --test tests/reading-sentence-detail-phrase-grammar.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "no-label-anywhere",
+      "text": "アプリのどの画面にも「フレーズ内の文法」を出さない。同じ「一文の構文解説」の題を持つ文学朗読の画面（LiteratureReader）も含めて、画面のコードとデータ（src 全体）に残っていないことを確かめる",
+      "population": "src 以下の全ファイル（受験長文 Reader・語彙強化 ExtendedReader・文学朗読 LiteratureReader の3つの「一文の構文解説」を含む全画面とデータ）",
+      "check": "node --test tests/reading-sentence-detail-phrase-grammar.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "tests-follow",
+      "text": "「フレーズ内の文法：{phraseGrammar}」を求めていた既存のテスト（tests/reading-translation-scenarios.test.mjs）を、見出しを出さない形に合わせる。画面の文言を1つ消したので、学習者向け日本語の表記数の固定値（tests/learner-japanese-audit.test.mjs：学習者画面 15,174→15,173表記、重複なし 11,338→11,337表記、ソース全体 199,541→199,540表記）を実測値に合わせる。既存の監査・テストがすべて通る",
+      "population": "「フレーズ内の文法」を確かめていた既存のテスト 1件（reading-translation-scenarios.test.mjs）、表記数が動く固定値 3つ（learner-japanese-audit.test.mjs）と、全テスト・全監査（npm run audit:all-content）",
+      "check": "node --test tests/reading-translation-scenarios.test.mjs tests/learner-japanese-audit.test.mjs tests/reading-sentence-detail-phrase-grammar.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、デプロイの成功と、公開版の一文の構文解説に「フレーズ内の文法」が出ないことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
