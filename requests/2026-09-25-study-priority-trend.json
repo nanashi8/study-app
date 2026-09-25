@@ -4,7 +4,8 @@
   "asked": [
     "暗記・テストの優先度を見直したいが良い案はあるか？",
     "・何度もまだ・不正解を繰り返すが、最上位にならない問題がある。\n・何度も覚えた・正解を繰り返すか、連続で覚えた・正解となったが、後回しにならない問題がある。\n何度やっても覚えないものがしつこく表示されないと覚えられないのではないか、また理解度の傾向が変わってきたら表示頻度を変えていくべきではないか。",
-    "許可します。"
+    "許可します。",
+    "nanashi8.github.ioを許可するドメインに加えなさい。"
   ],
   "sessions": [
     "d24b467f-728a-5870-9cb1-3b4909d2d1b8"
@@ -73,6 +74,14 @@
       "population": "main の commit fe65a59 と、そのデプロイ（run 36113477998）・同じコミットのビルド",
       "check": "node --test tests/deploy-workflow.test.mjs",
       "status": "done"
+    },
+    {
+      "id": "allow-public-host",
+      "text": "環境のネットワーク設定で、許可するドメイン（Allowed domains）に nanashi8.github.io を加え、セッションから公開版を開けるようにする。npm などの既定の許可（Trusted の一覧）は残す",
+      "population": "このアカウントのクラウド環境の全2つ（どちらも「Default」：env_0152i3sku8bwXHhMhTF52Ak4・env_01Nz9Y9VcVGZMA9MEzPkhrhT）。それぞれの環境で、設定のあとに立てたセッションから確かめる",
+      "check": "curl -sS -o /dev/null -w '%{http_code}' --max-time 30 https://nanashi8.github.io/study-app/ | grep -qx 200",
+      "status": "needs-user",
+      "question": "環境のネットワーク設定は、セッションの中からは変えられません（変える手段がなく、設定は利用者が環境の編集画面で変えるものです）。次の手順で加えてください：セッションのタイトルバーのクラウド環境メニュー → Edit（または claude.ai/code のメッセージ欄の上の段にある、環境名「Default」の雲のアイコン → 環境にポインタを置いて右に出る設定のアイコン）→ Network access を Custom にし、Allowed domains に nanashi8.github.io と書く → 「Also include default list of common package managers」にチェックを入れて（npm などの既定の許可を残すため）保存。「Default」という名前の環境が2つあるので、両方に加えてください。設定は保存のあとに立てたセッションから効きます。保存したら一言いただければ、新しいセッションで接続と公開版を確かめます。"
     },
     {
       "id": "public-site-check",
