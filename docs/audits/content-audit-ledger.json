@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-25T15:06:43.452Z",
+  "auditedAt": "2026-09-25T15:50:13.418Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
