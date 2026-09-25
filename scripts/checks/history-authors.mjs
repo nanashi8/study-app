@@ -42,9 +42,14 @@ export function wrongIdentityCommits(refs = currentRefs(), identity = projectIde
 // コミットの番号らしい語（7〜40桁の16進数。セッションの id のようにハイフンでつながる部分は除く）。
 const TOKEN = /(?<![0-9a-zA-Z-])[0-9a-f]{7,40}(?![0-9a-zA-Z-])/g
 
-/** 名指しした番号のうち、コミットに当たるのに今の枝のどこにもないもの（書き換える前の番号）。 */
+/**
+ * 名指しした番号のうち、書き換える前の main（控え refs/backup/<日付>/main-before-rewrite）にあって、今の枝にないもの。
+ * 書き換えで番号が変わったコミットの古い番号に当たる。控えがない clone では数えない。
+ */
 export function staleReferences(refs = currentRefs()) {
   const reachable = new Set(git('rev-list', ...refs).trim().split('\n'))
+  const oldMains = git('for-each-ref', '--format=%(refname)', 'refs/backup').trim().split('\n').filter((ref) => ref.endsWith('/main-before-rewrite'))
+  const rewritten = new Set(oldMains.length ? git('rev-list', ...oldMains).trim().split('\n').filter((sha) => !reachable.has(sha)) : [])
   const resolved = new Map()
   const resolve = (token) => {
     if (!resolved.has(token)) {
@@ -60,7 +65,7 @@ export function staleReferences(refs = currentRefs()) {
   const scan = (where, text) => {
     for (const token of new Set(String(text).match(TOKEN) ?? [])) {
       const sha = resolve(token)
-      if (sha && !reachable.has(sha)) stale.push(`${where}: ${token}`)
+      if (sha && rewritten.has(sha)) stale.push(`${where}: ${token}`)
     }
   }
   let files = 0
@@ -115,7 +120,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
   if (process.argv.includes('--references')) {
     const { files, messages, memories, stale } = staleReferences()
-    console.log(`コミットの番号の名指し: 追跡しているファイル ${files}件・コミットの文 ${messages}件・記憶 ${memories}件を読み、今の枝にない番号 ${stale.length}か所`)
+    console.log(`コミットの番号の名指し: 追跡しているファイル ${files}件・コミットの文 ${messages}件・記憶 ${memories}件を読み、書き換える前の番号 ${stale.length}か所`)
     for (const line of stale.slice(0, 40)) console.log(`  ${line}`)
     process.exit(stale.length ? 1 : 0)
   }
