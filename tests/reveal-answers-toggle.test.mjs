@@ -14,6 +14,7 @@ const CARD_SCREENS = [
   'src/screens/KotenCultureStudy.jsx',
   'src/screens/PhraseStudy.jsx',
   'src/screens/KanbunStudy.jsx',
+  'src/screens/EtymologyStudy.jsx',
 ]
 
 test('カード画面に答えを開いたままにする切り替えがある', () => {
@@ -47,6 +48,47 @@ test('カード画面に「まだ」と「覚えた」の両方のボタンが�
     assert.match(source, /answer\(false\)/, `${path} が「まだ」を記録していない`)
     assert.match(source, /answer\(true\)/, `${path} が「覚えた」を記録していない`)
   }
+})
+
+// 下部の判定欄に置くのは「まだ」「覚えた」だけ。カードを開く操作は上の目のボタンと
+// カードのタップが受け持つので、下部の「意味を見る」「答えを見る」「意味・成り立ちを見る」とは重ねない。
+// 慣れた学習者は、英単語でも古文・漢文でも、意味や答えを開かないまま答えて次のカードへ進める。
+test('全暗記カードは、意味や答えを開かないままでも「まだ」「覚えた」を押せる', () => {
+  for (const path of CARD_SCREENS) {
+    const source = readFileSync(path, 'utf8')
+    const start = source.indexOf('<CardStudyFooter')
+    assert.ok(start > 0, `${path}: 下部の判定欄がない`)
+    const footer = source.slice(start, source.indexOf('</CardStudyFooter>', start))
+    // 開いたかどうかで下部を入れ替えず、カードを開くボタンも置かない。
+    assert.doesNotMatch(footer, /flipped|revealed/, `${path}: 下部の判定欄がカードを開いたかで変わる`)
+    assert.doesNotMatch(footer, /を見る/, `${path}: 下部にカードを開くボタンが残っている`)
+    // 答えていないカードでは、開いていなくても両方の判定を押せる。
+    assert.match(footer, /まだ\s*🤔/, `${path}: 下部に「まだ」がない`)
+    assert.match(footer, /覚えた\s*👍/, `${path}: 下部に「覚えた」がない`)
+    assert.match(footer, /onClick=\{\(\) => answer\(false\)\}/, `${path}: 「まだ」が答えを記録しない`)
+    assert.match(footer, /onClick=\{\(\) => answer\(true\)\}/, `${path}: 「覚えた」が答えを記録しない`)
+    // カードそのもののタップは、これまでどおり意味・答えを開く道として残す。
+    assert.match(source, /タップ/, `${path}: カードのタップ案内が消えている`)
+    assert.match(
+      source,
+      /onClick=\{\(\) => [^}]*set(?:Flipped|Revealed)\(/,
+      `${path}: カードのタップで開けない`,
+    )
+  }
+
+  // 名作の本文語彙カードは共通の判定欄を使わないが、下部の形は同じにそろえる。
+  const literature = readFileSync('src/components/LiteratureVocabularySheet.jsx', 'utf8')
+  const cards = literature.slice(
+    literature.indexOf('data-literature-vocabulary-card='),
+    literature.indexOf("mode === 'done'"),
+  )
+  const beforeAnswers = cards.slice(cards.lastIndexOf('</article>'), cards.lastIndexOf('grid grid-cols-2'))
+  assert.doesNotMatch(beforeAnswers, /revealed/, '名作の本文語彙カード: 下部の判定が開いたかで変わる')
+  assert.doesNotMatch(beforeAnswers, /を見る/, '名作の本文語彙カード: 下部にカードを開くボタンが残っている')
+  assert.match(cards, /onClick=\{\(\) => answer\(false\)\}/, '名作の本文語彙カード: 「まだ」が答えを記録しない')
+  assert.match(cards, /onClick=\{\(\) => answer\(true\)\}/, '名作の本文語彙カード: 「覚えた」が答えを記録しない')
+  assert.match(cards, /<RevealAnswersToggle/, '名作の本文語彙カード: 上の目のボタンがない')
+  assert.match(cards, /onClick=\{\(\) => !revealed && setRevealed\(true\)\}/, '名作の本文語彙カード: カードのタップで開けない')
 })
 
 // 英単語・熟語のカードは、目のボタンで「意味を隠す→スペルを隠す→全部見せる」と切り替える。

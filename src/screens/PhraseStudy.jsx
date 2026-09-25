@@ -369,6 +369,8 @@ export function PhraseStudyScreen() {
         </div>
       </CardSwipeRegion>
 
+      {/* フッター操作。意味・成り立ちを開いたかに関わらず「まだ／覚えた」だけを置く。
+          意味と英語の出し入れは、上の目のボタンとカードのタップが受け持つ。 */}
       <CardStudyFooter className="border-brand-100">
         {recordedAnswer === null && lastAnswered !== null && (
           <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
@@ -380,13 +382,8 @@ export function PhraseStudyScreen() {
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>
-        ) : !flipped ? (
-          <Button full size="lg" onClick={() => setFlipped(true)}>
-            {spellingHidden
-              ? '英語を見る'
-              : item.kind === 'syntax' ? '意味・ポイントを見る' : '意味・成り立ちを見る'}
-          </Button>
         ) : (
+          // 意味を見ずに思い出せた日は、開かないまま答えて次のカードへ進める。
           <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>まだ🤔</Button>
             <Button variant="success" size="lg" onClick={() => answer(true)}>覚えた👍</Button>

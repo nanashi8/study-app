@@ -584,7 +584,8 @@ export function VocabStudyScreen() {
         </div>
       </CardSwipeRegion>
 
-      {/* フッター操作 */}
+      {/* フッター操作。意味を開いたかに関わらず「まだ／覚えた」だけを置く。
+          意味とスペルの出し入れは、上の目のボタンとカードのタップが受け持つ。 */}
       <CardStudyFooter className="vocab-study-actions border-brand-100" data-vocab-study-actions>
         {recordedAnswer === null && lastAnswered !== null && (
           <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
@@ -596,11 +597,8 @@ export function VocabStudyScreen() {
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>
-        ) : !flipped ? (
-          <Button full size="lg" onClick={() => setFlipped(true)}>
-            答えを見る
-          </Button>
         ) : (
+          // 意味を見ずに思い出せた日は、開かないまま答えて次のカードへ進める。
           <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>
               まだ🤔

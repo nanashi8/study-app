@@ -1,0 +1,55 @@
+{
+  "id": "2026-09-25-deploy-all-changes",
+  "title": "すべての変更をデプロイまで完了する（main に入っていない変更を残さない）",
+  "asked": [
+    "すべての変更をデプロイまで完了しなさい。"
+  ],
+  "sessions": [
+    "a788e4bb-3f5f-4b1f-8cbd-04897d2a8a77"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "session-changes-deployed",
+      "text": "このセッションの変更（cc9551b：一文の構文解説の「フレーズ内の文法：」を消す、07f55df：その依頼を閉じる）が main に入り、どちらのデプロイも成功している（run 36091987282・36092481320）",
+      "population": "このセッションのコミット 2件と、そのデプロイ 2回",
+      "check": "git merge-base --is-ancestor 07f55df origin/main && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "leftovers-surveyed",
+      "text": "main に入っていない変更を、この端末と GitHub の置き場所すべてから洗い出す。共有の作業ツリーは未コミット 0・stash 0・未 push 0 で、worktree は1つ。GitHub の参照は main だけ。scratchpad にある study-app の複製 3つのうち2つは main に入っている。残る1つ（例文の見直しのセッションの複製）の HEAD は、履歴を書き換える前の番号のコミットで、ファイルの中身は main の c58b8ce と同じ（差 0）。書き換え直前の作業ツリーの控え（refs/backup/2026-09-25b/worktree-before-reset）の60ファイルは、58ファイルが main と同じで、違う2つは作り直す台帳と件数の固定値。書き換え前の履歴の控え（main-before-rewrite 2本・外部サービスの控え 5本）は、同じ中身を書き換えた番号で main が持つか、外部のサービスの控えで、公開する変更ではない。main に入れる候補として残るのは、控えの枝 github/claude/remove-word-mode-bottom-buttons-zwu3m9 と旧 Codex の枝 5本だけ",
+      "population": "共有の作業ツリー（未コミット・stash・未 push・worktree）、GitHub の全参照、scratchpad の study-app の複製 3つ、refs/backup/ の控え 18本",
+      "check": "test \"$(git ls-remote --heads origin | wc -l | tr -d ' ')\" = 1 && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "bottom-buttons-applied",
+      "text": "控えの枝 github/claude/remove-word-mode-bottom-buttons-zwu3m9 の3コミット（874dac7・20039bf・d1a2c17、2026-09-19）を今の main に当て直す。これはクラウドのセッション「単語モード下部ボタン廃止」の作業で、別のセッションが 2026-09-25 に「この変更を main に入れますか？」と聞いたまま答えがなく、今回の「すべての変更」に含める。暗記カードの下の「答えを見る」「意味を見る」「意味・成り立ちを見る」「意味・ポイントを見る」「英語を見る」をなくし、まだ／覚えただけにする。意味や答えを開かないまま答えても記録に残り、次の未回答カードへ進む。開くのは、カードのタップと上の目のボタンが受け持つ。台帳（content-audit-ledger.json）と学習者向け日本語の表記数は、今の main で測り直す",
+      "population": "今の main で、暗記カードの下にカードを開くボタンを持つ画面すべて 8つ（英単語 VocabStudy・熟語と構文 PhraseStudy・古文単語 KotenStudy・古典文法 KotenGrammarStudy・古典常識 KotenCultureStudy・漢文 KanbunStudy・語根 EtymologyStudy・名作の本文語彙 LiteratureVocabularySheet）",
+      "check": "node --test tests/reveal-answers-toggle.test.mjs tests/learner-japanese-audit.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "bottom-buttons-verified-in-app",
+      "text": "8画面を動くアプリ（開発サーバー、スマホの幅）で開いて確かめる。下部に「まだ」「覚えた」だけが出ること、閉じたままのカードで答えると次のカードへ進むこと、カードのタップで開くこと、答えたカードへ戻ると選び直しのボタンが出ること。英単語 violin→outside、熟語 clamp down on→It goes without saying that、語根 pati / pass→over-、古文単語 まゐる→いたく、古典文法 形容動詞ナリ活用→係り結び、古典常識 通い婚→御簾・几帳・屏風、漢文 焉→於是 で、どれも 1/10 から 1/9 に詰まって次へ進んだ。タップで開き、「直前の1枚を選び直す」で戻ると、押した答えが選ばれた状態で選び直せた。名作の本文語彙（白鯨）は、閉じたまま答えると 1/791 の a から 2/791 の about へ進み、タップで本文での意味が開いた。この窓には、もとから前のカードへ戻る操作がない。コンソールのエラーは 0件",
+      "population": "8画面すべて（英単語・熟語と構文・古文単語・古典文法・古典常識・漢文・語根・名作の本文語彙）",
+      "check": "node --test tests/reveal-answers-toggle.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "codex-branches-excluded",
+      "text": "控えの旧 Codex の枝 5本（sites-public-domain-literature・sites-dictionary-deploy・public-domain-literature・xp-kanbun-snapshot・all-changes-pre-rebase-20260825、2026-07-27〜08-25）の、main にないコミット 24件は公開する変更に含めない。外部のサービス（Codex Sites）向けに作った古い版で、同じ働きは main に別の形で入っているため（英和辞書 9e7b3cb、学習内容と一覧 293fefe、漢文 0c5804f、名作 LiteratureLibrary・LiteratureReader、XP の廃止 check-xp-retirement.mjs）。RPG の戦闘の追加や英会話ノベルの削除のように、今の main と逆向きの変更も含むので、当てると今の教材を壊す",
+      "population": "控えの旧 Codex の枝 5本と、その main にないコミット 24件",
+      "check": "git merge-base --is-ancestor 293fefe origin/main && git merge-base --is-ancestor 9e7b3cb origin/main && git merge-base --is-ancestor 0c5804f origin/main && test -f src/screens/LiteratureReader.jsx && test -f scripts/check-xp-retirement.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、デプロイの成功と、公開版の暗記カードの下部に「まだ」「覚えた」だけが出ることを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

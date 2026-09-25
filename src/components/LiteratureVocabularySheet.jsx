@@ -359,20 +359,16 @@ export function LiteratureVocabularySheet({
               )}
             </article>
 
-            {!revealed ? (
-              <Button full size="lg" onClick={() => setRevealed(true)}>
-                意味を見る
+            {/* 下部は「まだ／覚えた」だけ。意味の出し入れは、上の目のボタンとカードのタップが受け持つ。
+                意味を見ずに思い出せた日は、開かないまま答えて次のカードへ進める。 */}
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="danger" size="lg" onClick={() => answer(false)}>
+                まだ
               </Button>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="danger" size="lg" onClick={() => answer(false)}>
-                  まだ
-                </Button>
-                <Button variant="success" size="lg" onClick={() => answer(true)}>
-                  覚えた
-                </Button>
-              </div>
-            )}
+              <Button variant="success" size="lg" onClick={() => answer(true)}>
+                覚えた
+              </Button>
+            </div>
           </div>
         )}
 
