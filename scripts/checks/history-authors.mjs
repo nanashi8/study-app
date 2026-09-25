@@ -49,23 +49,14 @@ const TOKEN = /(?<![0-9a-zA-Z-])[0-9a-f]{7,40}(?![0-9a-zA-Z-])/g
 export function staleReferences(refs = currentRefs()) {
   const reachable = new Set(git('rev-list', ...refs).trim().split('\n'))
   const oldMains = git('for-each-ref', '--format=%(refname)', 'refs/backup').trim().split('\n').filter((ref) => ref.endsWith('/main-before-rewrite'))
-  const rewritten = new Set(oldMains.length ? git('rev-list', ...oldMains).trim().split('\n').filter((sha) => !reachable.has(sha)) : [])
-  const resolved = new Map()
-  const resolve = (token) => {
-    if (!resolved.has(token)) {
-      try {
-        resolved.set(token, git('rev-parse', '--verify', '-q', `${token}^{commit}`).trim())
-      } catch {
-        resolved.set(token, null)
-      }
-    }
-    return resolved.get(token)
-  }
+  const rewritten = oldMains.length ? git('rev-list', ...oldMains).trim().split('\n').filter((sha) => !reachable.has(sha)) : []
+  // 番号の頭7文字から、書き換えで消えた番号を引く表（1語ずつ git に問い合わせない）。
+  const byPrefix = new Map()
+  for (const sha of rewritten) byPrefix.set(sha.slice(0, 7), [...(byPrefix.get(sha.slice(0, 7)) ?? []), sha])
   const stale = []
   const scan = (where, text) => {
     for (const token of new Set(String(text).match(TOKEN) ?? [])) {
-      const sha = resolve(token)
-      if (sha && rewritten.has(sha)) stale.push(`${where}: ${token}`)
+      if ((byPrefix.get(token.slice(0, 7)) ?? []).some((sha) => sha.startsWith(token))) stale.push(`${where}: ${token}`)
     }
   }
   let files = 0

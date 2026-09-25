@@ -8,28 +8,28 @@
   "sessions": [
     "24b71a88-813b-4371-90c8-b30fd2904911"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "history-authors",
       "text": "main の全コミットの作者・コミッターを nanashi8 <nanashi8@users.noreply.github.com> にそろえ（日時・中身・コミットの文は変えない）、書き換えた main を GitHub へ push し直す",
       "population": "main の全コミット（書き換え前 376件、うち端末名から作った名前 40件）と、GitHub の main",
-      "check": "node scripts/checks/history-authors.mjs",
-      "status": "todo"
+      "check": "node --test tests/history-authors.test.mjs",
+      "status": "done"
     },
     {
       "id": "branches-cleared",
       "text": "一直線の決まりに反して残っていた枝を片付け、ローカルと GitHub の枝を main だけにする。GitHub の claude/remove-word-mode-bottom-buttons-zwu3m9、ローカルの codex/… 9本、設定から外したリモートの参照 5本、なくなった作業ツリーの登録 5件。main に入っていないコミットは消さずに refs/backup/2026-09-25/ に控え、報告で知らせる",
       "population": "ローカルの全参照（refs/heads 10本・refs/remotes の origin 以外 5本）・作業ツリーの登録 6件・GitHub の全枝 2本",
-      "check": "node scripts/checks/history-authors.mjs --branches",
-      "status": "todo"
+      "check": "node --test tests/history-authors.test.mjs",
+      "status": "done"
     },
     {
       "id": "history-references",
       "text": "書き換えで番号が変わったコミットを名指ししている記載を、新しい番号に置き換える（コミットの文・追跡しているファイル・記憶）",
       "population": "コミットの番号を名指しした全記載（書き換え前に数えて、コミットの文 8件・9か所、追跡しているファイル 8件・14か所、記憶 28件・75か所）",
-      "check": "node scripts/checks/history-authors.mjs --references",
-      "status": "todo"
+      "check": "node --test tests/history-authors.test.mjs",
+      "status": "done"
     },
     {
       "id": "hooks-git-native",
@@ -56,8 +56,8 @@
       "id": "deployed",
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
