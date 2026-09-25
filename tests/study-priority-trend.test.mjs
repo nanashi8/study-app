@@ -652,6 +652,32 @@ test('後回し：続けて覚えた・正解した項目は、暗記・テス�
   }
 })
 
+test('後回し：1項目に複数の問題がある3画面も、続けて正解した問題は未回答・間違えた問題より後ろ', () => {
+  for (const screen of QUESTION_SCREENS) {
+    const [steady, missed, ...rest] = screen.questions
+    let quizResults = {}
+    for (const minutesAgo of [300, 200, 100]) {
+      quizResults = recordContentQuizResult(quizResults, {
+        domain: screen.domain, itemId: steady.id, correct: 1, total: 1, timestamp: NOW - DAY_MS - minutesAgo * 60_000,
+      })
+    }
+    quizResults = recordContentQuizResult(quizResults, {
+      domain: screen.domain, itemId: missed.id, correct: 0, total: 1, timestamp: NOW - DAY_MS,
+    })
+    const ranked = rankQuestionsForStudy(screen.questions, {
+      quizResults,
+      quizDomain: screen.domain,
+      itemIdOf: screen.itemOf,
+      now: NOW,
+    })
+    const order = ranked.map(({ item }) => item.id)
+    const at = (id) => order.indexOf(id)
+    assert.ok(rest.length > 0)
+    assert.ok(at(missed.id) < at(steady.id), `${screen.label}: 間違えた問題より後ろ`)
+    assert.ok(rest.every((question) => at(question.id) < at(steady.id)), `${screen.label}: 未回答より後ろ`)
+  }
+})
+
 test('後回し：テストだけで続けて正解した項目は暗記で「未学習」として、暗記だけで続けて覚えた項目はテストで「未回答」として先に出さない', () => {
   const testOnly = recordedEntry('srs', [[5, 'correct'], [4, 'correct'], [2, 'correct']])
   const memoryOnly = recordedEntry('srs', [[5, 'remembered'], [4, 'remembered'], [2, 'remembered']])

@@ -34,7 +34,7 @@
     {
       "id": "stable-deferred",
       "text": "何度も・連続で「覚えた」「正解」になった項目（定着＝最後の答えが成功で、3回以上続けて成功、または直近5回のうち4回以上成功）は、暗記・テストの全画面で後回しにする（未学習・未回答の項目と、今日1回まちがえた項目より後ろ）。テストだけで続けて正解した項目を暗記で「未学習」として先に出したり、暗記だけで続けて覚えた項目をテストで「未回答」として先に出したりしない",
-      "population": "暗記・テストの全21画面の出題口すべて（最上位の条件と同じ）",
+      "population": "暗記・テストの全21画面の出題口すべて（項目ごとに並べる18画面と、1項目に複数の問題がある3画面）",
       "check": "node --test --test-name-pattern=\"後回し\" tests/study-priority-trend.test.mjs",
       "status": "done"
     },
@@ -68,10 +68,18 @@
     },
     {
       "id": "deployed",
-      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、デプロイ（GitHub Actions の deploy.yml）の成功を確かめ、公開版で、何度もまちがえた語が暗記のいちばん先に出ることを確かめる",
+      "text": "クリーンな clone で npm run audit:all-content を通して（テスト1,030件・全監査・ビルドが通過）main へ push し（commit fe65a59）、デプロイ（GitHub Actions の deploy.yml、run 36113477998）が、push したコミットで成功したことを GitHub の記録で確かめる。同じコミットのビルド（dist）をブラウザ（Chromium）で開き、英検5級で何度も「まだ」と答えた語（late）が暗記のいちばん先に出ること、今日1回だけ「まだ」と答えた語（old）は同じ日の先頭に出ないことを確かめる",
+      "population": "main の commit fe65a59 と、そのデプロイ（run 36113477998）・同じコミットのビルド",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "public-site-check",
+      "text": "公開版 https://nanashi8.github.io/study-app/ をブラウザで開き、英検5級で何度も「まだ」と答えた語が暗記のいちばん先に出ることを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "needs-user",
+      "question": "このセッションからは、環境のネットワーク設定で nanashi8.github.io への接続が拒否されました（403）。環境の設定（セッションのタイトルバーのクラウド環境メニュー → Edit → Network access）で nanashi8.github.io を許可していただければ、このセッションで公開版を開いて確かめます。許可しない場合は、お手元の公開版で、何度も「まだ」と答えた語が次の暗記の先頭に出るかをご確認ください。"
     }
   ]
 }
