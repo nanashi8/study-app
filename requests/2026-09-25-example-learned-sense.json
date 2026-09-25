@@ -39,8 +39,8 @@
     },
     {
       "id": "copies-follow",
-      "text": "書き換えた例文を写している・引いているデータが新しい例文と合い、既存の監査・テストがすべて通る。語彙強化長文の重点語ケース 28行を差し替え（長文は作り直さない）、辞書で引けない語（gray）を避け、長文辞書語 7語は長文の本文を変えずにその語の定義に例文を書く。読み上げのテスト（構文 too…to の和訳）、学習者の日本語の見直し台帳、全教材監査台帳の長文の語彙カバー（3,943→3,944語）を合わせる。新しい例文がほかのカードと似すぎたもの（every と同じ文になった morning、場面が重なった contribute・authority・farm・architecture）は書き直した",
-      "population": "書き換えた例文 101件（英単語 96・ほかの意味 1・熟語と構文 4）と、それを写している・引いているすべてのデータ（語彙強化長文・関連語の使い分け解説・読み上げのテスト・学習者の日本語の見直し台帳・全教材監査台帳）",
+      "text": "書き換えた例文を写している・引いているデータが新しい例文と合い、既存の監査・テストがすべて通る。語彙強化長文の重点語ケース 28行を差し替え（長文は作り直さない）、辞書で引けない語（gray）を避け、長文辞書語 7語は長文の本文を変えずにその語の定義に例文を書く。読み上げのテスト（構文 too…to の和訳）、学習者の日本語の見直し台帳、全教材監査台帳の長文の語彙カバー（3,943→3,944語）を合わせる。新しい和訳101文を2つの辞書（IPADIC・UniDic）で読み比べ、端末の声が読み違える3か所（ambivalent の相反する、assign の一人一人、cook の料理人）を読みの台帳 japanese-speech-readings.js に足す。新しい例文がほかのカードと似すぎたもの（every と同じ文になった morning、場面が重なった contribute・authority・farm・architecture）は書き直した",
+      "population": "書き換えた例文 101件（英単語 96・ほかの意味 1・熟語と構文 4）と、それを写している・引いているすべてのデータ（語彙強化長文・関連語の使い分け解説・読み上げのテストと読みの台帳・学習者の日本語の見直し台帳・全教材監査台帳）",
       "check": "node --test tests/example-learned-sense.test.mjs tests/extended-reading.test.mjs tests/card-speech-range.test.mjs tests/learner-japanese-audit.test.mjs tests/content-audit-ledger.test.mjs && npm run audit:japanese-review && npm run audit:extended-reading",
       "status": "done"
     },
