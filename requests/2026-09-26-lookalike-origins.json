@@ -2,12 +2,13 @@
   "id": "2026-09-26-lookalike-origins",
   "title": "つづりが似た語は語源がつながっているのかを、似た語の全件で解説する（humiliate と human から）",
   "asked": [
-    "humiliateとhumanに語源的な繋がりはあるのか、生徒は似た語に関して疑問を持つと思うが、そこらへんの解説も加えられないか？"
+    "humiliateとhumanに語源的な繋がりはあるのか、生徒は似た語に関して疑問を持つと思うが、そこらへんの解説も加えられないか？",
+    "枝を消してみたがどうか？"
   ],
   "sessions": [
     "1ac347fe-0170-57eb-a347-1fd5dd87ba5c"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "hum-words-explained",
@@ -69,9 +70,8 @@
       "id": "branch-cleanup",
       "text": "作業の最後に、このセッション用に指定された枝 claude/humiliate-human-etymology-u4z06l へも push したところ、GitHub にその枝が新しくできてしまった（中身は main と同じ cea0eab）。一直線の決まりどおり、GitHub の枝を main だけに戻す",
       "population": "GitHub の枝（refs/heads）の全部",
-      "check": "node scripts/checks/history-authors.mjs --branches",
-      "status": "needs-user",
-      "question": "この環境からは GitHub の枝の削除が止められていて（git push --delete が4回とも接続を切られた）、消せませんでした。GitHub の Branches 画面（https://github.com/nanashi8/study-app/branches）で claude/humiliate-human-etymology-u4z06l を削除してください。中身は main と同じなので、消しても失われるものはありません。残っていると、ふつうに clone した作業ツリーでは「枝は main だけ」のテストが落ちます（--single-branch で main だけを clone すれば落ちません）。"
+      "check": "node --test --test-name-pattern=\"枝は main だけ\" tests/history-authors.test.mjs",
+      "status": "done"
     }
   ]
 }
