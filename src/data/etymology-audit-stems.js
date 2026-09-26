@@ -156,7 +156,7 @@ export const AUDIT_STEM_ROOT_WORDS = Object.freeze({
   // virus / virul ＝ 毒
   virus: Object.freeze(['virulence', 'virulent', 'virus']),
   // insul / isl ＝ 島
-  insul: Object.freeze(['insular', 'insulate', 'peninsula']),
+  insul: Object.freeze(['insular', 'insulate', 'peninsula', 'isolate', 'isolated', 'isolation']),
   // nav ＝ 船
   nav: Object.freeze(['naval', 'navigate', 'navy']),
   // imper / empir ＝ 命じる・支配

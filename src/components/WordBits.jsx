@@ -10,6 +10,7 @@ import { LEVELS, getLevel } from '../data/levels.js'
 import { ArrowRight, Check } from './Icons.jsx'
 import { Chip, cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
+import { LookalikeWordSection } from './LookalikeOrigins.jsx'
 
 const POS_COLORS = {
   動: '#6366f1', 名: '#0ea5e9', 形: '#f59e0b', 副: '#10b981',
@@ -191,8 +192,10 @@ export function ReferenceRootSummary({ word, onRoot }) {
  * 単語画面の語源ブロック。
  * 手動監査台帳を通ったカード以外は表示しない。単語レコード内の自由記述や
  * 自動綴り判定は、公開可否の根拠にも画面表示にも使わない。
+ * 最後に「つづりが似た語は同じ語源？」（src/data/lookalike-origins.js）を出す。onWord があれば語を押して開ける。
+ * lookalikeCollapsed は、テストの答えのように説明が多い所で、その欄を見出しだけにしておくとき。
  */
-export function EtymologyBlock({ word, onRoot, onPack }) {
+export function EtymologyBlock({ word, onRoot, onPack, onWord, lookalikeCollapsed = false }) {
   const cards = etymologyCardsForWord(word)
   // 語根では表せない「語そのものの歴史」は、確認済みの台帳にある語だけ出す。
   const story = etymologyStoryForWord(word)
@@ -219,6 +222,7 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           onRoot={onRoot}
         />
       ))}
+      <LookalikeWordSection word={word} onWord={onWord} collapsible={lookalikeCollapsed} />
     </div>
   )
 }

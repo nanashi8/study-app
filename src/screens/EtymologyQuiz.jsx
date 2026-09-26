@@ -9,6 +9,7 @@ import { orderForStudy } from '../lib/studyOrder.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -275,6 +276,8 @@ export function EtymologyQuizScreen() {
                   : ''}
               </p>
             </div>
+            {/* つづりが似た語は同じ語源か。答えの説明が多いので見出しだけにしておく。 */}
+            <LookalikeCardSection rootId={card.rootId} collapsible className="mt-3" />
             <button
               type="button"
               onClick={() => navigate('etymologyPack', { packId: card.id })}

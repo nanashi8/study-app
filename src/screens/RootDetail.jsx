@@ -9,6 +9,7 @@ import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { useSessionSize } from '../components/SessionSize.jsx'
 import { Button, Card } from '../components/ui.jsx'
 import { Book, Cards } from '../components/Icons.jsx'
+import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
 
 export function RootDetailScreen() {
   const rootId = useStore((state) => state.params.rootId)
@@ -131,6 +132,9 @@ export function RootDetailScreen() {
             emptyMessage="この語根に紐づく単語はまだありません。"
           />
         </section>
+
+        {/* カードの形とつづりが似ていてもカードに入れていない語が、この語根とつながるか。 */}
+        <LookalikeCardSection rootId={rootId} onWord={(id) => navigate('wordDetail', { id })} />
       </div>
     </div>
   )

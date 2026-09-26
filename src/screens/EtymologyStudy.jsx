@@ -34,6 +34,7 @@ import {
 } from '../components/QuestionSessionControls.jsx'
 import { ArrowRight, Book, Lightbulb } from '../components/Icons.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
+import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
 
 // 語源そのものを暗記するカード。表は語根の形、裏は意味・由来・確認済みの例語。
 // 判定は語源専用の記録（etymologySrs）に入る。紐づく英単語の暗記は別画面。
@@ -341,6 +342,9 @@ export function EtymologyStudyScreen() {
                   </p>
                 )}
               </div>
+
+              {/* つづりが似た語は同じ語源か。暗記の途中なので見出しだけにしておき、語は開かない。 */}
+              <LookalikeCardSection rootId={card.rootId} collapsible />
 
               <button
                 type="button"

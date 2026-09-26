@@ -626,7 +626,8 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 8606, 'sealed-note': 323 })
+  // prize は 2026-09-26、price と同じ古フランス語 pris「値打ち・ほうび」から来たことを書き直して、書き起こした本文に移した。
+  assert.deepEqual(kinds, { 'reviewed-text': 8607, 'sealed-note': 322 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // 同じつづりの別の語は見出し語が元の語と同じなので、つづりではなく id で引く。
     // January / Ms. のように大文字で始まる見出し語もあるため、つづりは小文字にそろえて比べる。

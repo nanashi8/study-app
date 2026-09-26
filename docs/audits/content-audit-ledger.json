@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-25T16:31:55.708Z",
+  "auditedAt": "2026-09-26T09:13:57.917Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 18279,
     "storedAndGeneratedQuestionPathCount": 5326,
     "storedAndGeneratedChoicePathCount": 20621,
-    "overallContentSha256": "57bd9c8a66ceb746d3ccc4a092ce278bd7281148dccb630b1e7075e352833c1e"
+    "overallContentSha256": "46674b795dfb670fb0cf42cb56d1c430428d159b9cf07c82fc434b2beda90183"
   },
   "completionCriteria": [
     "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c78e679d7a940311acc0bb2c6649138933c6a26385aba04b0f9a307ac89efa81",
+    "sha256": "e20f022c2a25ad708b7b7413b41aa06776eda662e9562833bca665e5ff4be17e",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -242,6 +242,7 @@
       "tests/literature-vocabulary.test.mjs",
       "tests/literature.test.mjs",
       "tests/long-sentence-translations.test.mjs",
+      "tests/lookalike-origins.test.mjs",
       "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
@@ -329,7 +330,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "d7481485b868a0201f72111fbe8586f63fd4ffc02fa0266a0c664e8dcd5b53d7",
+      "contentSha256": "3af68961e46b6fbe44da3165020c140ee6adabaf224f7dfec8ea848dce3586e3",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -451,7 +452,7 @@
       "quizItemCount": 339,
       "learningIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
       "quizIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
-      "contentSha256": "416a11d9aac7bc3a01b187d7e452f35e35ea4f9f62dcc8b3b87fd5eb207127c3",
+      "contentSha256": "8a3e74270acbe20ec71a24fcb49303c5990baad17a731e60204d5f9a11c3cad7",
       "auditGateIds": [
         "inventory",
         "coreData",

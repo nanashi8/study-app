@@ -12,6 +12,7 @@ import { NormalLearningRecordList } from '../components/NormalLearningRecordList
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
 import { ArrowRight, Book, Cards } from '../components/Icons.jsx'
+import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
 
 // このカード自身の暗記・テストの記録（紐づく単語のほうとは別に持つ）。
 const statusLabel = (entry) => {
@@ -152,6 +153,9 @@ export function EtymologyPackScreen() {
             emptyMessage="このカードに紐づく単語はまだありません。"
           />
         </section>
+
+        {/* カードの形とつづりが似ていてもカードに入れていない語が、この語根とつながるか。 */}
+        <LookalikeCardSection rootId={pack.rootId} onWord={(id) => navigate('wordDetail', { id })} />
 
         <button
           type="button"

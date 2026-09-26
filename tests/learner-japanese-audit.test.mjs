@@ -38,11 +38,13 @@ const RESULT_COPY_FORBIDDEN = /最新が[「『]|今回の間隔アップ|長期
 test('学習者向け日本語は画面・部品・自動生成文を全件監査する', async () => {
   const result = await auditLearnerJapanese()
 
-  assert.equal(result.learnerFiles, 293)
-  assert.equal(result.learnerJapaneseEntries, 15165)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11334)
-  assert.equal(result.sourceFiles, 739)
-  assert.equal(result.sourceJapaneseEntries, 199532)
+  // 2026-09-26、つづりが似た語の語源（src/data/lookalike-*.js・src/lib/lookalikeOrigins.js・
+  // src/components/LookalikeOrigins.jsx）を足して 5ファイル増えた。
+  assert.equal(result.learnerFiles, 295)
+  assert.equal(result.learnerJapaneseEntries, 15184)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11347)
+  assert.equal(result.sourceFiles, 744)
+  assert.equal(result.sourceJapaneseEntries, 200964)
   assert.equal(result.issues.length, 0)
 })
 

@@ -525,6 +525,7 @@ export function VocabStudyScreen() {
                   <EtymologyBlock
                     word={word}
                     onRoot={(rootId) => saveBeforeReference('rootDetail', { rootId })}
+                    onWord={openRelatedWord}
                   />
                 </div>
               )}

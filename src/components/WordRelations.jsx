@@ -6,6 +6,7 @@ import { isAmbiguousSpeechText } from '../lib/speechGuard.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { FORM_POS_LABELS } from '../lib/wordRelations.js'
 import { MeaningText } from './MeaningText.jsx'
+import { OriginNote } from './LookalikeOrigins.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { Chip, cx } from './ui.jsx'
 
@@ -325,6 +326,8 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
                 </div>
                 <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{item.word.meaning}</MeaningText></p>
                 <UsageNote text={item.usageNote} />
+                {/* 2語の語源がつながっているか（同じ語源・遠い親戚・別の語源・はっきりしない）。 */}
+                <OriginNote origin={item.origin} />
               </div>
               {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
             </>

@@ -112,7 +112,8 @@ export const CLASSICAL_ROOT_WORDS = Object.freeze({
   // sen ＝ 年老いた（ラテン語 senex「老いた」）
   sen: Object.freeze(['senior', 'senator']),
   // sol / sole ＝ 一つ・単独（ラテン語 sōlus「ただ一つの」）
-  solus: Object.freeze(['sole', 'solely', 'solitude', 'solitary', 'isolate', 'isolated', 'isolation', 'desolate']),
+  // isolate・isolated・isolation はイタリア語 isola「島」（ラテン語 īnsula）から来た語なので、insul（島）のカードに置く。
+  solus: Object.freeze(['sole', 'solely', 'solitude', 'solitary', 'desolate']),
   // soph ＝ 知恵・賢さ（ギリシャ語 sophos / sophia「賢い・知恵」）
   soph: Object.freeze(['philosophy', 'sophisticated', 'sophistication']),
   // sper ＝ 望む（ラテン語 spērāre「望む」）

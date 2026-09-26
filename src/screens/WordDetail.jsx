@@ -238,6 +238,7 @@ export function WordDetailScreen() {
                 word={word}
                 onRoot={(rootId) => navigate('rootDetail', { rootId })}
                 onPack={(packId) => navigate('etymologyPack', { packId })}
+                onWord={openWord}
               />
             </Card>
           )}

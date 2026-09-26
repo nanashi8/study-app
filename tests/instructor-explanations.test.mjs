@@ -404,7 +404,7 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
     assert.match(source, rowsPattern, `${screen}: 選択肢の欄がボタンと同じ選択肢から作られていません`)
   }
   const read = (screen) => readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
-  assert.match(await read('VocabQuiz.jsx'), /<EtymologyBlock word=\{word\} \/>/)
+  assert.match(await read('VocabQuiz.jsx'), /<EtymologyBlock word=\{word\}[^>]*\/>/)
   assert.match(await read('PhraseQuiz.jsx'), /\{item\.origin\}/)
   assert.match(await read('PhraseQuiz.jsx'), /<SyntaxFamilyGuide item=\{item\} showExamples=\{false\}/)
   // 表現の種類だけを言う決まり文句の成り立ち・進め方の指示だけの注意書きは、答え合わせに出さない。

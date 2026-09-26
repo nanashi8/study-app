@@ -1,0 +1,69 @@
+{
+  "id": "2026-09-26-lookalike-origins",
+  "title": "つづりが似た語は語源がつながっているのかを、似た語の全件で解説する（humiliate と human から）",
+  "asked": [
+    "humiliateとhumanに語源的な繋がりはあるのか、生徒は似た語に関して疑問を持つと思うが、そこらへんの解説も加えられないか？"
+  ],
+  "sessions": [
+    "1ac347fe-0170-57eb-a347-1fd5dd87ba5c"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "hum-words-explained",
+      "text": "「humiliate と human に語源的なつながりはあるか」に答える。humiliate（ラテン語 humilis「低い」。humus「土・地面」から）と human（ラテン語 hūmānus「人間の」。homō「人＝大地に住むもの」の仲間）は、さかのぼるとどちらも「土・大地」を表す古い語根につながる遠い親戚だと、両方の語の「語の成り立ち」の欄に出す。hum で始まるほかの語と exhume も、それぞれの語で同じく出す（humble・humility・humiliation・humiliated・exhume は humus「土」から、humane・humanity・humanitarian・humankind は hūmānus から、humid・humidity・humor はラテン語 ūmēre「湿っている」の仲間で別の語源、hum は音をまねた英語で別の語源）",
+      "population": "hum で始まる見出し語 14語と、接頭辞 ex- のあとに hum が続く exhume の、計15語",
+      "check": "node --test --test-name-pattern=\"humiliate と human\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "root-card-lookalikes",
+      "text": "語源カード（語根のカード）の語根の形で始まる見出し語と、接頭辞（接頭辞のカードに入っている語の頭の形）のすぐあとに語根の形が続く見出し語のうち、そのカードの語にも、その語の形のまとまり（word-forms.js）にも入っていない語を、1語ずつ読んで「同じ語源」「遠い親戚」「別の語源」（どうしても決まらないものは「つながりははっきりしない」）に分け、元の語（どの言語のどの語から来たか）とつながり方を書く。同じ由来の語はまとめる。同じカードの似た語どうしのつながり（human と humid など）も、まとまりの分け方と、まとまりどうしのつながりで決まるようにする",
+      "population": "語根カード 277枚（接頭辞・接尾辞のカード 62枚は、語ではなく語の一部の形を教えるカードなので除く）の、3文字以上の形に当たる見出し語の全件。全見出し語 8,929語が対象（大文字・空白・記号を含む見出し語 67語も小文字にして比べる）。着手時は英字だけのつづりの 8,862語に絞って 160枚・1,001件・909語と数えていたが、狭めずに数え直して 162枚・1,010件・918語",
+      "check": "node --test --test-name-pattern=\"語根カードの似た語\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "confusable-origins",
+      "text": "「つづりが似ていて間違えやすい語」に出る全組に、語源が同じか・遠い親戚か・別か（決まらないものは、はっきりしない）と、それぞれの元の語を書き、その行に出す。語根カードの似た語の台帳と食いちがう組がない",
+      "population": "つづり注意の全組 946組（見出し語どうしの組 915組・辞書にない語との組 31組）",
+      "check": "node --test --test-name-pattern=\"つづり注意の組\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "word-screens",
+      "text": "暗記カードの裏（VocabStudy）・辞書ページ（WordDetail）・単語テストの答え合わせ（VocabQuiz）の「語の成り立ち」の欄に、その語に当たる「つづりが似た語は同じ語源？」を出す（語根カードの語には、そのカードの似た語とのつながり。似た語には、カードの語とのつながりと、同じカードのほかの似た語とのつながり）。つづり注意の欄（暗記カードの裏・辞書ページ）の全行に、語源のつながりを出す",
+      "population": "似た語の台帳に入る全見出し語（似た語を持つ語根カードの語と、似た語）と、つづり注意の欄を出す全見出し語。画面は VocabStudy・WordDetail・VocabQuiz の3画面",
+      "check": "node --test --test-name-pattern=\"単語の画面\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "card-screens",
+      "text": "語源カードを出す画面（語根の単語一覧 RootDetail・語源カード EtymologyPack・語源の暗記カードの裏 EtymologyStudy・語源テストの答え合わせ EtymologyQuiz）に、カードの「綴りが似ているだけの語は含めません」の注意に続けて、どの語がつづりが似ているだけなのか、または実はつながっているのか（同じ語源・遠い親戚・別の語源と、その理由）を出す",
+      "population": "似た語を持つ語根カード全部（162枚）と、語源カードを出す全4画面",
+      "check": "node --test --test-name-pattern=\"語源カードの画面\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "stories-consistent",
+      "text": "似た語の台帳を作る中で見つかった、既存の「語の成り立ち」の誤りを直し、今後も食いちがわないようにする。語の成り立ちの本文が名指しした語のつながり（「X と同じ語源」「遠い親戚」「X とは別の語源」）が、似た語の台帳と食いちがわない。直すもの: omit・dismiss・emission・surmise・intermittent の「miss と同じ語源」（mittere の仲間は mission）、cure・curious・accurate の「care と同じ語源」（care は古英語 caru）、counsel の「council と同じ語源」、isolate・peninsula の「island と同じ語源」、stand・arm・recline を「同じ語源」と書いた遠い親戚、depose・purpose・juxtapose・disposal の pōnere の取り違え（古フランス語 poser）、college の legere、bondage・prize の元の語、同じつづりの別の語とまぎれる grave・bear。isolate・isolated・isolation は sōlus「ひとりの」のカードから īnsula「島」のカードへ移す",
+      "population": "公開している語の成り立ち 8,929件が名指しした語のうち、似た語の台帳（つづり注意の組・語根カードの似た語）で判定できる全件（670件）",
+      "check": "node --test --test-name-pattern=\"語の成り立ち\" tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "japanese-readable",
+      "text": "この依頼で書いた日本語（似た語の説明・語源のつながりの説明・画面の文言）を、学習者向け日本語の見直し（漢字のかたまりを1件ずつ読む・常用漢字表での裏打ち）に通す",
+      "population": "この依頼で足した日本語の全件",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）をクリーンな clone で通してから main へ push し、公開版のデプロイ（GitHub Actions の deploy.yml）が push したコミットで成功したことを GitHub の記録で確かめる",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

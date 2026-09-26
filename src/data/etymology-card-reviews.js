@@ -26,6 +26,9 @@ const reviewedPrefix = reviewedOn('2026-09-06')
 const reviewedSuffix = reviewedOn('2026-09-07')
 // 全語の語源メモを見直したときに新しく起こした語幹カード。
 const reviewedStem = reviewedOn('2026-09-07')
+// つづりが似た語の語源の見直し（requests/2026-09-26-lookalike-origins.json）で、紐づけ語を直して確かめ直したカード。
+// isolate は sōlus「ひとりの」ではなくイタリア語 isola「島」（ラテン語 īnsula）から来た語なので、solus から insul へ移した。
+const reviewedLookalike = reviewedOn('2026-09-26')
 
 export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   port: reviewed(['important', 'report'], 'f27669c208461d2f4021f890b0c5ed9fb0aa684a45af54248bc1be5e3f46b458'),
@@ -216,7 +219,7 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   satis: reviewedRelink(['satisfy', 'saturate'], 'b563f16284c13bbd2e888f86c177920b61b8cbb872c0f7dbbec6ef9859f9b819'),
   scend: reviewedRelink(['ascend', 'descend'], 'e58937561d300547b0dd2aa40825256243b58461d689c764c284d73fd4082e7d'),
   sen: reviewed(['senior', 'senator'], '411d20de82b5537d9c5893af78c9d5978f9eaadbd999d066b4bf62f374c106ad'),
-  solus: reviewedRelink(['sole', 'isolate'], '22d79e35050b637f5112b0a75a76fc2820fd9d50d3f754553634ef4bafd7db33'),
+  solus: reviewedLookalike(['sole', 'solitude'], 'cf9b53b62f4469fe0db8dbaf9c34d3d166530822ef000c6270af13ddc4506780'),
   soph: reviewed(['philosophy', 'sophisticated'], '4275fc86c691706943078432f15a7bba22df726d2598ca4670c17b93c7e37261'),
   sper: reviewed(['despair', 'prosper'], 'edcdbcb076a29c6e315308627c69975efc284dd522a9f4496e61fe546e4a08d5'),
   sum: reviewed(['assume', 'consume'], 'e8c93eda5c25d990807da4aac5fb11143aaf3112db67ccebc2cd2f54c5f9dd5f'),
@@ -360,7 +363,7 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   grav: reviewedStem(['gravity', 'grief'], 'b07c00d5c4019fcdc0980cf49251c64cb6cb6fd616c13d9c8ab8bb7b28a0a799'),
   heres: reviewedStem(['heir'], '74e4011558cc8153d859704aab4ed0ceed24aa6230342b5ad8e099cbc9060b14'),
   virus: reviewedStem(['virulence', 'virulent'], 'f2da99cb6957fb6664d7c8fd691732624f9717a93bd3963abba81bbcd4ab5a29'),
-  insul: reviewedStem(['insular', 'insulate'], '204f5f458fd18a55f709a33b110e2b80d8912f639110e06f838452141c090a14'),
+  insul: reviewedLookalike(['insular', 'insulate', 'isolate'], '4b55e8fd2c8e6207a3f40ad25015af83138a4a68d75fd04a7227bb6e4475414f'),
   nav: reviewedStem(['naval', 'navigate'], 'a9175f59e57f4a35b5108bc6544a3582e85bad44e4d1e90f1ebef98ddbe3d40f'),
   imper: reviewedStem(['empire', 'imperial'], '1e77756b56c7effeeb6b42ba865b2e299d7b671d88ad91efab2085ea0da46c3b'),
   plumb: reviewedStem(['plumber', 'plummet'], 'f20752bab9f5a99a43d992b4c12e14fb88e140b3251a62942b2f0ae136a29049'),

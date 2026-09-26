@@ -104,7 +104,8 @@ test('全英文法の13,800選択肢は、正解の理由または誤答がこ�
 // 単語・熟語のテストは選択肢の中身と成り立ちだけを出し、例文は出さない（例文は暗記カードと辞書で見る）。
 test('主要テストは正答後に、その問題の学習ポイントを表示する', () => {
   const checks = {
-    'VocabQuiz.jsx': [/<ChoiceExplanations/, /<EtymologyBlock word=\{word\} \/>/],
+    // 語の成り立ちの欄は、似た語の欄を畳んで出す（lookalikeCollapsed）などの属性がついてもよい。
+    'VocabQuiz.jsx': [/<ChoiceExplanations/, /<EtymologyBlock word=\{word\}[^>]*\/>/],
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /grammarRuleExplanationFor\(item\)/, /GrammarChoiceExplanations/, /patternExamples/],
     'PhraseQuiz.jsx': [/<ChoiceExplanations/, /\{item\.origin\}/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /\{item\.explain\}/, /<ChoiceExplanations/, /listeningChoiceNoteFor/],

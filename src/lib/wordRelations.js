@@ -16,6 +16,7 @@ import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES, WORD_FORM_SENSES }
 import { WORD_SENSES } from '../data/word-senses.js'
 import { WORD_USAGE_NOTES } from '../data/word-usage-notes.js'
 import { WORD_IDIOM_NOTES, WORD_RELATION_NOTES } from '../data/word-relation-notes.js'
+import { confusableOriginBetween } from './lookalikeOrigins.js'
 
 // 強勢記号や区切りを除いて、発音記号が同じかを比べる。
 const IPA_MARKS = /[ˈˌ/.\s]/gu
@@ -274,6 +275,8 @@ export function confusablesFor(word) {
     word: other,
     segments: spellingDifference(word.word, other.word),
     sameSound: Boolean(soundKey(word)) && soundKey(word) === soundKey(other),
+    // 語源がつながっているか（src/data/lookalike-confusables.js）。辞書にない語はつづりで引く。
+    origin: confusableOriginBetween(word.id, other.id ?? other.word),
   }, other.word))
 }
 

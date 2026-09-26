@@ -116,7 +116,8 @@ test('単語テストは解答直後に語源を表示し、詳細遷移を必�
   const study = read('../src/screens/VocabStudy.jsx')
   const detail = read('../src/screens/WordDetail.jsx')
 
-  assert.match(quiz, /answered && \([\s\S]*<EtymologyBlock word=\{word\} \/>/)
+  // 語の成り立ちの欄は、似た語の欄を畳んで出す（lookalikeCollapsed）などの属性がついてもよい。
+  assert.match(quiz, /answered && \([\s\S]*<EtymologyBlock word=\{word\}[^>]*\/>/)
   assert.match(quiz, /辞書ページで関連語も見る/)
   assert.match(study, /<EtymologyBlock/)
   assert.match(study, /辞書ページで関連語も見る/)

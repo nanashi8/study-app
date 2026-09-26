@@ -466,7 +466,7 @@ export function VocabQuizScreen() {
                 {!etymologyStoryForWord(word) && (
                   <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
                 )}
-                <EtymologyBlock word={word} />
+                <EtymologyBlock word={word} lookalikeCollapsed />
               </div>
             )}
             <button onClick={saveBeforeDetail} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">

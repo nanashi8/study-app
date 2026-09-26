@@ -316,7 +316,8 @@ for (const obsolete of [
     errors.push(`語源の学習者向け画面に専門的な表示語「${obsolete}」が残る`)
   }
 }
-if (!vocabQuizSource.includes('<EtymologyBlock word={word} />')) {
+// 似た語の欄を畳んで出す（lookalikeCollapsed）などの属性がついてもよい。
+if (!/<EtymologyBlock word=\{word\}[^>]*\/>/.test(vocabQuizSource)) {
   errors.push('単語テストの解答直後に語源本文がない')
 }
 // 意味を知っているかを問うテストは、出題にない例文や文脈で答えを決められると説く4段解説を置かない。
