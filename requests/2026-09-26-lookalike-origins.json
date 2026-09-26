@@ -63,7 +63,15 @@
       "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）をクリーンな clone で通してから main へ push し、公開版のデプロイ（GitHub Actions の deploy.yml）が push したコミットで成功したことを GitHub の記録で確かめる",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
+    },
+    {
+      "id": "branch-cleanup",
+      "text": "作業の最後に、このセッション用に指定された枝 claude/humiliate-human-etymology-u4z06l へも push したところ、GitHub にその枝が新しくできてしまった（中身は main と同じ cea0eab）。一直線の決まりどおり、GitHub の枝を main だけに戻す",
+      "population": "GitHub の枝（refs/heads）の全部",
+      "check": "node scripts/checks/history-authors.mjs --branches",
+      "status": "needs-user",
+      "question": "この環境からは GitHub の枝の削除が止められていて（git push --delete が4回とも接続を切られた）、消せませんでした。GitHub の Branches 画面（https://github.com/nanashi8/study-app/branches）で claude/humiliate-human-etymology-u4z06l を削除してください。中身は main と同じなので、消しても失われるものはありません。残っていると、ふつうに clone した作業ツリーでは「枝は main だけ」のテストが落ちます（--single-branch で main だけを clone すれば落ちません）。"
     }
   ]
 }
