@@ -25,7 +25,7 @@ const ROUTED_SCREENS = (() => {
 })()
 
 // どのアプリにも属さない共通画面。入口（スタディアプリ）へ戻す。
-const SHARED_SCREENS = new Set(['portal', 'login', 'settings', 'progress', 'myLearning'])
+const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning'])
 
 test('ルーティングされた全画面に、帰る先が決まっている', () => {
   assert.ok(ROUTED_SCREENS.length >= 60, `画面が${ROUTED_SCREENS.length}件しか読めていない`)

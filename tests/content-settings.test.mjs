@@ -70,7 +70,7 @@ test('値を持つ教材は、メニューの教材の行と画面の持ち主�
   for (const screen of Object.keys(SHARED_SCREENS)) assert.ok(!owned.includes(screen), screen)
   // どの公開画面も、持ち主の教材・共通の画面・教材を持たない画面のどれかに分ける。
   const unscoped = [
-    'portal', 'login', 'home', 'myLearning', 'myList', 'customWords', 'vocabCamera', 'progress', 'settings',
+    'portal', 'home', 'myLearning', 'myList', 'customWords', 'vocabCamera', 'progress', 'settings',
     'wordRequests', 'mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz',
   ]
   for (const route of routes) {

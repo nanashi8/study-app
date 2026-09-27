@@ -34,7 +34,6 @@ export function WordRequestsScreen() {
           </h2>
           <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
             {'英和辞書で調べて見つからなかった語は、ボタンを押さなくてもそのまま追加リクエストになります。'}
-            {'ログインは必要ありません。'}
           </p>
           <div className="mt-4 rounded-2xl bg-brand-50 p-4 text-center">
             <p className="text-xs font-extrabold text-brand-600">受付語数</p>

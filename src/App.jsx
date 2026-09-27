@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useAuth } from './store/useAuth.js'
 import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
-import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
@@ -139,7 +138,6 @@ const KanbunKundokuQuizScreen = lazyScreen(
 
 const SCREENS = {
   portal: PortalScreen,
-  login: LoginScreen,
   home: HomeScreen,
   vocabLevels: VocabLevelsScreen,
   vocabGroups: VocabGroupsScreen,
@@ -216,7 +214,7 @@ const SCREENS = {
 
 // 全公開画面はAppShell上部の戻る・メニュー入口を共有する。
 
-// 学習アプリ本体（ログイン済みのときだけ表示）。
+// 学習アプリ本体。
 function MainApp() {
   const screen = useStore((s) => s.screen)
   const params = useStore((s) => s.params)
@@ -267,6 +265,8 @@ function Splash({ label }) {
 }
 
 // 認証ゲート：未ログインはゲストとして本体へ、ログイン済みはクラウド復元→本体。
+// ログインの入口は紛らわしいので画面に出さない。すでにログインしている端末だけ、
+// 見えないまま今までどおりクラウドへ保存・復元を続ける（記録を失わせない）。
 export default function App() {
   const status = useAuth((s) => s.status)
   const user = useAuth((s) => s.user)
@@ -298,10 +298,6 @@ export default function App() {
     ]).then(() => {
       if (!alive) return
       stop = startAutoSave(user.uid, user.email)
-      // ゲストからログインした直後はログイン画面に居るので、ポータルへ戻す。
-      // navigate だとログイン画面が履歴に残り、戻るでログイン画面に出てしまう。
-      const st = useStore.getState()
-      if (st.screen === 'login') st.goPortal()
       setSynced(true)
     })
     return () => {

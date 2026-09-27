@@ -61,7 +61,7 @@ for (const home of APP_HOMES) {
 
 /**
  * その画面が属するアプリのホーム。どのアプリにも属さない共通画面
- * （設定・記録・マイ学習・ログイン）は、入口のスタディアプリを返す。
+ * （設定・記録・マイ学習）は、入口のスタディアプリを返す。
  */
 export function appHomeForScreen(screen) {
   const home = HOME_BY_SCREEN.get(screen)

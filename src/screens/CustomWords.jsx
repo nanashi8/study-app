@@ -549,7 +549,7 @@ export function CustomWordsScreen() {
             )}
 
             <p className="px-1 text-[11px] font-bold leading-relaxed text-ink/45">
-              {'自作単語はこの端末に保存され、ログインしていればクラウドにも保存されます。'}
+              {'自作単語はこの端末に保存されます。'}
               {'進捗コード・QRにも入りますが、語数が多いとQRに収まらないことがあります。'}
               {'端末を替えるときや、まとめて直したいときはこのファイルを使ってください。'}
             </p>

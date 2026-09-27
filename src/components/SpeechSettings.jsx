@@ -811,7 +811,6 @@ const MENU_ITEM_ICONS = {
   advisor: Sparkles,
   analytics: Chart,
   settings: Gear,
-  account: Home,
   reset: Refresh,
 }
 
@@ -820,8 +819,6 @@ function MenuDestinationList({
   onNavigate,
   onAction,
   onOpenContentSettings,
-  account,
-  authStatus,
   tone = 'brand',
 }) {
   const colors = tone === 'violet'
@@ -832,15 +829,10 @@ function MenuDestinationList({
       {items.map((item) => {
         const key = item.kind === 'screen' ? item.screen : item.action
         const Icon = MENU_ITEM_ICONS[key] ?? Book
-        const isAccount = item.action === 'account'
         // 教材の行は、押すとその教材の設定を開く（教材へは設定のいちばん上から進む）。
         const opensSettings = Array.isArray(item.settings)
-        const label = isAccount
-          ? account ? 'アカウント' : 'ログイン・保存'
-          : item.label
-        const description = isAccount
-          ? account?.email ?? (authStatus === 'out' ? '任意でクラウド保存' : 'ゲストで端末保存中')
-          : opensSettings ? contentSettingsSummary(item) : item.description
+        const label = item.label
+        const description = opensSettings ? contentSettingsSummary(item) : item.description
         const danger = item.tone === 'danger'
         return (
           <button
@@ -862,7 +854,6 @@ function MenuDestinationList({
             data-menu-content-settings={opensSettings ? item.screen : undefined}
             data-menu-action={item.kind === 'action' ? item.action : undefined}
             data-menu-settings-entry={item.action === 'settings' ? '' : undefined}
-            data-menu-account-entry={item.action === 'account' ? '' : undefined}
             data-menu-reset-entry={item.action === 'reset' ? '' : undefined}
             data-menu-advisor-entry={item.action === 'advisor' ? '' : undefined}
             data-menu-retention-entry={item.action === 'analytics' ? '' : undefined}
@@ -898,8 +889,6 @@ function MenuDestinationList({
 }
 
 export function AppMenuPanel({
-  account,
-  authStatus,
   onNavigate,
   onAction,
   onOpenContentSettings,
@@ -920,8 +909,6 @@ export function AppMenuPanel({
               onNavigate={onNavigate}
               onAction={onAction}
               onOpenContentSettings={onOpenContentSettings}
-              account={account}
-              authStatus={authStatus}
               tone={menuSection.id === 'english' || menuSection.id === 'support' ? 'violet' : 'brand'}
             />
           </section>
@@ -1123,40 +1110,6 @@ function ResetCompletePanel({ status, resetGroupIds, onRetry, onHome, onMenu }) 
   )
 }
 
-function AccountPanel({ account, authStatus, onLogin, onSignOut }) {
-  if (account) {
-    return (
-      <section className="space-y-3" data-menu-account-panel>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-extrabold text-brand-600">ログイン中</p>
-          <p className="mt-1 break-all font-display text-base font-extrabold text-ink">{account.email}</p>
-          <p className="mt-2 text-xs font-bold leading-relaxed text-ink/50">
-            学習状況はクラウドへ自動保存され、同じIDで別端末から続けられます。
-          </p>
-        </div>
-        <Button full variant="danger" onClick={onSignOut}>ログアウト</Button>
-        <p className="text-xs font-bold leading-relaxed text-ink/45">
-          ログアウトすると共有端末保護のため、この端末の学習状況を初期化します。クラウドの記録は残ります。
-        </p>
-      </section>
-    )
-  }
-
-  return (
-    <section className="space-y-3" data-menu-account-panel>
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
-        <p className="font-display text-lg font-extrabold text-ink">ゲストで学習中</p>
-        <p className="mt-2 text-xs font-bold leading-relaxed text-ink/50">
-          この端末には自動保存されています。QR・コードならログインなしでも持ち運べます。
-        </p>
-      </div>
-      {authStatus === 'out' && (
-        <Button full onClick={onLogin}>ログインしてクラウド保存を使う</Button>
-      )}
-    </section>
-  )
-}
-
 export function SpeechSettingsSheet() {
   const open = useStore((state) => state.speechSettingsOpen)
   const closeSpeechSettings = useStore((state) => state.closeSpeechSettings)
@@ -1179,9 +1132,8 @@ export function SpeechSettingsSheet() {
     diagnosticHistory: state.diagnosticHistory,
     stats: state.stats,
   })))
+  // ログインの表示は出さないが、すでにログインしている端末ではリセットをクラウドの記録にも当てる。
   const account = useAuth((state) => state.user)
-  const authStatus = useAuth((state) => state.status)
-  const signOutNow = useAuth((state) => state.signOutNow)
   const [view, setView] = useState('menu')
   const [contentSettingsItem, setContentSettingsItem] = useState(null)
   const [resetStatus, setResetStatus] = useState('idle')
@@ -1274,12 +1226,6 @@ export function SpeechSettingsSheet() {
       setResetStatus('cloud-error')
     }
   }
-  const signOutAndClose = async () => {
-    await signOutNow()
-    close()
-    goPortal()
-  }
-
   const sheetTitles = {
     menu: 'メニュー',
     settings: '設定',
@@ -1288,7 +1234,6 @@ export function SpeechSettingsSheet() {
     reset: '学習履歴のリセット',
     'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',
-    account: account ? 'アカウント' : 'ログイン・保存',
     'content-settings': contentSettingsItem ? `${contentSettingsItem.label}の設定` : '設定',
   }
   const sheetTitle = sheetTitles[view] ?? 'メニュー'
@@ -1377,20 +1322,8 @@ export function SpeechSettingsSheet() {
             continueLabel="保存を終えてリセット確認へ"
           />
         </>
-      ) : view === 'account' ? (
-        <>
-          <MenuBackButton onClick={() => showView('menu')} />
-          <AccountPanel
-            account={account}
-            authStatus={authStatus}
-            onLogin={() => openScreen('login')}
-            onSignOut={signOutAndClose}
-          />
-        </>
       ) : (
         <AppMenuPanel
-          account={account}
-          authStatus={authStatus}
           onNavigate={openScreen}
           onAction={showView}
           onOpenContentSettings={openContentSettings}

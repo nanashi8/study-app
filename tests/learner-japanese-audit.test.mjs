@@ -40,11 +40,12 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
 
   // 2026-09-26、つづりが似た語の語源（src/data/lookalike-*.js・src/lib/lookalikeOrigins.js・
   // src/components/LookalikeOrigins.jsx）を足して 5ファイル増えた。
-  assert.equal(result.learnerFiles, 295)
-  assert.equal(result.learnerJapaneseEntries, 15184)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11347)
-  assert.equal(result.sourceFiles, 744)
-  assert.equal(result.sourceJapaneseEntries, 200964)
+  // 2026-09-27、ログイン画面（src/screens/Login.jsx）とログイン・保存の表示を外して 1ファイル減った。
+  assert.equal(result.learnerFiles, 294)
+  assert.equal(result.learnerJapaneseEntries, 15152)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11319)
+  assert.equal(result.sourceFiles, 743)
+  assert.equal(result.sourceJapaneseEntries, 200927)
   assert.equal(result.issues.length, 0)
 })
 

@@ -144,22 +144,23 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     ['english', '英語の学習'],
     ['support', '学習サポート'],
     ['records', '保存・記録'],
-    ['settings', '設定・アカウント'],
+    ['settings', '設定'],
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [6, 8, 7, 4, 3],
+    [6, 8, 7, 4, 2],
   )
-  assert.equal(APP_MENU_ITEMS.length, 28)
+  assert.equal(APP_MENU_ITEMS.length, 27)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
-  assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'account', 'reset'])
+  assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
   assert.equal(APP_MENU_ITEMS.find((item) => item.screen === 'portal')?.label, 'スタディアプリ ホーム')
   assert.match(menu, /data-menu-section-list/)
   assert.match(menu, /data-menu-section=\{menuSection\.id\}/)
   assert.match(menu, /data-menu-item/)
   assert.match(menu, /data-menu-settings-entry/)
-  assert.match(menu, /data-menu-account-entry/)
+  // ログイン・保存の行は紛らわしいので出さない（2026-09-27）。
+  assert.doesNotMatch(menu, /data-menu-account-entry|AccountPanel|view === 'account'/)
   assert.match(menu, /data-menu-reset-entry/)
   assert.match(menu, /data-menu-reset-confirmation/)
   assert.doesNotMatch(menu, /data-menu-group-list|data-menu-direct-list|data-menu-group-entry|data-menu-group-panel|AppMenuGroupPanel|appMenuGroupById/)

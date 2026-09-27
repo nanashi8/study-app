@@ -1,0 +1,62 @@
+{
+  "id": "2026-09-27-hide-login-save",
+  "title": "メニューの「設定・アカウント」欄にある「ログイン・保存」を、紛らわしいので画面に出さない",
+  "asked": [
+    "設定・アカウントのログイン・保存は紛らわしいので見えないようにしなさい。"
+  ],
+  "sessions": [
+    "0090408f-1f37-4804-90b2-7579572226b0"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "menu-row-hidden",
+      "text": "上部の「メニュー」の「設定・アカウント」欄から「ログイン・保存」の行（説明は「任意でクラウド保存」か「ゲストで端末保存中」、ログイン中は同じ行が「アカウント」とメールアドレスになる）をなくす。ゲスト・Firebase 未設定・ログイン中のどの状態でも出さない。行がなくなると欄の見出しの「アカウント」が指すものがなくなるので、見出しは「設定」にする。欄に残る行は「設定」「学習履歴を選んでリセット」の2つ。ほかの欄の行（「保存・記録」欄の「学習記録・バックアップ」の QR・コードを含む）は1つも消さない。結果：直す前の28行から「ログイン・保存」の1行だけを外し、ほかの27行は名前・並び・行き先を1行も変えずに残した（tests/hide-login-save.test.mjs が全27行を1行ずつ突き合わせる）。メニューのシートをゲスト・未設定・ログイン中の3つの状態で描き、3つとも行は27、「設定」欄は「設定」「学習履歴を選んでリセット」の2行、ログイン・ログアウト・アカウント・パスワード・クラウド・ゲストの語は0件、ログイン中のメールアドレスも出ないことを確かめた。行を一時的に戻すとテスト7件のうち5件が落ちることも確かめた",
+      "population": "メニューの全5欄・全28行（直す前）× ログインの状態 3つ（ゲスト out・未設定 unconfigured・ログイン中 in）",
+      "check": "node --test tests/hide-login-save.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "account-views-unreachable",
+      "text": "「ログイン・保存」の行から開いていた表示をどこからも開けないようにする。メニューのシートのアカウントの表示（「ゲストで学習中」「ログインしてクラウド保存を使う」「ログイン中」「ログアウト」）と、ログイン画面（Login.jsx、画面 ID login：ID とパスワードの入力、「ログインせずに使う（ゲスト）」）をコードから外す。どこからも開かれない設定画面（Settings.jsx、画面 ID settings）に残っているアカウントの欄（ログイン中のメールアドレス・ログアウト）も外す。結果：SCREENS は 74→73（login を外し、Login.jsx を消した）、シートの表示は 9→8（account を外した）。どの学習者向けファイルにも login へ移る処理は残っていない。ログイン・ログアウトの処理（useAuth の signIn・signOutNow）も、呼ぶ画面がなくなったので外した",
+      "population": "App.jsx の SCREENS の全画面（直す前 74）と、メニューのシートの全表示（menu・settings・advisor・analytics・reset・reset-complete・backup-reset・account・content-settings の9つ）",
+      "check": "node --test tests/hide-login-save.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "no-login-copy-on-screens",
+      "text": "学習者の見る画面の文言で、ログイン・ログアウト・アカウント・パスワードに触れるもの、ログインするとクラウドに保存されると案内するものを出さない。自作単語（「自作単語はこの端末に保存され、ログインしていればクラウドにも保存されます。」→「自作単語はこの端末に保存されます。」）、教科書から単語追加（「ログインは要りません。」を消す）、辞書リクエスト一覧（「ログインは必要ありません。」を消す）を直す。学習者向け日本語の監査（scripts/audit-learner-japanese.mjs の FORBIDDEN_GUIDANCE）に禁止語として足し、今後も止める。ログイン中の端末で学習履歴をリセットしたときだけ出る結果の知らせ（「クラウドへ反映しています…」「クラウド保存を再試行」「この端末とクラウドの初期化を確認しました。」）は外さない：ゲストの端末には出ず、ログインの入口がなくなるので新しくこの表示に当たる端末もできない。すでにログインしている端末では、クラウドの古い記録が戻らないための再試行に要る。結果：31行・8ファイル → 5行・2ファイル。残る5行は、上に書いたリセットの結果の知らせ4行（SpeechSettings）と、公開終了したゲームの敵の技の名前「クラウド・コイル」1行（rpg.js、クラウド保存とは関係がない）。禁止語は仮のファイルで2件止まることを確かめた",
+      "population": "学習者向け日本語の監査が読む全ファイル（src の全 .jsx・src/lib・src/data/contents.js）の画面の文字列。直す前にログイン・ログアウト・アカウント・クラウド・パスワードを含む行は 31行・8ファイル（SpeechSettings 13・Login 8・Settings 4・appMenu 2・CustomWords 1・VocabCamera 1・WordRequests 1・rpg 1）",
+      "check": "node --test tests/hide-login-save.test.mjs && npm run audit:japanese",
+      "status": "done"
+    },
+    {
+      "id": "logged-in-devices-keep-records",
+      "text": "すでにログインしている端末の記録を失わせない。見えないまま、今までどおり起動時にクラウドから復元し、学習のたびにクラウドへ保存し続ける（ログアウトさせない・端末の記録を消さない）。学習履歴のリセットもクラウドの記録ごと行う。結果：App.jsx の起動時の復元（pullOrInit）と自動保存（startAutoSave）、useAuth のログイン状態の購読、リセットの resetProgressEverywhere(account, …) はそのまま。ログアウトで端末の記録を消す処理（signOutNow の resetProgress）は、呼ぶ画面がなくなったので外した",
+      "population": "ログインの状態 3つ（ゲスト・未設定・ログイン中）の起動・自動保存・リセットの経路",
+      "check": "node --test tests/hide-login-save.test.mjs tests/regressions.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "tests-docs-follow",
+      "text": "メニューの欄と行の数（5欄 6,8,7,4,3・28行 → 6,8,7,4,2・27行）、メニューの操作（advisor・analytics・settings・account・reset → account を除く4つ）、画面の数（74 → 73）を固定値で確かめている既存のテストと検査（tests/speech-settings-menu.test.mjs・tests/feature-upgrades.test.mjs・tests/readability-ui.test.mjs・tests/app-navigation.test.mjs・tests/content-settings.test.mjs・scripts/check-learner-facing-contract.mjs・scripts/check-learning-links.mjs）と、学習者向けの約束の文書（docs/learner-facing-quality-contract.md の「設定・アカウント」・全28項目）を合わせる。学習者向け日本語の表記数の固定値（tests/learner-japanese-audit.test.mjs）は実測値に合わせる。全テスト・全監査（npm run audit:all-content）が通る。消した文言の漢字語3つ（共有端末保護・自動保存・端末保存中）が「学習者の日本語が読めるか」の台帳（docs/audits/learner-japanese-review.json）に残り、tests/meaning-readable.test.mjs が「教材に出てこない漢字語が台帳に残っている」で止めたので、台帳から外した（上流の main に載せ直したあとの値で、漢字語 24,428→24,425。--write で作り直した結果と同じ）。上流の main が9コミット進んでいた（似た形の語の成り立ち・答えの傾向による出題順）ので載せ直し、ぶつかった2ファイル（学習者の日本語の台帳・表記数の固定値）は上流の版に自分の変更をやり直した。表記数は上流の 295ファイル・15,184表記（重複なし 11,347）・ソース全体 744ファイル・200,964表記から、294・15,152（11,319）・743・200,927 になった（前の土台での差と同じ −1・−32・−28・−1・−37）。結果：クリーンな clone（上流の dcf196e の上に載せたコミット）で npm run audit:all-content を通した（テスト 1,044件すべて通過、全検査・ビルド・配布物の監査・git diff --check・全教材監査台帳の書き直しと確認）。台帳の変化は監査日時・指紋・新しいテストの名前の3か所だけ",
+      "population": "メニュー・画面の数を固定値で持つテスト 5本・検査 2本・文書 1つと、全テスト・全監査、学習者の日本語の台帳（漢字語 24,428件）",
+      "check": "node --test tests/speech-settings-menu.test.mjs tests/feature-upgrades.test.mjs tests/readability-ui.test.mjs tests/app-navigation.test.mjs tests/content-settings.test.mjs tests/learner-japanese-audit.test.mjs tests/hide-login-save.test.mjs && npm run check:learner-contract && npm run audit:links",
+      "status": "done"
+    },
+    {
+      "id": "verified-in-app",
+      "text": "開発サーバーのアプリをスマホの幅で開いて確かめる。メニューの「設定」欄に「ログイン・保存」がなく、「設定」「学習履歴を選んでリセット」だけがあり、どちらも開けること。自作単語・教科書から単語追加・辞書リクエスト一覧にログインの文言が出ないこと。コンソールのエラーが出ないこと。結果：開発サーバー（スマホの幅 375×812）で、メニューは全27行・「設定」欄は「設定」「学習履歴を選んでリセット」の2行・ログイン・ログアウト・アカウント・クラウド・ゲストの語は0件（上流に載せ直したあとも同じ）。「設定」は全体の設定のパネルが、「学習履歴を選んでリセット」は分類を選ぶ画面が開いた（リセットは押していない）。自作単語の「ファイル」の欄は「自作単語はこの端末に保存されます。」になり、辞書リクエスト一覧からは「ログインは必要ありません。」が消えた。教科書から単語追加の「辞書にない単語」の欄は写真を読み取ったあとにだけ出るが、開発サーバーでは既存の不具合（StrictMode で画面の生存フラグが false のまま戻らない）で読み取りが2%で止まるので、本番ビルド（クリーンな clone の dist を vite preview）で確かめた：英文の画像を読み取らせ、5語のうち4語が辞書と一致、辞書にない語 zorblax の欄が「選んだ語だけを辞書登録リクエストへ送ります。写真や教科書の本文、メールアドレスは送信しません。…」になり、ログインの語は0件（送信は押していない）。本番ビルドでもメニューは全27行・「設定」欄2行・ログインの語0件。読み込み直したあとのコンソールのエラーは0件（文字認識エンジンの解像度の推定の知らせ1件を除く）。開発時だけの読み取りの不具合は、この依頼の範囲外として別の作業に提案した",
+      "population": "メニュー（開発サーバーと本番ビルド）と、文言を直した画面 3つ（自作単語・教科書から単語追加・辞書リクエスト一覧）",
+      "check": "node --test tests/hide-login-save.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版のメニューに「ログイン・保存」の行がないことを見る",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -131,9 +131,9 @@ export const APP_MENU_SECTIONS = Object.freeze([
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),
-  section('settings', '設定・アカウント', [
+  // ログイン・クラウド保存の行は紛らわしいので出さない（記録は端末へ自動保存され、QR・コードで持ち運べる）。
+  section('settings', '設定', [
     actionItem('settings', '設定', 'すべての教材の設定をまとめて変える・ホームの表示'),
-    actionItem('account', 'ログイン・アカウント', 'クラウド保存とログアウト'),
     actionItem('reset', '学習履歴を選んでリセット', 'すべて、または項目を選択', 'danger'),
   ]),
 ])

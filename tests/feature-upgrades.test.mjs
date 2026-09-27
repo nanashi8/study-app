@@ -192,15 +192,15 @@ test('メニューの全教材・個人機能は公開ルートに存在し、�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 74)
-  assert.equal(APP_MENU_ITEMS.length, 28)
+  assert.equal(publicScreens.size, 73)
+  assert.equal(APP_MENU_ITEMS.length, 27)
   assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 23)
   assert.deepEqual(
     APP_MENU_SCREEN_DESTINATIONS.filter((screen) => !publicScreens.has(screen)),
     [],
   )
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, APP_MENU_SCREEN_DESTINATIONS.length)
-  assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'account', 'reset'])
+  assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'reset'])
   assert.match(menu, /data-reset-select-all/)
   assert.match(menu, /data-reset-group=\{group\.id\}/)
   assert.doesNotMatch(menu, /DataManagementPanel|data-data-management-panel|clearLearningData/)
