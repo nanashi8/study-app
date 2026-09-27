@@ -7,7 +7,7 @@
   "sessions": [
     "0090408f-1f37-4804-90b2-7579572226b0"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "menu-row-hidden",
@@ -53,10 +53,10 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版のメニューに「ログイン・保存」の行がないことを見る",
+      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版のメニューに「ログイン・保存」の行がないことを見る。結果：クリーンな clone で npm run audit:all-content を通し（テスト 1,044件・全監査・ビルドが通過）、main へ push した（commit 2760121、上流の dcf196e の上）。デプロイ（GitHub Actions deploy.yml の run 36291098928、build・deploy とも success）を確かめ、scripts/checks/deployed-matches-head.mjs も「push 済みで、公開版へのデプロイが成功している」と答えた。公開版をスマホの幅で開き、メニューは全27行（6・8・7・4・2）、「設定」欄は「設定」「学習履歴を選んでリセット」の2行で、ログイン・ログアウト・アカウント・クラウド・ゲストの語は0件だった。公開版の入口の JS（index-BazjhmWW.js）は clone のビルドとバイト単位で同じで、「ログイン・保存」を含まない。ビルドした全 JS に「ログイン」「ログアウト」は0件。「アカウント」「パスワード」「クラウド」が残るのは、英単語の例文の和訳・訳語・カタカナのヒント・長文の訳・リスニングの解説（教材のデータ）と、上で残すと決めたリセットの結果の知らせ4行、公開終了したゲームの技の名前だけ。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
