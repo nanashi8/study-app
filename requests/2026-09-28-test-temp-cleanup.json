@@ -8,7 +8,7 @@
   "sessions": [
     "1beadc80-829a-4d82-bd29-daef0e33f650"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "gate-temp-removed",
@@ -40,10 +40,10 @@
     },
     {
       "id": "deployed",
-      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、デプロイの成功を確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "text": "クリーンな clone で npm run audit:all-content（テスト 1,061件・全監査・ビルド）を通して main へ push した（84734bd）。デプロイ（deploy.yml の run 36384487362）は build・deploy とも success で、公開版の index.html と JS・CSS 9本が、クリーンな clone のビルドとバイト単位で同じ。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
