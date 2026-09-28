@@ -7,7 +7,7 @@
   "sessions": [
     "a2e8450d-501c-42cd-8056-33ba4f9b8efc"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "contemp-words",
@@ -49,7 +49,7 @@
       "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）をクリーンな clone で通してから main へ push し、公開版のデプロイ（GitHub Actions の deploy.yml）が push したコミットで成功したことを GitHub の記録で確かめる",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
