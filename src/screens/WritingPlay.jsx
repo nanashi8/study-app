@@ -44,7 +44,7 @@ import {
   Target,
 } from '../components/Icons.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 
 function MissingWriting({ onBack }) {
@@ -84,13 +84,40 @@ function SaveGrammarButton({ grammarId, compact = false }) {
   )
 }
 
-// どれかの単語帳に入っている語か。
-const inAnyWordBook = (sets, wordId) => sets.some((set) => set.refs.includes(wordBookRef(wordId)))
+// 学習語の1語の単語帳ボタン。画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
+function WordSaveChip({ word }) {
+  const wordBook = useWordBookSlot([wordBookRef(word.id)], { label: word.word })
+  const saved = wordBook.inBook
+  return (
+    <button
+      onClick={wordBook.press}
+      aria-pressed={saved}
+      aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook: saved })}
+      className={cx(
+        'inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-2 text-left transition-transform active:scale-95',
+        saved
+          ? 'border-amber-300 bg-amber-100 text-amber-900'
+          : 'border-amber-200 bg-white text-ink',
+      )}
+    >
+      <span>
+        <span className="block font-display text-sm font-extrabold">
+          {word.word}
+        </span>
+        <span className="block max-w-32 truncate text-[10px] font-bold opacity-55">
+          <MeaningText>{word.meaning}</MeaningText>
+        </span>
+      </span>
+      {saved ? (
+        <BookmarkFilled size={15} className="text-amber-600" />
+      ) : (
+        <Bookmark size={15} className="text-amber-600" />
+      )}
+    </button>
+  )
+}
 
 function WordSaveRow({ ids }) {
-  const wordBookSets = useStore((s) => s.learningNotebook.sets)
-  // 押した語を入れる単語帳を選ぶ窓。
-  const [bookWord, setBookWord] = useState(null)
   const words = ids.map(getWord).filter(Boolean)
   if (!words.length) return null
   return (
@@ -99,45 +126,77 @@ function WordSaveRow({ ids }) {
         この表現の学習語
       </p>
       <div className="flex flex-wrap gap-2">
-        {words.map((word) => {
-          const saved = inAnyWordBook(wordBookSets, word.id)
-          return (
-            <button
-              key={word.id}
-              onClick={() => setBookWord(word)}
-              aria-haspopup="dialog"
-              aria-label={saved ? `${word.word}の単語帳を選ぶ（単語帳に入っています）` : `${word.word}を入れる単語帳を選ぶ`}
-              className={cx(
-                'inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-2 text-left transition-transform active:scale-95',
-                saved
-                  ? 'border-amber-300 bg-amber-100 text-amber-900'
-                  : 'border-amber-200 bg-white text-ink',
-              )}
-            >
-              <span>
-                <span className="block font-display text-sm font-extrabold">
-                  {word.word}
-                </span>
-                <span className="block max-w-32 truncate text-[10px] font-bold opacity-55">
-                  <MeaningText>{word.meaning}</MeaningText>
-                </span>
-              </span>
-              {saved ? (
-                <BookmarkFilled size={15} className="text-amber-600" />
-              ) : (
-                <Bookmark size={15} className="text-amber-600" />
-              )}
-            </button>
-          )
-        })}
+        {words.map((word) => <WordSaveChip key={word.id} word={word} />)}
       </div>
-      <WordListSheet
-        open={Boolean(bookWord)}
-        onClose={() => setBookWord(null)}
-        wordId={bookWord?.id}
-        wordLabel={bookWord?.word}
-      />
     </div>
+  )
+}
+
+// 作文に出た単語。まとめても1語ずつでも、画面下部の「単語帳」で選んだ登録先に入れる（全部入っていれば外す）。
+function WrittenWordsBook({ wordItems }) {
+  const wordBook = useWordBookSlot(wordItems.map((item) => wordBookRef(item.id)), {
+    label: `作文に出た${wordItems.length}語`,
+  })
+  return (
+    <>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="font-display text-base font-extrabold text-ink">
+            作文に出た単語
+          </p>
+          <p className="text-xs font-bold text-ink/45">
+            単語帳に入れると、その冊で暗記・テストできます
+          </p>
+        </div>
+        <button
+          onClick={wordBook.press}
+          aria-pressed={wordBook.inBook}
+          aria-label={wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: wordBook.inBook, what: `作文に出た${wordItems.length}語を` })}
+          data-writing-word-book
+          className="shrink-0 rounded-xl bg-amber-100 px-3 py-2 text-xs font-extrabold text-amber-700"
+        >
+          {wordBook.inBook ? 'すべて単語帳から外す' : 'すべて単語帳へ'}
+        </button>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {wordItems.map((word) => <WrittenWordChip key={word.id} word={word} />)}
+      </div>
+    </>
+  )
+}
+
+function WrittenWordChip({ word }) {
+  const wordBook = useWordBookSlot([wordBookRef(word.id)], { label: word.word })
+  const saved = wordBook.inBook
+  return (
+    <button
+      onClick={wordBook.press}
+      aria-pressed={saved}
+      aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook: saved })}
+      className={cx(
+        'rounded-xl border px-2.5 py-2 text-left',
+        saved
+          ? 'border-amber-300 bg-amber-50'
+          : 'border-brand-100 bg-white',
+      )}
+    >
+      <span className="flex items-center gap-1.5">
+        <span className="font-display text-sm font-extrabold text-ink">
+          {word.word}
+        </span>
+        {saved ? (
+          <BookmarkFilled
+            size={14}
+            className="text-amber-500"
+          />
+        ) : (
+          <Bookmark size={14} className="text-ink/30" />
+        )}
+      </span>
+      <span className="mt-0.5 block max-w-36 truncate text-[10px] font-bold text-ink/45">
+        <MeaningText>{word.meaning}</MeaningText>
+      </span>
+    </button>
   )
 }
 
@@ -304,7 +363,6 @@ export function WritingPlayScreen() {
   const navigate = useStore((s) => s.navigate)
   const recordWritingCompletion = useStore((s) => s.recordWritingCompletion)
   const addManyToMyGrammar = useStore((s) => s.addManyToMyGrammar)
-  const wordBookSets = useStore((s) => s.learningNotebook.sets)
   const myGrammarList = useStore((s) => s.myGrammarList)
 
   const exercise = getWritingExercise(params.exerciseId)
@@ -318,8 +376,6 @@ export function WritingPlayScreen() {
   const [finished, setFinished] = useState(false)
   const [wordBank, setWordBank] = useState([])
   const [answerTokens, setAnswerTokens] = useState([])
-  // 作文に出た語を入れる単語帳を選ぶ窓。{ ids, label }。1語でも全部でも同じ窓を使う。
-  const [bookSheetWords, setBookSheetWords] = useState(null)
 
   const leave = () => {
     if (params.returnTo?.screen) {
@@ -484,9 +540,6 @@ export function WritingPlayScreen() {
     const grammarItems = completedResult.grammarIds
       .map(getWritingGrammar)
       .filter(Boolean)
-    const allWordsSaved =
-      wordItems.length > 0 &&
-      wordItems.every((item) => inAnyWordBook(wordBookSets, item.id))
     const allGrammarSaved =
       grammarItems.length > 0 &&
       grammarItems.every((item) => myGrammarList.includes(item.id))
@@ -577,62 +630,7 @@ export function WritingPlayScreen() {
 
           {wordItems.length > 0 && (
             <Card className="mt-4 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="font-display text-base font-extrabold text-ink">
-                    作文に出た単語
-                  </p>
-                  <p className="text-xs font-bold text-ink/45">
-                    単語帳に入れると、その冊で暗記・テストできます
-                  </p>
-                </div>
-                <button
-                  onClick={() => setBookSheetWords({
-                    ids: wordItems.map((item) => item.id),
-                    label: `作文に出た${wordItems.length}語`,
-                  })}
-                  aria-haspopup="dialog"
-                  data-writing-word-book
-                  className="shrink-0 rounded-xl bg-amber-100 px-3 py-2 text-xs font-extrabold text-amber-700"
-                >
-                  {allWordsSaved ? 'すべて単語帳にある' : 'すべて単語帳へ'}
-                </button>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {wordItems.map((word) => (
-                  <button
-                    key={word.id}
-                    onClick={() => setBookSheetWords({ ids: [word.id], label: word.word })}
-                    aria-haspopup="dialog"
-                    aria-label={inAnyWordBook(wordBookSets, word.id)
-                      ? `${word.word}の単語帳を選ぶ（単語帳に入っています）`
-                      : `${word.word}を入れる単語帳を選ぶ`}
-                    className={cx(
-                      'rounded-xl border px-2.5 py-2 text-left',
-                      inAnyWordBook(wordBookSets, word.id)
-                        ? 'border-amber-300 bg-amber-50'
-                        : 'border-brand-100 bg-white',
-                    )}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <span className="font-display text-sm font-extrabold text-ink">
-                        {word.word}
-                      </span>
-                      {inAnyWordBook(wordBookSets, word.id) ? (
-                        <BookmarkFilled
-                          size={14}
-                          className="text-amber-500"
-                        />
-                      ) : (
-                        <Bookmark size={14} className="text-ink/30" />
-                      )}
-                    </span>
-                    <span className="mt-0.5 block max-w-36 truncate text-[10px] font-bold text-ink/45">
-                      <MeaningText>{word.meaning}</MeaningText>
-                    </span>
-                  </button>
-                ))}
-              </div>
+              <WrittenWordsBook wordItems={wordItems} />
             </Card>
           )}
 
@@ -691,13 +689,6 @@ export function WritingPlayScreen() {
             マイ文法を開く
           </button>
         </div>
-
-        <WordListSheet
-          open={Boolean(bookSheetWords)}
-          onClose={() => setBookSheetWords(null)}
-          wordIds={bookSheetWords?.ids}
-          wordLabel={bookSheetWords?.label}
-        />
       </div>
     )
   }

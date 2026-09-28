@@ -5,6 +5,7 @@ import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { Button } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   CardStudyFooter,
   CardSwipeRegion,
@@ -25,6 +26,7 @@ import {
 } from '../lib/studyRing.js'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -43,7 +45,11 @@ function buildEtymologyCardDeck(ids, size = 0, preserveOrder = false) {
   const cards = (ids ?? []).map(getEtymologyPack).filter(Boolean)
   const ordered = preserveOrder
     ? cards
-    : orderForStudy(cards, useStore.getState().etymologySrs, { purpose: 'study' })
+    : mixItemsForStudy(
+      orderForStudy(cards, useStore.getState().etymologySrs, { purpose: 'study' }),
+      useStore.getState().etymologySrs,
+      { freshShare: currentStudyMixShare(), size },
+    )
   return size > 0 ? ordered.slice(0, size) : ordered
 }
 
@@ -102,11 +108,23 @@ export function EtymologyStudyScreen() {
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : back())
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, nextStudyItems(buildEtymologyCardDeck(params.ids, 0, params.preserveOrder), cycleIds.current, 0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🌱</div>
         <p className="font-display text-lg font-extrabold text-ink">暗記できる語源カードがありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={leave}>戻る</Button>
       </div>
     )

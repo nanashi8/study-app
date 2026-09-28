@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { grammarReferenceTerm } from '../data/grammar-reference/terms.js'
 import { SpeakButton } from './SpeakButton.jsx'
 import { MeaningText } from './MeaningText.jsx'
-import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
+import { useWordBookSlot } from './WordBookSlot.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { Bookmark, BookmarkFilled, Close, Link } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -100,10 +100,9 @@ export function RefTable({ table, onPick, active }) {
 
 function WordPeek({ item, onClose }) {
   const navigate = useStore((state) => state.navigate)
-  const [bookOpen, setBookOpen] = useState(false)
-  const inBook = useWordInAnyBook(item.word.id)
-  // 別の語を開いたら、単語帳を選ぶ窓は閉じた状態から始める。
-  useEffect(() => setBookOpen(false), [item.key])
+  // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
+  const wordBook = useWordBookSlot(item.word.id ? [wordBookRef(item.word.id)] : [], { label: item.surface })
+  const inBook = wordBook.inBook
   const { word } = item
   return (
     <>
@@ -136,24 +135,20 @@ function WordPeek({ item, onClose }) {
           </button>
           <button
             type="button"
-            onClick={() => setBookOpen(true)}
-            aria-haspopup="dialog"
+            onClick={wordBook.press}
+            aria-pressed={inBook}
+            aria-label={inBook ? `${item.surface}を単語帳から外す` : `${item.surface}を単語帳に入れる`}
+            data-grammar-ref-word-book
             className={cx(
               'flex min-h-10 items-center justify-center gap-1 rounded-xl text-xs font-extrabold',
               inBook ? 'bg-hint-soft text-amber-700' : 'bg-brand-500 text-white active:bg-brand-600',
             )}
           >
             {inBook ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
-            {inBook ? '単語帳に入っています' : '単語帳に入れる'}
+            {inBook ? '単語帳から外す' : '単語帳に入れる'}
           </button>
         </div>
       )}
-      <WordListSheet
-        open={bookOpen && Boolean(word.id)}
-        onClose={() => setBookOpen(false)}
-        wordId={word.id}
-        wordLabel={item.surface}
-      />
     </>
   )
 }

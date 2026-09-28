@@ -25,6 +25,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -78,6 +79,7 @@ export function PhraseQuizScreen() {
     size,
     purpose: 'quiz',
     cycleIds: params.phraseCycleIds,
+    freshShare: currentStudyMixShare(),
   })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -105,6 +107,16 @@ export function PhraseQuizScreen() {
     correct: results.current.correct,
   })
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた問題を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: source.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), Math.max(size, keepCount)))
+    },
+  })
   const item = deck[index]
   const options = useMemo(() => {
     if (!item) return []
@@ -124,6 +136,7 @@ export function PhraseQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる項目がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToPhrases}>戻る</Button>
       </div>
     )

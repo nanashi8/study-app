@@ -24,6 +24,7 @@ import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   CardStudyFooter,
   CardSwipeRegion,
@@ -70,6 +71,7 @@ export function PhraseStudyScreen() {
       srs: useStore.getState().srs,
       size,
       purpose: 'study',
+      freshShare: currentStudyMixShare(),
     })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -97,6 +99,16 @@ export function PhraseStudyScreen() {
   const answerLog = useStudyAnswerLog()
   // 答える前の記録。結果画面で「復習間隔が延びた項目」を数えるのに使う。
   const srsAtStart = useRef(useStore.getState().srs)
+  // 画面下部の「出題」を動かしたら、表示中と答えたカードを残して、先のカードを新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: params.source?.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), Math.max(size, keepCount)))
+    },
+  })
   const item = deck[i]
   const entry = useStore((state) => (item ? state.srs[item.id] : null))
   const leave = () => params.returnTo
@@ -107,7 +119,7 @@ export function PhraseStudyScreen() {
   const spellingHidden = Boolean(item) && hideSpelling && !flipped
 
   // 読み上げは設定の範囲で、熟語（構文は完成した例文）→意味→例文→例文の意味。
-  // 意味と例文の意味は、カードを開いてから読む。
+  // 意味と例文の意味は、カードを開いてから読む。英語を隠しているあいだは、熟語も例文も読まない。
   // 読み上げ列の持ち主。自動の読み上げと見出し・例文のボタンで同じものを使い、再生パネルの「範囲」をこのカードへ効かせる。
   const speechKey = item ? `${i}:${item.id}` : null
   const phraseSpeechItems = item
@@ -119,11 +131,14 @@ export function PhraseStudyScreen() {
         example: item.example,
         range: settings.speechRange,
         answerOpen: flipped,
+        spellingHidden,
+        hiddenLabel: `この${itemKind(item).label}`,
       })
     : []
 
-  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。英語を隠しているあいだは読まず、
-  // 流れている音声と、英文が出る下の再生パネルも閉じる。カードを開いて英語が見えたら、そこで読み上げる。
+  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。下の再生パネルは閉じず、
+  // 自動で読まないときもこのカードの列を「再生」できるように置く。英語を隠しているあいだは読まず、
+  // パネルにも英文を出さない。カードを開いて英語が見えたら、そこで読み上げる。
   useCardAutoSpeech({
     speechKey,
     items: phraseSpeechItems,
@@ -137,6 +152,7 @@ export function PhraseStudyScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">対象の項目がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={leave}>戻る</Button>
       </div>
     )

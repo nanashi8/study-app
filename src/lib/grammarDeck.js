@@ -15,6 +15,7 @@ import {
 import { getGrammarStrand, grammarStrandQuestions } from '../data/grammar-strands.js'
 import { shuffle } from '../data/vocab.js'
 import { STUDY_ORDER_STAGE, rankForStudy, studyOrderKey } from './studyOrder.js'
+import { mixRankedForStudy, recordMixStockOf } from './studyMix.js'
 
 export const GRAMMAR_SESSION_SIZE = 10
 
@@ -156,6 +157,8 @@ function spreadTopicsByStage(items, stageOf) {
 
 // 出題順（studyOrder.js）を守りながら、語句差し替えだけの同型は
 // 1セッションに1問だけ選ぶ。型の少ない単元では問題数を水増ししない。
+// freshShare は画面下部の「出題」（出題バランス）の割合。手で寄せたときは、苦手を先頭に、残りを復習と未回答の割合で混ぜ、
+// その順の中で形式の巡回と単元の散らしを行う（studyMix.js）。
 export function buildGrammarDeck(
   source,
   {
@@ -164,6 +167,7 @@ export function buildGrammarDeck(
     day = 0,
     now = Date.now(),
     rng = Math.random,
+    freshShare = null,
   } = {},
 ) {
   const candidates = grammarCandidates(source)
@@ -175,11 +179,11 @@ export function buildGrammarDeck(
     pool = pool.filter((item) => srs[item.id]?.due <= day)
   }
   // 文法はテストだけの教材なので、まだ答えていない問題を2段（未回答）に数える。
-  const ranked = rankForStudy(
+  const ranked = mixRankedForStudy(rankForStudy(
     pool,
     (item) => studyOrderKey(srs[item.id], { purpose: 'quiz', now, day }),
     { rng: null },
-  )
+  ), { freshShare, stockOf: recordMixStockOf(srs) })
   const stageOf = new Map(ranked.map(({ item, stage }) => [item.id, stage]))
 
   const limit = size > 0 ? size : Number.POSITIVE_INFINITY

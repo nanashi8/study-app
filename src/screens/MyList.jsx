@@ -411,7 +411,7 @@ function ProblemSetCard({
             変更を保存
           </Button>
 
-          {/* 単語帳の並び順。単語画面の単語帳・入れる単語帳を選ぶ窓も同じ順に並ぶ。 */}
+          {/* 単語帳の並び順。単語画面の単語帳・画面下部の単語帳（登録先）の並びも同じ順になる。 */}
           <div className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5" data-notebook-set-order>
             <span className="min-w-0 flex-1 text-xs font-extrabold text-slate-700">
               並び順（{count}冊中{position + 1}番目）

@@ -30,6 +30,7 @@ import {
 } from '../components/Icons.jsx'
 import { listeningChoiceNoteFor } from '../data/listening-choice-notes.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -68,7 +69,7 @@ export function ListeningQuizScreen() {
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
   // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
-  const buildFor = (size) => buildListeningDeck(source, { size, srs: useStore.getState().srs })
+  const buildFor = (size) => buildListeningDeck(source, { size, srs: useStore.getState().srs, freshShare: currentStudyMixShare() })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
@@ -119,6 +120,16 @@ export function ListeningQuizScreen() {
   // 前に答えてから戻ってきた問題は、答えを選び直せる。
   const reselectable = useRevisitedAnswer(i, answered)
   const answeredIndexes = answeredQuizIndexes(i, selections)
+  // 画面下部の「出題」を動かしたら、表示中と答えた問題を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes,
+    fixedOrder: source.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = source.type === 'listeningList' ? 0 : params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), size ? Math.max(size, keepCount) : undefined))
+    },
+  })
   const isCorrectPick = answered && selected === item?.answer
   const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
   const userRateScale = (settings.ttsRate ?? 0.9) / 0.9
@@ -179,6 +190,7 @@ export function ListeningQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🎧</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToListening}>戻る</Button>
       </div>
     )

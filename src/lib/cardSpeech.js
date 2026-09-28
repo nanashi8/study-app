@@ -1,9 +1,11 @@
 // 英単語・熟語・構文の暗記カードの読み上げ。
 // 設定の範囲（単語のみ／単語・意味／単語・意味・例文・例文の意味）に合わせて、
 // 見出し→意味→例文→例文の意味の順に続けて読む。意味と例文の意味は日本語の声で読む。
-// 意味と例文の意味は答えにあたるので、カードを開いて見えているときだけ読む。
+// 意味と例文の意味は答えにあたるので、カードに見えているときだけ読む。
+// 単語（見出し）を読まないカード（スペルを隠している、使い方で発音が変わる語）では、例文と例文の意味も読まない。
 import { JAPANESE_SPEECH_READINGS } from '../data/japanese-speech-readings.js'
 import { meaningSegments } from './meaningReadings.js'
+import { isAmbiguousSpeechText } from './speechGuard.js'
 import { normalizeSpeechRange } from './speechRange.js'
 
 // 品詞の目印。「〜に水をやる(動)」の(動)は読まない。
@@ -119,11 +121,23 @@ function withPauses(parts) {
 }
 
 /**
+ * 見出し（単語・熟語、構文は完成した例文）を声に出して読むか。
+ * スペル（英語）を隠しているあいだと、使い方で発音が変わる語（heteronyms.js）は読まない。
+ */
+export function cardHeadSpoken({ head, spellingHidden = false }) {
+  const headText = String(head ?? '').trim()
+  return !spellingHidden && Boolean(headText) && !isAmbiguousSpeechText(headText, 'en-US')
+}
+
+/**
  * 暗記カードの読み上げ列。[見出し, 例文] の2つ（例文を読まないカードは見出しだけ）。
  * 見出しのボタンと自動の読み上げは、範囲に合わせて 見出し→意味→例文→例文の意味 を続けて読む。
  * 例文のボタンは 例文（範囲が例文の意味までなら→例文の意味）を読む。
  * answerOpen が false のあいだ（カードを開く前）は、意味と例文の意味を入れない。
- * 見出しはいつもいちばん前（カードを開いたときは、2つめの部分から続きを読む）。
+ * spellingHidden（スペル・英語を隠して意味を先に見せているカード）は、見出しを読まず、見出しの名前も hiddenLabel にする。
+ * 意味はカードに見えているので、範囲が意味まで・例文までなら入れる。
+ * 見出しを読まないカード（spellingHidden、使い方で発音が変わる語）には、例文と例文の意味を入れない。
+ * 見出しはいつもいちばん前（カードを開いたときは、2つめの部分から続きを読む）。読まない見出しも位置だけ残す（silent）。
  */
 export function cardSpeechItems({
   id = null,
@@ -135,31 +149,35 @@ export function cardSpeechItems({
   exampleSpeech = true,
   range,
   answerOpen,
+  spellingHidden = false,
+  hiddenLabel = 'この単語',
 }) {
   const scope = normalizeSpeechRange(range)
-  const withMeaning = Boolean(answerOpen) && scope !== 'word'
-  const withExample = Boolean(answerOpen) && scope === 'example'
   const headText = String(head ?? '').trim()
-  const exampleText = exampleSpeech ? String(example?.en ?? '').trim() : ''
+  const headSpoken = cardHeadSpoken({ head: headText, spellingHidden })
+  const withMeaning = (Boolean(answerOpen) || Boolean(spellingHidden)) && scope !== 'word'
+  // 単語を読まないときは、例文も例文の意味も読まない。
+  const exampleText = headSpoken && exampleSpeech ? String(example?.en ?? '').trim() : ''
+  const withExample = Boolean(answerOpen) && scope === 'example' && Boolean(exampleText)
   const japanese = withMeaning
     ? cardJapaneseSpeechTexts({ id, meanings, meaningReadings, exampleJa: example?.ja })
     : null
-  const exampleMeaning = exampleText && withExample
+  const exampleMeaning = withExample
     ? { text: japanese.exampleMeaning, label: '例文の意味', lang: 'ja-JP', style: 'translation' }
     : null
 
   const items = [{
     id: 'head',
-    label: headText,
+    label: spellingHidden ? hiddenLabel : headText,
     segments: withPauses([
-      { text: headText, lang: 'en-US', style: headStyle },
+      { text: headText, lang: 'en-US', style: headStyle, ...(headSpoken ? {} : { silent: true }) },
       withMeaning && {
         text: japanese.meaning,
         label: '意味',
         lang: 'ja-JP',
         style: 'translation',
       },
-      withExample && exampleText && { text: exampleText, label: '例文', lang: 'en-US', style: 'sentence' },
+      withExample && { text: exampleText, label: '例文', lang: 'en-US', style: 'sentence' },
       exampleMeaning,
     ]),
   }]
@@ -176,32 +194,46 @@ export function cardSpeechItems({
   return items
 }
 
-/** 読み上げ列の中身を1つの文字列にしたもの。カードを開いた・範囲を変えたで列が変わったかを見分ける。 */
+/**
+ * 読み上げ列の中身を1つの文字列にしたもの。カードを開いた・範囲を変えた・スペルを隠したで列が変わったかを見分ける。
+ * 読まない部分（silent）と見出しの名前も含める（スペルを隠すと、同じ文でも読まなくなり、名前も変わる）。
+ */
 export function speechItemsSignature(items) {
   return (items ?? [])
-    .map((item) => (item.segments ?? []).map((segment) => `${segment.lang}:${segment.text}`).join('|'))
+    .map((item) => [
+      item.label ?? '',
+      ...(item.segments ?? []).map((segment) => `${segment.silent ? '~' : ''}${segment.lang}:${segment.text}`),
+    ].join('|'))
     .join('||')
 }
 
 /**
  * 暗記カードの自動読み上げで、いま何をするか。
+ * action は play（読み上げる）・cue（読まずに再生パネルへ入れて止めておく）・none（そのまま）。
  * memory はこのカードでここまでに読んだもの（別のカードに移ったら null）。返す memory を次に渡す。
- * - スペルを隠しているあいだは読まず、再生パネルも閉じる（パネルにつづりが出るため）。
- * - カードを開く前は見出しだけを読む。開いたら、まだ読んでいない意味から続きを読む（見出しは読み直さない）。
- * - 範囲が意味までなら、開いたカードを閉じ直したときに再生パネルを閉じる（パネルから意味を読み直せるため）。
+ * 再生パネルはどの場合も閉じない。カードを出しているあいだは、いまのカードの列を「再生」できるように置く。
+ * - カードを出したら見出しを読む。自動で発音がオフなら読まずにパネルへ入れる。
+ * - カードを開いたら、まだ読んでいない意味から続きを読む（見出しは読み直さない）。
+ * - スペルを隠しているあいだは読まない。読んでいた音声を止め、パネルには隠したままの列（つづり・例文なし）を入れる。
+ * - 範囲が意味までなら、開いたカードを閉じ直したときに読んでいる意味を止め、閉じたカードの列に入れ替える
+ *   （パネルの「再生」から、閉じたカードの意味を読まない）。
  */
 export function planCardAutoSpeech(memory, { spellingHidden, answerOpen, range, autoSpeak }) {
   const answerParts = normalizeSpeechRange(range) !== 'word'
   const open = Boolean(answerOpen)
-  const previous = memory ?? { head: false, answer: false, open: false }
+  const fresh = !memory
+  const previous = memory ?? { head: false, answer: false, open: false, hidden: false }
   if (spellingHidden) {
-    return { action: 'dismiss', memory: { head: false, answer: false, open } }
+    return {
+      action: fresh || !previous.hidden ? 'cue' : 'none',
+      memory: { head: false, answer: false, open, hidden: true },
+    }
   }
-  const next = { ...previous, open }
-  if (previous.open && !open && answerParts) return { action: 'dismiss', memory: next }
-  if (!autoSpeak) return { action: 'none', memory: next }
+  const next = { ...previous, open, hidden: false }
+  if (previous.open && !open && answerParts) return { action: 'cue', memory: next }
+  if (!autoSpeak) return { action: fresh || previous.hidden ? 'cue' : 'none', memory: next }
   if (!previous.head) {
-    return { action: 'play', startSegment: 0, memory: { head: true, answer: open && answerParts, open } }
+    return { action: 'play', startSegment: 0, memory: { head: true, answer: open && answerParts, open, hidden: false } }
   }
   if (open && answerParts && !previous.answer) {
     return { action: 'play', startSegment: 1, memory: { ...next, answer: true } }

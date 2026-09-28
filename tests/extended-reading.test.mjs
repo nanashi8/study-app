@@ -72,8 +72,10 @@ test('節送り画面はモバイル操作、進捗保存、単語連動、読�
   assert.match(source, /resolvePassageWord/)
   assert.match(source, /if \(!target\) return <span/)
   assert.match(source, /recordVocabHistory/)
-  // 単語を開いたら、入れる単語帳を選べる（マイ単語もほかの単語帳と同じ1冊）。
-  assert.match(source, /<WordListSheet/)
+  // 単語を開いたら、画面下部の「単語帳」で選んだ登録先に入れられる（もう一度押すと外す）。
+  assert.match(source, /useWordBookSlot\(activeWord\?\.id \? \[wordBookRef\(activeWord\.id\)\] : \[\]/)
+  assert.match(source, /onClick=\{wordBook\.press\}/)
+  assert.doesNotMatch(source, /<WordListSheet/)
   assert.match(source, /data-extended-reading-word-book/)
   assert.doesNotMatch(source, /toggleMyList|マイ単語に追加/)
   assert.match(source, /data-extended-reading-vocabulary-cases/)

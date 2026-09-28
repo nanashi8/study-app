@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-27T03:16:33.685Z",
+  "auditedAt": "2026-09-28T01:14:18.543Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "64b9444421a9a826ef890f8db025a727220f79d7050561785a78285366aa27a4",
+    "sha256": "c2de810f73bcd426e688bb330ab1163014db99e8c3d32b533a8dcdc225219883",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -164,6 +164,7 @@
       "tests/app-recovery.test.mjs",
       "tests/battle-cinematic-visuals.test.mjs",
       "tests/battle-standing-visuals.test.mjs",
+      "tests/bottom-dock.test.mjs",
       "tests/card-speech-range.test.mjs",
       "tests/card-study-controls.test.mjs",
       "tests/catalog-return-state.test.mjs",

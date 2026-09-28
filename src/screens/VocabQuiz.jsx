@@ -4,7 +4,6 @@ import {
   answeredQuizIndexes,
   buildDeck,
   growDeck,
-  isAutomaticVocabularySource,
   restartSessionCount,
   reviseQuizTally,
   vocabularyStockCount,
@@ -31,6 +30,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import {
   QuestionSessionControls,
@@ -174,21 +174,17 @@ export function VocabQuizScreen() {
     correct: results.current.correct,
   })
 
-  // 出題バランスのバーを動かしたら、まだ出していない先の問題をその割合で組み直す。
-  // いま表示している問題と答えた問題はそのまま残す（次の回まで待たせない）。
-  const appliedVocabMix = useRef(vocabMix)
-  useEffect(() => {
-    if (appliedVocabMix.current === vocabMix) return
-    appliedVocabMix.current = vocabMix
-    if (!isAutomaticVocabularySource(source)) return
-    const size = params.size ?? sessionSize
-    const answeredIndexes = answeredQuizIndexes(index, selections)
-    setDeck((current) => {
-      const keepCount = current.length ? Math.max(index, answeredIndexes.at(-1) ?? 0) + 1 : 0
-      return growDeck(current, keepCount, buildFor(size), Math.max(size, keepCount))
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vocabMix])
+  // 出題バランスのバー（画面下部の「出題」）を動かしたら、まだ出していない先の問題をその割合で組み直す。
+  // いま表示している問題と答えた問題はそのまま残す（次の回まで待たせない）。並びを選んで始めた回はその順のまま。
+  useStudyMixRebuild({
+    index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: source.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), Math.max(size, keepCount)))
+    },
+  })
 
   const word = deck[index]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
@@ -205,7 +201,7 @@ export function VocabQuizScreen() {
 
   if (!deck.length) {
     // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
-    const mixNotice = isAutomaticVocabularySource(source) ? vocabMixEmptyNotice(vocabMix) : null
+    const mixNotice = source.preserveOrder === true ? null : vocabMixEmptyNotice(vocabMix)
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center" data-vocab-empty-deck>
         <div className="text-5xl">🧩</div>

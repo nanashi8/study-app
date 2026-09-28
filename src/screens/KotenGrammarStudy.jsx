@@ -15,6 +15,7 @@ import {
 } from '../components/KotenGrammarExtras.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   CardStudyFooter,
   CardSwipeRegion,
@@ -35,6 +36,7 @@ import {
 } from '../lib/studyRing.js'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -55,7 +57,11 @@ function buildDeck(ids, size = SESSION_SIZE, preserveOrder = false) {
   const selected = unique.map(getKotenGrammar).filter(Boolean)
   const items = preserveOrder
     ? selected
-    : orderForStudy(selected, useStore.getState().kotenGrammarSrs, { purpose: 'study' })
+    : mixItemsForStudy(
+      orderForStudy(selected, useStore.getState().kotenGrammarSrs, { purpose: 'study' }),
+      useStore.getState().kotenGrammarSrs,
+      { freshShare: currentStudyMixShare(), size },
+    )
   return size > 0 ? items.slice(0, size) : items
 }
 
@@ -113,11 +119,23 @@ export function KotenGrammarStudyScreen() {
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : returnTo('kotenGrammar')
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, nextStudyItems(buildDeck(params.ids, 0, params.preserveOrder), cycleIds.current, 0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる文法がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKotenGrammar}>戻る</Button>
       </div>
     )

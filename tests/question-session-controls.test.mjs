@@ -189,11 +189,15 @@ test('保存切替は共通部品で、44px以上・状態名・読み上げ名�
   // 保存先はどの教材も「単語帳」。単語は画面で、ほかの教材は共通の単語帳ボタン（WordBookToggle）で名前と読み上げ名を渡す。
   const vocab = read('src/screens/VocabStudy.jsx')
   assert.match(vocab, /label="単語帳"/)
-  assert.match(vocab, /入れる単語帳を選ぶ/)
+  assert.match(vocab, /wordBookSlotLabel\(\{ itemLabel: wordName, bookTitle: wordBook\.bookTitle, inBook: false \}\)/)
   const sheet = read('src/components/WordListSheet.jsx')
   assert.match(sheet, /export function WordBookToggle/)
   assert.match(sheet, /<CardSaveToggle[\s\S]*?label="単語帳"/)
-  assert.match(sheet, /unsavedLabel=\{`\$\{itemLabel\}を入れる単語帳を選ぶ`\}/)
+  assert.match(sheet, /unsavedLabel=\{wordBookSlotLabel\(\{ itemLabel, bookTitle: slot\.bookTitle, inBook: false \}\)\}/)
+  // 読み上げ名は、登録先の単語帳の名前と、押すと入れるか外すかを言う。
+  const slot = read('src/components/WordBookSlot.jsx')
+  assert.match(slot, /を単語帳「\$\{bookTitle\}」に入れる/)
+  assert.match(slot, /を単語帳「\$\{bookTitle\}」から外す（入っています）/)
   const toggles = {
     'src/screens/PhraseStudy.jsx': '"phrases"',
     'src/screens/KotenStudy.jsx': '"kotenVocab"',

@@ -124,13 +124,19 @@ test('英単語・熟語のカードは目のボタンでスペルも隠し、�
     assert.ok(!hiddenBranch.includes(heading), `${path}: 隠している側につづりが出る`)
   }
 
-  // 隠しているあいだは読み上げず、流れている音声と、つづりが出る再生パネルも閉じる（自動で発音がオフでも閉じる）。
+  // 隠しているあいだは読み上げない。流れている音声は止め、再生パネルは閉じずに、つづり・英文を出さない列を入れる
+  // （自動で発音がオフでも同じ）。読み上げ列にはスペルを隠しているかを渡す。
   const hook = readFileSync('src/components/useCardAutoSpeech.js', 'utf8')
-  assert.match(hook, /if \(plan\.action === 'dismiss'\) dismissSpeechPlayer\(\)/)
+  const panel = readFileSync('src/lib/cardSpeechPanel.js', 'utf8')
+  assert.match(panel, /if \(plan\.action !== 'none'\) \{\n\s*cueSpeechItems\(items, options\)/)
+  assert.doesNotMatch(`${hook}${panel}`, /dismissSpeechPlayer/)
   assert.match(hook, /\}, \[speechKey, spellingHidden, answerOpen\]\)/)
   for (const autoSpeak of [true, false]) {
     const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'word', autoSpeak })
-    assert.equal(hidden.action, 'dismiss')
+    assert.equal(hidden.action, 'cue')
+  }
+  for (const [path] of [['src/screens/VocabStudy.jsx'], ['src/screens/PhraseStudy.jsx']]) {
+    assert.match(readFileSync(path, 'utf8'), /answerOpen: flipped,\n\s*spellingHidden,\n\s*hiddenLabel:/, path)
   }
   // カードを開いてスペルが見えたら、そこで単語から読み上げる
   const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'word', autoSpeak: true })

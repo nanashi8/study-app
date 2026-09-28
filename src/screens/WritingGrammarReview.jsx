@@ -7,8 +7,10 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { StudyAnswerReselect } from '../components/CardStudyControls.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -34,7 +36,11 @@ export function WritingGrammarReviewScreen() {
     const state = useStore.getState()
     const items = state.myGrammarList.map(getWritingGrammar).filter(Boolean)
     const due = items.filter((item) => isDue(state.srs[item.id]))
-    const pool = orderForStudy(due.length ? due : items, state.srs, { purpose: 'study', rng: null })
+    const pool = mixItemsForStudy(
+      orderForStudy(due.length ? due : items, state.srs, { purpose: 'study', rng: null }),
+      state.srs,
+      { freshShare: currentStudyMixShare(), size },
+    )
     return size > 0 ? pool.slice(0, size) : pool
   }
   const [poolSize] = useState(() => buildFor(0).length)
@@ -68,6 +74,17 @@ export function WritingGrammarReviewScreen() {
     [myGrammarList, srs],
   )
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: false,
+    rebuild: (keepCount) => {
+      const size = sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="relative flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
@@ -78,6 +95,7 @@ export function WritingGrammarReviewScreen() {
         <p className="font-display text-lg font-extrabold text-ink">
           復習する文法がありません
         </p>
+        <StudyMixEmptyNotice />
         <Button onClick={() => navigate('writing')}>英作文へ</Button>
       </div>
     )

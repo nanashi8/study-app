@@ -41,11 +41,13 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-09-26、つづりが似た語の語源（src/data/lookalike-*.js・src/lib/lookalikeOrigins.js・
   // src/components/LookalikeOrigins.jsx）を足して 5ファイル増えた。
   // 2026-09-27、ログイン画面（src/screens/Login.jsx）とログイン・保存の表示を外して 1ファイル減った。
-  assert.equal(result.learnerFiles, 294)
-  assert.equal(result.learnerJapaneseEntries, 15152)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11319)
-  assert.equal(result.sourceFiles, 743)
-  assert.equal(result.sourceJapaneseEntries, 200927)
+  // 2026-09-28、画面下部の枠（読み上げ・出題・単語帳の登録先）で6ファイル増えた（src/components/StudyMix.jsx・
+  // src/components/WordBookSlot.jsx・src/lib/cardSpeechPanel.js・src/lib/studyDock.js・src/lib/studyMix.js・src/lib/wordBookSlot.js）。
+  assert.equal(result.learnerFiles, 300)
+  assert.equal(result.learnerJapaneseEntries, 15160)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11330)
+  assert.equal(result.sourceFiles, 749)
+  assert.equal(result.sourceJapaneseEntries, 200935)
   assert.equal(result.issues.length, 0)
 })
 

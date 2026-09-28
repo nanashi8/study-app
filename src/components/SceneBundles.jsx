@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getPassage } from '../data/passages.js'
@@ -8,9 +8,10 @@ import { LearningStatusBars } from './LearningStatusBars.jsx'
 import { MeaningText } from './MeaningText.jsx'
 import { Sheet } from './Sheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
-import { WordListSheet } from './WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText } from './WordBookSlot.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { Button, cx } from './ui.jsx'
-import { ArrowRight, Bookmark, Cards, ChevronRight } from './Icons.jsx'
+import { ArrowRight, Bookmark, BookmarkFilled, Cards, ChevronRight } from './Icons.jsx'
 
 /** 1つの長文の場面の束を、番号・名前・語の並び・暗記した数の1行ずつで並べる。 */
 export function SceneBundleRows({ bundles, srs, onOpen, className = '' }) {
@@ -70,7 +71,10 @@ function SentenceWithWord({ text, surface }) {
 export function SceneBundleSheet({ bundle, onClose, onStudy, onQuiz, onRead }) {
   const srs = useStore((state) => state.srs)
   const navigate = useStore((state) => state.navigate)
-  const [bookSheetOpen, setBookSheetOpen] = useState(false)
+  // 束の語をまとめて、画面下部の「単語帳」で選んだ登録先に入れる（全部入っていれば外す）。
+  const wordBook = useWordBookSlot((bundle?.wordIds ?? []).map(wordBookRef), {
+    label: bundle ? `場面の束「${bundle.name}」の${bundle.wordIds.length}語` : '',
+  })
   const examples = useMemo(() => (bundle ? sceneBundleExamples(bundle) : []), [bundle])
   const passage = bundle ? getPassage(bundle.passageId) : null
   if (!bundle || !passage) return null
@@ -137,20 +141,15 @@ export function SceneBundleSheet({ bundle, onClose, onStudy, onQuiz, onRead }) {
           <Button
             full
             variant="soft"
-            onClick={() => setBookSheetOpen(true)}
-            aria-haspopup="dialog"
+            onClick={wordBook.press}
+            aria-pressed={wordBook.inBook}
             data-scene-bundle-word-book
           >
-            <Bookmark size={17} /> この束の語を単語帳に入れる
+            {wordBook.inBook ? <BookmarkFilled size={17} /> : <Bookmark size={17} />}
+            {wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: wordBook.inBook, what: `この束の${total}語を` })}
           </Button>
         </div>
       </Sheet>
-      <WordListSheet
-        open={bookSheetOpen}
-        onClose={() => setBookSheetOpen(false)}
-        wordIds={bundle.wordIds}
-        wordLabel={`場面の束「${bundle.name}」の${total}語`}
-      />
     </>
   )
 }

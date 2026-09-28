@@ -24,6 +24,7 @@ import {
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   useAnswerReceipts,
@@ -50,7 +51,7 @@ export function DictationPlayScreen() {
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
   // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
-  const buildFor = (size) => buildDictationDeck(source, { size, srs: useStore.getState().srs })
+  const buildFor = (size) => buildDictationDeck(source, { size, srs: useStore.getState().srs, freshShare: currentStudyMixShare() })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
@@ -132,11 +133,28 @@ export function DictationPlayScreen() {
   // 答え合わせをしてから戻ってきた英文は、並べ直せる。
   const reselectable = useRevisitedAnswer(i, result !== null)
 
+  // 画面下部の「出題」を動かしたら、表示中と採点した英文を残して、先の英文を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes: answeredQuizIndexes(i, {
+      ...Object.fromEntries(
+        Object.entries(questionStates.current).map(([index, state]) => [index, state?.result ?? null]),
+      ),
+      [i]: result,
+    }),
+    fixedOrder: source.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = source.type === 'dictationList' ? 0 : params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), size ? Math.max(size, keepCount) : undefined))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">⌨️</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる英文がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={back}>戻る</Button>
       </div>
     )

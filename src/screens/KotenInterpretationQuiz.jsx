@@ -18,9 +18,11 @@ import {
 } from '../components/Icons.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { kotenInterpretationChoiceNoteFor } from '../data/koten-interpretation-choice-notes.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -43,7 +45,11 @@ function buildDeck(ids, size = 12, preserveOrder = false) {
   const selected = (ids ?? []).map(getKotenInterpretation).filter(Boolean)
   const items = preserveOrder
     ? selected
-    : orderForStudy(selected, useStore.getState().kotenInterpretationSrs, { purpose: 'quiz' })
+    : mixItemsForStudy(
+      orderForStudy(selected, useStore.getState().kotenInterpretationSrs, { purpose: 'quiz' }),
+      useStore.getState().kotenInterpretationSrs,
+      { freshShare: currentStudyMixShare(), size },
+    )
   return size > 0 ? items.slice(0, size) : items
 }
 
@@ -104,11 +110,23 @@ export function KotenInterpretationQuizScreen() {
     setDone(false)
   }
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredIndexes,
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildDeck(params.ids, 0, params.preserveOrder), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📜</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる短文がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKotenInterpretationList}>戻る</Button>
       </div>
     )

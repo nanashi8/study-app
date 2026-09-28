@@ -11,6 +11,7 @@ import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   QuestionSessionControls,
@@ -30,6 +31,7 @@ export function KanbunKundokuQuizScreen() {
     size,
     preserveOrder: params.preserveOrder,
     srs: useStore.getState().kanbunKundokuSrs,
+    freshShare: currentStudyMixShare(),
   })
   const [poolSize] = useState(() => pickExercises(params.ids, ALL_EXERCISES).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -65,11 +67,28 @@ export function KanbunKundokuQuizScreen() {
   // 答えてから戻ってきた問題は、読む順を並べ直せる。
   const reselectable = useRevisitedAnswer(index, answered)
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredQuizIndexes(index, {
+      ...Object.fromEntries(
+        Object.entries(questionStates.current).map(([position, state]) => [position, state?.answered ? true : null]),
+      ),
+      [index]: answered ? true : null,
+    }),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, pickExercises(params.ids, ALL_EXERCISES), Math.max(size, keepCount)))
+    },
+  })
+
   if (!exercise) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">↩️</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる返り点問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKanbunKundoku}>戻る</Button>
       </div>
     )

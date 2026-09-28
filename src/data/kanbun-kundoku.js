@@ -1,4 +1,5 @@
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 
 export const KANBUN_KUNDOKU_LEVELS = Object.freeze([
   { id: 'middle', label: 'レ点・一二点', color: '#0f766e' },
@@ -305,7 +306,7 @@ export const getKanbunKundokuExercise = (id) => KANBUN_KUNDOKU_BY_ID[id]
 
 export function pickKanbunKundokuExercises(
   ids,
-  { size = 10, rng = Math.random, preserveOrder = false, srs = {}, now = Date.now() } = {},
+  { size = 10, rng = Math.random, preserveOrder = false, srs = {}, now = Date.now(), freshShare = null } = {},
 ) {
   const requested = Array.isArray(ids) && ids.length
     ? new Set(ids)
@@ -315,11 +316,12 @@ export function pickKanbunKundokuExercises(
   )
   // 一覧で選んだ順ならそのまま。それ以外は全教材共通の出題順（lib/studyOrder.js）で、
   // 返り点ドリルはテストだけの教材なので、まだ答えていない問題を先に出す。
+  // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で復習と未修を混ぜる（lib/studyMix.js）。
   const ordered = preserveOrder
     ? Array.isArray(ids)
       ? ids.map((id) => candidates.find((item) => item.id === id)).filter(Boolean)
       : [...candidates]
-    : orderForStudy(candidates, srs, { purpose: 'quiz', now, rng })
+    : mixItemsForStudy(orderForStudy(candidates, srs, { purpose: 'quiz', now, rng }), srs, { freshShare, now })
   return ordered.slice(0, Math.min(Math.max(0, Number(size) || 10), ordered.length))
 }
 

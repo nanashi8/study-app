@@ -3,7 +3,8 @@ import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
+import { activeNotebookSetId } from '../lib/learningNotebook.js'
 import { Button, Card, Chip, EmptyState, cx } from '../components/ui.jsx'
 import {
   Bookmark,
@@ -74,7 +75,7 @@ function Field({ label, hint, children }) {
 const inputClass = 'mt-1 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-brand-500'
 const selectClass = 'mt-1 h-11 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm font-bold text-ink outline-none focus:border-brand-500'
 
-function WordForm({ form, books = [], onChange, onSubmit, onCancel, error }) {
+function WordForm({ form, books = [], defaultBookId = null, onChange, onSubmit, onCancel, error }) {
   const set = (key) => (event) => onChange({ ...form, [key]: event.target.value })
 
   return (
@@ -161,7 +162,7 @@ function WordForm({ form, books = [], onChange, onSubmit, onCancel, error }) {
         {!form.id && (
           <Field label="入れる単語帳">
             <select
-              value={form.addToBookId ?? books[0]?.id ?? ''}
+              value={form.addToBookId ?? defaultBookId ?? books[0]?.id ?? ''}
               onChange={(event) => onChange({ ...form, addToBookId: event.target.value })}
               data-custom-word-book-select
               className={selectClass}
@@ -193,7 +194,10 @@ function WordForm({ form, books = [], onChange, onSubmit, onCancel, error }) {
   )
 }
 
-function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
+function CustomWordCard({ word, onEdit, onDelete }) {
+  // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
+  const wordBook = useWordBookSlot([`vocab:${word.id}`], { label: word.word })
+  const inBook = wordBook.inBook
   const [confirmDelete, setConfirmDelete] = useState(false)
   const level = getLevel(word.level)
 
@@ -231,11 +235,12 @@ function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
       </div>
 
       <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t border-slate-200 pt-2.5">
-        {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+        {/* 押すと、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。 */}
         <button
           type="button"
-          onClick={() => onOpenLists(word)}
-          aria-haspopup="dialog"
+          onClick={wordBook.press}
+          aria-pressed={inBook}
+          aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook })}
           data-custom-word-book
           className={cx(
             'flex min-h-10 items-center justify-center gap-1 rounded-lg border px-1 text-[10px] font-extrabold',
@@ -272,9 +277,11 @@ function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
 }
 
 export function CustomWordsScreen() {
-  const { customWords, wordBookSets } = useStore(useShallow((state) => ({
+  const { customWords, wordBookSets, activeBookId } = useStore(useShallow((state) => ({
     customWords: state.customWords,
     wordBookSets: state.learningNotebook.sets,
+    // 登録と同時に入れる単語帳は、はじめは単語帳ボタンの登録先（画面下部の「単語帳」で選んだ冊）。
+    activeBookId: activeNotebookSetId(state.learningNotebook),
   })))
   const saveCustomWord = useStore((state) => state.saveCustomWord)
   const deleteCustomWord = useStore((state) => state.deleteCustomWord)
@@ -293,17 +300,10 @@ export function CustomWordsScreen() {
       : null
   ))
   const [error, setError] = useState('')
-  const [listSheetWord, setListSheetWord] = useState(null)
   const [fileNotice, setFileNotice] = useState('')
   const [pending, setPending] = useState(null)
   const fileInput = useRef(null)
 
-  // どれかの単語帳に入っている語。
-  const bookedIds = useMemo(() => new Set(
-    wordBookSets.flatMap((set) => set.refs
-      .filter((ref) => ref.startsWith('vocab:'))
-      .map((ref) => ref.slice('vocab:'.length))),
-  ), [wordBookSets])
   const ids = useMemo(() => customWords.map((word) => word.id), [customWords])
 
   const submit = () => {
@@ -326,7 +326,7 @@ export function CustomWordsScreen() {
       setError(`自作単語は${CUSTOM_WORD_LIMITS.words}語までです。使わない語を消すとまた足せます。`)
       return
     }
-    const bookId = form.addToBookId ?? wordBookSets[0]?.id ?? ''
+    const bookId = form.addToBookId ?? activeBookId ?? ''
     if (!form.id && bookId) setNotebookSetItem(bookId, 'vocab', result.id, true)
     setError('')
     setForm(null)
@@ -428,6 +428,7 @@ export function CustomWordsScreen() {
               <WordForm
                 form={form}
                 books={wordBookSets}
+                defaultBookId={activeBookId}
                 onChange={setForm}
                 onSubmit={submit}
                 onCancel={cancelForm}
@@ -460,10 +461,8 @@ export function CustomWordsScreen() {
                   <li key={word.id}>
                     <CustomWordCard
                       word={word}
-                      inBook={bookedIds.has(word.id)}
                       onEdit={(target) => { setForm(formFromWord(target)); setError('') }}
                       onDelete={deleteCustomWord}
-                      onOpenLists={setListSheetWord}
                     />
                   </li>
                 ))}
@@ -557,12 +556,6 @@ export function CustomWordsScreen() {
         )}
       </div>
 
-      <WordListSheet
-        open={Boolean(listSheetWord)}
-        onClose={() => setListSheetWord(null)}
-        wordId={listSheetWord?.id}
-        wordLabel={listSheetWord?.word}
-      />
     </div>
   )
 }

@@ -19,8 +19,10 @@ import {
 import { cx } from '../components/ui.jsx'
 import { QUIZ_CHOICE_COUNT, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -40,11 +42,11 @@ function shuffle(arr) {
 
 // 渡された id 群から、いまの記録で全教材共通の出題順に並べて作る（既定は設定した問題数）。
 function buildQuizDeck(ids, seed, size = 20) { // eslint-disable-line no-unused-vars
-  const words = orderForStudy(
+  const words = mixItemsForStudy(orderForStudy(
     (ids ?? []).map(getKoten).filter(Boolean),
     useStore.getState().kotenSrs,
     { purpose: 'quiz' },
-  )
+  ), useStore.getState().kotenSrs, { freshShare: currentStudyMixShare(), size })
   return size > 0 ? words.slice(0, size) : words
 }
 
@@ -84,11 +86,23 @@ export function KotenQuizScreen() {
   // 前に答えてから戻ってきた問題は、答えを選び直せる。
   const reselectable = useRevisitedAnswer(i, selected !== null)
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes: answeredQuizIndexes(i, selections),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildQuizDeck(params.ids, seed, 0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる語がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={back}>戻る</Button>
       </div>
     )

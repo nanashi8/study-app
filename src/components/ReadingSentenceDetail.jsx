@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
 import { readingRulesForSentence } from '../data/reading-rules.js'
@@ -11,7 +10,8 @@ import { SpeakButton } from './SpeakButton.jsx'
 import { StructureDiagram } from './StructureDiagram.js'
 import { ReadingRoleSentence } from './ReadingRoleSentence.js'
 import { ReadingRuleCard } from './ReadingRuleCard.jsx'
-import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText } from './WordBookSlot.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { Bookmark, BookmarkFilled, BookOpen, Lightbulb, Link } from './Icons.jsx'
 import { cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
@@ -136,10 +136,9 @@ export function ReadingSentenceDetail({
   onNavigateAway,
 }) {
   const navigate = useStore((s) => s.navigate)
-  const [bookSheetOpen, setBookSheetOpen] = useState(false)
-  const inWordBook = useWordInAnyBook(activeWord?.id)
-  // 別の語を開いたら、単語帳を選ぶ窓は閉じた状態から始める。
-  useEffect(() => setBookSheetOpen(false), [activeWord?.id])
+  // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
+  const wordBook = useWordBookSlot(activeWord?.id ? [wordBookRef(activeWord.id)] : [], { label: activeWord?.word })
+  const inWordBook = wordBook.inBook
   if (!sentence || !sentenceAnalysis) return null
   const visiblePhraseExplanations = readingPhraseExplanationTexts(sentenceAnalysis)
   const visibleBlockExplanations = readingBlockExplanationTexts(
@@ -219,12 +218,12 @@ export function ReadingSentenceDetail({
                     </button>
                   )}
                 </div>
-                {/* 単語帳に入れる（語彙データにある語のみ）。押すと入れる単語帳を選ぶ。 */}
+                {/* 単語帳に入れる（語彙データにある語のみ）。画面下部の「単語帳」で選んだ登録先に入れ、もう一度押すと外す。 */}
                 {activeWord.id && (
                   <button
                     type="button"
-                    onClick={() => setBookSheetOpen(true)}
-                    aria-haspopup="dialog"
+                    onClick={wordBook.press}
+                    aria-pressed={inWordBook}
                     data-reading-word-book
                     className={cx(
                       'mt-3 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold transition-colors',
@@ -233,23 +232,12 @@ export function ReadingSentenceDetail({
                         : 'bg-brand-500 text-white active:bg-brand-600',
                     )}
                   >
-                    {inWordBook ? (
-                      <>
-                        <BookmarkFilled size={16} /> 単語帳に入っています（入れる冊を選ぶ）
-                      </>
-                    ) : (
-                      <>
-                        <Bookmark size={16} /> 単語帳に入れる
-                      </>
-                    )}
+                    {inWordBook ? <BookmarkFilled size={16} /> : <Bookmark size={16} />}
+                    <span className="min-w-0 truncate">
+                      {wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: inWordBook })}
+                    </span>
                   </button>
                 )}
-                <WordListSheet
-                  open={bookSheetOpen && Boolean(activeWord.id)}
-                  onClose={() => setBookSheetOpen(false)}
-                  wordId={activeWord.id}
-                  wordLabel={activeWord.word}
-                />
               </div>
             )}
 

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getWord } from '../data/vocab.js'
@@ -7,7 +6,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
@@ -17,11 +16,12 @@ export function ReadingSummaryScreen() {
   const passageId = params.passageId
   const navigate = useStore((s) => s.navigate)
   const returnTo = useStore((s) => s.returnTo)
-  const wordBookSets = useStore((s) => s.learningNotebook.sets)
-
   const passage = getPassage(passageId)
-  // 単語帳を選ぶ窓で入れる語。{ ids, label }。1語でも全部でも同じ窓を使う。
-  const [bookSheetWords, setBookSheetWords] = useState(null)
+  // この長文の単語は、画面下部の「単語帳」で選んだ登録先にまとめて入れる（全部入っていれば外す）。
+  const summaryIds = (passage?.vocab ?? []).map(getWord).filter(Boolean).map((word) => word.id)
+  const wordsBook = useWordBookSlot(summaryIds.map(wordBookRef), {
+    label: `この長文の単語${summaryIds.length}語`,
+  })
 
   if (!passage) {
     return (
@@ -34,8 +34,7 @@ export function ReadingSummaryScreen() {
 
   const words = passage.vocab.map(getWord).filter(Boolean)
   const ids = words.map((w) => w.id)
-  const inWordBook = (id) => wordBookSets.some((set) => set.refs.includes(wordBookRef(id)))
-  const allSaved = ids.length > 0 && ids.every(inWordBook)
+  const allSaved = wordsBook.inBook
 
   return (
     <div className="pb-6">
@@ -59,20 +58,18 @@ export function ReadingSummaryScreen() {
             variant={allSaved ? 'soft' : 'hint'}
             className="mt-2"
             disabled={!ids.length}
-            onClick={() => setBookSheetWords({ ids, label: `この長文の単語${ids.length}語` })}
-            aria-haspopup="dialog"
+            onClick={wordsBook.press}
+            aria-pressed={allSaved}
             data-reading-summary-word-book
           >
-            {allSaved
-              ? <><Check size={16} /> 全部が単語帳に入っています（入れる冊を選ぶ）</>
-              : <><Bookmark size={16} /> 全部を単語帳に入れる</>}
+            {allSaved ? <Check size={16} /> : <Bookmark size={16} />}
+            {wordBookSlotButtonText({ bookTitle: wordsBook.bookTitle, inBook: allSaved, what: `全${ids.length}語を` })}
           </Button>
         </Card>
 
         <div className="space-y-2">
           {words.map((w) => {
             const level = getLevel(w.level)
-            const saved = inWordBook(w.id)
             return (
               <div key={w.id} className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
                 <SpeakButton text={w.word} size="sm" />
@@ -87,25 +84,11 @@ export function ReadingSummaryScreen() {
                   </div>
                   <span className="text-brand-300"><ArrowRight size={16} /></span>
                 </button>
-                <IconButton
-                  onClick={() => setBookSheetWords({ ids: [w.id], label: w.word })}
-                  className={saved ? 'text-hint' : 'text-ink/30'}
-                  aria-haspopup="dialog"
-                  aria-label={saved ? `${w.word}の単語帳を選ぶ（単語帳に入っています）` : `${w.word}を入れる単語帳を選ぶ`}
-                >
-                  {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-                </IconButton>
+                <WordRowBookButton word={w} />
               </div>
             )
           })}
         </div>
-
-        <WordListSheet
-          open={Boolean(bookSheetWords)}
-          onClose={() => setBookSheetWords(null)}
-          wordIds={bookSheetWords?.ids}
-          wordLabel={bookSheetWords?.label}
-        />
 
         <Button full variant="ghost" onClick={() => navigate('reader', { passageId, returnTo: params.returnTo })}>
           もう一度読む
@@ -121,5 +104,20 @@ export function ReadingSummaryScreen() {
         )}
       </div>
     </div>
+  )
+}
+
+// 1語の単語帳ボタン。画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
+function WordRowBookButton({ word }) {
+  const wordBook = useWordBookSlot([wordBookRef(word.id)], { label: word.word })
+  return (
+    <IconButton
+      onClick={wordBook.press}
+      className={wordBook.inBook ? 'text-hint' : 'text-ink/30'}
+      aria-pressed={wordBook.inBook}
+      aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook: wordBook.inBook })}
+    >
+      {wordBook.inBook ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+    </IconButton>
   )
 }

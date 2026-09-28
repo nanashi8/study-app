@@ -5,6 +5,7 @@ import {
 } from './koten-grammar.js'
 import { KOTEN_GRAMMAR_CONTEXT_MORE } from './koten-grammar-questions-more.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
+import { mixRankedForStudy, questionMixStockOf } from '../lib/studyMix.js'
 
 // grammarIds はSRS更新・登録・分野別出題に使う安定キー。
 export const KOTEN_GRAMMAR_LEVELS = {
@@ -994,19 +995,20 @@ export function kotenGrammarQuestionsFor(grammarIds) {
 // 点数はその問題が扱う最初の文法項目の記録（srs）で見る。文脈・基礎の配分は同じ段の中で守る。
 export function pickKotenGrammarQuestions(
   grammarIds,
-  { size = 12, rng = Math.random, srs = {}, quizResults = {}, now = Date.now() } = {},
+  { size = 12, rng = Math.random, srs = {}, quizResults = {}, now = Date.now(), freshShare = null } = {},
 ) {
   const candidates = kotenGrammarQuestionsFor(grammarIds)
   const limit = Math.max(1, Math.min(Number(size) || 12, candidates.length))
-  const ranked = rankQuestionsForStudy(candidates, {
+  // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で混ぜた順の中で文脈・基礎の配分を守る（lib/studyMix.js）。
+  const ranked = mixRankedForStudy(rankQuestionsForStudy(candidates, {
     quizResults,
     quizDomain: 'koten-grammar',
     srs,
     itemIdOf: (question) => question.grammarIds.find((id) => KOTEN_GRAMMAR_BY_ID[id]),
     now,
     rng,
-  })
-  if (candidates.length <= limit) return ranked.map(({ item }) => item)
+  }), { freshShare, stockOf: questionMixStockOf })
+  if (ranked.length <= limit) return ranked.map(({ item }) => item)
 
   const contextCount = candidates.filter((item) => item.style === 'context').length
   const contextTarget = Math.min(contextCount, Math.ceil(limit * (2 / 3)))

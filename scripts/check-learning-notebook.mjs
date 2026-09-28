@@ -209,7 +209,7 @@ if (!cloud.includes('data.learningNotebook ?? current.learningNotebook')) {
   fail('旧クラウド保存からの復元時に端末ノートを保護していません')
 }
 
-// 暗記・テストのカードからは、どの教材も入れる単語帳を選ぶ窓を開く。
+// 暗記・テストのカードからは、どの教材も単語帳ボタンで、画面下部の「単語帳」で選んだ登録先へ入れる。
 const wordBookScreens = {
   vocab: ['VocabQuiz.jsx'],
   phrases: ['PhraseStudy.jsx', 'PhraseQuiz.jsx'],

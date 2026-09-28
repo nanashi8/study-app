@@ -201,11 +201,15 @@ test('自作単語の画面は登録・編集・削除とファイルの出し�
   assert.match(screen, /saveCustomWord/)
   assert.match(screen, /deleteCustomWord/)
   assert.match(screen, /importCustomWords/)
-  // 登録した語は、選んだ単語帳（最初は並びの先頭の冊）に入り、暗記・テストへつながる。
+  // 登録した語は、選んだ単語帳（最初は単語帳ボタンの登録先）に入り、暗記・テストへつながる。
   assert.match(screen, /data-custom-word-book-select/)
   assert.match(screen, /setNotebookSetItem\(bookId, 'vocab', result\.id, true\)/)
-  assert.doesNotMatch(screen, /toggleMyList|myList|単語帳「マイ単語」/)
-  assert.match(screen, /<WordListSheet/)
+  assert.match(screen, /const bookId = form\.addToBookId \?\? activeBookId \?\? ''/)
+  assert.match(screen, /activeBookId: activeNotebookSetId\(state\.learningNotebook\)/)
+  assert.doesNotMatch(screen, /toggleMyList|myList|単語帳「マイ単語」|<WordListSheet/)
+  // 一覧の語ごとの「単語帳」は、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
+  assert.match(screen, /const wordBook = useWordBookSlot\(\[`vocab:\$\{word\.id\}`\], \{ label: word\.word \}\)/)
+  assert.match(screen, /onClick=\{wordBook\.press\}/)
   assert.match(screen, /navigate\(screen, \{/)
   // 枚数は「1回のカード数」に任せ、画面側で頭打ちにしない。
   assert.match(screen, /source: \{ type: 'mylist', ids \}/)

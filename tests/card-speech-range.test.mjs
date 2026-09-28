@@ -102,9 +102,13 @@ test('英単語カードは範囲に合わせて 単語→意味→例文→例�
   assert.equal(sentence.label, 'They had to abandon the plan.')
 })
 
-test('使い方で発音が変わる語も意味は読み、文でも読み分けられない語は例文とその意味を読まない', () => {
-  // record は単語だけでは読まない（再生パネルが外す）。例文は文の中で読み分けられるので読む。
-  assert.equal(spoken(wordItems('record', 'example', true))[0][0], 'en-US:record')
+test('使い方で発音が変わる語は、意味は読み、単語を発音しないので例文とその意味も読まない', () => {
+  // record は単語だけでは読まない（読み上げ列には位置だけ残し、再生パネルが外す）。単語を発音しないので例文も読まない。
+  const [head, ...rest] = wordItems('record', 'example', true)
+  assert.equal(head.segments[0].text, 'record')
+  assert.equal(head.segments[0].silent, true)
+  assert.deepEqual(head.segments.slice(1).map((segment) => segment.label), ['意味'])
+  assert.deepEqual(rest, [])
   assert.deepEqual(spoken(wordItems('row_2', 'example', true)), [['en-US:row', 'ja-JP:口論、騒ぎ']])
   assert.deepEqual(spoken(wordItems('row_2', 'word', false)), [['en-US:row']])
 })
@@ -209,7 +213,12 @@ test('端末の声が読み違えやすい語は、台帳の読みをかなで�
   assert.equal(japanese(wordItems('corner', 'meaning', true))[0][0], 'かど、隅')
   // 助数詞や接尾語は、かなにした語と一緒に読む（なんびゃく人→なんびゃくにん、ふつか後→ふつかご）。
   assert.match(japanese(wordItems('eruption', 'example', true))[1][0], /なんびゃくにんもの人/)
-  assert.match(japanese(wordItems('convict', 'example', true))[1][0], /ふつかごに/)
+  // convict（使い方で発音が変わる語）はカードで例文を読まないが、台帳の読みは例文の意味の文に当たる。
+  assert.match(
+    applyJapaneseSpeechReadings(exampleMeaningSpeechText(getWord('convict').example.ja), JAPANESE_SPEECH_READINGS.convict.example),
+    /ふつかごに/,
+  )
+  assert.equal(wordItems('convict', 'example', true).length, 1)
   // 文法の例文は、意味が例文の和訳そのもの。例文のボタンで読む和訳にも同じ読みを当てる。
   assert.deepEqual(japanese(phraseItems('curr_syn_gr_exam_eiken_pre2_conjunction_1_001', 'example', true)), [
     ['ケンが夕食を作っているあいだ、アヤはテーブルの準備をした。'],
@@ -222,7 +231,7 @@ test('端末の声が読み違えやすい語は、台帳の読みをかなで�
   assert.equal(getWord('thirsty').example.ja, 'サッカーの練習の後で、とてものどが渇いている。')
 })
 
-test('自動の読み上げは、カードを開く前は見出しだけ、開いたら意味から続きを読む', () => {
+test('自動の読み上げは、カードを開く前は見出しだけ、開いたら意味から続きを読み、再生パネルは閉じない', () => {
   const plan = (memory, state) => planCardAutoSpeech(memory, { spellingHidden: false, autoSpeak: true, ...state })
 
   // 単語のみ：カードを出したときに単語を読み、開いても読み直さない（前からと同じ）。
@@ -231,11 +240,12 @@ test('自動の読み上げは、カードを開く前は見出しだけ、開�
   assert.equal(plan(shown.memory, { answerOpen: true, range: 'word' }).action, 'none')
 
   // 単語・意味：開いたら、読んだ単語の続き（2つめの部分＝意味）から読む。閉じて開き直しても読み直さない。
+  // 閉じ直したときは、読んでいる意味を止めて閉じたカードの列に入れ替える（パネルは閉じない）。
   const front = plan(null, { answerOpen: false, range: 'meaning' })
   const opened = plan(front.memory, { answerOpen: true, range: 'meaning' })
   assert.deepEqual([opened.action, opened.startSegment], ['play', 1])
   const closed = plan(opened.memory, { answerOpen: false, range: 'meaning' })
-  assert.equal(closed.action, 'dismiss')
+  assert.equal(closed.action, 'cue')
   assert.equal(plan(closed.memory, { answerOpen: true, range: 'meaning' }).action, 'none')
 
   // 答えを開いたままのカードは、はじめから範囲の最後まで読む。
@@ -243,16 +253,26 @@ test('自動の読み上げは、カードを開く前は見出しだけ、開�
   assert.deepEqual([revealed.action, revealed.startSegment], ['play', 0])
   assert.equal(plan(revealed.memory, { answerOpen: true, range: 'example' }).action, 'none')
 
-  // 自動で発音がオフなら読まない。閉じ直したときは、パネルから意味を読み直せないように閉じる。
+  // 自動で発音がオフなら読まずに、カードの列をパネルへ入れて止めておく。閉じ直したときも入れ替えるだけ。
   const silent = planCardAutoSpeech(null, { spellingHidden: false, answerOpen: true, range: 'meaning', autoSpeak: false })
-  assert.equal(silent.action, 'none')
-  assert.equal(planCardAutoSpeech(silent.memory, { spellingHidden: false, answerOpen: false, range: 'meaning', autoSpeak: false }).action, 'dismiss')
+  assert.equal(silent.action, 'cue')
+  assert.equal(planCardAutoSpeech(silent.memory, { spellingHidden: false, answerOpen: false, range: 'meaning', autoSpeak: false }).action, 'cue')
 
-  // スペルを隠すカードは、開いてスペルが見えたところで単語から読む。
+  // スペルを隠すカードは読まずに、隠したままの列をパネルへ入れる。開いてスペルが見えたところで単語から読む。
   const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'example', autoSpeak: true })
-  assert.equal(hidden.action, 'dismiss')
+  assert.equal(hidden.action, 'cue')
   const spelled = plan(hidden.memory, { answerOpen: true, range: 'example' })
   assert.deepEqual([spelled.action, spelled.startSegment], ['play', 0])
+  // どの組み合わせでも、パネルを閉じる指示は出さない。
+  for (const spellingHidden of [false, true]) {
+    for (const answerOpen of [false, true]) {
+      for (const range of ['word', 'meaning', 'example']) {
+        for (const autoSpeak of [false, true]) {
+          assert.notEqual(planCardAutoSpeech(null, { spellingHidden, answerOpen, range, autoSpeak }).action, 'dismiss')
+        }
+      }
+    }
+  }
 })
 
 // 端末の読み上げの代わりに、読んだ文を queued に積む。
@@ -406,8 +426,10 @@ test('英単語・熟語・構文の暗記カードは、見出しのボタン�
 
   // 自動の読み上げとボタンは同じ持ち主で読み、範囲を変えたらそのカードの列を入れ替える（読んでいる途中なら読み直す）。
   const hook = read('src/components/useCardAutoSpeech.js')
+  const panel = read('src/lib/cardSpeechPanel.js')
   assert.match(hook, /key: speechKey,\n\s*rangeAdjustable: true,/)
-  assert.match(hook, /replaceSpeechItems\(speechKey, items, \{ restart: previous\.range !== range \}\)/)
+  assert.match(panel, /replaceSpeechItems\(speechKey, items, \{ restart: previous\.range !== scope, placeholder \}\)/)
+  assert.match(hook, /syncCardSpeechItems\(panel\.current, \{ speechKey, items, range, placeholder \}\)/)
   assert.match(hook, /\}, \[speechKey, signature, range\]\)/)
   assert.match(read('src/components/SpeakButton.jsx'), /\.\.\.\(speechKey && phrases\?\.length \? \{ key: speechKey, rangeAdjustable: true \} : \{\}\),/)
 

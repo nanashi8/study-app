@@ -5,6 +5,7 @@
 
 import { limitQuizChoices } from '../lib/quizChoices.js'
 import { pickInStudyOrder, rankItemsForStudy } from '../lib/studyOrder.js'
+import { mixRankedForStudy, recordMixStockOf } from '../lib/studyMix.js'
 
 export const LISTENING_TYPE_META = Object.freeze({
   response: Object.freeze({ label: '応答選択', icon: '💬', spokenChoices: true }),
@@ -359,10 +360,14 @@ export function shuffledListeningChoices(item, rng = Math.random) {
 
 export function buildListeningDeck(
   source = { type: 'level', levelId: '5' },
-  { size = 10, rng = Math.random, srs = {}, now = Date.now() } = {},
+  { size = 10, rng = Math.random, srs = {}, now = Date.now(), freshShare = null } = {},
 ) {
   // 出題順は全教材共通（lib/studyOrder.js）。リスニングはテストだけの教材なので、まだ答えていない問題を先に出す。
-  const rank = (items) => rankItemsForStudy(items, srs, { purpose: 'quiz', now, rng })
+  // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で混ぜた順の中で形式の配分を守る（lib/studyMix.js）。
+  const rank = (items) => mixRankedForStudy(
+    rankItemsForStudy(items, srs, { purpose: 'quiz', now, rng }),
+    { freshShare, stockOf: recordMixStockOf(srs) },
+  )
   if (source.type === 'listeningList') {
     const reviewItems = (source.ids ?? []).map(getListeningItem).filter(Boolean)
     const deck = source.preserveOrder ? reviewItems : rank(reviewItems).map(({ item }) => item)
@@ -372,7 +377,7 @@ export function buildListeningDeck(
   const levelId = source.levelId ?? '5'
   const candidates = listeningByLevel(levelId)
   const ranked = rank(candidates)
-  if (!size || size >= candidates.length) return ranked.map(({ item }) => item)
+  if (!size || size >= ranked.length) return ranked.map(({ item }) => item)
 
   // 10問版でも、級の出題形式が偶然欠落しないよう、級の構成比を縮約して層化抽出する。
   const profile = LISTENING_PROFILES[levelId]

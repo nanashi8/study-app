@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { useWordBookPicker } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import {
   getKotenGrammar,
@@ -27,6 +27,7 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -43,8 +44,6 @@ export function KotenGrammarQuizScreen() {
   const returnTo = useStore((state) => state.returnTo)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const reviseReview = useStore((state) => state.reviseReview)
-  const wordBookSets = useStore((state) => state.learningNotebook.sets)
-  const picker = useWordBookPicker()
   const recordQuizResult = useStore((state) => state.recordContentQuizResult)
 
   // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
@@ -54,6 +53,7 @@ export function KotenGrammarQuizScreen() {
       size,
       srs: state.kotenGrammarSrs,
       quizResults: state.contentQuizResults,
+      freshShare: currentStudyMixShare(),
     })
   }
   // 在庫を数えて、選べる問題数の上限を実態に合わせる。
@@ -92,10 +92,10 @@ export function KotenGrammarQuizScreen() {
     : null
   const level = question ? KOTEN_GRAMMAR_LEVELS[question.level] : null
   const format = question ? KOTEN_GRAMMAR_QUESTION_FORMATS[question.format] : null
-  // この問題に関わる項目が、どれも1冊以上の単語帳に入っているか。
+  // この問題に関わる文法事項は、画面下部の「単語帳」で選んだ登録先にまとめて入れる（全部入っていれば外す）。
   const relatedRefs = notebookRefs('kotenGrammar', relatedGrammar.map((item) => item.id))
-  const allSaved = relatedRefs.length > 0
-    && relatedRefs.every((ref) => wordBookSets.some((set) => set.refs.includes(ref)))
+  const relatedBook = useWordBookSlot(relatedRefs, { label: relatedGrammar.map((item) => item.title).join('・') })
+  const allSaved = relatedBook.inBook
 
   // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
   const backToKotenGrammar = () => returnTo('kotenGrammar')
@@ -103,11 +103,23 @@ export function KotenGrammarQuizScreen() {
   // 前に答えてから戻ってきた問題は、答えを選び直せる。
   const reselectable = useRevisitedAnswer(index, selected !== null)
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, pickQuestions(params.ids, ALL_QUESTIONS), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる文法問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKotenGrammar}>戻る</Button>
       </div>
     )
@@ -266,13 +278,13 @@ export function KotenGrammarQuizScreen() {
           // 関わる文法事項の名前は答えの手掛かりになるので、答えるまでは押せない。
           <CardSaveToggle
             saved={allSaved}
-            onToggle={() => picker.open(relatedRefs, relatedGrammar.map((item) => item.title).join('・'))}
+            onToggle={relatedBook.press}
             disabled={!answered || !relatedRefs.length}
             label="単語帳"
-            savedLabel="この問題の文法事項を入れる単語帳を選ぶ（単語帳に入っています）"
-            unsavedLabel={answered ? 'この問題の文法事項を入れる単語帳を選ぶ' : '答えたあとで、この問題の文法事項を単語帳に入れられます'}
-            aria-pressed={undefined}
-            aria-haspopup="dialog"
+            savedLabel={wordBookSlotLabel({ itemLabel: 'この問題の文法事項', bookTitle: relatedBook.bookTitle, inBook: true })}
+            unsavedLabel={answered
+              ? wordBookSlotLabel({ itemLabel: 'この問題の文法事項', bookTitle: relatedBook.bookTitle, inBook: false })
+              : '答えたあとで、この問題の文法事項を単語帳に入れられます'}
             data-word-book-related="kotenGrammar"
             className="disabled:opacity-40"
           />
@@ -410,7 +422,6 @@ export function KotenGrammarQuizScreen() {
           {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
       </div>
-      {picker.sheet}
     </div>
   )
 }

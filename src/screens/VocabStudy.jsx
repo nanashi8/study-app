@@ -6,7 +6,6 @@ import {
   answeredSessionIndexes,
   buildDeck,
   growDeck,
-  isAutomaticVocabularySource,
   recordStudyAnswer,
   restartSessionCount,
   reviseStudyAnswer,
@@ -38,6 +37,7 @@ import {
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import {
   CardSaveToggle,
@@ -53,7 +53,8 @@ import {
   ringProgress,
   ringRemaining,
 } from '../lib/studyRing.js'
-import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -132,7 +133,6 @@ export function VocabStudyScreen() {
   // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
   // 押し間違えたときだけここへ戻って選び直す。
   const [lastAnswered, setLastAnswered] = useState(null)
-  const [listSheetOpen, setListSheetOpen] = useState(false)
   const {
     value: recordedAnswer,
     setValue: setRecordedAnswer,
@@ -168,30 +168,25 @@ export function VocabStudyScreen() {
     }
   }
 
-  // 出題バランスのバーを動かしたら、まだ答えていない先のカードをその割合で組み直す。
-  // いま見ているカードと答えたカードはそのまま残す（次の回まで待たせない）。
-  const appliedVocabMix = useRef(settings.vocabMix)
-  useEffect(() => {
-    if (appliedVocabMix.current === settings.vocabMix) return
-    appliedVocabMix.current = settings.vocabMix
-    if (!isAutomaticVocabularySource(source)) return
-    const size = params.size ?? sessionSize
-    const answeredIndexes = answeredSessionIndexes(recordedAnswers)
-    setDeck((current) => {
-      const keepCount = current.length
-        ? Math.max(i + 1, ...answeredIndexes.map((index) => index + 1))
-        : 0
-      const nextDeck = growDeck(current, keepCount, buildFor(size), Math.max(size, keepCount))
-      rememberBoxesAtStart(nextDeck)
-      return nextDeck
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.vocabMix])
+  // 出題バランスのバー（画面下部の「出題」）を動かしたら、まだ答えていない先のカードをその割合で組み直す。
+  // いま見ているカードと答えたカードはそのまま残す（次の回まで待たせない）。並びを選んで始めた回はその順のまま。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: source.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => {
+        const nextDeck = growDeck(current, current.length ? keepCount : 0, buildFor(size), Math.max(size, keepCount))
+        rememberBoxesAtStart(nextDeck)
+        return nextDeck
+      })
+    },
+  })
   const word = deck[i]
   // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
   const reselectable = useRevisitedAnswer(i, recordedAnswer !== null)
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
-  const inWordBook = useWordInAnyBook(word?.id)
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
   const relatedPhrases = useMemo(() => phraseGroupsForWord(word), [word?.id])
   // 意味が同じ・近い語、同じ意味の熟語、つづりが似た語、カタカナ語のヒント。
@@ -199,9 +194,13 @@ export function VocabStudyScreen() {
 
   // スペルを隠していて、まだカードを開いていない。
   const spellingHidden = Boolean(word) && hideSpelling && !flipped
+  // スペルを隠しているあいだは、単語帳ボタンの読み上げ名や下部の知らせにも語を出さない。
+  const wordName = spellingHidden ? 'この単語' : word?.word
+  // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
+  const wordBook = useWordBookSlot(word ? [wordBookRef(word.id)] : [], { label: wordName })
 
   // 読み上げは設定の範囲で、単語→意味→例文→例文の意味。意味と例文の意味は、カードを開いてから読む。
-  // 使い方で発音が変わる語は単語を読まず（再生パネル側で外れる）、文でも読み分けられない語は例文も読まない。
+  // 単語を読まないとき（使い方で発音が変わる語、スペルを隠しているあいだ）は、例文と例文の意味も読まない。
   // 読み上げ列の持ち主。自動の読み上げと見出し・例文のボタンで同じものを使い、再生パネルの「範囲」をこのカードへ効かせる。
   const speechKey = word ? `${i}:${word.id}` : null
   const wordSpeechItems = word
@@ -214,11 +213,14 @@ export function VocabStudyScreen() {
         exampleSpeech: exampleSpeechAllowed(word),
         range: settings.speechRange,
         answerOpen: flipped,
+        spellingHidden,
+        hiddenLabel: 'この単語',
       })
     : []
 
-  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。スペルを隠しているあいだは読まず、
-  // 流れている音声と、つづりが出る下の再生パネルも閉じる。カードを開いてスペルが見えたら、そこで読み上げる。
+  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。下の再生パネルは閉じず、
+  // 自動で読まないときもこのカードの列を「再生」できるように置く。スペルを隠しているあいだは読まず、
+  // パネルにもつづり・例文を出さない。カードを開いてスペルが見えたら、そこで読み上げる。
   useCardAutoSpeech({
     speechKey,
     items: wordSpeechItems,
@@ -229,7 +231,7 @@ export function VocabStudyScreen() {
 
   if (!deck.length) {
     // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
-    const mixNotice = isAutomaticVocabularySource(source) ? vocabMixEmptyNotice(settings.vocabMix) : null
+    const mixNotice = source.preserveOrder === true ? null : vocabMixEmptyNotice(settings.vocabMix)
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center" data-vocab-empty-deck>
         <div className="text-5xl">🌳</div>
@@ -318,8 +320,6 @@ export function VocabStudyScreen() {
   const turnRing = (direction) => moveToCard(ringIndexAfter(i, deck.length, recordedAnswers, direction))
 
   const level = getLevel(word.level)
-  // スペルを隠しているあいだは、単語帳の窓や読み上げ名にも語を出さない。
-  const wordName = spellingHidden ? 'この単語' : word.word
 
   const saveBeforeReference = (screen, referenceParams) => {
     saveQuizSession({
@@ -392,15 +392,13 @@ export function VocabStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+            {/* 押すと、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。 */}
             <CardSaveToggle
-              saved={inWordBook}
-              onToggle={() => setListSheetOpen(true)}
+              saved={wordBook.inBook}
+              onToggle={wordBook.press}
               label="単語帳"
-              savedLabel={`${wordName}の単語帳を選ぶ（単語帳に入っています）`}
-              unsavedLabel={`${wordName}を入れる単語帳を選ぶ`}
-              aria-pressed={undefined}
-              aria-haspopup="dialog"
+              savedLabel={wordBookSlotLabel({ itemLabel: wordName, bookTitle: wordBook.bookTitle, inBook: true })}
+              unsavedLabel={wordBookSlotLabel({ itemLabel: wordName, bookTitle: wordBook.bookTitle, inBook: false })}
               data-vocab-word-book-toggle
             />
           </>
@@ -611,12 +609,6 @@ export function VocabStudyScreen() {
         )}
       </CardStudyFooter>
 
-      <WordListSheet
-        open={listSheetOpen}
-        onClose={() => setListSheetOpen(false)}
-        wordId={word.id}
-        wordLabel={wordName}
-      />
     </div>
   )
 }

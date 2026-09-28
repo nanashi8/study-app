@@ -8,6 +8,7 @@ import {
   questionsForChapters,
 } from '../data/math-history.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
+import { mixRankedForStudy, questionMixStockOf } from '../lib/studyMix.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { readableMathAccent } from '../lib/mathVisualColors.js'
@@ -17,6 +18,7 @@ import { MathText } from '../components/MathText.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, BookOpen, Check, Close } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -55,7 +57,8 @@ export function MathStoryQuizScreen() {
       quizResults: state.contentQuizResults,
       quizDomain: MATH_HISTORY_QUIZ_DOMAIN,
     })
-    return pickInStudyOrder(ranked, size)
+    // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で復習と未回答を混ぜる（lib/studyMix.js）。
+    return pickInStudyOrder(mixRankedForStudy(ranked, { freshShare: currentStudyMixShare(), stockOf: questionMixStockOf }), size)
   }
   // 在庫を数えて、選べる問題数の上限を実態に合わせる。
   const [poolSize] = useState(() => pickQuestions(chapterIds, ALL_QUESTIONS).length)
@@ -99,11 +102,23 @@ export function MathStoryQuizScreen() {
     returnTo('mathHistory')
   }
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: false,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, pickQuestions(chapterIds, ALL_QUESTIONS), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧭</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={leave}>戻る</Button>
       </div>
     )

@@ -153,7 +153,11 @@ test('場面の束は長文一覧から開き、読解の準備でも本文の�
   assert.match(parts, /<MeaningText>\{word\.meaning\}<\/MeaningText>/)
   assert.match(parts, /本文ではこう出る/)
   assert.match(parts, /この長文を読む/)
-  assert.match(parts, /<WordListSheet/)
+  // 束の語は、画面下部の「単語帳」で選んだ登録先へまとめて入れる（全部入っていれば外す）。
+  assert.match(parts, /useWordBookSlot\(\(bundle\?\.wordIds \?\? \[\]\)\.map\(wordBookRef\)/)
+  assert.match(parts, /onClick=\{wordBook\.press\}/)
+  assert.doesNotMatch(parts, /<WordListSheet/)
   // フックは束が無いときの早期 return より前に置く。
   assert.ok(parts.indexOf('useMemo(') < parts.indexOf('if (!bundle || !passage) return null'))
+  assert.ok(parts.indexOf('useWordBookSlot(') < parts.indexOf('if (!bundle || !passage) return null'))
 })

@@ -28,5 +28,8 @@ export function isAmbiguousSpeechText(text, lang = 'en-US') {
   )
 }
 
-/** カードの例文を読み上げてよいか。文の中でも読み分けられない語（row の「列」と「口論」など）は読まない。 */
-export const exampleSpeechAllowed = (word) => heteronymFor(word)?.exampleSpeech !== false
+/**
+ * 見出し語の例文を読み上げてよいか。単語を発音しない語（使い方で発音が変わる語）は、例文も読まない
+ * （暗記カード・辞書ページ。2026-09-28、利用者の指示「単語を発音しないときに、例文を読み上げさせないように」）。
+ */
+export const exampleSpeechAllowed = (word) => !heteronymFor(word)

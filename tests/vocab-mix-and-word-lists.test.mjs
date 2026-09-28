@@ -266,48 +266,55 @@ test('学習の途中でバーを動かすと、まだ答えていない先の�
   const quiz = read('../src/screens/VocabQuiz.jsx')
   const result = read('../src/screens/SessionResult.jsx')
   const progress = read('../src/lib/vocabSessionProgress.js')
+  const hook = read('../src/components/StudyMix.jsx')
 
   for (const source of [study, quiz]) {
-    assert.match(source, /appliedVocabMix\.current === (?:settings\.)?vocabMix/)
-    assert.match(source, /if \(!isAutomaticVocabularySource\(source\)\) return/)
+    // 組み直しは暗記・テストの全21画面で同じ部品（useStudyMixRebuild）。並びを選んで始めた回だけはその順のまま。
+    assert.match(source, /useStudyMixRebuild\(\{/)
+    assert.match(source, /fixedOrder: source\.preserveOrder === true,/)
     // いま表示している問題と答えた問題は残し、その先だけを新しい割合の出題に替える。
-    assert.match(source, /growDeck\(current, keepCount, buildFor\(size\), Math\.max\(size, keepCount\)\)/)
+    assert.match(source, /growDeck\(current, current\.length \? keepCount : 0, buildFor\(size\), Math\.max\(size, keepCount\)\)/)
     assert.match(source, /vocabMixEmptyNotice\((?:settings\.)?vocabMix\)/)
-    assert.doesNotMatch(source, /次に組む出題から効かせる/)
+    assert.doesNotMatch(source, /次に組む出題から効かせる|appliedVocabMix|isAutomaticVocabularySource\(source\)\) return/)
   }
-  assert.match(study, /Math\.max\(i \+ 1, \.\.\.answeredIndexes\.map\(\(index\) => index \+ 1\)\)/)
+  assert.match(hook, /if \(applied\.current === vocabMix\) return/)
+  assert.match(hook, /rebuild\(Math\.max\(index \+ 1, \.\.\.answeredIndexes\.map\(\(answered\) => answered \+ 1\)\)\)/)
   // 結果画面の「次の◯語へ」も、同じ割合で実際に出せる数を数える。
   assert.match(result, /freshShareOverride: vocabMixFreshShare\(settings\.vocabMix\)/)
   assert.equal((progress.match(/^ {4}freshShareOverride,$/gm) ?? []).length, 3)
 })
 
-test('画面下部の同じ枠で、読み上げと出題バランスを切り替える', () => {
+test('画面下部の同じ枠で、読み上げ・出題バランス・単語帳を切り替える', () => {
   const dock = read('../src/components/SpeechConsole.jsx')
   const mix = read('../src/components/VocabMixConsole.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const quiz = read('../src/screens/VocabQuiz.jsx')
 
   assert.match(dock, /data-study-dock-tabs/)
-  // 切り替えは各パネルの見出し行の先頭に入れ、切り替えだけの段を作らない。
-  assert.match(dock, /export function SpeechConsole\(\{ state, onRateChange, onRangeChange = null, range = null, leading = null \}\)/)
-  assert.match(mix, /export function VocabMixConsole\(\{ leading = null \} = \{\}\)/)
-  assert.equal((dock.match(/leading=\{tabs\}/g) ?? []).length, 2)
-  assert.doesNotMatch(dock, /grid grid-cols-2 gap-1 px-2 pt-1\.5/)
-  // 再生の6操作は残し、アイコンと名前を横に並べて押せる高さ44pxの1段に収める。
-  assert.match(dock, /flex min-h-11 min-w-0 items-center justify-center/)
-  assert.doesNotMatch(dock, /flex min-h-11 min-w-0 flex-col/)
-  assert.match(dock, /読み上げ/)
-  assert.match(dock, /出題バランス/)
-  assert.match(dock, /vocabMixApplies\(screen, params\)/)
-  // 読み上げも出題バランスも無い画面では、これまでどおり何も出さない。
-  assert.match(dock, /if \(!state\.visible && !mixAvailable\) return null/)
+  // 切り替えは左に縦に並べ、見出し1行＋操作1行の高さに収める（切り替えだけの段を作らない）。
+  assert.match(dock, /export function SpeechConsole\(\{ state, onRateChange, onRangeChange = null, range = null, titled = true \}\)/)
+  assert.match(mix, /export function VocabMixConsole\(\{ context = null, titled = true \} = \{\}\)/)
+  assert.match(dock, /className="flex w-10 shrink-0 flex-col gap-0\.5 py-1 pl-1"/)
+  assert.doesNotMatch(dock, /leading=\{tabs\}|grid grid-cols-2 gap-1 px-2 pt-1\.5/)
+  // 再生の6操作は残し、アイコンの下に名前を置いて押せる高さ44pxの1段に収める（左に切り替えが並んでも切れない幅）。
+  assert.match(dock, /flex min-h-11 min-w-0 flex-col items-center justify-center/)
+  assert.match(dock, /speech: Object\.freeze\(\{ label: '音声', name: '読み上げ' \}\)/)
+  assert.match(dock, /mix: Object\.freeze\(\{ label: '出題', name: '出題バランス' \}\)/)
+  assert.match(dock, /book: Object\.freeze\(\{ label: '単語帳', name: '単語帳の登録先' \}\)/)
+  assert.match(dock, /const mix = studyMixContext\(screen, params\)/)
+  assert.match(dock, /studyDockPanels\(\{\n\s*speechVisible: state\.visible,\n\s*mixContext: mix,\n\s*wordBookButtons: dock\.wordBookButtons,\n\s*\}\)/)
+  // どれも使えない画面では何も出さない（単語帳の設定の窓だけは開けるように置く）。
+  assert.match(dock, /if \(!panels\.length\) return sheet/)
   assert.match(mix, /data-vocab-mix-range/)
   assert.match(mix, /setSetting\('vocabMix'/)
   assert.match(mix, /次の出題から/)
   // 読み上げ欄と同じ枠を分け合うので、見出し1行＋操作1行の高さから増やさない。
   assert.match(mix, /data-vocab-mix-console-controls/)
   assert.doesNotMatch(mix, /<p className="mt-0\.5/)
-  // 出す語が決まっている画面（マイ単語・復習など）ではバーを出さない。
+  // 出題バランスは暗記・テストの全21画面に出す。選んだ順に出す回は、その順のまま動かせないことを示す。
+  assert.match(mix, /export const STUDY_MIX_SCREENS = Object\.freeze\(\[/)
+  assert.match(mix, /fixedOrder: params\?\.preserveOrder === true \|\| source\?\.preserveOrder === true,/)
+  assert.match(mix, /disabled=\{fixedOrder\}/)
   assert.match(mix, /isAutomaticVocabularySource/)
   for (const source of [study, quiz]) {
     assert.match(source, /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\)/)
@@ -316,35 +323,35 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
 
 test('マイ単語はほかの単語帳と同じ1冊で、どの冊もマイ学習ノートと同じ保存先を使う', () => {
   const sheet = read('../src/components/WordListSheet.jsx')
+  const slot = read('../src/components/WordBookSlot.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const detail = read('../src/screens/WordDetail.jsx')
   const levels = read('../src/screens/VocabLevels.jsx')
 
   assert.match(sheet, /title="単語帳"/)
+  assert.match(slot, /title="単語帳の設定"/)
   // 冊の並び・数え方はライブラリ1か所で決め、画面ごとにずらさない。「マイ単語」だけの特別な冊は作らない。
   const books = read('../src/lib/wordBooks.js')
   assert.match(books, /return sets\.map\(\(set\) => \(\{/)
   assert.doesNotMatch(books, /MY_WORDS_BOOK|renamable|myList/)
-  // どの冊も同じ行で並べ、同じ操作で入れる・外す（1語でも、まとめてでも）。
-  assert.doesNotMatch(sheet, /toggleMyList|(?:store|state)\.myList|data-word-list-my-words|いつもの単語帳/)
-  assert.match(sheet, /createNotebookSet/)
-  assert.match(sheet, /setNotebookSetRefs\(set\.id, refs, !removes\)/)
-  // もう入らない冊（全部入っている・500項目でいっぱい）は、押すと入っている語を外す。行を押せないままにしない。
-  assert.match(sheet, /const removes = present > 0 && !canAdd/)
-  assert.match(sheet, /data-word-list-new-title/)
+  // どの冊も同じ行で並べ、同じ操作で登録先にする・作る。単語帳ボタンは登録先に入れる・外す（1語でも、まとめてでも）。
+  for (const source of [sheet, slot]) {
+    assert.doesNotMatch(source, /toggleMyList|(?:store|state)\.myList|data-word-list-my-words|いつもの単語帳/)
+    // 新しい保存領域は作らない（進捗コード・クラウド同期の契約を増やさない）。
+    assert.doesNotMatch(source, /useStore\.setState/)
+  }
+  assert.match(slot, /createNotebookSet/)
+  assert.match(slot, /selectNotebookSet\(setId\)/)
+  assert.match(slot, /useStore\.getState\(\)\.toggleWordBookSlot\(list\)/)
+  assert.match(slot, /data-word-book-slot-new-title/)
   // マイ学習ノートでも同じ「単語帳」の名前で並び、「問題集」とは呼ばない。
-  assert.match(sheet, /単語帳は、マイ学習ノートの「単語帳」にも並びます/)
-  assert.doesNotMatch(sheet, /問題集と同じもの/)
-  // 新しい保存領域は作らない（進捗コード・クラウド同期の契約を増やさない）。
-  assert.doesNotMatch(sheet, /useStore\.setState/)
+  assert.doesNotMatch(`${sheet}${slot}`, /問題集/)
   for (const source of [study, detail]) {
-    assert.match(source, /<WordListSheet/)
-    assert.match(source, /wordId=\{word\.id\}/)
-    assert.match(source, /useWordInAnyBook/)
-    assert.doesNotMatch(source, /toggleMyList|マイ単語/)
+    assert.match(source, /useWordBookSlot\(word \? \[wordBookRef\(word\.id\)\] : \[\]/)
+    assert.doesNotMatch(source, /<WordListSheet|useWordInAnyBook|toggleMyList|マイ単語/)
   }
   assert.match(study, /label="単語帳"/)
-  assert.match(detail, /単語帳に入れる/)
+  assert.match(detail, /wordBookSlotButtonText\(\{ bookTitle: wordBook\.bookTitle, inBook: inWordBook \}\)/)
   assert.doesNotMatch(detail, /マイ単語リストに保存|マイ単語帳に入れる/)
 
   // 単語画面の単語帳の入口は「今日の学習」の下、10分野・語源と並ぶ選び方の1つで、単語帳を選んで学ぶ。冊数だけを示す。

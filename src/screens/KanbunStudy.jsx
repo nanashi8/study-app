@@ -8,6 +8,7 @@ import {
   kanbunItems,
 } from '../data/kanbun-content.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
@@ -15,6 +16,7 @@ import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedT
 import { KanbunExtras } from '../components/KanbunExtras.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   CardStudyFooter,
@@ -103,7 +105,11 @@ export function KanbunStudyScreen() {
     const selected = kanbunItems(domain, ids)
     const items = params.preserveOrder && Array.isArray(ids)
       ? ids.map((id) => selected.find((item) => item.id === id)).filter(Boolean)
-      : orderForStudy(selected, useStore.getState()[meta.srsField], { purpose: 'study' })
+      : mixItemsForStudy(
+        orderForStudy(selected, useStore.getState()[meta.srsField], { purpose: 'study' }),
+        useStore.getState()[meta.srsField],
+        { freshShare: currentStudyMixShare(), size },
+      )
     return size > 0 ? items.slice(0, size) : items
   }
   const [poolSize] = useState(() => kanbunItems(domain, params.ids).length)
@@ -154,11 +160,23 @@ export function KanbunStudyScreen() {
     returnTo('kanbunCatalog', { domain })
   }
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredSessionIndexes(recordedAnswers),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, nextStudyItems(buildFor(params.ids, 0), cycleIds.current, 0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length || !item) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📕</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる項目がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKanbunCatalog}>戻る</Button>
       </div>
     )

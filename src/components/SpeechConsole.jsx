@@ -22,7 +22,9 @@ import {
   Play,
   Stop,
 } from './Icons.jsx'
-import { VocabMixConsole, vocabMixApplies } from './VocabMixConsole.jsx'
+import { VocabMixConsole, studyMixContext } from './VocabMixConsole.jsx'
+import { WordBookSlotConsole, WordBookSlotSheet, useStudyDock } from './WordBookSlot.jsx'
+import { studyDockPanels, studyDockShowing } from '../lib/studyDock.js'
 import { cx } from './ui.jsx'
 
 const RATE_OPTIONS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]
@@ -42,8 +44,8 @@ function ConsoleButton({ label, disabled, onClick, children, primary = false }) 
       disabled={disabled}
       aria-label={label}
       className={cx(
-        // アイコンと名前を横に並べ、押せる高さ（44px）のまま1段に収める。
-        'flex min-h-11 min-w-0 items-center justify-center gap-0.5 rounded-lg px-0.5 text-[10px] font-extrabold leading-none transition-colors',
+        // アイコンの下に名前を置き、押せる高さ（44px）のまま1段に収める。左に切り替えが並んでも「一時停止」が切れない幅にする。
+        'flex min-h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 text-[10px] font-extrabold leading-none transition-colors',
         primary
           ? 'bg-brand-600 text-white active:bg-brand-700'
           : 'bg-slate-100 text-ink/70 active:bg-slate-200',
@@ -92,9 +94,9 @@ function SpeechRangeSelect({ range, onChange }) {
 /**
  * 全読み上げ導線で共有する、6操作固定の再生パネル。見出し1行＋操作1行に収める。
  * 英単語・熟語・構文の暗記カードを読んでいるときだけ、見出し行の速度の前に「範囲」も置く。
- * leading には、下部の枠を出題バランスと分け合うときの切り替えが入る。
+ * titled は見出し行に読み上げの名前（単語カードなど）を出すか（下部の枠を出題・単語帳と分け合うときは出さない）。
  */
-export function SpeechConsole({ state, onRateChange, onRangeChange = null, range = null, leading = null }) {
+export function SpeechConsole({ state, onRateChange, onRangeChange = null, range = null, titled = true }) {
   return (
     <section
       aria-label="読み上げ再生パネル"
@@ -102,13 +104,12 @@ export function SpeechConsole({ state, onRateChange, onRangeChange = null, range
       className="px-2 py-1"
     >
       <div className="mb-1 flex h-8 min-w-0 items-center gap-1.5">
-        {leading}
         {/* 再生中かどうかは再生・一時停止ボタンの押せる／押せないで見えるので、文字は読み上げにだけ渡す。 */}
         <span aria-live="polite" className="sr-only">
           {STATUS_LABEL[state.status] ?? '待機中'}
         </span>
         <p className="min-w-0 flex-1 truncate text-[11px] font-extrabold leading-tight text-ink">
-          {!leading && state.title && (
+          {titled && state.title && (
             <span className="mr-1 text-[9px] font-black tracking-[0.08em] text-brand-600">
               {state.title}
             </span>
@@ -139,7 +140,7 @@ export function SpeechConsole({ state, onRateChange, onRangeChange = null, range
         </label>
       </div>
 
-      <div className="grid grid-cols-5 gap-1" data-speech-console-controls>
+      <div className="grid grid-cols-5 gap-0.5" data-speech-console-controls>
         <ConsoleButton label="前へ" disabled={!state.canPrevious} onClick={previousSpeechItem}>
           <ChevronLeft size={15} />
         </ConsoleButton>
@@ -160,19 +161,37 @@ export function SpeechConsole({ state, onRateChange, onRangeChange = null, range
   )
 }
 
+// 下部の枠の切り替えの名前（左の縦の切り替えに出す名前と、読み上げ名）。
+const DOCK_PANELS = Object.freeze({
+  speech: Object.freeze({ label: '音声', name: '読み上げ' }),
+  mix: Object.freeze({ label: '出題', name: '出題バランス' }),
+  book: Object.freeze({ label: '単語帳', name: '単語帳の登録先' }),
+})
+// 押した結果を見せるために「単語帳」を前に出しておく時間（ミリ秒）。そのあとは元の切り替えに戻す。
+const BOOK_NOTICE_MS = 4000
+
+/**
+ * 画面下部の枠。読み上げ（再生パネル）・出題（出題バランス）・単語帳（登録先）のうち、いまの画面で使えるものを出す。
+ * 2つ以上あれば、左の縦の切り替えで選ぶ（切り替えだけの段は作らない）。どれも見出し1行＋操作1行で、
+ * 同じマスに重ねて見えていないものを隠すので、切り替えても枠の高さは上下しない。
+ *   読み上げ … 読み上げ列があるとき（英単語・熟語・構文の暗記カードは、カードを出しているあいだずっと）
+ *   出題     … 暗記・テストの全21画面（studyMixContext）
+ *   単語帳   … 単語帳ボタンが画面に出ているとき。単語帳の設定（登録先を選ぶ窓）もここから開く
+ */
 export function GlobalSpeechConsole() {
   const state = useSyncExternalStore(
     subscribeSpeechPlayer,
     getSpeechPlayerSnapshot,
     getSpeechPlayerServerSnapshot,
   )
+  const dock = useStudyDock()
   const screen = useStore((store) => store.screen)
   const params = useStore((store) => store.params)
   const settings = useContentSettings()
   const setSetting = useStore((store) => store.setSetting)
-  // 画面下部の同じ場所を、読み上げ操作と出題バランスで分け合う。
-  // どちらを開いていたかは画面のあいだだけ覚えていればよい一時状態。
-  const [panel, setPanel] = useState('speech')
+  // どれを開いていたかは画面のあいだだけ覚えていればよい一時状態。
+  const [chosen, setChosen] = useState(null)
+  const [flash, setFlash] = useState(null)
 
   useEffect(() => {
     updateSpeechPlayerVoices({
@@ -183,18 +202,39 @@ export function GlobalSpeechConsole() {
 
   useEffect(() => () => dismissSpeechPlayer(), [screen])
 
+  // 画面を移ったら、前の画面で選んでいた切り替えは忘れる。
+  useEffect(() => {
+    setChosen(null)
+    setFlash(null)
+  }, [screen])
+
   // 読み上げを始めた瞬間は、押した本人が見たい再生操作へ戻す。
   useEffect(() => {
-    if (state.visible) setPanel('speech')
+    if (state.visible) setChosen('speech')
   }, [state.visible])
 
-  const mixAvailable = vocabMixApplies(screen, params)
-  if (!state.visible && !mixAvailable) return null
+  // 単語帳ボタンを押したら、入れた先と結果を見せるため、少しのあいだ「単語帳」を前に出す。
+  useEffect(() => {
+    if (!dock.notice) {
+      setFlash(null)
+      return undefined
+    }
+    setFlash('book')
+    const timer = setTimeout(() => setFlash(null), BOOK_NOTICE_MS)
+    return () => clearTimeout(timer)
+  }, [dock.notice])
 
-  const both = state.visible && mixAvailable
-  const showing = !mixAvailable || (state.visible && panel === 'speech')
-    ? 'speech'
-    : 'mix'
+  const mix = studyMixContext(screen, params)
+  const panels = studyDockPanels({
+    speechVisible: state.visible,
+    mixContext: mix,
+    wordBookButtons: dock.wordBookButtons,
+  })
+  const sheet = <WordBookSlotSheet />
+  if (!panels.length) return sheet
+
+  const showing = studyDockShowing(panels, { flash, chosen })
+  const shared = panels.length > 1
 
   const changeRate = (rate) => {
     setSetting('ttsRate', rate)
@@ -205,75 +245,74 @@ export function GlobalSpeechConsole() {
   // 読んでいる途中なら、いまの部分を新しい範囲で読み直す（useCardAutoSpeech）。
   const changeRange = (range) => setSetting('speechRange', range)
 
-  // 切り替えは各パネルの見出し行の先頭に置き、切り替えだけの段を作らない。
-  const tabs = both ? (
-    <div
-      role="group"
-      aria-label="下部パネルの切り替え"
-      data-study-dock-tabs
-      className="flex h-8 shrink-0 items-center rounded-lg bg-slate-100 p-0.5"
-    >
-      {[
-        { id: 'speech', label: '読み上げ', name: '読み上げ' },
-        { id: 'mix', label: '出題', name: '出題バランス' },
-      ].map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          onClick={() => setPanel(tab.id)}
-          aria-pressed={showing === tab.id}
-          aria-label={tab.name}
-          className={cx(
-            'h-7 rounded-md px-2 text-[10px] font-extrabold transition-colors',
-            showing === tab.id
-              ? 'bg-brand-600 text-white'
-              : 'text-ink/55 active:bg-slate-200',
-          )}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  ) : null
+  const panelFor = (id) => {
+    if (id === 'speech') {
+      return (
+        <SpeechConsole
+          state={state}
+          onRateChange={changeRate}
+          onRangeChange={changeRange}
+          range={settings.speechRange}
+          titled={!shared}
+        />
+      )
+    }
+    if (id === 'mix') return <VocabMixConsole context={mix} titled={!shared} />
+    return <WordBookSlotConsole titled={!shared} />
+  }
 
   return (
-    <div
-      data-study-dock
-      className="shrink-0 border-t border-brand-100 bg-white/98 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
-    >
-      {both ? (
-        // 2つの操作を同じマスに重ね、見えていない側は visibility で隠す。
-        // 枠の高さは常に高いほうにそろい、タブを切り替えても下端が上下しない。
-        <div className="grid" data-study-dock-panels>
+    <>
+      <div
+        data-study-dock
+        className="flex shrink-0 border-t border-brand-100 bg-white/98 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
+      >
+        {shared && (
+          // 切り替えは左に縦に並べ、見出し1行＋操作1行の高さの中に収める。
           <div
-            className={cx('col-start-1 row-start-1', showing !== 'speech' && 'invisible')}
-            aria-hidden={showing !== 'speech'}
+            role="group"
+            aria-label="下部パネルの切り替え"
+            data-study-dock-tabs
+            className="flex w-10 shrink-0 flex-col gap-0.5 py-1 pl-1"
           >
-            <SpeechConsole
-              state={state}
-              onRateChange={changeRate}
-              onRangeChange={changeRange}
-              range={settings.speechRange}
-              leading={tabs}
-            />
+            {panels.map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setChosen(id)
+                  setFlash(null)
+                }}
+                aria-pressed={showing === id}
+                aria-label={DOCK_PANELS[id].name}
+                data-study-dock-tab={id}
+                className={cx(
+                  'min-h-0 flex-1 whitespace-nowrap rounded-md text-[9px] font-extrabold leading-none tracking-normal transition-colors',
+                  showing === id
+                    ? 'bg-brand-600 text-white'
+                    : 'bg-slate-100 text-ink/55 active:bg-slate-200',
+                )}
+              >
+                {DOCK_PANELS[id].label}
+              </button>
+            ))}
           </div>
-          <div
-            className={cx('col-start-1 row-start-1', showing !== 'mix' && 'invisible')}
-            aria-hidden={showing !== 'mix'}
-          >
-            <VocabMixConsole leading={tabs} />
-          </div>
+        )}
+        {/* 使えるものを同じマスに重ね、見えていないものは visibility で隠す。 */}
+        <div className="grid min-w-0 flex-1" data-study-dock-panels>
+          {panels.map((id) => (
+            <div
+              key={id}
+              className={cx('col-start-1 row-start-1 min-w-0', showing !== id && 'invisible')}
+              aria-hidden={showing !== id}
+              data-study-dock-panel={id}
+            >
+              {panelFor(id)}
+            </div>
+          ))}
         </div>
-      ) : showing === 'speech'
-        ? (
-            <SpeechConsole
-              state={state}
-              onRateChange={changeRate}
-              onRangeChange={changeRange}
-              range={settings.speechRange}
-            />
-          )
-        : <VocabMixConsole />}
-    </div>
+      </div>
+      {sheet}
+    </>
   )
 }

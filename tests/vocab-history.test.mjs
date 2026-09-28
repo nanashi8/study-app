@@ -84,16 +84,17 @@ test('辞書履歴は端末保存・進捗コード向けに正規化して往�
   }
 })
 
-test('英和辞書の検索結果・参照履歴の各単語から、入れる単語帳を選べる', () => {
+test('英和辞書の検索結果・参照履歴の各単語から、登録先の単語帳に入れられる', () => {
   const source = readFileSync(
     new URL('../src/screens/VocabSearch.jsx', import.meta.url),
     'utf8',
   )
 
-  // 検索結果・自作単語・履歴に同じ「単語帳」ボタンを置き、押すと入れる単語帳を選ぶ窓を開く。
-  assert.equal((source.match(/onChooseBook=\{\(\) => setBookWord\(/g) ?? []).length, 3)
-  assert.match(source, /<WordListSheet/)
+  // 検索結果・自作単語・履歴に同じ「単語帳」ボタン（WordRow）を置き、押すと画面下部の「単語帳」で選んだ登録先に入れる。
+  assert.equal((source.match(/<WordRow\b/g) ?? []).length, 3)
+  assert.match(source, /function WordRow\(\{ word, custom = false, onOpen \}\)/)
+  assert.match(source, /const wordBook = useWordBookSlot\(\[`vocab:\$\{word\.id\}`\], \{ label: word\.word \}\)/)
+  assert.match(source, /const wordBook = useWordBookSlot\(\[`phrases:\$\{phrase\.id\}`\], \{ label: phrase\.phrase \}\)/)
   assert.match(source, /data-dictionary-word-book/)
-  assert.match(source, /を入れる単語帳を選ぶ/)
-  assert.doesNotMatch(source, /toggleMyList|マイ単語/)
+  assert.doesNotMatch(source, /<WordListSheet|onChooseBook|toggleMyList|マイ単語/)
 })

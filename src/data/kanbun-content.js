@@ -4,6 +4,7 @@ import { KANBUN_VOCAB, getKanbunVocab } from './kanbun-vocab.js'
 import { KANBUN_DOMAIN_META } from './kanbun-meta.js'
 import { QUIZ_CHOICE_COUNT } from '../lib/quizChoices.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 
 export const KANBUN_COLLECTIONS = Object.freeze({
   vocab: KANBUN_VOCAB,
@@ -126,10 +127,15 @@ export function makeKanbunQuestion(domain, item, rng = Math.random) {
 export function pickKanbunQuestions(
   domain,
   ids,
-  { size = 12, rng = Math.random, srs = {}, now = Date.now() } = {},
+  { size = 12, rng = Math.random, srs = {}, now = Date.now(), freshShare = null } = {},
 ) {
   // 出題順は全教材共通（lib/studyOrder.js）。記録は項目ごとなので、項目を並べてから問題にする。
-  const candidates = orderForStudy(kanbunItems(domain, ids), srs, { purpose: 'quiz', now, rng })
+  // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で復習と未修を混ぜる（lib/studyMix.js）。
+  const candidates = mixItemsForStudy(
+    orderForStudy(kanbunItems(domain, ids), srs, { purpose: 'quiz', now, rng }),
+    srs,
+    { freshShare, now },
+  )
   const requestedSize = Math.max(0, Math.min(Number(size) || 12, candidates.length))
   return candidates.slice(0, requestedSize).map((item) => makeKanbunQuestion(domain, item, rng))
 }

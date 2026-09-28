@@ -22,6 +22,14 @@ import {
   orderForStudy,
   studyOrderKey,
 } from './studyOrder.js'
+import {
+  composeStudyMix,
+  interleaveProportionally,
+  latestStudyOutcome,
+  mixItemsForStudy,
+  studyMixShares,
+  studyMixStockOf,
+} from './studyMix.js'
 
 export const SESSION_SIZE = 10
 
@@ -176,13 +184,7 @@ function localDayForTimestamp(timestamp) {
   return todayIndex(timestamp)
 }
 
-function latestOutcome(entry) {
-  const memoryAt = Number(entry?.memory?.lastAt) || 0
-  const testAt = Number(entry?.test?.lastAt) || 0
-  if (memoryAt >= testAt && memoryAt > 0) return entry.memory?.lastJudgment ?? null
-  if (testAt > 0) return entry.test?.lastResult ?? null
-  return null
-}
+const latestOutcome = latestStudyOutcome
 
 function failedToday(entry, day) {
   if (!entry) return false
@@ -225,42 +227,11 @@ function interleaveGroups(first, second) {
   return result
 }
 
-// 7:3 や 6:4 でも片方が末尾に固まらないよう、比率を保って分散する。
-function interleaveProportionally(first, second) {
-  if (!first.length) return [...second]
-  if (!second.length) return [...first]
-  const result = []
-  let firstIndex = 0
-  let secondIndex = 0
-  while (firstIndex < first.length || secondIndex < second.length) {
-    if (firstIndex >= first.length) {
-      result.push(second[secondIndex++])
-    } else if (secondIndex >= second.length) {
-      result.push(first[firstIndex++])
-    } else if (firstIndex / first.length <= secondIndex / second.length) {
-      result.push(first[firstIndex++])
-    } else {
-      result.push(second[secondIndex++])
-    }
-  }
-  return result
-}
-
-// 出題バランスの両端（「復習だけ」「未修だけ」）は、足りなくてももう一方の語で数を埋めない。
-// 途中の段（復習寄り・半々・未修寄り）と自動は、在庫の足りない側をもう一方で補う。
-function vocabMixSides(freshShareOverride) {
-  if (!Number.isFinite(freshShareOverride)) return { review: true, fresh: true }
-  return { review: freshShareOverride < 1, fresh: freshShareOverride > 0 }
-}
-
-// 出題バランスを手で指定したときに分ける3つの在庫。
+// 出題バランスを手で指定したときに分ける3つの在庫（全教材で共通、studyMix.js）。
 //   fresh  未修…暗記もテストも記録のない語
 //   missed まだ・不正解…直近の答えが「まだ」「不正解」「わからない」の語（苦手な語）
 //   known  覚えた・正解…記録があり、直近の答えが「覚えた」「正解」の語
-function vocabMixGroupOf(entry) {
-  if (!hasVocabularyReviewEvidence(entry)) return 'fresh'
-  return ['forgot', 'wrong', 'unknown'].includes(latestOutcome(entry)) ? 'missed' : 'known'
-}
+const vocabMixGroupOf = studyMixStockOf
 
 /**
  * 出題バランスを手で指定したときの「復習」と「未修」の枠。ordered は出題順（studyOrder.js）に並べた語。
@@ -277,44 +248,14 @@ function manualVocabMixShares(
   srs,
   { size = 0, freshShare, cycleIds = [], now = Date.now(), day = todayIndex(now) } = {},
 ) {
-  const share = Math.min(1, Math.max(0, freshShare))
-  const sides = vocabMixSides(share)
-  const cycle = new Set(Array.isArray(cycleIds) ? cycleIds : [])
-  const groups = { fresh: [], missed: [], known: [] }
-  for (const word of ordered) groups[vocabMixGroupOf(srs[word.id])].push(word)
-  // 同じ周回で出し終えた語は、未修・覚えた・正解 からは外し、まだ・不正解 では最後に回す。
-  const fresh = sides.fresh ? groups.fresh.filter((word) => !cycle.has(word.id)) : []
-  const missed = sides.review ? unseenFirst(groups.missed, cycle) : []
-  const known = groups.known.filter((word) => !cycle.has(word.id))
-  const available = fresh.length + missed.length + known.length
-  const target = size > 0 ? Math.min(size, available) : available
-  const freshTarget = Math.round(target * share)
-  const reviewTarget = target - freshTarget
-
-  const freshPicked = fresh.slice(0, freshTarget)
-  const reviewPicked = missed.slice(0, reviewTarget)
-  // 復習の枠が先に、点数の低い 覚えた・正解 を取る。同じ点数なら出題順のまま（sort は安定）。
-  const scoreOf = new Map(known.map((word) => [
-    word.id,
-    vocabularyReviewMetrics(srs[word.id], { now, day }).score,
-  ]))
-  const byScore = [...known].sort((a, b) => scoreOf.get(a.id) - scoreOf.get(b.id))
-  const usedKnown = new Set()
-  for (const word of byScore) {
-    if (reviewPicked.length >= reviewTarget) break
-    reviewPicked.push(word)
-    usedKnown.add(word.id)
-  }
-  for (const word of known) {
-    if (freshPicked.length >= freshTarget) break
-    if (usedKnown.has(word.id)) continue
-    freshPicked.push(word)
-  }
-  const spareFresh = fresh.slice(Math.min(fresh.length, freshTarget))
-  const spareMissed = missed.slice(Math.min(missed.length, reviewTarget))
-  while (freshPicked.length < freshTarget && spareMissed.length) freshPicked.push(spareMissed.shift())
-  while (reviewPicked.length < reviewTarget && spareFresh.length) reviewPicked.push(spareFresh.shift())
-  return { review: reviewPicked, fresh: freshPicked }
+  // 組み方は全教材で共通（studyMix.js の studyMixShares）。英単語は語の記録と点数で在庫を分ける。
+  return studyMixShares(ordered, {
+    size,
+    freshShare,
+    stockOf: (word) => vocabMixGroupOf(srs[word.id]),
+    scoreOf: (word) => vocabularyReviewMetrics(srs[word.id], { now, day }).score,
+    cycleIds,
+  })
 }
 
 // day だけを渡されたときの基準時刻（その日の正午）。定着の見込みは時刻で、復習日は日で見るので、2つをそろえる。
@@ -589,24 +530,17 @@ export function buildDeck(
     }
     return compareStudyOrderKeys(keys.get(a.id), keys.get(b.id))
   })
-  if (!isAutomaticVocabularySource(source)) return size ? pool.slice(0, size) : pool
-
-  // 出題バランスを手で指定したときは、その割合で「復習」と「未修」の枠を組む（manualVocabMixShares）。
+  // 出題バランスを手で指定したときは、どの出題元（級・分野のほか、単語帳・今日の復習・先取り復習・語根・自作単語など）でも、
+  // その割合で「復習」と「未修」の枠を組む（manualVocabMixShares）。並びを選んで始めた回は上で返している。
   // size が 0（数えるとき・全部を選んだとき）も、同じ割合で出せる語をすべて並べる。
+  // 何度もまちがえている語は、未修の語と混ぜる前に、いちばん先へまとめて出す（composeStudyMix）。
   if (Number.isFinite(freshShareOverride)) {
     const shares = manualVocabMixShares(pool, srs, {
       size, freshShare: freshShareOverride, cycleIds, now, day,
     })
-    // 何度もまちがえている語は、未修の語と混ぜる前に、いちばん先へまとめて出す。
-    return [
-      ...shares.review.filter(isStruggling),
-      ...shares.fresh.filter(isStruggling),
-      ...interleaveProportionally(
-        shares.review.filter((word) => !isStruggling(word)),
-        shares.fresh.filter((word) => !isStruggling(word)),
-      ),
-    ]
+    return composeStudyMix(shares, isStruggling)
   }
+  if (!isAutomaticVocabularySource(source)) return size ? pool.slice(0, size) : pool
 
   // 自動のときは「今日の候補」（出題順の0〜2段：苦手・復習・未学習／未回答）から組み、苦手の語をいちばん先に出す。
   // 今日1回「まだ」「不正解」になった語、定着の確認、復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
@@ -806,6 +740,7 @@ function phraseCandidates(source) {
 // purpose は study（暗記）か quiz（テスト）。出題順は全教材共通（studyOrder.js）。
 // 結果画面の「次の◯項目へ」で続けるときは、同じ周回ですでに終えた項目（cycleIds）を
 // 候補から外し、一巡するまで同じ項目を出し直さない（英単語の buildDeck と同じ考え方）。
+// freshShare は画面下部の「出題」（出題バランス）の割合。自動（null）なら出題順のまま（studyMix.js）。
 export function buildPhraseDeck(
   source,
   {
@@ -814,6 +749,7 @@ export function buildPhraseDeck(
     purpose = 'study',
     excludeIds = [],
     cycleIds = [],
+    freshShare = null,
     now = Date.now(),
   } = {},
 ) {
@@ -830,7 +766,7 @@ export function buildPhraseDeck(
   if (source.type === 'phraseDue') {
     pool = pool.filter((p) => srs[p.id] && srs[p.id].due <= day)
   }
-  pool = orderForStudy(pool, srs, { purpose, now, day })
+  pool = mixItemsForStudy(orderForStudy(pool, srs, { purpose, now, day }), srs, { freshShare, size, now, day })
   return size ? pool.slice(0, size) : pool
 }
 

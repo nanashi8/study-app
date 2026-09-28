@@ -29,9 +29,7 @@ export function PronunciationNote({ word, compact = false, className = '' }) {
         })}
       </ul>
       <p className="mt-1.5 text-[11px] font-bold leading-relaxed text-amber-900/70">
-        {entry.exampleSpeech
-          ? 'つづりだけでは発音が決まらないので、単語だけの音声はありません。'
-          : 'つづりだけでは発音が決まらないので、この語と例文の音声はありません。'}
+        {'つづりだけでは発音が決まらないので、この語と例文の音声はありません。'}
       </p>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { WordBookToggle, useWordBookPicker } from '../components/WordListSheet.jsx'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import { getKoten } from '../data/koten.js'
 import { getKotenGrammar, KOTEN_GRAMMAR_CATEGORIES } from '../data/koten-grammar.js'
@@ -24,9 +25,7 @@ const uniqueById = (items) => [
 export function KotenInterpretationPrepScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const kotenSrs = useStore((state) => state.kotenSrs)
-  const picker = useWordBookPicker()
   const [tab, setTab] = useState('words')
   const [openGrammarId, setOpenGrammarId] = useState(null)
 
@@ -62,6 +61,12 @@ export function KotenInterpretationPrepScreen() {
     [items],
   )
 
+  // 重要語・文法は、画面下部の「単語帳」で選んだ登録先にまとめて入れる（全部入っていれば外す）。
+  const wordRefs = notebookRefs('kotenVocab', words.map((word) => word.id))
+  const grammarRefs = notebookRefs('kotenGrammar', grammar.map((item) => item.id))
+  const wordsBook = useWordBookSlot(wordRefs, { label: `短文の重要語${wordRefs.length}語` })
+  const grammarBook = useWordBookSlot(grammarRefs, { label: `短文の文法${grammarRefs.length}項目` })
+
   if (!items.length) {
     return (
       <div>
@@ -75,12 +80,9 @@ export function KotenInterpretationPrepScreen() {
 
   const wordIds = words.map((word) => word.id)
   const grammarIds = grammar.map((item) => item.id)
-  // 重要語・文法が、どれも1冊以上の単語帳に入っているか。
-  const wordRefs = notebookRefs('kotenVocab', wordIds)
-  const grammarRefs = notebookRefs('kotenGrammar', grammarIds)
-  const inAnyBook = (ref) => wordBookSets.some((set) => set.refs.includes(ref))
-  const allWordsSaved = wordRefs.length > 0 && wordRefs.every(inAnyBook)
-  const allGrammarSaved = grammarRefs.length > 0 && grammarRefs.every(inAnyBook)
+  // 重要語・文法が、どれも登録先の単語帳に入っているか。
+  const allWordsSaved = wordsBook.inBook
+  const allGrammarSaved = grammarBook.inBook
   const learnedWords = words.filter((word) => kotenSrs[word.id]).length
 
   const tabs = [
@@ -173,18 +175,12 @@ export function KotenInterpretationPrepScreen() {
               full
               variant={allWordsSaved ? 'soft' : 'hint'}
               disabled={!wordRefs.length}
-              onClick={() => picker.open(wordRefs, `短文の重要語${wordRefs.length}語`)}
-              aria-haspopup="dialog"
+              onClick={wordsBook.press}
+              aria-pressed={allWordsSaved}
+              data-koten-prep-word-book="words"
             >
-              {allWordsSaved ? (
-                <>
-                  <Check size={17} /> 全語が単語帳に入っています
-                </>
-              ) : (
-                <>
-                  <Bookmark size={17} /> 全語を単語帳に入れる
-                </>
-              )}
+              {allWordsSaved ? <Check size={17} /> : <Bookmark size={17} />}
+              {wordBookSlotButtonText({ bookTitle: wordsBook.bookTitle, inBook: allWordsSaved, what: `全${wordRefs.length}語を` })}
             </Button>
 
             <div className="mt-3 space-y-2">
@@ -223,18 +219,12 @@ export function KotenInterpretationPrepScreen() {
               full
               variant={allGrammarSaved ? 'soft' : 'hint'}
               disabled={!grammarRefs.length}
-              onClick={() => picker.open(grammarRefs, `短文の文法${grammarRefs.length}項目`)}
-              aria-haspopup="dialog"
+              onClick={grammarBook.press}
+              aria-pressed={allGrammarSaved}
+              data-koten-prep-word-book="grammar"
             >
-              {allGrammarSaved ? (
-                <>
-                  <Check size={17} /> 全項目が単語帳に入っています
-                </>
-              ) : (
-                <>
-                  <Bookmark size={17} /> 全項目を単語帳に入れる
-                </>
-              )}
+              {allGrammarSaved ? <Check size={17} /> : <Bookmark size={17} />}
+              {wordBookSlotButtonText({ bookTitle: grammarBook.bookTitle, inBook: allGrammarSaved, what: `全${grammarRefs.length}項目を` })}
             </Button>
 
             <div className="mt-3 space-y-2">
@@ -331,7 +321,6 @@ export function KotenInterpretationPrepScreen() {
           問題を解く <ArrowRight size={18} />
         </Button>
       </div>
-      {picker.sheet}
     </div>
   )
 }

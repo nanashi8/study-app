@@ -14,7 +14,7 @@ import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
 import { SceneBundleRows, SceneBundleSheet } from '../components/SceneBundles.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Button, Card, Chip, cx } from '../components/ui.jsx'
@@ -46,10 +46,7 @@ export function ReadingPrepScreen() {
   const passageId = params.passageId
   const navigate = useStore((state) => state.navigate)
   const replaceParams = useStore((state) => state.replaceParams)
-  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const srs = useStore((state) => state.srs)
-  // 必須語彙をまとめて入れる単語帳を選ぶ窓。
-  const [bookSheetOpen, setBookSheetOpen] = useState(false)
   // 表示とタブは params に置き、語の詳細や暗記から戻ったときも同じ一覧・同じ位置から続ける。
   const [view, setView] = useScreenParam('view', readPrepView)
   const [tab, setTab] = useScreenParam('listTab', readListTab)
@@ -67,6 +64,11 @@ export function ReadingPrepScreen() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const passage = getPassage(passageId)
+  // 必須語彙は、画面下部の「単語帳」で選んだ登録先にまとめて入れる（全部入っていれば外す）。
+  const prepWordIds = passage ? getReadingStudy(passage).words.map((word) => word.id) : []
+  const wordsBook = useWordBookSlot(prepWordIds.map(wordBookRef), {
+    label: `この長文の必須語彙${prepWordIds.length}語`,
+  })
 
   if (!passage) {
     return (
@@ -85,10 +87,8 @@ export function ReadingPrepScreen() {
   const wordIds = words.map((word) => word.id)
   const wordStatus = summarizeSrsItems(wordIds, srs)
   const phraseStatus = summarizeSrsItems(phrases, srs)
-  // どの語も、いずれかの単語帳に入っているか。
-  const allSaved = wordIds.length > 0 && wordIds.every((id) => (
-    wordBookSets.some((set) => set.refs.includes(wordBookRef(id)))
-  ))
+  // どの語も、登録先の単語帳に入っているか。
+  const allSaved = wordsBook.inBook
   const detailTranslation = detail ? longSentenceTranslationFor(detail) : null
   const continueTo = {
     screen: 'readingPrep',
@@ -363,19 +363,12 @@ export function ReadingPrepScreen() {
             full
             variant={allSaved ? 'soft' : 'hint'}
             disabled={!wordIds.length}
-            onClick={() => setBookSheetOpen(true)}
-            aria-haspopup="dialog"
+            onClick={wordsBook.press}
+            aria-pressed={allSaved}
             data-reading-prep-word-book
           >
-            {allSaved ? (
-              <>
-                <Check size={17} /> 全語が単語帳に入っています（入れる冊を選ぶ）
-              </>
-            ) : (
-              <>
-                <Bookmark size={17} /> 全語を単語帳に入れる
-              </>
-            )}
+            {allSaved ? <Check size={17} /> : <Bookmark size={17} />}
+            {wordBookSlotButtonText({ bookTitle: wordsBook.bookTitle, inBook: allSaved, what: `全${wordIds.length}語を` })}
           </Button>
           <NormalLearningRecordList
             entryId="reading-prep-words"
@@ -432,13 +425,6 @@ export function ReadingPrepScreen() {
           setOpenBundle(null)
           readPassage()
         }}
-      />
-
-      <WordListSheet
-        open={bookSheetOpen}
-        onClose={() => setBookSheetOpen(false)}
-        wordIds={wordIds}
-        wordLabel={`この長文の必須語彙${wordIds.length}語`}
       />
 
       <Sheet open={!!detail} onClose={() => setDetail(null)} title="くわしく">

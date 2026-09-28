@@ -56,6 +56,8 @@ function normalizeItems(items, defaults) {
       const segments = (source.segments?.length ? source.segments : [source])
         .map((segment, sourceIndex) => ({ ...textSegment(segment, defaults), sourceIndex }))
         .filter((segment) => String(segment.text ?? '').trim())
+        // 読まない部分（スペルを隠している見出しなど）は、位置だけ残して外す。
+        .filter((segment) => segment.silent !== true)
         // 使い方で発音が変わる語（heteronyms.js）は、単語だけでは読み上げない（長文の単語タップも同じ）。
         .filter((segment) => !isAmbiguousSpeechText(segment.text, segment.lang))
       if (!segments.length) return null
@@ -118,7 +120,8 @@ function resumeContinuation() {
 }
 
 function controlsFor(status = playerState.status) {
-  if (!session) {
+  // 読める部分のない列（見出しを読まない語のカードなど）は、パネルを出したまま、どの操作も押せない。
+  if (!session || !session.items.length) {
     return {
       canPlay: false,
       canPause: false,
@@ -219,7 +222,7 @@ function firstSegmentFrom(item, fromSegment = 0) {
 }
 
 function startCurrentItem({ reason = 'play', fromSegment = 0 } = {}) {
-  if (!session) return false
+  if (!session || !session.items.length) return false
   clearContinuation()
   stopSpeaking()
   const token = ++runToken
@@ -254,7 +257,32 @@ export function playSpeechItems(items, options = {}) {
     style: options.style ?? 'auto',
   })
   if (!normalized.length) return false
+  openSession(normalized, options)
+  return startCurrentItem({
+    reason: 'initial',
+    fromSegment: Math.max(0, Math.trunc(Number(options.startSegment) || 0)),
+  })
+}
 
+/**
+ * 読み上げ列を共通の再生パネルに入れて、読まずに止めておく。
+ * 暗記カードを出したのに自動で読まないとき（自動で発音がオフ、スペルを隠している、開いたカードを閉じ直した）に使い、
+ * パネルは閉じずに「再生」でいまのカードを読めるようにする。
+ * 読める部分がひとつもない列（見出しを読まない語で、範囲が単語のみ、など）でも、パネルは placeholder の見出しで出したまま、
+ * どの操作も押せない状態で置く（前のカードの列を残さない）。
+ */
+export function cueSpeechItems(items, options = {}) {
+  if (!isTTSSupported()) return false
+  const normalized = normalizeItems(items, {
+    lang: options.lang ?? 'en-US',
+    style: options.style ?? 'auto',
+  })
+  openSession(normalized, options)
+  return true
+}
+
+// 新しい読み上げ列でパネルを開き直す（流れている音声は止める）。読み始めるかは呼んだ側が決める。
+function openSession(normalized, options) {
   runToken += 1
   clearContinuation()
   stopSpeaking()
@@ -263,8 +291,10 @@ export function playSpeechItems(items, options = {}) {
     key: options.key ?? null,
     defaults: { lang: options.lang ?? 'en-US', style: options.style ?? 'auto' },
     items: normalized,
-    index: clamp(Math.trunc(options.index ?? 0), 0, normalized.length - 1),
+    index: clamp(Math.trunc(options.index ?? 0), 0, Math.max(0, normalized.length - 1)),
     title: options.title ?? '読み上げ',
+    // 読める部分がない列でパネルに出す見出し（スペルを隠しているカードの「この単語」など）。
+    placeholder: String(options.placeholder ?? ''),
     rate: clamp(Number(options.rate) || 0.9, 0.5, 1.2),
     voiceURI: options.voiceURI ?? null,
     japaneseVoiceURI: options.japaneseVoiceURI ?? null,
@@ -286,7 +316,7 @@ export function playSpeechItems(items, options = {}) {
     visible: true,
     status: 'stopped',
     title: session.title,
-    itemLabel: String(normalized[session.index].label ?? ''),
+    itemLabel: currentItemLabel(),
     index: session.index,
     count: normalized.length,
     rate: session.rate,
@@ -294,10 +324,13 @@ export function playSpeechItems(items, options = {}) {
     ...controlsFor('stopped'),
   })
   emit()
-  return startCurrentItem({
-    reason: 'initial',
-    fromSegment: Math.max(0, Math.trunc(Number(options.startSegment) || 0)),
-  })
+}
+
+// パネルの見出し。読める部分がない列では placeholder を出す。
+function currentItemLabel() {
+  if (!session) return ''
+  const item = session.items[session.index]
+  return item ? String(item.label ?? '') : session.placeholder
 }
 
 export function playSpeechPlayer() {
@@ -361,23 +394,34 @@ export function setSpeechPlayerRate(rate) {
  * restart のときは、読んでいる途中ならいまの item を新しい列で最初から読み直す（速さを変えたときと同じ）。
  * 読んでいないときは入れ替えるだけで、次の「再生」から新しい列を読む。
  */
-export function replaceSpeechItems(key, items, { restart = false } = {}) {
+export function replaceSpeechItems(key, items, { restart = false, placeholder } = {}) {
   if (!session || session.key == null || session.key !== key) return false
   const normalized = normalizeItems(items, session.defaults)
-  if (!normalized.length) return false
+  if (placeholder !== undefined) session.placeholder = String(placeholder ?? '')
+  // 読める部分がなくなった列（スペルを隠した、など）は、読んでいる音声を止めて、押せないパネルにする。
+  if (!normalized.length && (playerState.status === 'playing' || playerState.status === 'paused')) {
+    runToken += 1
+    clearContinuation()
+    stopSpeaking()
+  }
   session.items = normalized
-  session.index = clamp(session.index, 0, normalized.length - 1)
-  const status = playerState.status
+  session.index = clamp(session.index, 0, Math.max(0, normalized.length - 1))
+  const status = normalized.length ? playerState.status : 'stopped'
   if (restart && status === 'playing') return startCurrentItem({ reason: 'range-change' })
   if (restart && status === 'paused') session.restartOnResume = true
   setPlayerState({
-    itemLabel: String(normalized[session.index].label ?? ''),
+    status,
+    itemLabel: currentItemLabel(),
+    ...(normalized.length ? {} : { segmentLabel: '' }),
     index: session.index,
     count: normalized.length,
     ...controlsFor(status),
   })
   return true
 }
+
+/** いまの再生パネルの読み上げ列の持ち主（暗記カードの speechKey など）。持ち主のない読み上げは null。 */
+export const speechPlayerOwner = () => session?.key ?? null
 
 export function updateSpeechPlayerVoices({ voiceURI, japaneseVoiceURI } = {}) {
   if (!session) return

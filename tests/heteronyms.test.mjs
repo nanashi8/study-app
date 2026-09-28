@@ -24,11 +24,14 @@ test('使い方で発音が変わる語は、単語だけでは読み上げな�
     assert.equal(isAmbiguousSpeechText(text), false, text)
   }
   assert.equal(isAmbiguousSpeechText('record', 'ja-JP'), false)
-  // 文の中でも品詞では読み分けられない語は、カードの例文も読まない。
+  // 単語を発音しない語は、カードと辞書ページの例文も読まない（2026-09-28、利用者の指示）。
   assert.equal(exampleSpeechAllowed(getWord('row_2')), false)
   assert.equal(exampleSpeechAllowed(getWord('tear')), false)
-  assert.equal(exampleSpeechAllowed(getWord('record')), true)
+  assert.equal(exampleSpeechAllowed(getWord('record')), false)
   assert.equal(exampleSpeechAllowed(getWord('apple')), true)
+  for (const word of ALL_WORDS) {
+    assert.equal(exampleSpeechAllowed(word), !isAmbiguousSpeechText(word.word), word.id)
+  }
   assert.deepEqual(heteronymFor(getWord('row_2')).readings.map((reading) => reading.phonetic), ['/ˈɹoʊ/', '/ˈɹaʊ/'])
 })
 

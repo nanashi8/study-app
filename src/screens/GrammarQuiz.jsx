@@ -29,6 +29,7 @@ import {
   grammarRuleExplanationFor,
 } from '../lib/grammarQuestionExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -63,7 +64,7 @@ export function GrammarQuizScreen() {
   const buildFor = (size) =>
     buildGrammarDeck(
       params.source ?? { type: 'grammar', level: '5' },
-      { srs: useStore.getState().srs, day: todayIndex(), size },
+      { srs: useStore.getState().srs, day: todayIndex(), size, freshShare: currentStudyMixShare() },
     )
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -100,6 +101,16 @@ export function GrammarQuizScreen() {
     correct: results.current.correct,
   })
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた問題を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: i,
+    answeredIndexes: answeredQuizIndexes(i, selections),
+    fixedOrder: params.source?.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildFor(size), Math.max(size, keepCount)))
+    },
+  })
   const item = deck[i]
   // 教材は4択だが、出題は「3択＋わからない」にそろえる。
   const options = useMemo(
@@ -119,6 +130,7 @@ export function GrammarQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={back}>戻る</Button>
       </div>
     )

@@ -6,11 +6,13 @@ import { buildEtymologyQuizQuestion } from '../lib/etymologyQuiz.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -32,11 +34,11 @@ function shuffle(values) {
 
 // 語源の記録（etymologySrs）から、全教材共通の出題順に並べる。
 function buildQuizDeck(ids, size = 0) {
-  const cards = orderForStudy(
+  const cards = mixItemsForStudy(orderForStudy(
     (ids ?? []).map(getEtymologyPack).filter(Boolean),
     useStore.getState().etymologySrs,
     { purpose: 'quiz' },
-  )
+  ), useStore.getState().etymologySrs, { freshShare: currentStudyMixShare(), size })
   return size > 0 ? cards.slice(0, size) : cards
 }
 
@@ -85,11 +87,23 @@ export function EtymologyQuizScreen() {
   // 前に答えてから戻ってきた問題は、答えを選び直せる。
   const reselectable = useRevisitedAnswer(index, selected !== null)
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, buildQuizDeck(params.ids, 0), Math.max(size, keepCount)))
+    },
+  })
+
   if (!deck.length || !question) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる語源カードがありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={leave}>戻る</Button>
       </div>
     )

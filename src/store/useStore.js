@@ -90,12 +90,14 @@ import {
   moveNotebookSet as moveNotebookSetState,
   moveNotebookSetItem as moveNotebookSetItemState,
   recordNotebookSetLaunch as recordNotebookSetLaunchState,
+  selectNotebookSet as selectNotebookSetState,
   setNotebookItemSaved,
   setNotebookSetRefs as setNotebookSetRefsState,
   updateNotebookItem as updateNotebookItemState,
   updateNotebookSet as updateNotebookSetState,
 } from '../lib/learningNotebook.js'
 import { updateLearningContentPlan } from '../lib/learningContentPlan.js'
+import { wordBookSlotAction, wordBookSlotStatus } from '../lib/wordBookSlot.js'
 import {
   ALL_PROGRESS_RESET_GROUP_IDS,
   RESET_PRESERVED_PROGRESS_FIELDS,
@@ -1007,6 +1009,34 @@ export const useStore = create(
         set((st) => ({
           learningNotebook: moveNotebookSetState(st.learningNotebook, setId, direction),
         })),
+
+      // 単語帳ボタンで入れる先（登録先）の冊を選ぶ。画面下部の「単語帳」と単語帳の設定から選ぶ。
+      selectNotebookSet: (setId) =>
+        set((st) => ({
+          learningNotebook: selectNotebookSetState(st.learningNotebook, setId),
+        })),
+
+      // 単語帳ボタン：登録先の冊に refs（「教材:ID」の並び）を入れる。全部入っていれば外す。
+      // 登録先がいっぱい（500項目）・単語帳がないときは何も変えない。結果を返し、画面下部で知らせる。
+      toggleWordBookSlot: (refs) => {
+        const status = wordBookSlotStatus(get().learningNotebook, refs)
+        const action = wordBookSlotAction(status)
+        const result = {
+          action,
+          bookId: status.book?.id ?? null,
+          bookTitle: status.book?.title ?? '',
+          requested: status.refs.length - status.present,
+          added: 0,
+          removed: 0,
+        }
+        if (action !== 'add' && action !== 'remove') return result
+        get().setNotebookSetRefs(status.book.id, status.refs, action === 'add')
+        const after = new Set(get().learningNotebook.sets.find((item) => item.id === status.book.id)?.refs ?? [])
+        const now = status.refs.filter((ref) => after.has(ref)).length
+        return action === 'add'
+          ? { ...result, added: now - status.present }
+          : { ...result, removed: status.present - now }
+      },
 
       // 単語帳へ1項目を入れる・外す。英単語を入れたときは辞書履歴にも残す（どの冊でも同じ）。
       setNotebookSetItem: (setId, domain, itemId, included) =>

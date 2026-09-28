@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   etymologyCardsForWord,
@@ -29,7 +29,8 @@ import {
 } from '../components/WordRelations.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.jsx'
-import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
@@ -74,10 +75,11 @@ export function WordDetailScreen() {
   const id = useStore((s) => s.params.id)
   const navigate = useStore((s) => s.navigate)
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
-  const [listSheetOpen, setListSheetOpen] = useState(false)
-  const inWordBook = useWordInAnyBook(id)
   const entry = useStore((s) => s.srs[id])
   const word = getWord(id)
+  // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
+  const wordBook = useWordBookSlot(word ? [wordBookRef(word.id)] : [], { label: word?.word })
+  const inWordBook = wordBook.inBook
 
   useEffect(() => {
     if (word) recordVocabHistory(word.id)
@@ -115,10 +117,11 @@ export function WordDetailScreen() {
           color={level.color}
           right={
             <IconButton
-              onClick={() => setListSheetOpen(true)}
+              onClick={wordBook.press}
               className={inWordBook ? 'text-hint' : 'text-ink/30'}
-              aria-label="単語帳に入れる"
-              aria-haspopup="dialog"
+              aria-pressed={inWordBook}
+              aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook: inWordBook })}
+              data-word-detail-word-book
             >
               {inWordBook ? <BookmarkFilled size={24} /> : <Bookmark size={24} />}
             </IconButton>
@@ -265,24 +268,18 @@ export function WordDetailScreen() {
 
       {/* 保存ボタン（本文の外に置き、末尾のカードへ重ならないようにする） */}
       <div className="shrink-0 space-y-2 border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
-        {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+        {/* 押すと、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。 */}
         <Button
           full
           variant={inWordBook ? 'soft' : 'primary'}
-          onClick={() => setListSheetOpen(true)}
-          aria-haspopup="dialog"
+          onClick={wordBook.press}
+          aria-pressed={inWordBook}
         >
           {inWordBook ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
-          {inWordBook ? '単語帳に入っています（入れる冊を選ぶ）' : '単語帳に入れる'}
+          {wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: inWordBook })}
         </Button>
       </div>
 
-      <WordListSheet
-        open={listSheetOpen}
-        onClose={() => setListSheetOpen(false)}
-        wordId={word.id}
-        wordLabel={word.word}
-      />
     </div>
   )
 }

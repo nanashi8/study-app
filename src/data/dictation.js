@@ -4,6 +4,7 @@
 // 文長・構文・話題を段階化した問題。
 
 import { orderForStudy } from '../lib/studyOrder.js'
+import { mixItemsForStudy } from '../lib/studyMix.js'
 
 export const DICTATION_PROFILES = Object.freeze({
   '5': Object.freeze({
@@ -267,15 +268,16 @@ export const dictationByLevel = (levelId) =>
 
 export function buildDictationDeck(
   source = { type: 'level', levelId: '5' },
-  { size = 8, rng = Math.random, srs = {}, now = Date.now() } = {},
+  { size = 8, rng = Math.random, srs = {}, now = Date.now(), freshShare = null } = {},
 ) {
   const candidates =
     source.type === 'dictationList'
       ? (source.ids ?? []).map(getDictation).filter(Boolean)
       : dictationByLevel(source.levelId ?? '5')
   // 出題順は全教材共通（lib/studyOrder.js）。書き取りはテストだけの教材なので、まだ答えていない問題を先に出す。
+  // 画面下部の「出題」（出題バランス）で寄せたときは、その割合で復習と未修を混ぜる（lib/studyMix.js）。
   const deck = source.type === 'dictationList' && source.preserveOrder
     ? candidates
-    : orderForStudy(candidates, srs, { purpose: 'quiz', now, rng })
+    : mixItemsForStudy(orderForStudy(candidates, srs, { purpose: 'quiz', now, rng }), srs, { freshShare, size, now })
   return size ? deck.slice(0, size) : deck
 }

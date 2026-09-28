@@ -221,7 +221,7 @@ test('共通メニューから保存される学習・音声・コンテンツ�
   assert.match(source, /set: \(value\) => setContentSetting\(scopes \? targets : null, key, value\)/)
   assert.match(source, /title="読み上げの速さ"/)
   assert.match(source, /title="正解したら自動で次へ"/)
-  assert.match(source, /title="英単語の出題バランス"/)
+  assert.match(source, /title="出題バランス"/)
   // トグルのつまみは左端から動かす（中央から始まるとオフでも右に寄り、オンでは枠からはみ出す）。
   assert.match(source, /'absolute left-0 top-0\.5 h-6 w-6 rounded-full/)
   assert.match(source, /英語をテスト/)
@@ -265,13 +265,17 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   for (const item of APP_MENU_SECTIONS.find((menuSection) => menuSection.id === 'english').items) {
     for (const key of item.settings) assert.ok(settingsOf('home').includes(key), `英語アプリに ${item.label} の ${key} が無い`)
   }
-  assert.deepEqual(settingsOf('mathMap'), [])
-  assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'dailyGoal'])
-  assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'dailyGoal'])
+  assert.deepEqual(settingsOf('mathMap'), ['sessionSize', 'autoAdvanceCorrect', 'vocabMix'])
+  assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
+  assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
   assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
-  // 出題バランスは級・分野から始める英単語だけ。日本語の声は、訳や古典・漢文を読み上げる教材と、
-  // 意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。読み上げる範囲は、その暗記カードを開く教材だけ。
-  assert.deepEqual(screensUsing('vocabMix'), ['home', 'vocabLevels'])
+  // 出題バランスは、暗記・テストの全21画面を開く教材すべて（辞書から選んだ1件を学ぶ英和辞書と、学習診断は除く）。
+  // 日本語の声は、訳や古典・漢文を読み上げる教材と、意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。
+  // 読み上げる範囲は、その暗記カードを開く教材だけ。
+  assert.deepEqual(screensUsing('vocabMix'), [
+    'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'vocabLevels', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening', 'dictation',
+  ])
   assert.deepEqual(
     screensUsing('ttsJapaneseVoiceURI'),
     ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
@@ -281,7 +285,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
   )
   assert.deepEqual(screensUsing('speechRange'), screensUsing('autoSpeak').filter((screen) => screen !== 'dictation'))
-  assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・読み上げ')
+  assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・出題バランス・読み上げ')
   assert.equal(contentSettingsSummary({ settings: settingsOf('kotenList') }), '答えの表示・問題数・自動で次へ など')
   assert.equal(contentSettingsSummary({ settings: [] }), '変えられる設定はありません')
 
@@ -292,7 +296,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     ['hideSpelling', /hideSpelling/],
     ['sessionSize', /sessionSize|useSessionSize/],
     ['autoAdvanceCorrect', /showAutoAdvance/],
-    ['vocabMix', /vocabMix/],
+    ['vocabMix', /vocabMix|currentStudyMixShare|useStudyMixRebuild/],
     ['dailyGoal', /dailyGoal/],
     ['autoSpeak', /autoSpeak|useCardAutoSpeech/],
     ['speechRange', /speechRange|useCardAutoSpeech/],
@@ -301,7 +305,10 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     ['ttsVoiceURI', /<SpeakButton|ttsVoiceURI|playSpeechItems/],
   ]
   const ownFiles = {
-    mathMap: ['screens/MathMap', 'screens/MathUnits', 'screens/MathSolve', 'screens/MathIntro'],
+    mathMap: [
+      'screens/MathMap', 'screens/MathUnits', 'screens/MathSolve', 'screens/MathIntro',
+      'screens/MathHistory', 'screens/MathStory', 'screens/MathStoryQuiz',
+    ],
     kotenList: [
       'screens/KotenList', 'screens/KotenStudy', 'screens/KotenQuiz',
       'screens/KotenGrammar', 'screens/KotenGrammarStudy', 'screens/KotenGrammarQuiz',
@@ -469,8 +476,8 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(consoleSource, /<span>範囲<\/span>/)
   assert.match(consoleSource, /\{state\.rangeAdjustable && onRangeChange && \(\n\s*<SpeechRangeSelect range=\{range\} onChange=\{onRangeChange\} \/>/)
   assert.match(consoleSource, /const changeRange = \(range\) => setSetting\('speechRange', range\)/)
-  assert.equal((consoleSource.match(/onRangeChange=\{changeRange\}/g) ?? []).length, 2)
-  assert.match(consoleSource, /grid grid-cols-5 gap-1/)
+  assert.equal((consoleSource.match(/onRangeChange=\{changeRange\}/g) ?? []).length, 1)
+  assert.match(consoleSource, /grid grid-cols-5 gap-0\.5/)
   assert.match(player, /pauseSpeaking\(\)/)
   assert.match(player, /resumeSpeaking\(\)/)
   assert.match(player, /previousSpeechItem/)

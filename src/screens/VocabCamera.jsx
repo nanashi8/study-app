@@ -6,9 +6,12 @@ import { matchOcrTextToWords, normalizeOcrToken } from '../lib/vocabOcr.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
+import { activeNotebookSetId } from '../lib/learningNotebook.js'
 import { Button, Card, Chip, ProgressBar } from '../components/ui.jsx'
 import { Check, Close, Refresh, Sparkles, Upload } from '../components/Icons.jsx'
+
+const NO_REFS = Object.freeze([])
 
 const MAX_FILE_BYTES = 20 * 1024 * 1024
 const MAX_OCR_DIMENSION = 2200
@@ -73,7 +76,10 @@ async function prepareImageForOcr(file) {
 
 export function VocabCameraScreen() {
   const navigate = useStore((state) => state.navigate)
-  const wordBookSets = useStore((state) => state.learningNotebook.sets)
+  // 登録先の単語帳（画面下部の「単語帳」で選んだ冊）に入っている語。
+  const activeBookRefs = useStore((state) => (
+    state.learningNotebook.sets.find((set) => set.id === activeNotebookSetId(state.learningNotebook))?.refs ?? NO_REFS
+  ))
   const cameraInput = useRef(null)
   const photoInput = useRef(null)
   const previewUrlRef = useRef('')
@@ -96,11 +102,14 @@ export function VocabCameraScreen() {
   const [requestError, setRequestError] = useState('')
   const [requestedCount, setRequestedCount] = useState(0)
   const [addedCount, setAddedCount] = useState(0)
-  // 選んだ語を入れる単語帳を選ぶ窓で扱っている語。閉じたときに、入った語だけを選択から外す。
-  const [bookSheetIds, setBookSheetIds] = useState(null)
-
-  // どれかの単語帳に入っている語は、候補のなかで「入っている」と示して選べなくする。
-  const inWordBook = (id, sets = wordBookSets) => sets.some((set) => set.refs.includes(wordBookRef(id)))
+  // 登録先の単語帳に入っている語は、候補のなかで「入っている」と示して選べなくする。
+  const inWordBook = (id, refs = activeBookRefs) => refs.includes(wordBookRef(id))
+  // 選んだ語は、登録先の単語帳にまとめて入れる。
+  const pendingIds = [...selected].filter((id) => !inWordBook(id))
+  const wordBook = useWordBookSlot(pendingIds.map(wordBookRef), {
+    label: `読み取った${pendingIds.length}語`,
+    present: true,
+  })
 
   useEffect(() => () => {
     mountedRef.current = false
@@ -221,16 +230,13 @@ export function VocabCameraScreen() {
     setSelected(new Set(summary.candidates.filter((item) => !inWordBook(item.id)).map((item) => item.id)))
   }
 
+  // 入れた語は選択から外し、入れた数を示す（入らなかったときは画面下部で知らせ、単語帳の設定を開く）。
   const addSelected = () => {
-    const ids = [...selected].filter((id) => !inWordBook(id))
-    if (!ids.length) return
-    setBookSheetIds(ids)
-  }
-
-  const closeBookSheet = () => {
-    const sets = useStore.getState().learningNotebook.sets
-    const added = (bookSheetIds ?? []).filter((id) => inWordBook(id, sets))
-    setBookSheetIds(null)
+    if (!pendingIds.length) return
+    wordBook.press()
+    const { learningNotebook } = useStore.getState()
+    const refs = learningNotebook.sets.find((set) => set.id === activeNotebookSetId(learningNotebook))?.refs ?? NO_REFS
+    const added = pendingIds.filter((id) => inWordBook(id, refs))
     if (!added.length) return
     setSelected((current) => {
       const next = new Set(current)
@@ -522,8 +528,8 @@ export function VocabCameraScreen() {
                 </div>
 
                 <div className="sticky bottom-3 z-10 mt-4 rounded-3xl bg-paper/90 p-2 shadow-xl backdrop-blur">
-                  <Button full disabled={!selected.size} onClick={addSelected} aria-haspopup="dialog" data-ocr-word-book>
-                    <Check size={18} /> 選んだ {selected.size}語を単語帳に入れる
+                  <Button full disabled={!pendingIds.length} onClick={addSelected} data-ocr-word-book>
+                    <Check size={18} /> {wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: false, what: `選んだ${pendingIds.length}語を` })}
                   </Button>
                 </div>
               </section>
@@ -699,12 +705,6 @@ export function VocabCameraScreen() {
         )}
       </div>
 
-      <WordListSheet
-        open={Boolean(bookSheetIds)}
-        onClose={closeBookSheet}
-        wordIds={bookSheetIds ?? []}
-        wordLabel={`読み取った${bookSheetIds?.length ?? 0}語`}
-      />
     </div>
   )
 }

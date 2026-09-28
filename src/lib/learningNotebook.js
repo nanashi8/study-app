@@ -340,12 +340,18 @@ export function normalizeLearningNotebook(value) {
     .filter(Boolean)
     .slice(0, NOTEBOOK_LIMITS.sessions)
 
+  // 単語帳ボタンで入れる先（登録先）に選んだ冊。消えた冊を指していたら持たない（並びの先頭の冊が登録先になる）。
+  const activeSetId = typeof source.activeSetId === 'string' && seenSetIds.has(source.activeSetId)
+    ? source.activeSetId
+    : null
+
   return {
     version: NOTEBOOK_SCHEMA_VERSION,
     entries,
     sets,
     sessions,
     contentPlan: normalizeLearningContentPlan(source.contentPlan),
+    ...(activeSetId ? { activeSetId } : {}),
   }
 }
 
@@ -532,14 +538,34 @@ export function moveNotebookSet(notebook, setId, direction) {
 }
 
 export function deleteNotebookSet(notebook, setId) {
-  const current = normalizeLearningNotebook(notebook)
+  const { activeSetId, ...current } = normalizeLearningNotebook(notebook)
   return {
     ...current,
     sets: current.sets.filter((set) => set.id !== setId),
     // 問題集そのものを消したら、その問題集の利用履歴だけも除く。
     // 各教材のSRS正誤・復習履歴は別契約なので影響しない。
     sessions: current.sessions.filter((session) => session.setId !== setId),
+    // 登録先の冊を消したら、登録先は並びの先頭の冊に戻す。
+    ...(activeSetId && activeSetId !== setId ? { activeSetId } : {}),
   }
+}
+
+/**
+ * 単語帳ボタンで入れる先（登録先）の冊を選ぶ。無い冊は選ばない（そのまま返す）。
+ * 選んでいないとき・選んだ冊を消したときは、並びの先頭の冊が登録先（activeNotebookSetId）。
+ */
+export function selectNotebookSet(notebook, setId) {
+  const current = normalizeLearningNotebook(notebook)
+  if (!current.sets.some((set) => set.id === setId)) return current
+  return { ...current, activeSetId: setId }
+}
+
+/** 単語帳ボタンで入れる先（登録先）の冊の ID。選んだ冊が無ければ並びの先頭の冊、単語帳が1冊もなければ null。 */
+export function activeNotebookSetId(notebook) {
+  const sets = Array.isArray(notebook?.sets) ? notebook.sets : []
+  const chosen = notebook?.activeSetId
+  if (chosen && sets.some((set) => set?.id === chosen)) return chosen
+  return sets[0]?.id ?? null
 }
 
 export function setNotebookSetItem(

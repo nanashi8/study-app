@@ -2,8 +2,8 @@
 //
 // 単語だけを読み上げると、どちらの発音で読むかをつづりから決められず、カードとちがう発音になることがある。
 // ここに載せた語は、単語だけを読み上げない（読み上げボタン・再生パネル・長文で単語をタップしたとき）。
-// exampleSpeech: false の語は、文の中でも品詞では読み分けられないので（row の「列」と「口論」など）、
-// その語のカードの例文も読み上げない。画面には readings を「使い方で発音が変わる語」として出す。
+// 単語を発音しないので、その語の暗記カードと辞書ページの例文も読み上げない（2026-09-28、利用者の指示）。
+// 画面には readings を「使い方で発音が変わる語」として出す。
 //
 // 載せる基準: 発音辞書（CMU）で読みが品詞・意味で分かれ、次のどれかに当てはまる語。
 // - カードの意味やほかの意味に、もう一方の発音の使い方が入っている（record の「記録」など）
@@ -12,9 +12,8 @@
 // どちらの発音でもよい語（address の名詞、detail など）や、もう一方がまれな語（house の動詞など）は載せず、
 // 見直した記録として HETERONYM_CANDIDATES_REVIEWED に置く。
 // カードの発音記号は readings のどれかと一致させる（scripts/check-data.mjs）。
-const heteronym = (readings, { exampleSpeech = true } = {}) => Object.freeze({
+const heteronym = (readings) => Object.freeze({
   readings: Object.freeze(readings.map(([use, phonetic]) => Object.freeze({ use, phonetic }))),
-  exampleSpeech,
 })
 
 export const HETERONYMS = Object.freeze({
@@ -29,7 +28,7 @@ export const HETERONYMS = Object.freeze({
   associate: heteronym([['動詞', '/əˈsoʊsiˌeɪt/'], ['名詞「仲間」・形容詞', '/əˈsoʊsiət/']]),
   attribute: heteronym([['動詞', '/əˈtɹɪbjut/'], ['名詞「特質」', '/ˈætɹəˌbjut/']]),
   bow: heteronym([['「お辞儀する・屈する」', '/ˈbaʊ/'], ['「弓・ちょう結び」', '/ˈboʊ/']]),
-  bowed: heteronym([['「（重みで）曲がった・（頭を）下げた」', '/ˈbaʊd/'], ['「弓の形に反った」', '/ˈboʊd/']], { exampleSpeech: false }),
+  bowed: heteronym([['「（重みで）曲がった・（頭を）下げた」', '/ˈbaʊd/'], ['「弓の形に反った」', '/ˈboʊd/']]),
   close: heteronym([['動詞「閉じる」', '/ˈkloʊz/'], ['形容詞「近い」', '/ˈkloʊs/']]),
   combat: heteronym([['名詞', '/ˈkɑmbæt/'], ['動詞「戦う」', '/kəmˈbæt/']]),
   combine: heteronym([['動詞', '/kəmˈbaɪn/'], ['名詞「コンバイン（刈り取り機）」', '/ˈkɑmbaɪn/']]),
@@ -89,7 +88,7 @@ export const HETERONYMS = Object.freeze({
   progress: heteronym([['名詞', '/ˈpɹɑˌɡɹɛs/'], ['動詞「進展する」', '/pɹəˈɡɹɛs/']]),
   project: heteronym([['動詞', '/pɹəˈdʒɛkt/'], ['名詞「計画」', '/ˈpɹɑdʒɛkt/']]),
   protest: heteronym([['名詞', '/ˈpɹoʊˌtɛst/'], ['動詞「抗議する」', '/pɹəˈtɛst/']]),
-  read: heteronym([['現在形・原形', '/ˈɹid/'], ['過去形・過去分詞', '/ˈɹɛd/']], { exampleSpeech: false }),
+  read: heteronym([['現在形・原形', '/ˈɹid/'], ['過去形・過去分詞', '/ˈɹɛd/']]),
   rebel: heteronym([['動詞', '/ɹɪˈbɛl/'], ['名詞「反逆者」', '/ˈɹɛbəl/']]),
   recall: heteronym([['動詞', '/ɹɪˈkɔl/'], ['名詞「回収・記憶」', '/ˈɹiˌkɔl/']]),
   record: heteronym([['動詞', '/ɹəˈkɔɹd/'], ['名詞「記録」', '/ˈɹɛkɚd/']]),
@@ -97,7 +96,7 @@ export const HETERONYMS = Object.freeze({
   refund: heteronym([['名詞', '/ˈɹiˌfʌnd/'], ['動詞「返金する」', '/ɹɪˈfʌnd/']]),
   resume: heteronym([['動詞「再開する」', '/ɹɪˈzum/'], ['名詞「履歴書（résumé）」', '/ˈɹɛzəˌmeɪ/']]),
   reuse: heteronym([['動詞', '/ɹiˈjuz/'], ['名詞「再利用」', '/ɹiˈjus/']]),
-  row: heteronym([['「列・並び」「（舟を）こぐ」', '/ˈɹoʊ/'], ['「口論・騒ぎ」', '/ˈɹaʊ/']], { exampleSpeech: false }),
+  row: heteronym([['「列・並び」「（舟を）こぐ」', '/ˈɹoʊ/'], ['「口論・騒ぎ」', '/ˈɹaʊ/']]),
   separate: heteronym([['動詞', '/ˈsɛpɚˌeɪt/'], ['形容詞「別々の」', '/ˈsɛpɹət/']]),
   sow: heteronym([['動詞「（種を）まく」', '/ˈsoʊ/'], ['名詞「雌豚」', '/ˈsaʊ/']]),
   subject: heteronym([['名詞・形容詞', '/ˈsʌbdʒɪkt/'], ['動詞「従わせる」', '/səbˈdʒɛkt/']]),
@@ -106,7 +105,7 @@ export const HETERONYMS = Object.freeze({
   surcharge: heteronym([['名詞', '/ˈsɝˌtʃɑɹdʒ/'], ['動詞「追加料金を課す」', '/sɚˈtʃɑɹdʒ/']]),
   survey: heteronym([['名詞', '/ˈsɝˌveɪ/'], ['動詞「調査する」', '/sɚˈveɪ/']]),
   suspect: heteronym([['動詞', '/səˈspɛkt/'], ['名詞「容疑者」', '/ˈsʌˌspɛkt/']]),
-  tear: heteronym([['「裂く・裂け目」', '/ˈtɛɹ/'], ['「涙」', '/ˈtɪɹ/']], { exampleSpeech: false }),
+  tear: heteronym([['「裂く・裂け目」', '/ˈtɛɹ/'], ['「涙」', '/ˈtɪɹ/']]),
   torment: heteronym([['動詞', '/tɔɹˈmɛnt/'], ['名詞「苦痛」', '/ˈtɔɹˌmɛnt/']]),
   transfer: heteronym([['動詞', '/tɹænˈsfɝ/'], ['名詞「移動・乗り換え」', '/ˈtɹænsfɚ/']]),
   transport: heteronym([['動詞', '/tɹænˈspɔɹt/'], ['名詞「輸送（機関）」', '/ˈtɹænspɔɹt/']]),

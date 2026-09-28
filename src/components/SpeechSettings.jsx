@@ -20,7 +20,6 @@ import { SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS } from './SessionSize.jsx'
 import { isAppHomeScreen } from '../lib/appHome.js'
 import {
   VOCAB_MIX_STEPS,
-  describeVocabMix,
   normalizeVocabMix,
   vocabMixStep,
 } from '../lib/vocabMix.js'
@@ -477,8 +476,8 @@ function VocabMixSetting() {
 
   return (
     <SettingRow
-      title="英単語の出題バランス"
-      desc={`${vocabMix.mixed ? '' : `現在 ${vocabMixStep(vocabMix.value).label}（${describeVocabMix(vocabMix.value)}）・`}級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
+      title="出題バランス"
+      desc={`${vocabMix.mixed ? '' : `現在 ${vocabMixStep(vocabMix.value).label}・`}暗記・テストで、復習と未修のどちらを多く出すかを決めます。自動は今の出題順（何度もまちがえている項目→復習→未修）のまま出します。何度もまちがえている項目は、未修だけ のとき以外は先に出します。学習中は画面下部の「出題」でも変えられます`}
       mixed={vocabMix.mixed}
       stacked
     >

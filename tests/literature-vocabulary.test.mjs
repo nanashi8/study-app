@@ -205,12 +205,14 @@ test('全作品の読む前に共通予習導線があり、一覧・検索・�
   assert.match(reader, /data-literature-vocabulary-preparation=\{work\.id\}/)
   assert.match(reader, /data-literature-vocabulary-open/)
   assert.match(reader, /本文語彙を予習/)
-  // 本文語彙は、英語・古典・漢文のどの作品でも、入れる単語帳を選ぶ窓からまとめて入れる（1語ずつも同じ窓）。
-  assert.match(reader, /refs: notebookRefs\(sharedWordDomain, sharedWordIds\)/)
-  assert.match(reader, /: work\.kind === 'classical'\s*\? 'kotenVocab'\s*: 'kanbunVocab'/)
-  assert.match(reader, /setBookSheetWords\(\{ refs: notebookRefs\('vocab', activeWord\.id\), label: activeWord\.word \}\)/)
-  assert.match(reader, /refs: notebookRefs\('kotenGrammar', work\.grammarIds\)/)
-  assert.match(reader, /<WordListSheet/)
+  // 本文語彙は、英語・古典・漢文のどの作品でも、画面下部の「単語帳」で選んだ登録先へまとめて入れる（1語ずつも同じ）。
+  assert.match(reader, /useWordBookSlot\(notebookRefs\(sharedWordDomain, sharedWordIds\)/)
+  assert.match(reader, /: work\?\.kind === 'classical'\s*\? 'kotenVocab'\s*: 'kanbunVocab'/)
+  assert.match(reader, /useWordBookSlot\(activeWord\?\.id \? notebookRefs\('vocab', activeWord\.id\) : \[\]/)
+  assert.match(reader, /useWordBookSlot\(notebookRefs\('kotenGrammar', work\?\.grammarIds \?\? \[\]\)/)
+  assert.doesNotMatch(reader, /<WordListSheet/)
+  // フックは作品が見つからないときの早期 return より前に置く。
+  assert.ok(reader.indexOf('useWordBookSlot(') < reader.indexOf('if (!work) {'))
   assert.doesNotMatch(reader, /addManyToMyList|toggleMyList|マイ単語に追加|addManyToKotenWordList|addManyToKotenGrammarList|addManyToKanbunList/)
   assert.match(reader, /navigate\('kanbunStudy'/)
 

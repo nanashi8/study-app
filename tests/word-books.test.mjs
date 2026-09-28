@@ -208,20 +208,27 @@ test('以前の端末保存・進捗コード・クラウド保存の「マイ�
 
 test('単語帳の一覧の歯車から、どの冊も名前の変更・並び順・削除ができ、一覧確認へ進める', () => {
   const sheet = read('../src/components/WordListSheet.jsx')
+  // 歯車と冊の設定（名前・並び順・削除）は、単語帳の一覧と単語帳の設定（登録先）で同じ部品を使う。
+  const slot = read('../src/components/WordBookSlot.jsx')
   const decks = read('../src/screens/VocabDecks.jsx')
 
   // 歯車はどの冊にも置く（マイ単語だけ出さない、という条件を持たない）。
-  assert.doesNotMatch(sheet, /renamable|長文や辞書からの保存先/)
-  assert.match(sheet, /<Gear size=\{18\} \/>/)
-  assert.match(sheet, /aria-label=\{`\$\{book\.title\}の名前・並び順・削除`\}/)
-  assert.match(sheet, /data-word-book-rename-input/)
-  assert.match(sheet, /updateNotebookSet\(editing\.id, \{ title \}\)/)
-  assert.match(sheet, /maxLength=\{NOTEBOOK_LIMITS\.setTitleLength\}/)
-  assert.match(sheet, /moveNotebookSet\(book\.id, 'up'\)/)
-  assert.match(sheet, /moveNotebookSet\(book\.id, 'down'\)/)
-  assert.match(sheet, /data-word-book-delete-confirm/)
-  assert.match(sheet, /deleteNotebookSet\(bookId\)/)
-  assert.match(sheet, /入っている項目の学習記録は残ります/)
+  assert.doesNotMatch(`${sheet}${slot}`, /renamable|長文や辞書からの保存先/)
+  assert.match(sheet, /<WordBookGearButton\n\s*book=\{book\}/)
+  assert.match(sheet, /<WordBookEditPanel\n\s*book=\{book\}/)
+  assert.match(slot, /<Gear size=\{18\} \/>/)
+  assert.match(slot, /aria-label=\{`\$\{book\.title\}の名前・並び順・削除`\}/)
+  assert.match(slot, /data-word-book-rename-input/)
+  assert.match(slot, /updateNotebookSet\(editing\.id, \{ title \}\)/)
+  assert.match(slot, /maxLength=\{NOTEBOOK_LIMITS\.setTitleLength\}/)
+  assert.match(slot, /moveNotebookSet\(book\.id, 'up'\)/)
+  assert.match(slot, /moveNotebookSet\(book\.id, 'down'\)/)
+  assert.match(slot, /data-word-book-delete-confirm/)
+  assert.match(slot, /deleteNotebookSet\(bookId\)/)
+  assert.match(slot, /入っている項目の学習記録は残ります/)
+  // 単語帳の設定（登録先）でも、冊ごとに同じ歯車を置く。
+  assert.match(slot, /<WordBookGearButton\n\s*book=\{set\}/)
+  assert.match(slot, /<WordBookEditPanel\n\s*book=\{set\}/)
   assert.match(sheet, /wordBooksFromState\(\{ learningNotebook \}, meta\.id\)/)
   // 暗記・テストを始めた記録は、どの冊でも同じように残す。
   assert.doesNotMatch(sheet, /if \(book\.set\) \{/)
@@ -237,7 +244,7 @@ test('単語帳の一覧の歯車から、どの冊も名前の変更・並び�
   assert.match(decks, /data-vocab-word-book-missing/)
 })
 
-test('長文・辞書・名作・写真の読み取り・英作文・自作単語からは、入れる単語帳を選んで入れる', () => {
+test('長文・辞書・名作・写真の読み取り・英作文・自作単語からは、登録先の単語帳に入れる', () => {
   const savers = {
     'src/screens/VocabSearch.jsx': /data-dictionary-word-book/,
     'src/components/ReadingSentenceDetail.jsx': /data-reading-word-book/,
@@ -252,14 +259,15 @@ test('長文・辞書・名作・写真の読み取り・英作文・自作単�
   for (const [path, marker] of Object.entries(savers)) {
     const source = read(`../${path}`)
     assert.match(source, marker, path)
-    if (!path.endsWith('CustomWords.jsx')) assert.match(source, /<WordListSheet/, path)
+    // 押すと、画面下部の「単語帳」で選んだ登録先に入れる（入れる冊を選ぶ窓は開かない）。
+    assert.match(source, /useWordBookSlot\(/, path)
+    assert.doesNotMatch(source, /<WordListSheet|useWordBookPicker/, path)
     // 「マイ単語」だけへ直接入れる保存ボタンは残さない。
     assert.doesNotMatch(source, /toggleMyList|addManyToMyList|マイ単語に(?:追加|保存)/, path)
   }
-  // まとめて入れる画面は、語の一覧をそのまま窓へ渡す。
-  for (const path of ['src/screens/ReadingPrep.jsx', 'src/screens/VocabCamera.jsx']) {
-    assert.match(read(`../${path}`), /wordIds=\{/, path)
-  }
+  // まとめて入れる画面は、語の一覧をそのまま登録先へ入れる。
+  assert.match(read('../src/screens/ReadingPrep.jsx'), /useWordBookSlot\(prepWordIds\.map\(wordBookRef\)/)
+  assert.match(read('../src/screens/VocabCamera.jsx'), /useWordBookSlot\(pendingIds\.map\(wordBookRef\)/)
   const store = read('../src/store/useStore.js')
   assert.doesNotMatch(store, /toggleMyList|addManyToMyList|myList: \[\]/)
   assert.match(store, /setNotebookSetItems: \(setId, domain, itemIds, included\) =>/)
@@ -321,7 +329,7 @@ test('熟語・文法・古典・漢文などほかの教材も単語帳に入�
   assert.equal(launchForBooks.wordBookLaunchTarget('kanbunGrammar', 'quiz', ['kgw001']).params.domain, 'grammar')
   assert.equal(launchForBooks.kanbunNotebookDomain('culture'), 'kanbunCulture')
 
-  // 暗記・テストのカードの保存ボタンは、どれも入れる単語帳を選ぶ窓を開く。
+  // 暗記・テストのカードの保存ボタンは、どれも共通の単語帳ボタン（WordBookToggle）で、登録先の単語帳に入れる。
   const toggles = {
     'src/screens/VocabQuiz.jsx': 'vocab',
     'src/screens/PhraseStudy.jsx': 'phrases',

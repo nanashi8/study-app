@@ -17,6 +17,7 @@ import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunExtras } from '../components/KanbunExtras.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   QuestionSessionControls,
@@ -104,6 +105,7 @@ export function KanbunQuizScreen() {
   const pickQuestions = (ids, size) => pickKanbunQuestions(domain, ids, {
     size,
     srs: useStore.getState()[meta.srsField],
+    freshShare: currentStudyMixShare(),
   })
   const [poolSize] = useState(() => pickQuestions(params.ids, ALL_QUESTIONS).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -134,11 +136,23 @@ export function KanbunQuizScreen() {
   // 前に答えてから戻ってきた問題は、答えを選び直せる。
   const reselectable = useRevisitedAnswer(index, selected !== null)
 
+  // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
+  useStudyMixRebuild({
+    index: index,
+    answeredIndexes: answeredQuizIndexes(index, selections),
+    fixedOrder: params.preserveOrder === true,
+    rebuild: (keepCount) => {
+      const size = params.size ?? sessionSize
+      setDeck((current) => growDeck(current, current.length ? keepCount : 0, pickQuestions(params.ids, ALL_QUESTIONS), Math.max(size, keepCount)))
+    },
+  })
+
   if (!question || !item) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
+        <StudyMixEmptyNotice />
         <Button onClick={backToKanbunCatalog}>戻る</Button>
       </div>
     )
