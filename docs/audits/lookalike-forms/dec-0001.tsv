@@ -1,0 +1,13 @@
+# 2026-09-28 形の似た組の1回目: contemp・temp・tempt（依頼の例の contemporary・contempt・contemplate をふくむまとまり）
+K	temporary	temple	unclear	ラテン語の tempus「時」と templum「区切った区域・神殿」は別の語だが、どちらも「引き伸ばす」を表す同じ古い語根から来たとする説がある（templum には「切る」を表す語根から来たとする説もある）。はっきりしない。
+K	temporary	temper	unclear	temperāre「ほどよく混ぜる」は、tempus「時」から来た（ちょうどよい時・ほどよい具合に合わせる）とよく説明されるが、確かではない。
+K	temporary	tempt	unclear	temptāre「さわってみる・試す」は、tempus と同じく「引き伸ばす」を表す古い語根から来たとする説があるが、はっきりしない。
+K	temper	temple	unclear	temperāre は tempus から来たとよく説明され、tempus と templum は同じ古い語根から来たとする説もあるが、どちらも確かではない。
+K	temper	tempt	unclear	temperāre は tempus から来たとよく説明され、tempus と temptāre は同じ古い語根から来たとする説もあるが、どちらも確かではない。
+K	temple	tempt	unclear	templum と temptāre は、どちらも「引き伸ばす」を表す古い語根から来たとする説があるが、はっきりしない。
+K	contempt	tempt	unrelated	contempt は con＋tempt ではない。ラテン語 contemnere の過去分詞 contemptus（temnere「軽んじる」の形に p が入った形）から来たので、つづりが tempt と同じになっただけ。
+C	contemp	contemporary / contempt contemptible contemptuous / contemplate	contemp のすぐあとの文字で見分ける。contempo- は tempus「時」（temporary と同じ）で「同時代の」、contempt は temnere「軽んじる」で「軽蔑」、contempl- は templum「神殿」（temple と同じ）で「じっくり考える」。
+C	temp	temper temperament temperamental temperance temperate temperature / temporary tempo tempest / temple / tempt temptation tempting	temp のあとの形で見分ける。tempor- と tempo・tempest は tempus「時」、temper- は temperāre「ほどよく混ぜる」、templ- は templum「神殿」、tempt- は temptāre「試す」から。
+C	tempt	tempt temptation tempting attempt / contempt contemptible contemptuous	attempt は at-（〜へ）＋ temptāre「試す」で、tempt と同じ仲間。contempt・contemptible・contemptuous の -tempt は temnere「軽んじる」から来た形で、tempt とは関係ない。
+Z	同源	contemporary temporary tempo tempest
+K	contemporary	contemplate	unclear	contemporary の元の tempus「時」と、contemplate の元の templum「区切った区域・神殿」は別の語だが、どちらも「引き伸ばす」を表す同じ古い語根から来たとする説がある（templum には「切る」を表す語根から来たとする説もある）。はっきりしない。

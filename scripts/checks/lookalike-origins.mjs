@@ -24,6 +24,7 @@ import {
   lookalikeGroupsOf,
   rootLookalikeCandidates,
 } from '../../src/lib/lookalikeOrigins.js'
+import { lookalikeFormRelation } from '../../src/lib/lookalikeForms.js'
 
 const pairKey = (a, b) => [String(a), String(b)].sort().join('|')
 
@@ -150,7 +151,7 @@ export function lookalikeOriginGaps() {
 // （curious と care は、curious が cure と同じカードの語で、cure と care が別の語源なので、別の語源）。
 // 同じつづりの見出し語が2つ以上ある語（grave と grave_2）は、どれか1つと合えばよい。
 const CLAIM_MARKS = [
-  ['same', /と同じ語源|と同系|と同じ語根/g],
+  ['same', /と同じ語源(?!では|でな)|と同系|と同じ語根(?!では|でな)/g],
   ['distant', /遠い親戚/g],
   ['unrelated', /とは別の語源|とは関係ない|とは無関係/g],
 ]
@@ -188,11 +189,17 @@ const claimTokens = (clause, kind) => {
 let cardFamilies = null
 const rootCardFamilies = () => (cardFamilies ??= LOOKALIKE_ROOT_CARDS.map((card) => [card, cardFamilyIds(card)]))
 
-/** 2語のつながりの台帳の判定（[どこ, kind] の並び）。直接の組があればそれだけ。 */
-export function lookalikeVerdicts(aId, bId) {
+/**
+ * 2語のつながりの台帳の判定（[どこ, kind] の並び）。つづり注意の直接の組があれば、それと形の似た語の台帳だけ。
+ * forms: false … 形の似た語の台帳（src/data/lookalike-forms.js）を見ない（その台帳とほかの台帳を照らすとき）。
+ * indirect: false … カードの語を通した判定（画面には出ない）を使わない。
+ */
+export function lookalikeVerdicts(aId, bId, { forms = true, indirect = true } = {}) {
+  const formRelation = forms ? lookalikeFormRelation(aId, bId) : null
+  const formVerdicts = formRelation ? [[`形の似た語 ${pairKey(aId, bId)}`, formRelation.kind]] : []
   const direct = CONFUSABLE_ORIGINS[pairKey(aId, bId)]
-  if (direct) return [[`つづり注意 ${pairKey(aId, bId)}`, direct[0]]]
-  const out = []
+  if (direct) return [[`つづり注意 ${pairKey(aId, bId)}`, direct[0]], ...formVerdicts]
+  const out = [...formVerdicts]
   const families = rootCardFamilies()
   for (const [card, family] of families) {
     if (!ROOT_LOOKALIKES[card.rootId]) continue
@@ -207,7 +214,7 @@ export function lookalikeVerdicts(aId, bId) {
       if (relation) out.push([`${card.rootId} のカード`, relation.kind])
     }
   }
-  if (out.length) return out
+  if (out.length || !indirect) return out
   // カードの語を通す（a と同じカードの語 m と b の組がつづり注意にある）。
   for (const [card, family] of families) {
     if (!family.has(aId)) continue

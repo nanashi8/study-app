@@ -1,0 +1,33 @@
+# 2026-09-28 形の似た組の8回目（banal〜bewilder）
+C	bana	banal / banana	banal（陳腐な）はフランス語 banal「共同で使う」（ban「布告」から）、banana（バナナ）は西アフリカのことばからスペイン語・ポルトガル語を経た語で、関係ない。
+C	bank	bank bankrupt bankruptcy / bank_2
+K	bank	bank_2	distant	bank（銀行）の元のイタリア語 banca「台」と、bank（土手）の元の古ノルド語 banki は、どちらも「台・盛り上がった所」を表すゲルマン系の同じ語にさかのぼるとされる遠い親戚。
+C	bark	bark / bark_2 / embark	embark（乗船する）は em-「中へ」＋ barque「小舟」で、bark（ほえる）とも bark（樹皮）とも関係ない。
+C	barr	barrier barrier_free barrister / barrel / barren	barrier（障壁）と barrister（法廷弁護士）は bar（横木・柵）の仲間。barrel（樽）と barren（不毛の）は、それぞれ別の古フランス語から来た語。
+K	barrel	barrier	unclear	barrel の元の古フランス語 baril は由来がはっきりせず、樽板を表す barra「棒」（bar の元）から来たとする説もある。
+C	base	base baseball baseline / debase	debase（品位を落とす）の base は「低い」を表す別の語（中世ラテン語 bassus「低い」から）で、「土台」の base（ギリシャ語 basis）とは関係ない。
+C	basi	basic basically / basin	basin（盆地・洗面器）は後期ラテン語 bacca「水入れ」から、basic（基本的な）は base（土台）から来た別の語。
+Z	同源	batter battery battle battlefield battleship
+Z	同源	beat upbeat
+C	caus	cause causation because / caustic	caustic（辛辣な・腐食性の）はギリシャ語 kaustikos「焼く力のある」（kaiein「焼く」から）から来た語で、cause（原因）とは関係ない。
+Z	同源	because cause
+Z	同源	before beforehand
+Z	同源	behalf half
+Z	同源	behave have
+Z	同源	belabor collaborate collaboration labor laboratory laborer laborious
+C	league	league / colleague / beleaguer	league（連盟）は ligāre「結ぶ」、colleague（同僚）は con-「共に」＋ lēgāre「任命する」、beleaguer（包囲する）はオランダ語 belegeren（leger「陣営」から）から来た別々の語。
+C	belie	belie / believe believable believer unbelievable	believe（信じる）は belie＋ve ではなく、古英語 belȳfan「信じる」から来た語。belie（裏切る）は be-＋ lie「うそをつく」。
+C	bell	bell bellwether / bellicose belligerent rebellion rebellious / embellish	bellicose・belligerent・rebellion は bellum「戦争」、embellish（飾る）は bellus「美しい」から来た語で、bell（鐘）とは関係ない。
+C	long	long longing / longevity longitude prolong prolonged / belong belongings	long（長い）は古英語 lang、longevity・longitude・prolong はラテン語 longus「長い」から来た語で、同じ古い語から分かれた遠い親戚。belong（属する）は古英語 langian「属する」から来た語で、long とのつながりははっきりしない。
+K	long	longevity	distant	英語の long と、longevity・longitude・prolong の元のラテン語 longus「長い」は、同じ古い語から分かれた遠い親戚。
+K	belong	long	unclear	belong の元の古英語 langian「属する」は gelang「そばにある・属する」から来た語で、along（〜に沿って）を通して long と結びつける説もあるが、はっきりしない。
+K	belong	longevity	unclear	belong が long と結びつくなら、ラテン語 longus とも遠い親戚になるが、belong と long のつながりがはっきりしない。
+Z	同源	bemoan moan
+Z	同源	bench benchmark
+Z	同源	benighted night nightmare nighttime
+C	quest	quest question questionnaire conquest request / bequest	bequest（遺産）は be＋quest（探求）ではなく、古英語 becweþan「言い残す」（bequeath と同じ）から来た語。quest・request は quaerere「求める」から。
+C	side	side sidewalk beside besides inside outside outsider / consider considerable considerably considerate consideration / reside residence resident preside president dissident subside	side（側）の仲間は beside・inside・outside。consider（よく考える）は cōnsīderāre「よく見る」（sīdus「星」から来たとする説がある）、reside・preside・dissident・subside は sedēre「座る」の仲間から来た語で、side とは関係ない。
+C	best	best / bestow	bestow（授ける）は best＋ow ではなく、be-「すっかり」＋ stow「置く」から来た語。
+C	tray	tray / betray betrayal / portray	betray（裏切る）は be＋tray（盆）ではなく、古フランス語 traïr「裏切る」（trādere「引き渡す」から）から来た語。portray（描く）は pour-「前へ」＋ traire「引く」から。
+Z	同源	bewilder wild wilderness wildlife
+Z	同源	come become income outcome overcome

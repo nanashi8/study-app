@@ -3,6 +3,7 @@
 // 語源カードの画面（同じ語根の単語・カード・カードの暗記・カードのテスト）で答える。
 import { useState } from 'react'
 import { lookalikeRowsForCard, lookalikeSectionsForWord } from '../lib/lookalikeOrigins.js'
+import { lookalikeFormSectionsForWord } from '../lib/lookalikeForms.js'
 import { MeaningText } from './MeaningText.jsx'
 import { cx } from './ui.jsx'
 
@@ -44,11 +45,12 @@ export function OriginNote({ origin }) {
   )
 }
 
-function LookalikeRow({ row, onWord }) {
+// rowAttr は行の印。語根カードの似た語は data-lookalike-row、形の似た語のまとまりは data-lookalike-form-row。
+function LookalikeRow({ row, onWord, rowAttr = 'data-lookalike-row' }) {
   const [allWords, setAllWords] = useState(false)
   const words = allWords ? row.words : row.words.slice(0, WORD_LIMIT)
   return (
-    <li className="py-2" data-lookalike-row={row.kind}>
+    <li className="py-2" {...{ [rowAttr]: row.kind }}>
       <div className="flex flex-wrap items-center gap-1.5">
         <LookalikeKindChip kind={row.kind} label={row.label} />
         {words.map((word) => (onWord ? (
@@ -73,6 +75,12 @@ function LookalikeRow({ row, onWord }) {
           </button>
         )}
       </div>
+      {/* 形の似た語のまとまりでは、まとまりどうしのつながりの説明を、由来の説明の前に分けて出す。 */}
+      {row.relationNote && (
+        <p className="mt-1 text-xs font-extrabold leading-relaxed text-ink/70" data-lookalike-relation-note>
+          <MeaningText>{row.relationNote}</MeaningText>
+        </p>
+      )}
       {row.note && (
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60"><MeaningText>{row.note}</MeaningText></p>
       )}
@@ -80,14 +88,14 @@ function LookalikeRow({ row, onWord }) {
   )
 }
 
-function LookalikeRows({ rows, onWord }) {
+function LookalikeRows({ rows, onWord, rowAttr }) {
   const [allRows, setAllRows] = useState(false)
   const shown = allRows ? rows : rows.slice(0, ROW_LIMIT)
   return (
     <>
       <ul className="divide-y divide-slate-100">
         {shown.map((row, index) => (
-          <LookalikeRow key={`${row.kind}:${row.words[0]?.id ?? index}`} row={row} onWord={onWord} />
+          <LookalikeRow key={`${row.kind}:${row.words[0]?.id ?? index}`} row={row} onWord={onWord} rowAttr={rowAttr} />
         ))}
       </ul>
       {rows.length > shown.length && (
@@ -135,8 +143,9 @@ function Foldable({ title, count, collapsible, children, dataAttrs }) {
  */
 export function LookalikeWordSection({ word, onWord, collapsible = false, className }) {
   const sections = lookalikeSectionsForWord(word)
-  if (!sections.length) return null
-  const count = sections.reduce((sum, section) => sum + section.rows.length, 0)
+  const formSections = lookalikeFormSectionsForWord(word)
+  if (!sections.length && !formSections.length) return null
+  const count = [...sections, ...formSections].reduce((sum, section) => sum + section.rows.length, 0)
   return (
     <Foldable
       title="つづりが似た語は同じ語源？"
@@ -164,7 +173,54 @@ export function LookalikeWordSection({ word, onWord, collapsible = false, classN
           </div>
         )
       })}
+      {formSections.map((section) => (
+        <LookalikeFormSection key={`form:${section.form}`} word={word} section={section} onWord={onWord} />
+      ))}
     </Foldable>
+  )
+}
+
+/**
+ * 形は似ているが元の語がちがう語のまとまり（src/lib/lookalikeForms.js）。
+ * contempt なら「contemp で始まる語」: 同じ由来の語（contemptible）と、ほかの由来の語（contemporary・contemplate）の説明、見分け方。
+ */
+function LookalikeFormSection({ word, section, onWord }) {
+  return (
+    <div className="mt-2" data-lookalike-form-section={section.form}>
+      <p className="text-xs font-bold leading-relaxed text-ink/70">
+        {`${section.heading}。${word.word} と形は似ていても、元の語がちがう語がある。`}
+      </p>
+      {section.siblings.length > 0 && (
+        <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50" data-lookalike-siblings>
+          {`${word.word} と同じ由来の語: `}
+          {/* 区切りの「・」は前の語の後ろに付け、行の頭に来ないようにする。 */}
+          {section.siblings.map((sibling, index) => (
+            <span key={sibling.id} className="whitespace-nowrap">
+              {onWord ? (
+                <button
+                  type="button"
+                  onClick={() => onWord(sibling.id)}
+                  className="font-extrabold text-violet-700 underline decoration-dotted underline-offset-2 active:opacity-70"
+                >
+                  {sibling.word}
+                </button>
+              ) : sibling.word}
+              {index < section.siblings.length - 1 && '・'}
+            </span>
+          ))}
+        </p>
+      )}
+      <LookalikeRows rows={section.rows} onWord={onWord} rowAttr="data-lookalike-form-row" />
+      {section.tip && (
+        <p
+          className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-amber-900/85 ring-1 ring-amber-100"
+          data-lookalike-tip
+        >
+          <span className="mr-1 font-extrabold text-amber-700">見分け方</span>
+          <MeaningText>{section.tip}</MeaningText>
+        </p>
+      )}
+    </div>
   )
 }
 

@@ -1,0 +1,55 @@
+{
+  "id": "2026-09-28-lookalike-different-words",
+  "title": "形は似ているが元の語がちがう別の語を、形が似た組の全件で解説する（contemporary・contempt・contemplate から）",
+  "asked": [
+    "contemporary, contempt, contemplation辺りは見た目が近いが全く別の語源だが、学生が迷いやすい形は似ているけど、全く別の言葉の解説はできないか。"
+  ],
+  "sessions": [
+    "a2e8450d-501c-42cd-8056-33ba4f9b8efc"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "contemp-words",
+      "text": "contemporary・contempt・contemplate は、つづりは contemp まで同じでも元の語がちがう別の語だと、3語の画面（辞書ページ・暗記カードの裏・テストの答え合わせ）で答える。contemporary はラテン語 tempus「時」（temporary と同じ）、contempt・contemptible・contemptuous は temnere「軽んじる」、contemplate（とその形 contemplation・contemplative）は templum「神殿・占いのために区切った空の区域」（temple と同じ）から来たことと、見分け方を出す。contempt は con＋tempt（誘惑する）ではないことも、contempt と tempt の両方の画面で出す",
+      "population": "contemp で始まる見出し語 5語（contemplate・contemporary・contempt・contemptible・contemptuous）と、contempt に似た tempt・temptation・tempting・attempt",
+      "check": "node --test --test-name-pattern=\"contemporary・contempt・contemplate\" tests/lookalike-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "lookalike-pairs-all",
+      "text": "形が似た見出し語の組を全件読み、元の語がちがう組（別の語・遠い親戚・はっきりしない）は、由来ごとのまとまりと、元の語（どの言語のどの語か）と今の意味への筋道の説明を台帳 src/data/lookalike-forms.js に書き、形の似た語のまとまりに入れる。載せない組は、理由の略号を docs/audits/lookalike-forms-survey.json に書く（捨てる箱を作らない。同じ由来の語・語根カードの似た語で説明済みの組など、理由のあるものだけ）",
+      "population": "全見出し語 8,929語（大文字・空白・記号を含む語も小文字にして比べる。自作の単語を除く）から、次の3つの決まりで拾う見出し語の id の組の全件 5,000組。(1) 頭のつづりが、接頭辞の形（con-・in- など）を除いて4文字以上同じ（contemporary と contempt、temper と temple）(2) 接頭辞の形のあとに、4文字以上の別の見出し語がそのまま続く（contempt と tempt、recover と cover）(3) 4文字以上の見出し語が、別の見出し語の頭にそのまま入っている（adult と adultery、real と realm）。ほかの品詞の形のまとまり（word-forms.js）の組と、つづり注意の洗い出しの母集団（6,432組。1組ずつ読み済み）の組は除く。（着手時に拾い方を試したときは、つづりの組で数えて 4,853組だった。同じつづりの別の見出し語を別々に数える id の組では 5,000組）",
+      "check": "node --test --test-name-pattern=\"形が似た組\" tests/lookalike-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "word-screens",
+      "text": "暗記カードの裏（VocabStudy）・辞書ページ（WordDetail）・単語テストの答え合わせ（VocabQuiz）の「つづりが似た語は同じ語源？」の欄に、その語が入る形の似た語のまとまりを出す。その語の由来を先に示し、ほかの由来の語には、つながり（別の語源・遠い親戚・はっきりしない）と説明を並べ、同じ由来の語はまとめる。押すとその語へ移れる",
+      "population": "台帳のまとまり 388 に入る全見出し語 1,666語（2つ以上のまとまりに入る語があり、欄は延べ 1,697）と、3画面（VocabStudy・WordDetail・VocabQuiz）",
+      "check": "node --test --test-name-pattern=\"単語の画面\" tests/lookalike-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "consistent-with-ledgers",
+      "text": "新しい台帳のつながりが、つづり注意の組の語源（lookalike-confusables.js）・語根カードの似た語の台帳（lookalike-root-cards.js）と食いちがわない。語の成り立ちの本文が名指しした語（「X と同じ語源」「遠い親戚」「X とは別の語源」）とも食いちがわず、見つかった本文の誤りは直す",
+      "population": "新しい台帳でつながりが決まる 4,455組のうち、ほかの2つの台帳でも判定がある 811組の全件と、公開している語の成り立ち 8,929件が名指しした語のうち、3つの台帳のどれかで判定できる全件（748件）",
+      "check": "node --test --test-name-pattern=\"食いちがい\" tests/lookalike-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "japanese-readable",
+      "text": "この依頼で書いた日本語（由来の説明・見分け方・画面の文言）を、学習者向け日本語の見直し（漢字のかたまりを1件ずつ読む・常用漢字表での裏打ち）に通す",
+      "population": "この依頼で足した日本語の全件",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）をクリーンな clone で通してから main へ push し、公開版のデプロイ（GitHub Actions の deploy.yml）が push したコミットで成功したことを GitHub の記録で確かめる",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

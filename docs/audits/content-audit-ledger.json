@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-28T10:45:31.715Z",
+  "auditedAt": "2026-09-28T11:08:08.727Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "bafdeb0d75ae5d3115a9c533d0768fc4478df836d2e8bf4424a1524e004b69ba",
+    "sha256": "5cbd5d2386be8deb1a9d488f6fdd9830f392ea0c9bada0fd8bb4e7310c2adc02",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -245,6 +245,7 @@
       "tests/literature-vocabulary.test.mjs",
       "tests/literature.test.mjs",
       "tests/long-sentence-translations.test.mjs",
+      "tests/lookalike-forms.test.mjs",
       "tests/lookalike-origins.test.mjs",
       "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",

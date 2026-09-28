@@ -56,6 +56,17 @@ const lookalike = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-09-28 の点検: 形の似た語の台帳（src/data/lookalike-forms.js）と照らし、遠い親戚を「同じ語源」と書いていた本文
+// （prolong・longitude の long、simultaneously・assemble の similar）、別の語源の語を「同じ語源」と書いていた本文
+// （converge の verge、mineral の「私のもの」の mine）、別の語の pound とまぎれる本文（pond・ponder）、
+// あとから付いたつづりで fore＋most に分けていた本文（foremost）、「風」の wind と同じ語源と読める本文（wander）を直したもの。
+const lookform = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-28',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'a': clear('古英語 ān「1つの」が弱く発音されて n が落ちた形→「1つの・ある（不定冠詞）」。', '1d0443e4e1da47ac'),
   'a.m.': clear('ラテン語 ante meridiem「正午の前」の頭文字を取った時刻表現→「午前・午前の時刻」。', 'c63d182d0eba657a'),
@@ -547,7 +558,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'aspire': clear('ラテン語 ad-「〜へ」＋ spirare「息をする」→「熱望する・志す」。spirit と同じ語源。', '2cc224f9fc5b209f'),
   'assail': clear('ラテン語 ad-「〜へ」＋ salire「跳びかかる」→「激しく攻撃する・襲う」。', 'bef51305c03f91ed'),
   'assault': clear('ラテン語 assultāre「飛びかかる」（ad-「〜に」＋ saltāre「跳ぶ」）から。相手に飛びかかる→「襲撃する・暴行」。', '22bb40acd376bfbe'),
-  'assemble': clear('ラテン語 ad「〜に」＋ simul「共に」→寄せ集める→「集める」。similar と同じ語源。', 'cb160e751a2edded'),
+  'assemble': lookform('ラテン語 ad「〜に」＋ simul「共に」→寄せ集める→「集める」。similar（似た）の元のラテン語 similis とは、同じ古い語根から来た遠い親戚。', '6a5cedb8060fd5f5'),
   'assembly': recheck('assemble「集める」＋ -y「〜すること・〜な状態」→「議会・集会・組み立て」。assemble はラテン語 ad「〜に」＋ simul「共に」から。', '7c787cfd421c97d7'),
   'assert': clear('ラテン語 ad「〜に」＋ serere「結びつける」→言い立てる→「主張する」。', 'a4bd96d7253e2409'),
   'assertion': recheck('assert「主張する」＋ -ion「〜すること・〜したもの」→「主張・断言」。assert はラテン語 ad「〜に」＋ serere「結びつける」から。', '435d34b152b1d624'),
@@ -1618,7 +1629,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'convenient': recheck('ラテン語 convenīre「集まる・ぴったり合う」（com-「共に」＋ venīre「来る」）から。都合にぴったり合う→「便利な・都合のよい」。', 'e76976b3d835ca29'),
   'convention': relink('ラテン語 conventiō「集まり・取り決め」（convenīre「集まる」、con-「共に」＋ venīre「来る」から）から。人が集まる→「大会」、集まって取り決めたこと→「条約」、みんなが従う決まり→「慣習」。convene と同じ語源。', 'd722930b0a3e942b'),
   'conventional': clear('ラテン語 com-「共に」＋ venire「集まる」→「従来の・慣習的な」。convene と同じ語源。', '10063f036ced6984'),
-  'converge': clear('ラテン語 con-「共に」＋ vergere「傾く」→「収束する・集まる」。verge と同じ語源。', '0a6efe3490de0aab'),
+  'converge': lookform('ラテン語 con-「共に」＋ vergere「傾く」→「収束する・集まる」。diverge と同じ語源。verge（縁・間際、ラテン語 virga「小枝」から）とは別の語源。', '5a47312f1a2879bd'),
   'convergence': recheck('converge「収束する」＋ -ence「〜すること・〜な状態」→「収束・集中」。converge はラテン語 con-「共に」＋ vergere「傾く」から。', '3c80b88ddfcbd200'),
   'convergent': recheck('converge「収束する」＋ -ent「〜している・〜の性質の」→「収束する・一点に向かう」。converge はラテン語 con-「共に」＋ vergere「傾く」から。', '9c01d38f7e9a08bc'),
   'conversational': recheck('conversation「会話」＋ -al「〜の・〜に関する」→「会話の・打ち解けた」。conversation はラテン語 conversātiō「交わり・付き合い」（conversārī「共に過ごす」、com-「共に」＋ versārī「身を置く」、vertere「回す」から）に由来する。', 'ebaebe2e5cf26ffb'),
@@ -3195,7 +3206,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'forehead': recheck('fore-「前の」＋ head「頭」の複合語で、頭の前側をそのまま表す→「額・ひたい」。head は古英語 hēafod から。', '68dc881e9b7d7f3a'),
   'foreign': clear('ラテン語 foris「外で」→外の→「外国の」。', '1143c879115aaa83'),
   'foreman': recheck('fore「前の」＋ man「人」→「現場監督・職長」。man は古英語 mann「人」から。', 'c7bd8b7139829e7c'),
-  'foremost': recheck('fore「前」＋ most「最も」→「一番の・主要な」。most は古英語 mǣst「最も大きい・最も多い」から。', 'd8aac6608c1a33f5'),
+  'foremost': lookform('古英語 formest「いちばん前の・最初の」（forma「最初の」の最上級）から。あとから fore「前」＋ most「最も」と思われて、つづりが foremost になった→「一番の・主要な」。', 'b6a668295267ec38'),
   'forerunner': recheck('fore「前」＋ runner「走る人」→「先駆者・前兆」。runner は run「走る」＋ -er「〜する人」で、run は古英語 rinnan「走る」から。', '44d4a4a9678f7dd6'),
   'foresee': recheck('fore「前もって」＋ see「見る」→「予見する・見越す」。see は古英語 sēon「見る」から。', 'd2ba1a3661bd69f4'),
   'foresight': recheck('fore「前」＋ sight「見ること」→「先見の明・洞察力」。sight は古英語 gesiht「見ること・見えるもの」（sēon「見る」から）に由来する。', 'c21d96ff80ae6957'),
@@ -4606,7 +4617,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'lonely': recheck('lone「独りの」＋ -ly「〜のような・〜らしい」→「孤独な・寂しい」。lone は alone「ひとりで」の頭が落ちた形で、alone は all「すっかり」＋ one「1つ」（古英語 ān）からできた語。', '3b407ee4da23d893'),
   'longevity': clear('ラテン語 longus「長い」＋ aevum「年齢」→「長寿・長持ち」。', '895404e776fbdb9e'),
   'longing': recheck('long「切望する」＋ -ing「〜すること」→「思慕・あこがれ」。この long（切望する）は古英語 langian「長く感じる・恋しく思う」から（「長い」の long と同じ語根）。', 'cc70428bdf5d6337'),
-  'longitude': clear('ラテン語 longitūdō「長さ」（longus「長い」から）から。昔の地図は東西に長く、その「長さ」の方向を測る目盛り→「経度」。long と同じ語源。', 'a8df424060ef15de'),
+  'longitude': lookform('ラテン語 longitūdō「長さ」（longus「長い」から）から。昔の地図は東西に長く、その「長さ」の方向を測る目盛り→「経度」。英語の long（長い）とは、同じ古い語から分かれた遠い親戚。', 'a44b2389c6bf3247'),
   'look': clear('古英語 lōcian「見る」→「見る・〜に見える」。', '8bb385f160155d49'),
   'loom': clear('16世紀から使われている語。由来ははっきりしない→「ぼんやり現れる・気がかりに迫る」。', '487c25611acb73cc'),
   'looming': recheck('loom「ぼんやり現れる」＋ -ing「〜させる・〜している」→「迫りくる・ぼんやり現れる」。loom は16世紀の船乗りのことばから広まった語で、北欧系の語とされる。', '967f72d950c2a0fb'),
@@ -4837,7 +4848,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'mimicry': recheck('mimic「まねる」＋ -ry「〜すること・〜したもの」→「物まね・擬態」。mimic はギリシャ語 mīmos「物まね役者」から。', '28be34395cdd0759'),
   'mind': clear('古英語 gemynd「記憶・考え」から。覚えて考える働き→「心・考え・精神」。', 'd4ef666863b2b450'),
   'mine': clear('my「私の」と同系の古い所有代名詞形が独立して残った語→「私のもの」。', '5ecba8ba9ebec485'),
-  'mineral': clear('中世ラテン語 minerale「鉱石」→「鉱物・ミネラル」。mine と同じ語源。', 'fbd7eecbe2feca04'),
+  'mineral': lookform('中世ラテン語 minerale「鉱石」（mina「鉱山」から）→「鉱物・ミネラル」。undermine と同じ語源。「私のもの」の mine とは関係ない。', '1d8675a1bab783e0'),
   'mingle': clear('古英語 mengan「混ぜる」→「混ざる・歓談する」。among と同じ語源。', 'd431eb4496e01d2f'),
   'minimal': clear('ラテン語 minimus「最小の」→「最小限の・ごくわずかな」。minimum と同じ語源。', '8c517de5906954da'),
   'minimalism': recheck('minimal「最小限の」＋ -ism「主義・様式」→「最小限主義・ミニマリズム」。minimal はラテン語 minimus「最小の」から。', 'b5ebd5b17d5febce'),
@@ -5698,8 +5709,8 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'pollution': clear('ラテン語 polluere「汚す」→「汚染」。', '760871a91bca43cf'),
   'polyglot': clear('ギリシャ語 poly-「多くの」＋ glōtta「舌・ことば」→多くのことばを話す→「数か国語に通じた人・多言語の」。', 'bf0249a10b8da414'),
   'pomposity': clear('ラテン語 pompa「（祭りの）行列・華やかな見せ物」から。行列のように仰々しくふるまうこと→「尊大さ・もったいぶり」。pomp（華やかさ）と同じ語源。', '0af71e1a3abcbac5'),
-  'pond': clear('中英語 ponde「囲った水」→「池」。pound と同じ語源。', 'b6ee9f440890633b'),
-  'ponder': clear('ラテン語 ponderare「重さを量る」→「熟考する」。pound と同じ語源。', 'cff8c0d65f3aa29a'),
+  'pond': lookform('中英語 ponde「囲った水」→「池」。家畜を入れておく囲いを表す pound と同じ語源で、重さの単位の pound（ポンド）とは別の語。', 'be0bb7253bf507dc'),
+  'ponder': lookform('ラテン語 ponderare「重さを量る」→心の中で重さを量る→「熟考する」。重さの単位の pound（ポンド）と同じ語源。', 'e11e4ff077889765'),
   'ponderous': clear('ラテン語 pondus「重さ」から。重くて動きが鈍い→「（動き・文体が）重々しい・退屈な」。ponder（じっくり考える）と同じ語源。', '62a1565238369750'),
   'pool': clear('古英語 pōl に由来→「プール・水たまり」。', '5af2e8428cc5767c'),
   'poor': relink('古フランス語 povre「貧しい」（ラテン語 pauper から）から。「貧しい」、気の毒な身の上→「かわいそうな」、中身が乏しい→「下手な」。poverty と同じ語源。', 'f431ba758e4f8e65'),
@@ -5883,7 +5894,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'project': recheck('ラテン語 prōicere「前へ投げ出す」（prō-「前へ」＋ iacere「投げる」）から。光を前へ投げ出す→「投影する」、先の数字を投げかける→「見積もる」。', 'ae55adb23a27c672'),
   'proliferate': clear('ラテン語 proles「子孫」＋ ferre「生む」→「急増する・拡散する」。', 'ca94086d38ead456'),
   'prolific': clear('ラテン語 proles「子孫」＋ facere「作る」→「多作の・多産の」。', '7323b10d1a539fc6'),
-  'prolong': clear('ラテン語 pro-「前へ」＋ longus「長い」→「延長する・長引かせる」。long と同じ語源。', '1f31fc5780e95d81'),
+  'prolong': lookform('ラテン語 pro-「前へ」＋ longus「長い」→「延長する・長引かせる」。英語の long（長い）とは、同じ古い語から分かれた遠い親戚。', 'c6cccd46cfd043e4'),
   'prolonged': recheck('prolong「延長する」＋ -ed「〜された・〜した」→「長引いた・長期の」。prolong はラテン語 pro-「前へ」＋ longus「長い」から。', '4af21e341c2f6e30'),
   'prominent': clear('ラテン語 prōminēre「突き出る」から。突き出て目立つ→「突出した・著名な」。', 'c09b08a64cc2242c'),
   'promise': recheck('ラテン語 prōmittere「前もって送り出す・約束する」（prō-「前へ」＋ mittere「送る」）から→「約束」。', '804e0e0064298382'),
@@ -6804,7 +6815,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'simply': recheck('simple「単純な」＋ -ly「〜に・〜く（様子を表す）」→「単に・簡単に・まったく」。simple はラテン語 simplus「一重の」から。', 'ef1dc7ec9d112dd6'),
   'simulate': clear('ラテン語 simulare「似せる」→「模擬する・装う」。similar と同じ語源。', '7c636748441a5792'),
   'simulation': clear('ラテン語 simulare「似せる」→「シミュレーション・模擬実験」。similar と同じ語源。', '9e0c25ef8348019a'),
-  'simultaneously': clear('ラテン語 simul「同時に」→「同時に」。similar と同じ語源。', '8eba536bd4b91cbc'),
+  'simultaneously': lookform('simultaneous「同時の」＋ -ly「〜に・〜く（様子を表す）」→「同時に」。simultaneous はラテン語 simul「同時に」から。similar（似た）の元のラテン語 similis とは、同じ古い語根から来た遠い親戚。', 'b9b59d3fc2cb79a9'),
   'sin': clear('古英語 synn「罪」→「罪・罪を犯す」。', 'de22a0d7867f5502'),
   'sincere': clear('ラテン語 sincērus「混じりけのない・純粋な」から。飾りやうそが混じらない→「誠実な・心からの」。', '6fa307582bd859b8'),
   'sincerely': recheck('sincere「誠実な」＋ -ly「〜に・〜く（様子を表す）」→「心から・誠実に」。sincere はラテン語 sincērus「混じりけのない・純粋な」から。', '1a1041e24877b816'),
@@ -8087,7 +8098,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'wake': split('古英語 wacian「目を覚ましている」から→「目を覚ます・起こす」。watch（見張る）と同じ語源。「航跡・通った跡」の wake は古ノルド語 vǫk「氷に開いた穴」から来たとされる別の語。', '518f9a4b0342bcf6'),
   'walk': clear('古英語 wealcan「転がる・動き回る」に由来→「歩く・散歩」。', 'cc67a16fcdb19748'),
   'wall': clear('ラテン語 vallum「（杭を並べた）土塁」から、古英語 weall を経た語。敵を防ぐ土の囲い→「壁」。', '8b2e217606633ce6'),
-  'wander': clear('古英語 wandrian→「さまよう・ぶらつく」。wind と同じ語源。', '5002bd049cf6158b'),
+  'wander': lookform('古英語 wandrian→「さまよう・ぶらつく」。「巻く・曲がりくねる」の wind と同じ語源で、「風」の wind とは別の語。', '81ddb5a5d0452959'),
   'wanderer': recheck('wander「さまよう」＋ -er「〜する人・もの」→「放浪者・さすらい人」。wander は古英語 wandrian から。', '533ba6c17fafb70a'),
   'wandering': recheck('wander「さまよう」＋ -ing「〜させる・〜している」→「放浪の・さまよう・とりとめのない」。wander は古英語 wandrian から。', '0b2484b73bd118ed'),
   'wane': clear('古英語 wanian「減る・小さくなる」から。「（月が）欠ける」、勢いが減る→「衰える」。', '11f4341db8cea378'),
