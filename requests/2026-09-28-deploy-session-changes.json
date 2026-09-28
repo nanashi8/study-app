@@ -1,0 +1,34 @@
+{
+  "id": "2026-09-28-deploy-session-changes",
+  "title": "このセッションの変更をデプロイする（形は似ているが元の語がちがう語の解説）",
+  "asked": [
+    "このセッションの変更をデプロイしなさい。"
+  ],
+  "sessions": [
+    "a2e8450d-501c-42cd-8056-33ba4f9b8efc"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "session-commits-deployed",
+      "text": "この会話の依頼（2026-09-28-lookalike-different-words：形は似ているが元の語がちがう語の解説）の変更 20a98b4 と、依頼を閉じたコミット d879e6e が main に入り、デプロイ（deploy.yml の run 36414133085・36414813822）がどちらも build・deploy とも成功している。公開版の JS（LookalikeOrigins の部品）に、新しい見分け方（contemp のすぐあとの文字で見分ける）・画面の印（data-lookalike-form-section）・直した語の成り立ち（古英語 formest）が入り、公開版の contempt の辞書ページに「contemp で始まる語」の欄が出ることも確かめた",
+      "population": "この会話のコミット 2件と、そのデプロイ 2回（公開版 https://nanashi8.github.io/study-app/）",
+      "check": "git merge-base --is-ancestor 20a98b4 origin/main && git merge-base --is-ancestor d879e6e origin/main && test \"$(gh run view 36414133085 --json conclusion -q .conclusion)\" = success && test \"$(gh run view 36414813822 --json conclusion -q .conclusion)\" = success && node --test tests/lookalike-forms.test.mjs tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない。共有の作業ツリーは、この依頼の台帳のほかは未コミット 0・stash 0・未 push 0（この依頼の台帳のコミットを除けば、HEAD は origin/main の d879e6e と同じ）。確かめに使った複製（scratchpad/clean）は、HEAD の 20a98b4 が main に入っていることを確かめてから消した。画面の確認で一時的に足した .claude/launch.json の項目は元に戻した（main と差分なし）。このセッションの作業場所（scratchpad）に study-app の複製は残っていない。端末全体で見ると、study-app の複製はほかのセッションのものが2つあり、控え（cc18be91）は main に入っていない変更 0件、もう1つ（9c73e8f3「スクロール上下の不具合」）の未コミットは、そのセッションが作業中の自分の依頼台帳（requests/2026-09-28-deploy-scroll-fix.json）だけで、このセッションの変更ではない。scratchpad に残るのは記録（ログ）と下書きの道具だけで、アプリの変更ではない。メモリ（~/.claude/projects/ の lookalike-forms-different-words.md と MEMORY.md の1行）はリポジトリの外で、公開の対象ではない",
+      "population": "共有の作業ツリー（~/projects/study-app）と、このセッションの作業場所（scratchpad）",
+      "check": "test -z \"$(git status --porcelain -- . ':!requests')\" && test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test -z \"$(git log origin/main..HEAD --oneline -- . ':!requests')\" && git diff --quiet origin/main -- .claude/launch.json && node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/a2e8450d-501c-42cd-8056-33ba4f9b8efc/scratchpad && node --test tests/leftover-changes.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "この依頼の台帳のコミットを push し、そのコミットのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
