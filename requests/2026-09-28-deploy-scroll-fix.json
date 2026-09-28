@@ -7,7 +7,7 @@
   "sessions": [
     "9c73e8f3-2a65-49d5-b8e8-adbb05c1077b"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "session-changes-on-main",
@@ -21,7 +21,7 @@
       "id": "session-deploys",
       "text": "このセッションのコミットのデプロイ（deploy.yml の ee2e79a の run 36411990207、9db69bc の run 36412370634）が、どちらも build・deploy とも成功している",
       "population": "このセッションのコミット 2件のデプロイ 2回",
-      "check": "for run in 36411990207 36412370634; do test \"$(gh run view $run --json conclusion -q .conclusion)\" = success || exit 1; test -z \"$(gh run view $run --json jobs -q '.jobs[] | select(.conclusion != \"success\") | .name')\" || exit 1; done",
+      "check": "for run in 36411990207 36412370634; do test \"$(gh run view $run --json conclusion -q .conclusion)\" = success || exit 1; test -z \"$(gh run view $run --json jobs -q '.jobs[] | select(.conclusion != \"success\") | .name')\" || exit 1; done && node --test tests/deploy-workflow.test.mjs",
       "status": "done",
       "verifiedBy": "ee2e79a の run 36411990207、9db69bc の run 36412370634 は、どちらも build・deploy とも success"
     },
@@ -29,7 +29,7 @@
       "id": "public-has-fix",
       "text": "いまの公開版（最新の main のデプロイ）に、この修正が入っている。公開版の CSS に外枠の固定（.study-app-viewport の position:fixed）とページの跳ね返し止め（overscroll-behavior:none）があり、公開版の index.html と JS・CSS が、いまの main をクリーンな clone でビルドしたものとバイト単位で同じ",
       "population": "公開版 https://nanashi8.github.io/study-app/ の index.html と、そこから読む JS・CSS のすべて",
-      "check": "css=$(curl -fsS https://nanashi8.github.io/study-app/ | grep -oE 'assets/index-[A-Za-z0-9_-]+\\.css' | head -1) && test -n \"$css\" && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -qE 'study-app-viewport\\)?\\{[^}]*position:fixed' && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -q 'overscroll-behavior:none'",
+      "check": "css=$(curl -fsS https://nanashi8.github.io/study-app/ | grep -oE 'assets/index-[A-Za-z0-9_-]+\\.css' | head -1) && test -n \"$css\" && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -qE 'study-app-viewport\\)?\\{[^}]*position:fixed' && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -q 'overscroll-behavior:none' && node --test tests/safe-area.test.mjs",
       "status": "done",
       "verifiedBy": "公開版（d879e6e のデプロイ run 36414813822）の index.html と JS・CSS 9本（計10ファイル）が、クリーンな clone のいまの main（d879e6e＋この台帳）のビルドとバイト単位で同じ。公開版の CSS に外枠の固定（.study-app-viewport の position:fixed）と跳ね返し止め（overscroll-behavior:none）がある。この clone の npm run audit:all-content はテスト 1,070件すべて成功・全監査・ビルドまで通った（監査台帳の差分は日時だけ）"
     },
@@ -37,15 +37,17 @@
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない。検証用の複製（scratchpad/study-app）に main にないコミット・変更がなく、共有の作業ツリーのこのセッションのファイルが main と同じ。記憶（~/.claude の memory）の更新はこの端末の作業メモで、アプリには含まれない",
       "population": "この端末の study-app の複製すべて（このセッションの検証用の複製を含む）と、共有の作業ツリーのこのセッションのファイル 4つ",
-      "check": "node scripts/checks/leftover-changes.mjs --clones && git diff --quiet origin/main -- src/index.css tests/safe-area.test.mjs tests/scroll-back-from-bottom.test.mjs requests/2026-09-28-scroll-back-from-bottom.json",
-      "status": "todo"
+      "check": "node scripts/checks/leftover-changes.mjs --clones && git diff --quiet origin/main -- src/index.css tests/safe-area.test.mjs tests/scroll-back-from-bottom.test.mjs requests/2026-09-28-scroll-back-from-bottom.json && node --test tests/leftover-changes.test.mjs",
+      "status": "done",
+      "verifiedBy": "この端末の study-app の複製は共有の作業ツリーのほかに2つ（ほかのセッションの控え cc18be91-scratch-backup/clean-verify と、このセッションの検証用の複製 scratchpad/study-app）で、どちらも main の履歴にないコミット 0件・main に入っていない変更 0件（台帳のコミット b2a43d6 を push したあと）。共有の作業ツリーのこのセッションのファイル4つ（src/index.css・2つのテスト・依頼台帳）は main と同じ。記憶の更新（page-never-scrolls.md と MEMORY.md の1行）は ~/.claude のこの端末の作業メモで、アプリには含まれない"
     },
     {
       "id": "deployed",
       "text": "この依頼の台帳だけを足すコミットを、クリーンな clone（いまの main）で npm run audit:all-content（全テスト・全監査・ビルド）を通してから main へ push し、そのコミットのデプロイが成功したことを確かめる。同じ時間にほかのセッションも台帳を push するので、監査台帳の書き直し（日時だけ）は取り込まず、この台帳のファイルだけをコミットする。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（いまの main の d879e6e＋この台帳）で npm run audit:all-content（テスト 1,070件すべて成功・全監査・ビルド）を通し、監査台帳の日時の書き直しは取り込まずに、この台帳だけのコミット b2a43d6 を、ほかのセッションの 63ee143・498191f の上へ rebase して push した。デプロイ（deploy.yml の run 36425203560）は build・deploy とも success で、公開版の index.html と JS・CSS 9本（計10ファイル）が、クリーンな clone のビルドとバイト単位で同じ。依頼を閉じるコミットのデプロイも成功を確かめてから報告する"
     }
   ]
 }
