@@ -7,7 +7,7 @@
   "sessions": [
     "0090408f-1f37-4804-90b2-7579572226b0"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "dev-ocr-reaches-results",
@@ -46,10 +46,10 @@
     },
     {
       "id": "deployed",
-      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版の「教科書から単語追加」でも読み取りが結果まで進むことを見る（送信は押さない）",
+      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版の「教科書から単語追加」でも読み取りが結果まで進むことを見る（送信は押さない）。結果：クリーンな clone で npm run audit:all-content を通し（テスト 1,077件・全監査・ビルドが通過）、main へ push した（commit c81f9c3、上流の 7770547 の上）。デプロイ（GitHub Actions deploy.yml の run 36430212998、build・deploy とも success）を確かめ、scripts/checks/deployed-matches-head.mjs も「push 済みで、公開版へのデプロイが成功している」と答えた。公開版をスマホの幅（375×812）で開き、「教科書から単語追加」で同じ英文の画像を読み取らせると、「4語が辞書と一致」の候補と zorblax の入った「辞書にない単語」の欄まで進んだ（送信は押していない）。公開版の画面の JS（VocabCamera-zTNLAxzi.js）は clone のビルドとバイト単位で同じ。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
