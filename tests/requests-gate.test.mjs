@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import test from 'node:test'
+import test, { after } from 'node:test'
 
 // commit・push の前の確認を、本物の git が呼ぶ git のフック（scripts/git-hooks）で確かめる。
 // 使い捨てのリポジトリに、このリポジトリのフック・判定スクリプト・.claude/settings.json を入れて試す。
@@ -13,8 +13,19 @@ const SETTINGS = JSON.parse(readFileSync(here('.claude/settings.json'), 'utf8'))
 const IDENTITY = { name: 'nanashi8', email: 'nanashi8@users.noreply.github.com' }
 const STRANGER = { name: 'Someone', email: 'someone@laptop.local' }
 
+// 使い捨てのリポジトリなど、このテストが一時フォルダに作ったもの。テストが終わったらすべて消す。
+const made = []
+function tempDir(prefix) {
+  const dir = mkdtempSync(join(tmpdir(), prefix))
+  made.push(dir)
+  return dir
+}
+after(() => {
+  for (const dir of made) rmSync(dir, { recursive: true, force: true })
+})
+
 // 利用者の git の設定と、このテストを動かすセッションの env を読まない（名前の設定もフックもない git から始める）。
-const home = mkdtempSync(join(tmpdir(), 'hooks-home-'))
+const home = tempDir('hooks-home-')
 function bareEnv() {
   const env = { ...process.env, HOME: home, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: join(home, 'gitconfig') }
   for (const key of Object.keys(env)) {
@@ -48,7 +59,7 @@ const LEDGER_CHECK = [
 
 /** このリポジトリのフックを入れた使い捨てのリポジトリと、push 先の空のリモート。 */
 function project() {
-  const dir = mkdtempSync(join(tmpdir(), 'hooks-repo-'))
+  const dir = tempDir('hooks-repo-')
   for (const path of ['scripts/git-hooks', 'requests', '.claude', 'sub']) mkdirSync(join(dir, path), { recursive: true })
   for (const path of ['scripts/check-requests.mjs', 'scripts/git-hooks/prepare-commit-msg', 'scripts/git-hooks/pre-push', '.claude/settings.json']) {
     copyFileSync(here(path), join(dir, path))
@@ -59,7 +70,7 @@ function project() {
   writeFileSync(join(dir, 'content.txt'), 'a')
   writeFileSync(join(dir, 'ledger.txt'), 'a')
   writeFileSync(join(dir, 'sub', 'note.txt'), 'note')
-  const remote = mkdtempSync(join(tmpdir(), 'hooks-remote-'))
+  const remote = tempDir('hooks-remote-')
   git(remote, ['init', '-q', '--bare', '-b', 'main'])
   git(dir, ['init', '-q', '-b', 'main'])
   git(dir, ['add', '-A'])
@@ -103,7 +114,7 @@ test('どんな書き方の push でも、git がフックを呼ぶ（場所・�
   commitStale(dir)
   const script = join(dir, 'push.sh')
   writeFileSync(script, 'git push -q origin main\n')
-  const outside = mkdtempSync(join(tmpdir(), 'hooks-elsewhere-'))
+  const outside = tempDir('hooks-elsewhere-')
   for (const [command, cwd] of [
     ['git push -q origin main', dir],
     [`git -C ${dir} push -q origin main`, outside],
@@ -120,7 +131,7 @@ test('どんな書き方の push でも、git がフックを呼ぶ（場所・�
   }
   assert.equal(remoteMain(remote), before)
   // clone でも、その clone のフックが呼ばれる。
-  const clone = mkdtempSync(join(tmpdir(), 'hooks-clone-'))
+  const clone = tempDir('hooks-clone-')
   git(clone, ['clone', '-q', remote, '.'])
   commitStale(clone)
   const cloned = sh('git push -q origin main', clone)
@@ -163,7 +174,7 @@ test('push の前に、まだどのリモートにもないコミットの作者
   assert.equal(sh('git commit -q --amend --allow-empty --no-edit --reset-author', dir).status, 0)
   assert.equal(sh('git push -q origin main', dir).status, 0)
   // すでにリモートにあるコミット（ほかの人が push したもの）は数えない。
-  const peer = mkdtempSync(join(tmpdir(), 'hooks-peer-'))
+  const peer = tempDir('hooks-peer-')
   git(peer, ['clone', '-q', remote, '.'], noHooks())
   git(peer, ['commit', '-q', '--allow-empty', '-m', 'by a peer'], noHooks(STRANGER))
   git(peer, ['push', '-q', 'origin', 'main'], noHooks())

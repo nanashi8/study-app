@@ -1,0 +1,49 @@
+{
+  "id": "2026-09-28-test-temp-cleanup",
+  "title": "テストが一時フォルダに作った使い捨てのリポジトリ・台帳を、終わったら消す",
+  "asked": [
+    "In ~/projects/study-app, tests/requests-gate.test.mjs creates temporary git repositories with mkdtempSync(join(tmpdir(), 'hooks-repo-' / 'hooks-remote-' / 'hooks-clone-' / 'hooks-peer-')) (around lines 51, 62, 123, 166) and never removes them. Every `npm test` / `npm run audit:all-content` run leaves about 12 of them in the OS temp folder (on this Mac /var/folders/.../T; 112 hooks-* entries existed on 2026-09-28). They also show up when scripts/checks/leftover-changes.mjs --clones scans the machine for git repositories (they are not study-app clones, so they don't fail it, but they inflate the repo count).\n\nTask: make the tests clean up after themselves (e.g. collect created dirs and rmSync(dir, { recursive: true, force: true }) in a finally block or test.after hook), without changing what the tests check. Follow the project's CLAUDE.md: first create requests/<date>-<name>.json with the user's request, criteria (population + check) and this session's id in `sessions`; run `npm run audit:all-content` in a clean clone before committing; commit directly to main as nanashi8 and push; confirm the GitHub Pages deploy succeeds. Answer the user in Japanese."
+  ],
+  "askedNote": "原文のホームのフォルダのパスは、公開のリポジトリに利用者の名前を残さないため（npm run audit:secrets の absolute-user-path）、~ に置き換えた",
+  "sessions": [
+    "1beadc80-829a-4d82-bd29-daef0e33f650"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "gate-temp-removed",
+      "text": "tests/requests-gate.test.mjs が一時フォルダに作るもの（1回の実行で16個：hooks-home 1・hooks-repo 6・hooks-remote 6・hooks-elsewhere 1・hooks-clone 1・hooks-peer 1）を、テストの終わりにすべて消す。空の一時フォルダ（TMPDIR）で動かして、終わったあと何も残らない（直す前は16個残った）",
+      "population": "requests-gate.test.mjs の一時フォルダを作る6か所と、1回の実行で作る16個",
+      "check": "T=$(mktemp -d) && TMPDIR=\"$T/\" node --test tests/requests-gate.test.mjs > /dev/null 2>&1 && test -z \"$(ls -A \"$T\")\"; s=$?; rm -rf \"$T\"; exit $s",
+      "status": "done"
+    },
+    {
+      "id": "ledger-temp-removed",
+      "text": "tests/requests-ledger.test.mjs の ledger() が一時フォルダに作る台帳のフォルダ（requests-、1回の実行で13個）も同じく残っていたので、依頼の「テストが自分で片付ける」に含め、テストの終わりにすべて消す（直す前は13個残った）",
+      "population": "requests-ledger.test.mjs の一時フォルダを作る1か所と、1回の実行で作る13個",
+      "check": "T=$(mktemp -d) && TMPDIR=\"$T/\" node --test tests/requests-ledger.test.mjs > /dev/null 2>&1 && test -z \"$(ls -A \"$T\")\"; s=$?; rm -rf \"$T\"; exit $s",
+      "status": "done"
+    },
+    {
+      "id": "guard-all-temp-tests",
+      "text": "一時フォルダを作るテストのファイルすべて（tmpdir・mkdtemp を使う tests/*.test.mjs。今は requests-gate・requests-ledger・leftover-changes の3つ）を空の一時フォルダで動かし、通ったうえで何も残らないことを、新しいテスト tests/test-temp-cleanup.test.mjs で npm test のたびに確かめる。あとから一時フォルダを使うテストを足しても、自動で対象に入る",
+      "population": "tests/*.test.mjs のうち一時フォルダを作るファイルすべて（3つ）",
+      "check": "node --test tests/test-temp-cleanup.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "same-checks",
+      "text": "テストが確かめる中身は変えない。requests-gate の7件・requests-ledger の12件のテストがそのまま通り、2つのファイルの変更に assert の行と test( の行の追加・削除がない",
+      "population": "requests-gate.test.mjs の7件と requests-ledger.test.mjs の12件",
+      "check": "test \"$(git diff 6c2f634 -- tests/requests-gate.test.mjs tests/requests-ledger.test.mjs | grep -E '^[-+][^-+]' | grep -cE 'assert|test\\(')\" = 0 && node --test --test-reporter=spec tests/requests-gate.test.mjs 2>&1 | grep -qx 'ℹ pass 7' && node --test --test-reporter=spec tests/requests-ledger.test.mjs 2>&1 | grep -qx 'ℹ pass 12'",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、デプロイの成功を確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import test from 'node:test'
+import test, { after } from 'node:test'
 import { HOOKS_PATH, hooksActive, loadRequests, ownRequests, validateRequest } from '../scripts/check-requests.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -30,8 +30,15 @@ const request = (criteria, overrides = {}) => ({
   ...overrides,
 })
 
+// 一時フォルダに作った台帳のフォルダ。テストが終わったらすべて消す。
+const made = []
+after(() => {
+  for (const dir of made) rmSync(dir, { recursive: true, force: true })
+})
+
 function ledger(...requests) {
   const dir = mkdtempSync(join(tmpdir(), 'requests-'))
+  made.push(dir)
   requests.forEach((item, index) => writeFileSync(join(dir, `r${index}.json`), JSON.stringify(item)))
   return dir
 }
