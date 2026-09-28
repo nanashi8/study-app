@@ -1,0 +1,51 @@
+{
+  "id": "2026-09-28-deploy-scroll-fix",
+  "title": "このセッションの変更をデプロイする（一番下から上へ戻れない不具合の修正とその台帳）",
+  "asked": [
+    "このセッションの変更をデプロイしなさい。"
+  ],
+  "sessions": [
+    "9c73e8f3-2a65-49d5-b8e8-adbb05c1077b"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "session-changes-on-main",
+      "text": "このセッションの変更（ee2e79a：src/index.css・tests/safe-area.test.mjs・tests/scroll-back-from-bottom.test.mjs・docs/audits/content-audit-ledger.json・requests/2026-09-28-scroll-back-from-bottom.json、9db69bc：依頼を閉じた台帳）が main の履歴にあり、後のコミット（ほかのセッションの 20a98b4・d879e6e など）で消されたり書き換えられたりしていない。src/index.css と2つのテストは ee2e79a と同じ、依頼台帳は 9db69bc と同じ（全教材監査台帳は、後のコミットが書き直すのが決まりなので中身の一致は見ない）",
+      "population": "このセッションのコミット 2件と、そのファイル 5つ",
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 9db69bc origin/main && git diff --quiet ee2e79a origin/main -- src/index.css tests/safe-area.test.mjs tests/scroll-back-from-bottom.test.mjs && git diff --quiet 9db69bc origin/main -- requests/2026-09-28-scroll-back-from-bottom.json && node --test tests/safe-area.test.mjs",
+      "status": "done",
+      "verifiedBy": "ee2e79a・9db69bc は main（d879e6e）の履歴にあり、後のコミット（ほかのセッションの 20a98b4・d879e6e、45ファイル）は src/index.css・tests/safe-area.test.mjs・tests/scroll-back-from-bottom.test.mjs に触れていない（ee2e79a と同じ）。依頼台帳は 9db69bc と同じ。tests/safe-area.test.mjs の18件が通る"
+    },
+    {
+      "id": "session-deploys",
+      "text": "このセッションのコミットのデプロイ（deploy.yml の ee2e79a の run 36411990207、9db69bc の run 36412370634）が、どちらも build・deploy とも成功している",
+      "population": "このセッションのコミット 2件のデプロイ 2回",
+      "check": "for run in 36411990207 36412370634; do test \"$(gh run view $run --json conclusion -q .conclusion)\" = success || exit 1; test -z \"$(gh run view $run --json jobs -q '.jobs[] | select(.conclusion != \"success\") | .name')\" || exit 1; done",
+      "status": "done",
+      "verifiedBy": "ee2e79a の run 36411990207、9db69bc の run 36412370634 は、どちらも build・deploy とも success"
+    },
+    {
+      "id": "public-has-fix",
+      "text": "いまの公開版（最新の main のデプロイ）に、この修正が入っている。公開版の CSS に外枠の固定（.study-app-viewport の position:fixed）とページの跳ね返し止め（overscroll-behavior:none）があり、公開版の index.html と JS・CSS が、いまの main をクリーンな clone でビルドしたものとバイト単位で同じ",
+      "population": "公開版 https://nanashi8.github.io/study-app/ の index.html と、そこから読む JS・CSS のすべて",
+      "check": "css=$(curl -fsS https://nanashi8.github.io/study-app/ | grep -oE 'assets/index-[A-Za-z0-9_-]+\\.css' | head -1) && test -n \"$css\" && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -qE 'study-app-viewport\\)?\\{[^}]*position:fixed' && curl -fsS \"https://nanashi8.github.io/study-app/$css\" | grep -q 'overscroll-behavior:none'",
+      "status": "done",
+      "verifiedBy": "公開版（d879e6e のデプロイ run 36414813822）の index.html と JS・CSS 9本（計10ファイル）が、クリーンな clone のいまの main（d879e6e＋この台帳）のビルドとバイト単位で同じ。公開版の CSS に外枠の固定（.study-app-viewport の position:fixed）と跳ね返し止め（overscroll-behavior:none）がある。この clone の npm run audit:all-content はテスト 1,070件すべて成功・全監査・ビルドまで通った（監査台帳の差分は日時だけ）"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない。検証用の複製（scratchpad/study-app）に main にないコミット・変更がなく、共有の作業ツリーのこのセッションのファイルが main と同じ。記憶（~/.claude の memory）の更新はこの端末の作業メモで、アプリには含まれない",
+      "population": "この端末の study-app の複製すべて（このセッションの検証用の複製を含む）と、共有の作業ツリーのこのセッションのファイル 4つ",
+      "check": "node scripts/checks/leftover-changes.mjs --clones && git diff --quiet origin/main -- src/index.css tests/safe-area.test.mjs tests/scroll-back-from-bottom.test.mjs requests/2026-09-28-scroll-back-from-bottom.json",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "この依頼の台帳だけを足すコミットを、クリーンな clone（いまの main）で npm run audit:all-content（全テスト・全監査・ビルド）を通してから main へ push し、そのコミットのデプロイが成功したことを確かめる。同じ時間にほかのセッションも台帳を push するので、監査台帳の書き直し（日時だけ）は取り込まず、この台帳のファイルだけをコミットする。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
