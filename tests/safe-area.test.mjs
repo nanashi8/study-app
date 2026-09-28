@@ -204,7 +204,7 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   const menu = read('src/components/SpeechSettings.jsx')
   const safeArea = read('src/lib/safeArea.js')
   assert.match(css, /:where\(\.study-app-surface\)\s*\{\s*height:\s*var\(--app-frame-height, 100svh\)/)
-  assert.match(css, /:where\(\.study-app-viewport\)\s*\{\s*min-height:\s*var\(--app-frame-height, 100svh\)/)
+  assert.match(css, /:where\(\.study-app-viewport\)\s*\{\s*position:\s*fixed;\s*inset:\s*0 0 auto;\s*height:\s*var\(--app-frame-height, 100svh\)/)
   assert.doesNotMatch(shell, /(?:min-)?h-\[100svh\]/)
   assert.match(css, /\.app-viewport-overlay\s*\{[^}]*top:\s*var\(--app-visual-viewport-top[^}]*height:\s*var\(--app-visual-viewport-height/s)
   assert.match(sheet, /app-viewport-overlay fixed inset-x-0/)
@@ -212,6 +212,22 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   assert.match(safeArea, /visualViewport\?\.addEventListener\('scroll'/)
   assert.match(safeArea, /visualViewport\?\.removeEventListener\('scroll'/)
   assert.doesNotMatch(menu, /maxH="92vh"/)
+})
+
+test('ページそのもの（文書）は動かさず、外枠は画面に固定する', () => {
+  // 2026-09-28、一番下までスクロールすると上へ戻れなくなる不具合（requests/2026-09-28-scroll-back-from-bottom.json）。
+  // 外枠を流れに置き、html・body のはみ出しを切らずにいたため、外枠の実測高がページの高さより大きいあいだ
+  // ページそのものがスクロールでき、ずれたページを main（contain）の中からは戻せなかった。
+  const css = read('src/index.css')
+  const base = css.slice(css.indexOf('/* ---- Base ---'))
+  assert.match(base, /html,\s*body\s*\{[^}]*overflow:\s*hidden;[^}]*overscroll-behavior:\s*none;/)
+  // 跳ね返し止めはページに効く html にも書く（body だけに書くと Safari のページには効かない）。
+  assert.doesNotMatch(css, /overscroll-behavior-y:\s*none/)
+  // 外枠は流れに置かない（置くと実測高とページの高さの差のぶん、ページがスクロールできる）。
+  assert.doesNotMatch(css, /:where\(\.study-app-viewport\)\s*\{[^}]*min-height/)
+  assert.match(css, /:where\(\.study-app-viewport\)\s*\{[^}]*position:\s*fixed;/)
+  // 本文は main がスクロールし、ページへ指の動きを渡さない。
+  assert.match(read('src/components/AppShell.jsx'), /study-app-content[^\n]*overflow-y-auto[^\n]*overscroll-contain/)
 })
 
 test('キーボードが出ている間は外枠を縮めず、打っている欄を本文の外へ押し出さない', () => {

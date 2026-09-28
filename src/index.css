@@ -5223,6 +5223,15 @@ body,
 #root {
   height: 100%;
 }
+/* ページそのもの（文書）は動かさない。縦に動くのは外枠の中の main・画面の中の欄・
+   シートの欄だけ。ページが動けると、欄やシートを一番下まで送った先の指でページが
+   ずれ、上部の「戻る・メニュー」が画面の上へ出たまま、main の中からは戻せなくなる
+   （main は指の動きをページへ渡さない）。跳ね返し止めも、ページに効くのは html の値。 */
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -5236,8 +5245,6 @@ body {
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  /* avoid rubber-band / pull-to-refresh inside the app shell */
-  overscroll-behavior-y: none;
 }
 [lang|="en"] {
   font-family: var(--font-english-reading);
@@ -5292,9 +5299,15 @@ button { -webkit-tap-highlight-color: transparent; }
    visualViewport の実測高を基準にして、上下がバーへ隠れないようにする。
    ただしキーボードが出ている間は縮めない（縮めると打っている欄が本文の
    スクロール領域の外へ押し出される）。高さは src/lib/safeArea.js が
-   --app-frame-height に書き込む。JSが動く前は 100svh へ戻す。 */
+   --app-frame-height に書き込む。JSが動く前は 100svh へ戻す。
+   外枠は画面に固定し、ページの流れには置かない。実測高はページの高さ（html・body の
+   100%＝ツールバーが出ているときの高さ）と食い違う（ツールバーが縮むと見えている範囲が
+   ページより高くなり、ツールバーが戻る途中は外枠が見えている範囲より高く残る）。流れに
+   置くと、その差のぶんページそのものがスクロールできてしまう。 */
 :where(.study-app-viewport) {
-  min-height: var(--app-frame-height, 100svh);
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--app-frame-height, 100svh);
 }
 :where(.study-app-surface) {
   height: var(--app-frame-height, 100svh);
