@@ -8,7 +8,7 @@
   "sessions": [
     "1beadc80-829a-4d82-bd29-daef0e33f650"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "speech-panel-restored",
@@ -95,7 +95,8 @@
       "text": "クリーンな clone で npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）を通して main へ push し、デプロイ（GitHub Actions の deploy.yml）が push したコミットで成功したことと、公開版が今回のコードを配っていることを確かめる",
       "population": "今回の変更を含む main のコミットと、そのデプロイ・公開版",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone で npm run audit:all-content が通過（テスト1,054件・全監査・ビルド、台帳を書き直し）し、main へ push（commit 39e98b3）。デプロイ（run 36365319442）は build・deploy とも success で、node scripts/checks/deployed-matches-head.mjs も通る。公開版 https://nanashi8.github.io/study-app/ の JS 154ファイルのうち index-MppoO7Om.js に data-study-dock-tab・data-word-book-slot-console・作って登録先にする・選んだ順に出す回、PronunciationNote-bUvt7utn.js に「この語と例文の音声はありません」がある。ブラウザで公開版を開き、英検5級の暗記カードの下部に 音声／出題／単語帳 の切り替えと再生パネルが出ることを確かめた"
     }
   ]
 }
