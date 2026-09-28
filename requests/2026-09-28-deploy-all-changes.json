@@ -7,7 +7,7 @@
   "sessions": [
     "1beadc80-829a-4d82-bd29-daef0e33f650"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "session-changes-deployed",
@@ -53,10 +53,10 @@
     },
     {
       "id": "deployed",
-      "text": "洗い出しで main に入れる変更は見つからなかった。この依頼で足した確認の道具（scripts/checks/leftover-changes.mjs とそのテスト）と台帳を、クリーンな clone で npm run audit:all-content を通して push し、デプロイの成功を確かめる。Realtime Database のルール（database.rules.json・firebase.json・.firebaserc）は、最後に成功したルールのデプロイ（firebase-rules.yml の run 36078915155、9/25、main の 408e243 と同じ中身）から変わっていない。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "text": "洗い出しで main に入れる変更は見つからなかった。この依頼で足した確認の道具（scripts/checks/leftover-changes.mjs とそのテスト）と台帳を、クリーンな clone で npm run audit:all-content（テスト 1,057件・全監査・ビルド）を通して push した（4093efe）。デプロイ（deploy.yml の run 36381418553）は build・deploy とも success で、公開版の index.html と JS・CSS 11本が、クリーンな clone のビルドとバイト単位で同じ。Realtime Database のルール（database.rules.json・firebase.json・.firebaserc）は、最後に成功したルールのデプロイ（firebase-rules.yml の run 36078915155、9/25、main の 408e243 と同じ中身）から変わっていない。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "公開版 https://nanashi8.github.io/study-app/ と、Firebase の Realtime Database のルール",
       "check": "node scripts/checks/deployed-matches-head.mjs && git diff --quiet 408e243 origin/main -- database.rules.json firebase.json .firebaserc && test \"$(gh run view 36078915155 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
