@@ -7,7 +7,7 @@
   "sessions": [
     "9c73e8f3-2a65-49d5-b8e8-adbb05c1077b"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "cause-reproduced",
@@ -46,7 +46,8 @@
       "text": "npm run audit:all-content（全テスト・全監査・ビルド・監査台帳の書き直し）をクリーンな clone で通してから main へ push し、公開版のデプロイ（GitHub Actions の deploy.yml）が push したコミットで成功し、公開版が push したコミットのビルドと同じであることを確かめる",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（GitHub の main 200eea9 から作った複製）で npm run audit:all-content（テスト 1,066件すべて成功・全監査・ビルド・台帳の書き直し）を通して main へ push した（ee2e79a）。デプロイ（deploy.yml の run 36411990207）は build・deploy とも success で、公開版の index.html と JS・CSS 9本（計10ファイル）が、クリーンな clone のビルドとバイト単位で同じ。公開版の CSS に外枠の固定（position:fixed）とページの跳ね返し止め（overscroll-behavior:none）が入っている。依頼を閉じるコミットのデプロイも成功を確かめてから報告する"
     }
   ]
 }
