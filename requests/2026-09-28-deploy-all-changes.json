@@ -1,0 +1,62 @@
+{
+  "id": "2026-09-28-deploy-all-changes",
+  "title": "すべての変更をデプロイまで完了する（main に入っていない変更を残さない）",
+  "asked": [
+    "すべての変更をデプロイまで完了させなさい。"
+  ],
+  "sessions": [
+    "1beadc80-829a-4d82-bd29-daef0e33f650"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "session-changes-deployed",
+      "text": "この会話の依頼（2026-09-28-bottom-dock：画面下部の再生・出題・単語帳）の変更 39e98b3 と、依頼を閉じたコミット b22a17c が main に入り、デプロイ（deploy.yml の run 36365319442・36365657027）がどちらも成功している",
+      "population": "この会話のコミット 2件と、そのデプロイ 2回",
+      "check": "git merge-base --is-ancestor b22a17c origin/main && test \"$(gh run view 36365319442 --json conclusion -q .conclusion)\" = success && test \"$(gh run view 36365657027 --json conclusion -q .conclusion)\" = success && node --test tests/bottom-dock.test.mjs tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "shared-tree-and-github",
+      "text": "共有の作業ツリーは、始めたときに未コミット 0・stash 0・未 push 0（HEAD と origin/main がどちらも b22a17c）で、worktree はこれ1つ。GitHub の参照は main だけ（ほかの枝・タグ 0、開いている PR 0）",
+      "population": "共有の作業ツリー（~/projects/study-app）と、GitHub（origin）の全参照・PR",
+      "check": "test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test \"$(git worktree list | wc -l | tr -d ' ')\" = 1 && test \"$(git ls-remote --heads --tags origin | wc -l | tr -d ' ')\" = 1 && test -z \"$(gh pr list --state open --json number -q '.[].number')\" && node --test tests/history-authors.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "machine-clones",
+      "text": "この端末の git リポジトリ 72個（ホームのフォルダ・/private/tmp・一時フォルダを探した）を見分け、study-app の複製は共有の作業ツリーのほかに2つだった。この会話の検証用の clone（scratchpad/clean）は HEAD が main の 39e98b3 で未コミット 0。別のセッション（cc18be91、9/17）が再起動に備えて ~/.claude/projects/ に写した控え（cc18be91-scratch-backup/clean-verify）は、未コミットの30ファイルの版がすべて main の履歴にある（9/17 の「Explain every grammar choice with its own note…」で入った）。同じ控えのパッチ4つ（69ファイル）の変更後の版も、消した2ファイルも main と同じで、作業用の台帳（熟語の成り立ち 1,582件・長文の選択肢の説明 732件・数学の穴埋めの説明 1,745件・文法の説明の書き直し 85件・文法のルール 654件）は、数学の説明2件がコミット前に言い直され、文法のルール2件（a series of＋複数名詞）が「複数の動詞でも辞書に載る」ため問題ごと外されたほかは、すべて main にある。ほかの69個は study-app の履歴を持たない（研究用リポジトリとその Lean の部品 32、git のフックのテストが一時フォルダに作る使い捨てのリポジトリ 32、ほか5）。確かめ方は scripts/checks/leftover-changes.mjs --clones（未コミット・未追跡・stash・ローカルの枝と HEAD の main にないコミットの中身が、main の履歴（書き換える前の main の控えを含む）に一度でも入ったか）",
+      "population": "この端末で study-app の履歴を持つ git リポジトリすべて（共有の作業ツリーを除く2つ）と、その未コミット・stash・main にないコミット",
+      "check": "node scripts/checks/leftover-changes.mjs --clones && node --test tests/leftover-changes.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "backup-refs",
+      "text": "共有の作業ツリーの控えの参照 18本（refs/backup/2026-09-25/ の16本・refs/backup/2026-09-25b/ の2本）は、2026-09-25 の洗い出し（2026-09-25-deploy-all-changes）から増えも変わりもしていない（いちばん新しいコミットの日付が 9/25）。その日の判断のまま：暗記カードの下のボタンをなくす枝は 3c5fc1d で main に入った。旧 Codex の枝のうち adaptive-vocab-mix・fix-learning-flow・catalog-short-screen-release・readable-english-font の4本は書き換える前の main に入っている。残る5本と外部のサービスの控え5本は、公開しない理由つき（外部のサービス向けの古い版で、同じ働きは main に別の形で入っている）。書き換える前の main の控え2本と作業ツリーの控え1本は、中身が main に入っている",
+      "population": "refs/backup/ の控え 18本",
+      "check": "test \"$(git for-each-ref refs/backup | wc -l | tr -d ' ')\" = 18 && test \"$(git for-each-ref --format='%(committerdate:short)' refs/backup | sort | tail -1)\" = 2026-09-25 && git merge-base --is-ancestor 3c5fc1d origin/main && for b in adaptive-vocab-mix-20260824 fix-learning-flow-20260824 catalog-short-screen-release readable-english-font; do git merge-base --is-ancestor refs/backup/2026-09-25/branches/codex/$b refs/backup/2026-09-25/main-before-rewrite || exit 1; done && node --test tests/history-authors.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "codex-snapshots",
+      "text": "旧 Codex が作業ツリーを写した参照（refs/codex/turn-diffs/checkpoints/ の31本、8/21 10:36〜8/27 09:35、中身は28通り）を時刻の順にたどった。一度もコミットされていないファイルの版は395個（159ファイル）あり、次の写しで、そのまま 1,907・さらに編集 236・その後にコミットされた版へ 160 で、捨てられた（ファイルが消えた・前からあるコミットの版へ戻った）ものは 0。いちばん新しい写しにコミットされていない版は 0（8/26 00:06 からの写しは main のコミットと同じ中身）。進んだ先の版のうち61個は、8/25 に main へ取り込む前の控えの枝（codex/all-changes-pre-rebase-20260825）にだけある。その枝の変更で main に一度も入らなかった行は 48ファイル・494行で、1行ずつ読むと、どれも main があとで作り直した古い設計だった：確認済み語源カード109枚を主役にした語源画面（9/5 からの語根の暗記・テストに置き換え、公開は339カード）、苦手語最大6語・6対4で組む英単語の出題と復習間隔 [0,1,2,4,7,15,30]（8/24 の出題の組み方と、今の共通の出題順・出題バランスに置き換え）、廃止したゲームへ戻す完了画面の行き先、当時の監査の件数。今の main に当てると作り直した教材を壊すので、入れない",
+      "population": "refs/codex/turn-diffs/checkpoints/ の31本と、その中の一度もコミットされていないファイルの版 395個、main へ取り込む前の控えの枝にだけある行 494行",
+      "check": "node scripts/checks/leftover-changes.mjs --codex-snapshots && node --test tests/leftover-changes.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "other-sessions",
+      "text": "ほかのセッションに、study-app の作業で main に入っていない変更や開いたままの依頼が残っていない。この端末の study-app のセッション（この会話のほか62件、どれも動いていない）は、どれも共有の作業ツリーで作業する（worktree なし）ので、未コミットの変更は共有の作業ツリーの確認に含まれる。Remote Control で offline と出る3つのうち2つはこの62件にあり、残る「長文読解の単語・熟語・構文」は一覧にも題名の記録にもない（どれも動いていない）。requests/ の開いている依頼は、この依頼のほかに 0。クラウドのセッションのうち study-app の3つは、作業が main に入り依頼も閉じている（暗記・テストの優先度見直し：fe65a59〜07e6321、humiliate と human の語源関連性：cea0eab〜dcf196e、単語モード下部ボタン廃止：3c5fc1d）。「次の工程」（動作中）と「ABC完全無条件証明の進捗」は研究用リポジトリの作業（工程の番号で進める研究のセッションの呼び方）と見られ、中身はここから読めない。study-app の GitHub には main のほかの枝がないので、study-app へ入れる変更を待っているものはない",
+      "population": "study-app を作業場所にする Claude のセッションすべて（この端末 62件・クラウド 3件）と、requests/ の開いている依頼すべて",
+      "check": "node -e \"import('./scripts/check-requests.mjs').then(({ loadRequests }) => process.exit(loadRequests().requests.some((r) => r.status === 'open' && r.id !== '2026-09-28-deploy-all-changes') ? 1 : 0))\" && git merge-base --is-ancestor 07e6321 origin/main && git merge-base --is-ancestor dcf196e origin/main && git merge-base --is-ancestor 3c5fc1d origin/main && node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "洗い出しで main に入れる変更は見つからなかった。この依頼で足した確認の道具（scripts/checks/leftover-changes.mjs とそのテスト）と台帳を、クリーンな clone で npm run audit:all-content を通して push し、デプロイの成功を確かめる。Realtime Database のルール（database.rules.json・firebase.json・.firebaserc）は、最後に成功したルールのデプロイ（firebase-rules.yml の run 36078915155、9/25、main の 408e243 と同じ中身）から変わっていない。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "公開版 https://nanashi8.github.io/study-app/ と、Firebase の Realtime Database のルール",
+      "check": "node scripts/checks/deployed-matches-head.mjs && git diff --quiet 408e243 origin/main -- database.rules.json firebase.json .firebaserc && test \"$(gh run view 36078915155 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
