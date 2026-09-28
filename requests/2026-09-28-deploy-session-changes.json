@@ -7,7 +7,7 @@
   "sessions": [
     "a2e8450d-501c-42cd-8056-33ba4f9b8efc"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "session-commits-deployed",
@@ -25,10 +25,10 @@
     },
     {
       "id": "deployed",
-      "text": "この依頼の台帳のコミットを push し、そのコミットのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "text": "この依頼の台帳のコミットを push し、そのコミットのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する。台帳のコミット 63ee143 のデプロイ（deploy.yml の run 36424656113）は build・deploy とも success",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
