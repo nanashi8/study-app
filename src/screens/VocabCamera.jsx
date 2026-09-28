@@ -111,10 +111,15 @@ export function VocabCameraScreen() {
     present: true,
   })
 
-  useEffect(() => () => {
-    mountedRef.current = false
-    workerRef.current?.terminate()
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+  // 画面が出ているあいだだけ、読み取りの結果を画面へ書く。開発版の StrictMode は effect を「付ける→外す→付ける」と
+  // 2回走らせるので、付けるたびに true へ戻す（戻さないと読み取りが写真の読み込みの直後で止まる）。
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+      workerRef.current?.terminate()
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    }
   }, [])
 
   const applyMatches = (text) => {

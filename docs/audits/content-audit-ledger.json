@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-28T11:08:08.727Z",
+  "auditedAt": "2026-09-28T13:37:03.205Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "5cbd5d2386be8deb1a9d488f6fdd9830f392ea0c9bada0fd8bb4e7310c2adc02",
+    "sha256": "7c8ace3342b55583c143585d74eec72d5eefd27c4f0fe8e516128127f4f3d413",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -199,6 +199,7 @@
       "tests/dictation-cards.test.mjs",
       "tests/dictionary-custom-words.test.mjs",
       "tests/dragon-vein.test.mjs",
+      "tests/effect-cleanup-refs.test.mjs",
       "tests/english-content-quality.test.mjs",
       "tests/english-font.test.mjs",
       "tests/english-question-formats.test.mjs",
@@ -300,6 +301,7 @@
       "tests/test-temp-cleanup.test.mjs",
       "tests/tts-quality.test.mjs",
       "tests/unknown-choice.test.mjs",
+      "tests/vocab-camera-dev-ocr.test.mjs",
       "tests/vocab-catalog.test.mjs",
       "tests/vocab-completion.test.mjs",
       "tests/vocab-fields.test.mjs",

@@ -1,0 +1,55 @@
+{
+  "id": "2026-09-28-vocab-camera-dev-ocr",
+  "title": "開発版で「教科書から単語追加」の読み取りが「写真を読み込んでいます…」2%で止まる不具合を直す",
+  "asked": [
+    "In ~/projects/study-app (えいごクエスト, a React + Vite app; follow CLAUDE.md: write a request ledger in requests/ before changing code, criteria with population and check commands, answer in Japanese, commit directly to main after `npm run audit:all-content` in a clean clone).\n\nBug (dev only): on the 「教科書から単語追加」 screen (src/screens/VocabCamera.jsx), choosing a photo and pressing 「英単語を読み取る」 stays at 「写真を読み込んでいます…」 2% forever when running `npm run dev`. Cause: `const mountedRef = useRef(true)` and the effect `useEffect(() => () => { mountedRef.current = false; ... }, [])` (around line 81 and 105). src/main.jsx wraps the app in React StrictMode, which in development runs mount → cleanup → mount, so the cleanup sets mountedRef.current = false and nothing sets it back to true. scanImage() then returns early at `if (!mountedRef.current) return` right after prepareImageForOcr(), leaving `scanning` true. Production builds do not double-run effects, so the public site is not affected.\n\nFix: set `mountedRef.current = true` at the start of that effect (keep the cleanup that terminates the worker and revokes the preview URL), and check other screens for the same `useRef(true)` + cleanup-only pattern (grep for `mountedRef` / `aliveRef` in src). Add a test (e.g. in tests/) that fails on the old pattern. Verify in the dev server at mobile width that OCR on a generated image of an English sentence reaches the results (\"辞書と一致\" / 「辞書にない単語」) — do NOT press the request send button, the dev Firebase is production."
+  ],
+  "sessions": [
+    "0090408f-1f37-4804-90b2-7579572226b0"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "dev-ocr-reaches-results",
+      "text": "開発版（npm run dev、src/main.jsx の StrictMode で effect が「付ける→外す→付ける」と2回走る）で、「教科書から単語追加」の読み取りが「写真を読み込んでいます…」2%で止まらず、結果（「◯語が辞書と一致」の候補と「辞書にない単語」の欄）まで進む。原因の生存フラグ mountedRef（useRef(true) と、後始末だけで false にする effect）は、effect の本体で毎回 true に戻す。本番ビルドの読み取りも今までどおり結果まで進む。結果：src/screens/VocabCamera.jsx の effect を、本体で mountedRef.current = true に戻してから後始末を返す形にした。開発版は、テスト（開発サーバーを StrictMode のまま・読み取りエンジンを差し替え）と、開発サーバーでの本物の読み取りエンジンの両方で、写真の読み込み→エンジンの準備→読み取り→結果（4語が辞書と一致・辞書にない単語 zorblax）まで進んだ。本番ビルド（クリーンな clone の dist を vite preview、375×812）でも、同じ画像で「4語が辞書と一致」と zorblax の「辞書にない単語」の欄まで進んだ（送信は押していない）",
+      "population": "読み取りの流れの全段（写真を選ぶ→「英単語を読み取る」→写真の読み込み→読み取りエンジンの準備→読み取り→結果）を、開発版（StrictMode）と本番ビルドの2つで",
+      "check": "node --test tests/vocab-camera-dev-ocr.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "cleanup-kept",
+      "text": "effect の後始末の働きは変えない：画面を離れたら読み取りの途中の結果を画面へ書かない（mountedRef を false にする）、読み取りエンジン（worker）を止める、写真のプレビューの URL を消す。結果：effect は本体で mountedRef.current = true に戻し、後始末の3つ（false にする・worker.terminate()・URL.revokeObjectURL）はそのまま。開発サーバーで読み取りを途中で待たせたまま「戻る」で画面を離れると、エンジンが止まり（terminate 1回）、写真のプレビューの blob URL が消え、待たせていた読み取りを終わらせても結果は出ず、エラーも0件だった",
+      "population": "VocabCamera の effect の後始末 3つ",
+      "check": "node --test tests/vocab-camera-dev-ocr.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "same-pattern-all-effects",
+      "text": "ほかの画面・部品・フックに同じ型（effect の後始末で ref に値を入れ、effect の本体では入れ直さない。StrictMode の開発版と、画面を付け直すときに壊れる）がないことを、名前（mountedRef・aliveRef など）によらず構文木で全件確かめ、テストで今後も止める。テストは直す前の VocabCamera の書き方を渡すと止まることも確かめる。結果：src の effect 68件（後始末を返すもの 13件）のうち、後始末で ref に値を入れ本体で入れ直さないものは、直す前は VocabCamera の1件、直したあと0件。名前で探しても、生存フラグ（mountedRef・aliveRef・isMounted・unmounted・componentWillUnmount など）は VocabCamera の mountedRef だけで、ref に true・false を入れるほかの3か所（SessionResult・ReadingComprehensionCheck の記録済みの印）は後始末ではなく「一度だけ記録する」ための印。テスト（tests/effect-cleanup-refs.test.mjs）は直す前の VocabCamera の書き方と、名前や書き方を変えた同じ型4通り（本体つきの effect が返す後始末・名前を付けた後始末・React.useEffect と後始末の中の入れ子の関数・本体の入れ子の関数でだけ入れ直す）を止め、問題のない書き方4通りは止めない。直す前のコードでは実際に VocabCamera の1件を挙げて落ちた",
+      "population": "src の全 .js・.jsx の useEffect・useLayoutEffect・useInsertionEffect 68件（後始末を返すもの 13件）と、ref に true・false を入れる全 4か所（VocabCamera の mountedRef・SessionResult と ReadingComprehensionCheck の記録済みの印）",
+      "check": "node --test tests/effect-cleanup-refs.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "verified-in-dev-server",
+      "text": "開発サーバーのアプリをスマホの幅で開き、画面の中で作った英文の画像を読み取らせて、結果（辞書と一致・辞書にない単語）まで進むことを本物の読み取りエンジンで確かめる。辞書にない語の送信ボタンは押さない（開発版の Firebase は本番のデータベース）。コンソールのエラーを見る。結果：開発サーバー（npm run dev、375×812）で「教科書から単語追加」を開き、画面の中で作った英文「The student reads zorblax books.」の画像を選んで読み取らせた。本物の読み取りエンジンで「英語の認識データを読み込み中… 24%」「36%」と進み、「4語が辞書と一致（読み取った 5 語のうち…）」の候補と、zorblax が入った「辞書にない単語」の欄まで出た。「選んだ 1語を送る」は押していない。コンソールのエラーは、文字認識エンジンが画像の解像度を推定したときに出す決まった知らせ（Estimating resolution as 614）1件だけ。テスト（tests/vocab-camera-dev-ocr.test.mjs）は、開発サーバーを StrictMode のまま立て、読み取りエンジンを決まった文を返すものに差し替え、外への通信を止めて同じ流れを動かす（直す前の作りでは「写真を読み込んでいます…」2% のまま2.5秒たってもエンジンが呼ばれず、直した作りでは結果まで進む）。直す前のコードでは、結果まで進むテストと途中で離れるテストが時間切れで落ちた",
+      "population": "開発サーバーの「教科書から単語追加」の読み取りの全段",
+      "check": "node --test tests/vocab-camera-dev-ocr.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "tests-audit",
+      "text": "既存の全テスト・全監査が通る。テストを足すと全教材監査台帳の指紋が変わるので、npm run audit:all-content で台帳を作り直す。結果：クリーンな clone（7770547 の上の d91bd5f）で npm run audit:all-content を通した（テスト 1,077件すべて通過、全検査・ビルド・配布物の監査・git diff --check・全教材監査台帳の書き直しと確認）。台帳の変化は監査日時・指紋・新しいテスト2本の名前だけ。1回目の全監査は、依頼台帳の原文にあった利用者のホームの絶対パスを秘密の検査（absolute-user-path）が止めたので、ほかの台帳と同じく ~/projects/study-app の形に直し、公開の履歴に残らないようコミットを作り直した",
+      "population": "全テスト・全監査（npm run audit:all-content）",
+      "check": "node scripts/content-audit-ledger.mjs && node --test tests/effect-cleanup-refs.test.mjs tests/vocab-camera-dev-ocr.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content をクリーンな clone で通し、main へ push する。デプロイ（GitHub Actions deploy.yml）の成功を確かめ、公開版の「教科書から単語追加」でも読み取りが結果まで進むことを見る（送信は押さない）",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
