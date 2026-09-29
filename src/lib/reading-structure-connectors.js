@@ -412,6 +412,16 @@ function interrogativeExplanation(unit) {
   const leadText = lead ? plain(lead) : ''
   const leadWords = words(leadText).map((word) => word.toLowerCase())
   const wh = leadWords[0] ?? ''
+  // what an establishment it would be のような what a(n)＋名詞は、驚きを表す「なんという〜か」。
+  if (wh === 'what' && /^(?:a|an)$/.test(leadWords[1] ?? '')) {
+    const noun = leadText.split(/\s+/).slice(2).join(' ')
+    return {
+      word: leadText,
+      chip: '感嘆の what',
+      kind: '感嘆の what（名詞節）',
+      explanation: `what a(n)＋名詞で「なんという〜か」と驚きを表す言い方です。${leadText} が節の先頭に出て、「なんという ${noun} であるか」という名詞のまとまりを作ります。前に受ける名詞（先行詞）がないので、関係詞ではありません。`,
+    }
+  }
   let meaning = INTERROGATIVE_MEANINGS[wh]?.[lead?.role] ?? INTERROGATIVE_MEANINGS[wh]?.default ?? ''
   if (wh === 'how') {
     if (leadWords.length === 1) meaning = 'どのように〜するのか'
@@ -632,13 +642,28 @@ function nounClauseExplanation(unit) {
         kind: '接続詞 if（名詞節）',
         explanation: `この ${leadText} は「もし〜なら」の意味ではなく、「〜かどうか」という名詞のまとまり（名詞節）を作る接続詞です。${unit.containerVerb ? `${unit.containerVerb} の目的語になっている点で、` : ''}条件を表す if と見分けます。`,
       }
-    case 'what節':
+    case 'what節': {
+      const compound = {
+        whichever: '〜するものはどれでも',
+        whatever: '〜するものは何でも',
+        whoever: '〜する人は誰でも',
+        whomever: '〜する人は誰でも',
+      }[leadText.toLowerCase()]
+      if (compound) {
+        return {
+          word: leadText,
+          chip: '複合関係代名詞',
+          kind: `複合関係代名詞 ${leadText.toLowerCase()}`,
+          explanation: `${leadText} は「${compound}」という名詞のまとまりを作る複合関係代名詞です。前に先行詞がなく、節の中で${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}になっています。`,
+        }
+      }
       return {
         word: leadText,
         chip: '関係代名詞 what',
         kind: '関係代名詞 what',
         explanation: `${leadText} は先行詞を中に含む関係代名詞で、「〜すること・〜するもの」という名詞のまとまりを作ります。前に先行詞がなく、節の中で${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}になっています。`,
       }
+    }
     case '強調':
       return {
         word: 'that',
@@ -746,8 +771,11 @@ export function describeLinkElement(element, elements, index, options = {}) {
   let tip = ''
   // or の後ろが副詞節だけのときは、節どうしを並べている。
   const nextElement = elements[index + 1]
-  const nextIsAdverbialClause = nextElement?.role === 'M' &&
-    nextElement.children.some((child) => child.kind === 'unit' && child.base === '副詞節')
+  const previousElement = elements[index - 1]
+  const isAdverbialClause = (item) => item?.role === 'M' &&
+    item.children.some((child) => child.kind === 'unit' && child.base === '副詞節')
+  // 前にも後ろにも副詞節があるときだけ、副詞節どうしを並べている（; for as you are …, Mr. Bingley … の for は節をつなぐ）。
+  const nextIsAdverbialClause = isAdverbialClause(nextElement) && isAdverbialClause(previousElement)
   if (nextIsAdverbialClause) {
     return {
       word: text,
@@ -798,6 +826,7 @@ export function shortConnectorNote(info, unit = null) {
   if (kind === '目的格の関係代名詞の省略') return `${antecedent} の後ろで、目的格の関係代名詞が省略されています。`
   if (kind === '関係副詞の働きをする語の省略') return `${antecedent} の後ろで、関係副詞の働きをする語が省略されています。`
   if (kind === '疑問詞（間接疑問）') return `${word} は疑問詞で、間接疑問の名詞節を作ります。`
+  if (kind === '感嘆の what（名詞節）') return `${word} は「なんという〜か」と驚きを表す名詞節を作ります。`
   if (kind === '複合関係副詞 however') return 'however は「どれほど〜でも」という譲歩を表します。'
   if (kind === '倒置による条件（if の省略）') return `${word} が主語の前に出て、if を省いた条件「もし〜なら」を表します。`
   if (kind.startsWith('従属接続詞')) {
@@ -812,6 +841,7 @@ export function shortConnectorNote(info, unit = null) {
   }
   if (kind === '接続詞 than（比較）') return 'than は比べる相手を表す接続詞です。'
   if (kind === '関係代名詞 what') return 'what は先行詞を含む関係代名詞で、「〜すること」という名詞節を作ります。'
+  if (kind.startsWith('複合関係代名詞')) return `${word} は先行詞を含む複合関係代名詞で、名詞節を作ります。`
   if (kind === '強調構文の that') return 'It is と that で強調したい語句をはさむ強調構文です。'
   if (kind.startsWith('等位接続詞')) return `${word} は等位接続詞です。`
   if (kind === '接続副詞') return `${word} は接続副詞で、接続詞ではありません。`

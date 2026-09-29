@@ -1274,7 +1274,7 @@ export default Object.freeze([
     },
   }),
   // 87
-  ls('[接 And], [M doubtless], [S my {動名詞| [V going] [M {前| on this whaling voyage}]}], [V formed] [O part {前| of the grand programme {前| of Providence} {関係>the grand programme| [S that] [V was drawn up] [M a long time ago]}}].', {
+  ls('[接 And], [M doubtless], [S {動名詞| [M my] [V going] [M {前| on this whaling voyage}]}], [V formed] [O part {前| of the grand programme {前| of Providence} {関係>the grand programme| [S that] [V was drawn up] [M a long time ago]}}].', {
     ja: 'そして、私がこの捕鯨の航海に出ることは、疑いなく、ずっと昔に組まれた神の摂理という壮大な番組の一部になっていたのだ。',
     chunks: [
       ['And, doubtless, my going on this whaling voyage,', 'そして疑いなく、私がこの捕鯨の航海に出ることは'],

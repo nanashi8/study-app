@@ -394,8 +394,13 @@ export function structureUnitLabel(unit) {
       return 'whether で始まる名詞節'
     case 'if節':
       return 'if で始まる名詞節（〜かどうか）'
-    case 'what節':
-      return '関係代名詞 what の節（名詞節）'
+    case 'what節': {
+      // whichever he chooses of the girls のような複合関係代名詞も、先行詞を含む名詞節として同じ種類で書く。
+      const lead = normalizeStructureText(rawText(firstElement(unit)?.children ?? [])).toLowerCase()
+      return /^(?:whichever|whatever|whoever|whomever)$/.test(lead)
+        ? `複合関係代名詞 ${lead} の節（名詞節）`
+        : '関係代名詞 what の節（名詞節）'
+    }
     case '副詞節':
       if (unit.elliptical) return `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節（動詞の省略）`
       return adverbialClauseHasSubject(unit)

@@ -636,12 +636,12 @@ const work = {
     "label": "第1章全文",
     "sourceUnit": "Chapter I",
     "complete": true,
-    "sourceWordCount": 860,
+    "sourceWordCount": 853,
     "maxWordTarget": 5000,
     "limitNote": "長編のため、5,000語以内で完結する第1章を全文収録",
     "startMarker": "It is a truth universally acknowledged, that a single man in possession of a goo",
     "endMarker": "ervous. The business of her life was to get her daughters married: its solace was visiting and news.",
-    "sourceSha256": "8c565e7eb74019fd7c66a9bb9a96fa12544b6e3023d6b7fac93dc1ba9cd9a3a8",
+    "sourceSha256": "d856fe2e6f1c93d3a7f506efcfc643c2b12a7d9aaa61e5e9867d1494f47fd09f",
     "checkedOn": "2026-08-27"
   }
 }
