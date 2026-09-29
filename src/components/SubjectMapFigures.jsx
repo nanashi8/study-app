@@ -14,12 +14,13 @@ import {
 // 社会の地図の図（世界地図・日本地図）。形は data/subjects/maps.js、投影は data/subjects/projection.js。
 // 文字や記号は、画面での大きさ（図の幅を約300pxとして）がどの切り出しでも同じになるように、切り出した幅に合わせて大きさを決める。
 //   view   … 切り出す範囲。{ lon: [西, 東], lat: [南, 北] }（西経・南緯は負の数）。無ければ地図の全体。
+//            世界地図は西経25.5度（大西洋）で切れているので、その線をまたぐ範囲は切り出せない（テストが止める）。
 //   marks  … 国・県に付ける記号。{ USA: 'A' } / { 'JP-13': 'A' }
 //   fills  … 国・県の色。{ USA: '#fde68a' }
 //   grid   … 緯線・経線を引く間隔（度）。例 30。gridLabels: false で目盛りの文字を出さない。gridLabelEvery: 2 で経線の文字を1本おきに
 //   parallels / meridians … 1本ずつ引く緯線・経線。[{ lat: 22, text: '北緯22度', side?: 'right' }] / [{ lon: 25, text: '東経25度' }]
 //   lines  … 特別な緯線・経線（世界地図）。['equator', 'tropicN', 'tropicS', 'primeMeridian', 'meridian180', 'meridian135']
-//   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京' }]
+//   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京', side?: 'left' | 'right' }]（地名は、図の右寄りなら点の左、ほかは右。side で決められる）
 //   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat] }]
 //   labels … 緯度・経度に置く文字（海・山脈など）。[{ lon, lat, text, color?, size?, italic? }]
 //   states: true … 州で色分け（hideLegend: true で凡例を出さない。同じ凡例の図を並べるとき）
@@ -170,17 +171,19 @@ function arrowHead(points, u, color) {
   )
 }
 
-function Arrows({ arrows, project, u }) {
+function Arrows({ arrows, project, u, box }) {
   return (arrows ?? []).map((arrow, index) => {
     const color = arrow.color ?? '#b91c1c'
     const points = arrow.path.map(([lon, lat]) => project(lon, lat))
     const d = points.map(([x, y], i) => `${i ? 'L' : 'M'}${x},${y}`).join(' ')
     const textAt = arrow.textAt ? project(...arrow.textAt) : null
+    // 矢印の文字は、図の外へはみ出さないように内側へ寄せる。
+    const textX = textAt && box ? clampTextX(textAt[0], arrow.text, 10 * u, box, 'start', 2 * u) : textAt?.[0]
     return (
       <g key={`arrow-${index}`}>
         <path d={d} fill="none" stroke={color} strokeWidth={2.2 * u} strokeDasharray={arrow.dashed ? `${6 * u} ${4 * u}` : undefined} strokeLinecap="round" strokeLinejoin="round" />
         {arrowHead(points, u, color)}
-        {textAt && <Halo x={textAt[0]} y={textAt[1]} u={u} size={10} weight="800" color={color}>{arrow.text}</Halo>}
+        {textAt && <Halo x={textX} y={textAt[1]} u={u} size={10} weight="800" color={color}>{arrow.text}</Halo>}
       </g>
     )
   })
@@ -259,6 +262,7 @@ export function WorldMapFigure({ figure }) {
           {WORLD_MAP.countries.filter((country) => country.d).map((country) => (
             <path key={country.code} d={country.d} fill={fillOf(country)} stroke="#ffffff" strokeWidth={0.6 * u} strokeLinejoin="round" />
           ))}
+          {WORLD_MAP.lakes.map((lake) => <path key={lake.name} d={lake.d} fill={SEA} stroke="#93c5fd" strokeWidth={0.5 * u} />)}
           {WORLD_MAP.rivers.filter((river) => (figure.rivers ?? []).includes(river.id)).map((river) => (
             <path key={river.id} d={river.d} fill="none" stroke={RIVER} strokeWidth={1.3 * u} strokeLinejoin="round" strokeLinecap="round" data-river={river.id} />
           ))}
@@ -326,13 +330,13 @@ export function WorldMapFigure({ figure }) {
             )
           })}
           <Labels labels={figure.labels} project={projectWorld} u={u} box={box} />
-          <Arrows arrows={figure.arrows} project={projectWorld} u={u} />
+          <Arrows arrows={figure.arrows} project={projectWorld} u={u} box={box} />
           {WORLD_MAP.countries.filter((country) => marks[country.code]).map((country) => (
             <Mark key={country.code} x={country.x} y={country.y} label={marks[country.code]} u={u} />
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectWorld(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={x > box.x + box.w * 0.62} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} />
           })}
         </g>
       </svg>
@@ -404,13 +408,13 @@ export function JapanMapFigure({ figure }) {
           {lakes.map((lake) => <path key={lake.name} d={lake.d} fill="#bfdbfe" stroke="#93c5fd" strokeWidth={0.6 * u} />)}
           {figure.grid && <JapanGrid step={figure.grid} box={box} u={u} showLabels={figure.gridLabels !== false} />}
           <Labels labels={figure.labels} project={projectJapan} u={u} box={box} />
-          <Arrows arrows={figure.arrows} project={projectJapan} u={u} />
+          <Arrows arrows={figure.arrows} project={projectJapan} u={u} box={box} />
           {prefectures.filter((pref) => marks[pref.code]).map((pref) => (
             <Mark key={pref.code} x={pref.x} y={pref.y} label={marks[pref.code]} u={u} />
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectJapan(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={x > box.x + box.w * 0.62} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} />
           })}
         </g>
       </svg>

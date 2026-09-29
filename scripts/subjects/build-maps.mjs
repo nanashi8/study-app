@@ -297,6 +297,36 @@ const worldRivers = RIVERS.map((river) => {
   return { id: river.id, label: river.label, d }
 })
 
+// 世界の大きな湖（Natural Earth の湖）。国の形は湖の上もぬっているので、どの世界地図にも水の色で重ねて描く。
+const LAKES_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_lakes.geojson'
+const LAKE_NAMES = Object.freeze([
+  'Superior', 'Michigan', 'Huron', 'Erie', 'Ontario', 'Great Bear', 'Great Slave', 'Winnipeg',
+  'Nyanza', 'Tanganyika', 'Malawi', 'Chad', 'Baikal', 'Balkhash', 'Ladoga', 'Onega', 'Titicaca',
+  'Issyk-Kul', 'North Aral Sea', 'South Aral Sea',
+])
+const lakesFile = path.join(folder, 'ne_50m_lakes.geojson')
+if (!fs.existsSync(lakesFile)) {
+  const response = await fetch(LAKES_URL, { signal: AbortSignal.timeout(120_000) })
+  if (!response.ok) throw new Error(`湖のデータを取れない：${response.status}`)
+  fs.writeFileSync(lakesFile, Buffer.from(await response.arrayBuffer()))
+}
+const lakeFeatures = JSON.parse(fs.readFileSync(lakesFile, 'utf8')).features
+const worldLakes = LAKE_NAMES.map((name) => {
+  const features = lakeFeatures.filter((feature) => (feature.properties.name_en ?? feature.properties.name) === name && feature.properties.scalerank === 0)
+  if (!features.length) throw new Error(`湖が見つからない：${name}`)
+  const rings = features.flatMap((feature) => (feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates[0]] : feature.geometry.coordinates.map((poly) => poly[0])))
+  const d = rings
+    .map((ring) => {
+      const [lon] = centroid(ring)
+      return simplifyRing(ring.map(([x, y]) => projectWorld([lon < CUT_LON ? x + 360 : x, y])), WORLD_TOL * 0.6)
+    })
+    .filter((ring) => ring.length >= 4)
+    .map(pathOf)
+    .filter(Boolean)
+    .join('')
+  return { name, d }
+})
+
 // ── 東京を中心とした正距方位図法（中心からの距離と方位が正しい地図）──────────────────────
 // 南極大陸も描く（地図の下の縁の近くに広がる）。北方領土は日本の形として描く。
 const AZIMUTHAL_TOL = 0.45
@@ -349,7 +379,7 @@ const worldLines = {
 }
 
 const header = `// このファイルは scripts/subjects/build-maps.mjs が作る（手で直さない）。
-// 元データ：Natural Earth（県の形・日本の見方の国境・湖・世界の国の形・世界の大河。パブリックドメイン）。
+// 元データ：Natural Earth（県の形・日本の見方の国境・湖・世界の国の形・世界の大河と大きな湖。パブリックドメイン）。
 // 日本地図：九州〜北海道の本図と、南西諸島の囲み（inset）。県は7地方区分（region）つき。
 // 世界地図：太平洋を中央にしたミラー図法。国は日本の学校の州（state）つき。x・y は国名・県名を置く点。
 `
@@ -369,6 +399,7 @@ export const WORLD_MAP = ${JSON.stringify({
   lines: worldLines,
   countries: worldCountries,
   rivers: worldRivers,
+  lakes: worldLakes,
 })}
 
 // 東京を中心とした正距方位図法。円の中心が東京、縁が地球の反対側。

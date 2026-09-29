@@ -34,7 +34,7 @@ export const CREDIT_SECTIONS = Object.freeze([
         id: 'natural-earth',
         name: 'Natural Earth',
         url: 'https://www.naturalearthdata.com/',
-        use: '日本地図（都道府県・北方領土・竹島・尖閣諸島・琵琶湖）と世界地図（国の形・大河の流れ）に使いました。',
+        use: '日本地図（都道府県・北方領土・竹島・尖閣諸島・琵琶湖）と世界地図（国の形・大河の流れ・大きな湖）に使いました。',
       }),
     ]),
   }),

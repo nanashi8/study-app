@@ -13,6 +13,7 @@ import { CLIMATE_STATIONS } from '../src/data/subjects/climate.js'
 import { JAPAN_MAP, WORLD_MAP } from '../src/data/subjects/maps.js'
 import { SUBJECT_DIAGRAM_NAMES, SUBJECT_FIGURE_KINDS } from '../src/data/subjects/figureKinds.js'
 import { clockOf, localHour } from '../src/data/subjects/figureMath.js'
+import { WORLD_PROJECTION, worldLongitude } from '../src/data/subjects/projection.js'
 import { figuresLedgerProblems } from '../scripts/checks/junior-social-science-figures.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -43,6 +44,13 @@ function figureProblems(figure, where) {
     if (figure.view) {
       const { lon, lat } = figure.view
       if (!lon?.every(lonOk) || !lat?.every(latOk) || lat[0] >= lat[1]) problems.push(`${where}: 切り出す範囲がおかしい`)
+      // 世界地図は西経25.5度で切れている。その線をまたぐ範囲は、切れ目の向こう側が描かれない。
+      if (figure.type === 'worldMap' && lon?.every(lonOk)) {
+        const west = worldLongitude(lon[0])
+        let east = worldLongitude(lon[1])
+        if (east <= west) east += 360
+        if (east > WORLD_PROJECTION.east) problems.push(`${where}: 切り出す範囲が地図の切れ目（西経25.5度）をまたいでいる`)
+      }
     }
   }
   for (const point of [...(figure.points ?? []), ...(figure.labels ?? [])]) {
