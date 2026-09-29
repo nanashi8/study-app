@@ -7,7 +7,7 @@
   "sessions": [
     "6e6f58b9-978c-4168-a59a-8209991f2b32"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "units-match-textbooks",
@@ -62,7 +62,7 @@
       "id": "learner-japanese-and-audits",
       "text": "学習者向けの日本語の決まり（常用漢字外の読み、JSX の改行、画面に載せない説明）と、全教材監査・既存のテストをすべて通す",
       "population": "新しい教材の日本語の全件と、npm test・npm run check の全件",
-      "check": "npm test && npm run check",
+      "check": "node --test tests/learner-japanese-audit.test.mjs tests/meaning-readable.test.mjs tests/content-audit-ledger.test.mjs && npm test && npm run check",
       "status": "done",
       "verifiedBy": "まっさらな複製（main の 87a58eb にこの依頼のコミットを載せたもの）で npm run audit:all-content を通した。npm test は1,152件すべて合格、check:content も全段合格：学習者向け日本語の監査（学習者向けファイル321・日本語15,813表記・違反0、JSX の改行のつなぎ目0、画面に載せない説明の禁止語0）、日本語の見直し台帳（訳語19,801件・漢字語27,256件すべて見直し済み。社会・理科で増えた漢字語は1件ずつ読み、常用漢字にない字をふくむ150語は読みの辞書 src/data/subjects/readings.js でルビを付ける）、ビルド・公開物の検査・差分の検査のあと全教材監査台帳（24教材・20,337件、社会・理科の問題バンク：選ぶ問題776問・3,104択と語句テスト1,151問・4,604択にすべて説明）を書き直して一致を確かめた。社会・理科の語句と問題は、単元の画面だけでなく全教材の一覧・学習の記録の行・マイ学習ノート・成績表でも読みがなを付ける（画面テストで確認）。社会・理科を足して動いた既存のテスト・監査の固定値（画面数・教材数・保存項目・メニュー・出題順の振る舞いテストの母集団など）を実測に合わせ、『一番下から上へ戻れる』テストは起動直後の測り直しを待つ形と、標準の大きさで中身が収まる社会・理科の暗記カードを小さい画面（375×548）で確かめる形に直した"
     },
@@ -70,15 +70,17 @@
       "id": "on-main-deployed",
       "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイが成功したことと、公開版で社会・理科が開けることを確かめる",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor af1e2b7 origin/main && test \"$(gh run view 36616441274 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "verifiedBy": "まっさらな複製（GitHub の main 87a58eb を clone し、この依頼の作業を1つのコミットにまとめて載せ、npm ci で依存を入れ直したもの）で npm run audit:all-content を通し（npm test 1,152件すべて合格・check:content 全段合格・ビルド・公開物の検査・差分の検査・全教材監査台帳の書き直しと一致）、コミット af1e2b7 を main へ push した（push の前の確認で、全教材監査台帳が push するコミットの中身と一致）。デプロイ（deploy.yml の run 36616441274）は build・deploy とも success で、scripts/checks/deployed-matches-head.mjs が通った。公開版 https://nanashi8.github.io/study-app/ を内蔵ブラウザで開き、ポータルの社会アプリ・理科アプリのタイル、社会アプリ（地理19単元の入口：暗記・演習・要点を読む）、単元のページ（世界の姿：めあて・要点）、理科アプリ（1年13単元の入口）、演習（気体の性質の1問目、3択＋わからない）、メニューのいちばん下の「このアプリについて → 出典」（6件）が開くことを確かめた。依頼を閉じるコミットのデプロイも成功を確かめてから報告する"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない（この端末の study-app の複製すべてと共有の作業ツリー）",
       "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
-      "check": "node scripts/checks/leftover-changes.mjs --clones",
-      "status": "todo"
+      "check": "node scripts/checks/leftover-changes.mjs --clones && node --test tests/leftover-changes.test.mjs",
+      "status": "done",
+      "verifiedBy": "この端末の study-app の複製は、共有の作業ツリーのほかに3つ（ほかのセッションの控え1つ、このセッションの作業用の複製と最終確認用のまっさらな複製）で、共有の作業ツリーから流しても最終確認用の複製から流しても、どれも main の履歴にないコミット 0件・main に入っていない変更 0件。作業用の複製の途中のコミット11個は1つにまとめて main へ入れ、作業用の複製は main にそろえた。原因の切り分けに使った一時的な作業ツリーは消した。共有の作業ツリーは、未追跡だった依頼台帳の写し（main のものと同一）を外して af1e2b7 へ早送りし、変更 0件。依頼を閉じるコミットのあとも、共有の作業ツリーと複製を main へ早送りして確かめる。記憶の更新（junior-social-science.md・new-screen-audit-counts.md・page-never-scrolls.md・feedback-learner-copy-only-learning.md・MEMORY.md）は、この端末の作業メモでアプリには含まれない"
     }
   ]
 }
