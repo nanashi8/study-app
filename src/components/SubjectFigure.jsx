@@ -1,5 +1,5 @@
 import { SubjectText } from './SubjectText.jsx'
-import { ClimateFigure, climateAxisMin } from './SubjectClimateFigure.jsx'
+import { ClimateFigure, climateAxisMax, climateAxisMin } from './SubjectClimateFigure.jsx'
 import { AzimuthalMapFigure, JapanMapFigure, WorldMapFigure, WorldOverviewFigure } from './SubjectMapFigures.jsx'
 import { DiagramFigure } from './SubjectDiagrams.jsx'
 import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
@@ -81,6 +81,8 @@ function TableFigure({ figure }) {
       </div>
     )
   }
+  // 行の見出し（1列目）が短い表は、見出しを1行に収める（「インドネシ／ア」のように折れないように）。
+  const shortHeads = figure.rows.every((row) => [...String(row[0])].length <= 7)
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-xs font-bold text-ink" data-subject-figure-table>
@@ -96,7 +98,7 @@ function TableFigure({ figure }) {
             <tr key={rowIndex} className={highlight.has(rowIndex) ? 'bg-amber-50' : undefined}>
               {row.map((cell, cellIndex) => (
                 cellIndex === 0
-                  ? <th key={cellIndex} scope="row" className={`border border-slate-300 px-2 py-1.5 font-extrabold ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></th>
+                  ? <th key={cellIndex} scope="row" className={`border border-slate-300 px-2 py-1.5 font-extrabold ${shortHeads ? 'whitespace-nowrap' : ''} ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></th>
                   : <td key={cellIndex} className={`border border-slate-300 px-2 py-1.5 leading-relaxed ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></td>
               ))}
             </tr>
@@ -278,10 +280,11 @@ function TimelineFigure({ figure }) {
 }
 
 function SetFigure({ figure }) {
-  // 雨温図を並べるときは、気温の目もりをそろえて比べられるようにする。
+  // 雨温図を並べるときは、目もりの下の端と上の端をそろえて比べられるようにする。
   const climateItems = figure.items.filter((item) => item.type === 'climate' && CLIMATE_STATIONS[item.station])
   const tMin = climateItems.length ? Math.min(...climateItems.map((item) => climateAxisMin(CLIMATE_STATIONS[item.station]))) : null
-  const items = figure.items.map((item) => (item.type === 'climate' && tMin !== null ? { ...item, axis: { tMin, ...item.axis } } : item))
+  const tMax = climateItems.length ? Math.max(...climateItems.map((item) => climateAxisMax(CLIMATE_STATIONS[item.station], tMin))) : null
+  const items = figure.items.map((item) => (item.type === 'climate' && tMin !== null ? { ...item, axis: { tMin, tMax, ...item.axis } } : item))
   if (figure.layout === 'scroll') {
     return (
       <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1" data-subject-figure-set="scroll">

@@ -80,7 +80,11 @@ const centroid = (points) => points.reduce(([sx, sy], [x, y]) => [sx + x / point
 const fmt = (value) => String(Math.round(value * 10) / 10).replace(/^0\./, '.').replace(/^-0\./, '-.')
 
 // 相対座標で短く書く（0.1 に丸めた点どうしの差なので、ずれがたまらない）。
-function pathOf(ring) {
+// 閉じた輪は pathOf、閉じない線（川）は linePathOf。map に直接渡すので、引数は1つにしておく。
+const pathOf = (ring) => pathText(ring, false)
+const linePathOf = (line) => pathText(line, true)
+
+function pathText(ring, open) {
   const rounded = ring.map(([x, y]) => [Math.round(x * 10), Math.round(y * 10)])
   const parts = []
   for (let i = 1; i < rounded.length; i += 1) {
@@ -90,8 +94,8 @@ function pathOf(ring) {
     const sy = fmt(dy / 10)
     parts.push(`${fmt(dx / 10)}${sy.startsWith('-') ? '' : ','}${sy}`)
   }
-  if (parts.length < 2) return ''
-  return `M${fmt(rounded[0][0] / 10)},${fmt(rounded[0][1] / 10)}l${parts.join(' ')}z`
+  if (parts.length < (open ? 1 : 2)) return ''
+  return `M${fmt(rounded[0][0] / 10)},${fmt(rounded[0][1] / 10)}l${parts.join(' ')}${open ? '' : 'z'}`
 }
 
 const round1 = (value) => Math.round(value * 10) / 10
@@ -247,6 +251,52 @@ const worldCountries = [...countries.values()].map((country) => {
   }
 }).sort((a, b) => a.code.localeCompare(b.code))
 
+// 世界の大河（Natural Earth の川の中心線）。figure.rivers に id を並べると地図に描く。
+// names は Natural Earth の名前（上流・支流の区間も同じ川として描く）。
+const RIVERS_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_rivers_lake_centerlines.geojson'
+const RIVERS = Object.freeze([
+  { id: 'yangtze', label: '長江', names: ['Yangtze', 'Tongtian'] },
+  { id: 'huanghe', label: '黄河', names: ['Huang', 'Yellow'] },
+  { id: 'mekong', label: 'メコン川', names: ['Mekong'] },
+  { id: 'ganges', label: 'ガンジス川', names: ['Ganges'] },
+  { id: 'indus', label: 'インダス川', names: ['Indus'] },
+  { id: 'tigris', label: 'ティグリス川', names: ['Tigris'] },
+  { id: 'euphrates', label: 'ユーフラテス川', names: ['Euphrates'] },
+  { id: 'ob', label: 'オビ川', names: ['Ob'] },
+  { id: 'lena', label: 'レナ川', names: ['Lena'] },
+  { id: 'rhine', label: 'ライン川', names: ['Rhine', 'Rhein'] },
+  { id: 'danube', label: 'ドナウ川', names: ['Danube'] },
+  { id: 'volga', label: 'ボルガ川', names: ['Volga'] },
+  { id: 'nile', label: 'ナイル川', names: ['Nile', 'White Nile', 'Blue Nile', 'Victoria Nile', 'Albert Nile', 'Mountain Nile'] },
+  { id: 'congo', label: 'コンゴ川', names: ['Congo'] },
+  { id: 'niger', label: 'ニジェール川', names: ['Niger'] },
+  { id: 'zambezi', label: 'ザンベジ川', names: ['Zambezi'] },
+  { id: 'mississippi', label: 'ミシシッピ川', names: ['Mississippi', 'Missouri', 'Ohio'] },
+  { id: 'colorado', label: 'コロラド川', names: ['Colorado'] },
+  { id: 'amazon', label: 'アマゾン川', names: ['Amazonas', 'Marañón', 'Ucayali'] },
+  { id: 'parana', label: 'パラナ川', names: ['Paraná'] },
+  { id: 'murray', label: 'マーレー川', names: ['Murray', 'Darling'] },
+])
+const riversFile = path.join(folder, 'ne_50m_rivers.geojson')
+if (!fs.existsSync(riversFile)) {
+  const response = await fetch(RIVERS_URL, { signal: AbortSignal.timeout(120_000) })
+  if (!response.ok) throw new Error(`川のデータを取れない：${response.status}`)
+  fs.writeFileSync(riversFile, Buffer.from(await response.arrayBuffer()))
+}
+const riverFeatures = JSON.parse(fs.readFileSync(riversFile, 'utf8')).features
+const worldRivers = RIVERS.map((river) => {
+  const lines = riverFeatures
+    .filter((feature) => river.names.includes(feature.properties.name_en ?? feature.properties.name) || river.names.includes(feature.properties.name))
+    .flatMap((feature) => (feature.geometry.type === 'LineString' ? [feature.geometry.coordinates] : feature.geometry.coordinates))
+  if (!lines.length) throw new Error(`川が見つからない：${river.id}`)
+  const d = lines
+    .map((line) => simplify(line.map(([lon, lat]) => projectWorld([lon < CUT_LON ? lon + 360 : lon, lat])), WORLD_TOL * 0.6))
+    .map(linePathOf)
+    .filter(Boolean)
+    .join('')
+  return { id: river.id, label: river.label, d }
+})
+
 // ── 東京を中心とした正距方位図法（中心からの距離と方位が正しい地図）──────────────────────
 // 南極大陸も描く（地図の下の縁の近くに広がる）。北方領土は日本の形として描く。
 const AZIMUTHAL_TOL = 0.45
@@ -299,7 +349,7 @@ const worldLines = {
 }
 
 const header = `// このファイルは scripts/subjects/build-maps.mjs が作る（手で直さない）。
-// 元データ：Natural Earth（県の形・日本の見方の国境・湖・世界の国の形。パブリックドメイン）。
+// 元データ：Natural Earth（県の形・日本の見方の国境・湖・世界の国の形・世界の大河。パブリックドメイン）。
 // 日本地図：九州〜北海道の本図と、南西諸島の囲み（inset）。県は7地方区分（region）つき。
 // 世界地図：太平洋を中央にしたミラー図法。国は日本の学校の州（state）つき。x・y は国名・県名を置く点。
 `
@@ -318,6 +368,7 @@ export const WORLD_MAP = ${JSON.stringify({
   height: worldHeight,
   lines: worldLines,
   countries: worldCountries,
+  rivers: worldRivers,
 })}
 
 // 東京を中心とした正距方位図法。円の中心が東京、縁が地球の反対側。

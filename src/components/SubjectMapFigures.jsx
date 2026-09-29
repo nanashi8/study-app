@@ -23,11 +23,13 @@ import {
 //   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat] }]
 //   labels … 緯度・経度に置く文字（海・山脈など）。[{ lon, lat, text, color?, size?, italic? }]
 //   states: true … 州で色分け（hideLegend: true で凡例を出さない。同じ凡例の図を並べるとき）
+//   rivers … 大河の線（世界地図）。['yangtze', 'huanghe']（id は maps.js の WORLD_MAP.rivers。川の名前は labels で置く）
 
 export const INK = '#1f2937'
 const SEA = '#e0f2fe'
 const LAND = '#e2e8f0'
 const LINE_RED = '#dc2626'
+const RIVER = '#2563eb'
 const SCREEN_WIDTH = 300
 
 export const JAPAN_REGION_META = Object.freeze({
@@ -256,6 +258,9 @@ export function WorldMapFigure({ figure }) {
           <rect x={box.x} y={box.y} width={box.w} height={box.h} fill={SEA} />
           {WORLD_MAP.countries.filter((country) => country.d).map((country) => (
             <path key={country.code} d={country.d} fill={fillOf(country)} stroke="#ffffff" strokeWidth={0.6 * u} strokeLinejoin="round" />
+          ))}
+          {WORLD_MAP.rivers.filter((river) => (figure.rivers ?? []).includes(river.id)).map((river) => (
+            <path key={river.id} d={river.d} fill="none" stroke={RIVER} strokeWidth={1.3 * u} strokeLinejoin="round" strokeLinecap="round" data-river={river.id} />
           ))}
           {figure.grid && (
             <WorldGrid

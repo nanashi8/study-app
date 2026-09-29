@@ -198,6 +198,7 @@ test('図の指定は描ける形で、地図の印は実在する県・国、�
     } else if (figure.type === 'worldMap') {
       for (const code of Object.keys(figure.marks ?? {})) if (!countries.has(code)) failures.push(`${at}: 国 ${code}`)
       for (const line of figure.lines ?? []) if (!(line in WORLD_MAP.lines)) failures.push(`${at}: 線 ${line}`)
+      for (const river of figure.rivers ?? []) if (!WORLD_MAP.rivers.some((item) => item.id === river)) failures.push(`${at}: 川 ${river}`)
     } else if (figure.type === 'climate') {
       if (!CLIMATE_STATIONS[figure.station]) failures.push(`${at}: 地点 ${figure.station}`)
     } else if (figure.type === 'table') {

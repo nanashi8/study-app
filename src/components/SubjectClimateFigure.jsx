@@ -4,8 +4,10 @@ import { textWidth } from './SubjectMapFigures.jsx'
 // 雨温図（棒＝月の降水量、折れ線＝月の平均気温）。{ type: 'climate', station: 'tokyo' }（地点は data/subjects/climate.js）。
 //   hideName: true と label: 'A' … 問題で地点名をふせる
 //   judge: true … 気候帯を見分ける目安の線（18℃・10℃・−3℃）と、最も暖かい月・寒い月の気温を図に出す
-//   axis: { tMin } … 気温の目もりの下の端（並べて比べる図で、目もりをそろえるとき）
+//   axis: { tMin, tMax } … 気温の目もりの下の端・上の端（並べて比べる図で、目もりをそろえるとき）
 // 目もりは、気温10℃と降水量100mmが同じ高さ。気温の下の端が降水量0mm。
+// 目もりの上の端はふつう40℃（降水量700mm）。降水量がそれより多い月のある地点は、棒が入るまで10℃（100mm）ずつ上へ広げる。
+// 10℃あたりの高さはどの図も同じなので、目もりを広げた図は縦に長くなる。
 
 const INK = '#1f2937'
 const GRID = '#e2e8f0'
@@ -74,10 +76,16 @@ function placeText(candidates, { points, pad, taken, bars, bounds }) {
   return chosen
 }
 
-/** 気温の目もりの下の端。いちばん低い月の気温が入るように、-30℃より下へ10℃ずつ広げる。 */
+/** 気温の目もりの下の端。いちばん低い月の気温が入るように、−30℃より下へ10℃ずつ広げる。 */
 export function climateAxisMin(station) {
   const lowest = Math.min(...station.temp)
   return Math.min(-30, Math.floor(lowest / 10) * 10)
+}
+
+/** 気温の目もりの上の端。40℃（降水量700mm）で、降水量のいちばん多い月の棒が入るように10℃ずつ広げる。 */
+export function climateAxisMax(station, tMin = climateAxisMin(station)) {
+  const wettest = Math.max(...station.rain)
+  return Math.max(40, Math.ceil((tMin + wettest / 10) / 10) * 10)
 }
 
 export function ClimateFigure({ figure }) {
@@ -86,16 +94,16 @@ export function ClimateFigure({ figure }) {
   const name = figure.hideName ? figure.label ?? '' : station.label
   const summary = climateSummary(station)
   const width = 300
-  const height = 216
   const left = 30
   const right = 34
   const top = 16
   const bottom = 24
   const tMin = figure.axis?.tMin ?? climateAxisMin(station)
-  const tMax = 40
+  const tMax = figure.axis?.tMax ?? climateAxisMax(station, tMin)
   const rMax = (tMax - tMin) * 10
   const plotW = width - left - right
-  const plotH = height - top - bottom
+  const plotH = ((tMax - tMin) / 70) * 176
+  const height = top + plotH + bottom
   const colW = plotW / 12
   const ty = (t) => top + ((tMax - t) / (tMax - tMin)) * plotH
   const ry = (r) => top + plotH - (Math.min(r, rMax) / rMax) * plotH

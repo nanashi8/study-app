@@ -37,6 +37,9 @@ function figureProblems(figure, where) {
     for (const code of [...Object.keys(figure.marks ?? {}), ...Object.keys(figure.fills ?? {})]) {
       if (!codes.has(code)) problems.push(`${where}: 地図に ${code} がない`)
     }
+    for (const river of figure.rivers ?? []) {
+      if (figure.type !== 'worldMap' || !WORLD_MAP.rivers.some((item) => item.id === river)) problems.push(`${where}: 川 ${river} がない`)
+    }
     if (figure.view) {
       const { lon, lat } = figure.view
       if (!lon?.every(lonOk) || !lat?.every(latOk) || lat[0] >= lat[1]) problems.push(`${where}: 切り出す範囲がおかしい`)
