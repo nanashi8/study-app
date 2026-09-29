@@ -8,7 +8,7 @@
   "sessions": [
     "3dfd9e38-74af-41f0-b1ce-21ee03dd715d"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "units-both-levels",
@@ -103,7 +103,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通してから main へ push し、公開版のデプロイ成功と、公開版で入試演習が開いて解けることを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな複製（作業ツリーから作り、この依頼の変更だけを当てたもの）で npm run audit:all-content が全段通過（テスト1,093件すべて合格・内容監査・ビルド・公開物検査・空白検査・台帳の書き直しと照合）。43650ea を main へ push し、Deploy to GitHub Pages（run 36517821567）が success。公開版 https://nanashi8.github.io/study-app/ で 数学アプリ→入試演習 を開き、今日の演習の1問目（正負の数）に数字キーで -5 を入れて答え合わせし「正解！・目安の半分以内」と解答の筋道が出ること、大学入試の数学II・B・Cの総合演習が単元名と型を伏せて開くことを確かめた"
     }
   ]
 }
