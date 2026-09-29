@@ -55,7 +55,7 @@ export const CONTENTS = [
   {
     id: 'math-quest',
     title: '数学アプリ',
-    subtitle: '数えることから数IIIまで・歴史をたどり図を動かして学ぶ',
+    subtitle: '数えることから数IIIまで・歴史と図で学び、入試問題で演習する',
     emoji: '📐',
     color: '#7c3aed',
     screen: 'mathMap',

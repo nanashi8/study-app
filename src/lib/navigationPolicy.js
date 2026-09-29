@@ -14,6 +14,7 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'dictationPlay',
   'mathSolve',
   'mathStoryQuiz',
+  'mathExamSolve',
   'grammarQuiz',
   'writingPlay',
   'writingExam',

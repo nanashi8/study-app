@@ -38,7 +38,7 @@
       "id": "mix-on-all-study-screens",
       "text": "画面下部の「出題」（出題バランスのバー）を、暗記・テストの全21画面に出す。英単語は、級・分野・品詞・全語の回に加えて、単語帳・今日の復習・先取り復習・語根・自作単語・一覧から始めた回など、すべての回で出す。並びを選んで始めた回（一覧で選んで並べた項目・語源カードの単語の並び・辞書から選んだ1件）はその順で出すので、バーは出すが動かせないことを示す",
       "population": "暗記・テストの全21画面（tests/study-order.test.mjs が SessionCounter で数える画面）と、英単語の暗記・テストのすべての出題元（all・field・pos・level・levelField・mylist・deck・root・due・review・custom・battle・dragonVein）",
-      "check": "node --test --test-name-pattern=\"出題を全21画面に\" tests/bottom-dock.test.mjs",
+      "check": "node --test --test-name-pattern=\"出題を全[0-9]+画面に\" tests/bottom-dock.test.mjs",
       "status": "done",
       "verifiedBy": "21画面を STUDY_MIX_SCREENS・App.jsx の画面IDと突き合わせ、サーバー描画で21画面すべての下部に「出題」があることを確かめた。開発サーバーで熟語・文法・リスニング・書き取り・英単語テスト・古文単語・古典文法・古典常識・漢文・返り点・語源・英作文の文法・数学の歴史を開いて確かめた"
     },

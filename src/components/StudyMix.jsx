@@ -4,7 +4,7 @@ import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 
 /**
  * いま開いている教材の出題バランス（画面下部の「出題」）の割合。自動は null。
- * 暗記・テストの全21画面が、問題を組むたびにこれを読む（lib/studyMix.js）。
+ * 暗記・テストの全22画面が、問題を組むたびにこれを読む（lib/studyMix.js）。
  */
 export const currentStudyMixShare = () => vocabMixFreshShare(currentContentSettings().vocabMix)
 

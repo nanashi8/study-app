@@ -202,6 +202,8 @@ class Phone {
         vocabSearch: { q: 'take' },
         mathIntro: { unitId: mathUnit.id },
         mathSolve: { unitId: mathUnit.id },
+        mathExamUnit: { unitId: mathUnit.id },
+        mathExamSolve: { unitId: mathUnit.id },
         mathStory: { chapterId: mathHistory.MATH_HISTORY_CHAPTERS[0].id },
         grammarReference: { unitId: grammarReference.GRAMMAR_REFERENCE_UNITS[0].id },
         grammarStrandReference: { strandId: strands.GRAMMAR_STRANDS[0].id },
@@ -519,8 +521,8 @@ test('直す前の作りでは、欄の下端から先の指でページがず�
   for (const [where, state] of Object.entries(fixed)) assertPageStill(state, `直した作り・${where}`)
 })
 
-test('全73画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
-  assert.equal(SCREEN_NAMES.length, 73)
+test('全76画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
+  assert.equal(SCREEN_NAMES.length, 76)
   const checked = new Set()
   await eachScreen(async (phone, screen) => {
     const opened = await phone.openScreen(screen, paramsByScreen[screen])
@@ -562,10 +564,10 @@ test('全73画面で、見えている範囲のどの状態でもページその
   }
   await phone.closeMenu()
   await phone.applyFrameState('normal')
-  assert.equal(checked.size, 73 * FRAME_STATES.length + FRAME_STATES.length)
+  assert.equal(checked.size, 76 * FRAME_STATES.length + FRAME_STATES.length)
 })
 
-test('全73画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
+test('全76画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
   const counts = new Map()
   const revealedScreens = []
   let total = 0
@@ -607,7 +609,7 @@ test('全73画面の縦に動く欄で、一番下から上へ戻れる', async 
   const without = SCREEN_NAMES.filter((screen) => !counts.get(screen))
   t.diagnostic(`縦に動く欄のある画面 ${SCREEN_NAMES.length - without.length}/${SCREEN_NAMES.length}（欄 ${[...counts.values()].reduce((sum, count) => sum + count, 0)}、状態2つとメニューで ${total} 回）`)
   t.diagnostic(`中身を開いてからも確かめた画面 ${revealedScreens.length}：${revealedScreens.join('・')}`)
-  assert.equal(counts.size, 73)
+  assert.equal(counts.size, 76)
   // どの画面にも、一番下まで送る縦の欄がある（中身が空の画面には中身を入れてから開く）。
   assert.deepEqual(without, [], '縦に動く欄がない画面')
 })

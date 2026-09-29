@@ -45,11 +45,14 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // src/components/WordBookSlot.jsx・src/lib/cardSpeechPanel.js・src/lib/studyDock.js・src/lib/studyMix.js・src/lib/wordBookSlot.js）。
   // 2026-09-28、形は似ているが元の語がちがう語のまとまり（src/data/lookalike-forms.js・src/lib/lookalikeForms.js）で
   // 2ファイル増えた（画面の文言を持つのは src/lib/lookalikeForms.js）。
-  assert.equal(result.learnerFiles, 301)
-  assert.equal(result.learnerJapaneseEntries, 15166)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11334)
-  assert.equal(result.sourceFiles, 751)
-  assert.equal(result.sourceJapaneseEntries, 201385)
+  // 2026-09-29、数学の入試演習で画面・部品・lib が7ファイル（src/screens/MathExam.jsx・MathExamUnit.jsx・
+  // MathExamSolve.jsx・src/components/MathAnswerPad.jsx・MathExamFigure.jsx・src/lib/mathExam.js・mathExamLog.js）、
+  // 問題データが11ファイル（src/data/math-exam.js と src/data/math-exam/ の10ファイル）増えた。
+  assert.equal(result.learnerFiles, 308)
+  assert.equal(result.learnerJapaneseEntries, 15325)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11450)
+  assert.equal(result.sourceFiles, 769)
+  assert.equal(result.sourceJapaneseEntries, 205201)
   assert.equal(result.issues.length, 0)
 })
 

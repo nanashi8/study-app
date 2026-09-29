@@ -9,6 +9,8 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Check, ArrowRight, Link as LinkIcon, Lightbulb, ChevronLeft } from '../components/Icons.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import { MATH_HISTORY_CHAPTERS } from '../data/math-history.js'
+import { MATH_EXAM_PROBLEMS } from '../data/math-exam.js'
+import { mathExamStatusCounts } from '../lib/mathExamLog.js'
 import { studyLogStatusCounts } from '../lib/studyLog.js'
 
 const MATH_ITEMS = Object.freeze(Object.values(MATH_PROBLEMS).flat())
@@ -34,6 +36,8 @@ export function MathMapScreen() {
   const mathMastery = useStore((s) => s.mathMastery)
   const contentQuizResults = useStore((s) => s.contentQuizResults)
   const mathStoryLog = useStore((s) => s.mathStoryLog)
+  const mathExamLog = useStore((s) => s.mathExamLog)
+  const examCounts = mathExamStatusCounts(mathExamLog, MATH_EXAM_PROBLEMS.map((problem) => problem.id))
   const strands = strandsWithUnits()
   const storyCounts = studyLogStatusCounts(mathStoryLog, MATH_HISTORY_CHAPTERS.map((chapter) => chapter.id))
   const mathProgress = summarizeCompletionItems({
@@ -101,6 +105,29 @@ export function MathMapScreen() {
             </span>
           </span>
           <ArrowRight size={20} className="shrink-0 text-sky-700" />
+        </button>
+      </div>
+
+      {/* 高校入試・大学入試の基礎〜標準問題を、単元ごとに解く入試演習 */}
+      <div className="px-4 pt-3">
+        <button
+          type="button"
+          onClick={() => navigate('mathExam')}
+          className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-card transition-transform active:scale-[0.98]"
+          data-math-exam-entry
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-2xl" aria-hidden="true">📝</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-extrabold text-violet-700">高校入試・大学入試</span>
+            <span className="block font-display text-base font-extrabold text-ink">入試演習</span>
+            <span className="mt-0.5 block text-xs font-bold leading-relaxed text-ink/55">
+              {`全${MATH_UNITS.length}単元の基礎〜標準問題${MATH_EXAM_PROBLEMS.length}問。紙に解いて、解答欄に答えを入れて確かめる`}
+            </span>
+            <span className="mt-1 block text-[11px] font-extrabold text-emerald-700">
+              {`自力で正解 ${examCounts.solved}/${MATH_EXAM_PROBLEMS.length}問`}
+            </span>
+          </span>
+          <ArrowRight size={20} className="shrink-0 text-violet-700" />
         </button>
       </div>
 

@@ -34,6 +34,7 @@ import {
   MATH_HISTORY_QUIZ_DOMAIN,
   questionsForChapters,
 } from '../src/data/math-history.js'
+import { MATH_EXAM_QUIZ_DOMAIN, mathExamProblemsForScope } from '../src/data/math-exam.js'
 import { contentQuizMarks, normalizeContentQuizResults, recordContentQuizResult } from '../src/lib/contentProgress.js'
 import { buildGrammarDeck, grammarVariationKey } from '../src/lib/grammarDeck.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
@@ -186,7 +187,7 @@ function distinctGrammarIds(items, count) {
   return ids
 }
 
-// 暗記・テストの全21画面の出題口（tests/study-order.test.mjs の21画面と同じ呼び方）。
+// 暗記・テストの全22画面の出題口（tests/study-order.test.mjs の22画面と同じ呼び方）。
 // order は並べた全項目の id、purpose は暗記（study）かテスト（quiz）。
 const ITEM_SCREENS = [
   {
@@ -329,7 +330,7 @@ const ITEM_SCREENS = [
   },
 ]
 
-// 1項目に複数の問題がある3画面（古典文法・古典常識・数学の歴史のテスト）。
+// 問題ごとの結果で並べる4画面（1項目に複数の問題がある古典文法・古典常識のテストと、数学の歴史のテスト・数学の入試演習）。
 const QUESTION_SCREENS = [
   {
     label: '古典文法のテスト（KotenGrammarQuiz）',
@@ -362,14 +363,29 @@ const QUESTION_SCREENS = [
       12,
     ),
   },
+  {
+    label: '数学の入試演習（MathExamSolve）',
+    domain: MATH_EXAM_QUIZ_DOMAIN,
+    field: null,
+    questions: mathExamProblemsForScope('high'),
+    itemOf: () => null,
+    pick: (_itemIds, { quizResults }) => pickInStudyOrder(
+      rankQuestionsForStudy(mathExamProblemsForScope('high'), {
+        quizResults,
+        quizDomain: MATH_EXAM_QUIZ_DOMAIN,
+        now: NOW,
+      }),
+      12,
+    ),
+  },
 ]
 
-test('全21画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
+test('全22画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
   const screens = new Set([
     ...ITEM_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
     ...QUESTION_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
   ])
-  assert.equal(screens.size, 21)
+  assert.equal(screens.size, 22)
 })
 
 // ── 直近の答え ─────────────────────────────────────────
@@ -482,7 +498,7 @@ test('最上位：何度もまちがえている項目は、暗記・テスト�
   }
 })
 
-test('最上位：1項目に複数の問題がある3画面も、何度も間違えている問題・苦手な項目の問題をいちばん先に出す', () => {
+test('最上位：問題ごとの結果で並べる4画面も、何度も間違えている問題・苦手な項目の問題をいちばん先に出す', () => {
   for (const screen of QUESTION_SCREENS) {
     const byItem = new Map()
     for (const question of screen.questions) {
@@ -652,7 +668,7 @@ test('後回し：続けて覚えた・正解した項目は、暗記・テス�
   }
 })
 
-test('後回し：1項目に複数の問題がある3画面も、続けて正解した問題は未回答・間違えた問題より後ろ', () => {
+test('後回し：問題ごとの結果で並べる4画面も、続けて正解した問題は未回答・間違えた問題より後ろ', () => {
   for (const screen of QUESTION_SCREENS) {
     const [steady, missed, ...rest] = screen.questions
     let quizResults = {}
@@ -920,7 +936,7 @@ test('一覧と学習結果：語源の一覧・語根の画面の次に学ぶ�
   assert.equal(report.priorityItems[1].id, ids[0])
 })
 
-test('全21画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の21画面）', () => {
+test('全22画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の22画面）', () => {
   const studyOrderTest = read('./study-order.test.mjs')
   for (const screen of [...ITEM_SCREENS, ...QUESTION_SCREENS]) {
     const file = `${/（(\w+)/.exec(screen.label)[1]}.jsx`

@@ -41,11 +41,12 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'results',
     '診断・テスト結果',
-    '正答数、診断結果、分野別・時間帯別の記録',
+    '正答数、診断結果、数学の入試演習の記録、分野別・時間帯別の記録',
     [
       'skillStats',
       'learningAnalytics',
       'contentQuizResults',
+      'mathExamLog',
       'diagnosticHistory',
       'diagnosticAttempt',
       'diagnosticSeed',

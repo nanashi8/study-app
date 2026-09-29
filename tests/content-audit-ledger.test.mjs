@@ -4,15 +4,15 @@ import test from 'node:test'
 
 const readJson = async (relative) => JSON.parse(await readFile(new URL(relative, import.meta.url), 'utf8'))
 
-test('全教材監査台帳は18カテゴリの母数・ゲート・ハッシュ・合否を保持する', async () => {
+test('全教材監査台帳は20カテゴリの母数・ゲート・ハッシュ・合否を保持する', async () => {
   const ledger = await readJson('../docs/audits/content-audit-ledger.json')
   assert.equal(ledger.schemaVersion, 1)
   assert.equal(ledger.result, 'pass')
   assert.equal(ledger.failureCount, 0)
-  assert.equal(ledger.scope.categoryCount, 19)
-  assert.equal(ledger.categories.length, 19)
-  assert.equal(ledger.scope.learningItemCount, 17_908)
-  assert.equal(ledger.scope.quizItemCount, 18_279)
+  assert.equal(ledger.scope.categoryCount, 20)
+  assert.equal(ledger.categories.length, 20)
+  assert.equal(ledger.scope.learningItemCount, 18_268)
+  assert.equal(ledger.scope.quizItemCount, 18_639)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -36,6 +36,13 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(mathHistory.choiceCount, mathHistory.questionCount * 3)
   assert.equal(mathHistory.generalRationaleCount, mathHistory.questionCount)
   assert.equal(mathHistory.choiceSpecificRationaleCount, mathHistory.choiceCount)
+  // 数学の入試演習の選択式の欄（27欄・86択）は、どの選択肢にも問題ごとの説明がある。
+  const mathExamChoices = ledger.questionBanks.find((bank) => bank.id === 'math-exam-choices')
+  assert.equal(mathExamChoices.questionCount, 27)
+  assert.equal(mathExamChoices.choiceCount, 86)
+  assert.equal(mathExamChoices.generalRationaleCount, 27)
+  assert.equal(mathExamChoices.choiceSpecificRationaleCount, 86)
+  assert.equal(mathExamChoices.failureCount, 0)
   assert.equal(grammar.questionCount, 3_450)
   assert.equal(grammar.choiceCount, 13_800)
   assert.equal(grammar.generalRationaleCount, 3_450)

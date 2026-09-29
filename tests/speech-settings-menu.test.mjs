@@ -269,7 +269,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
   assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
   assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
-  // 出題バランスは、暗記・テストの全21画面を開く教材すべて（辞書から選んだ1件を学ぶ英和辞書と、学習診断は除く）。
+  // 出題バランスは、暗記・テストの全22画面を開く教材すべて（辞書から選んだ1件を学ぶ英和辞書と、学習診断は除く）。
   // 日本語の声は、訳や古典・漢文を読み上げる教材と、意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。
   // 読み上げる範囲は、その暗記カードを開く教材だけ。
   assert.deepEqual(screensUsing('vocabMix'), [

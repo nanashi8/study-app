@@ -17,6 +17,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { LITERATURE_KIND_META } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../data/math.js'
 import { mathHistoryPart } from '../data/math-history.js'
+import { MATH_EXAM_LEVELS, mathExamPattern } from '../data/math-exam.js'
 import {
   contentQuizKey,
   contentQuizMarks,
@@ -223,6 +224,16 @@ function presentationFor(contentId, item) {
       level: mathHistoryPart(item.part)?.title ?? '',
     }
   }
+  if (contentId === 'math-exam') {
+    const unit = MATH_UNITS.find((candidate) => candidate.id === item.unit)
+    return {
+      title: item.text,
+      subtitle: [unit?.title, mathExamPattern(item.unit, item.pattern)?.title].filter(Boolean).join('・'),
+      field: unit?.strand || '数学',
+      level: [unit?.grade, MATH_EXAM_LEVELS[item.level]?.label].filter(Boolean).join('・'),
+      unitId: unit?.id || null,
+    }
+  }
   if (contentId === 'math') {
     const unit = MATH_ITEM_META.get(item.id)
     return {
@@ -417,6 +428,7 @@ export const LEARNING_CONTENT_CATALOG_ACTIONS = Object.freeze({
   literature: { selection: 'one', verb: '読む' },
   math: { selection: 'one', verb: '解く' },
   'math-history': { selection: 'one', verb: '読む' },
+  'math-exam': { selection: 'many', verb: '解く' },
 })
 
 export function learningContentCatalogLaunch(
@@ -518,6 +530,12 @@ export function learningContentCatalogLaunch(
   }
   if (content.id === 'math-history') {
     return { screen: 'mathStory', params: { chapterId: ids[0], returnTo } }
+  }
+  if (content.id === 'math-exam') {
+    return {
+      screen: 'mathExamSolve',
+      params: { ...common, ids, preserveOrder: true },
+    }
   }
   if (content.id === 'math') {
     return {

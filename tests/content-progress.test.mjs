@@ -57,6 +57,7 @@ const expectedContentIds = [
   'literature',
   'math',
   'math-history',
+  'math-exam',
 ]
 
 test('暗記とテストは同じ項目でも独立した3区分として集計する', () => {
@@ -153,7 +154,7 @@ test('SRS外教材は完了状態と直近テスト結果を独立して保存�
   assert.deepEqual(normalizeContentQuizResults({ invalid: { total: 0 } }), {})
 })
 
-test('全19教材の母集団は重複なく、空状態でも両方の3区分が全件を覆う', () => {
+test('全20教材の母集団は重複なく、空状態でも両方の3区分が全件を覆う', () => {
   assert.deepEqual(LEARNING_CONTENTS.map((content) => content.id), expectedContentIds)
   assert.deepEqual(LEARNING_CONTENT_GROUPS.map((group) => group.id), [
     'english',

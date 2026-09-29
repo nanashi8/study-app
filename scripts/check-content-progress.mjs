@@ -37,6 +37,7 @@ const expected = [
   ['literature', 'src/screens/LiteratureLibrary.jsx'],
   ['math', 'src/screens/MathMap.jsx'],
   ['math-history', 'src/screens/MathHistory.jsx'],
+  ['math-exam', 'src/screens/MathExam.jsx'],
 ]
 
 const detailDisplays = [
@@ -155,6 +156,7 @@ for (const [file, marker] of [
   ['src/screens/LiteratureReader.jsx', "'literature',"],
   ['src/screens/MathSolve.jsx', "recordContentQuizResult('math', p.id"],
   ['src/screens/MathStoryQuiz.jsx', 'recordQuizResult(MATH_HISTORY_QUIZ_DOMAIN, question.id'],
+  ['src/store/useStore.js', 'domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problemId'],
 ]) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
   assert.ok(source.includes(marker), `${file}: 教材別テスト結果の保存がありません`)

@@ -1,5 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { unitsByGrade, unitCount } from '../data/math.js'
+import { mathExamProblemsForUnit } from '../data/math-exam.js'
 import { Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { ArrowRight, Check, ChevronLeft } from '../components/Icons.jsx'
@@ -41,9 +42,10 @@ export function MathUnitsScreen() {
                 const n = unitCount(u.id)
                 const ready = n > 0
                 const done = problemsDone(mathDone, u.id)
+                const exam = mathExamProblemsForUnit(u.id).length
                 return (
+                  <div key={u.id} className="space-y-1.5">
                   <button
-                    key={u.id}
                     disabled={!ready}
                     onClick={() => navigate('mathIntro', { unitId: u.id })}
                     className="relative flex w-full items-center gap-3 rounded-3xl bg-white p-4 text-left shadow-card transition-transform active:scale-[0.98] disabled:opacity-55 disabled:active:scale-100"
@@ -81,6 +83,17 @@ export function MathUnitsScreen() {
                       </span>
                     )}
                   </button>
+                  {exam > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => navigate('mathExamUnit', { unitId: u.id })}
+                      className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-2xl bg-violet-50 px-3 text-xs font-extrabold text-violet-800 transition-transform active:scale-[0.98]"
+                      data-math-units-exam={u.id}
+                    >
+                      {`📝 入試演習（基礎〜標準 ${exam}問）`}
+                    </button>
+                  )}
+                  </div>
                 )
               })}
             </div>

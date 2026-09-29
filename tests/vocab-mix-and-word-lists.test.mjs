@@ -269,7 +269,7 @@ test('学習の途中でバーを動かすと、まだ答えていない先の�
   const hook = read('../src/components/StudyMix.jsx')
 
   for (const source of [study, quiz]) {
-    // 組み直しは暗記・テストの全21画面で同じ部品（useStudyMixRebuild）。並びを選んで始めた回だけはその順のまま。
+    // 組み直しは暗記・テストの全22画面で同じ部品（useStudyMixRebuild）。並びを選んで始めた回だけはその順のまま。
     assert.match(source, /useStudyMixRebuild\(\{/)
     assert.match(source, /fixedOrder: source\.preserveOrder === true,/)
     // いま表示している問題と答えた問題は残し、その先だけを新しい割合の出題に替える。
@@ -311,7 +311,7 @@ test('画面下部の同じ枠で、読み上げ・出題バランス・単語�
   // 読み上げ欄と同じ枠を分け合うので、見出し1行＋操作1行の高さから増やさない。
   assert.match(mix, /data-vocab-mix-console-controls/)
   assert.doesNotMatch(mix, /<p className="mt-0\.5/)
-  // 出題バランスは暗記・テストの全21画面に出す。選んだ順に出す回は、その順のまま動かせないことを示す。
+  // 出題バランスは暗記・テストの全22画面に出す。選んだ順に出す回は、その順のまま動かせないことを示す。
   assert.match(mix, /export const STUDY_MIX_SCREENS = Object\.freeze\(\[/)
   assert.match(mix, /fixedOrder: params\?\.preserveOrder === true \|\| source\?\.preserveOrder === true,/)
   assert.match(mix, /disabled=\{fixedOrder\}/)

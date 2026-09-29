@@ -44,6 +44,7 @@ import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
 import { normalizeGrammarReferenceLog } from './grammarReferenceLog.js'
 import { normalizeMathStoryLog } from './mathStoryLog.js'
+import { normalizeMathExamLog } from './mathExamLog.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -92,6 +93,8 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     mathMastery: data.mathMastery ?? {},
     // 古いクラウド保存にこの項目が無い場合、端末で残した数学の歴史の記録を消さない。
     mathStoryLog: normalizeMathStoryLog(data.mathStoryLog ?? current.mathStoryLog),
+    // 古いクラウド保存にこの項目が無い場合、端末で残した入試演習の記録を消さない。
+    mathExamLog: normalizeMathExamLog(data.mathExamLog ?? current.mathExamLog),
     contentQuizResults: normalizeContentQuizResults(data.contentQuizResults),
     skillStats: data.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(

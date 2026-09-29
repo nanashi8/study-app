@@ -489,7 +489,7 @@ test('学習の記録は端末保存・進捗コード・クラウド・記録�
   assert.match(read('src/store/useStore.js'), /mathStoryLog: normalizeMathStoryLog\(payload\.mathStoryLog\)/)
   assert.match(read('src/store/useStore.js'), /mathStoryLog: appendMathStoryLog\(st\.mathStoryLog, pageId, result, today\(\)\)/)
   assert.match(read('src/lib/cloudSync.js'), /mathStoryLog: normalizeMathStoryLog\(data\.mathStoryLog \?\? current\.mathStoryLog\)/)
-  assert.match(read('src/lib/progressCode.js'), /'grammarReferenceLog',\n\s*'mathStoryLog',\n\s*'contentQuizResults',/)
+  assert.match(read('src/lib/progressCode.js'), /'grammarReferenceLog',\n\s*'mathStoryLog',\n\s*'mathExamLog',\n\s*'contentQuizResults',/)
 })
 
 test('数学マップ・単元の導入・ポータルから、コースと話へ行き来できる', () => {

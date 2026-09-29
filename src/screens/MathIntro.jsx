@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { introForUnit } from '../data/math-intros.js'
 import { problemsForUnit, unitById } from '../data/math.js'
 import { chaptersForUnit } from '../data/math-history.js'
+import { mathExamKind, mathExamKindOf, mathExamProblemsForUnit } from '../data/math-exam.js'
 import { MathVisual } from '../components/MathVisual.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -25,6 +26,8 @@ export function MathIntroScreen() {
   const intro = introForUnit(params.unitId)
   const problemCount = problemsForUnit(params.unitId).length
   const stories = chaptersForUnit(params.unitId)
+  const examProblems = mathExamProblemsForUnit(params.unitId)
+  const examKind = mathExamKind(mathExamKindOf(params.unitId))
   const defaults = useMemo(() => defaultsFor(intro), [intro])
   const [session, setSession] = useState(() => ({ unitId: params.unitId, values: defaults }))
   const values = session.unitId === params.unitId ? session.values : defaults
@@ -171,6 +174,23 @@ export function MathIntroScreen() {
               </div>
             </div>
           </section>
+
+          {/* この単元の入試問題（基礎〜標準）を解く入試演習へ */}
+          {examProblems.length > 0 && (
+            <button
+              type="button"
+              onClick={() => navigate('mathExamUnit', { unitId: unit.id })}
+              className="mt-3 flex w-full items-center gap-3 rounded-2xl bg-white px-4 py-3.5 text-left shadow-card active:bg-violet-50"
+              data-math-intro-exam={unit.id}
+            >
+              <span className="text-xl" aria-hidden="true">📝</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-extrabold tracking-wide text-violet-700">{`${examKind.title}の入試演習`}</span>
+                <span className="block text-sm font-extrabold text-ink">{`基礎〜標準の${examProblems.length}問を解く`}</span>
+              </span>
+              <ArrowRight size={16} className="shrink-0 text-violet-600" />
+            </button>
+          )}
 
           {/* この単元の中心の考えが生まれた話（数学の歴史のコース）へ */}
           {stories.length > 0 && (

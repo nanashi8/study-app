@@ -53,8 +53,11 @@ export const SCOPE_SCREENS = Object.freeze({
   ],
   kanbunHome: ['kanbunHome', 'kanbunCatalog', 'kanbunQuiz', 'kanbunKundoku', 'kanbunKundokuQuiz'],
   literatureLibrary: ['literatureLibrary', 'literatureReader'],
-  // 数学アプリの画面。数学の歴史のテストが、問題数と出題バランスに数学アプリの値を使う。
-  mathMap: ['mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz'],
+  // 数学アプリの画面。数学の歴史のテストと入試演習が、問題数と出題バランスに数学アプリの値を使う。
+  mathMap: [
+    'mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz',
+    'mathExam', 'mathExamUnit', 'mathExamSolve',
+  ],
 })
 
 // いくつかの教材から開く暗記・テスト・結果・辞書の画面。開いた教材（scopes のどれか）の値を使い、

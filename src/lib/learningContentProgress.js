@@ -22,6 +22,8 @@ import {
   MATH_HISTORY_QUIZ_DOMAIN,
 } from '../data/math-history.js'
 import { notYetMathStories, understoodMathStories } from './mathStoryLog.js'
+import { MATH_EXAM_PROBLEMS, MATH_EXAM_QUIZ_DOMAIN } from '../data/math-exam.js'
+import { latestMathExamAttempt } from './mathExamLog.js'
 import {
   summarizeCompletionItems,
   summarizeQuizItems,
@@ -164,6 +166,27 @@ export const LEARNING_CONTENTS = Object.freeze([
       quizItems: MATH_HISTORY_QUESTIONS,
       quizUnit: '問',
       reviewingIds: (state) => notYetMathStories(state.mathStoryLog),
+    },
+  ),
+  // 数学の入試演習：いちばん新しい結果が「自力で正解」の問題を学習を終えた問題、それ以外に解いた問題を解き直し中として数える。
+  completionContent(
+    'math-exam',
+    'other',
+    '数学の入試演習',
+    '問',
+    'mathExam',
+    MATH_EXAM_PROBLEMS,
+    (state) => MATH_EXAM_PROBLEMS
+      .filter((problem) => latestMathExamAttempt(state.mathExamLog, problem.id)?.result === 'solved')
+      .map((problem) => problem.id),
+    MATH_EXAM_QUIZ_DOMAIN,
+    {
+      reviewingIds: (state) => MATH_EXAM_PROBLEMS
+        .filter((problem) => {
+          const latest = latestMathExamAttempt(state.mathExamLog, problem.id)
+          return latest && latest.result !== 'solved'
+        })
+        .map((problem) => problem.id),
     },
   ),
 ])

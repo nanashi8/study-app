@@ -221,7 +221,7 @@ test('アカウントの表示とログイン画面は、どこからも開け�
   assert.ok(!existsSync(join(ROOT, 'src/screens/Login.jsx')))
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routes = [...screenMap.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1])
-  assert.equal(routes.length, 73)
+  assert.equal(routes.length, 76)
   assert.ok(!routes.includes('login'))
   assert.doesNotMatch(app, /LoginScreen|screens\/Login/)
 

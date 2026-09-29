@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-28T13:37:03.205Z",
+  "auditedAt": "2026-09-29T03:33:18.141Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
   "failures": [],
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
-    "categoryCount": 19,
-    "learningItemCount": 17908,
-    "quizItemCount": 18279,
-    "storedAndGeneratedQuestionPathCount": 5326,
-    "storedAndGeneratedChoicePathCount": 20621,
-    "overallContentSha256": "46674b795dfb670fb0cf42cb56d1c430428d159b9cf07c82fc434b2beda90183"
+    "categoryCount": 20,
+    "learningItemCount": 18268,
+    "quizItemCount": 18639,
+    "storedAndGeneratedQuestionPathCount": 5353,
+    "storedAndGeneratedChoicePathCount": 20707,
+    "overallContentSha256": "85eec19e1294b4eb2355bbc8f9b71fc9b0bcf0fd1bc458d2d3b4e9fa189af185"
   },
   "completionCriteria": [
-    "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
+    "全20教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
     "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
@@ -52,7 +52,7 @@
     },
     "routesAndProgress": {
       "command": "npm run audit:content-progress && npm run audit:links",
-      "coverage": "全19教材の公開導線、母数、暗記・テスト記録、参照リンク"
+      "coverage": "全20教材の公開導線、母数、暗記・テスト記録、参照リンク"
     },
     "english": {
       "command": "npm run audit:english",
@@ -105,10 +105,14 @@
     "mathHistory": {
       "command": "node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs",
       "coverage": "数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画"
+    },
+    "mathExam": {
+      "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs",
+      "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画"
     }
   },
   "auditImplementation": {
-    "sha256": "7c8ace3342b55583c143585d74eec72d5eefd27c4f0fe8e516128127f4f3d413",
+    "sha256": "f0c7aa571d9c20e7ff458741f41ce977e6e8272d4c53fbfa6e827b8e809efd7f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -248,6 +252,8 @@
       "tests/long-sentence-translations.test.mjs",
       "tests/lookalike-forms.test.mjs",
       "tests/lookalike-origins.test.mjs",
+      "tests/math-exam-answers.test.mjs",
+      "tests/math-exam.test.mjs",
       "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
@@ -774,6 +780,29 @@
       "result": "pass",
       "failureCount": 0,
       "failures": []
+    },
+    {
+      "id": "math-exam",
+      "group": "other",
+      "label": "数学の入試演習",
+      "learningUnit": "問",
+      "quizUnit": "問",
+      "learningItemCount": 360,
+      "quizItemCount": 360,
+      "learningIdOrderSha256": "7130d37685372cefc61a5953eb70bd09d6f418f82829d75b2971bcc58c9b0c9f",
+      "quizIdOrderSha256": "7130d37685372cefc61a5953eb70bd09d6f418f82829d75b2971bcc58c9b0c9f",
+      "contentSha256": "9ab40b90f7b7a6b0ac84ef88d41b6dc20006b84fa74c0c3fe5fc0560fdc50433",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "mathExam"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
     }
   ],
   "questionBanks": [
@@ -917,6 +946,18 @@
       "generalRationaleCount": 440,
       "choiceSpecificRationaleCount": 1745,
       "questionSetSha256": "14c2c1b7e2dff80d00358e61ef148e0f33bfe4ca78a9a439b9541c997b4ded69",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "math-exam-choices",
+      "label": "数学の入試演習（選択式の欄）",
+      "questionCount": 27,
+      "choiceCount": 86,
+      "generalRationaleCount": 27,
+      "choiceSpecificRationaleCount": 86,
+      "questionSetSha256": "d77b0e16cd9ea947369c2c821cc338ec44f96c63f6af0fa63d3f355fe0c407e4",
       "result": "pass",
       "failureCount": 0,
       "failures": []

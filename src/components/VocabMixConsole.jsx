@@ -9,7 +9,7 @@ import {
   vocabMixStep,
 } from '../lib/vocabMix.js'
 
-// 暗記・テストの全21画面。どの画面も、今の出題順（lib/studyOrder.js）の上で出題バランスを当てて問題を組む（lib/studyMix.js）。
+// 暗記・テストの全22画面。どの画面も、今の出題順（lib/studyOrder.js）の上で出題バランスを当てて問題を組む（lib/studyMix.js）。
 export const STUDY_MIX_SCREENS = Object.freeze([
   'vocabStudy',
   'vocabQuiz',
@@ -32,6 +32,7 @@ export const STUDY_MIX_SCREENS = Object.freeze([
   'kanbunKundokuQuiz',
   'writingGrammarReview',
   'mathStoryQuiz',
+  'mathExamSolve',
 ])
 
 /**

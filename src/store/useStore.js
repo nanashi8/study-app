@@ -129,6 +129,8 @@ import {
 import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
 import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/grammarReferenceLog.js'
 import { appendMathStoryLog, normalizeMathStoryLog } from '../lib/mathStoryLog.js'
+import { appendMathExamLog, normalizeMathExamLog } from '../lib/mathExamLog.js'
+import { MATH_EXAM_QUIZ_DOMAIN } from '../lib/mathExam.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // 箱（段階）で間隔をのばす間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -278,6 +280,8 @@ export const createInitialLearningState = () => ({
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   // 数学の歴史の話の学習日と「理解した／まだまだ」。{ 話ID: [{ day, result }, …] }（古い順・1日1件）
   mathStoryLog: {},
+  // 数学の入試演習の問題ごとの記録。{ 問題ID: [{ day, result, seconds }, …] }（古い順・10回まで）
+  mathExamLog: {},
   contentQuizResults: {}, // SRS外教材の教材ID別・直近テスト結果
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
@@ -506,6 +510,7 @@ export function migratePersistedState(persistedState) {
   state.customWords = normalizeCustomWords(state.customWords)
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
+  state.mathExamLog = normalizeMathExamLog(state.mathExamLog)
   state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeLegacyXp(state.battleXpSpent)
@@ -572,6 +577,7 @@ export function progressStateFromPayload(payload = {}) {
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
     mathStoryLog: normalizeMathStoryLog(payload.mathStoryLog),
+    mathExamLog: normalizeMathExamLog(payload.mathExamLog),
     contentQuizResults: normalizeContentQuizResults(payload.contentQuizResults),
     skillStats: payload.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(payload.learningAnalytics),
@@ -1162,6 +1168,17 @@ export const useStore = create(
       recordMathStory: (pageId, result) =>
         set((st) => ({
           mathStoryLog: appendMathStoryLog(st.mathStoryLog, pageId, result, today()),
+        })),
+
+      // 入試演習の1問の結果。自力で正解のときだけ「正解」として問題ごとの結果に残し、
+      // ヒントで正解・不正解・わからないは解き直しに回す（出題の順は全教材共通の決まりで決まる）。
+      recordMathExamAttempt: (problemId, result, seconds) =>
+        set((st) => ({
+          mathExamLog: appendMathExamLog(st.mathExamLog, problemId, { result, seconds, day: today() }),
+          contentQuizResults: recordContentQuizResultState(
+            st.contentQuizResults,
+            { domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problemId, correct: result === 'solved' ? 1 : 0, total: 1 },
+          ),
         })),
 
       markMathDone: (id) =>

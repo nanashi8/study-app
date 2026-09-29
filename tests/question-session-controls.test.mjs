@@ -29,9 +29,14 @@ const STUDY_SCREENS = [
   'src/screens/WritingGrammarReview.jsx',
 ]
 
-test('問題数を選べる全19画面で、前へ・進捗・次へを一つの共通表示にする', () => {
-  const allScreens = [...QUIZ_SCREENS, ...STUDY_SCREENS]
-  assert.equal(allScreens.length, 19)
+// 数学の入試演習は、答え合わせのあとに解答の筋道を読む画面なので、正解後の自動送りを置かない。
+const WORKED_SCREENS = [
+  'src/screens/MathExamSolve.jsx',
+]
+
+test('問題数を選べる全20画面で、前へ・進捗・次へを一つの共通表示にする', () => {
+  const allScreens = [...QUIZ_SCREENS, ...STUDY_SCREENS, ...WORKED_SCREENS]
+  assert.equal(allScreens.length, 20)
   for (const path of allScreens) {
     const source = read(path)
     assert.match(source, /QuestionSessionControls/, `${path}: 前後移動がない`)
@@ -52,6 +57,9 @@ test('正誤をすぐ示す全12テストで、正解後の自動送りを切り
   for (const path of STUDY_SCREENS) {
     assert.doesNotMatch(read(path), /showAutoAdvance/, `${path}: 自己評価カードに正解時設定を出している`)
   }
+  for (const path of WORKED_SCREENS) {
+    assert.doesNotMatch(read(path), /showAutoAdvance|autoAdvanceSignal/, `${path}: 解答を読む画面で正解後に自動で進む`)
+  }
 })
 
 test('共通操作は44px以上で、状態名と読み上げ名を持つ', () => {
@@ -69,19 +77,19 @@ test('共通操作は44px以上で、状態名と読み上げ名を持つ', () =
   assert.match(source, /CORRECT_AUTO_ADVANCE_DELAY_MS = 1400/)
 })
 
-// 語源カードの暗記・テストも同じバーを使う（問題数を選べる18画面の母数とは別に数える）。
+// 語源カードの暗記・テストも同じバーを使う（問題数を選べる20画面の母数とは別に数える）。
 const ETYMOLOGY_SCREENS = [
   'src/screens/EtymologyQuiz.jsx',
   'src/screens/EtymologyStudy.jsx',
 ]
 
-test('暗記・テストの全21画面は上部を1本のバーにまとめ、数字進捗も中に入れ、「×」を置かない', () => {
+test('暗記・テストの全22画面は上部を1本のバーにまとめ、数字進捗も中に入れ、「×」を置かない', () => {
   const controls = read('src/components/QuestionSessionControls.jsx')
   // 途中でやめる操作は上部バーの共通「戻る」が受け持つ。バー側に終了の差し込み口を残さない。
   assert.doesNotMatch(controls, /leadingAction/)
 
-  const screens = [...QUIZ_SCREENS, ...STUDY_SCREENS, ...ETYMOLOGY_SCREENS]
-  assert.equal(screens.length, 21)
+  const screens = [...QUIZ_SCREENS, ...STUDY_SCREENS, ...WORKED_SCREENS, ...ETYMOLOGY_SCREENS]
+  assert.equal(screens.length, 22)
   for (const path of screens) {
     const source = read(path)
     // バーは画面の先頭。上に「×」や「2/10」だけの行を戻さない。

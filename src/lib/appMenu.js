@@ -50,7 +50,7 @@ export const CONTENT_SETTING_GROUPS = Object.freeze([
 const SETTING_ORDER = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
 
 // 教材から開く暗記・テスト・読み上げの画面が、それぞれ読んでいる設定。
-// 出題バランス（画面下部の「出題」）は、暗記・テストの全21画面で使う（STUDY_MIX）。
+// 出題バランス（画面下部の「出題」）は、暗記・テストの全22画面で使う（STUDY_MIX）。
 const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
 const STUDY_MIX = ['vocabMix']
 // 英単語・熟語・構文の暗記カードは、読み上げる範囲に合わせて意味と例文の意味を日本語の声で読む。
@@ -129,7 +129,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', 'コンテンツのメモ・単語帳・履歴'),
-    screenItem('myLearning', '暗記・テストの記録', '全19教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
+    screenItem('myLearning', '暗記・テストの記録', '全20教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),

@@ -10,6 +10,7 @@ import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { MATH_HISTORY_QUESTIONS } from '../src/data/math-history.js'
+import { MATH_EXAM_PROBLEMS } from '../src/data/math-exam.js'
 import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
 import { EXTENDED_PASSAGE_READING_APPROACHES } from '../src/data/reading-extended-approaches.js'
@@ -67,7 +68,7 @@ const GATE_CATALOG = Object.freeze({
   },
   routesAndProgress: {
     command: 'npm run audit:content-progress && npm run audit:links',
-    coverage: '全19教材の公開導線、母数、暗記・テスト記録、参照リンク',
+    coverage: '全20教材の公開導線、母数、暗記・テスト記録、参照リンク',
   },
   english: {
     command: 'npm run audit:english',
@@ -121,6 +122,10 @@ const GATE_CATALOG = Object.freeze({
     command: 'node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs',
     coverage: '数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画',
   },
+  mathExam: {
+    command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs',
+    coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画',
+  },
 })
 
 const COMMON_GATES = ['inventory', 'coreData', 'behavior', 'learnerCopy', 'routesAndProgress']
@@ -144,6 +149,7 @@ const CATEGORY_SPECIFIC_GATES = Object.freeze({
   literature: ['literature'],
   math: ['math'],
   'math-history': ['mathHistory'],
+  'math-exam': ['mathExam'],
 })
 
 const itemId = (item, index) => String(item?.id ?? `index:${index}`)
@@ -357,6 +363,22 @@ function buildQuestionBanks() {
       choiceRationalesFor: (item) => item.fill.tiles.map((_, index) => mathFillNoteFor(item.id, index)),
       expectedChoiceCounts: [2, 3, 4],
     }),
+    // 数学の入試演習の選択式の欄。欄ごとに選択肢と、選択肢と同じ順の説明（notes）を全択に持つ。
+    auditQuestionBank({
+      id: 'math-exam-choices',
+      label: '数学の入試演習（選択式の欄）',
+      items: MATH_EXAM_PROBLEMS.flatMap((problem) => Object.entries(problem.choices ?? {}).map(([label, choice]) => ({
+        id: `${problem.id}:${label}`,
+        choices: choice.options,
+        answer: problem.boxes[label],
+        notes: choice.notes,
+        solution: problem.solution,
+      }))),
+      answerMatches: (item, choices) => (Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0),
+      rationaleFor: (item) => item.solution.map((step) => step.text ?? step.math ?? '').join(''),
+      choiceRationalesFor: (item) => item.notes,
+      expectedChoiceCounts: [2, 3, 4, 5, 6],
+    }),
     // 数学の歴史の話のテスト。3択（＋わからない）で、選択肢と同じ順の説明（notes）を全択に持つ。
     auditQuestionBank({
       id: 'math-history',
@@ -551,7 +573,7 @@ async function buildLedger(auditedAt) {
       overallContentSha256: overallContentHash,
     },
     completionCriteria: [
-      '全19教材カテゴリのID・母数・重複・内容ハッシュが一致する',
+      '全20教材カテゴリのID・母数・重複・内容ハッシュが一致する',
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
       `英語長文と学習診断の読解の正解・全誤答・わからない${readingAnswerPaths.answerPathCount.toLocaleString('en-US')}経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',
