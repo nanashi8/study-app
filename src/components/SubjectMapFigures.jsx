@@ -1,4 +1,5 @@
 import { AZIMUTHAL_MAP, GLOBE_LAND, JAPAN_MAP, WORLD_MAP } from '../data/subjects/maps.js'
+import { tokenizeSubjectText } from '../lib/subjectText.js'
 import {
   AZIMUTHAL_PROJECTION,
   JAPAN_PROJECTION,
@@ -16,7 +17,7 @@ import {
 //   marks  … 国・県に付ける記号。{ USA: 'A' } / { 'JP-13': 'A' }
 //   fills  … 国・県の色。{ USA: '#fde68a' }
 //   grid   … 緯線・経線を引く間隔（度）。例 30。gridLabels: false で目盛りの文字を出さない。gridLabelEvery: 2 で経線の文字を1本おきに
-//   parallels / meridians … 1本ずつ引く緯線・経線。[{ lat: 22, text: '北緯22度' }] / [{ lon: 25, text: '東経25度' }]
+//   parallels / meridians … 1本ずつ引く緯線・経線。[{ lat: 22, text: '北緯22度', side?: 'right' }] / [{ lon: 25, text: '東経25度' }]
 //   lines  … 特別な緯線・経線（世界地図）。['equator', 'tropicN', 'tropicS', 'primeMeridian', 'meridian180', 'meridian135']
 //   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京' }]
 //   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat] }]
@@ -116,7 +117,7 @@ function Point({ x, y, label, text, u, flip = false }) {
   )
 }
 
-/** 白いふちどりの文字（地図の上でも読めるように）。 */
+/** 白いふちどりの文字（地図の上でも読めるように）。常用漢字にない字をふくむ語には、上に小さく読みがなを出す。 */
 export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor = 'start', italic = false, children }) {
   const common = {
     x,
@@ -126,10 +127,27 @@ export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor =
     textAnchor: anchor,
     fontStyle: italic ? 'italic' : undefined,
   }
+  const segments = typeof children === 'string' ? tokenizeSubjectText(children) : []
+  const rubies = []
+  if (segments.some((segment) => segment.reading)) {
+    const total = textWidth(children, size * u)
+    let left = anchor === 'start' ? x : anchor === 'end' ? x - total : x - total / 2
+    for (const segment of segments) {
+      const width = textWidth(segment.text, size * u)
+      if (segment.reading) rubies.push({ x: left + width / 2, text: segment.reading })
+      left += width
+    }
+  }
   return (
     <g>
       <text {...common} fill="none" stroke="#ffffff" strokeWidth={3 * u} strokeLinejoin="round">{children}</text>
       <text {...common} fill={color}>{children}</text>
+      {rubies.map((ruby) => (
+        <g key={`${ruby.x}-${ruby.text}`}>
+          <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill="none" stroke="#ffffff" strokeWidth={2 * u} strokeLinejoin="round">{ruby.text}</text>
+          <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill={color}>{ruby.text}</text>
+        </g>
+      ))}
     </g>
   )
 }
@@ -255,7 +273,19 @@ export function WorldMapFigure({ figure }) {
             return (
               <g key={`par-${line.lat}`}>
                 <line x1={box.x} x2={box.x + box.w} y1={y} y2={y} stroke={line.color ?? LINE_RED} strokeWidth={1.5 * u} strokeDasharray={`${5 * u} ${3 * u}`} />
-                {line.text && <Halo x={box.x + 3 * u} y={y - 3 * u} u={u} size={9.5} weight="800" color={line.color ?? '#b91c1c'}>{line.text}</Halo>}
+                {line.text && (
+                  <Halo
+                    x={line.side === 'right' ? box.x + box.w - 3 * u : box.x + 3 * u}
+                    y={y - 3 * u}
+                    u={u}
+                    size={9.5}
+                    weight="800"
+                    color={line.color ?? '#b91c1c'}
+                    anchor={line.side === 'right' ? 'end' : 'start'}
+                  >
+                    {line.text}
+                  </Halo>
+                )}
               </g>
             )
           })}
@@ -271,6 +301,8 @@ export function WorldMapFigure({ figure }) {
           {(figure.lines ?? []).map((line) => {
             const meta = WORLD_LINE_META[line]
             if (!meta) return null
+            // たての線の名前は、重ならないように段をずらす。
+            const column = (figure.lines ?? []).filter((name) => WORLD_LINE_META[name]?.lon !== undefined).indexOf(line)
             if (meta.lat !== undefined) {
               const [, y] = projectWorld(0, meta.lat)
               return (
@@ -284,7 +316,7 @@ export function WorldMapFigure({ figure }) {
             return (
               <g key={line}>
                 <line x1={x} x2={x} y1={box.y} y2={box.y + box.h} stroke={LINE_RED} strokeWidth={1.4 * u} strokeDasharray={`${5 * u} ${3 * u}`} />
-                <Halo x={x + 3 * u} y={box.y + 12 * u} u={u} size={9.5} weight="800" color="#b91c1c">{meta.label}</Halo>
+                <Halo x={x + 3 * u} y={box.y + (12 + column * 13) * u} u={u} size={9.5} weight="800" color="#b91c1c">{meta.label}</Halo>
               </g>
             )
           })}

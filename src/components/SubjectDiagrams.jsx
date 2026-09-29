@@ -2,7 +2,7 @@
 // どの図も幅300の座標で描き、画面では約300pxに出る（文字の大きさ9〜11がそのまま画面の大きさになる）。
 // 値から描く図（緯度の角度・時差など）は、テストが同じ値を計算して図と本文の数が合うことを確かめる。
 import { GLOBE_LAND } from '../data/subjects/maps.js'
-import { clockOf, localHour } from '../data/subjects/figureMath.js'
+import { clockOf, localHour, shiftDate } from '../data/subjects/figureMath.js'
 
 const INK = '#1f2937'
 const MUTED = '#64748b'
@@ -208,17 +208,28 @@ function GlobeDiagram({ tilt = 25, center = 135 }) {
 }
 
 // ── 時差の数直線：経度15度ごとに1時間。東ほど時刻が進んでいる ─────────────
-function TimeZoneDiagram({ cities = [], base = { lon: 135, hour: 10, date: '1月1日' }, from = -120, to = 180 }) {
-  const left = 16
-  const right = 284
-  const y = 70
+//   { name: 'timeZone', cities: [{ name: 'ロンドン', lon: 0 }], base: { lon: 135, hour: 10, date: '1月1日' }, from, to, showTimes }
+//   showTimes: false … 都市の経度だけを出す（演習で、時刻を計算させるとき）
+function TimeZoneDiagram({ cities = [], base = { lon: 135, hour: 10, date: '1月1日' }, from = -120, to = 180, showTimes = true }) {
+  const left = 18
+  const right = 282
+  const y = 78
   const x = (lon) => left + ((lon - from) / (to - from)) * (right - left)
   const ticks = []
   for (let lon = Math.ceil(from / 15) * 15; lon <= to; lon += 15) ticks.push(lon)
-  const [month, day] = base.date.match(/\d+/g).map(Number)
-  const dateOf = (offsetDay) => `${month}月${day + offsetDay}日`
+  const clampX = (value, text, size) => {
+    const half = (text.length * size) / 2
+    return Math.max(half + 2, Math.min(300 - half - 2, value))
+  }
+  const lonText = (lon) => (lon === 0 ? '0度' : lon === 180 ? '180度' : `${lon > 0 ? '東経' : '西経'}${Math.abs(lon)}度`)
   return (
-    <svg viewBox="0 0 300 150" className="h-auto w-full" role="img" aria-label="経度と時刻の数直線" data-subject-diagram="timeZone">
+    <svg viewBox={`0 0 300 ${showTimes ? 165 : 142}`} className="h-auto w-full" role="img" aria-label="経度と時刻の数直線" data-subject-diagram="timeZone">
+      {to >= 180 && (
+        <g>
+          <line x1={x(180)} x2={x(180)} y1={y - 16} y2={y + 26} stroke={RED} strokeWidth="1.4" strokeDasharray="4 3" />
+          <Label x={x(180) - 2} y={y + 36} size={8.5} weight="800" color={RED} anchor="end">日付変更線</Label>
+        </g>
+      )}
       <line x1={left} x2={right} y1={y} y2={y} stroke={INK} strokeWidth="1.6" />
       {ticks.map((lon) => (
         <g key={lon}>
@@ -228,23 +239,71 @@ function TimeZoneDiagram({ cities = [], base = { lon: 135, hour: 10, date: '1月
           )}
         </g>
       ))}
-      <ArrowLine x1={x(0) + 6} y1={y + 32} x2={x(45) - 4} y2={y + 32} color={GREEN} width={1.4} head={5} />
-      <Label x={x(0) + 6} y={y + 45} size={8.5} color={GREEN}>東へ15度で1時間進む</Label>
+      <ArrowLine x1={x(0) + 6} y1={y + 42} x2={x(45) - 4} y2={y + 42} color={GREEN} width={1.4} head={5} />
+      <Label x={x(0) + 6} y={y + 56} size={8.5} color={GREEN}>東へ15度ごとに1時間進む</Label>
       {cities.map((city, index) => {
-        const hour = localHour(base.hour, base.lon, city.lon)
-        const { day: offset, text } = clockOf(hour)
         const cxp = x(city.lon)
-        const top = index % 2 === 0 ? 14 : 34
+        const top = index % 2 === 0 ? 16 : 40
+        const second = showTimes
+          ? (() => {
+              const { day: offset, text } = clockOf(localHour(base.hour, base.lon, city.lon))
+              return `${shiftDate(base.date, offset)} ${text}`
+            })()
+          : `（${lonText(city.lon)}）`
         return (
           <g key={city.name}>
-            <line x1={cxp} x2={cxp} y1={top + 4} y2={y} stroke={BLUE} strokeWidth="1" strokeDasharray="2 2" />
+            <line x1={cxp} x2={cxp} y1={top + 14} y2={y} stroke={BLUE} strokeWidth="1" strokeDasharray="2 2" />
             <circle cx={cxp} cy={y} r="3.6" fill={BLUE} stroke="#ffffff" strokeWidth="1" />
-            <Label x={cxp} y={top} size={9.5} weight="800" anchor="middle" color={BLUE}>{city.name}</Label>
-            <Label x={cxp} y={top + 11} size={8.5} weight="700" anchor="middle">{`${dateOf(offset)} ${text}`}</Label>
+            <Label x={clampX(cxp, city.name, 9.5)} y={top} size={9.5} weight="800" anchor="middle" color={BLUE}>{city.name}</Label>
+            <Label x={clampX(cxp, second, 8.5)} y={top + 11} size={8.5} weight="700" anchor="middle">{second}</Label>
           </g>
         )
       })}
-      <Label x={left} y={y + 70} size={8.5} color={MUTED}>{`※ ${base.date}${base.hour}時の東経${base.lon}度（日本の標準時）を基準にした時刻`}</Label>
+      {showTimes && <Label x={left} y={y + 78} size={8.5} color={MUTED}>{`※ ${base.date}${base.hour}時の東経${base.lon}度（日本の標準時）を基準にした時刻`}</Label>}
+    </svg>
+  )
+}
+
+// ── 国の領域の断面図：領土・領海・領空・接続水域・排他的経済水域・公海（距離は実際の比ではない）─────────────
+function TerritoryDiagram() {
+  const sea = 118
+  const coast = 62
+  const marks = [
+    { x: coast, label: '海岸線' },
+    { x: 110, label: '12海里（約22km）' },
+    { x: 150, label: '24海里' },
+    { x: 262, label: '200海里（約370km）' },
+  ]
+  return (
+    <svg viewBox="0 0 300 240" className="h-auto w-full" role="img" aria-label="国の領域と排他的経済水域の断面図" data-subject-diagram="territory">
+      <rect x="4" y="30" width={110 - 4} height={sea - 30} fill="#fef3c7" opacity="0.8" />
+      <Label x={40} y={52} size={10.5} weight="800" color="#92400e">領空</Label>
+      <Label x={20} y={66} size={8.5} color="#92400e">（領土と領海の上空）</Label>
+      <path d={`M4,${sea - 18} L40,${sea - 26} L${coast - 6},${sea - 20} L${coast},${sea} L${coast},${sea + 70} L4,${sea + 70} Z`} fill="#d6c7a1" stroke="#8b7355" strokeWidth="1" />
+      <Label x={16} y={sea + 30} size={10.5} weight="800" color="#5b4636">領土</Label>
+      <rect x={coast} y={sea} width={296 - coast} height="52" fill="#bfdbfe" />
+      <path d={`M${coast},${sea + 52} L296,${sea + 62} L296,${sea + 70} L${coast},${sea + 70} Z`} fill="#cbd5e1" />
+      <Label x={180} y={sea + 66} size={8.5} color="#475569" anchor="middle">海底（石油・天然ガスなどの鉱産資源）</Label>
+      {marks.map((mark) => (
+        <g key={mark.label}>
+          <line x1={mark.x} x2={mark.x} y1={sea - 8} y2={sea + 52} stroke={INK} strokeWidth="1" strokeDasharray={mark.x === coast ? undefined : '3 2'} />
+        </g>
+      ))}
+      <Label x={(coast + 110) / 2} y={sea + 24} size={9.5} weight="800" anchor="middle" color={BLUE}>領海</Label>
+      <Label x={(110 + 150) / 2} y={sea + 14} size={8} weight="800" anchor="middle" color="#334155">接続</Label>
+      <Label x={(110 + 150) / 2} y={sea + 24} size={8} weight="800" anchor="middle" color="#334155">水域</Label>
+      <Label x={(150 + 262) / 2} y={sea + 20} size={9.5} weight="800" anchor="middle" color={GREEN}>排他的経済水域</Label>
+      <Label x={(150 + 262) / 2} y={sea + 34} size={8} anchor="middle" color={GREEN}>（魚や海底の資源は沿岸国のもの）</Label>
+      <Label x={281} y={sea + 24} size={9.5} weight="800" anchor="middle" color="#334155">公海</Label>
+      <Label x={coast} y={sea - 12} size={8} anchor="middle" color={INK}>海岸線</Label>
+      {marks.slice(1).map((mark, index) => (
+        <g key={`d-${mark.label}`}>
+          <line x1={coast} x2={mark.x} y1={sea + 82 + index * 15} y2={sea + 82 + index * 15} stroke={MUTED} strokeWidth="0.9" />
+          <line x1={mark.x} x2={mark.x} y1={sea + 78 + index * 15} y2={sea + 86 + index * 15} stroke={MUTED} strokeWidth="0.9" />
+          <Label x={mark.x + 3} y={sea + 85 + index * 15} size={8.5} color={INK} anchor={mark.x > 200 ? 'end' : 'start'}>{mark.label}</Label>
+        </g>
+      ))}
+      <Label x={296} y={20} size={8} color={MUTED} anchor="end">※ 距離は実際の比ではない</Label>
     </svg>
   )
 }
@@ -254,6 +313,7 @@ export const SUBJECT_DIAGRAMS = Object.freeze({
   longitude: LongitudeDiagram,
   globe: GlobeDiagram,
   timeZone: TimeZoneDiagram,
+  territory: TerritoryDiagram,
 })
 
 export function DiagramFigure({ figure }) {

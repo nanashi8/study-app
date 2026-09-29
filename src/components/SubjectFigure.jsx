@@ -7,10 +7,10 @@ import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
 export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 
 // 社会・理科の図。要点と演習の問題が、データ（figure）で図を指定する。種類は次のとおり。
-//   table    … 表。{ columns, rows, note? }
+//   table    … 表。{ columns, rows, note?, layout?: 'cards' | 'grid' }（列が4つ以上で長い文があれば、行ごとのカードで見せる）
 //   bars     … 横棒グラフ。{ unit, items: [[名前, 値], …], note? }
 //   lines    … 折れ線グラフ。{ x: { label, ticks? }, y: { label, min?, max?, step? }, series: [{ name, points: [[x, y], …] }] }
-//   climate  … 雨温図。{ station: 'tokyo', judge? }（SubjectClimateFigure.jsx）
+//   climate  … 雨温図。{ station: 'tokyo', judge?, hideName?, label?, axis? }（SubjectClimateFigure.jsx）
 //   japanMap … 日本地図。worldMap … 世界地図（SubjectMapFigures.jsx。切り出し・緯線経線・点・矢印・文字）
 //   azimuthalMap … 東京を中心とした、中心からの距離と方位が正しい地図（正距方位図法）
 //   worldOverview … 陸と海の世界全図（南極大陸まで。国境なし）
@@ -55,8 +55,32 @@ export function FigureGuide({ guide }) {
   )
 }
 
+/** 列が4つ以上で、長い文の入った表か。画面の幅では1文字ずつ折れて読みにくいので、行ごとのカードにする。 */
+const tableAsCards = (figure) =>
+  figure.layout === 'cards' ||
+  (figure.layout !== 'grid' && figure.columns.length >= 4 && figure.rows.some((row) => row.slice(1).some((cell) => [...String(cell)].length > 20)))
+
 function TableFigure({ figure }) {
   const highlight = new Set(figure.highlight ?? [])
+  if (tableAsCards(figure)) {
+    return (
+      <div className="space-y-2" data-subject-figure-table="cards">
+        {figure.rows.map((row, rowIndex) => (
+          <section key={rowIndex} className={`rounded-xl border border-slate-300 px-3 py-2 ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}>
+            <h4 className="text-sm font-black text-ink"><SubjectText>{row[0]}</SubjectText></h4>
+            <dl className="mt-1 space-y-1.5">
+              {row.slice(1).map((cell, cellIndex) => (
+                <div key={cellIndex}>
+                  <dt className="text-[11px] font-extrabold text-ink/50"><SubjectText>{figure.columns[cellIndex + 1]}</SubjectText></dt>
+                  <dd className="text-xs font-bold leading-relaxed text-ink"><SubjectText>{cell}</SubjectText></dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
+      </div>
+    )
+  }
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-xs font-bold text-ink" data-subject-figure-table>
@@ -191,23 +215,23 @@ function LinesFigure({ figure }) {
 
 function DecisionFigure({ figure }) {
   return (
-    <div className="space-y-0" data-subject-figure-decision>
+    <div data-subject-figure-decision>
       {figure.steps.map((step, index) => (
         <div key={step.ask}>
-          <div className="flex items-stretch gap-1.5">
-            <div className="flex min-w-0 flex-1 items-start gap-1.5 rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-[12.5px] font-extrabold leading-snug text-ink">
-              <span className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-slate-700 px-1 text-[10px] text-white">{index + 1}</span>
+          <div className="rounded-xl border border-slate-300 bg-white px-2.5 py-2">
+            <p className="flex items-start gap-1.5 text-[12.5px] font-extrabold leading-snug text-ink">
+              <span className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-slate-700 text-[10px] text-white">{index + 1}</span>
               <span className="min-w-0 flex-1"><SubjectText>{step.ask}</SubjectText></span>
-            </div>
-            <div className="flex w-[34%] shrink-0 flex-col justify-center">
-              <span className="text-[10px] font-extrabold text-emerald-700">はい →</span>
-              <span className="rounded-lg bg-emerald-50 px-2 py-1 text-[12px] font-extrabold leading-snug text-emerald-900"><SubjectText>{step.yes}</SubjectText></span>
-            </div>
+            </p>
+            <p className="mt-1.5 rounded-lg bg-emerald-50 px-2 py-1 text-[12px] font-bold leading-snug text-emerald-900">
+              <span className="mr-1 font-extrabold text-emerald-700">はい →</span>
+              <SubjectText>{step.yes}</SubjectText>
+            </p>
           </div>
-          <p className="py-0.5 pl-6 text-[10px] font-extrabold text-rose-700">いいえ ↓</p>
+          <p className="py-0.5 pl-3 text-[11px] font-extrabold text-rose-700">いいえ ↓</p>
         </div>
       ))}
-      <div className="rounded-xl bg-emerald-50 px-2.5 py-2 text-[12.5px] font-extrabold leading-snug text-emerald-900">
+      <div className="rounded-xl bg-emerald-50 px-2.5 py-2 text-[12.5px] font-extrabold leading-snug text-emerald-900 ring-1 ring-emerald-200">
         <SubjectText>{figure.otherwise}</SubjectText>
       </div>
     </div>

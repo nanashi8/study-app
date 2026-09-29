@@ -11,3 +11,10 @@ export function clockOf(hour) {
   const minutes = Math.round((h - whole) * 60)
   return { day, text: `${whole}時${minutes ? `${minutes}分` : ''}` }
 }
+
+/** 「1月1日」から days 日ずらした日付の文字（うるう年でない年として数える）。 */
+export function shiftDate(date, days) {
+  const [month, day] = date.match(/\d+/g).map(Number)
+  const shifted = new Date(Date.UTC(2025, month - 1, day + days))
+  return `${shifted.getUTCMonth() + 1}月${shifted.getUTCDate()}日`
+}

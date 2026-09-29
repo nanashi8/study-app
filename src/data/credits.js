@@ -59,6 +59,18 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'territory',
+    title: '領域の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'kaiho-ryokai',
+        name: '海上保安庁「日本の領海等概念図」の面積',
+        url: 'https://www1.kaiho.mlit.go.jp/ryokai/gainenzu.html',
+        use: '地理「日本の姿」の、国土と領海・排他的経済水域の面積をくらべるグラフに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'environment',
     title: '環境の数値',
     items: Object.freeze([

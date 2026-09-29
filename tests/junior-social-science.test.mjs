@@ -18,6 +18,7 @@ import {
 import { JAPAN_MAP, WORLD_MAP } from '../src/data/subjects/maps.js'
 import { CLIMATE_STATIONS } from '../src/data/subjects/climate.js'
 import { CREDIT_IDS, CREDIT_SECTIONS } from '../src/data/credits.js'
+import { SUBJECT_FIGURE_KINDS } from '../src/data/subjects/figureKinds.js'
 import { APP_MENU_SECTIONS } from '../src/lib/appMenu.js'
 import { limitQuizChoices } from '../src/lib/quizChoices.js'
 import { tokenizeSubjectText } from '../src/lib/subjectText.js'
@@ -180,9 +181,11 @@ test('演習の全問に解説があり、選ぶ問題は4択すべてに説明�
   assert.deepEqual(failures, [])
 })
 
+// 並べた図（set）の中の図までたどる。
+const withItems = (figure) => (figure ? [figure, ...(figure.type === 'set' ? figure.items.flatMap(withItems) : [])] : [])
 const figuresOf = () => ALL_SUBJECT_UNITS.flatMap((unit) => [
-  ...unit.points.filter((point) => point.figure).map((point) => ({ at: `${unit.id}:${point.heading}`, figure: point.figure })),
-  ...unit.questions.filter((question) => question.figure).map((question) => ({ at: question.id, figure: question.figure })),
+  ...unit.points.flatMap((point) => withItems(point.figure).map((figure) => ({ at: `${unit.id}:${point.heading}`, figure }))),
+  ...unit.questions.flatMap((question) => withItems(question.figure).map((figure) => ({ at: question.id, figure }))),
 ])
 
 test('図の指定は描ける形で、地図の印は実在する県・国、雨温図は取った地点を指す', () => {
@@ -204,7 +207,8 @@ test('図の指定は描ける形で、地図の印は実在する県・国、�
       if (!figure.items?.length || figure.items.some(([, value]) => !Number.isFinite(value))) failures.push(`${at}: 棒グラフの値`)
     } else if (figure.type === 'lines') {
       if (!figure.series?.length || figure.series.some((series) => !series.points?.length)) failures.push(`${at}: 折れ線の値`)
-    } else failures.push(`${at}: 図の種類 ${figure.type}`)
+    } else if (!SUBJECT_FIGURE_KINDS.includes(figure.type)) failures.push(`${at}: 図の種類 ${figure.type}`)
+    // ほかの種類（図解・判断の手順・年表など）の中身は tests/junior-social-science-figures.test.mjs が確かめる。
   }
   assert.deepEqual(failures, [])
 })
@@ -217,7 +221,8 @@ test('出典のページはメニューのいちばん下の区切りにあり�
 
   const needed = new Set(['tosho-social', 'tosho-science'])
   for (const { figure } of figuresOf()) {
-    if (figure.type === 'japanMap' || figure.type === 'worldMap') needed.add('natural-earth')
+    // 地図の形と、地球儀・世界全図の陸の形は Natural Earth から作る。
+    if (['japanMap', 'worldMap', 'azimuthalMap', 'worldOverview'].includes(figure.type) || (figure.type === 'diagram' && figure.name === 'globe')) needed.add('natural-earth')
     if (figure.type === 'climate') needed.add(CLIMATE_STATIONS[figure.station]?.country === '日本' ? 'jma-normals-japan' : 'jma-normals-world')
     if (figure.source) needed.add(figure.source)
   }
