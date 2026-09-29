@@ -107,11 +107,23 @@ function Mark({ x, y, label, u, tone = INK }) {
   )
 }
 
-/** 点（小さな丸と地名）。図の右寄りの点は、地名を左に置く（図の外へはみ出さないように）。 */
-function Point({ x, y, label, text, u, flip = false }) {
+/** 点（小さな丸と地名）。図の右寄りの点は、地名を左に置く。地名が図の外へはみ出すときは、反対の側へ移すか内側へ寄せる。 */
+function Point({ x, y, label, text, u, flip = false, box = null }) {
   const gap = (label ? 11 : 5) * u
-  const textX = flip ? x - gap : x + gap
-  const anchor = flip ? 'end' : 'start'
+  let left = flip
+  let textX = left ? x - gap : x + gap
+  if (box && text) {
+    const width = textWidth(text, 10 * u)
+    const margin = 2 * u
+    const fitsRight = x + gap + width <= box.x + box.w - margin
+    const fitsLeft = x - gap - width >= box.x + margin
+    if (!left && !fitsRight && fitsLeft) left = true
+    else if (left && !fitsLeft && fitsRight) left = false
+    textX = left ? x - gap : x + gap
+    if (left && !fitsLeft && !fitsRight) textX = Math.max(textX, box.x + margin + width)
+    if (!left && !fitsLeft && !fitsRight) textX = Math.min(textX, box.x + box.w - margin - width)
+  }
+  const anchor = left ? 'end' : 'start'
   return (
     <g>
       {label ? <Mark x={x} y={y} label={label} u={u} /> : <circle cx={x} cy={y} r={3.2 * u} fill={INK} stroke="#ffffff" strokeWidth={1.2 * u} />}
@@ -336,7 +348,7 @@ export function WorldMapFigure({ figure }) {
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectWorld(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} />
           })}
         </g>
       </svg>
@@ -415,7 +427,7 @@ export function JapanMapFigure({ figure }) {
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectJapan(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} />
           })}
         </g>
       </svg>
