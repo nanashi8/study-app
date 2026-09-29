@@ -142,7 +142,7 @@ export const MULTIWORD_PREPOSITIONS = Object.freeze([
   'according to', 'ahead of', 'along with', 'apart from', 'as for', 'aside from', 'because of',
   'close to', 'due to', 'except for', 'far from', 'instead of', 'next to', 'out of', 'owing to',
   'prior to', 'rather than', 'regardless of', 'such as', 'thanks to', 'together with', 'up to',
-  'by reason of',
+  'by reason of', 'as to',
 ])
 
 export const SINGLE_PREPOSITIONS = new Set([
@@ -1028,7 +1028,14 @@ function validateUnit(unit, errors) {
     // nothing but A・all but A の but は「〜を除いて」という前置詞。
     const preposition = leadingPreposition(words) || (/^but$/i.test(words[0] ?? '') ? 'but' : '')
     const leadingText = unit.children[0]?.kind === 'text' ? structureWords(unit.children[0].text) : []
-    if (!preposition || leadingText.length < preposition.split(' ').length) {
+    // in and close upon A のように、前置詞をいくつか組んだ決まった言い方で始まる前置詞句。
+    const firstChild = unit.children.find((child) => !(child.kind === 'text' && !structureWords(child.text).length))
+    const leadPhrase = firstChild?.kind === 'unit' && firstChild.base === '成句'
+      ? structureWords(rawText(firstChild.children))
+      : null
+    if (leadPhrase) {
+      if (words.length <= leadPhrase.length) errors.push(`前置詞句「${unitText(unit)}」に前置詞の目的語がありません`)
+    } else if (!preposition || leadingText.length < preposition.split(' ').length) {
       errors.push(`前置詞句「${unitText(unit)}」が前置詞で始まっていません`)
     } else if (words.length <= preposition.split(' ').length) {
       errors.push(`前置詞句「${unitText(unit)}」に前置詞の目的語がありません`)
@@ -1687,6 +1694,8 @@ function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
   // 目的語が続かない語は前置詞ではない（its own past の past、once before の before など）。
   if (!next && !(nextNode?.kind === 'unit')) return true
+  // すぐ後ろが別の前置詞句なら、目的語を取らない副詞（fired … in among them の in、the swallowing up of の up）。
+  if (!next && nextNode?.kind === 'unit' && nextNode.base === '前') return true
   // by about a third の about は「約」という副詞で、後ろの数量にかかる。
   if (found === 'about' && isApproximateQuantity(list, cursor + 1)) return true
   // near miss（あと少しで事故になりかけたこと）の near は名詞の一部。

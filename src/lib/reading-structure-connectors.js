@@ -468,6 +468,8 @@ const SUBORDINATE_MEANINGS = Object.freeze({
   once: { 時: 'いったん〜すると', 条件: 'いったん〜すると' },
   'as soon as': { 時: '〜するとすぐに' },
   because: { 理由: '〜なので' },
+  // forasmuch as は because の古い言い方（名作の古い英語）。
+  'forasmuch as': { 理由: '〜なので' },
   as: { 理由: '〜なので', 様態: '〜するように', 時: '〜するとき', 比例: '〜するにつれて', 比較: '〜と同じくらい' },
   'now that': { 理由: '今や〜なので' },
   if: { 条件: 'もし〜なら' },

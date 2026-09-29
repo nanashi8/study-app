@@ -4,8 +4,10 @@
 
 import mobyDick from './moby-dick.js'
 import prideAndPrejudice from './pride-and-prejudice.js'
+import taleOfTwoCities from './tale-of-two-cities.js'
 
 export const LITERATURE_SENTENCE_STRUCTURES = Object.freeze({
   lit_en_moby_dick_water_gazers: mobyDick,
   lit_en_pride_prejudice_netherfield: prideAndPrejudice,
+  lit_en_tale_two_cities_times: taleOfTwoCities,
 })
