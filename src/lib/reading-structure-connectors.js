@@ -297,11 +297,15 @@ function relativeExplanation(unit) {
   if (prepositional) {
     const preposition = leadText.split(/\s+/).slice(0, -1).join(' ')
     const pronoun = leadText.split(/\s+/).at(-1)
+    // $1.87 with which to buy Jim a present のように、前置詞＋関係代名詞のあとに to不定詞が続く形（主語はない）。
+    const rest = subject
+      ? `後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`
+      : `後ろは to不定詞 ${verb} で、「それを使って〜するための」と先行詞を説明します。`
     return {
       word: leadText,
       chip: '前置詞＋関係代名詞',
       kind: '前置詞＋関係代名詞',
-      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${lowerAntecedent(antecedent, unit.antecedentAtSentenceStart)}」の意味で節の中の修飾語Mになります。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`,
+      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${lowerAntecedent(antecedent, unit.antecedentAtSentenceStart)}」の意味で節の中の修飾語Mになります。${rest}`,
     }
   }
   if (leadLower.startsWith('whose ')) {
@@ -541,6 +545,16 @@ function adverbialExplanation(unit) {
       chip: '複合関係副詞',
       kind: '複合関係副詞 however',
       explanation: `however は「どれほど〜でも」という譲歩の意味を作る語（複合関係副詞）です。however ＋ ${adjective} が節の先頭に出て、後ろに主語 ${subject} と動詞 ${verb} が続きます。「しかし」の意味の副詞ではありません。`,
+    }
+  }
+  // Grand as the watch was のように、補語（形容詞）を as・though の前に出した譲歩「〜だけれども」。
+  const second = elements[1]
+  if (lead?.role === 'C' && second?.role === '接' && /^(?:as|though)$/i.test(plain(second)) && unit.detail === '譲歩') {
+    return {
+      word: plain(second),
+      chip: '接続詞',
+      kind: '従属接続詞（譲歩）',
+      explanation: `${leadText} ${plain(second)} … は「形容詞＋${plain(second)}＋主語＋動詞」の形で、「〜だけれども」という譲歩を表します。補語 ${leadText} を前に出して強めていて、後ろに主語 ${subject} と動詞 ${verb} が続きます。`,
     }
   }
   // Should you ever be … / Were Niagara but … / Had I known … のように、if を省いて助動詞・be動詞を主語の前に出した条件。

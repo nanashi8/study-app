@@ -147,7 +147,7 @@ export const MULTIWORD_PREPOSITIONS = Object.freeze([
   'according to', 'ahead of', 'along with', 'apart from', 'as for', 'aside from', 'because of',
   'close to', 'due to', 'except for', 'far from', 'instead of', 'next to', 'out of', 'owing to',
   'prior to', 'rather than', 'regardless of', 'such as', 'thanks to', 'together with', 'up to',
-  'by reason of', 'as to', 'on to',
+  'by reason of', 'as to', 'on to', 'on account of',
 ])
 
 export const SINGLE_PREPOSITIONS = new Set([
@@ -261,7 +261,8 @@ function parseUnitType(spec) {
   if (!CLAUSE_TYPES.has(base) && !PHRASE_TYPES.has(base) && !QUOTE_TYPES.has(base)) {
     throw new StructureSyntaxError(`不明なまとまりの種類「${raw}」`)
   }
-  if (QUOTE_TYPES.has(base) && (detail || unit.antecedent)) {
+  // “Cut it off and sold it,” のように主語 I を省いた答えは {引用:主語省略| …} と書く（命令文ではない）。
+  if (QUOTE_TYPES.has(base) && ((detail && !(base === '引用' && detail === '主語省略')) || unit.antecedent)) {
     throw new StructureSyntaxError(`引用に種類や説明する名詞は付けません「${raw}」`)
   }
   if (base === '副詞節' && !ADVERBIAL_CLAUSE_KINDS[detail]) {
@@ -862,7 +863,9 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
         const verb = nearestVerb(scopeElements, container)
         return `${inside}${verb ? `${verb} の` : ''}目的語Oです（to のない不定詞）。`
       }
-      const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
+      const rawObject = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
+      // let’s have … の ’s は us の短縮形。
+      const object = /^['’]s$/.test(rawObject) ? 'us（let’s の ’s）' : rawObject
       return object
         ? `${inside}目的語 ${object} が何をするかを表す補語Cです（to のない不定詞）。`
         : `${inside}to のない不定詞として働きます。`
@@ -909,6 +912,11 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
       return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
     }
     default:
+      if (!container && parent?.kind === 'unit' && parent.base === '前') {
+        // 形容詞のまとまりの中の near to being worthy のように、要素の外の前置詞句の目的語。
+        const preposition = prepositionBeforeUnit(parent, unit)
+        return preposition ? `${inside}前置詞 ${preposition} の目的語です。` : ''
+      }
       return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
   }
 }
@@ -1123,7 +1131,9 @@ function validateUnit(unit, errors) {
     errors.push(`まとまり「${unitText(unit)}」に動詞Vがありません`)
   }
   // 関係詞が目的語・補語・修飾語になる節には、必ず主語がある（受け身なら関係代名詞が主語S）。
-  if (['関係', '関係,'].includes(unit.base) && ['O', 'O1', 'O2', 'C', 'M'].includes(elements[0]?.role)) {
+  // ただし money with which to buy a present のように、前置詞＋関係代名詞のあとが to不定詞なら主語はない。
+  const infinitiveRelative = elements.some((element) => element.role === 'V' && /^to\s/i.test(normalizeStructureText(rawText(element.children))))
+  if (['関係', '関係,'].includes(unit.base) && ['O', 'O1', 'O2', 'C', 'M'].includes(elements[0]?.role) && !infinitiveRelative) {
     if (!elements.some((element) => ['S', '仮S'].includes(element.role))) {
       errors.push(`関係代名詞の節「${unitText(unit)}」に主語Sがありません（受け身なら関係代名詞が主語Sです）`)
     }
@@ -1223,7 +1233,9 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       // 引用の中は一つの文として読む（主語のない Tell me は命令文）。
       patterns: clause
         ? patternsForScope(innerElements)
-        : QUOTE_TYPES.has(node.base) ? patternsForScope(innerElements, { root: true, quote: node.base === '引用' }) : [],
+        : QUOTE_TYPES.has(node.base)
+          ? patternsForScope(innerElements, { root: node.detail !== '主語省略', quote: node.base === '引用' })
+          : [],
       // 節・句そのものを括弧つきで示す文字列（外側の括弧も含む）。
       marked: normalizeStructureText(markedText([node])),
     })
