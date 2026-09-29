@@ -12,6 +12,7 @@ import { KANBUN_VOCAB } from '../src/data/kanbun-vocab.js'
 import { KANBUN_GRAMMAR } from '../src/data/kanbun-grammar.js'
 import { KANBUN_CULTURE } from '../src/data/kanbun-culture.js'
 import { KANBUN_KUNDOKU_EXERCISES } from '../src/data/kanbun-kundoku.js'
+import { SUBJECTS, subjectQuestions, subjectTerms } from '../src/data/subjects/index.js'
 import {
   LEGACY_SAVED_LIST_FIELDS,
   NOTEBOOK_DOMAIN_IDS,
@@ -54,10 +55,15 @@ const sources = {
   kanbunGrammar: KANBUN_GRAMMAR,
   kanbunCulture: KANBUN_CULTURE,
   kanbunKundoku: KANBUN_KUNDOKU_EXERCISES,
+  socialTerms: subjectTerms('social'),
+  socialPractice: subjectQuestions('social'),
+  scienceTerms: subjectTerms('science'),
+  sciencePractice: subjectQuestions('science'),
 }
 const domainCount = NOTEBOOK_DOMAIN_IDS.length
 
-if (domainCount !== 14) fail(`教材の種類が14ではありません: ${domainCount}`)
+// 2026-09-30、中学の社会・理科（重要語句・演習）で4つ増えた。
+if (domainCount !== 18) fail(`教材の種類が18ではありません: ${domainCount}`)
 for (const domain of NOTEBOOK_DOMAIN_IDS) {
   if (!sources[domain]) fail(`${domain}: 監査する正本データがありません`)
 }
@@ -147,6 +153,7 @@ for (const route of [
   'listeningQuiz', 'dictationPlay', 'etymologyStudy', 'etymologyQuiz', 'kotenStudy', 'kotenQuiz',
   'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenCultureStudy', 'kotenCultureQuiz',
   'kotenInterpretationPrep', 'kanbunStudy', 'kanbunQuiz', 'kanbunKundokuQuiz',
+  'socialStudy', 'socialQuiz', 'socialPractice', 'scienceStudy', 'scienceQuiz', 'sciencePractice',
 ]) {
   if (!launch.includes(`'${route}'`)) fail(`単語帳の行き先に学習経路 ${route} がありません`)
 }
@@ -229,6 +236,20 @@ for (const [domain, files] of Object.entries(wordBookScreens)) {
     if (!source.includes(`<WordBookToggle domain="${domain}"`)) {
       fail(`${file}: ${domain}を単語帳へ入れるボタンがありません`)
     }
+  }
+}
+// 社会・理科は画面の部品が共通で、入れる先の教材（notebookTerms・notebookPractice）を教科の設定から渡す。
+for (const [file, key] of [
+  ['SubjectStudy.jsx', 'notebookTerms'],
+  ['SubjectQuiz.jsx', 'notebookTerms'],
+  ['SubjectPractice.jsx', 'notebookPractice'],
+]) {
+  const source = read(`../src/screens/${file}`)
+  if (!new RegExp(`<WordBookToggle\\s+domain={meta\\.${key}}`).test(source)) {
+    fail(`${file}: 社会・理科の${key}を単語帳へ入れるボタンがありません`)
+  }
+  for (const subject of ['social', 'science']) {
+    if (!NOTEBOOK_DOMAIN_IDS.includes(SUBJECTS[subject][key])) fail(`${subject}.${key}: 単語帳の教材にありません`)
   }
 }
 

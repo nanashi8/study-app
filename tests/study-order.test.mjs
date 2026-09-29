@@ -461,7 +461,7 @@ test('古典文法・古典常識のテストは、問題ごとの結果で、�
   }
 })
 
-test('暗記・テストの全22画面が、いまの記録から共通の出題順で組む', () => {
+test('暗記・テストの全25画面が、いまの記録から共通の出題順で組む', () => {
   const read = (file) => readFileSync(new URL(`../src/screens/${file}`, import.meta.url), 'utf8')
   const expectations = [
     ['VocabStudy.jsx', /buildDeck\(source, \{[\s\S]*?purpose: 'study'/],
@@ -486,8 +486,12 @@ test('暗記・テストの全22画面が、いまの記録から共通の出題
     ['WritingGrammarReview.jsx', /orderForStudy\(due\.length \? due : items, state\.srs, \{ purpose: 'study', rng: null \}\)/],
     ['MathStoryQuiz.jsx', /rankQuestionsForStudy\(questionsForChapters\(ids\), \{\s*quizResults: state\.contentQuizResults,\s*quizDomain: MATH_HISTORY_QUIZ_DOMAIN,/],
     ['MathExamSolve.jsx', /rankQuestionsForStudy\(pool, \{\s*quizResults: state\.contentQuizResults,\s*quizDomain: MATH_EXAM_QUIZ_DOMAIN,/],
+    // 社会・理科（画面は社会と理科で共通。出題順は src/data/subjects/index.js の pickSubject… が lib/studyOrder.js で決める）。
+    ['SubjectStudy.jsx', /const srs = useStore\.getState\(\)\[SUBJECTS\[subject\]\.termSrsField\]\s*return pickSubjectTerms\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/],
+    ['SubjectQuiz.jsx', /pickSubjectTermQuestions\(ids, \{\s*subject,\s*size,\s*srs: state\[meta\.termSrsField\],\s*quizResults: state\.contentQuizResults,/],
+    ['SubjectPractice.jsx', /pickSubjectPractice\(pool, \{\s*subject,\s*quizResults: state\.contentQuizResults,/],
   ]
-  assert.equal(expectations.length, 22)
+  assert.equal(expectations.length, 25)
   // 1回の数を数える部品（SessionCounter）を持つ画面が、暗記・テストの画面のすべて。
   const sessionScreens = readdirSync(new URL('../src/screens/', import.meta.url))
     .filter((file) => file.endsWith('.jsx') && /<SessionCounter\b/.test(read(file)))

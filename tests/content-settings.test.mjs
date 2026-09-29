@@ -71,7 +71,7 @@ test('値を持つ教材は、メニューの教材の行と画面の持ち主�
   // どの公開画面も、持ち主の教材・共通の画面・教材を持たない画面のどれかに分ける。
   const unscoped = [
     'portal', 'home', 'myLearning', 'myList', 'customWords', 'vocabCamera', 'progress', 'settings',
-    'wordRequests',
+    'wordRequests', 'credits',
   ]
   for (const route of routes) {
     assert.ok(

@@ -189,6 +189,7 @@ export function NormalLearningRecordList({
               openLabel={openLabel}
               openHint={openHint}
               titleLanguage={titleLanguage}
+              textSource={contentId}
               note={typeof noteFor === 'function' ? noteFor(row.item, row) : ''}
             />
             {typeof renderAfter === 'function' && renderAfter(row.item, row)}

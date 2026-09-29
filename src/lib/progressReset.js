@@ -15,7 +15,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'review',
     '復習の記録と予定',
-    '英単語・語源・古典・漢文の復習記録と予定',
+    '英単語・語源・古典・漢文・社会・理科の復習記録と予定',
     [
       'srs',
       'etymologySrs',
@@ -27,6 +27,8 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'kanbunGrammarSrs',
       'kanbunCultureSrs',
       'kanbunKundokuSrs',
+      'socialTermSrs',
+      'scienceTermSrs',
     ],
     // 復習記録を消すと、そこから作られる成績・分析だけが残って数字が合わなくなる。
     ['results'],
@@ -41,12 +43,14 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'results',
     '診断・テスト結果',
-    '正答数、診断結果、数学の入試演習の記録、分野別・時間帯別の記録',
+    '正答数、診断結果、数学・社会・理科の演習の記録、分野別・時間帯別の記録',
     [
       'skillStats',
       'learningAnalytics',
       'contentQuizResults',
       'mathExamLog',
+      'socialPracticeLog',
+      'sciencePracticeLog',
       'diagnosticHistory',
       'diagnosticAttempt',
       'diagnosticSeed',

@@ -134,6 +134,17 @@ const KanbunCatalogScreen = lazyScreen(() => import('./screens/KanbunCatalog.jsx
 const KanbunStudyScreen = lazyScreen(() => import('./screens/KanbunStudy.jsx'), 'KanbunStudyScreen')
 const KanbunQuizScreen = lazyScreen(() => import('./screens/KanbunQuiz.jsx'), 'KanbunQuizScreen')
 const KanbunKundokuScreen = lazyScreen(() => import('./screens/KanbunKundoku.jsx'), 'KanbunKundokuScreen')
+const SocialHomeScreen = lazyScreen(() => import('./screens/SubjectHome.jsx'), 'SocialHomeScreen')
+const ScienceHomeScreen = lazyScreen(() => import('./screens/SubjectHome.jsx'), 'ScienceHomeScreen')
+const SocialUnitScreen = lazyScreen(() => import('./screens/SubjectUnit.jsx'), 'SocialUnitScreen')
+const ScienceUnitScreen = lazyScreen(() => import('./screens/SubjectUnit.jsx'), 'ScienceUnitScreen')
+const SocialStudyScreen = lazyScreen(() => import('./screens/SubjectStudy.jsx'), 'SocialStudyScreen')
+const ScienceStudyScreen = lazyScreen(() => import('./screens/SubjectStudy.jsx'), 'ScienceStudyScreen')
+const SocialQuizScreen = lazyScreen(() => import('./screens/SubjectQuiz.jsx'), 'SocialQuizScreen')
+const ScienceQuizScreen = lazyScreen(() => import('./screens/SubjectQuiz.jsx'), 'ScienceQuizScreen')
+const SocialPracticeScreen = lazyScreen(() => import('./screens/SubjectPractice.jsx'), 'SocialPracticeScreen')
+const SciencePracticeScreen = lazyScreen(() => import('./screens/SubjectPractice.jsx'), 'SciencePracticeScreen')
+const CreditsScreen = lazyScreen(() => import('./screens/Credits.jsx'), 'CreditsScreen')
 const KanbunKundokuQuizScreen = lazyScreen(
   () => import('./screens/KanbunKundokuQuiz.jsx'),
   'KanbunKundokuQuizScreen',
@@ -216,6 +227,17 @@ const SCREENS = {
   kanbunQuiz: KanbunQuizScreen,
   kanbunKundoku: KanbunKundokuScreen,
   kanbunKundokuQuiz: KanbunKundokuQuizScreen,
+  socialHome: SocialHomeScreen,
+  socialUnit: SocialUnitScreen,
+  socialStudy: SocialStudyScreen,
+  socialQuiz: SocialQuizScreen,
+  socialPractice: SocialPracticeScreen,
+  scienceHome: ScienceHomeScreen,
+  scienceUnit: ScienceUnitScreen,
+  scienceStudy: ScienceStudyScreen,
+  scienceQuiz: ScienceQuizScreen,
+  sciencePractice: SciencePracticeScreen,
+  credits: CreditsScreen,
 }
 
 // 全公開画面はAppShell上部の戻る・メニュー入口を共有する。

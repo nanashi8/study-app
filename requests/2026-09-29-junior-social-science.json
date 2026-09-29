@@ -1,0 +1,84 @@
+{
+  "id": "2026-09-29-junior-social-science",
+  "title": "中学の社会・理科を、東京書籍の教科書の単元に合わせて、基礎から高校入試レベルまで学んで演習できる教材として作る。出典はメニューの最後の方の出典ページにまとめる",
+  "asked": [
+    "東京書籍の社会・理科の教科書の単元を参考に、高校受験の基礎〜受験レベルまでを学習して演習できるコンテンツを実装しなさい。出典は出典ページをメニュー内の最後の方に設けなさい。"
+  ],
+  "sessions": [
+    "6e6f58b9-978c-4168-a59a-8209991f2b32"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "units-match-textbooks",
+      "text": "社会（地理・歴史・公民）と理科（1〜3年）の単元を、東京書籍の今の中学校教科書の単元の並びに合わせて一覧にし、その全単元をアプリに載せる。単元の並びは東京書籍が公開している資料で確かめる",
+      "population": "東京書籍の令和7年度用の中学校教科書の全102単元（社会：地理19・歴史21・公民18、理科：1年13・2年15・3年16）。単元の並びは東京書籍の公開資料（単元一覧・年間指導計画）で確かめた",
+      "check": "node --test tests/junior-social-science.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "learn-every-unit",
+      "text": "全単元に「学ぶ」内容（要点の説明と、重要語句の暗記カード）があり、暗記とテストができる",
+      "population": "全102単元と、その重要語句の全1151語句（社会649・理科502）",
+      "check": "node --test tests/junior-social-science.test.mjs && node --test tests/junior-social-science-screens.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "practice-every-unit-levels",
+      "text": "全単元に演習問題があり、基礎・標準・入試の3段階それぞれに問題がある（数は単元の一覧を確定してから決める）",
+      "population": "全102単元 × 3段階（基礎・標準・入試を各3問、計918問）",
+      "check": "node --test tests/junior-social-science.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "all-choices-explained",
+      "text": "全問の全選択肢に、その問題ならではの説明（正解の理由・誤りの理由）がある。決まり文句の説明を置かない",
+      "population": "全918問（選ぶ問題776問の全3104選択肢、並べる問題50問の全206項目、数を入れる問題92問の解き方）",
+      "check": "node --test tests/junior-social-science.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "answers-verified",
+      "text": "全問の正解が正しいことを確かめる。計算の問題は問題文の条件から独立に計算し直して一致を確かめ、知識の問題は1問ずつ読み直して、正解がひとつに決まり誤答が誤りであることを確かめて台帳に記録する",
+      "population": "全918問（数を入れる問題92問は計算し直し、知識の問題826問は1問ずつ読み直して docs/audits/junior-social-science-answers.json に記録）",
+      "check": "node --test tests/junior-social-science-answers.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "screens-work",
+      "text": "入口から全単元の「学ぶ」「演習」に入れ、答え合わせ・記録まで動く。ほかの教材と同じ部品と決まり（入口は項目ごと、共通の出題順、終わりの報告、単語帳、答え合わせの説明）に合わせ、375px の幅で確かめる",
+      "population": "新しい画面11（社会・理科それぞれの入口・単元・暗記カード・語句テスト・演習と、出典のページ）と、全102単元の入口（暗記・演習・要点を読む）",
+      "check": "node --test tests/junior-social-science-screens.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "credits-page",
+      "text": "メニューの最後の方に「出典」ページを置き、この教材で使った素材・資料の出典（教科書の単元の並びの参考、地図などのデータ）をすべて載せる。学習の画面には出典を出さない",
+      "population": "この教材が使う資料の全6件（教科書の単元の並び2・地図1・気候の数値2・環境の数値1）と、メニューの並び、学習の画面（入口・全102単元のページ・暗記・語句テスト・演習）",
+      "check": "node --test tests/junior-social-science.test.mjs && node --test tests/junior-social-science-screens.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "learner-japanese-and-audits",
+      "text": "学習者向けの日本語の決まり（常用漢字外の読み、JSX の改行、画面に載せない説明）と、全教材監査・既存のテストをすべて通す",
+      "population": "新しい教材の日本語の全件と、npm test・npm run check の全件",
+      "check": "npm test && npm run check",
+      "status": "done",
+      "verifiedBy": "まっさらな複製（main の 87a58eb にこの依頼のコミットを載せたもの）で npm run audit:all-content を通した。npm test は1,152件すべて合格、check:content も全段合格：学習者向け日本語の監査（学習者向けファイル321・日本語15,813表記・違反0、JSX の改行のつなぎ目0、画面に載せない説明の禁止語0）、日本語の見直し台帳（訳語19,801件・漢字語27,256件すべて見直し済み。社会・理科で増えた漢字語は1件ずつ読み、常用漢字にない字をふくむ150語は読みの辞書 src/data/subjects/readings.js でルビを付ける）、ビルド・公開物の検査・差分の検査のあと全教材監査台帳（24教材・20,337件、社会・理科の問題バンク：選ぶ問題776問・3,104択と語句テスト1,151問・4,604択にすべて説明）を書き直して一致を確かめた。社会・理科の語句と問題は、単元の画面だけでなく全教材の一覧・学習の記録の行・マイ学習ノート・成績表でも読みがなを付ける（画面テストで確認）。社会・理科を足して動いた既存のテスト・監査の固定値（画面数・教材数・保存項目・メニュー・出題順の振る舞いテストの母集団など）を実測に合わせ、『一番下から上へ戻れる』テストは起動直後の測り直しを待つ形と、標準の大きさで中身が収まる社会・理科の暗記カードを小さい画面（375×548）で確かめる形に直した"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイが成功したことと、公開版で社会・理科が開けることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない（この端末の study-app の複製すべてと共有の作業ツリー）",
+      "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones",
+      "status": "todo"
+    }
+  ]
+}

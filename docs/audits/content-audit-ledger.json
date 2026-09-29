@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-29T14:47:25.785Z",
+  "auditedAt": "2026-09-29T18:42:56.204Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
   "failures": [],
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
-    "categoryCount": 20,
-    "learningItemCount": 18268,
-    "quizItemCount": 18639,
-    "storedAndGeneratedQuestionPathCount": 5353,
-    "storedAndGeneratedChoicePathCount": 20707,
-    "overallContentSha256": "98af157e04ebde3512bc8c235ac4f78ac118783ee1220940585b113cb65d213e"
+    "categoryCount": 24,
+    "learningItemCount": 20337,
+    "quizItemCount": 20708,
+    "storedAndGeneratedQuestionPathCount": 7280,
+    "storedAndGeneratedChoicePathCount": 28415,
+    "overallContentSha256": "c694655e727124bdb191b3dc8ef74ce1795177e55667928776282b0611690393"
   },
   "completionCriteria": [
-    "全20教材カテゴリのID・母数・重複・内容ハッシュが一致する",
+    "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
     "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
@@ -52,7 +52,7 @@
     },
     "routesAndProgress": {
       "command": "npm run audit:content-progress && npm run audit:links",
-      "coverage": "全20教材の公開導線、母数、暗記・テスト記録、参照リンク"
+      "coverage": "全24教材の公開導線、母数、暗記・テスト記録、参照リンク"
     },
     "english": {
       "command": "npm run audit:english",
@@ -109,10 +109,14 @@
     "mathExam": {
       "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs",
       "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画"
+    },
+    "juniorSocialScience": {
+      "command": "node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs",
+      "coverage": "中学の社会・理科の全102単元（教科書の単元の並び）、重要語句1,151・演習918問、全選択肢・並べる項目の説明、数を入れる92問の検算と知識826問の読み直しの記録、常用漢字にない字の読み、画面（入口・単元・暗記・語句テスト・演習・出典）"
     }
   },
   "auditImplementation": {
-    "sha256": "4b9259640623d1734a03571f1be5e698d573164e07bb3426f3bf119ffa60ab65",
+    "sha256": "cc3113773162918d7a85a119612ba5deec96df006332658a0bb81ae045e21987",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -233,6 +237,9 @@
       "tests/homograph-words.test.mjs",
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
+      "tests/junior-social-science-answers.test.mjs",
+      "tests/junior-social-science-screens.test.mjs",
+      "tests/junior-social-science.test.mjs",
       "tests/kanbun-mark-rendering.test.mjs",
       "tests/kanbun.test.mjs",
       "tests/koten-culture.test.mjs",
@@ -809,6 +816,98 @@
       "result": "pass",
       "failureCount": 0,
       "failures": []
+    },
+    {
+      "id": "social-terms",
+      "group": "social",
+      "label": "社会の重要語句",
+      "learningUnit": "語句",
+      "quizUnit": "問",
+      "learningItemCount": 649,
+      "quizItemCount": 649,
+      "learningIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
+      "quizIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
+      "contentSha256": "d4e3ad80f662cf6719dc3c1552523128b14626cf4517691ef7da4ad1455b3374",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "juniorSocialScience"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "social-practice",
+      "group": "social",
+      "label": "社会の演習",
+      "learningUnit": "問",
+      "quizUnit": "問",
+      "learningItemCount": 522,
+      "quizItemCount": 522,
+      "learningIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
+      "quizIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
+      "contentSha256": "c17f4198d937505f76b422d231a1645efc02b399ae557da9074ff8d9ddd007a1",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "juniorSocialScience"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "science-terms",
+      "group": "science",
+      "label": "理科の重要語句",
+      "learningUnit": "語句",
+      "quizUnit": "問",
+      "learningItemCount": 502,
+      "quizItemCount": 502,
+      "learningIdOrderSha256": "e2860bce398af920ad9270dfa5a88c80d29a44c31fb29154471da6da8be395bc",
+      "quizIdOrderSha256": "e2860bce398af920ad9270dfa5a88c80d29a44c31fb29154471da6da8be395bc",
+      "contentSha256": "e1089dd7aa1c8f78fc8162e79b3cfcbff9748fb6ed12d08f8814268fe2b955af",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "juniorSocialScience"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "science-practice",
+      "group": "science",
+      "label": "理科の演習",
+      "learningUnit": "問",
+      "quizUnit": "問",
+      "learningItemCount": 396,
+      "quizItemCount": 396,
+      "learningIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
+      "quizIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
+      "contentSha256": "9cfeb820986bfeb125c40b2cc30e6beedfec6482a5c25e46f5a3b8ed2c6ab9ab",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "juniorSocialScience"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
     }
   ],
   "questionBanks": [
@@ -976,6 +1075,30 @@
       "generalRationaleCount": 252,
       "choiceSpecificRationaleCount": 756,
       "questionSetSha256": "f2de0ba94518905d6c6b3dbafb1fe0430f92e266eafe581acd789540e2f8274a",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "subject-practice-choices",
+      "label": "社会・理科の演習（選ぶ問題）",
+      "questionCount": 776,
+      "choiceCount": 3104,
+      "generalRationaleCount": 776,
+      "choiceSpecificRationaleCount": 3104,
+      "questionSetSha256": "1b0bdf370023f132acfbf09ed1b48f3d74b24da279ba023195670839ad54d97d",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "subject-terms",
+      "label": "社会・理科の語句テスト",
+      "questionCount": 1151,
+      "choiceCount": 4604,
+      "generalRationaleCount": 1151,
+      "choiceSpecificRationaleCount": 4604,
+      "questionSetSha256": "0f01cb43baad860d2bf6c4c80e58601ed29e042202f17027ff8e6d91d61e7b0c",
       "result": "pass",
       "failureCount": 0,
       "failures": []

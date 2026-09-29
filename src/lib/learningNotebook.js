@@ -7,7 +7,7 @@ import {
 
 export const NOTEBOOK_SCHEMA_VERSION = 2
 
-// 単語帳に入れられる教材の種類。並びはアプリごと（英語→古典→漢文）で、ノートの絞り込みもこの順に出す。
+// 単語帳に入れられる教材の種類。並びはアプリごと（英語→古典→漢文→社会→理科）で、ノートの絞り込みもこの順に出す。
 // 教材データを読み込まずに使える名前・単位だけをここに置く（本文の引き当ては learningNotebookCatalog.js）。
 // canStudy は「暗記」で始められる教材。ほかはテスト（問題を解く形）で学ぶ。
 export const NOTEBOOK_DOMAINS = Object.freeze([
@@ -25,6 +25,10 @@ export const NOTEBOOK_DOMAINS = Object.freeze([
   { id: 'kanbunGrammar', label: '漢文法', unit: '項目', emoji: '🧭', color: '#be123c', canStudy: true },
   { id: 'kanbunCulture', label: '漢文常識', unit: 'テーマ', emoji: '🏛️', color: '#7c3aed', canStudy: true },
   { id: 'kanbunKundoku', label: '返り点', unit: '題', emoji: '🔁', color: '#9f1239', canStudy: false },
+  { id: 'socialTerms', label: '社会の重要語句', unit: '語句', emoji: '🗾', color: '#0f766e', canStudy: true },
+  { id: 'socialPractice', label: '社会の演習', unit: '問', emoji: '📝', color: '#0e7490', canStudy: false },
+  { id: 'scienceTerms', label: '理科の重要語句', unit: '語句', emoji: '🔬', color: '#15803d', canStudy: true },
+  { id: 'sciencePractice', label: '理科の演習', unit: '問', emoji: '🧪', color: '#0369a1', canStudy: false },
 ].map((domain) => Object.freeze(domain)))
 
 export const NOTEBOOK_DOMAIN_IDS = Object.freeze(NOTEBOOK_DOMAINS.map((domain) => domain.id))

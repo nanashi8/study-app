@@ -130,6 +130,8 @@ import { learningContentCatalogReviewCommand } from '../lib/learningContentCatal
 import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/grammarReferenceLog.js'
 import { appendMathStoryLog, normalizeMathStoryLog } from '../lib/mathStoryLog.js'
 import { appendMathExamLog, normalizeMathExamLog } from '../lib/mathExamLog.js'
+import { appendSubjectPracticeLog, normalizeSubjectPracticeLog } from '../lib/subjectPractice.js'
+import { SUBJECTS } from '../data/subjects/meta.js'
 import { MATH_EXAM_QUIZ_DOMAIN } from '../lib/mathExam.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
@@ -266,6 +268,8 @@ export const createInitialLearningState = () => ({
   kanbunGrammarSrs: {}, // 漢文法の itemId -> { box, ... }
   kanbunCultureSrs: {}, // 漢文常識の itemId -> { box, ... }
   kanbunKundokuSrs: {}, // 返り点・訓読ドリルの exerciseId -> { box, ... }
+  socialTermSrs: {}, // 社会の重要語句の termId -> { box, ... }
+  scienceTermSrs: {}, // 理科の重要語句の termId -> { box, ... }
   customWords: [], // 自作単語（辞書に無い語を自分で登録したもの）
   vocabHistory: [], // 最近検索・参照・単語帳へ入れた英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
@@ -283,6 +287,9 @@ export const createInitialLearningState = () => ({
   // 数学の入試演習の問題ごとの記録。{ 問題ID: [{ day, result, seconds }, …] }（古い順・10回まで）
   mathExamLog: {},
   contentQuizResults: {}, // SRS外教材の教材ID別・直近テスト結果
+  // 社会・理科の演習の問題ごとの記録。{ 問題ID: [{ day, result, seconds }, …] }（古い順・10回まで）
+  socialPracticeLog: {},
+  sciencePracticeLog: {},
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
   diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
@@ -511,6 +518,8 @@ export function migratePersistedState(persistedState) {
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
   state.mathExamLog = normalizeMathExamLog(state.mathExamLog)
+  state.socialPracticeLog = normalizeSubjectPracticeLog(state.socialPracticeLog)
+  state.sciencePracticeLog = normalizeSubjectPracticeLog(state.sciencePracticeLog)
   state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeLegacyXp(state.battleXpSpent)
@@ -563,6 +572,8 @@ export function progressStateFromPayload(payload = {}) {
     kanbunGrammarSrs: payload.kanbunGrammarSrs ?? {},
     kanbunCultureSrs: payload.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: payload.kanbunKundokuSrs ?? {},
+    socialTermSrs: payload.socialTermSrs ?? {},
+    scienceTermSrs: payload.scienceTermSrs ?? {},
     customWords: normalizeCustomWords(payload.customWords),
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
@@ -579,6 +590,8 @@ export function progressStateFromPayload(payload = {}) {
     mathStoryLog: normalizeMathStoryLog(payload.mathStoryLog),
     mathExamLog: normalizeMathExamLog(payload.mathExamLog),
     contentQuizResults: normalizeContentQuizResults(payload.contentQuizResults),
+    socialPracticeLog: normalizeSubjectPracticeLog(payload.socialPracticeLog),
+    sciencePracticeLog: normalizeSubjectPracticeLog(payload.sciencePracticeLog),
     skillStats: payload.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(payload.learningAnalytics),
     diagnosticHistory: payload.diagnosticHistory ?? [],
@@ -814,6 +827,19 @@ export const useStore = create(
         let receipt = null
         set((st) => {
           const recorded = recordReviewState(st, { field: 'kotenGrammarSrs', itemId: grammarId, result, skill: 'koten_grammar' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
+
+      // 社会・理科の重要語句。暗記カードと語句テストを同じ記録（教科ごと）でつなぐ。
+      reviewSubjectTerm: (subject, termId, result) => {
+        const meta = SUBJECTS[subject]
+        if (!meta) return null
+        let receipt = null
+        set((st) => {
+          const recorded = recordReviewState(st, { field: meta.termSrsField, itemId: termId, result, skill: meta.termSkill })
           receipt = recorded.receipt
           return recorded.patch
         })
@@ -1180,6 +1206,24 @@ export const useStore = create(
             { domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problemId, correct: result === 'solved' ? 1 : 0, total: 1 },
           ),
         })),
+
+      // 社会・理科の演習の1問の結果。正解のときだけ「正解」として問題ごとの結果に残し、不正解・わからないは解き直しへ。
+      recordSubjectPractice: (subject, questionId, result, seconds) => {
+        const meta = SUBJECTS[subject]
+        if (!meta) return
+        set((st) => ({
+          [meta.practiceLogField]: appendSubjectPracticeLog(st[meta.practiceLogField], questionId, { result, seconds, day: today() }),
+          contentQuizResults: recordContentQuizResultState(
+            st.contentQuizResults,
+            { domain: meta.practiceDomain, itemId: questionId, correct: result === 'correct' ? 1 : 0, total: 1 },
+          ),
+          learningAnalytics: recordLearningEvent(
+            st.learningAnalytics,
+            { skill: meta.practiceSkill, inputs: 1, scored: 1, correct: result === 'correct' ? 1 : 0 },
+            Date.now(),
+          ),
+        }))
+      },
 
       markMathDone: (id) =>
         set((st) =>

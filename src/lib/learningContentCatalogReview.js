@@ -8,12 +8,14 @@ const REVIEWABLE_CONTENT_CONFIG = Object.freeze({
   'kanbun-vocab': Object.freeze({ action: 'reviewKanbun', domain: 'vocab' }),
   'kanbun-grammar': Object.freeze({ action: 'reviewKanbun', domain: 'grammar' }),
   'kanbun-culture': Object.freeze({ action: 'reviewKanbun', domain: 'culture' }),
+  'social-terms': Object.freeze({ action: 'reviewSubjectTerm', subject: 'social' }),
+  'science-terms': Object.freeze({ action: 'reviewSubjectTerm', subject: 'science' }),
 })
 
 const REVIEW_RESULTS = new Set(['remembered', 'forgot', 'correct', 'wrong'])
 
 // 熟語と構文は同じ usage 教材にまとまっているため、画面上の対象は
-// 英単語・語源を含む9教材ID、学習者向けの呼び方では英単語＋指定9カテゴリになる。
+// 英単語・語源を含む9教材IDと社会・理科の重要語句の2教材ID、学習者向けの呼び方では英単語＋指定9カテゴリと社会・理科の重要語句になる。
 export const LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS = Object.freeze(
   Object.keys(REVIEWABLE_CONTENT_CONFIG),
 )
@@ -32,6 +34,9 @@ export function learningContentCatalogReviewCommand(contentId, itemId, result) {
   }
   if (config.action === 'reviewKanbun') {
     return { action: config.action, args: [config.domain, itemId, result] }
+  }
+  if (config.action === 'reviewSubjectTerm') {
+    return { action: config.action, args: [config.subject, itemId, result] }
   }
   return { action: config.action, args: [itemId, result] }
 }

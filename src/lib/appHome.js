@@ -33,6 +33,18 @@ export const APP_HOMES = [
     ],
   },
   {
+    id: 'social',
+    screen: 'socialHome',
+    label: '社会アプリ',
+    screens: ['socialHome', 'socialUnit', 'socialStudy', 'socialQuiz', 'socialPractice'],
+  },
+  {
+    id: 'science',
+    screen: 'scienceHome',
+    label: '理科アプリ',
+    screens: ['scienceHome', 'scienceUnit', 'scienceStudy', 'scienceQuiz', 'sciencePractice'],
+  },
+  {
     id: 'literature',
     screen: 'literatureLibrary',
     label: '名作に親しむ',

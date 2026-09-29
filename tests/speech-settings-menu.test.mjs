@@ -134,10 +134,12 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   assert.match(advisor, /data-advisor-weakness/)
   assert.match(advisor, /data-advisor-next-unit/)
   const expectedScreens = [
-    'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
     'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation', 'vocabCamera', 'customWords', 'wordRequests',
     'myList', 'myLearning', 'myGrammar', 'progress',
+    // 出典のページは、メニューのいちばん下の区切り「このアプリについて」に置く（2026-09-29 利用者の指示）。
+    'credits',
   ]
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
     ['apps', 'スタディアプリ'],
@@ -145,12 +147,13 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     ['support', '学習サポート'],
     ['records', '保存・記録'],
     ['settings', '設定'],
+    ['about', 'このアプリについて'],
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [6, 8, 7, 4, 2],
+    [8, 8, 7, 4, 2, 1],
   )
-  assert.equal(APP_MENU_ITEMS.length, 27)
+  assert.equal(APP_MENU_ITEMS.length, 30)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
@@ -253,7 +256,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
 
   // 学ぶ内容の行だけが設定を開く。ホーム・道具・保存・記録・設定の行は押すとそのまま開く。
   assert.deepEqual(APP_MENU_CONTENT_ITEMS.map((item) => item.screen), [
-    'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
     'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation',
   ])
@@ -268,12 +271,14 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   assert.deepEqual(settingsOf('mathMap'), ['sessionSize', 'autoAdvanceCorrect', 'vocabMix'])
   assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
   assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
+  assert.deepEqual(settingsOf('socialHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
+  assert.deepEqual(settingsOf('scienceHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'vocabMix', 'dailyGoal'])
   assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
-  // 出題バランスは、暗記・テストの全22画面を開く教材すべて（辞書から選んだ1件を学ぶ英和辞書と、学習診断は除く）。
+  // 出題バランスは、暗記・テストの全25画面を開く教材すべて（辞書から選んだ1件を学ぶ英和辞書と、学習診断は除く）。
   // 日本語の声は、訳や古典・漢文を読み上げる教材と、意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。
   // 読み上げる範囲は、その暗記カードを開く教材だけ。
   assert.deepEqual(screensUsing('vocabMix'), [
-    'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
     'vocabLevels', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening', 'dictation',
   ])
   assert.deepEqual(
@@ -318,6 +323,15 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     kanbunHome: [
       'screens/KanbunHome', 'screens/KanbunCatalog', 'screens/KanbunStudy', 'screens/KanbunQuiz',
       'screens/KanbunKundoku', 'screens/KanbunKundokuQuiz',
+    ],
+    // 社会と理科は同じ画面の部品を使う（画面名は socialHome・scienceHome など）。
+    socialHome: [
+      'screens/SubjectHome', 'screens/SubjectUnit', 'screens/SubjectStudy', 'screens/SubjectQuiz',
+      'screens/SubjectPractice', 'components/SubjectFigure',
+    ],
+    scienceHome: [
+      'screens/SubjectHome', 'screens/SubjectUnit', 'screens/SubjectStudy', 'screens/SubjectQuiz',
+      'screens/SubjectPractice', 'components/SubjectFigure',
     ],
     literatureLibrary: ['screens/LiteratureLibrary', 'screens/LiteratureReader', 'components/LiteratureVocabularySheet'],
     vocabLevels: ['screens/VocabLevels', 'screens/VocabGroups', 'screens/VocabDecks', 'screens/VocabStudy', 'screens/VocabQuiz'],

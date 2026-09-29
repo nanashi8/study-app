@@ -92,7 +92,7 @@ const entry = (due = todayIndex()) => ({
   last: due,
 })
 
-test('旧ポータルの独立辞書を英語アプリ内へ移し、主要6コンテンツ順へ移行する', () => {
+test('旧ポータルの独立辞書を英語アプリ内へ移し、主要7コンテンツ順へ移行する', () => {
   const legacyOrder = [
     'eigo-quest',
     'math-quest',
@@ -108,7 +108,8 @@ test('旧ポータルの独立辞書を英語アプリ内へ移し、主要6コ�
     'kanbun-quest',
     'literature-listening',
     'math-quest',
-    'other-subjects',
+    'social-quest',
+    'science-quest',
   ])
 })
 
@@ -355,7 +356,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('履歴リセットの7分類は全45永続項目を漏れなく一度だけ扱う', () => {
+test('履歴リセットの7分類は全49永続項目を漏れなく一度だけ扱う', () => {
   const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
   const combinedFields = [
     ...RESETTABLE_PROGRESS_FIELDS,
@@ -365,11 +366,11 @@ test('履歴リセットの7分類は全45永続項目を漏れなく一度だ�
   assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
   assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
   // 以前の「マイ単語」（myList）と古典・漢文の登録リストは単語帳へ移したので、保存項目には持たない。
-  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 45)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 49)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('myList'), false)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('kotenWordList'), false)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('kanbunCultureList'), false)
-  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 42)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 46)
   assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
   assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
   assert.deepEqual(

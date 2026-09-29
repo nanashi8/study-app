@@ -387,11 +387,13 @@
   100% { transform: scale(0.8); opacity: 0.32; }
 }
 
-.koten-ruby {
+.koten-ruby,
+.subject-ruby {
   ruby-align: center;
   ruby-position: over;
 }
-.koten-ruby > rt {
+.koten-ruby > rt,
+.subject-ruby > rt {
   font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN",
     "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
   font-size: 0.5em;

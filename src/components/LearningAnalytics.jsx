@@ -6,6 +6,7 @@ import {
   launchForGradeGroup,
 } from '../lib/learningAnalyticsReport.js'
 import { Button, Card, cx } from './ui.jsx'
+import { SubjectSourceText } from './SubjectText.jsx'
 
 const DIAGNOSTIC_SKILL_META = {
   vocab: { emoji: '📖', label: '英単語' },
@@ -599,7 +600,7 @@ function Gradebook({ report, onNavigate }) {
                   <div className="min-w-0">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <h3 className="break-words text-sm font-extrabold leading-snug text-slate-900">{group.label}</h3>
+                          <h3 className="break-words text-sm font-extrabold leading-snug text-slate-900"><SubjectSourceText source={group.primaryDomain}>{group.label}</SubjectSourceText></h3>
                           <p className="mt-0.5 text-[9px] font-bold text-slate-400">{group.count}項目・記録 {group.testAttempts + group.memoryAttempts + group.legacyAttempts}件</p>
                         </div>
                         <span className={cx('border px-2 py-1 text-[9px] font-extrabold', group.due ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-slate-200 bg-slate-50 text-slate-500')}>
@@ -1003,6 +1004,8 @@ export function LearningAnalyticsPanel({
   kanbunGrammarSrs,
   kanbunCultureSrs,
   kanbunKundokuSrs,
+  socialTermSrs,
+  scienceTermSrs,
   skillStats,
   diagnosticHistory,
   stats,
@@ -1024,6 +1027,8 @@ export function LearningAnalyticsPanel({
         kanbunGrammarSrs,
         kanbunCultureSrs,
         kanbunKundokuSrs,
+        socialTermSrs,
+        scienceTermSrs,
       ],
       skillStats,
       diagnosticHistory,
@@ -1042,6 +1047,8 @@ export function LearningAnalyticsPanel({
       kanbunGrammarSrs,
       kanbunCultureSrs,
       kanbunKundokuSrs,
+      socialTermSrs,
+      scienceTermSrs,
       skillStats,
       diagnosticHistory,
       stats,
@@ -1063,6 +1070,8 @@ export function LearningAnalyticsPanel({
         kanbunGrammarSrs,
         kanbunCultureSrs,
         kanbunKundokuSrs,
+        socialTermSrs,
+        scienceTermSrs,
         skillStats,
       },
       analysis,
@@ -1079,6 +1088,8 @@ export function LearningAnalyticsPanel({
       kanbunGrammarSrs,
       kanbunCultureSrs,
       kanbunKundokuSrs,
+      socialTermSrs,
+      scienceTermSrs,
       skillStats,
       analysis,
     ],

@@ -50,7 +50,7 @@ export const CONTENT_SETTING_GROUPS = Object.freeze([
 const SETTING_ORDER = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
 
 // 教材から開く暗記・テスト・読み上げの画面が、それぞれ読んでいる設定。
-// 出題バランス（画面下部の「出題」）は、暗記・テストの全22画面で使う（STUDY_MIX）。
+// 出題バランス（画面下部の「出題」）は、暗記・テストの全28画面で使う（STUDY_MIX）。
 const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
 const STUDY_MIX = ['vocabMix']
 // 英単語・熟語・構文の暗記カードは、読み上げる範囲に合わせて意味と例文の意味を日本語の声で読む。
@@ -99,12 +99,15 @@ const englishItem = (screen, label, description) =>
 // 画面IDは保存済み履歴・戻る履歴との互換性のため変更しない。
 export const APP_MENU_SECTIONS = Object.freeze([
   section('apps', 'スタディアプリ', [
-    screenItem('portal', 'スタディアプリ ホーム', '英語・数学・古典・漢文・名作から選ぶ'),
+    screenItem('portal', 'スタディアプリ ホーム', '英語・数学・古典・漢文・社会・理科・名作から選ぶ'),
     contentItem('home', '英語アプリ', '英検5級〜1級の主要学習', settingsOf(...Object.values(ENGLISH_CONTENT_SETTINGS))),
     // 数学の歴史のテストは、問題数・正解したら自動で次へ・出題バランスを使う。
     contentItem('mathMap', '数学アプリ', '単元マップと理解度', settingsOf(QUESTION_TEST, STUDY_MIX)),
     contentItem('kotenList', '古典アプリ', '古典単語・文法・常識・短文', settingsOf(CARD_STUDY, QUESTION_TEST, STUDY_MIX)),
     contentItem('kanbunHome', '漢文アプリ', '漢語・漢文法・漢文常識・返り点', settingsOf(CARD_STUDY, QUESTION_TEST, STUDY_MIX)),
+    // 社会・理科は、重要語句の暗記（カード）と語句テスト・演習（基礎・標準・入試）を使う。
+    contentItem('socialHome', '社会アプリ', '地理・歴史・公民の要点・重要語句・演習', settingsOf(CARD_STUDY, QUESTION_TEST, STUDY_MIX)),
+    contentItem('scienceHome', '理科アプリ', '1〜3年の要点・重要語句・演習', settingsOf(CARD_STUDY, QUESTION_TEST, STUDY_MIX)),
     // 本文の語は、英語の作品なら英単語、古典・漢文の作品なら古典単語・漢語の暗記で学ぶ。
     contentItem('literatureLibrary', '名作に親しむ', '英語・古典・漢文の朗読', settingsOf(READ_ALOUD, WORD_STUDY, CARD_STUDY, STUDY_MIX)),
   ]),
@@ -129,7 +132,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', 'コンテンツのメモ・単語帳・履歴'),
-    screenItem('myLearning', '暗記・テストの記録', '全20教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
+    screenItem('myLearning', '暗記・テストの記録', '全24教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),
@@ -137,6 +140,10 @@ export const APP_MENU_SECTIONS = Object.freeze([
   section('settings', '設定', [
     actionItem('settings', '設定', 'すべての教材の設定をまとめて変える・ホームの表示'),
     actionItem('reset', '学習履歴を選んでリセット', 'すべて、または項目を選択', 'danger'),
+  ]),
+  // 教材づくりで参考にしたもの・使った資料は、メニューの最後の出典のページにまとめる（学習の画面には出さない）。
+  section('about', 'このアプリについて', [
+    screenItem('credits', '出典', '参考にした教科書の単元と、図・数値に使った資料'),
   ]),
 ])
 
@@ -183,6 +190,8 @@ const DAILY_GOAL_UNITS = Object.freeze({
   phrases: '項目',
   kotenList: '項目',
   kanbunHome: '項目',
+  socialHome: '語句',
+  scienceHome: '語句',
 })
 
 export function dailyGoalUnit(scopes) {

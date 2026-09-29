@@ -58,6 +58,9 @@ export const SCOPE_SCREENS = Object.freeze({
     'mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz',
     'mathExam', 'mathExamUnit', 'mathExamSolve',
   ],
+  // 社会・理科アプリの画面。重要語句の暗記・語句テスト・演習が、同じ教科の値を使う。
+  socialHome: ['socialHome', 'socialUnit', 'socialStudy', 'socialQuiz', 'socialPractice'],
+  scienceHome: ['scienceHome', 'scienceUnit', 'scienceStudy', 'scienceQuiz', 'sciencePractice'],
 })
 
 // いくつかの教材から開く暗記・テスト・結果・辞書の画面。開いた教材（scopes のどれか）の値を使い、
@@ -80,6 +83,8 @@ const APP_FALLBACK_SCOPES = Object.freeze({
   koten: 'kotenList',
   kanbun: 'kanbunHome',
   literature: 'literatureLibrary',
+  social: 'socialHome',
+  science: 'scienceHome',
 })
 
 const OWNER_BY_SCREEN = new Map(

@@ -30,6 +30,7 @@ import { KANBUN_CULTURE_CATEGORIES, getKanbunCulture } from '../data/kanbun-cult
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { getKanbunKundokuExercise } from '../data/kanbun-kundoku.js'
 import { unitById } from '../data/math.js'
+import { bookMeta, getSubjectQuestion, getSubjectTerm, getSubjectUnit } from '../data/subjects/index.js'
 import { analyzeLearning, learningSkillForItem } from './learningAnalytics.js'
 import {
   LONG_TERM_SRS_BOX,
@@ -53,6 +54,8 @@ export const LEARNING_REPORT_SUBJECTS = Object.freeze({
   koten: { label: '古典', emoji: '📜', color: '#b45309' },
   kanbun: { label: '漢文', emoji: '📕', color: '#9f1239' },
   math: { label: '数学', emoji: '📐', color: '#7c3aed' },
+  social: { label: '社会', emoji: '🗾', color: '#0f766e' },
+  science: { label: '理科', emoji: '🔬', color: '#15803d' },
 })
 
 export const LEARNING_REPORT_DOMAINS = Object.freeze({
@@ -73,6 +76,10 @@ export const LEARNING_REPORT_DOMAINS = Object.freeze({
   kanbunCulture: { label: '漢文常識', subject: 'kanbun', skill: 'kanbun_culture', memory: true, test: true, color: '#7c3aed' },
   kanbunKundoku: { label: '返り点・訓読', subject: 'kanbun', skill: 'kanbun_kundoku', memory: false, test: true, color: '#0369a1' },
   math: { label: '数学', subject: 'math', skill: 'math', memory: false, test: true, color: '#7c3aed' },
+  socialTerms: { label: '社会の重要語句', subject: 'social', skill: 'social_terms', memory: true, test: true, color: '#0f766e' },
+  socialPractice: { label: '社会の演習', subject: 'social', skill: 'social_practice', memory: false, test: true, color: '#0e7490' },
+  scienceTerms: { label: '理科の重要語句', subject: 'science', skill: 'science_terms', memory: true, test: true, color: '#15803d' },
+  sciencePractice: { label: '理科の演習', subject: 'science', skill: 'science_practice', memory: false, test: true, color: '#0369a1' },
 })
 
 const domainForSkill = Object.fromEntries(
@@ -203,6 +210,17 @@ function descriptor(domain, item, fallbackId) {
     subtitle: item?.kakikudashi ?? '',
     field: '返り点・訓読',
     level: KANBUN_LEVEL_BY_ID[item?.level]?.label ?? '',
+  }
+  if (domain === 'socialTerms' || domain === 'scienceTerms') {
+    const unit = getSubjectUnit(item?.unitId)
+    return {
+      catalogResolved: Boolean(item),
+      id,
+      title: item?.term ?? fallbackId,
+      subtitle: item?.meaning ?? '',
+      field: unit?.title ?? (domain === 'socialTerms' ? '社会全般' : '理科全般'),
+      level: unit ? bookMeta(unit.subject, unit.book)?.label ?? '' : '',
+    }
   }
   if (domain === 'math') return {
     catalogResolved: Boolean(item),
@@ -392,6 +410,8 @@ function collectSrsRows(state, analysis, now) {
     ['kanbunGrammar', state.kanbunGrammarSrs, (id) => descriptor('kanbunGrammar', getKanbunGrammar(id), id)],
     ['kanbunCulture', state.kanbunCultureSrs, (id) => descriptor('kanbunCulture', getKanbunCulture(id), id)],
     ['kanbunKundoku', state.kanbunKundokuSrs, (id) => descriptor('kanbunKundoku', getKanbunKundokuExercise(id), id)],
+    ['socialTerms', state.socialTermSrs, (id) => descriptor('socialTerms', getSubjectTerm(id), id)],
+    ['scienceTerms', state.scienceTermSrs, (id) => descriptor('scienceTerms', getSubjectTerm(id), id)],
   ]
   for (const [domain, store, resolve] of stores) {
     for (const [id, entry] of Object.entries(store ?? {})) {
@@ -572,6 +592,8 @@ const COMPLETION_CONTENTS = Object.freeze({
   'kanbun-vocab': Object.freeze({ domain: 'kanbunVocab', get: getKanbunVocab }),
   'kanbun-grammar': Object.freeze({ domain: 'kanbunGrammar', get: getKanbunGrammar }),
   'kanbun-culture': Object.freeze({ domain: 'kanbunCulture', get: getKanbunCulture }),
+  'social-terms': Object.freeze({ domain: 'socialTerms', get: getSubjectTerm }),
+  'science-terms': Object.freeze({ domain: 'scienceTerms', get: getSubjectTerm }),
 })
 
 export const STUDY_COMPLETION_CONTENT_IDS = Object.freeze(Object.keys(COMPLETION_CONTENTS))
@@ -802,6 +824,24 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
   if (domain === 'kanbunKundoku') return {
     screen: 'kanbunKundokuQuiz',
     params: { ids: uniqueIds, title: title || '学習記録から選んだ返り点復習', size: uniqueIds.length },
+  }
+  if (domain === 'socialTerms' || domain === 'scienceTerms') {
+    const subject = domain === 'socialTerms' ? 'social' : 'science'
+    const termIds = uniqueIds.filter((id) => getSubjectTerm(id))
+    if (!termIds.length) return { screen: `${subject}Home`, params: {} }
+    return {
+      screen: mode === 'memory' ? `${subject}Study` : `${subject}Quiz`,
+      params: { ids: termIds, title: title || '学習記録から選んだ重要語句', size: termIds.length },
+    }
+  }
+  if (domain === 'socialPractice' || domain === 'sciencePractice') {
+    const subject = domain === 'socialPractice' ? 'social' : 'science'
+    const questionIds = uniqueIds.filter((id) => getSubjectQuestion(id))
+    if (!questionIds.length) return { screen: `${subject}Home`, params: {} }
+    return {
+      screen: `${subject}Practice`,
+      params: { ids: questionIds, title: title || '学習記録から選んだ演習', size: questionIds.length },
+    }
   }
   if (domain === 'math') return {
     screen: uniqueIds[0] && unitById(uniqueIds[0]) ? 'mathIntro' : 'mathMap',

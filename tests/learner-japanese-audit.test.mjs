@@ -53,11 +53,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // src/components/LiteratureSceneNavigator.jsx を外した）。ソース全体は、文ごとの台帳（literature-sentences.js・
   // literature-classics-notes.js・literature-structures/ の8ファイル）を足し、英語名作の古い全文の場面ファイル・
   // 訳の修正台帳（src/data/literature-full-text/ の12ファイル）を外して、差し引き1ファイル増えた。
-  assert.equal(result.learnerFiles, 311)
-  assert.equal(result.learnerJapaneseEntries, 15516)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11529)
-  assert.equal(result.sourceFiles, 770)
-  assert.equal(result.sourceJapaneseEntries, 208184)
+  // 2026-09-30、中学の社会・理科で画面・部品・lib が10ファイル（src/screens/SubjectHome.jsx・SubjectUnit.jsx・
+  // SubjectStudy.jsx・SubjectQuiz.jsx・SubjectPractice.jsx・Credits.jsx・src/components/SubjectFigure.jsx・
+  // SubjectText.jsx・src/lib/subjectPractice.js・subjectText.js）、単元と出典のデータが12ファイル
+  // （src/data/subjects/ の11ファイルと src/data/credits.js）増えた。
+  assert.equal(result.learnerFiles, 321)
+  assert.equal(result.learnerJapaneseEntries, 15813)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11676)
+  assert.equal(result.sourceFiles, 792)
+  assert.equal(result.sourceJapaneseEntries, 221702)
   assert.equal(result.issues.length, 0)
 })
 

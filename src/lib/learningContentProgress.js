@@ -24,6 +24,8 @@ import {
 import { notYetMathStories, understoodMathStories } from './mathStoryLog.js'
 import { MATH_EXAM_PROBLEMS, MATH_EXAM_QUIZ_DOMAIN } from '../data/math-exam.js'
 import { latestMathExamAttempt } from './mathExamLog.js'
+import { SUBJECTS, subjectQuestions, subjectTerms } from '../data/subjects/index.js'
+import { latestSubjectPractice } from './subjectPractice.js'
 import {
   summarizeCompletionItems,
   summarizeQuizItems,
@@ -88,7 +90,38 @@ export const LEARNING_CONTENT_GROUPS = Object.freeze([
   { id: 'classics', label: '古典' },
   { id: 'kanbun', label: '漢文' },
   { id: 'other', label: '名作・数学' },
+  { id: 'social', label: '社会' },
+  { id: 'science', label: '理科' },
 ])
+
+// 社会・理科は教科ごとに2教材。重要語句は暗記とテスト（1語句1問）、演習は問題ごとの結果で数える。
+// 演習は、いちばん新しい結果が正解の問題を学習を終えた問題、それ以外に解いた問題を解き直し中として数える。
+function subjectContents(subject) {
+  const meta = SUBJECTS[subject]
+  const questions = subjectQuestions(subject)
+  const latestOf = (state, question) => latestSubjectPractice(state[meta.practiceLogField], question.id)
+  return [
+    srsContent(meta.termDomain, subject, `${meta.label}の重要語句`, '語句', meta.screens.home, subjectTerms(subject), meta.termSrsField),
+    completionContent(
+      meta.practiceDomain,
+      subject,
+      `${meta.label}の演習`,
+      '問',
+      meta.screens.home,
+      questions,
+      (state) => questions.filter((question) => latestOf(state, question)?.result === 'correct').map((question) => question.id),
+      meta.practiceDomain,
+      {
+        reviewingIds: (state) => questions
+          .filter((question) => {
+            const latest = latestOf(state, question)
+            return latest && latest.result !== 'correct'
+          })
+          .map((question) => question.id),
+      },
+    ),
+  ]
+}
 
 // learner-facing の全教材母集団。辞書・診断・保存リスト・設定は教材ではないため除く。
 export const LEARNING_CONTENTS = Object.freeze([
@@ -189,6 +222,7 @@ export const LEARNING_CONTENTS = Object.freeze([
         .map((problem) => problem.id),
     },
   ),
+  ...['social', 'science'].flatMap((subject) => subjectContents(subject)),
 ])
 
 export function buildLearningContentProgress(state = {}) {

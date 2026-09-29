@@ -45,6 +45,7 @@ import { normalizeContentQuizResults } from './contentProgress.js'
 import { normalizeGrammarReferenceLog } from './grammarReferenceLog.js'
 import { normalizeMathStoryLog } from './mathStoryLog.js'
 import { normalizeMathExamLog } from './mathExamLog.js'
+import { normalizeSubjectPracticeLog } from './subjectPractice.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -72,6 +73,9 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     kanbunGrammarSrs: data.kanbunGrammarSrs ?? {},
     kanbunCultureSrs: data.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: data.kanbunKundokuSrs ?? {},
+    // 古いクラウド保存にこの項目が無い場合、端末で残した社会・理科の暗記の記録を消さない。
+    socialTermSrs: data.socialTermSrs ?? current.socialTermSrs ?? {},
+    scienceTermSrs: data.scienceTermSrs ?? current.scienceTermSrs ?? {},
     // 古いクラウド保存にこの項目が無い場合、端末で作った自作単語を消さない。
     customWords: normalizeCustomWords(data.customWords ?? current.customWords),
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
@@ -96,6 +100,9 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     // 古いクラウド保存にこの項目が無い場合、端末で残した入試演習の記録を消さない。
     mathExamLog: normalizeMathExamLog(data.mathExamLog ?? current.mathExamLog),
     contentQuizResults: normalizeContentQuizResults(data.contentQuizResults),
+    // 古いクラウド保存にこの項目が無い場合、端末で残した社会・理科の演習の記録を消さない。
+    socialPracticeLog: normalizeSubjectPracticeLog(data.socialPracticeLog ?? current.socialPracticeLog),
+    sciencePracticeLog: normalizeSubjectPracticeLog(data.sciencePracticeLog ?? current.sciencePracticeLog),
     skillStats: data.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(
       data.learningAnalytics ?? current.learningAnalytics,

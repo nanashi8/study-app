@@ -359,21 +359,22 @@ test('スペルを隠しているあいだの再生パネルは、つづり・�
 })
 
 // ─── 出題（出題バランス） ──────────────────────────────────────────────────────────
-// 暗記・テストの全22画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
+// 暗記・テストの全28画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
 function studyScreens() {
   const app = read('src/App.jsx')
   const componentFile = new Map(
     [...app.matchAll(/const (\w+) = lazyScreen\(\s*\(\) => import\('\.\/screens\/(\w+)\.jsx'\)/g)]
       .map((match) => [match[1], match[2]]),
   )
-  const screenOf = new Map(
-    [...app.slice(app.indexOf('const SCREENS = {')).matchAll(/^ {2}(\w+): (\w+),$/gm)]
-      .map((match) => [componentFile.get(match[2]), match[1]])
-      .filter(([file]) => file),
-  )
+  // 社会・理科のように、1つのファイルが教科ごとの2つの画面を持つこともある。
+  const screensOf = new Map()
+  for (const match of app.slice(app.indexOf('const SCREENS = {')).matchAll(/^ {2}(\w+): (\w+),$/gm)) {
+    const file = componentFile.get(match[2])
+    if (file) screensOf.set(file, [...(screensOf.get(file) ?? []), match[1]])
+  }
   return readdirSync(new URL('../src/screens/', import.meta.url))
     .filter((file) => file.endsWith('.jsx') && /<SessionCounter\b/.test(read(`src/screens/${file}`)))
-    .map((file) => ({ file, screen: screenOf.get(file.replace(/\.jsx$/, '')) }))
+    .flatMap((file) => (screensOf.get(file.replace(/\.jsx$/, '')) ?? [undefined]).map((screen) => ({ file, screen })))
 }
 
 let vite
@@ -413,9 +414,9 @@ function withInitialState(patch, run) {
 }
 const renderDock = (patch) => withInitialState(patch, () => renderToStaticMarkup(React.createElement(modules.console.GlobalSpeechConsole)))
 
-test('出題を全22画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
+test('出題を全28画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
   const screens = studyScreens()
-  assert.equal(screens.length, 22)
+  assert.equal(screens.length, 28)
   assert.deepEqual([...modules.mix.STUDY_MIX_SCREENS].sort(), screens.map(({ screen }) => screen).sort())
   for (const { file, screen } of screens) {
     const source = read(`src/screens/${file}`)
@@ -484,7 +485,7 @@ function stockedRecords(items, { idOf = (item) => item.id } = {}) {
   return { srs, kindOf }
 }
 
-test('今の出題順の上で：出題バランスの6段が、全22画面の出題口で今の出題順に効く', () => {
+test('今の出題順の上で：出題バランスの6段が、全28画面の出題口で今の出題順に効く', () => {
   const realNow = Date.now
   Date.now = () => NOW
   try {
@@ -666,8 +667,12 @@ test('今の出題順の上で：出題バランスの6段が、全22画面の�
       'DictationPlay.jsx': /freshShare: currentStudyMixShare\(\) \}/,
       'VocabStudy.jsx': /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\),/,
       'VocabQuiz.jsx': /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\),/,
+      // 社会・理科は1ファイルで教科ごとの2画面（25ファイルで28画面）。
+      'SubjectStudy.jsx': /pickSubjectTerms\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/,
+      'SubjectQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
+      'SubjectPractice.jsx': /freshShare: currentStudyMixShare\(\),/,
     }
-    assert.equal(Object.keys(wiring).length, 22)
+    assert.equal(Object.keys(wiring).length, 25)
     for (const [file, pattern] of Object.entries(wiring)) assert.match(read(`src/screens/${file}`), pattern, file)
     // 下部の説明も今の出題順で書く。
     assert.match(read('src/lib/vocabMix.js'), /adaptive \? 'たまり具合で自動' : '苦手→復習→未修の順'/)
@@ -680,7 +685,7 @@ test('今の出題順の上で：出題バランスの6段が、全22画面の�
   }
 })
 
-test('先の問題を組み直す：バーを動かすと、全22画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
+test('先の問題を組み直す：バーを動かすと、全28画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
   for (const { file } of studyScreens()) {
     const source = read(`src/screens/${file}`)
     assert.match(source, /useStudyMixRebuild\(\{\n\s*index(?:: \w+)?,\n\s*answeredIndexes(?::|,)/, file)
@@ -702,7 +707,7 @@ test('先の問題を組み直す：バーを動かすと、全22画面で表示
   assert.deepEqual(growDeck(current, 2, next, 5).map((item) => item.id), ['a', 'b', 'x', 'y', 'z'])
 })
 
-test('出題バランスを教材の設定に並べる：22画面を開く教材の設定にどれも出題バランスがある', () => {
+test('出題バランスを教材の設定に並べる：28画面を開く教材の設定にどれも出題バランスがある', () => {
   const settingsOf = (screen) => APP_MENU_CONTENT_ITEMS.find((item) => item.screen === screen)?.settings ?? []
   const screens = studyScreens().map(({ screen }) => screen)
   const owners = new Set()
@@ -720,7 +725,7 @@ test('出題バランスを教材の設定に並べる：22画面を開く教材
   }
   assert.deepEqual([...owners].sort(), [
     'dictation', 'grammar', 'kanbunHome', 'kotenList', 'listening', 'literatureLibrary', 'mathMap',
-    'phrases', 'readingList', 'roots', 'vocabLevels', 'writing',
+    'phrases', 'readingList', 'roots', 'scienceHome', 'socialHome', 'vocabLevels', 'writing',
   ])
   assert.ok(settingsOf('home').includes('vocabMix'))
   // 設定の行の名前は全教材で同じ「出題バランス」。

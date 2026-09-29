@@ -53,6 +53,10 @@ const EXPECTED_COUNTS = Object.freeze({
   math: 274,
   'math-history': 71,
   'math-exam': 360,
+  'social-terms': 649,
+  'social-practice': 522,
+  'science-terms': 502,
+  'science-practice': 396,
 })
 
 const contentById = (id) => LEARNING_CONTENTS.find((content) => content.id === id)
@@ -67,6 +71,8 @@ const EXPECTED_REVIEWABLE_CONTENT_IDS = Object.freeze([
   'kanbun-vocab',
   'kanbun-grammar',
   'kanbun-culture',
+  'social-terms',
+  'science-terms',
 ])
 
 function reviewEntry({ memoryAt, testAt, failed = false, day }) {
@@ -97,9 +103,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全20教材・18,268項目を一覧行へ重複も欠落もなく変換する', () => {
-  assert.equal(LEARNING_CONTENTS.length, 20)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 18_268)
+test('全24教材・20,337項目を一覧行へ重複も欠落もなく変換する', () => {
+  assert.equal(LEARNING_CONTENTS.length, 24)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 20_337)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
@@ -209,7 +215,7 @@ test('日付を持たない読了記録と、日付を持つ作文・独立テ�
   assert.equal(writingRow.memoryAt, 20_000 * DAY_MS)
 })
 
-test('20教材すべてに既存の学習画面への開始契約と一覧への帰り先がある', () => {
+test('24教材すべてに既存の学習画面への開始契約と一覧への帰り先がある', () => {
   const expectedScreens = {
     vocab: 'vocabStudy',
     usage: 'phraseStudy',
@@ -231,6 +237,10 @@ test('20教材すべてに既存の学習画面への開始契約と一覧への
     math: 'mathSolve',
     'math-history': 'mathStory',
     'math-exam': 'mathExamSolve',
+    'social-terms': 'socialStudy',
+    'social-practice': 'socialPractice',
+    'science-terms': 'scienceStudy',
+    'science-practice': 'sciencePractice',
   }
   assert.deepEqual(Object.keys(LEARNING_CONTENT_CATALOG_ACTIONS), Object.keys(EXPECTED_COUNTS))
 
@@ -310,12 +320,12 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   )
 })
 
-test('英単語と指定9カテゴリの全12,689項目を学習・テストの連続スワイプ対象にする', () => {
+test('英単語と指定11カテゴリの全13,840項目を学習・テストの連続スワイプ対象にする', () => {
   assert.deepEqual(LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS, EXPECTED_REVIEWABLE_CONTENT_IDS)
   const contents = EXPECTED_REVIEWABLE_CONTENT_IDS.map(contentById)
   assert.ok(contents.every(Boolean))
-  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 12_689)
-  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 3_760)
+  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 13_840)
+  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 4_911)
 
   const usageKinds = Object.fromEntries(
     [...new Set(contentById('usage').items.map((item) => item.kind))]
@@ -344,7 +354,7 @@ test('英単語と指定9カテゴリの全12,689項目を学習・テストの�
   assert.equal(learningContentCatalogReviewCommand('grammar', 'g1', 'correct'), null)
 })
 
-test('一覧スワイプは9教材IDごとの既存SRS書き込み口へ保存する', () => {
+test('一覧スワイプは11教材IDごとの既存SRS書き込み口へ保存する', () => {
   const storeFields = {
     vocab: 'srs',
     usage: 'srs',
@@ -355,6 +365,8 @@ test('一覧スワイプは9教材IDごとの既存SRS書き込み口へ保存�
     'kanbun-vocab': 'kanbunVocabSrs',
     'kanbun-grammar': 'kanbunGrammarSrs',
     'kanbun-culture': 'kanbunCultureSrs',
+    'social-terms': 'socialTermSrs',
+    'science-terms': 'scienceTermSrs',
   }
   for (const field of new Set(Object.values(storeFields))) {
     assert.ok(PERSISTED_PROGRESS_FIELDS.includes(field), `${field}: 保存・同期契約`)
@@ -372,7 +384,7 @@ test('一覧スワイプは9教材IDごとの既存SRS書き込み口へ保存�
   useStore.setState(createInitialLearningState())
 })
 
-test('マイ学習の入口を一覧確認へ統一し、英単語と指定9カテゴリを連続スワイプで記録する', () => {
+test('マイ学習の入口を一覧確認へ統一し、英単語と指定11カテゴリを連続スワイプで記録する', () => {
   const myLearning = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
   const vocabularyHistoryRow = readFileSync(new URL('../src/components/VocabularyHistoryRow.jsx', import.meta.url), 'utf8')
@@ -386,7 +398,7 @@ test('マイ学習の入口を一覧確認へ統一し、英単語と指定9カ�
   assert.match(myLearning, /data-learning-content-catalog-entry=\{content\.id\}/)
   assert.match(myLearning, /一覧を確認/)
   assert.doesNotMatch(myLearning, /一覧から学ぶ|一覧から確認/)
-  assert.match(appMenu, /全20教材の一覧を確認し/)
+  assert.match(appMenu, /全24教材の一覧を確認し/)
   assert.doesNotMatch(appMenu, /一覧から学び|一覧から学ぶ|一覧から確認|一覧から復習/)
   assert.match(myLearning, /view: 'catalog', contentId: content\.id/)
   assert.match(catalog, /data-learning-content-catalog=\{content\.id\}/)
@@ -547,7 +559,7 @@ test('一覧の上は記録の切替1行だけを残し、しぼり込み・並�
   assert.match(tools, /aria-expanded=\{open\}/)
   assert.match(tools, /!open && 'learning-catalog-tools-collapsible'/)
 
-  // 20教材の一覧は、教材選び・検索・並び替え・一覧を再表示を畳む側へ入れる。
+  // 24教材の一覧は、教材選び・検索・並び替え・一覧を再表示を畳む側へ入れる。
   const catalogInside = catalog.slice(catalog.indexOf('<CatalogTools'), catalog.indexOf('</CatalogTools>'))
   for (const token of [
     'data-learning-catalog-content-select',
@@ -555,7 +567,7 @@ test('一覧の上は記録の切替1行だけを残し、しぼり込み・並�
     'data-learning-catalog-sort',
     'data-learning-catalog-restore',
   ]) {
-    assert.ok(catalogInside.includes(token), `20教材の一覧: ${token}`)
+    assert.ok(catalogInside.includes(token), `24教材の一覧: ${token}`)
   }
 
   // 英単語の一覧も同じで、10分野・学習状況・並び替え・見方の切替を畳む。
@@ -573,7 +585,7 @@ test('一覧の上は記録の切替1行だけを残し、しぼり込み・並�
   // スワイプの案内は動かない上部ではなく、一覧と一緒に流れる側に置く。
   assert.ok(
     catalog.indexOf('data-learning-catalog-list') < catalog.indexOf('data-learning-catalog-swipe-guide'),
-    '20教材の一覧: スワイプの案内は一覧の中',
+    '24教材の一覧: スワイプの案内は一覧の中',
   )
   assert.ok(
     decks.indexOf('data-vocab-catalog-list') < decks.indexOf('data-vocab-catalog-swipe-guide'),

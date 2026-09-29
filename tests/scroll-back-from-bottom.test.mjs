@@ -11,6 +11,7 @@
 //
 // 実ブラウザ（Playwright の Chromium・スマホの大きさ・指の送りは CDP の synthesizeScrollGesture）で全画面を動かす。
 // 見えている範囲の値は、iPhone の Safari が返す値を外枠の計算（src/lib/safeArea.js の syncSafeArea）へ渡して作る。
+// 標準の大きさで中身が収まり、縦に動く欄がない画面（社会・理科の暗記カード）は、小さい画面（iPhone SE の Safari で見える範囲）で確かめる。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -23,6 +24,12 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 // iPhone の Safari でツールバーが出ているときのページの高さ（html・body の 100%）と、ツールバーが縮んだときの差。
 const PAGE_HEIGHT = 664
 const TOOLBAR = 81
+// 標準の大きさ（390×PAGE_HEIGHT）では中身が画面に収まり、縦に動く欄がない画面を確かめる大きさ。
+// iPhone SE（第2・第3世代、画面 375×667）の Safari で、ツールバーが出ているときに見えるおよその範囲。
+const SMALL_VIEWPORT = { width: 375, height: 548 }
+// 標準の大きさでは縦に動く欄がなく、小さい画面で確かめる画面（暗記カードの裏が意味だけで短い、社会・理科の暗記カード）。
+// ここにない画面で縦に動く欄がなくなったら、テストが止める（理由を確かめてから足す）。
+const SMALL_ONLY_SCREENS = ['socialStudy', 'scienceStudy']
 // 全画面を確かめるときに同時に動かす画面の数。
 const PHONES = 4
 
@@ -95,8 +102,8 @@ class Phone {
 
   async ensureApp() {
     await this.page.waitForSelector('.study-app-content', { timeout: 30_000 })
-    await this.page.evaluate(async () => {
-      if (window.__scrollTest) return
+    const started = await this.page.evaluate(async () => {
+      if (window.__scrollTest) return false
       const moduleUrl = (path) => performance.getEntriesByType('resource')
         .map((entry) => entry.name)
         .find((name) => new URL(name).pathname === path)
@@ -142,7 +149,18 @@ class Phone {
         }
       }
       window.__scrollTest = { store, applyFrameState, pageState }
+      return true
     })
+    // 起動の直後は、外枠の高さを 0.4 秒後・1.2 秒後にも測り直す（src/lib/safeArea.js の startSafeAreaSync）。
+    // 読み込んだばかりのページで外枠の状態を差し替えると、その測り直しで元へ戻るので、終わるまで待つ。
+    if (started) await this.page.waitForTimeout(1300)
+  }
+
+  // 見えている範囲の大きさを変える。外枠は resize を受けて測り直す。
+  async resize(viewport) {
+    await this.page.setViewportSize(viewport)
+    await this.page.waitForTimeout(150)
+    await this.settle()
   }
 
   async evaluate(fn, arg) {
@@ -167,7 +185,7 @@ class Phone {
     return this.evaluate(async () => {
       const [
         vocab, passages, math, mathHistory, strands, grammarReference, writing, writingExam,
-        koten, kotenInterpretations, kotenGrammar, kotenCulture, literature,
+        koten, kotenInterpretations, kotenGrammar, kotenCulture, literature, subjects,
       ] = await Promise.all([
         '/src/data/vocab.js',
         '/src/data/passages.js',
@@ -182,6 +200,7 @@ class Phone {
         '/src/data/koten-grammar.js',
         '/src/data/koten-culture.js',
         '/src/data/public-domain-literature.js',
+        '/src/data/subjects/index.js',
       ].map((path) => import(path)))
       const ids = (items, count) => items.slice(0, count).map((item) => item.id)
       const rootPack = vocab.ETYMOLOGY_PACKS.find((pack) => String(pack.id).startsWith('root:'))
@@ -218,6 +237,18 @@ class Phone {
         kotenGrammarQuiz: { ids: ids(kotenGrammar.KOTEN_GRAMMAR, 10) },
         kotenCultureStudy: { ids: ids(kotenCulture.KOTEN_CULTURE, 10) },
         kotenCultureQuiz: { ids: ids(kotenCulture.KOTEN_CULTURE, 10) },
+        // 社会・理科は、それぞれ最初の単元（地理「世界の姿」・理科1年の最初の単元）を開く。
+        ...Object.fromEntries(['social', 'science'].flatMap((subject) => {
+          const meta = subjects.SUBJECTS[subject]
+          const unit = subjects.subjectUnits(subject)[0]
+          const termIds = unit.terms.map((term) => term.id)
+          return [
+            [meta.screens.unit, { unitId: unit.id }],
+            [meta.screens.study, { ids: termIds }],
+            [meta.screens.quiz, { ids: termIds }],
+            [meta.screens.practice, { unitId: unit.id }],
+          ]
+        })),
       }
     })
   }
@@ -521,8 +552,8 @@ test('直す前の作りでは、欄の下端から先の指でページがず�
   for (const [where, state] of Object.entries(fixed)) assertPageStill(state, `直した作り・${where}`)
 })
 
-test('全76画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
-  assert.equal(SCREEN_NAMES.length, 76)
+test('全87画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
+  assert.equal(SCREEN_NAMES.length, 87)
   const checked = new Set()
   await eachScreen(async (phone, screen) => {
     const opened = await phone.openScreen(screen, paramsByScreen[screen])
@@ -564,34 +595,50 @@ test('全76画面で、見えている範囲のどの状態でもページその
   }
   await phone.closeMenu()
   await phone.applyFrameState('normal')
-  assert.equal(checked.size, 76 * FRAME_STATES.length + FRAME_STATES.length)
+  assert.equal(checked.size, 87 * FRAME_STATES.length + FRAME_STATES.length)
 })
 
-test('全76画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
+test('全87画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
   const counts = new Map()
   const revealedScreens = []
+  const smallScreens = []
   let total = 0
   await eachScreen(async (phone, screen) => {
     await phone.seedFor(screen)
-    await phone.openScreen(screen, paramsByScreen[screen])
     let seen = 0
-    // 開いたままと、中身を開いた後（カードの裏・答えと解説）の両方で。
-    for (let pass = 0; pass < 2; pass += 1) {
-      const content = pass === 0 ? '開いたまま' : await phone.reveal()
-      if (!content) break
-      if (pass === 1) revealedScreens.push(`${screen}（${content}）`)
-      // ふつうの状態と、外枠が見えている範囲より高い状態（直す前にページが動けた状態）の両方で。
-      for (const stateId of ['normal', 'toolbar-returning']) {
-        await phone.applyFrameState(stateId)
-        const areas = await phone.scrollAreas()
-        seen = Math.max(seen, areas.length)
-        for (const area of areas) {
-          await phone.checkBackUpFromBottom(`[data-scroll-test-area="${area.index}"]`, `${screen}・${content}・${area.name}・${stateId}`)
-          total += 1
+    // 標準の大きさで確かめ、中身が収まって縦に動く欄がない画面は、小さい画面（SMALL_VIEWPORT）でも確かめる。
+    for (const viewport of [null, SMALL_VIEWPORT]) {
+      if (viewport && seen) break
+      const size = viewport ? '・小さい画面' : ''
+      try {
+        if (viewport) {
+          await phone.resize(viewport)
+          // 同じ画面名へ続けて開くと画面が作り直されないので、いったんポータルを挟む。
+          await phone.openScreen('portal')
+          smallScreens.push(screen)
         }
-        await phone.clearScrollAreas()
+        await phone.openScreen(screen, paramsByScreen[screen])
+        // 開いたままと、中身を開いた後（カードの裏・答えと解説）の両方で。
+        for (let pass = 0; pass < 2; pass += 1) {
+          const content = pass === 0 ? '開いたまま' : await phone.reveal()
+          if (!content) break
+          if (pass === 1) revealedScreens.push(`${screen}${size}（${content}）`)
+          // ふつうの状態と、外枠が見えている範囲より高い状態（直す前にページが動けた状態）の両方で。
+          for (const stateId of ['normal', 'toolbar-returning']) {
+            await phone.applyFrameState(stateId)
+            const areas = await phone.scrollAreas()
+            seen = Math.max(seen, areas.length)
+            for (const area of areas) {
+              await phone.checkBackUpFromBottom(`[data-scroll-test-area="${area.index}"]`, `${screen}${size}・${content}・${area.name}・${stateId}`)
+              total += 1
+            }
+            await phone.clearScrollAreas()
+          }
+          await phone.applyFrameState('normal')
+        }
+      } finally {
+        if (viewport) await phone.resize({ width: 390, height: PAGE_HEIGHT })
       }
-      await phone.applyFrameState('normal')
     }
     counts.set(screen, seen)
   })
@@ -609,7 +656,10 @@ test('全76画面の縦に動く欄で、一番下から上へ戻れる', async 
   const without = SCREEN_NAMES.filter((screen) => !counts.get(screen))
   t.diagnostic(`縦に動く欄のある画面 ${SCREEN_NAMES.length - without.length}/${SCREEN_NAMES.length}（欄 ${[...counts.values()].reduce((sum, count) => sum + count, 0)}、状態2つとメニューで ${total} 回）`)
   t.diagnostic(`中身を開いてからも確かめた画面 ${revealedScreens.length}：${revealedScreens.join('・')}`)
-  assert.equal(counts.size, 76)
+  t.diagnostic(`小さい画面（${SMALL_VIEWPORT.width}×${SMALL_VIEWPORT.height}）で確かめた画面 ${smallScreens.length}：${smallScreens.join('・')}`)
+  assert.equal(counts.size, 87)
+  // 標準の大きさで縦に動く欄がない画面は、決めた画面だけ（ほかの画面で欄がなくなったら理由を確かめる）。
+  assert.deepEqual([...new Set(smallScreens)].sort(), [...SMALL_ONLY_SCREENS].sort(), '標準の大きさで縦に動く欄がない画面')
   // どの画面にも、一番下まで送る縦の欄がある（中身が空の画面には中身を入れてから開く）。
   assert.deepEqual(without, [], '縦に動く欄がない画面')
 })

@@ -73,6 +73,15 @@ export function wordBookLaunchTarget(domain, mode, ids, { title, returnTo } = {}
       }
     case 'kanbunKundoku':
       return { screen: 'kanbunKundokuQuiz', params: { ids, title, ...back } }
+    case 'socialTerms':
+      return { screen: study ? 'socialStudy' : 'socialQuiz', params: { ids, title, ...back } }
+    case 'scienceTerms':
+      return { screen: study ? 'scienceStudy' : 'scienceQuiz', params: { ids, title, ...back } }
+    // 演習の問題は、いつも解く画面で学ぶ。
+    case 'socialPractice':
+      return { screen: 'socialPractice', params: { ids, title, ...back } }
+    case 'sciencePractice':
+      return { screen: 'sciencePractice', params: { ids, title, ...back } }
     default:
       return null
   }

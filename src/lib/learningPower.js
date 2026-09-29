@@ -74,6 +74,26 @@ const SKILL_ROUTES = {
     label: '古典常識',
     actionLabel: '古典常識へ',
   },
+  social_terms: {
+    screen: 'socialHome',
+    label: '社会の重要語句',
+    actionLabel: '社会へ',
+  },
+  social_practice: {
+    screen: 'socialHome',
+    label: '社会の演習',
+    actionLabel: '社会へ',
+  },
+  science_terms: {
+    screen: 'scienceHome',
+    label: '理科の重要語句',
+    actionLabel: '理科へ',
+  },
+  science_practice: {
+    screen: 'scienceHome',
+    label: '理科の演習',
+    actionLabel: '理科へ',
+  },
   koten_reading: {
     screen: 'kotenInterpretationList',
     label: '古典読解',

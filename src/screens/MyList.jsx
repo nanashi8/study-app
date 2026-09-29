@@ -6,6 +6,7 @@ import { wordBookLaunchTarget } from '../lib/wordBookLaunch.js'
 import { getEtymologyPack } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SubjectSourceText } from '../components/SubjectText.jsx'
 import { Button, Card, Chip, EmptyState } from '../components/ui.jsx'
 import {
   NOTEBOOK_LIMITS,
@@ -65,6 +66,10 @@ const SESSION_LIMITS = Object.freeze({
   kanbunGrammar: 20,
   kanbunCulture: 12,
   kanbunKundoku: 10,
+  socialTerms: 20,
+  socialPractice: 10,
+  scienceTerms: 20,
+  sciencePractice: 10,
 })
 
 // 「暗記」で始められる教材。ほかはテストで学ぶ（どの画面の単語帳でも同じ区別）。
@@ -158,12 +163,12 @@ function NotebookItemCard({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
               <h3 className="break-words font-display text-[15px] font-extrabold leading-snug text-slate-950">
-                {item.title}
+                <SubjectSourceText source={item.domain}>{item.title}</SubjectSourceText>
               </h3>
               {item.level && <Chip className="px-2 py-0.5 text-[9px]" color={NOTEBOOK_DOMAIN_BY_ID[item.domain].color}>{item.level}</Chip>}
             </div>
-            <p className="mt-0.5 break-words text-xs font-bold leading-relaxed text-slate-600">{item.subtitle}</p>
-            {item.detail && <p className="mt-1 line-clamp-2 text-[10px] font-bold leading-relaxed text-slate-500">{item.detail}</p>}
+            <p className="mt-0.5 break-words text-xs font-bold leading-relaxed text-slate-600"><SubjectSourceText source={item.domain}>{item.subtitle}</SubjectSourceText></p>
+            {item.detail && <p className="mt-1 line-clamp-2 text-[10px] font-bold leading-relaxed text-slate-500"><SubjectSourceText source={item.domain}>{item.detail}</SubjectSourceText></p>}
           </div>
           {speechText && <SpeakButton text={speechText} size="sm" />}
         </div>
@@ -448,7 +453,7 @@ function ProblemSetCard({
                   return (
                     <div key={ref} className="flex items-center gap-1.5 px-2 py-2">
                       <span className="w-6 shrink-0 text-center text-[9px] font-extrabold text-slate-400">{index + 1}</span>
-                      <span className="min-w-0 flex-1 truncate text-[11px] font-bold text-slate-700">{item.title}</span>
+                      <span className="min-w-0 flex-1 truncate text-[11px] font-bold text-slate-700"><SubjectSourceText source={item.domain}>{item.title}</SubjectSourceText></span>
                       <button
                         type="button"
                         onClick={() => onMove(set.id, ref, 'up')}
@@ -572,8 +577,8 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
               <div key={item.ref} className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2.5">
                 <span>{NOTEBOOK_DOMAIN_BY_ID[item.domain].emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[11px] font-extrabold text-slate-800">{item.title}</p>
-                  <p className="truncate text-[9px] font-bold text-slate-500">{item.subtitle}</p>
+                  <p className="truncate text-[11px] font-extrabold text-slate-800"><SubjectSourceText source={item.domain}>{item.title}</SubjectSourceText></p>
+                  <p className="truncate text-[9px] font-bold text-slate-500"><SubjectSourceText source={item.domain}>{item.subtitle}</SubjectSourceText></p>
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="text-[10px] font-extrabold tabular-nums text-slate-700">

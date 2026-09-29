@@ -35,6 +35,15 @@ import {
   questionsForChapters,
 } from '../src/data/math-history.js'
 import { MATH_EXAM_QUIZ_DOMAIN, mathExamProblemsForScope } from '../src/data/math-exam.js'
+import {
+  SUBJECTS,
+  pickSubjectPractice,
+  pickSubjectTermQuestions,
+  pickSubjectTerms,
+  subjectQuestions,
+  subjectTerms,
+  termQuestion,
+} from '../src/data/subjects/index.js'
 import { contentQuizMarks, normalizeContentQuizResults, recordContentQuizResult } from '../src/lib/contentProgress.js'
 import { buildGrammarDeck, grammarVariationKey } from '../src/lib/grammarDeck.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
@@ -81,7 +90,7 @@ const DAY = todayIndex(NOW)
 const idsOf = (items) => items.map((item) => item.id)
 const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf8')
 
-// 学習記録の全10種類と、それぞれへ書くストアの操作。
+// 学習記録の全12種類と、それぞれへ書くストアの操作。
 const WRITERS = Object.freeze({
   srs: (id, result) => useStore.getState().review(id, result, 'vocab'),
   etymologySrs: (id, result) => useStore.getState().reviewEtymology(id, result),
@@ -93,6 +102,8 @@ const WRITERS = Object.freeze({
   kanbunGrammarSrs: (id, result) => useStore.getState().reviewKanbun('grammar', id, result),
   kanbunCultureSrs: (id, result) => useStore.getState().reviewKanbun('culture', id, result),
   kanbunKundokuSrs: (id, result) => useStore.getState().reviewKanbunKundoku(id, result),
+  socialTermSrs: (id, result) => useStore.getState().reviewSubjectTerm('social', id, result),
+  scienceTermSrs: (id, result) => useStore.getState().reviewSubjectTerm('science', id, result),
 })
 const FIELDS = Object.keys(WRITERS)
 
@@ -187,7 +198,7 @@ function distinctGrammarIds(items, count) {
   return ids
 }
 
-// 暗記・テストの全22画面の出題口（tests/study-order.test.mjs の22画面と同じ呼び方）。
+// 暗記・テストの全25画面の出題口（tests/study-order.test.mjs の25画面と同じ呼び方）。
 // order は並べた全項目の id、purpose は暗記（study）かテスト（quiz）。
 const ITEM_SCREENS = [
   {
@@ -328,9 +339,17 @@ const ITEM_SCREENS = [
         .map((item) => item.id)
     },
   },
+  ...['social', 'science'].map((subject) => ({
+    label: `${SUBJECTS[subject].label}の重要語句の暗記（SubjectStudy）`,
+    purpose: 'study',
+    field: SUBJECTS[subject].termSrsField,
+    ids: idsOf(subjectTerms(subject)).slice(0, 14),
+    order: (srs, ids) => idsOf(pickSubjectTerms(ids, { srs, size: 0, now: NOW })),
+  })),
 ]
 
-// 問題ごとの結果で並べる4画面（1項目に複数の問題がある古典文法・古典常識のテストと、数学の歴史のテスト・数学の入試演習）。
+// 問題ごとの結果で並べる6画面（1項目に複数の問題がある古典文法・古典常識のテストと、数学の歴史のテスト・数学の入試演習、
+// 社会・理科の語句テストと演習）。
 const QUESTION_SCREENS = [
   {
     label: '古典文法のテスト（KotenGrammarQuiz）',
@@ -378,19 +397,37 @@ const QUESTION_SCREENS = [
       12,
     ),
   },
+  ...['social', 'science'].flatMap((subject) => [
+    {
+      label: `${SUBJECTS[subject].label}の語句テスト（SubjectQuiz）`,
+      domain: SUBJECTS[subject].termDomain,
+      field: SUBJECTS[subject].termSrsField,
+      questions: subjectTerms(subject).map(termQuestion),
+      itemOf: (question) => question.termId,
+      pick: (itemIds, { srs, quizResults }) => pickSubjectTermQuestions(itemIds, { subject, size: 12, srs, quizResults, now: NOW }),
+    },
+    {
+      label: `${SUBJECTS[subject].label}の演習（SubjectPractice）`,
+      domain: SUBJECTS[subject].practiceDomain,
+      field: null,
+      questions: subjectQuestions(subject),
+      itemOf: () => null,
+      pick: (_itemIds, { quizResults }) => pickSubjectPractice(subjectQuestions(subject), { subject, size: 12, quizResults, now: NOW }),
+    },
+  ]),
 ]
 
-test('全22画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
+test('全25画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
   const screens = new Set([
     ...ITEM_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
     ...QUESTION_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
   ])
-  assert.equal(screens.size, 22)
+  assert.equal(screens.size, 25)
 })
 
 // ── 直近の答え ─────────────────────────────────────────
 
-test('直近の答え：暗記とテストを通して答えた順に5回まで残し、全10種類の記録で同じ', () => {
+test('直近の答え：暗記とテストを通して答えた順に5回まで残し、全12種類の記録で同じ', () => {
   assert.equal(REVIEW_MARK_LIMIT, 5)
   for (const field of FIELDS) {
     const entry = recordedEntry(field, [
@@ -498,7 +535,7 @@ test('最上位：何度もまちがえている項目は、暗記・テスト�
   }
 })
 
-test('最上位：問題ごとの結果で並べる4画面も、何度も間違えている問題・苦手な項目の問題をいちばん先に出す', () => {
+test('最上位：問題ごとの結果で並べる6画面も、何度も間違えている問題・苦手な項目の問題をいちばん先に出す', () => {
   for (const screen of QUESTION_SCREENS) {
     const byItem = new Map()
     for (const question of screen.questions) {
@@ -595,7 +632,7 @@ test('最上位：級別の混合テスト（文法の形式の巡回）・リ�
 
 // ── しつこく出す ─────────────────────────────────────────
 
-test('しつこく：何度もまちがえたら段階0・復習日を今日にし、正解しても3回続けて成功するまで毎日出す（全10種類）', () => {
+test('しつこく：何度もまちがえたら段階0・復習日を今日にし、正解しても3回続けて成功するまで毎日出す（全12種類）', () => {
   for (const field of FIELDS) {
     withStore((setNow) => {
       useStore.setState({ [field]: {} })
@@ -668,7 +705,7 @@ test('後回し：続けて覚えた・正解した項目は、暗記・テス�
   }
 })
 
-test('後回し：問題ごとの結果で並べる4画面も、続けて正解した問題は未回答・間違えた問題より後ろ', () => {
+test('後回し：問題ごとの結果で並べる6画面も、続けて正解した問題は未回答・間違えた問題より後ろ', () => {
   for (const screen of QUESTION_SCREENS) {
     const [steady, missed, ...rest] = screen.questions
     let quizResults = {}
@@ -790,7 +827,7 @@ test('忘れかける前：180日の試算（準2級・毎日 暗記10枚→テ�
 
 // ── 傾向で間隔を変える ────────────────────────────────────
 
-test('間隔：全10種類の記録で、同じ日のくり返しでは段階を上げず、間をあけた成功でのばす', () => {
+test('間隔：全12種類の記録で、同じ日のくり返しでは段階を上げず、間をあけた成功でのばす', () => {
   for (const field of FIELDS) {
     const sameDay = recordedEntry(field, [[0, 'remembered', 240], [0, 'correct', 180], [0, 'remembered', 120], [0, 'correct', 60]])
     assert.equal(sameDay.box, 1, `${field}: 同じ日に4回成功しても段階1`)
@@ -813,7 +850,7 @@ test('間隔：全10種類の記録で、同じ日のくり返しでは段階を
   }
 })
 
-test('間隔：1回のまちがいはこれまでどおり、2回目のまちがい（苦手）で段階0・今日からやり直す（全10種類）', () => {
+test('間隔：1回のまちがいはこれまでどおり、2回目のまちがい（苦手）で段階0・今日からやり直す（全12種類）', () => {
   for (const field of FIELDS) {
     withStore((setNow) => {
       const answer = (daysAgo, result) => {
@@ -871,11 +908,12 @@ test('一覧と学習結果：わたしの学習の一覧は全教材で苦手�
   const state = {
     srs: {}, etymologySrs: {}, kotenSrs: {}, kotenGrammarSrs: {}, kotenCultureSrs: {},
     kotenInterpretationSrs: {}, kanbunVocabSrs: {}, kanbunGrammarSrs: {}, kanbunCultureSrs: {},
-    kanbunKundokuSrs: {}, contentQuizResults: {}, readingsDone: [], writingProgress: {}, mathDone: [],
-    mathStoryLog: [], learningNotebook: null,
+    kanbunKundokuSrs: {}, socialTermSrs: {}, scienceTermSrs: {}, contentQuizResults: {}, readingsDone: [],
+    writingProgress: {}, mathDone: [], mathStoryLog: [], learningNotebook: null,
   }
   const srsContents = LEARNING_CONTENTS.filter((content) => content.kind === 'srs')
-  assert.equal(srsContents.length, 14)
+  // 2026-09-30、社会・理科の重要語句（social-terms・science-terms）で2つ増えた。
+  assert.equal(srsContents.length, 16)
   for (const content of srsContents) {
     const [once, repeated] = [content.items[0].id, content.items[5].id]
     const store = {
@@ -936,7 +974,7 @@ test('一覧と学習結果：語源の一覧・語根の画面の次に学ぶ�
   assert.equal(report.priorityItems[1].id, ids[0])
 })
 
-test('全22画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の22画面）', () => {
+test('全25画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の25画面）', () => {
   const studyOrderTest = read('./study-order.test.mjs')
   for (const screen of [...ITEM_SCREENS, ...QUESTION_SCREENS]) {
     const file = `${/（(\w+)/.exec(screen.label)[1]}.jsx`

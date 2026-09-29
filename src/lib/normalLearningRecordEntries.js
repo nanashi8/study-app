@@ -6,6 +6,7 @@ import { KOTEN_CULTURE } from '../data/koten-culture.js'
 import { KANBUN_VOCAB } from '../data/kanbun-vocab.js'
 import { KANBUN_GRAMMAR } from '../data/kanbun-grammar.js'
 import { KANBUN_CULTURE } from '../data/kanbun-culture.js'
+import { subjectTerms } from '../data/subjects/index.js'
 
 const entry = (id, label, contentId, screen, params, sourceFile, items) => Object.freeze({
   id,
@@ -28,6 +29,8 @@ export const NORMAL_LEARNING_RECORD_ENTRIES = Object.freeze([
   entry('kanbun-vocab', '漢語', 'kanbun-vocab', 'kanbunCatalog', { domain: 'vocab' }, 'src/screens/KanbunCatalog.jsx', KANBUN_VOCAB),
   entry('kanbun-grammar', '漢文法', 'kanbun-grammar', 'kanbunCatalog', { domain: 'grammar' }, 'src/screens/KanbunCatalog.jsx', KANBUN_GRAMMAR),
   entry('kanbun-culture', '漢文常識', 'kanbun-culture', 'kanbunCatalog', { domain: 'culture' }, 'src/screens/KanbunCatalog.jsx', KANBUN_CULTURE),
+  entry('social-terms', '社会の重要語句', 'social-terms', 'socialHome', {}, 'src/screens/SubjectHome.jsx', subjectTerms('social')),
+  entry('science-terms', '理科の重要語句', 'science-terms', 'scienceHome', {}, 'src/screens/SubjectHome.jsx', subjectTerms('science')),
 ])
 
 export const NORMAL_LEARNING_RECORD_TOTAL = NORMAL_LEARNING_RECORD_ENTRIES.reduce(

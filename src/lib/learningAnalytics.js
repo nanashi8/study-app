@@ -65,6 +65,10 @@ export const LEARNING_SKILLS = {
   kanbun_culture: { label: '漢文常識', emoji: '🏛️', color: '#7c3aed' },
   kanbun_kundoku: { label: '返り点・訓読', emoji: '🔁', color: '#0369a1' },
   math: { label: '数学', emoji: '📐', color: '#7c3aed' },
+  social_terms: { label: '社会の重要語句', emoji: '🗾', color: '#0f766e' },
+  social_practice: { label: '社会の演習', emoji: '🗾', color: '#0e7490' },
+  science_terms: { label: '理科の重要語句', emoji: '🔬', color: '#15803d' },
+  science_practice: { label: '理科の演習', emoji: '🔬', color: '#0369a1' },
 }
 
 const finiteOr = (value, fallback = 0) =>

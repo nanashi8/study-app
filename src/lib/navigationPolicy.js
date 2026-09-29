@@ -30,6 +30,12 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'kanbunStudy',
   'kanbunQuiz',
   'kanbunKundokuQuiz',
+  'socialStudy',
+  'socialQuiz',
+  'socialPractice',
+  'scienceStudy',
+  'scienceQuiz',
+  'sciencePractice',
 ]))
 
 const SESSION_REENTRY_SCREENS = new Set([

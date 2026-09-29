@@ -25,6 +25,7 @@ import { ScreenHeader } from './AppShell.jsx'
 import { CatalogTools } from './CatalogTools.jsx'
 import { Button, cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
+import { SubjectSourceText } from './SubjectText.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
 import {
   LearningRecordRow,
@@ -168,7 +169,7 @@ function CatalogItemRow({
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <strong className="break-words font-display text-base font-extrabold leading-snug text-ink">
-              {row.title}
+              <SubjectSourceText source={content.id}>{row.title}</SubjectSourceText>
             </strong>
             {row.level && (
               <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-extrabold text-brand-700">
@@ -191,8 +192,10 @@ function CatalogItemRow({
           </span>
           {row.subtitle && (
             <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/70">
-              {/* 英語の教材だけ、意味の読みにくい語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
-              {content.group === 'english' ? <MeaningText>{row.subtitle}</MeaningText> : row.subtitle}
+              {/* 英語の教材は意味の読みにくい語に、社会・理科は常用漢字にない字をふくむ語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
+              {content.group === 'english'
+                ? <MeaningText>{row.subtitle}</MeaningText>
+                : <SubjectSourceText source={content.id}>{row.subtitle}</SubjectSourceText>}
             </span>
           )}
           <span className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45">
@@ -681,6 +684,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
               openLabel={`この${content.unit}を${action.verb}`}
               openHint={action.verb}
               titleLanguage={content.group === 'english' ? 'en' : 'ja'}
+              textSource={content.id}
             />
           ) : (
             <CatalogItemRow

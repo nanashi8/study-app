@@ -239,6 +239,8 @@ export function ProgressScreen() {
           kanbunGrammarSrs={full.kanbunGrammarSrs}
           kanbunCultureSrs={full.kanbunCultureSrs}
           kanbunKundokuSrs={full.kanbunKundokuSrs}
+          socialTermSrs={full.socialTermSrs}
+          scienceTermSrs={full.scienceTermSrs}
           skillStats={full.skillStats}
           diagnosticHistory={full.diagnosticHistory}
           stats={stats}

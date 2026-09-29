@@ -32,6 +32,7 @@ import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
 import { PUBLIC_DOMAIN_LITERATURE } from '../src/data/public-domain-literature.js'
 import { getLiteratureReadingQuestions } from '../src/data/literature-reading.js'
+import { ALL_SUBJECT_QUESTIONS, ALL_SUBJECT_TERMS, termQuestion } from '../src/data/subjects/index.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
 import {
   grammarQuestionNeedsMeaningCue,
@@ -68,7 +69,7 @@ const GATE_CATALOG = Object.freeze({
   },
   routesAndProgress: {
     command: 'npm run audit:content-progress && npm run audit:links',
-    coverage: '全20教材の公開導線、母数、暗記・テスト記録、参照リンク',
+    coverage: '全24教材の公開導線、母数、暗記・テスト記録、参照リンク',
   },
   english: {
     command: 'npm run audit:english',
@@ -126,6 +127,10 @@ const GATE_CATALOG = Object.freeze({
     command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs',
     coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画',
   },
+  juniorSocialScience: {
+    command: 'node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs',
+    coverage: '中学の社会・理科の全102単元（教科書の単元の並び）、重要語句1,151・演習918問、全選択肢・並べる項目の説明、数を入れる92問の検算と知識826問の読み直しの記録、常用漢字にない字の読み、画面（入口・単元・暗記・語句テスト・演習・出典）',
+  },
 })
 
 const COMMON_GATES = ['inventory', 'coreData', 'behavior', 'learnerCopy', 'routesAndProgress']
@@ -150,6 +155,10 @@ const CATEGORY_SPECIFIC_GATES = Object.freeze({
   math: ['math'],
   'math-history': ['mathHistory'],
   'math-exam': ['mathExam'],
+  'social-terms': ['juniorSocialScience'],
+  'social-practice': ['juniorSocialScience'],
+  'science-terms': ['juniorSocialScience'],
+  'science-practice': ['juniorSocialScience'],
 })
 
 const itemId = (item, index) => String(item?.id ?? `index:${index}`)
@@ -389,6 +398,22 @@ function buildQuestionBanks() {
       choiceRationalesFor: (item) => item.notes,
       expectedChoiceCounts: [3],
     }),
+    // 社会・理科の演習の選ぶ問題。教材は4択（出題は3択＋わからない）で、選択肢の文ごとの説明（notes）を全択に持つ。
+    stringBank(
+      'subject-practice-choices',
+      '社会・理科の演習（選ぶ問題）',
+      ALL_SUBJECT_QUESTIONS.filter((item) => item.kind === 'choice'),
+      (item) => item.explanation,
+      { choiceRationalesFor: (item) => item.choices.map((choice) => item.notes?.[choice]) },
+    ),
+    // 社会・理科の語句テスト。意味から語句を選ぶ4択（出題は3択＋わからない）で、どの選択肢にもその語句の意味を説明に出す。
+    stringBank(
+      'subject-terms',
+      '社会・理科の語句テスト',
+      ALL_SUBJECT_TERMS.map(termQuestion),
+      (item) => item.notes?.[item.answer],
+      { choiceRationalesFor: (item) => item.choices.map((choice) => item.notes?.[choice]) },
+    ),
   ]
 }
 
@@ -573,7 +598,7 @@ async function buildLedger(auditedAt) {
       overallContentSha256: overallContentHash,
     },
     completionCriteria: [
-      '全20教材カテゴリのID・母数・重複・内容ハッシュが一致する',
+      `全${categories.length}教材カテゴリのID・母数・重複・内容ハッシュが一致する`,
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
       `英語長文と学習診断の読解の正解・全誤答・わからない${readingAnswerPaths.answerPathCount.toLocaleString('en-US')}経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',

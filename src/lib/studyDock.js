@@ -59,7 +59,7 @@ export const STUDY_DOCK_PANELS = Object.freeze(['speech', 'mix', 'book'])
 
 /**
  * いまの画面で下部の枠に出すもの。
- * 読み上げ（speech）は読み上げ列があるとき、出題（mix）は暗記・テストの全22画面、単語帳（book）は単語帳ボタンがあるとき。
+ * 読み上げ（speech）は読み上げ列があるとき、出題（mix）は暗記・テストの全28画面、単語帳（book）は単語帳ボタンがあるとき。
  */
 export function studyDockPanels({ speechVisible = false, mixContext = null, wordBookButtons = 0 } = {}) {
   const available = { speech: Boolean(speechVisible), mix: Boolean(mixContext), book: wordBookButtons > 0 }

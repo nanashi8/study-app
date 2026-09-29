@@ -46,7 +46,7 @@ import {
   updateLearningContentPlan,
 } from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは英語・古典・漢文の14教材・全17,495項目を安定IDで解決する', () => {
+test('マイ学習ノートは英語・古典・漢文・社会・理科の18教材・全19,564項目を安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -62,6 +62,10 @@ test('マイ学習ノートは英語・古典・漢文の14教材・全17,495項
     'kanbunGrammar',
     'kanbunCulture',
     'kanbunKundoku',
+    'socialTerms',
+    'socialPractice',
+    'scienceTerms',
+    'sciencePractice',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
     vocab: 8929,
@@ -78,8 +82,12 @@ test('マイ学習ノートは英語・古典・漢文の14教材・全17,495項
     kanbunGrammar: 131,
     kanbunCulture: 95,
     kanbunKundoku: 40,
+    socialTerms: 649,
+    socialPractice: 522,
+    scienceTerms: 502,
+    sciencePractice: 396,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 17495)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 19564)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)
@@ -245,6 +253,10 @@ test('以前のマイ単語と古典・漢文の登録リストはノートの�
     kanbunGrammar: 0,
     kanbunCulture: 0,
     kanbunKundoku: 0,
+    socialTerms: 0,
+    socialPractice: 0,
+    scienceTerms: 0,
+    sciencePractice: 0,
   })
   // 同じ登録を何度読み込んでも、冊も項目も増えない。登録が1つもなければ冊を作らない。
   const again = foldLegacySavedLists(learningNotebook, { kotenWordList: ['k001'], kanbunVocabList: ['kv001'] }, { timestamp: 50 })

@@ -121,7 +121,7 @@ test('問題数を変える画面はすべて、減らしても答えた分の�
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
-  assert.equal(screens.length, 22)
+  assert.equal(screens.length, 25)
   for (const path of screens) {
     const source = read(path)
     const handler = /onResize=\{\(size, \{ restart \}\) => \{[\s\S]*?\n {8,12}\}\}/.exec(source)?.[0]
@@ -176,7 +176,7 @@ test('問題数を出す全画面が、実際の番号と総数を表示する',
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
-  assert.equal(screens.length, 22)
+  assert.equal(screens.length, 25)
   // 表示の作り方は1か所（sessionCounterDisplay）だけ。画面ごとに数字を組み立てない。
   const sizes = read('src/components/SessionSize.jsx')
   assert.match(sizes, /sessionCounterDisplay\(\{ index, total, remaining, position \}\)/)
@@ -195,8 +195,8 @@ test('問題数を出す全画面が、実際の番号と総数を表示する',
     assert.equal(display.text, passesRemaining ? '3/17' : '3/20', `${path} の問題数が実際の数にならない`)
     assert.doesNotMatch(display.text, /^0\/0$/, `${path} の問題数が 0/0 になる`)
   }
-  // 暗記カード7画面だけが残り枚数を渡す。ほかはデッキの番号と総数を出す。
-  assert.equal(withRemaining, 7)
+  // 暗記カード8画面だけが残り枚数を渡す。ほかはデッキの番号と総数を出す。
+  assert.equal(withRemaining, 8)
 })
 
 test('問題数の表示は切り取られない（いちばん長い「200/200」でも縮まない）', () => {

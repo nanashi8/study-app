@@ -62,12 +62,22 @@ export const CONTENTS = [
     status: 'available',
   },
   {
-    id: 'other-subjects',
-    title: 'その他',
-    subtitle: '理科・社会などの確認機能（準備中）',
-    emoji: '📚',
-    color: '#10b981',
-    status: 'coming',
+    id: 'social-quest',
+    title: '社会アプリ',
+    subtitle: '地理・歴史・公民を単元ごとに学び、基礎〜入試の問題で演習する',
+    emoji: '🗾',
+    color: '#0f766e',
+    screen: 'socialHome',
+    status: 'available',
+  },
+  {
+    id: 'science-quest',
+    title: '理科アプリ',
+    subtitle: '1〜3年の理科を単元ごとに学び、基礎〜入試の問題で演習する',
+    emoji: '🔬',
+    color: '#15803d',
+    screen: 'scienceHome',
+    status: 'available',
   },
 ]
 

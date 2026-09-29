@@ -22,11 +22,13 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-vocab': 293,
   'kanbun-grammar': 131,
   'kanbun-culture': 95,
+  'social-terms': 649,
+  'science-terms': 502,
 })
 
-test('指定9カテゴリの通常入口3,760項目を欠落なくスワイプ記録へ接続する', () => {
-  assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 9)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 3_760)
+test('指定11カテゴリの通常入口4,911項目を欠落なくスワイプ記録へ接続する', () => {
+  assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 11)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 4_911)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,
@@ -51,7 +53,7 @@ test('指定9カテゴリの通常入口3,760項目を欠落なくスワイプ�
   }
 })
 
-test('9カテゴリすべての通常画面そのものが共通スワイプ一覧を描画する', () => {
+test('11カテゴリすべての通常画面そのものが共通スワイプ一覧を描画する', () => {
   const sourceFiles = [...new Set(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => entry.sourceFile))]
   const sourceByFile = new Map(sourceFiles.map((sourceFile) => [
     sourceFile,
@@ -65,6 +67,7 @@ test('9カテゴリすべての通常画面そのものが共通スワイプ一�
     'src/screens/KotenList.jsx',
     'src/screens/Phrases.jsx',
     'src/screens/Roots.jsx',
+    'src/screens/SubjectHome.jsx',
   ])
   for (const sourceFile of sourceFiles) {
     assert.match(sourceByFile.get(sourceFile), /<NormalLearningRecordList/, sourceFile)

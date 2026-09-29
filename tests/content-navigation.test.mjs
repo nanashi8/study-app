@@ -11,7 +11,8 @@ test('主要コンテンツは指定順を保ち、英語アプリから英和�
     'kanbun-quest',
     'literature-listening',
     'math-quest',
-    'other-subjects',
+    'social-quest',
+    'science-quest',
   ])
   assert.deepEqual(CONTENTS.map((item) => item.title), [
     '英語アプリ',
@@ -19,7 +20,8 @@ test('主要コンテンツは指定順を保ち、英語アプリから英和�
     '漢文アプリ',
     '名作に親しむ',
     '数学アプリ',
-    'その他',
+    '社会アプリ',
+    '理科アプリ',
   ])
   assert.equal(CONTENTS.some((item) => item.id === 'eigo-dict'), false)
 

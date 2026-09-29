@@ -18,6 +18,7 @@ import { LITERATURE_KIND_META } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../data/math.js'
 import { mathHistoryPart } from '../data/math-history.js'
 import { MATH_EXAM_LEVELS, mathExamPattern } from '../data/math-exam.js'
+import { PRACTICE_LEVELS, SUBJECTS, bookMeta, getSubjectUnit } from '../data/subjects/index.js'
 import {
   contentQuizKey,
   contentQuizMarks,
@@ -44,6 +45,8 @@ export const LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS = Object.freeze({
 })
 
 const DAY_MS = 86_400_000
+const SUBJECT_TERM_CONTENTS = new Set(Object.values(SUBJECTS).map((meta) => meta.termDomain))
+const SUBJECT_PRACTICE_CONTENTS = new Set(Object.values(SUBJECTS).map((meta) => meta.practiceDomain))
 const JA_COLLATOR = new Intl.Collator('ja', { sensitivity: 'base', numeric: true })
 const EN_COLLATOR = new Intl.Collator('en', { sensitivity: 'base', numeric: true })
 const LEVEL_BY_RANK = Object.freeze(['5級', '4級', '3級', '準2級', '2級', '準1級', '1級'])
@@ -232,6 +235,29 @@ function presentationFor(contentId, item) {
       field: unit?.strand || '数学',
       level: [unit?.grade, MATH_EXAM_LEVELS[item.level]?.label].filter(Boolean).join('・'),
       unitId: unit?.id || null,
+    }
+  }
+  // 社会・理科：分野は冊（地理・1年など）、級の欄は単元名（演習は段階も）。
+  if (SUBJECT_TERM_CONTENTS.has(contentId)) {
+    const unit = getSubjectUnit(item.unitId)
+    return {
+      title: item.term,
+      subtitle: item.meaning,
+      field: bookMeta(item.subject, item.book)?.label || '',
+      level: unit?.title || '',
+    }
+  }
+  if (SUBJECT_PRACTICE_CONTENTS.has(contentId)) {
+    const unit = getSubjectUnit(item.unitId)
+    return {
+      title: item.text,
+      subtitle: item.kind === 'number'
+        ? `${item.answer}${item.unit}`
+        : item.kind === 'order'
+          ? item.items.join(' → ')
+          : item.answer,
+      field: bookMeta(item.subject, item.book)?.label || '',
+      level: [unit?.title, PRACTICE_LEVELS[item.level]?.label].filter(Boolean).join('・'),
     }
   }
   if (contentId === 'math') {
@@ -429,6 +455,10 @@ export const LEARNING_CONTENT_CATALOG_ACTIONS = Object.freeze({
   math: { selection: 'one', verb: '解く' },
   'math-history': { selection: 'one', verb: '読む' },
   'math-exam': { selection: 'many', verb: '解く' },
+  'social-terms': { selection: 'many', verb: '暗記' },
+  'social-practice': { selection: 'many', verb: '解く' },
+  'science-terms': { selection: 'many', verb: '暗記' },
+  'science-practice': { selection: 'many', verb: '解く' },
 })
 
 export function learningContentCatalogLaunch(
@@ -534,6 +564,15 @@ export function learningContentCatalogLaunch(
   if (content.id === 'math-exam') {
     return {
       screen: 'mathExamSolve',
+      params: { ...common, ids, preserveOrder: true },
+    }
+  }
+  const subject = Object.values(SUBJECTS).find((meta) => (
+    meta.termDomain === content.id || meta.practiceDomain === content.id
+  ))
+  if (subject) {
+    return {
+      screen: subject.termDomain === content.id ? subject.screens.study : subject.screens.practice,
       params: { ...common, ids, preserveOrder: true },
     }
   }

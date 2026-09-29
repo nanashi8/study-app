@@ -93,7 +93,8 @@ if (
 const appSource = read('src/App.jsx')
 const screenBlock = /const SCREENS = \{([\s\S]*?)\n\}/.exec(appSource)?.[1] ?? ''
 const routedScreens = [...screenBlock.matchAll(/^\s{2}([A-Za-z]+):/gm)].map((match) => match[1])
-const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning'])
+// 出典のページ（credits）は、メニューのいちばん下から開く、どのアプリにも属さない画面。
+const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning', 'credits'])
 const mappedScreens = new Set(APP_HOMES.flatMap((home) => home.screens))
 if (routedScreens.length < 60) errors.push('画面一覧を読み取れていない')
 for (const screen of routedScreens) {

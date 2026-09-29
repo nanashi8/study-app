@@ -3,6 +3,7 @@ import { cx } from './ui.jsx'
 import { learningContentCatalogSwipeSide } from '../lib/learningContentCatalogSwipe.js'
 import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 import { MeaningText } from './MeaningText.jsx'
+import { SubjectSourceText } from './SubjectText.jsx'
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
 
@@ -60,6 +61,8 @@ export function LearningRecordRow({
   openLabel = '単語の詳細',
   openHint = '詳細',
   titleLanguage = 'en',
+  // どの教材の行か（一覧の教材 ID）。社会・理科の行は、語句と意味に読みがなを付ける。
+  textSource = null,
   // 行の中に一行だけ足せる補足。語源や今回の答えのように、
   // 一覧のまま「一目で確認」したい情報をここへ入れる。
   note = '',
@@ -141,7 +144,7 @@ export function LearningRecordRow({
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <strong lang={titleLanguage || undefined} className="break-words font-display text-lg font-extrabold leading-tight text-ink">
-              {title}
+              <SubjectSourceText source={textSource}>{title}</SubjectSourceText>
             </strong>
             {pos && (
               <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-extrabold text-brand-700">
@@ -158,15 +161,17 @@ export function LearningRecordRow({
             )}
           </span>
           <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/75">
-            {/* 英語の教材だけ、意味の読みにくい語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
-            {titleLanguage === 'en' ? <MeaningText>{meaning}</MeaningText> : meaning}
+            {/* 英語の教材は意味の読みにくい語に、社会・理科は常用漢字にない字をふくむ語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
+            {titleLanguage === 'en'
+              ? <MeaningText>{meaning}</MeaningText>
+              : <SubjectSourceText source={textSource}>{meaning}</SubjectSourceText>}
           </span>
           {note && (
             <span
               className="mt-1 block break-words rounded-lg bg-slate-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-ink/60"
               data-learning-record-note
             >
-              {note}
+              <SubjectSourceText source={textSource}>{note}</SubjectSourceText>
             </span>
           )}
           <span className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45">

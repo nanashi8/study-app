@@ -28,6 +28,7 @@ import {
   parseNotebookRef,
 } from './learningNotebook.js'
 import { grammarRuleExplanationFor } from './grammarQuestionExplanations.js'
+import { bookMeta, getSubjectUnit, subjectQuestions, subjectTerms } from '../data/subjects/index.js'
 
 // 教材の名前・単位は、教材データを読まずに使えるよう learningNotebook.js に置いている。ここからも同じものを出す。
 export { NOTEBOOK_DOMAINS, NOTEBOOK_DOMAIN_BY_ID }
@@ -55,6 +56,30 @@ const examLevel = (levelId) => {
   const level = levelById.get(levelId)
   return level ? `英検${level.label}` : ''
 }
+
+// 社会・理科：重要語句は語句と意味、演習は問題文と正解。分類は冊（地理・1年など）、段階は単元名。
+const LEVEL_LABELS = Object.freeze({ basic: '基礎', standard: '標準', exam: '入試' })
+const subjectUnitLabel = (item) => getSubjectUnit(item.unitId)?.title ?? ''
+const subjectTermEntry = (item) => ({
+  title: item.term,
+  subtitle: item.meaning,
+  detail: item.note,
+  category: bookMeta(item.subject, item.book)?.label ?? '',
+  level: subjectUnitLabel(item),
+  search: [item.meaning, item.note],
+})
+const subjectQuestionEntry = (item) => ({
+  title: item.text,
+  subtitle: item.kind === 'number'
+    ? `${item.answer}${item.unit}`
+    : item.kind === 'order'
+      ? item.items.join(' → ')
+      : item.answer,
+  detail: item.explanation,
+  category: bookMeta(item.subject, item.book)?.label ?? '',
+  level: [subjectUnitLabel(item), LEVEL_LABELS[item.level]].filter(Boolean).join('・'),
+  search: [item.choices, item.items, item.steps, Object.values(item.notes ?? {})],
+})
 
 const adapt = (domain, items, mapper) => items.map((raw) => {
   const mapped = mapper(raw)
@@ -190,6 +215,10 @@ const CATALOG = Object.freeze({
     // 訓読文は字の間に送り仮名が入るので、白文でも引けるようにする。
     search: [kanbunPlainText(item.marked), item.marked, item.clue, item.pitfall],
   })),
+  socialTerms: adapt('socialTerms', subjectTerms('social'), subjectTermEntry),
+  socialPractice: adapt('socialPractice', subjectQuestions('social'), subjectQuestionEntry),
+  scienceTerms: adapt('scienceTerms', subjectTerms('science'), subjectTermEntry),
+  sciencePractice: adapt('sciencePractice', subjectQuestions('science'), subjectQuestionEntry),
 })
 
 const CATALOG_MAPS = Object.freeze(
@@ -283,6 +312,8 @@ const SRS_FIELD_BY_DOMAIN = Object.freeze({
   kanbunGrammar: 'kanbunGrammarSrs',
   kanbunCulture: 'kanbunCultureSrs',
   kanbunKundoku: 'kanbunKundokuSrs',
+  socialTerms: 'socialTermSrs',
+  scienceTerms: 'scienceTermSrs',
 })
 
 const srsForDomain = (state, domain) => state?.[SRS_FIELD_BY_DOMAIN[domain]] ?? {}

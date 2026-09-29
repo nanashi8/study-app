@@ -1126,6 +1126,8 @@ export function SpeechSettingsSheet() {
     kanbunGrammarSrs: state.kanbunGrammarSrs,
     kanbunCultureSrs: state.kanbunCultureSrs,
     kanbunKundokuSrs: state.kanbunKundokuSrs,
+    socialTermSrs: state.socialTermSrs,
+    scienceTermSrs: state.scienceTermSrs,
     skillStats: state.skillStats,
     learningAnalytics: state.learningAnalytics,
     diagnosticHistory: state.diagnosticHistory,
@@ -1155,6 +1157,8 @@ export function SpeechSettingsSheet() {
         learningState.kanbunGrammarSrs,
         learningState.kanbunCultureSrs,
         learningState.kanbunKundokuSrs,
+        learningState.socialTermSrs,
+        learningState.scienceTermSrs,
       ],
       skillStats: learningState.skillStats,
       diagnosticHistory: learningState.diagnosticHistory,
@@ -1282,6 +1286,8 @@ export function SpeechSettingsSheet() {
             kanbunGrammarSrs={learningState.kanbunGrammarSrs}
             kanbunCultureSrs={learningState.kanbunCultureSrs}
             kanbunKundokuSrs={learningState.kanbunKundokuSrs}
+            socialTermSrs={learningState.socialTermSrs}
+            scienceTermSrs={learningState.scienceTermSrs}
             skillStats={learningState.skillStats}
             diagnosticHistory={learningState.diagnosticHistory}
             stats={learningState.stats}

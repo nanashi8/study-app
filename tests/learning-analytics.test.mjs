@@ -323,7 +323,7 @@ test('科目・種類・分野・項目の成績表、忘却曲線、学習導�
   assert.ok(report.prescriptions.some((item) => item.angle === '分野' || item.angle === '種類'))
 })
 
-test('全17分野の学習操作が対応する記録へ漏れなく反映される', () => {
+test('全21分野の学習操作が対応する記録へ漏れなく反映される', () => {
   const original = useStore.getState()
   useStore.setState({
     srs: {},
@@ -336,6 +336,10 @@ test('全17分野の学習操作が対応する記録へ漏れなく反映され
     kanbunGrammarSrs: {},
     kanbunCultureSrs: {},
     kanbunKundokuSrs: {},
+    socialTermSrs: {},
+    scienceTermSrs: {},
+    socialPracticeLog: {},
+    sciencePracticeLog: {},
     writingProgress: {},
     mathMastery: {},
     skillStats: {},
@@ -367,6 +371,11 @@ test('全17分野の学習操作が対応する記録へ漏れなく反映され
       grammarIds: [],
     })
     useStore.getState().setMathMastery('audit-math', 80)
+    // 社会・理科：重要語句の暗記と、演習の1問。
+    useStore.getState().reviewSubjectTerm('social', 'geo-01-t01', 'remembered')
+    useStore.getState().reviewSubjectTerm('science', 'sc1-01-t01', 'remembered')
+    useStore.getState().recordSubjectPractice('social', 'geo-01-q01', 'correct', 20)
+    useStore.getState().recordSubjectPractice('science', 'sc1-01-q01', 'correct', 20)
 
     const state = useStore.getState()
     assert.deepEqual(
@@ -386,6 +395,10 @@ test('全17分野の学習操作が対応する記録へ漏れなく反映され
     assert.equal(state.skillStats.reading.answered, 4)
     assert.equal(state.writingProgress['audit-writing'].completed, 1)
     assert.equal(state.mathMastery['audit-math'], 80)
+    assert.equal(state.socialTermSrs['geo-01-t01'].box, 1)
+    assert.equal(state.scienceTermSrs['sc1-01-t01'].box, 1)
+    assert.equal(state.socialPracticeLog['geo-01-q01'].at(-1).result, 'correct')
+    assert.equal(state.sciencePracticeLog['sc1-01-q01'].at(-1).result, 'correct')
   } finally {
     useStore.setState(original, true)
   }

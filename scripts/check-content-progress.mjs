@@ -38,6 +38,11 @@ const expected = [
   ['math', 'src/screens/MathMap.jsx'],
   ['math-history', 'src/screens/MathHistory.jsx'],
   ['math-exam', 'src/screens/MathExam.jsx'],
+  // 社会・理科は、重要語句と演習を教科のホーム（社会と理科で共通の部品）で示す。
+  ['social-terms', 'src/screens/SubjectHome.jsx'],
+  ['social-practice', 'src/screens/SubjectHome.jsx'],
+  ['science-terms', 'src/screens/SubjectHome.jsx'],
+  ['science-practice', 'src/screens/SubjectHome.jsx'],
 ]
 
 const detailDisplays = [
@@ -59,6 +64,8 @@ assert.deepEqual(LEARNING_CONTENT_GROUPS.map((group) => group.id), [
   'classics',
   'kanbun',
   'other',
+  'social',
+  'science',
 ])
 
 const rows = buildLearningContentProgress(createInitialLearningState())
@@ -157,6 +164,9 @@ for (const [file, marker] of [
   ['src/screens/MathSolve.jsx', "recordContentQuizResult('math', p.id"],
   ['src/screens/MathStoryQuiz.jsx', 'recordQuizResult(MATH_HISTORY_QUIZ_DOMAIN, question.id'],
   ['src/store/useStore.js', 'domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problemId'],
+  // 社会・理科の語句テストは語句ごと、演習は問題ごとに、全教材共通の結果（contentQuizResults）へ残す。
+  ['src/screens/SubjectQuiz.jsx', 'recordQuizResult(meta.termDomain, question.termId'],
+  ['src/store/useStore.js', 'domain: meta.practiceDomain, itemId: questionId'],
 ]) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
   assert.ok(source.includes(marker), `${file}: 教材別テスト結果の保存がありません`)

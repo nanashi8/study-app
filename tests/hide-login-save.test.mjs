@@ -24,13 +24,15 @@ const AUTH_STATES = [
   ['ログイン中', { status: 'in', user: { uid: 'hidden-login-test', email: EMAIL } }],
 ]
 
-// 直す前の全28行から「ログイン・保存」の1行だけを外した27行。ほかの行は1つも消さない。
+// 直す前の全28行から「ログイン・保存」の1行だけを外した27行に、社会・理科アプリと出典の3行（2026-09-29）を足した30行。ほかの行は1つも消さない。
 const EXPECTED_ROWS = [
   ['apps', 'portal', 'スタディアプリ ホーム'],
   ['apps', 'home', '英語アプリ'],
   ['apps', 'mathMap', '数学アプリ'],
   ['apps', 'kotenList', '古典アプリ'],
   ['apps', 'kanbunHome', '漢文アプリ'],
+  ['apps', 'socialHome', '社会アプリ'],
+  ['apps', 'scienceHome', '理科アプリ'],
   ['apps', 'literatureLibrary', '名作に親しむ'],
   ['english', 'vocabLevels', '英単語'],
   ['english', 'vocabSearch', '英和辞書'],
@@ -53,6 +55,7 @@ const EXPECTED_ROWS = [
   ['records', 'progress', '学習記録・バックアップ'],
   ['settings', 'settings', '設定'],
   ['settings', 'reset', '学習履歴を選んでリセット'],
+  ['about', 'credits', '出典'],
 ]
 
 const unescapeHtml = (text) => text
@@ -157,13 +160,14 @@ after(async () => {
   await vite?.close()
 })
 
-test('メニューの台帳に「ログイン・保存」の行がなく、ほかの27行はそのまま残る', () => {
+test('メニューの台帳に「ログイン・保存」の行がなく、ほかの30行はそのまま残る', () => {
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
     ['apps', 'スタディアプリ'],
     ['english', '英語の学習'],
     ['support', '学習サポート'],
     ['records', '保存・記録'],
     ['settings', '設定'],
+    ['about', 'このアプリについて'],
   ])
   const rows = APP_MENU_SECTIONS.flatMap((section) => section.items.map((item) => [
     section.id,
@@ -195,7 +199,7 @@ for (const [name, state] of AUTH_STATES) {
       assert.ok(!text.includes(EMAIL), 'ログイン中のメールアドレスを出さない')
       assert.doesNotMatch(html, /data-menu-account-entry|data-menu-action="account"|data-menu-account-panel/)
 
-      // 全27行がそのまま並ぶ。
+      // 全30行がそのまま並ぶ。
       const labels = [...html.matchAll(/<strong[^>]*>([^<]+)<\/strong>/g)].map((match) => unescapeHtml(match[1]))
       for (const [, , label] of EXPECTED_ROWS) assert.ok(labels.includes(label), `${label} の行がない`)
       assert.equal((html.match(/ data-menu-item="true"/g) ?? []).length, EXPECTED_ROWS.length)
@@ -221,7 +225,7 @@ test('アカウントの表示とログイン画面は、どこからも開け�
   assert.ok(!existsSync(join(ROOT, 'src/screens/Login.jsx')))
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routes = [...screenMap.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1])
-  assert.equal(routes.length, 76)
+  assert.equal(routes.length, 87)
   assert.ok(!routes.includes('login'))
   assert.doesNotMatch(app, /LoginScreen|screens\/Login/)
 
