@@ -21,7 +21,7 @@ import {
 //   parallels / meridians … 1本ずつ引く緯線・経線。[{ lat: 22, text: '北緯22度', side?: 'right' }] / [{ lon: 25, text: '東経25度' }]
 //   lines  … 特別な緯線・経線（世界地図）。['equator', 'tropicN', 'tropicS', 'primeMeridian', 'meridian180', 'meridian135']
 //   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京', side?: 'left' | 'right' }]（地名は、図の右寄りなら点の左、ほかは右。side で決められる）
-//   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat] }]
+//   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat], head?: false（矢じりなしの線）, width?: 線の太さ（帯のように太く引くとき）, textSize?, textColor? }]
 //   labels … 緯度・経度に置く文字（海・山脈など）。[{ lon, lat, text, color?, size?, italic? }]
 //   states: true … 州で色分け（hideLegend: true で凡例を出さない。同じ凡例の図を並べるとき）
 //   rivers … 大河の線（世界地図）。['yangtze', 'huanghe']（id は maps.js の WORLD_MAP.rivers。川の名前は labels で置く）
@@ -178,12 +178,12 @@ function Arrows({ arrows, project, u, box }) {
     const d = points.map(([x, y], i) => `${i ? 'L' : 'M'}${x},${y}`).join(' ')
     const textAt = arrow.textAt ? project(...arrow.textAt) : null
     // 矢印の文字は、図の外へはみ出さないように内側へ寄せる。
-    const textX = textAt && box ? clampTextX(textAt[0], arrow.text, 10 * u, box, 'start', 2 * u) : textAt?.[0]
+    const textX = textAt && box ? clampTextX(textAt[0], arrow.text, (arrow.textSize ?? 10) * u, box, 'start', 2 * u) : textAt?.[0]
     return (
       <g key={`arrow-${index}`}>
-        <path d={d} fill="none" stroke={color} strokeWidth={2.2 * u} strokeDasharray={arrow.dashed ? `${6 * u} ${4 * u}` : undefined} strokeLinecap="round" strokeLinejoin="round" />
-        {arrowHead(points, u, color)}
-        {textAt && <Halo x={textX} y={textAt[1]} u={u} size={10} weight="800" color={color}>{arrow.text}</Halo>}
+        <path d={d} fill="none" stroke={color} strokeWidth={(arrow.width ?? 2.2) * u} strokeDasharray={arrow.dashed ? `${6 * u} ${4 * u}` : undefined} strokeLinecap="round" strokeLinejoin="round" />
+        {arrow.head !== false && arrowHead(points, u, color)}
+        {textAt && <Halo x={textX} y={textAt[1]} u={u} size={arrow.textSize ?? 10} weight="800" color={arrow.textColor ?? color}>{arrow.text}</Halo>}
       </g>
     )
   })
@@ -404,7 +404,8 @@ export function JapanMapFigure({ figure }) {
           ))}
           <path d={territories.northern} fill={fills.northern ?? (figure.regions ? JAPAN_REGION_META.hokkaido.color : LAND)} stroke="#ffffff" strokeWidth={0.9 * u} />
           <circle cx={territories.takeshima.x} cy={territories.takeshima.y} r={2.6 * u} fill={figure.regions ? JAPAN_REGION_META.chugokuShikoku.color : '#cbd5e1'} stroke="#64748b" strokeWidth={0.7 * u} />
-          <circle cx={territories.senkaku.x} cy={territories.senkaku.y} r={2.6 * u} fill={figure.regions ? JAPAN_REGION_META.kyushu.color : '#cbd5e1'} stroke="#64748b" strokeWidth={0.7 * u} />
+          {/* 尖閣諸島は南西諸島の囲みの中に描く（囲みを出さない図では描かない）。 */}
+          {showInset && <circle cx={territories.senkaku.x} cy={territories.senkaku.y} r={2.6 * u} fill={figure.regions ? JAPAN_REGION_META.kyushu.color : '#cbd5e1'} stroke="#64748b" strokeWidth={0.7 * u} />}
           {lakes.map((lake) => <path key={lake.name} d={lake.d} fill="#bfdbfe" stroke="#93c5fd" strokeWidth={0.6 * u} />)}
           {figure.grid && <JapanGrid step={figure.grid} box={box} u={u} showLabels={figure.gridLabels !== false} />}
           <Labels labels={figure.labels} project={projectJapan} u={u} box={box} />

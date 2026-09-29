@@ -4,6 +4,7 @@
 import { GLOBE_LAND } from '../data/subjects/maps.js'
 import { clockOf, localHour, shiftDate } from '../data/subjects/figureMath.js'
 import { MAP_READING_DIAGRAMS } from './SubjectMapReadingDiagrams.jsx'
+import { GEOGRAPHY_DIAGRAMS } from './SubjectGeographyDiagrams.jsx'
 
 const INK = '#1f2937'
 const MUTED = '#64748b'
@@ -316,6 +317,7 @@ export const SUBJECT_DIAGRAMS = Object.freeze({
   timeZone: TimeZoneDiagram,
   territory: TerritoryDiagram,
   ...MAP_READING_DIAGRAMS,
+  ...GEOGRAPHY_DIAGRAMS,
 })
 
 export function DiagramFigure({ figure }) {
