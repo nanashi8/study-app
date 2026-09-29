@@ -78,7 +78,7 @@ export const CREDIT_SECTIONS = Object.freeze([
         id: 'world-bank-wdi',
         name: '世界銀行「世界開発指標（World Development Indicators）」（CC BY 4.0）',
         url: 'https://data.worldbank.org/',
-        use: '地理「ヨーロッパ州」の、EUの国々の1人あたりの国内総生産（2024年）のグラフに使いました。',
+        use: '地理「ヨーロッパ州」の、EUの国々の1人あたりの国内総生産（2024年）のグラフと、「アフリカ州」の人口の移り変わりのグラフに使いました。',
       }),
     ]),
   }),

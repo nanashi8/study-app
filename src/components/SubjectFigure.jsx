@@ -150,8 +150,9 @@ function LinesFigure({ figure }) {
   const bottom = 38
   const points = figure.series.flatMap((series) => series.points)
   const xs = figure.x.ticks ?? [...new Set(points.map(([x]) => x))].sort((a, b) => a - b)
-  const xMin = figure.x.min ?? Math.min(...xs)
-  const xMax = figure.x.max ?? Math.max(...xs)
+  // 横の軸は、目もりの外にある値（最後の年など）も入るように広げる。
+  const xMin = figure.x.min ?? Math.min(...xs, ...points.map(([x]) => x))
+  const xMax = figure.x.max ?? Math.max(...xs, ...points.map(([x]) => x))
   const yMin = figure.y.min ?? Math.min(0, ...points.map(([, y]) => y))
   const yMaxRaw = figure.y.max ?? Math.max(...points.map(([, y]) => y))
   const yStep = figure.y.step ?? niceStep(yMaxRaw - yMin)
