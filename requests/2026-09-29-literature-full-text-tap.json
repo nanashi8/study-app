@@ -8,7 +8,7 @@
   "sessions": [
     "67ee5ee7-46c0-49ae-98cd-9095842092a7"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "full-text-tap",
@@ -85,7 +85,7 @@
       "text": "npm run audit:all-content をクリーンな clone で通してから main へ push し、公開版のデプロイ成功と、公開版で名作の全文表示と文の解説が開くことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
