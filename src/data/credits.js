@@ -34,7 +34,7 @@ export const CREDIT_SECTIONS = Object.freeze([
         id: 'natural-earth',
         name: 'Natural Earth',
         url: 'https://www.naturalearthdata.com/',
-        use: '日本地図（都道府県・北方領土・竹島・尖閣諸島・琵琶湖）と世界地図（国の形）に使いました。',
+        use: '日本地図（都道府県・北方領土・竹島・尖閣諸島・琵琶湖）と世界地図（国の形・大河の流れ）に使いました。',
       }),
     ]),
   }),
@@ -67,6 +67,18 @@ export const CREDIT_SECTIONS = Object.freeze([
         name: '海上保安庁「日本の領海等概念図」の面積',
         url: 'https://www1.kaiho.mlit.go.jp/ryokai/gainenzu.html',
         use: '地理「日本の姿」の、国土と領海・排他的経済水域の面積をくらべるグラフに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
+    id: 'economy',
+    title: '経済の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'world-bank-wdi',
+        name: '世界銀行「世界開発指標（World Development Indicators）」（CC BY 4.0）',
+        url: 'https://data.worldbank.org/',
+        use: '地理「ヨーロッパ州」の、EUの国々の1人あたりの国内総生産（2024年）のグラフに使いました。',
       }),
     ]),
   }),

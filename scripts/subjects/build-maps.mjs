@@ -203,7 +203,7 @@ const STATE_OF = Object.freeze({
   Oceania: 'oceania',
 })
 // 学校の地図の呼び方と、1つの国として描く地域。
-const NAME_OVERRIDES = Object.freeze({ TWN: '台湾', USA: 'アメリカ合衆国', GBR: 'イギリス', KOR: '大韓民国', PRK: '北朝鮮', CHN: '中国' })
+const NAME_OVERRIDES = Object.freeze({ TWN: '台湾', USA: 'アメリカ合衆国', GBR: 'イギリス', KOR: '大韓民国', PRK: '北朝鮮', CHN: '中国', CYP: 'キプロス' })
 const MERGE_INTO = Object.freeze({ SOL: 'SOM', CYN: 'CYP' })
 const isNorthernTerritories = ([lon, lat]) => lon > 145.3 && lon < 149.5 && lat > 43.2 && lat < 45.7
 
