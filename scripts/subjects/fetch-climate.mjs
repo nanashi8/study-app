@@ -22,6 +22,7 @@ const WORLD_STATIONS = [
   { id: 'bangkok', label: 'バンコク', station: 48455 },
   { id: 'darwin', label: 'ダーウィン', station: 94120 },
   { id: 'riyadh', label: 'リヤド', station: 40438 },
+  { id: 'ulaanbaatar', label: 'ウランバートル', station: 44292 },
   { id: 'lisbon', label: 'リスボン', station: 8535 },
   { id: 'london', label: 'ロンドン', station: 3772 },
   { id: 'paris', label: 'パリ', station: 7149 },
@@ -31,6 +32,8 @@ const WORLD_STATIONS = [
   { id: 'moscow', label: 'モスクワ', station: 27612 },
   { id: 'yakutsk', label: 'ヤクーツク', station: 24959 },
   { id: 'barrow', label: 'バロー', station: 70026 },
+  // 氷雪気候：南極の昭和基地は降水量を観測していないので、降水量まであるミールヌイ基地（南極大陸の沿岸）を使う。
+  { id: 'mirny', label: 'ミールヌイ（南極）', station: 89592 },
   { id: 'lhasa', label: 'ラサ', station: 55591 },
   { id: 'lapaz', label: 'ラパス', station: 85201 },
 ]

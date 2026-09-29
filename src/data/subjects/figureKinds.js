@@ -1,0 +1,25 @@
+// 社会・理科の図の種類と、名前で呼び出す図解（diagram）の名前の一覧。
+// 図の部品（src/components/SubjectFigure.jsx・SubjectDiagrams.jsx）と、図のテスト（tests/junior-social-science-figures.test.mjs）が
+// 同じ一覧を使う。種類や図解を足したら、部品とこの一覧の両方に足す（テストが食いちがいを止める）。
+export const SUBJECT_FIGURE_KINDS = Object.freeze([
+  'table',
+  'bars',
+  'lines',
+  'climate',
+  'japanMap',
+  'worldMap',
+  'azimuthalMap',
+  'worldOverview',
+  'diagram',
+  'decision',
+  'chain',
+  'timeline',
+  'set',
+])
+
+export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
+  'latitude',
+  'longitude',
+  'globe',
+  'timeZone',
+])

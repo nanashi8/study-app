@@ -96,7 +96,7 @@ function SubjectUnitScreen({ subject }) {
               <p className="mt-2 text-sm font-bold leading-relaxed text-ink/75"><SubjectText>{point.body}</SubjectText></p>
               {point.figure && (
                 <div className="mt-3 rounded-2xl bg-paper p-2">
-                  <SubjectFigure figure={point.figure} />
+                  <SubjectFigure figure={point.figure} showGuide />
                 </div>
               )}
             </Card>
@@ -129,7 +129,7 @@ function SubjectUnitScreen({ subject }) {
                   </div>
                 </div>
                 <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65"><SubjectText>{term.meaning}</SubjectText></p>
-                {term.note && <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45"><SubjectText>{term.note}</SubjectText></p>}
+                {term.note && <p className="mt-1 text-[13px] font-bold leading-relaxed text-ink/55" data-subject-term-note><SubjectText>{term.note}</SubjectText></p>}
               </li>
             ))}
           </ul>

@@ -1,39 +1,31 @@
-import { JAPAN_MAP, WORLD_MAP } from '../data/subjects/maps.js'
-import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
 import { SubjectText } from './SubjectText.jsx'
+import { ClimateFigure, climateAxisMin } from './SubjectClimateFigure.jsx'
+import { AzimuthalMapFigure, JapanMapFigure, WorldMapFigure, WorldOverviewFigure } from './SubjectMapFigures.jsx'
+import { DiagramFigure } from './SubjectDiagrams.jsx'
+import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
+
+export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 
 // 社会・理科の図。要点と演習の問題が、データ（figure）で図を指定する。種類は次のとおり。
 //   table    … 表。{ columns, rows, note? }
 //   bars     … 横棒グラフ。{ unit, items: [[名前, 値], …], note? }
 //   lines    … 折れ線グラフ。{ x: { label, ticks? }, y: { label, min?, max?, step? }, series: [{ name, points: [[x, y], …] }] }
-//   climate  … 雨温図（棒＝月の降水量、折れ線＝月の平均気温）。{ station: 'tokyo' }（地点は data/subjects/climate.js）。
-//              問題で地点名をふせるときは { station, hideName: true, label: 'A' }。
-//   japanMap … 日本地図。{ marks: { 'JP-13': 'A' }, fills?: { 'JP-13': 色 }, regions?: true（7地方区分で色分け）}
-//   worldMap … 世界地図。{ marks: { USA: 'A' }, fills?, states?: true（州で色分け）, lines?: ['equator', …] }
-// どの図も caption（図の題）を持てる。色はテーマの色ではなく、読みやすい固定の色を使う。
+//   climate  … 雨温図。{ station: 'tokyo', judge? }（SubjectClimateFigure.jsx）
+//   japanMap … 日本地図。worldMap … 世界地図（SubjectMapFigures.jsx。切り出し・緯線経線・点・矢印・文字）
+//   azimuthalMap … 東京を中心とした、中心からの距離と方位が正しい地図（正距方位図法）
+//   worldOverview … 陸と海の世界全図（南極大陸まで。国境なし）
+//   diagram  … 名前で呼び出す図解。{ name: 'latitude', … }（SubjectDiagrams.jsx）
+//   decision … 判断の手順。{ steps: [{ ask, yes }], otherwise }（上から順に「はい」なら右の答え、「いいえ」なら次へ）
+//   chain    … 流れ・順序・循環。{ items: [文, …], loop? }
+//   timeline … 年表。{ groups: [{ era?, events: [[年, できごと], …] }] }
+//   set      … 図を並べて比べる。{ items: [図, …], layout?: 'stack' | 'scroll' }
+// どの図も caption（図の題）と note（図の下の注）を持てる。要点の図は guide（図の読み方：何を表すか・どこを見るか・
+// 特徴・判断の仕方を順に書いた文の並び）を持ち、単元のページで図の下に出す（演習の図の読み取り方は、答えたあとの解説に出す）。
+// 色はテーマの色ではなく、読みやすい固定の色を使う。
 
 const INK = '#1f2937'
 const GRID = '#e2e8f0'
 const SERIES_COLORS = Object.freeze(['#0f766e', '#be123c', '#1d4ed8', '#b45309', '#7c3aed'])
-
-export const JAPAN_REGION_META = Object.freeze({
-  hokkaido: { label: '北海道地方', color: '#bfdbfe' },
-  tohoku: { label: '東北地方', color: '#bbf7d0' },
-  kanto: { label: '関東地方', color: '#fde68a' },
-  chubu: { label: '中部地方', color: '#fecaca' },
-  kinki: { label: '近畿地方', color: '#ddd6fe' },
-  chugokuShikoku: { label: '中国・四国地方', color: '#a5f3fc' },
-  kyushu: { label: '九州地方', color: '#fed7aa' },
-})
-
-export const WORLD_STATE_META = Object.freeze({
-  asia: { label: 'アジア州', color: '#fde68a' },
-  europe: { label: 'ヨーロッパ州', color: '#bfdbfe' },
-  africa: { label: 'アフリカ州', color: '#fed7aa' },
-  northAmerica: { label: '北アメリカ州', color: '#bbf7d0' },
-  southAmerica: { label: '南アメリカ州', color: '#fecaca' },
-  oceania: { label: 'オセアニア州', color: '#ddd6fe' },
-})
 
 function Caption({ children }) {
   if (!children) return null
@@ -45,7 +37,26 @@ function Note({ children }) {
   return <p className="mt-1.5 px-1 text-[11px] font-bold leading-relaxed text-ink/50"><SubjectText>{children}</SubjectText></p>
 }
 
+/** 図の読み方（要点の図の下に出す）。 */
+export function FigureGuide({ guide }) {
+  if (!Array.isArray(guide) || !guide.length) return null
+  return (
+    <div className="mt-2 rounded-xl border border-emerald-100 bg-white px-3 py-2.5" data-subject-figure-guide>
+      <p className="text-[11px] font-extrabold tracking-wide text-emerald-700">図の読み方</p>
+      <ol className="mt-1.5 space-y-1.5">
+        {guide.map((step, index) => (
+          <li key={step} className="flex items-start gap-2 text-[13px] font-bold leading-relaxed text-ink/80">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-extrabold text-white">{index + 1}</span>
+            <span className="min-w-0 flex-1"><SubjectText>{step}</SubjectText></span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
 function TableFigure({ figure }) {
+  const highlight = new Set(figure.highlight ?? [])
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-xs font-bold text-ink" data-subject-figure-table>
@@ -58,11 +69,11 @@ function TableFigure({ figure }) {
         </thead>
         <tbody>
           {figure.rows.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr key={rowIndex} className={highlight.has(rowIndex) ? 'bg-amber-50' : undefined}>
               {row.map((cell, cellIndex) => (
                 cellIndex === 0
-                  ? <th key={cellIndex} scope="row" className="border border-slate-300 bg-white px-2 py-1.5 font-extrabold"><SubjectText>{cell}</SubjectText></th>
-                  : <td key={cellIndex} className="border border-slate-300 bg-white px-2 py-1.5 tabular-nums"><SubjectText>{cell}</SubjectText></td>
+                  ? <th key={cellIndex} scope="row" className={`border border-slate-300 px-2 py-1.5 font-extrabold ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></th>
+                  : <td key={cellIndex} className={`border border-slate-300 px-2 py-1.5 leading-relaxed ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></td>
               ))}
             </tr>
           ))}
@@ -75,10 +86,11 @@ function TableFigure({ figure }) {
 function BarsFigure({ figure }) {
   const max = figure.max ?? Math.max(...figure.items.map(([, value]) => value))
   const rowHeight = 26
-  const labelWidth = 92
+  const labelWidth = figure.labelWidth ?? 92
   const width = 340
-  const barWidth = width - labelWidth - 56
+  const barWidth = width - labelWidth - 60
   const height = figure.items.length * rowHeight + 6
+  const highlight = new Set(figure.highlight ?? [])
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-label={figure.caption ?? '棒グラフ'} data-subject-figure-bars>
       {figure.items.map(([label, value], index) => {
@@ -87,8 +99,8 @@ function BarsFigure({ figure }) {
         return (
           <g key={label}>
             <text x={labelWidth - 6} y={y + 15} textAnchor="end" fontSize="11" fontWeight="700" fill={INK}>{label}</text>
-            <rect x={labelWidth} y={y + 4} width={w} height={rowHeight - 10} rx="3" fill={SERIES_COLORS[0]} opacity="0.85" />
-            <text x={labelWidth + w + 4} y={y + 15} fontSize="10.5" fontWeight="700" fill={INK}>{`${value}${figure.unit ?? ''}`}</text>
+            <rect x={labelWidth} y={y + 4} width={w} height={rowHeight - 10} rx="3" fill={highlight.has(index) ? '#be123c' : SERIES_COLORS[0]} opacity="0.85" />
+            <text x={labelWidth + w + 4} y={y + 15} fontSize="10.5" fontWeight="700" fill={INK}>{`${value.toLocaleString('ja-JP')}${figure.unit ?? ''}`}</text>
           </g>
         )
       })}
@@ -138,6 +150,15 @@ function LinesFigure({ figure }) {
         <line x1={left} x2={width - right} y1={height - bottom} y2={height - bottom} stroke={INK} />
         <text x={(left + width - right) / 2} y={height - 6} textAnchor="middle" fontSize="10.5" fontWeight="700" fill={INK}>{figure.x.label}</text>
         <text x={10} y={(top + height - bottom) / 2} textAnchor="middle" fontSize="10.5" fontWeight="700" fill={INK} transform={`rotate(-90 10 ${(top + height - bottom) / 2})`}>{figure.y.label}</text>
+        {(figure.marks ?? []).map((mark, index) => (
+          <g key={`mark-${index}`}>
+            {mark.x !== undefined && <line x1={sx(mark.x)} x2={sx(mark.x)} y1={top} y2={height - bottom} stroke="#94a3b8" strokeDasharray="3 3" />}
+            {mark.y !== undefined && <line x1={left} x2={width - right} y1={sy(mark.y)} y2={sy(mark.y)} stroke="#94a3b8" strokeDasharray="3 3" />}
+            {mark.text && (
+              <text x={mark.x !== undefined ? sx(mark.x) + 3 : left + 4} y={mark.y !== undefined ? sy(mark.y) - 4 : top + 10} fontSize="9.5" fontWeight="800" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">{mark.text}</text>
+            )}
+          </g>
+        ))}
         {figure.series.map((series, index) => {
           const color = series.color ?? SERIES_COLORS[index % SERIES_COLORS.length]
           return (
@@ -168,162 +189,93 @@ function LinesFigure({ figure }) {
   )
 }
 
-function ClimateFigure({ figure }) {
-  const station = CLIMATE_STATIONS[figure.station]
-  if (!station) return null
-  const name = figure.hideName ? figure.label ?? '' : station.label
-  const width = 300
-  const height = 210
-  const left = 34
-  const right = 36
-  const top = 16
-  const bottom = 26
-  const tMin = -30
-  const tMax = 40
-  const rMax = 700
-  const plotW = width - left - right
-  const plotH = height - top - bottom
-  const colW = plotW / 12
-  const ty = (t) => top + ((tMax - t) / (tMax - tMin)) * plotH
-  const ry = (r) => top + plotH - (Math.min(r, rMax) / rMax) * plotH
-  const average = (list) => Math.round((list.reduce((sum, value) => sum + value, 0) / list.length) * 10) / 10
-  const total = Math.round(station.rain.reduce((sum, value) => sum + value, 0))
+function DecisionFigure({ figure }) {
   return (
-    <div>
-      <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-label={`${name}の雨温図`} data-subject-figure-climate>
-        {[-30, -20, -10, 0, 10, 20, 30, 40].map((t) => (
-          <g key={t}>
-            <line x1={left} x2={width - right} y1={ty(t)} y2={ty(t)} stroke={t === 0 ? '#94a3b8' : GRID} />
-            <text x={left - 4} y={ty(t) + 3.5} textAnchor="end" fontSize="9.5" fill="#b91c1c">{t}</text>
-            <text x={width - right + 4} y={ty(t) + 3.5} fontSize="9.5" fill="#1d4ed8">{Math.round(((t - tMin) / (tMax - tMin)) * rMax)}</text>
-          </g>
-        ))}
-        {station.rain.map((rain, month) => (
-          <rect
-            key={`rain-${month}`}
-            x={left + month * colW + colW * 0.15}
-            y={ry(rain)}
-            width={colW * 0.7}
-            height={top + plotH - ry(rain)}
-            fill="#60a5fa"
-          />
-        ))}
-        <polyline
-          points={station.temp.map((t, month) => `${left + month * colW + colW / 2},${ty(t)}`).join(' ')}
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="2.2"
-        />
-        {station.temp.map((t, month) => <circle key={`t-${month}`} cx={left + month * colW + colW / 2} cy={ty(t)} r="2.4" fill="#dc2626" />)}
-        {Array.from({ length: 12 }, (_, month) => (
-          <text key={`m-${month}`} x={left + month * colW + colW / 2} y={height - bottom + 12} textAnchor="middle" fontSize="9" fill={INK}>{month + 1}</text>
-        ))}
-        <text x={left - 4} y={top - 5} textAnchor="end" fontSize="9" fontWeight="700" fill="#b91c1c">℃</text>
-        <text x={width - right + 4} y={top - 5} fontSize="9" fontWeight="700" fill="#1d4ed8">mm</text>
-        <text x={width / 2} y={height - 3} textAnchor="middle" fontSize="9" fill={INK}>月</text>
-      </svg>
-      <p className="mt-1 text-center text-[11px] font-bold text-ink/60">
-        {`${name ? `${name}　` : ''}年平均気温 ${average(station.temp)}℃・年降水量 ${total}mm`}
-      </p>
+    <div className="space-y-0" data-subject-figure-decision>
+      {figure.steps.map((step, index) => (
+        <div key={step.ask}>
+          <div className="flex items-stretch gap-1.5">
+            <div className="flex min-w-0 flex-1 items-start gap-1.5 rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-[12.5px] font-extrabold leading-snug text-ink">
+              <span className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-slate-700 px-1 text-[10px] text-white">{index + 1}</span>
+              <span className="min-w-0 flex-1"><SubjectText>{step.ask}</SubjectText></span>
+            </div>
+            <div className="flex w-[34%] shrink-0 flex-col justify-center">
+              <span className="text-[10px] font-extrabold text-emerald-700">はい →</span>
+              <span className="rounded-lg bg-emerald-50 px-2 py-1 text-[12px] font-extrabold leading-snug text-emerald-900"><SubjectText>{step.yes}</SubjectText></span>
+            </div>
+          </div>
+          <p className="py-0.5 pl-6 text-[10px] font-extrabold text-rose-700">いいえ ↓</p>
+        </div>
+      ))}
+      <div className="rounded-xl bg-emerald-50 px-2.5 py-2 text-[12.5px] font-extrabold leading-snug text-emerald-900">
+        <SubjectText>{figure.otherwise}</SubjectText>
+      </div>
     </div>
   )
 }
 
-function Mark({ x, y, label, size = 1 }) {
-  const r = 9 * size
+function ChainFigure({ figure }) {
   return (
-    <g>
-      <circle cx={x} cy={y} r={r} fill="#ffffff" stroke={INK} strokeWidth={1.4 * size} />
-      <text x={x} y={y + 4 * size} textAnchor="middle" fontSize={11 * size} fontWeight="800" fill={INK}>{label}</text>
-    </g>
-  )
-}
-
-function JapanMapFigure({ figure }) {
-  const marks = figure.marks ?? {}
-  const fills = figure.fills ?? {}
-  const { width, height, inset, prefectures, territories, lakes } = JAPAN_MAP
-  const fillOf = (pref) => fills[pref.code] ?? (figure.regions ? JAPAN_REGION_META[pref.region].color : '#e2e8f0')
-  return (
-    <div>
-      <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-label={figure.caption ?? '日本地図'} data-subject-figure-japan>
-        <rect x="0" y="0" width={width} height={height} fill="#eff6ff" />
-        <rect x={inset.x} y={inset.y} width={inset.w} height={inset.h} fill="#eff6ff" stroke="#94a3b8" strokeWidth="1.2" />
-        {prefectures.map((pref) => (
-          <path key={pref.code} d={pref.d} fill={fillOf(pref)} stroke="#ffffff" strokeWidth="0.9" strokeLinejoin="round" />
-        ))}
-        <path d={territories.northern} fill={fills.northern ?? (figure.regions ? JAPAN_REGION_META.hokkaido.color : '#e2e8f0')} stroke="#ffffff" strokeWidth="0.9" />
-        <circle cx={territories.takeshima.x} cy={territories.takeshima.y} r="2.4" fill={figure.regions ? JAPAN_REGION_META.chugokuShikoku.color : '#cbd5e1'} stroke="#64748b" strokeWidth="0.6" />
-        <circle cx={territories.senkaku.x} cy={territories.senkaku.y} r="2.4" fill={figure.regions ? JAPAN_REGION_META.kyushu.color : '#cbd5e1'} stroke="#64748b" strokeWidth="0.6" />
-        {lakes.map((lake) => <path key={lake.name} d={lake.d} fill="#bfdbfe" stroke="#93c5fd" strokeWidth="0.6" />)}
-        {prefectures.filter((pref) => marks[pref.code]).map((pref) => (
-          <Mark key={pref.code} x={pref.x} y={pref.y} label={marks[pref.code]} size={1.5} />
-        ))}
-      </svg>
-      {figure.regions && (
-        <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] font-bold text-ink/70">
-          {Object.values(JAPAN_REGION_META).map((region) => (
-            <span key={region.label} className="inline-flex items-center gap-1">
-              <i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: region.color }} />
-              {region.label}
-            </span>
-          ))}
+    <div data-subject-figure-chain>
+      {figure.items.map((item, index) => (
+        <div key={item}>
+          {index > 0 && <p className="py-0.5 text-center text-sm font-extrabold leading-none text-slate-500" aria-hidden="true">↓</p>}
+          <div className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-[12.5px] font-bold leading-relaxed text-ink">
+            <SubjectText>{item}</SubjectText>
+          </div>
         </div>
+      ))}
+      {figure.loop && (
+        <p className="pt-1 text-center text-[11px] font-extrabold text-slate-500">↺ 最初にもどって、くり返す</p>
       )}
     </div>
   )
 }
 
-const WORLD_LINE_LABELS = Object.freeze({
-  equator: '赤道',
-  tropicN: '北回帰線',
-  tropicS: '南回帰線',
-  primeMeridian: '本初子午線',
-  meridian180: '180度の経線',
-  meridian135: '東経135度',
-})
-
-function WorldMapFigure({ figure }) {
-  const marks = figure.marks ?? {}
-  const fills = figure.fills ?? {}
-  const { width, height, lines, countries } = WORLD_MAP
-  const fillOf = (country) => fills[country.code] ?? (figure.states ? WORLD_STATE_META[country.state].color : '#e2e8f0')
+function TimelineFigure({ figure }) {
   return (
-    <div>
-      <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-label={figure.caption ?? '世界地図'} data-subject-figure-world>
-        <rect x="0" y="0" width={width} height={height} fill="#eff6ff" />
-        {countries.filter((country) => country.d).map((country) => (
-          <path key={country.code} d={country.d} fill={fillOf(country)} stroke="#ffffff" strokeWidth="0.5" strokeLinejoin="round" />
-        ))}
-        {(figure.lines ?? []).map((line) => {
-          const value = lines[line]
-          const horizontal = line === 'equator' || line.startsWith('tropic')
-          return horizontal ? (
-            <g key={line}>
-              <line x1="0" x2={width} y1={value} y2={value} stroke="#dc2626" strokeWidth="1" strokeDasharray="5 3" />
-              <text x="4" y={value - 3} fontSize="10" fontWeight="700" fill="#b91c1c">{WORLD_LINE_LABELS[line]}</text>
-            </g>
-          ) : (
-            <g key={line}>
-              <line x1={value} x2={value} y1="0" y2={height} stroke="#dc2626" strokeWidth="1" strokeDasharray="5 3" />
-              <text x={value + 3} y={height - 6} fontSize="10" fontWeight="700" fill="#b91c1c">{WORLD_LINE_LABELS[line]}</text>
-            </g>
-          )
-        })}
-        {countries.filter((country) => marks[country.code]).map((country) => (
-          <Mark key={country.code} x={country.x} y={country.y} label={marks[country.code]} />
-        ))}
-      </svg>
-      {figure.states && (
-        <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] font-bold text-ink/70">
-          {Object.values(WORLD_STATE_META).map((state) => (
-            <span key={state.label} className="inline-flex items-center gap-1">
-              <i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: state.color }} />
-              {state.label}
-            </span>
-          ))}
+    <div className="space-y-2" data-subject-figure-timeline>
+      {figure.groups.map((group, groupIndex) => (
+        <div key={group.era ?? groupIndex}>
+          {group.era && <p className="mb-1 rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-extrabold text-slate-700"><SubjectText>{group.era}</SubjectText></p>}
+          <ol className="relative ml-1 border-l-2 border-slate-300">
+            {group.events.map(([year, text]) => (
+              <li key={`${year}-${text}`} className="relative flex gap-2 py-1 pl-3">
+                <span className="absolute -left-[5px] top-2.5 h-2 w-2 rounded-full bg-slate-600" aria-hidden="true" />
+                <span className="w-14 shrink-0 text-[12px] font-extrabold tabular-nums text-slate-700"><SubjectText>{String(year)}</SubjectText></span>
+                <span className="min-w-0 flex-1 text-[12.5px] font-bold leading-snug text-ink"><SubjectText>{text}</SubjectText></span>
+              </li>
+            ))}
+          </ol>
         </div>
-      )}
+      ))}
+    </div>
+  )
+}
+
+function SetFigure({ figure }) {
+  // 雨温図を並べるときは、気温の目もりをそろえて比べられるようにする。
+  const climateItems = figure.items.filter((item) => item.type === 'climate' && CLIMATE_STATIONS[item.station])
+  const tMin = climateItems.length ? Math.min(...climateItems.map((item) => climateAxisMin(CLIMATE_STATIONS[item.station]))) : null
+  const items = figure.items.map((item) => (item.type === 'climate' && tMin !== null ? { ...item, axis: { tMin, ...item.axis } } : item))
+  if (figure.layout === 'scroll') {
+    return (
+      <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1" data-subject-figure-set="scroll">
+        {items.map((item, index) => (
+          <div key={index} className="w-[78%] shrink-0 snap-start rounded-xl bg-white p-1.5">
+            <SubjectFigure figure={item} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+  return (
+    <div className="space-y-3" data-subject-figure-set="stack">
+      {items.map((item, index) => (
+        <div key={index} className="rounded-xl bg-white p-1.5">
+          <SubjectFigure figure={item} />
+        </div>
+      ))}
     </div>
   )
 }
@@ -335,11 +287,18 @@ const FIGURES = Object.freeze({
   climate: ClimateFigure,
   japanMap: JapanMapFigure,
   worldMap: WorldMapFigure,
+  azimuthalMap: AzimuthalMapFigure,
+  worldOverview: WorldOverviewFigure,
+  diagram: DiagramFigure,
+  decision: DecisionFigure,
+  chain: ChainFigure,
+  timeline: TimelineFigure,
+  set: SetFigure,
 })
 
 export const SUBJECT_FIGURE_TYPES = Object.freeze(Object.keys(FIGURES))
 
-export function SubjectFigure({ figure }) {
+export function SubjectFigure({ figure, showGuide = false }) {
   const Figure = FIGURES[figure?.type]
   if (!Figure) return null
   return (
@@ -347,6 +306,7 @@ export function SubjectFigure({ figure }) {
       <Caption>{figure.caption}</Caption>
       <Figure figure={figure} />
       <Note>{figure.note}</Note>
+      {showGuide && <FigureGuide guide={figure.guide} />}
     </figure>
   )
 }

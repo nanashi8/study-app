@@ -1,0 +1,16 @@
+{
+  "readMe": "社会・理科の重要語句の解説を、中学生向けの用語集の程度（意味に、背景・特徴・関連する語句・まちがえやすい語との見分け方を添える）に書き、1語ずつ読み直した記録。値は語句・意味・解説の指紋。確認は node scripts/checks/junior-social-science-glossary.mjs、押し直しは --stamp <単元ID>。",
+  "reviewedOn": "2026-09-29",
+  "terms": {
+    "geo-01-t01": "3a564bccc143e8ef19d4141117ca309338d1f3798f6012de0bab8df2aa6b4ad5",
+    "geo-01-t02": "3d9e32ffe6e0100f829fe8c921a87ea31f0937be77204d0b985b5262eb3d7b12",
+    "geo-01-t03": "2369cbb993c33f8deb7aa74349217fd2332ccc1e75dc23bacae6aa1e30b33779",
+    "geo-01-t04": "f0816a12dcc7479527b5c59f162b4d13966405fdc8b6611398c19613ce9f139f",
+    "geo-01-t05": "8f49bd2aba48871141d804215b155474b79e906c5408bd2883abf130de933d24",
+    "geo-01-t06": "f9f518e76a781872d1997c5d7724ee8227686749995b53f9ffd60ea507182f7e",
+    "geo-01-t07": "0b6abefc152124da4e0578cc39a6f6110cfcb9ca738f3739bcd19c606e92df3b",
+    "geo-01-t08": "c131fa96352de06edb0c4d5e734759a0cab370580b371f4ec614bc8de9ab934c",
+    "geo-01-t09": "64a772b46869a8882c0beb5637dce3d8c953bc8a1e40b80240322dc297c2cb1f",
+    "geo-01-t10": "31669a317b46a3743dc2cdc7cff997753296d6aba8b311d7bab5f031b5a0ee4b"
+  }
+}

@@ -48,6 +48,8 @@ function finalizeQuestion(unit, question, index) {
     text: question.text,
     figure: question.figure ?? null,
     explanation: question.explanation ?? '',
+    // 図を使う問題の「図の読み取り方」（図のどこを見て、どう判断するか）。答えたあとの解説に出す。
+    read: Object.freeze([...(question.read ?? [])]),
   }
   if (kind === 'choice') {
     const choices = question.choices.map(([text]) => text)

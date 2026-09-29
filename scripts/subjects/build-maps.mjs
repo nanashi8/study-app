@@ -8,6 +8,16 @@
 // 世界地図は太平洋を中央にした図（ミラー図法）。国の形ごとに、重心が西経25度より西なら右側（アメリカ側）へ回す。
 import fs from 'node:fs'
 import path from 'node:path'
+import {
+  AZIMUTHAL_PROJECTION,
+  JAPAN_PROJECTION,
+  WORLD_HEIGHT,
+  WORLD_PROJECTION,
+  projectAzimuthal,
+  projectJapanInset,
+  projectJapanMain,
+  projectWorldShifted,
+} from '../../src/data/subjects/projection.js'
 
 const folder = process.argv[2]
 if (!folder) {
@@ -88,15 +98,15 @@ const round1 = (value) => Math.round(value * 10) / 10
 
 // ── 日本地図 ─────────────────────────────────────────────────────────
 
-const K = Math.cos((38 * Math.PI) / 180)
-const MAIN = { lon0: 128.5, lat1: 45.65, lat0: 30.0, scale: 38, ox: 22, oy: 8 }
-// 南西諸島の囲み（左上の日本海の上に置く）。縮尺は本図より小さい。
-const INSET = { lon0: 122.8, lon1: 131.5, lat0: 24.0, lat1: 29.6, scale: 30, ox: 14, oy: 14 }
+// 投影は src/data/subjects/projection.js（図の部品と共有）。南西諸島の囲みは左上の日本海の上に置き、縮尺は本図より小さい。
+const K = JAPAN_PROJECTION.k
+const MAIN = JAPAN_PROJECTION.main
+const INSET = JAPAN_PROJECTION.inset
 const JAPAN_TOL = 0.9
 const JAPAN_MIN_AREA = 5
 
-const projectMain = ([lon, lat]) => [MAIN.ox + (lon - MAIN.lon0) * K * MAIN.scale, MAIN.oy + (MAIN.lat1 - lat) * MAIN.scale]
-const projectInset = ([lon, lat]) => [INSET.ox + (lon - INSET.lon0) * K * INSET.scale, INSET.oy + (INSET.lat1 - lat) * INSET.scale]
+const projectMain = ([lon, lat]) => projectJapanMain(lon, lat)
+const projectInset = ([lon, lat]) => projectJapanInset(lon, lat)
 const insetBox = {
   x: INSET.ox - 6,
   y: INSET.oy - 6,
@@ -171,20 +181,11 @@ if (!fs.existsSync(worldFile)) {
 }
 const world = JSON.parse(fs.readFileSync(worldFile, 'utf8'))
 
-const CUT_LON = -25 // これより西に重心がある形は、右側（東経335度の側）へ回す
-const WEST = -25.5
-const EAST = 349.5
-const WORLD_WIDTH = 720
-const LAT_TOP = 84
-const LAT_BOTTOM = -57
-const miller = (lat) => 1.25 * Math.log(Math.tan(Math.PI / 4 + (0.4 * lat * Math.PI) / 180))
-const X_SCALE = WORLD_WIDTH / (EAST - WEST)
-const Y_SCALE = X_SCALE * (180 / Math.PI)
-const worldHeight = Math.ceil((miller(LAT_TOP) - miller(LAT_BOTTOM)) * Y_SCALE)
-const projectWorld = ([lon, lat]) => [
-  (lon - WEST) * X_SCALE,
-  (miller(LAT_TOP) - miller(Math.max(LAT_BOTTOM, Math.min(LAT_TOP, lat)))) * Y_SCALE,
-]
+// 投影は src/data/subjects/projection.js。重心が西経25度より西にある形は、右側（東経335度の側）へ回す。
+const CUT_LON = WORLD_PROJECTION.cutLon
+const WORLD_WIDTH = WORLD_PROJECTION.width
+const worldHeight = WORLD_HEIGHT
+const projectWorld = ([lon, lat]) => projectWorldShifted(lon, lat)
 const WORLD_TOL = 0.55
 const WORLD_MIN_AREA = 1.2
 
@@ -246,6 +247,47 @@ const worldCountries = [...countries.values()].map((country) => {
   }
 }).sort((a, b) => a.code.localeCompare(b.code))
 
+// ── 東京を中心とした正距方位図法（中心からの距離と方位が正しい地図）──────────────────────
+// 南極大陸も描く（地図の下の縁の近くに広がる）。北方領土は日本の形として描く。
+const AZIMUTHAL_TOL = 0.45
+const AZIMUTHAL_MIN_AREA = 2
+const azimuthalCountries = []
+for (const feature of world.features) {
+  const props = feature.properties
+  const code = MERGE_INTO[props.ADM0_A3] ?? props.ADM0_A3
+  const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates
+  let rings = polys.map((poly) => poly[0])
+  if (code === 'RUS') rings = rings.filter((ring) => !isNorthernTerritories(centroid(ring)))
+  if (code === 'JPN') rings = [...rings, ...japan.territories.northern]
+  const drawn = []
+  for (const ring of rings) {
+    const projected = ring.map(([lon, lat]) => projectAzimuthal(lon, lat))
+    const simple = simplifyRing(projected, AZIMUTHAL_TOL)
+    if (simple.length < 4 || area(simple) < AZIMUTHAL_MIN_AREA) continue
+    drawn.push(simple)
+  }
+  if (!drawn.length) continue
+  const existing = azimuthalCountries.find((item) => item.code === code)
+  const d = drawn.map(pathOf).filter(Boolean).join('')
+  if (existing) existing.d += d
+  else azimuthalCountries.push({ code, state: STATE_OF[props.CONTINENT] ?? 'antarctica', d })
+}
+azimuthalCountries.sort((a, b) => a.code.localeCompare(b.code))
+
+// ── 地球儀の図に使う陸の形（緯度・経度のまま。図の部品が見る向きに合わせて描く）──────────────
+const GLOBE_TOL = 0.5
+const GLOBE_MIN_AREA = 1.5
+const globeLand = []
+for (const feature of world.features) {
+  const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates
+  for (const poly of polys) {
+    const ring = poly[0]
+    const simple = simplifyRing(ring, GLOBE_TOL)
+    if (simple.length < 4 || area(simple) < GLOBE_MIN_AREA) continue
+    globeLand.push(simple.map(([lon, lat]) => [Math.round(lon * 10) / 10, Math.round(lat * 10) / 10]))
+  }
+}
+
 // 緯線（赤道・北回帰線・南回帰線）と経線（本初子午線・日付変更線のもと＝180度）の位置。
 const worldLines = {
   equator: round1(projectWorld([0, 0])[1]),
@@ -277,8 +319,18 @@ export const WORLD_MAP = ${JSON.stringify({
   lines: worldLines,
   countries: worldCountries,
 })}
+
+// 東京を中心とした正距方位図法。円の中心が東京、縁が地球の反対側。
+export const AZIMUTHAL_MAP = ${JSON.stringify({
+  radius: AZIMUTHAL_PROJECTION.radius,
+  countries: azimuthalCountries,
+})}
+
+// 地球儀の図の陸の形（[経度, 緯度] の輪）。
+export const GLOBE_LAND = ${JSON.stringify(globeLand)}
 `
 fs.writeFileSync(OUT, body)
 console.log(`日本：${prefectures.length}都道府県・図 ${japanWidth}×${japanHeight}`)
 console.log(`世界：${worldCountries.length}か国・地域・図 ${WORLD_WIDTH}×${worldHeight}`)
+console.log(`正距方位図法：${azimuthalCountries.length}か国・地域、地球儀の陸：${globeLand.length}の輪`)
 console.log(`→ ${path.relative(process.cwd(), OUT)}（${fs.statSync(OUT).size.toLocaleString()} バイト）`)

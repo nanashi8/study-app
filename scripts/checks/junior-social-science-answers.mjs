@@ -20,7 +20,7 @@ export const ANSWERS_LEDGER_PATH = new URL('docs/audits/junior-social-science-an
 /** 正解の確かめの対象（数を入れる問題は、テストで計算し直すので外す）。 */
 export const reviewedQuestions = () => ALL_SUBJECT_QUESTIONS.filter((question) => question.kind !== 'number')
 
-/** 問題の指紋。学習者に見せる中身が1字でも変わると変わる。 */
+/** 問題の指紋。学習者に見せる中身が1字でも変わると変わる（図の読み取り方は、ある問題だけ指紋に入れる）。 */
 export const questionFingerprint = (question) => createHash('sha256').update(JSON.stringify([
   question.kind,
   question.text,
@@ -28,6 +28,7 @@ export const questionFingerprint = (question) => createHash('sha256').update(JSO
   question.kind === 'order' ? question.items : question.choices,
   question.notes,
   question.explanation,
+  ...(question.read?.length ? [question.read] : []),
 ])).digest('hex')
 
 export const readAnswersLedger = () => JSON.parse(readFileSync(ANSWERS_LEDGER_PATH, 'utf8'))

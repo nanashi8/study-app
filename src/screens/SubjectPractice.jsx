@@ -464,6 +464,22 @@ function SubjectPracticeScreen({ subject }) {
               )}
             </div>
 
+            {question.read.length > 0 && (
+              <section className="rounded-2xl bg-white p-4 shadow-card" data-subject-practice-read aria-label="図の読み取り方">
+                <p className="text-xs font-extrabold tracking-wide text-emerald-700">図の読み取り方</p>
+                <ol className="mt-2 space-y-2">
+                  {question.read.map((step, stepIndex) => (
+                    <li key={stepIndex} className="flex gap-2.5">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-extrabold text-emerald-700">
+                        {stepIndex + 1}
+                      </span>
+                      <p className="min-w-0 flex-1 text-sm font-bold leading-relaxed text-ink/80"><SubjectText>{step}</SubjectText></p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
             {question.kind === 'choice' && (
               <ChoiceExplanations
                 title="選択肢解説（3択すべて）"

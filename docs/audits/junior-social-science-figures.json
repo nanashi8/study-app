@@ -1,0 +1,64 @@
+{
+  "readMe": "社会・理科の全要点と全演習を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断した記録。figure＝図と図の読み方（要点）・図の読み取り方（演習）を付けた、none＝付けない（要点は理由を noFigure に書く）。sha256 は判断したときの中身の指紋。確認は node scripts/checks/junior-social-science-figures.mjs、押し直しは --stamp <単元ID>。",
+  "reviewedOn": "2026-09-29",
+  "points": {
+    "geo-01#1": {
+      "decision": "figure",
+      "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
+    },
+    "geo-01#2": {
+      "decision": "figure",
+      "sha256": "3f6543e499787950b9f736b1a1e5c4e527bf04ee783981952a5287a4a52b9096"
+    },
+    "geo-01#3": {
+      "decision": "figure",
+      "sha256": "d8c7a9f4ed82a49f48b6e8b56fa10db602e23376cf85c42b2ed0e5a9088209c5"
+    },
+    "geo-01#4": {
+      "decision": "figure",
+      "sha256": "b2119db8fe0e0c904530bda859bc36a974083d6ebcdda06121a9680d2da599f7"
+    },
+    "geo-01#5": {
+      "decision": "figure",
+      "sha256": "8e30e01731a5a72b387343d8b1d9377836664ad251568a20fbe42c280865f34a"
+    }
+  },
+  "questions": {
+    "geo-01-q01": {
+      "decision": "none",
+      "sha256": "3969111840b0d2c76a3b01f33c922ef3c0eed75c94bb6f0b45bcac9a120a35b2"
+    },
+    "geo-01-q02": {
+      "decision": "none",
+      "sha256": "03f61eb40482dda4d51cae2f0ef4bf4863912e818118a2460ecfc3db763c40cc"
+    },
+    "geo-01-q03": {
+      "decision": "none",
+      "sha256": "1484e21cf9cb197073bc452cfdef5d11dca97a78e17a8ee17ea09f089bb7d19c"
+    },
+    "geo-01-q04": {
+      "decision": "figure",
+      "sha256": "dca3437a5a3d4a8212946f380403ef54128c61253f73e6c8bb652e5cb4110cd1"
+    },
+    "geo-01-q05": {
+      "decision": "none",
+      "sha256": "41a2232ed8803218e681e200554b33b375c2e9f01a606a93941ec602c26863ca"
+    },
+    "geo-01-q06": {
+      "decision": "none",
+      "sha256": "ef49f10e4bbc8b27da1794eed5bc504dabd9f792c972842e289073d52b55b02a"
+    },
+    "geo-01-q07": {
+      "decision": "figure",
+      "sha256": "d6882aea6f94dc73ef506af33bbc454203d772531b516f75eb80f0f9768272cf"
+    },
+    "geo-01-q08": {
+      "decision": "none",
+      "sha256": "bc7899526f6cdf93a02ca3924060a4a0cd76e891fca1a5af49009d4c42136e82"
+    },
+    "geo-01-q09": {
+      "decision": "none",
+      "sha256": "9b4cd8e0ef0809c2419c7636e7ed86c3954b2100ce82d074d10504b045f2f4c3"
+    }
+  }
+}

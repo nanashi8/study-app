@@ -35,7 +35,7 @@ import {
   useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
-// 社会・理科の重要語句の暗記カード。表は語句、裏は意味と補足。
+// 社会・理科の重要語句の暗記カード。表は語句、裏は意味と解説（用語集の程度の説明）。
 // 出題順は全教材共通の決まり（lib/studyOrder.js）で、出題バランス（画面下部の「出題」）を当てる。
 const SESSION_SIZE = 20
 
@@ -292,7 +292,7 @@ function SubjectStudyScreen({ subject }) {
               </div>
               {term.note && (
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-[10px] font-extrabold tracking-wide text-slate-500">補足</p>
+                  <p className="text-[10px] font-extrabold tracking-wide text-slate-500">解説</p>
                   <p className="mt-1 text-sm font-bold leading-relaxed text-ink/70"><SubjectText>{term.note}</SubjectText></p>
                 </div>
               )}
