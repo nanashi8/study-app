@@ -88,8 +88,8 @@ function TableFigure({ figure }) {
       <table className="w-full border-collapse text-left text-xs font-bold text-ink" data-subject-figure-table>
         <thead>
           <tr>
-            {figure.columns.map((column) => (
-              <th key={column} scope="col" className="border border-slate-300 bg-slate-100 px-2 py-1.5 font-extrabold"><SubjectText>{column}</SubjectText></th>
+            {figure.columns.map((column, columnIndex) => (
+              <th key={column} scope="col" className={`border border-slate-300 bg-slate-100 px-2 py-1.5 font-extrabold ${columnIndex === 0 && shortHeads && [...String(column)].length <= 7 ? 'whitespace-nowrap' : ''}`}><SubjectText>{column}</SubjectText></th>
             ))}
           </tr>
         </thead>
