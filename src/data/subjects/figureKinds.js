@@ -23,4 +23,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'globe',
   'timeZone',
   'territory',
+  'mapScale',
+  'contour',
+  'mapSymbols',
 ])

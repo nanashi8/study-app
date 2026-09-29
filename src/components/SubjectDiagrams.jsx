@@ -3,6 +3,7 @@
 // 値から描く図（緯度の角度・時差など）は、テストが同じ値を計算して図と本文の数が合うことを確かめる。
 import { GLOBE_LAND } from '../data/subjects/maps.js'
 import { clockOf, localHour, shiftDate } from '../data/subjects/figureMath.js'
+import { MAP_READING_DIAGRAMS } from './SubjectMapReadingDiagrams.jsx'
 
 const INK = '#1f2937'
 const MUTED = '#64748b'
@@ -314,6 +315,7 @@ export const SUBJECT_DIAGRAMS = Object.freeze({
   globe: GlobeDiagram,
   timeZone: TimeZoneDiagram,
   territory: TerritoryDiagram,
+  ...MAP_READING_DIAGRAMS,
 })
 
 export function DiagramFigure({ figure }) {
