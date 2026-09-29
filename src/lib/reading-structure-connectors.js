@@ -399,6 +399,8 @@ const INTERROGATIVE_MEANINGS = Object.freeze({
   what: { S: '何が〜するのか', O: '何を〜するのか', C: '何であるのか', default: '何を〜するのか' },
   which: { default: 'どれが（どれを）〜するのか' },
   why: { default: 'なぜ〜するのか' },
+  // wherefore は why の古い言い方（名作の古い英語）。
+  wherefore: { default: 'なぜ〜するのか' },
   where: { default: 'どこで〜するのか' },
   when: { default: 'いつ〜するのか' },
   whose: { default: 'だれのものが（を）〜するのか' },
@@ -500,11 +502,29 @@ function adverbialExplanation(unit) {
   // however serious … のように、however＋形容詞が節の先頭に出る譲歩。
   if (lead?.role !== '接' && /^however\b/i.test(leadText)) {
     const adjective = leadText.split(/\s+/).slice(1).join(' ')
+    // however the old sea-captains may order me about のように、however だけで「どんなふうに〜しても」。
+    if (!adjective) {
+      return {
+        word: 'however',
+        chip: '複合関係副詞',
+        kind: '複合関係副詞 however',
+        explanation: `however は「どんなふうに〜しても・どれほど〜しても」という譲歩の意味を作る語（複合関係副詞）です。however の後ろに主語 ${subject} と動詞 ${verb} が続きます。「しかし」の意味の副詞ではありません。`,
+      }
+    }
     return {
       word: 'however',
       chip: '複合関係副詞',
       kind: '複合関係副詞 however',
       explanation: `however は「どれほど〜でも」という譲歩の意味を作る語（複合関係副詞）です。however ＋ ${adjective} が節の先頭に出て、後ろに主語 ${subject} と動詞 ${verb} が続きます。「しかし」の意味の副詞ではありません。`,
+    }
+  }
+  // Should you ever be … / Were Niagara but … / Had I known … のように、if を省いて助動詞・be動詞を主語の前に出した条件。
+  if (lead?.role === 'V' && unit.detail === '条件' && /^(?:should|were|had|would)$/i.test(leadText) && subject) {
+    return {
+      word: leadText,
+      chip: '倒置（if の省略）',
+      kind: '倒置による条件（if の省略）',
+      explanation: `if が省かれ、${leadText} が主語 ${subject} の前に出た倒置の形で、「もし〜なら」という条件を表します。If ${subject} ${leadLower} … と同じ意味です。このまとまりが${target}。`,
     }
   }
   if (lead?.role !== '接') return null
@@ -540,6 +560,16 @@ function adverbialExplanation(unit) {
       chip: '接続詞',
       kind: `従属接続詞（${kind}）`,
       explanation: `${head}${leadText} の後ろは ${restText} だけで、主節と共通する${shared}が省かれています。省かれた部分を補って読みます。このまとまりが${target}。`,
+    }
+  }
+  // as Indian isles by coral reefs のように、主語は残して主節と同じ動詞を省いた節。
+  if (unit.node.elliptical && !verb) {
+    const restText = elements.slice(1).map(plain).filter(Boolean).join(' ')
+    return {
+      word: leadText,
+      chip: '接続詞',
+      kind: `従属接続詞（${kind}）`,
+      explanation: `${head}${leadText} の後ろは ${restText} だけで、主節と同じ動詞が省かれています。前の動詞を補って読みます。このまとまりが${target}。`,
     }
   }
   if (leadLower === 'than') {
@@ -675,7 +705,7 @@ const CONJUNCTIVE_ADVERBS = Object.freeze({
 
 // 接続語の要素 [接 …] と、文をつなぐ副詞 [M however] の説明。
 // elements は同じ節（または文全体）の要素の並び、index はその中の位置。
-export function describeLinkElement(element, elements, index) {
+export function describeLinkElement(element, elements, index, options = {}) {
   const text = plain(element)
   const lower = text.toLowerCase()
   if (element.role === 'M') {
@@ -699,6 +729,17 @@ export function describeLinkElement(element, elements, index) {
       explanation: `${text} は「〜もまた…ない」と否定の内容を続ける接続詞です。後ろは疑問文と同じ語順（倒置）になります。`,
     }
   }
+  // 文の頭の But・And・Yet などは、前の文とこの文をつなぐ。
+  if (options.sentenceStart) {
+    const meaning = lower === 'and' ? 'そして' : coordinate.meaning
+    const note = lower === 'and' ? '前の文に内容を付け足します' : coordinate.note
+    return {
+      word: text,
+      chip: '等位接続詞',
+      kind: `等位接続詞 ${lower}`,
+      explanation: `文の頭の ${text} は等位接続詞で、前の文を受けて「${meaning}」と${note}。`,
+    }
+  }
   const next = elements.slice(index + 1).find((item) => item.role !== 'M')
   const previousSubject = [...elements.slice(0, index)].reverse().find((item) => ['S', '仮S'].includes(item.role))
   let joins = '前後の語句'
@@ -715,9 +756,17 @@ export function describeLinkElement(element, elements, index) {
       explanation: `${text} は等位接続詞で、前後の副詞節を対等に${lower === 'and' ? '並べます' : `つなぎ、「${coordinate.meaning}」と${coordinate.note}`}。`,
     }
   }
+  // here sleeps his meadow のように、動詞が主語の前に出た倒置の節。
+  // 動詞のすぐ後ろ（修飾語を除く）に主語が来るときだけ倒置。
+  const nextIndex = next ? elements.indexOf(next) : -1
+  const afterVerb = nextIndex >= 0 ? elements.slice(nextIndex + 1).find((item) => item.role !== 'M') : null
+  const invertedSubject = next?.role === 'V' && afterVerb && ['S', '仮S'].includes(afterVerb.role) ? afterVerb : null
   if (next && ['S', '仮S'].includes(next.role)) {
     joins = '前の節と後ろの節'
     tip = `後ろに主語 ${plain(next)} が続くので、節と節をつないでいると分かります。`
+  } else if (invertedSubject) {
+    joins = '前の節と後ろの節'
+    tip = `後ろは、動詞 ${plain(next)} が主語 ${plain(invertedSubject)} の前に出た倒置の節なので、節と節をつないでいると分かります。`
   } else if (next?.role === 'V') {
     joins = '前の述語と後ろの述語'
     tip = previousSubject
@@ -750,6 +799,7 @@ export function shortConnectorNote(info, unit = null) {
   if (kind === '関係副詞の働きをする語の省略') return `${antecedent} の後ろで、関係副詞の働きをする語が省略されています。`
   if (kind === '疑問詞（間接疑問）') return `${word} は疑問詞で、間接疑問の名詞節を作ります。`
   if (kind === '複合関係副詞 however') return 'however は「どれほど〜でも」という譲歩を表します。'
+  if (kind === '倒置による条件（if の省略）') return `${word} が主語の前に出て、if を省いた条件「もし〜なら」を表します。`
   if (kind.startsWith('従属接続詞')) {
     const inner = /（(.+)）/u.exec(kind)?.[1] ?? ''
     return `${word} は${inner}を表す接続詞で、副詞節を作ります。`

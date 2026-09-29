@@ -9,6 +9,7 @@ export const READING_ROLE_CODES = Object.freeze([
   'C',
   'M',
   'LINK',
+  'IND',
   'S_FORMAL',
   'S_REAL',
   'O_FORMAL',

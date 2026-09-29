@@ -1,25 +1,20 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useScreenParam, useStore, useContentSettings } from '../store/useStore.js'
-import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import {
   LITERATURE_KIND_META,
   getLiteratureWork,
 } from '../data/public-domain-literature.js'
+import { getLiteratureReadingQuestions } from '../data/literature-reading.js'
+import { readingRulesForPassage } from '../data/reading-rules.js'
+import { buildLiteratureVocabulary } from '../data/literature-vocabulary.js'
 import {
-  getLiteratureReadingGuide,
-  getLiteratureReadingQuestions,
-} from '../data/literature-reading.js'
-import { readingRulesForPassage, readingRulesForSentence } from '../data/reading-rules.js'
-import {
-  buildLiteratureVocabulary,
-  resolveLiteratureEnglishWord,
-} from '../data/literature-vocabulary.js'
-import {
-  buildLiteratureNarration,
-  literatureNarrationSegments,
-  narrationStepIndex,
-} from '../lib/literature.js'
+  literatureParagraphs,
+  literatureSentences,
+  literatureSentenceIndexForSegment,
+  resolveLiteratureSentenceWord,
+} from '../data/literature-sentences.js'
+import { buildLiteratureNarration } from '../lib/literature.js'
 import { isTTSSupported } from '../lib/tts.js'
 import {
   dismissSpeechPlayer,
@@ -30,20 +25,15 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { literatureReadingChoiceNoteFor } from '../data/literature-reading-choice-notes.js'
-import { Sheet } from '../components/Sheet.jsx'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
-import { LiteratureSceneNavigator } from '../components/LiteratureSceneNavigator.jsx'
+import { LiteratureFullText } from '../components/LiteratureFullText.jsx'
+import { LiteratureSentenceSheet } from '../components/LiteratureSentenceSheet.jsx'
 import { LiteratureVocabularySheet } from '../components/LiteratureVocabularySheet.jsx'
 import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
-import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
-import { MeaningText } from '../components/MeaningText.jsx'
-import { translationRoleMeta } from '../lib/translation-roles.js'
+import { Button, Card, Chip, cx } from '../components/ui.jsx'
 import {
   Book,
   Bookmark,
-  BookmarkFilled,
   Check,
   SpeakerWave,
 } from '../components/Icons.jsx'
@@ -55,40 +45,30 @@ const NARRATION_PAUSE_MS = {
 
 const READER_COPY = Object.freeze({
   english: Object.freeze({
-    playingOriginal: '英語を再生中',
-    playingTranslation: '対応する日本語を再生中',
-    originalSegment: 'English',
-    translationSegment: '対応する日本語',
-    help: '英語を一息ぶん読み、その区切りに対応する日本語を続けて読みます。',
-    speechSummary: null,
-    footer: '英語 → 対応する日本語',
+    help: '分からない文を押すと、その文の構文解説（文の要素・語順訳・記号の働き・和訳）が開きます。',
+    translationToggle: '和訳',
+    narration: '英語を一息ぶん読み、その区切りに対応する日本語を続けて読みます。',
     gradient: 'linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e)',
   }),
   classical: Object.freeze({
-    playingOriginal: '古文を再生中',
-    playingTranslation: '現代語訳を再生中',
-    originalSegment: '古文',
-    translationSegment: '区切りの現代語訳',
-    help: '古文を一息ぶん読み、その区切りの現代語訳を続けて読みます。',
-    speechSummary: '場面全体の読み仮名',
-    footer: '古文 → 区切りの現代語訳',
+    help: '分からない文を押すと、その文の読み・語句の意味・文法・現代語訳が開きます。',
+    translationToggle: '現代語訳',
+    narration: '古文を一息ぶん読み、その区切りの現代語訳を続けて読みます。',
     gradient: 'linear-gradient(135deg,#451a03,#92400e,#7c2d12)',
   }),
   kanbun: Object.freeze({
-    playingOriginal: '書き下しを再生中',
-    playingTranslation: '現代語訳を再生中',
-    originalSegment: '漢文（送り仮名・返り点つき）',
-    translationSegment: '区切りの現代語訳',
-    help: '送り仮名と返り点に従って漢文を読む順に目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
-    speechSummary: '場面全体の書き下し文',
-    footer: '漢文（書き下し） → 区切りの現代語訳',
+    help: '分からない文を押すと、その文の書き下し文・読む順・語句・句法・現代語訳が開きます。',
+    translationToggle: '現代語訳',
+    narration: '書き下し文を一息ぶん読み、対応する現代語訳を続けて読みます。',
     gradient: 'linear-gradient(135deg,#4c0519,#9f1239,#7f1d1d)',
   }),
 })
 
-// 読んでいる場面とまとまりは params に置き、単語の暗記や語の詳細から戻ったときも同じ所から読み続ける。
-// 別の作品を開くと params ごと新しくなるので、最初の場面から始まる。
-const readPosition = (value) => (Number.isInteger(value) && value > 0 ? value : 0)
+// 読んでいる文（交互朗読の位置と、最後に開いた文）と、訳・解説の表示は params に置き、
+// 語の詳細や単語の暗記から戻ったときも同じ所・同じ表示から読み続ける。
+const readPosition = (value) => (Number.isInteger(value) && value >= 0 ? value : 0)
+const readShown = (value) => value === true
+const readOpen = (value) => (Number.isInteger(value) && value >= 0 ? value : null)
 
 export function LiteratureReaderScreen() {
   const workId = useStore((state) => state.params.workId)
@@ -100,18 +80,21 @@ export function LiteratureReaderScreen() {
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
 
   const work = getLiteratureWork(workId)
+  const sentences = useMemo(() => (work ? literatureSentences(work) : []), [work])
+  const paragraphs = useMemo(() => (work ? literatureParagraphs(work) : []), [work])
   const steps = useMemo(() => buildLiteratureNarration(work), [work])
   const vocabulary = useMemo(() => buildLiteratureVocabulary(work), [work])
-  const [sceneIndex, setSceneIndex] = useScreenParam('scene', readPosition)
-  const [segmentIndex, setSegmentIndex] = useScreenParam('segment', readPosition)
-  const [phase, setPhase] = useState('original')
+  const [sentenceIndex, setSentenceIndex] = useScreenParam('sentence', readPosition)
+  const [openIndex, setOpenIndex] = useScreenParam('open', readOpen)
+  const [showTranslation, setShowTranslation] = useScreenParam('showJa', readShown)
+  const [showKakikudashi, setShowKakikudashi] = useScreenParam('showKakikudashi', readShown)
   const [playbackStatus, setPlaybackStatus] = useState('stopped')
-  const [syntaxOpen, setSyntaxOpen] = useState(false)
   const [vocabularyOpen, setVocabularyOpen] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
   const [questionAnswers, setQuestionAnswers] = useState({})
+  const sheetScrollRef = useRef(null)
   // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる（全部入っていれば外す）。
-  // 本文の語（英単語・古典単語・漢語）はまとめて、古典文法もまとめて、本文でタップした英単語は1語で入れる。
+  // 本文の語（英単語・古典単語・漢語）はまとめて、古典文法もまとめて入れる。
   const sharedWordDomain = work?.kind === 'english'
     ? 'vocab'
     : work?.kind === 'classical'
@@ -131,10 +114,8 @@ export function LiteratureReaderScreen() {
   const grammarBook = useWordBookSlot(notebookRefs('kotenGrammar', work?.grammarIds ?? []), {
     label: work ? `${work.titleJa}の古典文法${work.grammarIds.length}項目` : '',
   })
-  const activeWordBook = useWordBookSlot(activeWord?.id ? notebookRefs('vocab', activeWord.id) : [], {
-    label: activeWord?.word,
-  })
 
+  // 交互朗読の順（区切りごとに、原文→対応する訳）。
   const narrationItems = useMemo(() => {
     const items = []
     for (const step of steps) {
@@ -146,7 +127,7 @@ export function LiteratureReaderScreen() {
         ? previous
         : {
             id: `${step.sceneIndex}:${step.segmentIndex}`,
-            label: step.text,
+            label: step.displayText,
             meta: {
               sceneIndex: step.sceneIndex,
               segmentIndex: step.segmentIndex,
@@ -168,9 +149,7 @@ export function LiteratureReaderScreen() {
   }, [steps])
 
   useEffect(() => {
-    setPhase('original')
     setPlaybackStatus('stopped')
-    setSyntaxOpen(false)
     setVocabularyOpen(false)
     setActiveWord(null)
     setQuestionAnswers({})
@@ -190,28 +169,15 @@ export function LiteratureReaderScreen() {
 
   const meta = LITERATURE_KIND_META[work.kind]
   const copy = READER_COPY[work.kind] ?? READER_COPY.classical
-  const currentScene = work.scenes[sceneIndex]
-  const currentSegments = literatureNarrationSegments(currentScene)
-  const currentStep = narrationStepIndex(work, sceneIndex, segmentIndex, phase)
   const completed = readingsDone.includes(work.id)
   const ttsSupported = isTTSSupported()
-  const currentNarrationIndex = Math.max(
-    0,
-    narrationItems.findIndex(
-      (item) =>
-        item.meta.sceneIndex === sceneIndex &&
-        item.meta.segmentIndex === segmentIndex,
-    ),
-  )
   const playing = playbackStatus === 'playing'
   const playbackActive = playing || playbackStatus === 'paused'
+  const currentSentence = Math.min(sentenceIndex, Math.max(0, sentences.length - 1))
   // 本文の語と古典文法は、登録先の単語帳に入っている数で示す。
   const savedWordCount = wordsBook.present
   const savedGrammarCount = grammarBook.present
   const isEnglish = work.kind === 'english'
-  const readingGuide = isEnglish
-    ? getLiteratureReadingGuide(work.id, sceneIndex, currentScene)
-    : null
   const readingQuestions = isEnglish ? getLiteratureReadingQuestions(work.id, work) : []
   const answeredQuestionCount = readingQuestions.filter((item) => questionAnswers[item.id] != null).length
   const allQuestionsAnswered = answeredQuestionCount === readingQuestions.length
@@ -220,14 +186,11 @@ export function LiteratureReaderScreen() {
   ).length
   const passageRules = isEnglish
     ? readingRulesForPassage({
-        sentences: work.scenes.map((scene, index) => ({
-          en: scene.original,
-          paragraphStart: index === 0,
+        sentences: sentences.map((sentence) => ({
+          en: sentence.en,
+          paragraphStart: sentence.paragraphStart,
         })),
       }, 4)
-    : []
-  const sentenceRules = isEnglish
-    ? readingRulesForSentence({ en: currentScene.original, paragraphStart: sceneIndex === 0 }, 3)
     : []
 
   const stopPlayback = () => {
@@ -237,20 +200,20 @@ export function LiteratureReaderScreen() {
 
   const finishWork = () => {
     setPlaybackStatus('ended')
-    setSceneIndex(work.scenes.length - 1)
-    setSegmentIndex(
-      Math.max(
-        0,
-        literatureNarrationSegments(work.scenes[work.scenes.length - 1]).length - 1,
-      ),
-    )
-    setPhase('translation')
+    setSentenceIndex(sentences.length - 1)
     // 英語名作は通常の長文と同様、読解チェックを終えてから読了にする。
     if (!isEnglish) markLiteratureDone(work.id, 'koten_reading', work.scenes.length)
   }
 
-  const startPlayback = (fromIndex = currentNarrationIndex) => {
+  // 文の最初の区切りから交互朗読を始める。
+  const startPlayback = (fromSentence = currentSentence) => {
     if (!ttsSupported || !narrationItems.length) return
+    const first = sentences[fromSentence]?.segments[0]
+    const fromIndex = Math.max(0, narrationItems.findIndex((item) =>
+      item.meta.sceneIndex === first?.sceneIndex && item.meta.segmentIndex === first?.segmentIndex))
+    setOpenIndex(null)
+    setActiveWord(null)
+    setSentenceIndex(fromSentence)
     playSpeechItems(narrationItems, {
       index: fromIndex,
       title: '名作に親しむ',
@@ -259,29 +222,26 @@ export function LiteratureReaderScreen() {
       japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
       autoAdvance: true,
       onIndexChange: (_index, item) => {
-        setSceneIndex(item.meta.sceneIndex)
-        setSegmentIndex(item.meta.segmentIndex)
-        setPhase('original')
+        const next = literatureSentenceIndexForSegment(work, item.meta.sceneIndex, item.meta.segmentIndex)
+        if (next >= 0) setSentenceIndex(next)
       },
-      onSegmentChange: (segment) => setPhase(segment.meta.phase),
       onStatusChange: setPlaybackStatus,
       onComplete: finishWork,
     })
   }
 
-  const moveToScene = (nextIndex) => {
+  const openSentence = (index) => {
     stopPlayback()
-    setSyntaxOpen(false)
     setActiveWord(null)
-    setSceneIndex(Math.max(0, Math.min(nextIndex, work.scenes.length - 1)))
-    setSegmentIndex(0)
-    setPhase('original')
+    if (sheetScrollRef.current) sheetScrollRef.current.scrollTop = 0
+    setSentenceIndex(index)
+    setOpenIndex(index)
   }
 
-  const moveToSegment = (nextIndex) => {
-    stopPlayback()
-    setSegmentIndex(Math.max(0, Math.min(nextIndex, currentSegments.length - 1)))
-    setPhase('original')
+  const closeSentence = () => {
+    dismissSpeechPlayer()
+    setOpenIndex(null)
+    setActiveWord(null)
   }
 
   const openStudy = () => {
@@ -320,17 +280,17 @@ export function LiteratureReaderScreen() {
     setVocabularyOpen(true)
   }
 
-  const openSyntax = () => {
-    stopPlayback()
-    setActiveWord(null)
-    setSyntaxOpen(true)
-  }
+  const openSheetSentence = openIndex != null ? sentences[openIndex] : null
+  const resolveWord = (key) => resolveLiteratureSentenceWord(work, openSheetSentence, key)
 
   const tapWord = (token) => {
-    const meaning = resolveLiteratureEnglishWord(token.key, {
-      workId: work.id,
-      sceneIndex,
+    playSpeechItems([{ text: token.word, label: token.word, style: 'word' }], {
+      title: '単語の読み上げ',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
     })
+    const meaning = resolveWord(token.key)
     if (meaning?.id) recordVocabHistory(meaning.id)
     setActiveWord({
       word: token.word,
@@ -418,15 +378,15 @@ export function LiteratureReaderScreen() {
             </div>
             <p className="mt-2 text-sm font-bold leading-relaxed text-ink/65">
               {isEnglish
-                ? '本文に出る語を先に確認し、英語順のまとまりを保って読みます。'
+                ? '本文に出る語を先に確認してから、全文を読みます。分からない文は押して構文解説を開きます。'
                 : work.kind === 'classical'
-                  ? '古典単語と本文の意味区切りを先に確認してから、古文と現代語訳を往復します。'
-                  : '漢文語彙と本文の意味区切りを先に確認してから、原文・書き下し・現代語訳をつなぎます。'}
+                  ? '古典単語を先に確認してから、全文を読みます。分からない文は押して解説を開きます。'
+                  : '漢文語彙を先に確認してから、訓読文を読みます。分からない文は押して解説を開きます。'}
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-sky-50 px-2 py-2">
-                <span className="block text-lg font-extrabold text-sky-800">{work.scenes.length}</span>
-                <span className="text-[10px] font-bold text-ink/45">場面</span>
+                <span className="block text-lg font-extrabold text-sky-800">{sentences.length}</span>
+                <span className="text-[10px] font-bold text-ink/45">文</span>
               </div>
               <div className="rounded-xl bg-violet-50 px-2 py-2">
                 <span className="block text-lg font-extrabold text-violet-800">
@@ -482,199 +442,89 @@ export function LiteratureReaderScreen() {
           </Card>
         )}
 
-        <LiteratureSceneNavigator
-          current={sceneIndex}
-          total={work.scenes.length}
-          onChange={moveToScene}
-          color={meta.color}
-          completed={completed}
-        />
-
-        <Card className="overflow-hidden">
-          <div className="border-b border-ink/5 p-4">
-            <div className="flex items-center justify-between gap-3">
+        <Card className="overflow-hidden" data-literature-reader-body>
+          <div className="space-y-3 border-b border-ink/5 p-4">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-extrabold uppercase tracking-wide text-ink/40">
-                  この場面を一息ずつ
-                </p>
+                <p className="text-[11px] font-extrabold tracking-wide text-ink/40">本文</p>
                 <h2 className="font-display text-base font-extrabold text-ink">
-                  区切り {segmentIndex + 1} / {currentSegments.length}
+                  全文・{paragraphs.length}段落
                 </h2>
               </div>
-              <Chip color={phase === 'original' ? meta.color : '#d97706'}>
-                {playbackStatus === 'paused'
-                  ? '一時停止中'
-                  : playing
-                  ? phase === 'original'
-                    ? copy.playingOriginal
-                    : copy.playingTranslation
-                  : `区切り ${segmentIndex + 1}`}
-              </Chip>
+              {playbackActive && (
+                <Chip color={meta.color}>
+                  {playbackStatus === 'paused' ? '一時停止中' : `${currentSentence + 1}番目の文を再生中`}
+                </Chip>
+              )}
             </div>
-            <ProgressBar
-              value={
-                steps.length
-                  ? (currentStep + (playbackActive ? 0.5 : 0)) / steps.length
-                  : 0
-              }
-              className="mt-3"
-              color={meta.color}
-            />
-          </div>
-
-          <div className="space-y-3 p-4" aria-live="polite">
+            <p className="text-xs font-bold leading-relaxed text-ink/55">{copy.help}</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowTranslation((value) => !value)}
+                aria-pressed={showTranslation}
+                className={cx(
+                  'min-h-9 rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors',
+                  showTranslation ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-800',
+                )}
+                data-literature-translation-toggle
+              >
+                {copy.translationToggle} {showTranslation ? 'ON' : 'OFF'}
+              </button>
+              {work.kind === 'kanbun' && (
+                <button
+                  type="button"
+                  onClick={() => setShowKakikudashi((value) => !value)}
+                  aria-pressed={showKakikudashi}
+                  className={cx(
+                    'min-h-9 rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors',
+                    showKakikudashi ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-800',
+                  )}
+                  data-literature-kakikudashi-toggle
+                >
+                  書き下し文 {showKakikudashi ? 'ON' : 'OFF'}
+                </button>
+              )}
+            </div>
             <div className="rounded-2xl bg-teal-50 p-3">
               <p className="flex items-center gap-2 text-xs font-extrabold text-teal-800">
                 <SpeakerWave size={15} />
                 間で区切る交互朗読
               </p>
-              <p className="mt-1 text-[11px] font-bold leading-relaxed text-teal-950/55">
-                {copy.help}
+              <p className="mt-1 text-[11px] font-bold leading-relaxed text-teal-950/55">{copy.narration}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  disabled={!ttsSupported || playbackActive}
+                  onClick={() => startPlayback(0)}
+                >
+                  <SpeakerWave size={15} /> 最初から
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={!ttsSupported || playbackActive}
+                  onClick={() => startPlayback(currentSentence)}
+                  data-literature-play-from
+                >
+                  <SpeakerWave size={15} /> {currentSentence > 0 ? `${currentSentence + 1}番目の文から` : '再生'}
+                </Button>
+              </div>
+              <p className="mt-2 text-center text-[10px] font-bold text-teal-950/40">
+                {playbackActive ? '下の再生パネルで、前後の区切り・停止・速度を操作できます。' : '再生中の文は本文で色が付きます。'}
               </p>
             </div>
-
-            {isEnglish && readingGuide && (
-              <button
-                type="button"
-                onClick={openSyntax}
-                className="w-full rounded-2xl border-2 border-sky-200 bg-white p-4 text-left active:bg-sky-50"
-                data-literature-syntax-trigger={sceneIndex + 1}
-              >
-                <span className="flex items-center justify-between gap-2 text-[11px] font-extrabold text-sky-700">
-                  一文をタップして構文解説
-                  <span aria-hidden="true">S・V・O・C・M ›</span>
-                </span>
-                <span lang="en" className="mt-2 block text-base font-bold leading-[1.8] text-ink">
-                  {currentScene.original}
-                </span>
-              </button>
-            )}
-
-            <Button
-              full
-              disabled={!ttsSupported || playbackActive}
-              onClick={() => startPlayback(currentNarrationIndex)}
-            >
-              <SpeakerWave size={17} />
-              {playbackActive ? '下の再生パネルで操作中' : 'ここから交互再生'}
-            </Button>
-            <p className="text-center text-[10px] font-bold text-ink/35">
-              再生後は下の再生パネルで、前後のフレーズ・停止・速度を操作できます。
-            </p>
-
-            <section className="space-y-2" aria-label="間で区切った交互朗読">
-              {currentSegments.map((segment, index) => {
-                const active = segmentIndex === index
-                return (
-                  <button
-                    key={`${sceneIndex}:${index}`}
-                    type="button"
-                    onClick={() => moveToSegment(index)}
-                    aria-current={active ? 'step' : undefined}
-                    aria-label={`区切り${index + 1}を選択`}
-                    className={cx(
-                      'w-full overflow-hidden rounded-2xl border-2 text-left transition-colors',
-                      active
-                        ? 'border-teal-300 shadow-sm'
-                        : 'border-ink/5 bg-white',
-                    )}
-                  >
-                    <div
-                      className={cx(
-                        'p-3.5 transition-colors',
-                        active && phase === 'original' ? 'bg-teal-50' : 'bg-white',
-                      )}
-                    >
-                      <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wide text-teal-700">
-                          {copy.originalSegment} {index + 1}
-                        </span>
-                        {playbackActive && active && phase === 'original' && (
-                          <span className="text-[10px] font-extrabold text-teal-700">
-                            再生中
-                          </span>
-                        )}
-                      </div>
-                      {segment.marked ? (
-                        <KanbunMarkedText marked={segment.marked} showLegend={false} align="start" size="sm" />
-                      ) : (
-                        <p
-                          className={cx(
-                            'font-bold leading-[1.8] text-ink',
-                            work.kind !== 'english'
-                              ? 'font-serif text-lg'
-                              : 'text-base',
-                          )}
-                        >
-                          {segment.original}
-                        </p>
-                      )}
-                      {work.kind === 'kanbun' && (
-                        <div className="mt-2 border-t border-teal-100 pt-2">
-                          <span className="text-[10px] font-extrabold tracking-wide text-rose-700">
-                            書き下し（朗読）
-                          </span>
-                          <p className="mt-1 text-sm font-bold leading-[1.8] text-ink/65">
-                            {segment.speech}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    <div
-                      className={cx(
-                        'border-t border-ink/5 p-3.5 transition-colors',
-                        active && phase === 'translation'
-                          ? 'bg-amber-50'
-                          : 'bg-paper',
-                      )}
-                    >
-                      <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-extrabold tracking-wide text-amber-700">
-                          {copy.translationSegment}
-                        </span>
-                        {playbackActive && active && phase === 'translation' && (
-                          <span className="text-[10px] font-extrabold text-amber-700">
-                            再生中
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm font-bold leading-[1.8] text-ink">
-                        <MeaningText>{segment.translation}</MeaningText>
-                      </p>
-                    </div>
-                  </button>
-                )
-              })}
-            </section>
-
-            {copy.speechSummary && currentScene.speech && (
-              <details className="rounded-xl bg-white px-3 py-2">
-                <summary className="cursor-pointer text-xs font-extrabold text-teal-800">
-                  {copy.speechSummary}
-                </summary>
-                <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
-                  {currentScene.speech}
-                </p>
-              </details>
-            )}
-
-            <details className="rounded-xl bg-amber-50 px-3 py-2">
-              <summary className="cursor-pointer text-xs font-extrabold text-amber-800">
-                {work.kind === 'english'
-                  ? '場面全体の自然な和訳'
-                  : '場面全体の現代語訳'}
-              </summary>
-              <p className="mt-2 text-sm font-bold leading-relaxed text-ink/65">
-                <MeaningText>{currentScene.translation}</MeaningText>
-              </p>
-            </details>
-
-            <div className="rounded-2xl bg-violet-50 p-3">
-              <p className="text-[11px] font-extrabold text-violet-700">読みのポイント</p>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-violet-950/70">
-                {currentScene.guide}
-              </p>
-            </div>
+          </div>
+          <div className="p-4">
+            <LiteratureFullText
+              work={work}
+              paragraphs={paragraphs}
+              currentIndex={playbackActive || openIndex != null || currentSentence > 0 ? currentSentence : -1}
+              playing={playing}
+              onOpen={openSentence}
+              showTranslation={showTranslation}
+              showKakikudashi={showKakikudashi}
+            />
           </div>
         </Card>
 
@@ -688,7 +538,7 @@ export function LiteratureReaderScreen() {
               <Chip color="#059669">{answeredQuestionCount}/{readingQuestions.length} 回答</Chip>
             </div>
             <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-              選ぶとすぐに根拠を確認できます。誤答でも、本文へ戻って読み直せば学習完了にできます。
+              選ぶとすぐに根拠を確認できます。根拠の文を押すと、その文の構文解説が開きます。
             </p>
             <div className="mt-4 space-y-5">
               {readingQuestions.map((item, questionIndex) => {
@@ -703,6 +553,7 @@ export function LiteratureReaderScreen() {
                   (entry) => entry.choiceIndex === item.answer,
                   { seed: item.id },
                 )
+                const evidence = sentences[item.evidenceSentence]
                 return (
                   <section key={item.id} data-literature-question={item.id}>
                     <p lang="en" className="text-sm font-extrabold leading-relaxed text-ink">
@@ -745,9 +596,17 @@ export function LiteratureReaderScreen() {
                         <p className={cx('text-xs font-extrabold', correct ? 'text-emerald-800' : 'text-rose-800')}>
                           {correct ? '正解。' : unknown ? '答えはこちら。' : 'ここを読み直そう。'} {item.explanation}
                         </p>
-                        <p lang="en" className="mt-2 border-l-2 border-sky-300 pl-2 text-[11px] font-bold leading-relaxed text-ink/60">
-                          根拠 Scene {item.evidenceScene + 1}: {work.scenes[item.evidenceScene].original}
-                        </p>
+                        {evidence && (
+                          <button
+                            type="button"
+                            onClick={() => openSentence(item.evidenceSentence)}
+                            className="mt-2 block w-full border-l-2 border-sky-300 pl-2 text-left text-[11px] font-bold leading-relaxed text-ink/60 active:bg-sky-50"
+                            data-literature-evidence-sentence={evidence.number}
+                          >
+                            <span className="mr-1 font-extrabold text-sky-700">根拠（{evidence.number}番目の文）</span>
+                            <span lang="en">{evidence.text}</span>
+                          </button>
+                        )}
                       </div>
                     )}
                     {answered && (
@@ -826,130 +685,19 @@ export function LiteratureReaderScreen() {
         onOpenSharedStudy={openStudy}
       />
 
-      {isEnglish && readingGuide && (
-        <Sheet
-          open={syntaxOpen}
-          onClose={() => {
-            setSyntaxOpen(false)
-            setActiveWord(null)
-          }}
-          title="一文の構文解説"
-          maxH="88vh"
-        >
-          <div className="space-y-4" data-literature-syntax-sheet={sceneIndex + 1}>
-            <div className="rounded-2xl bg-brand-50 p-4" data-reading-role-card="direct-labels">
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <span className="text-[11px] font-extrabold tracking-wide text-brand-500">
-                  文の要素
-                </span>
-                <SpeakButton text={currentScene.original} size="sm" />
-              </div>
-              <ReadingRoleSentence
-                sentence={currentScene.original}
-                parts={readingGuide.parts}
-                activeWord={activeWord?.word}
-                isKnownWord={(token) => Boolean(resolveLiteratureEnglishWord(token.key, {
-                  workId: work.id,
-                  sceneIndex,
-                })?.ja)}
-                onWordClick={tapWord}
-                allowVerbOmission={readingGuide.allowVerbOmission}
-                verbOmissionNote={readingGuide.note}
-              />
-              <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">
-                ラベルと同じ色の下線が役割の範囲です。どの英単語もタップして意味を確認できます。
-              </p>
-            </div>
-
-            {activeWord && (
-              <div className="rounded-2xl bg-white p-3 ring-2 ring-brand-200" data-literature-active-word>
-                <div className="flex items-center gap-3">
-                  <SpeakButton text={activeWord.word} size="sm" />
-                  <div className="min-w-0 flex-1">
-                    <p lang="en" className="font-display text-lg font-extrabold text-ink">{activeWord.word}</p>
-                    <p className="text-sm font-bold text-ink/60">
-                      {activeWord.ja
-                        ? (isEnglish ? <MeaningText>{activeWord.ja}</MeaningText> : activeWord.ja)
-                        : '発音を確認できます'}
-                    </p>
-                  </div>
-                  {activeWord.id && (
-                    <button
-                      type="button"
-                      onClick={() => navigate('wordDetail', { id: activeWord.id })}
-                      className="rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
-                    >
-                      詳しく
-                    </button>
-                  )}
-                </div>
-                {/* 画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。 */}
-                {activeWord.id && (
-                  <button
-                    type="button"
-                    onClick={activeWordBook.press}
-                    aria-pressed={activeWordBook.inBook}
-                    data-literature-word-book
-                    className={cx(
-                      'mt-3 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold',
-                      activeWordBook.inBook
-                        ? 'bg-hint-soft text-amber-700'
-                        : 'bg-brand-500 text-white',
-                    )}
-                  >
-                    {activeWordBook.inBook ? <BookmarkFilled size={16} /> : <Bookmark size={16} />}
-                    <span className="min-w-0 truncate">
-                      {wordBookSlotButtonText({ bookTitle: activeWordBook.bookTitle, inBook: activeWordBook.inBook })}
-                    </span>
-                  </button>
-                )}
-              </div>
-            )}
-
-            <section className="rounded-2xl border border-brand-100 bg-white p-3" data-literature-svoc-flow>
-              <h3 className="text-xs font-extrabold text-brand-700">英語の順に役割を追う</h3>
-              <ol className="mt-2 space-y-1.5">
-                {readingGuide.parts.map((part, index) => {
-                  const roleMeta = translationRoleMeta(part.role)
-                  return (
-                    <li key={`${part.role}-${index}`} className="grid grid-cols-[2.7rem_minmax(0,1fr)] gap-2 rounded-lg bg-slate-50 px-2 py-2">
-                      <span className="flex h-7 items-center justify-center rounded border border-brand-200 bg-white text-[10px] font-black text-brand-700">
-                        {roleMeta.code}
-                      </span>
-                      <div className="min-w-0">
-                        <p lang="en" className="break-words text-xs font-extrabold leading-relaxed text-ink">{part.text}</p>
-                        <p className="text-[10px] font-bold text-ink/45">{roleMeta.label}：{roleMeta.question}</p>
-                      </div>
-                    </li>
-                  )
-                })}
-              </ol>
-            </section>
-
-            <section className="rounded-2xl border border-sky-100 bg-sky-50/50 p-3" data-literature-sentence-rules>
-              <h3 className="text-xs font-extrabold text-sky-700">読解ルール</h3>
-              <div className="mt-2 space-y-2">
-                {sentenceRules.map((rule) => (
-                  <ReadingRuleCard key={rule.id} rule={rule} compact />
-                ))}
-              </div>
-            </section>
-
-            <div className="rounded-2xl bg-violet-50 p-3">
-              <p className="text-[11px] font-extrabold text-violet-700">この場面の読み方</p>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-violet-950/70">{readingGuide.note}</p>
-              <p className="mt-2 border-t border-violet-100 pt-2 text-xs font-bold leading-relaxed text-violet-950/60">
-                作品上のポイント：{currentScene.guide}
-              </p>
-            </div>
-
-            <div className="rounded-2xl bg-amber-50 p-4">
-              <p className="text-[11px] font-extrabold text-amber-700">最後に自然な和訳</p>
-              <p className="mt-1 text-sm font-bold leading-relaxed text-amber-950"><MeaningText>{currentScene.translation}</MeaningText></p>
-            </div>
-          </div>
-        </Sheet>
-      )}
+      <LiteratureSentenceSheet
+        work={work}
+        sentences={sentences}
+        index={openIndex != null && openIndex < sentences.length ? openIndex : null}
+        onClose={closeSentence}
+        onMove={openSentence}
+        onPlayFrom={(index) => startPlayback(index)}
+        playEnabled={ttsSupported}
+        activeWord={activeWord}
+        onWordTap={tapWord}
+        resolveWord={resolveWord}
+        scrollAreaRef={sheetScrollRef}
+      />
     </div>
   )
 }

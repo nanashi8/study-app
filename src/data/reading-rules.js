@@ -858,7 +858,8 @@ function structureRuleIds(sentence, structure) {
       verbs.join(' '),
     ))
   if (reportsContent || verbs.some((verb) => /\b(?:may|might)\b/.test(verb))) ids.push('author-stance')
-  if (['現在分詞', '過去分詞'].some((base) => unitBases.has(base)) || structure.units.some((unit) => unit.base === 'to' && unit.usage === '形容詞')) ids.push('postmodifier')
+  // 補語になる分詞（find myself growing grim）は名詞を後ろから説明しないので、後置修飾のルールにしない。
+  if (structure.units.some((unit) => ['現在分詞', '過去分詞'].includes(unit.base) && unit.detail !== '補語') || structure.units.some((unit) => unit.base === 'to' && unit.usage === '形容詞')) ids.push('postmodifier')
   if (structure.units.some((unit) => unit.clause)) ids.push('main-clause-skeleton')
   return ids
 }

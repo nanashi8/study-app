@@ -1,4 +1,5 @@
 import { analyzeReadingSentence } from '../lib/reading-grammar.js'
+import { literatureSentences } from './literature-sentences.js'
 import {
   buildReadingRoleAnnotation,
   readingSentenceRoleParts,
@@ -527,10 +528,13 @@ export function getLiteratureReadingQuestions(workId, work = null) {
   const questions = LITERATURE_READING_QUESTIONS[workId] ?? Object.freeze([])
   if (!work?.scenes?.length) return questions
   if (QUESTION_CACHE.has(work)) return QUESTION_CACHE.get(work)
+  const sentences = literatureSentences(work)
   const resolved = Object.freeze(questions.map((item) => {
     const evidence = LITERATURE_QUESTION_EVIDENCE[item.id]
     const evidenceScene = work.scenes.findIndex((scene) => scene.original.includes(evidence))
-    return Object.freeze({ ...item, evidenceScene })
+    // 根拠は、本文で押して構文解説を開ける文で示す。
+    const evidenceSentence = sentences.findIndex((sentence) => sentence.text.includes(evidence))
+    return Object.freeze({ ...item, evidenceScene, evidenceSentence })
   }))
   QUESTION_CACHE.set(work, resolved)
   return resolved

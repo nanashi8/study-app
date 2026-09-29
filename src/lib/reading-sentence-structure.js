@@ -1,8 +1,10 @@
 // 長文の一文を、人が本文を読んで確定した入れ子の構造から組み立てる。
 //
 // 記法
-//   [R 語句]       要素。R は S V O O1 O2 C M 接 仮S 真S 仮O 真O
+//   [R 語句]       要素。R は S V O O1 O2 C M 接 独 仮S 真S 仮O 真O
+//                  独 は独立語（間投詞・呼びかけ・Yes/No の答え・動詞のない提示の語句）。文の骨組みの外に置く。
 //   {種類| 中身}   節・句のまとまり。中身には、そのまとまりの中の要素を並べる。
+//   {引用| 中身}   直接話法の引用（発言そのもの）。中に発言の文の要素を並べる。括弧は付けない。
 //
 // 例
 //   [S A screen near the office] [V reports]
@@ -31,7 +33,7 @@ import {
 } from './reading-structure-connectors.js'
 
 export const STRUCTURE_ROLES = Object.freeze([
-  'S', 'V', 'O', 'O1', 'O2', 'C', 'M', '接', '仮S', '真S', '仮O', '真O',
+  'S', 'V', 'O', 'O1', 'O2', 'C', 'M', '接', '独', '仮S', '真S', '仮O', '真O',
 ])
 
 // 画面の下線表示で使う役割コードへの対応。
@@ -44,6 +46,7 @@ export const STRUCTURE_DISPLAY_ROLE = Object.freeze({
   C: 'C',
   M: 'M',
   接: 'LINK',
+  独: 'IND',
   仮S: 'S_FORMAL',
   真S: 'S_REAL',
   仮O: 'O_FORMAL',
@@ -59,6 +62,7 @@ const ROLE_NAMES = Object.freeze({
   C: '補語C',
   M: '修飾語M',
   接: '接続語',
+  独: '独立語',
   仮S: '形式主語（仮S）',
   真S: '真主語（真S）',
   仮O: '形式目的語（仮O）',
@@ -111,9 +115,12 @@ const CLAUSE_TYPES = new Set([
   'whether節', 'if節', 'what節', '副詞節', '強調',
 ])
 
+// 直接話法の引用（“…,” said he の “…”）。発言の中の要素を並べるが、節の ( ) も句の < > も付けない。
+const QUOTE_TYPES = new Set(['引用'])
+
 const PHRASE_TYPES = new Set([
   'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前', '数量', '反復',
-  '形容詞',
+  '形容詞', '成句',
 ])
 
 // 役割（要素）を持たずに語句を直接入れるまとまり。前置詞句は中に節・句を入れ子にできる。
@@ -121,7 +128,9 @@ const PHRASE_TYPES = new Set([
 // 反復は、year after year のように同じ名詞を前置詞でつなぐ決まった言い方を一つの句にする（2026-09-18 利用者が決定）。
 // 形容詞は、a harsh law full of loopholes の full of … のように名詞を後ろから説明する形容詞のまとまり。
 // 形容詞そのものは括らず、中の句だけを括る（2026-09-18 利用者が決定）。
-const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量', '反復', '形容詞'])
+// 成句は、ten to one（十中八九）・some time or other（いつか）・little or no（ほとんど〜ない）のような
+// 語を組み合わせた決まった言い方。全体を一つの < > にし、中の前置詞・and・or を句や並列として扱わない。
+const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量', '反復', '形容詞', '成句'])
 
 // 要素の中で並ぶ語句のまとまり。読み取ったあとで外し、並ぶものの語の範囲だけを残す。
 const PARALLEL_UNIT = '並列'
@@ -133,6 +142,7 @@ export const MULTIWORD_PREPOSITIONS = Object.freeze([
   'according to', 'ahead of', 'along with', 'apart from', 'as for', 'aside from', 'because of',
   'close to', 'due to', 'except for', 'far from', 'instead of', 'next to', 'out of', 'owing to',
   'prior to', 'rather than', 'regardless of', 'such as', 'thanks to', 'together with', 'up to',
+  'by reason of',
 ])
 
 export const SINGLE_PREPOSITIONS = new Set([
@@ -214,13 +224,19 @@ function parseUnitType(spec) {
   const raw = spec.trim()
   if (raw === PARALLEL_UNIT) return { rawType: raw, base: PARALLEL_UNIT, detail: '', antecedent: '' }
   const [head, antecedent = ''] = raw.split('>')
-  const [base, detail = ''] = head.split(':')
-  const unit = { rawType: raw, base, detail, antecedent: antecedent.trim() }
+  const [base, rawDetail = ''] = head.split(':')
+  // 副詞節:様態(省略) … as Indian isles by coral reefs のように、主節と同じ動詞を省いた節。
+  const elliptical = base === '副詞節' && rawDetail.endsWith('(省略)')
+  const detail = elliptical ? rawDetail.slice(0, -'(省略)'.length) : rawDetail
+  const unit = { rawType: raw, base, detail, antecedent: antecedent.trim(), elliptical }
   if (base.startsWith('to') && base !== 'to') {
     throw new StructureSyntaxError(`不明なまとまりの種類「${raw}」`)
   }
-  if (!CLAUSE_TYPES.has(base) && !PHRASE_TYPES.has(base)) {
+  if (!CLAUSE_TYPES.has(base) && !PHRASE_TYPES.has(base) && !QUOTE_TYPES.has(base)) {
     throw new StructureSyntaxError(`不明なまとまりの種類「${raw}」`)
+  }
+  if (QUOTE_TYPES.has(base) && (detail || unit.antecedent)) {
+    throw new StructureSyntaxError(`引用に種類や説明する名詞は付けません「${raw}」`)
   }
   if (base === '副詞節' && !ADVERBIAL_CLAUSE_KINDS[detail]) {
     throw new StructureSyntaxError(`副詞節の種類が不明「${raw}」`)
@@ -228,7 +244,7 @@ function parseUnitType(spec) {
   if (base === '分詞構文' && !PARTICIPIAL_CONSTRUCTION_KINDS[detail]) {
     throw new StructureSyntaxError(`分詞構文の種類が不明「${raw}」`)
   }
-  if (['数量', '反復'].includes(base) && detail) {
+  if (['数量', '反復', '成句'].includes(base) && detail) {
     throw new StructureSyntaxError(`${base}の句に種類は付けません「${raw}」`)
   }
   if (base === '前' && !['', '意味上の主語'].includes(detail)) {
@@ -254,8 +270,16 @@ function parseUnitType(spec) {
     unit.usage = usage
     unit.adverbKind = adverbKind
   }
-  const needsAntecedent = ['関係', '関係,', '関係省略', '同格that', '現在分詞', '過去分詞', '同格', '形容詞']
-    .includes(base) || (base === 'to' && unit.usage === '形容詞')
+  // 分詞が補語になる形（find myself growing grim・found herself seated）は {現在分詞:補語| …}。名詞は説明しない。
+  if (['現在分詞', '過去分詞'].includes(base) && detail && detail !== '補語') {
+    throw new StructureSyntaxError(`分詞の種類は「補語」だけ書けます「${raw}」`)
+  }
+  const participleComplement = ['現在分詞', '過去分詞'].includes(base) && detail === '補語'
+  if (participleComplement && unit.antecedent) {
+    throw new StructureSyntaxError(`補語の分詞に説明する名詞は付けません「${raw}」`)
+  }
+  const needsAntecedent = (['関係', '関係,', '関係省略', '同格that', '現在分詞', '過去分詞', '同格', '形容詞']
+    .includes(base) && !participleComplement) || (base === 'to' && unit.usage === '形容詞')
   if (needsAntecedent && !unit.antecedent) {
     throw new StructureSyntaxError(`「${raw}」には説明する名詞（>名詞）が必要です`)
   }
@@ -279,7 +303,7 @@ function parseNodes(source, cursor, closer, separators = false) {
     if (character === '[') {
       flush()
       cursor.index++
-      const match = /^(仮S|真S|仮O|真O|O1|O2|接|S|V|O|C|M) /u.exec(source.slice(cursor.index))
+      const match = /^(仮S|真S|仮O|真O|O1|O2|接|独|S|V|O|C|M) /u.exec(source.slice(cursor.index))
       if (!match) {
         throw new StructureSyntaxError(`役割の書き方が不正です（${source.slice(cursor.index, cursor.index + 12)}）`)
       }
@@ -373,6 +397,7 @@ export function structureUnitLabel(unit) {
     case 'what節':
       return '関係代名詞 what の節（名詞節）'
     case '副詞節':
+      if (unit.elliptical) return `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節（動詞の省略）`
       return adverbialClauseHasSubject(unit)
         ? `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節`
         : `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節（主語と be動詞の省略）`
@@ -392,9 +417,9 @@ export function structureUnitLabel(unit) {
     case 'ing限定':
       return '-ing形のまとまり（形容詞の内容を限定）'
     case '現在分詞':
-      return '現在分詞句（後ろから名詞を説明）'
+      return unit.detail === '補語' ? '現在分詞句（補語）' : '現在分詞句（後ろから名詞を説明）'
     case '過去分詞':
-      return '過去分詞句（後ろから名詞を説明）'
+      return unit.detail === '補語' ? '過去分詞句（補語）' : '過去分詞句（後ろから名詞を説明）'
     case '分詞構文':
       return `分詞構文（${PARTICIPIAL_CONSTRUCTION_KINDS[unit.detail]}）`
     case '同格':
@@ -409,6 +434,10 @@ export function structureUnitLabel(unit) {
       return '同じ名詞をくり返す句'
     case '形容詞':
       return '名詞を後ろから説明する形容詞のまとまり'
+    case '成句':
+      return '決まった言い方'
+    case '引用':
+      return '直接話法の引用（発言そのもの）'
     default:
       return 'まとまり'
   }
@@ -442,8 +471,18 @@ function verbIsComplete(element, elements = []) {
   const index = elements.indexOf(element)
   if (index < 0) return false
   // Nor does S … guarantee のような倒置も、主語をはさんで動詞が続くので未完結。
-  const next = elements.slice(index + 1).find((item) => !['M', 'S', '仮S'].includes(item.role))
-  return next?.role !== 'V'
+  // ただし There is A — B surrounds … のように主語が2つ続けば、2つ目の主語から新しい節なので完結。
+  let seenSubject = false
+  for (const item of elements.slice(index + 1)) {
+    if (item.role === 'M') continue
+    if (['S', '仮S'].includes(item.role)) {
+      if (seenSubject) return true
+      seenSubject = true
+      continue
+    }
+    return item.role !== 'V'
+  }
+  return true
 }
 
 function clauseGroups(elements) {
@@ -674,11 +713,32 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
     }
     case '形容詞':
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
+    case '成句':
+      return `${inside}語の組み合わせ全体で一つの意味を表す決まった言い方です${partOf}。`
+    // 直接話法の引用は、said・cried などの目的語として、話した言葉をそのまま示す。
+    case '引用': {
+      if (container && ['O', 'O2'].includes(container.role)) {
+        const verb = nearestVerb(scopeElements, container)
+        return `${inside}${verb ? `${verb} の` : ''}目的語Oで、話した言葉をそのまま引いています。`
+      }
+      return `${inside}話した言葉をそのまま引いています${partOf}。`
+    }
     // 仕様（docs/reading-phrase-explanation-method.md）：過去分詞の後置修飾は、省略された関係詞＋be動詞と受け身の関係を説明する。
     case '現在分詞':
-      return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。-ing形が名詞の後ろに置かれ、「〜している（${unit.antecedent}）」と読みます。`
-    case '過去分詞':
+    case '過去分詞': {
+      if (unit.detail === '補語') {
+        const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
+        const subject = container ? nearestRole(scopeElements, container, ['S', '仮S']) : ''
+        const meaning = unit.base === '現在分詞' ? '「〜している」' : '「〜された・〜されている」'
+        return object
+          ? `${inside}目的語 ${object} がどんな様子かを表す補語Cです（${unit.base}で${meaning}）。`
+          : `${inside}${subject ? `主語 ${subject} が` : '主語が'}どんな様子かを表す補語Cです（${unit.base}で${meaning}）。`
+      }
+      if (unit.base === '現在分詞') {
+        return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。-ing形が名詞の後ろに置かれ、「〜している（${unit.antecedent}）」と読みます。`
+      }
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。${unit.antecedent} の後ろに「関係代名詞＋be動詞」（that is・that are など）が省かれた形で、「〜される・〜された」という受け身の意味です。`
+    }
     case '副詞節': {
       const kind = ADVERBIAL_CLAUSE_KINDS[unit.detail]
       if (unit.detail === '比較' && container && container.role !== 'M') {
@@ -804,7 +864,7 @@ function markedText(nodes) {
       }
       // 同格の語句・名詞を後ろから説明する形容詞は、句を名詞のところで閉じ、それ自体は括らず中の句・節だけを括る
       // （Ms. Brown, one <of the librarians>、<than a harsh law> full <of loopholes>）。
-      if (['同格', '形容詞'].includes(node.base)) {
+      if (['同格', '形容詞', '引用'].includes(node.base)) {
         if (phrase?.open) {
           emit('> ')
           phrase.open = false
@@ -828,7 +888,9 @@ function markedText(nodes) {
   }
   walk(nodes, null)
   // 括弧の内側には空白を入れない（<to help them> <explore the town>）。
+  // 句が別の句で始まるとき（<of week days> で始まる分詞構文）に残る空の < > は消す。
   return out.join('')
+    .replace(/<\s*>/g, '')
     .replace(/\s+/g, ' ')
     .replace(/([(<])\s+/g, '$1')
     .replace(/\s+([)>])/g, '$1')
@@ -877,7 +939,7 @@ function collectWords(nodes, scopes, elements, output) {
       continue
     }
     // 前置詞句は括弧を付けるだけで、語順訳の役割を探す場面（節・句の中）にはしない。
-    collectWords(node.children, ['前', '数量', '反復'].includes(node.base) ? scopes : [...scopes, node], elements, output)
+    collectWords(node.children, ['前', '数量', '反復', '成句'].includes(node.base) ? scopes : [...scopes, node], elements, output)
   }
 }
 
@@ -930,9 +992,10 @@ function validateUnit(unit, errors) {
   if (!bare && !elements.length) {
     errors.push(`まとまり「${unitText(unit)}」の中に要素がありません`)
   }
-  // when possible のように主語と be動詞を省いた副詞節は、動詞がなくてもよい。
-  const ellipticalAdverbial = unit.base === '副詞節' && !adverbialClauseHasSubject(unit)
-  if (!bare && !elements.some((element) => element.role === 'V') && unit.base !== '強調' && !ellipticalAdverbial) {
+  // when possible のように主語と be動詞を省いた副詞節と、主節と同じ動詞を省いた副詞節（(省略)）は、動詞がなくてもよい。
+  const ellipticalAdverbial = unit.base === '副詞節' && (!adverbialClauseHasSubject(unit) || unit.elliptical)
+  // 引用は発言そのものなので、Oh dear! のような動詞のない言葉だけでもよい。
+  if (!bare && !elements.some((element) => element.role === 'V') && unit.base !== '強調' && !ellipticalAdverbial && !QUOTE_TYPES.has(unit.base)) {
     errors.push(`まとまり「${unitText(unit)}」に動詞Vがありません`)
   }
   // 関係詞が目的語・補語・修飾語になる節には、必ず主語がある（受け身なら関係代名詞が主語S）。
@@ -957,7 +1020,8 @@ function validateUnit(unit, errors) {
   }
   if (unit.base === '前') {
     const words = structureWords(rawText(unit.children))
-    const preposition = leadingPreposition(words)
+    // nothing but A・all but A の but は「〜を除いて」という前置詞。
+    const preposition = leadingPreposition(words) || (/^but$/i.test(words[0] ?? '') ? 'but' : '')
     const leadingText = unit.children[0]?.kind === 'text' ? structureWords(unit.children[0].text) : []
     if (!preposition || leadingText.length < preposition.split(' ').length) {
       errors.push(`前置詞句「${unitText(unit)}」が前置詞で始まっていません`)
@@ -1021,7 +1085,10 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
         role: element.role,
         text: nodeText(element),
       })),
-      patterns: clause ? patternsForScope(innerElements) : [],
+      // 引用の中は一つの文として読む（主語のない Tell me は命令文）。
+      patterns: clause
+        ? patternsForScope(innerElements)
+        : QUOTE_TYPES.has(node.base) ? patternsForScope(innerElements, { root: true }) : [],
       // 節・句そのものを括弧つきで示す文字列（外側の括弧も含む）。
       marked: normalizeStructureText(markedText([node])),
     })
@@ -1524,7 +1591,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
         if (range) connectorSpans.push({ ...range, note: shortConnectorNote(info, scope.unit) })
         return
       }
-      const link = describeLinkElement(element, scope.elements, index)
+      const link = describeLinkElement(element, scope.elements, index, { sentenceStart: !scope.unit && index === 0 })
       if (!link) return
       chipByElement.set(element, link.chip)
       links.push(link)
@@ -1576,6 +1643,8 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
     structureTokens: parsedMarkers.tokens,
     notes,
     rules: options.rules ?? null,
+    // 記号（— ： ；）の働きの説明（台帳の marks。src/lib/punctuation-notes.js で本文の記号へ当てる）。
+    marks: options.marks ?? [],
   })
 }
 
@@ -1646,9 +1715,9 @@ export function unbracketedPrepositions(structure) {
         const list = structureWords(node.text)
         let cursor = 0
         // 数量の句（more than ten thousand）の than、反復の句（year after year）の after は、決まった言い方の一部。
-        if (['数量', '反復'].includes(unit?.base)) continue
+        if (['数量', '反復', '成句'].includes(unit?.base)) continue
         if (unit?.base === '前' && index === 0) {
-          const lead = leadingPreposition(list)
+          const lead = leadingPreposition(list) || (/^but$/i.test(list[0] ?? '') ? 'but' : '')
           cursor = lead ? lead.split(' ').length : 0
         }
         while (cursor < list.length) {

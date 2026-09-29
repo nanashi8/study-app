@@ -13,6 +13,7 @@ import {
   LITERATURE_SEGMENT_TRANSLATION_OVERRIDES,
 } from './literature-full-text/translation-review.js'
 import { tokenize } from '../lib/text.js'
+import { LITERATURE_SENTENCE_STRUCTURES } from './literature-structures/index.js'
 
 // marked は漢文の訓読文（送り仮名・返り点・句読点付き）、kakikudashi はその書き下し文（歴史的仮名遣い）。
 // speech は端末音声で読ませるための読み。訓読文は返り点どおりに読むと必ず書き下し文になるように持つ。
@@ -1074,10 +1075,37 @@ const LITERATURE_SELECTION_COVERAGE = Object.freeze({
   }),
 })
 
+// 英語名作は、一文ごとの構造台帳（literature-structures/）が本文の正本。原文の段落を1つの場面にし、
+// 各文の語順訳のまとまり（英語と対応する日本語）をそのまま交互朗読の区切りにする。
+function englishScenesFromLedger(entries) {
+  const paragraphs = []
+  for (const [index, entry] of entries.entries()) {
+    if (index === 0 || entry.p) paragraphs.push([])
+    paragraphs.at(-1).push(entry)
+  }
+  return paragraphs.map((list) => {
+    const chunks = list.flatMap((entry) => entry.chunks ?? [])
+    return Object.freeze({
+      original: chunks.map((chunk) => chunk.en).join(' '),
+      translation: list.map((entry) => entry.ja).join(''),
+      guide: '',
+      speech: null,
+      marked: null,
+      kakikudashi: null,
+      narrationSegments: Object.freeze(chunks.map((chunk) => Object.freeze({
+        original: chunk.en,
+        translation: chunk.ja,
+        speech: chunk.en,
+      }))),
+    })
+  })
+}
+
 export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
   BASE_PUBLIC_DOMAIN_LITERATURE.map((work) => {
+    const ledger = work.kind === 'english' ? LITERATURE_SENTENCE_STRUCTURES[work.id] : null
     const expanded = LITERATURE_FULL_TEXT[work.id]
-    const sourceScenes = expanded?.scenes ?? work.scenes
+    const sourceScenes = ledger ? englishScenesFromLedger(ledger) : expanded?.scenes ?? work.scenes
     const workWithSegments = {
       ...work,
       excerpt: expanded?.excerpt ?? work.excerpt,
@@ -1092,11 +1120,12 @@ export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
             item.narrationSegments ??
             LITERATURE_NARRATION_SEGMENTS[work.id]?.[sceneIndex] ??
             Object.freeze([])
-          const workOverrides = LITERATURE_SEGMENT_TRANSLATION_OVERRIDES[work.id]
+          // 台帳から作った場面は、訳も台帳が正本なので、古い場面番号の訳の修正台帳を当てない。
+          const workOverrides = ledger ? null : LITERATURE_SEGMENT_TRANSLATION_OVERRIDES[work.id]
           return Object.freeze({
             ...item,
             translation:
-              LITERATURE_SCENE_TRANSLATION_OVERRIDES[work.id]?.[sceneIndex + 1] ??
+              (ledger ? null : LITERATURE_SCENE_TRANSLATION_OVERRIDES[work.id]?.[sceneIndex + 1]) ??
               item.translation,
             narrationSegments: Object.freeze(
               withKanbunMarks(item.marked, segments).map((segment, segmentIndex) =>

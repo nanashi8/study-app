@@ -5,6 +5,13 @@ export const TRANSLATION_ROLE_META = Object.freeze({
     question: '後ろをどんな関係で足すか',
     japaneseShape: '「もし」「なぜなら」「そして」など',
   }),
+  // 間投詞（Oh・Alas）・呼びかけ（my dear）・Yes/No の答え・動詞のない提示の語句。文の骨組み（S・V・O・C）の外に置く。
+  IND: Object.freeze({
+    code: '独立',
+    label: '独立語',
+    question: '呼びかけ・感動・答えなど、文の骨組みの外にある語句',
+    japaneseShape: '「ああ」「ねえ、あなた」「いいえ」など、文の頭や途中に添える形',
+  }),
   S: Object.freeze({
     code: 'S',
     label: '主語',

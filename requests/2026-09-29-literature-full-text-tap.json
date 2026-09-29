@@ -1,0 +1,91 @@
+{
+  "id": "2026-09-29-literature-full-text-tap",
+  "title": "名作に親しむを全文表示にし、文を押すと見やすい解説（英語は長文読解と同じ一文の構文解説、古文・漢文は語句・文法・訳）が出るようにする。英語長文のダッシュ・コロン・セミコロンの働きも解説する",
+  "asked": [
+    "名作に親しむのコンテンツが読解しづらくないか？\n英語コンテンツの長文読解のように、全文をタップしたら詳細が出るようにしたらどうか？白鯨の第一文が長すぎるのを問題だと思わないのか？\n名作に親しむコンテンツの古文・漢文も見づらいので、全文表示から、分からないところがあったとしたら見やすい解説が表示されるように改修しなさい。",
+    "英語長文ではーや：や；にも意味があるが、それらの解説が漏れてもいるのではないか。"
+  ],
+  "sessions": [
+    "67ee5ee7-46c0-49ae-98cd-9095842092a7"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "full-text-tap",
+      "text": "名作に親しむの全12作品で、読む画面は本文全体を段落ごとに続けて表示し（場面ごとにページを切り替えない）、本文の文（英語は1文、古文・漢文は「。」などで終わる1文）を押すと、その文の解説のシートが開く。シートから前の文・次の文へ移れる",
+      "population": "名作に親しむの全12作品（英語6・古典3・漢文3）の本文全体の全文",
+      "check": "node --test tests/literature-full-text-reader.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "english-one-sentence",
+      "text": "英語6作品で、押す単位と構文解説の対象は必ず本文の1文にする（白鯨の冒頭のように、複数の文や文の途中で切れた約100語の場面を「一文」として出さない）。1文の中に別の文の終わりがなく、全文をつなぐと本文と一字一句同じになる。朗読の区切りも文をまたがない",
+      "population": "英語6作品（白鯨2,237語・高慢と偏見860語・二都物語1,015語・不思議の国のアリス2,162語・幸福な王子3,499語・賢者の贈り物2,071語）の全文の全文と全区切り",
+      "check": "node --test tests/literature-sentences.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "english-structure-detail",
+      "text": "英語6作品の全文の各文に、長文読解と同じ手書きの構造台帳（主節の要素 S・V・O・C・M、節・句の入れ子、並列、語順訳のまとまりと日本語、自然な和訳）を書き、シートは長文読解と同じ一文の構文解説（文の要素・文型・構造図・語順訳・節・句とつなぐ語の解説・きれいな日本語訳・単語を押して意味）を出す。長い文は語順訳のまとまりごとに英語と日本語を並べ、並列は縦にそろえる。自動の解析だけで付けた役割（Call me Ishmael. を修飾語とするような誤り）は出さない。長文読解の台帳と同じ検査（前置詞句の囲み・並列・関係詞節の主語・つなぐ語の説明）を通す",
+      "population": "英語6作品の全文の全文",
+      "check": "node --test tests/literature-sentence-structures.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "classical-notes",
+      "text": "古典3作品（枕草子第一段・徒然草第五十二段・方丈記冒頭）の各文に、読み（ひらがな）・区切りごとの現代語訳・文全体の現代語訳・語句の意味・文法の説明を書き、シートで見やすく出す。語句のうち古典単語・古典文法のカードがあるものは、そのカードへ行ける",
+      "population": "古典3作品の全文の全文",
+      "check": "node --test tests/literature-classics-notes.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "kanbun-notes",
+      "text": "漢文3作品の各文に、訓読文（返り点・送り仮名）・書き下し文・読み・読む順・区切りごとの現代語訳・文全体の現代語訳・語句の意味・句法の説明を書き、シートで見やすく出す。語句のうち漢文のカードがあるものは、そのカードへ行ける",
+      "population": "漢文3作品（論語・孟子「五十歩百歩」・韓非子「矛盾」）の全文の全文",
+      "check": "node --test tests/literature-classics-notes.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "punctuation-explained",
+      "text": "英語長文の — ： ；（ダッシュ・コロン・セミコロン）のすべてに、その文でその記号が何を表すか（挿入・言い換え・具体例・理由・並べる区切り・話の転換など）の解説を書き、一文の構文解説のシートに出す",
+      "population": "長文読解42本の全1,518文にある ： ；（16文・16個、ダッシュは0個）と、名作英語6作品の全文にある — ： ；（— 53個・： 28個・； 100個）のすべて",
+      "check": "node --test tests/reading-punctuation-notes.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "features-kept",
+      "text": "いまある操作と中身を全作品で残す：交互朗読（原文→訳）の再生と画面下部の再生パネル、区切りごとの対応する日本語、和訳・現代語訳の全文、読みのポイント、本文語彙の予習と単語帳、古典文法のカードと単語帳、読解チェック、読了の記録。交互朗読は全文表示から始められ、読んでいる文が本文で分かる",
+      "population": "名作12作品 × 今の読む画面の操作と中身すべて",
+      "check": "node --test tests/literature.test.mjs tests/literature-full-text-reader.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "related-screens",
+      "text": "依頼に関わる画面とデータをそろえる：作品一覧（場面数などの表示）、読む前の準備と本文語彙の予習シート、読解チェック18問（根拠を場面ではなく本文の文で示し、押すとその文の解説が開く）、読了と学習の記録、戻ったときの位置（開いていた文・和訳の表示）",
+      "population": "作品一覧・読む画面・本文語彙の予習シート・読解チェック18問・読了の記録・戻り位置",
+      "check": "node --test tests/literature.test.mjs tests/literature-reading.test.mjs tests/literature-vocabulary.test.mjs tests/screen-return-place.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "screen-verified",
+      "text": "開発サーバーの幅375で12作品すべてを開き、全文表示・文を押したシート・前後の文への移動・交互再生・和訳の表示を実際に操作して確かめる（英語は白鯨の冒頭の文を含む）。テストでも全作品の全文を描いて確かめる",
+      "population": "名作12作品",
+      "check": "node --test tests/literature-full-text-reader.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "japanese-readable",
+      "text": "足した日本語（和訳・解説・画面）を、学習者向け日本語の監査（禁止表現なし・JSXの改行の空白なし）と見直しの台帳に通す",
+      "population": "この依頼で足した日本語の全件",
+      "check": "node --test tests/learner-japanese-audit.test.mjs && npm run audit:japanese-review",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "npm run audit:all-content をクリーンな clone で通してから main へ push し、公開版のデプロイ成功と、公開版で名作の全文表示と文の解説が開くことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

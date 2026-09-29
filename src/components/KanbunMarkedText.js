@@ -76,6 +76,8 @@ export function KanbunMarkedText({
   showLegend = true,
   align = 'center',
   size = 'md',
+  // ボタンの中など、段落の要素（figure・div）を置けない所では span で組む。
+  inline = false,
 }) {
   const scale = SIZES[size] ?? SIZES.md
   const parsed = parseKanbunMarkedText(marked)
@@ -172,16 +174,16 @@ export function KanbunMarkedText({
     : '字の右は送り仮名、字の下は返り点です。'
 
   return createElement(
-    'figure',
+    inline ? 'span' : 'figure',
     {
-      className: classes('m-0', className),
+      className: classes('m-0', inline && 'block', className),
       'data-kanbun-marked-text': parsed.source,
       'data-kanbun-mark-status': parsed.errors.length ? 'incomplete' : 'complete',
       'data-kanbun-return-mark-total': parsed.returnMarkCount,
       'data-kanbun-okurigana-total': parsed.okuriganaCount,
     },
     createElement(
-      'div',
+      inline ? 'span' : 'div',
       {
         lang: 'ja',
         role: 'text',
@@ -195,7 +197,7 @@ export function KanbunMarkedText({
     ),
     showLegend
       ? createElement(
-          'figcaption',
+          inline ? 'span' : 'figcaption',
           {
             className: classes(
               'mt-2 text-center text-[10px] font-bold leading-relaxed',

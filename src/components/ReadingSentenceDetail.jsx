@@ -19,6 +19,7 @@ import {
   STRUCTURE_DISPLAY_ROLE,
   structurePatternName,
 } from '../lib/reading-sentence-structure.js'
+import { buildPunctuationNotes } from '../lib/punctuation-notes.js'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -29,6 +30,7 @@ const ROLE_STYLE = {
   C: 'border-amber-200 bg-amber-50 text-amber-800',
   M: 'border-violet-200 bg-violet-50 text-violet-800',
   LINK: 'border-slate-200 bg-slate-50 text-slate-700',
+  IND: 'border-stone-200 bg-stone-50 text-stone-700',
   並列: 'border-slate-200 bg-slate-50 text-slate-700',
 }
 
@@ -127,13 +129,52 @@ function StructureUnitRows({ units, activeWord, isKnownWord, onWordClick }) {
   )
 }
 
-// 一文をタップしたときの構文詳細。受験長文と語彙強化ロングリーディングで共通。
+// 記号（— ： ；）がこの文で何を表すか。本文の記号の前後の語を添えて、どの記号の話かを示す。
+function PunctuationNotes({ notes }) {
+  if (!notes.length) return null
+  return (
+    <section
+      className="rounded-2xl border border-slate-200 bg-white p-3"
+      data-reading-punctuation-notes={notes.length}
+    >
+      <h3 className="text-[11px] font-extrabold tracking-wide text-slate-700">記号の働き</h3>
+      <ol className="mt-2 space-y-2">
+        {notes.map((note, index) => (
+          <li
+            key={`${note.mark}-${index}`}
+            className="border-l-2 border-slate-300 bg-slate-50 px-2.5 py-2"
+            data-reading-punctuation-mark={note.mark}
+          >
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="rounded bg-slate-700 px-1.5 py-0.5 font-display text-sm font-black leading-none text-white">
+                {note.mark}
+              </span>
+              <span className="text-[11px] font-extrabold text-slate-600">{note.name}</span>
+            </p>
+            <p lang="en" className="mt-1 break-words text-xs font-bold leading-relaxed text-ink/55">
+              {note.mark === '— —'
+                ? `… ${note.before} — ${note.inside} — ${note.after} …`
+                : note.mark === '—'
+                  ? `… ${note.before} — ${note.after} …`
+                  : `… ${note.before}${note.mark} ${note.after} …`}
+            </p>
+            <p className="mt-1 text-xs font-bold leading-relaxed text-ink/80">{note.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+// 一文をタップしたときの構文詳細。受験長文と語彙強化ロングリーディング、名作（英語）で共通。
+// resolveWord は、押した英単語の意味の引き方（名作は作品・場面ごとの語義を使う）。
 export function ReadingSentenceDetail({
   sentence,
   sentenceAnalysis,
   activeWord,
   onWordTap,
   onNavigateAway,
+  resolveWord = null,
 }) {
   const navigate = useStore((s) => s.navigate)
   // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
@@ -151,9 +192,12 @@ export function ReadingSentenceDetail({
   const closeSentence = () => onNavigateAway?.()
   const tapToken = (token) => onWordTap?.(token)
   const isKnownWord = (token) => Boolean(
-    resolvePassageWord(token.key, sentence.gloss)?.id,
+    (resolveWord ? resolveWord(token.key) : resolvePassageWord(token.key, sentence.gloss))?.id,
   )
   const patternText = structure ? structurePatternsText(structure.patterns) : ''
+  const punctuation = buildPunctuationNotes(sentence.en, structure?.marks ?? [])
+  // 動詞のない文（Strange! や “Bingley.”）は、文型を出さず、主語 you も補わない。
+  const fragment = Boolean(structure && !structure.patterns.length)
   return (
           <div className="space-y-4">
             {/* 構文ラベルを原文へ直接対応させた英文（単語タップ可） */}
@@ -177,7 +221,13 @@ export function ReadingSentenceDetail({
                 activeWord={activeWord?.word}
                 isKnownWord={isKnownWord}
                 onWordClick={tapToken}
+                fragment={fragment}
               />
+              {fragment && (
+                <p className="mt-2 text-xs font-extrabold text-stone-700" data-reading-sentence-fragment>
+                  動詞のない文です。文型ではなく、それぞれの語句の働きを示します。
+                </p>
+              )}
               {patternText && (
                 <p className="mt-2 text-xs font-extrabold text-brand-700" data-reading-sentence-pattern>
                   文型：{patternText}
@@ -240,6 +290,8 @@ export function ReadingSentenceDetail({
                 )}
               </div>
             )}
+
+            <PunctuationNotes notes={punctuation.notes} />
 
             {/* 節・句の区分と文全体の流れ */}
             <section className="border-y border-brand-100 bg-white py-3">

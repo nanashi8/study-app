@@ -5,6 +5,8 @@
 // notes: 語順訳のまとまり（英語）ごとの文法メモ
 // unitNotes: 節・句のまとまり（英語）ごとの文法メモ
 // rules: 一文の読解ルールを手で決めるときの id の並び
+// marks: 記号（— ： ；）がこの文で何を表すか。[記号, 説明] の並びで、本文に出る順に書く
+//   （挿入をはさむ一対のダッシュは '— —'。src/lib/punctuation-notes.js）
 
 export const st = (markup, options = {}) => Object.freeze({
   markup,
@@ -15,4 +17,5 @@ export const st = (markup, options = {}) => Object.freeze({
   unitNotes: Object.freeze({ ...(options.unitNotes ?? {}) }),
   // 語の字面だけでは関係の薄いルールが選ばれる文だけ、表示するルールを本文から決めて指定する。
   rules: options.rules ? Object.freeze([...options.rules]) : null,
+  marks: Object.freeze((options.marks ?? []).map(([mark, text]) => Object.freeze({ mark, text }))),
 })

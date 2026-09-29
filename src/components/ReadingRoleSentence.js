@@ -19,6 +19,7 @@ const ROLE_LINE_CLASS = Object.freeze({
   C: 'border-amber-400',
   M: 'border-violet-400',
   LINK: 'border-slate-400',
+  IND: 'border-stone-400 border-dotted',
   S_FORMAL: 'border-emerald-300 border-dashed',
   S_REAL: 'border-emerald-400',
   O_FORMAL: 'border-sky-300 border-dashed',
@@ -34,6 +35,7 @@ const ROLE_LABEL_CLASS = Object.freeze({
   C: 'bg-amber-100 text-amber-800',
   M: 'bg-violet-100 text-violet-800',
   LINK: 'bg-slate-100 text-slate-700',
+  IND: 'bg-stone-100 text-stone-700',
   S_FORMAL: 'bg-emerald-50 text-emerald-700',
   S_REAL: 'bg-emerald-100 text-emerald-800',
   O_FORMAL: 'bg-sky-50 text-sky-700',
@@ -90,11 +92,13 @@ export function ReadingRoleSentence({
   inner = false,
   // and・or・but で並ぶもの（構造台帳の parallel。英文の頭からの語の番号）。あれば改行して縦にそろえる。
   parallel = [],
+  // 動詞のない文（Strange! や “Bingley.”）。動詞がなくてもよく、主語 you も補わない。
+  fragment = false,
 }) {
   const annotation = buildReadingRoleAnnotation(sentence, parts, {
     allowVerbOmission,
-    allowMissingVerb: inner,
-    withoutImpliedSubject: inner,
+    allowMissingVerb: inner || fragment,
+    withoutImpliedSubject: inner || fragment,
   })
   const children = []
 
