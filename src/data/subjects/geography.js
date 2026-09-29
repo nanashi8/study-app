@@ -3633,7 +3633,7 @@ export const GEOGRAPHY_UNITS = [
         figure: {
           type: 'diagram',
           name: 'contour',
-          labels: false,
+          showLabels: false,
           profile: false,
           marks: [{ at: 'ridge', label: 'X' }],
         },

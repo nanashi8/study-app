@@ -66,7 +66,8 @@ function MapScaleDiagram({ scales = [25000, 50000] }) {
 }
 
 // ── 等高線と断面図 ─────────────────────────────────────────────────────
-//   { name: 'contour', labels?: true, profile?: true, marks?: [{ at: 'ridge' | 'valley' | 'steep' | 'gentle' | 'summit', label: 'X' }] }
+//   { name: 'contour', showLabels?: true, profile?: true, marks?: [{ at: 'ridge' | 'valley' | 'steep' | 'gentle' | 'summit', label: 'X' }] }
+//   showLabels: false で、尾根・谷・計曲線の数字などの文字を出さない（演習で読み取らせるとき）。
 // 1つの山の標高を式で決め、10mごとの等高線（50mごとは太い計曲線）と、A－Bの断面図を描く。
 // 山頂の東は傾斜が急、西はゆるやか。南西へのびる尾根と、北へ下る谷（川が流れる）がある。
 
@@ -159,7 +160,7 @@ const MARK_AT = Object.freeze({
   summit: [SUMMIT.x, SUMMIT.y],
 })
 
-function ContourDiagram({ labels = true, profile = true, marks = [] }) {
+function ContourDiagram({ showLabels = true, profile = true, marks = [] }) {
   const lines = contourLines()
   const summit = contourSummitHeight()
   const A = 14
@@ -183,12 +184,12 @@ function ContourDiagram({ labels = true, profile = true, marks = [] }) {
       {lines.map((line) => (
         <path key={line.level} d={line.d} fill="none" stroke={BROWN} strokeWidth={line.level % 50 === 0 ? 1.6 : 0.7} strokeLinecap="round" />
       ))}
-      {labels && [50, 100, 150].filter((level) => level < summit).map((level) => {
+      {showLabels && [50, 100, 150].filter((level) => level < summit).map((level) => {
         const x = numberAt(level)
         return x === null ? null : <Label key={`n-${level}`} x={x} y={PROFILE_Y - 3} size={8} weight="800" color={BROWN} anchor="middle">{String(level)}</Label>
       })}
       <path d={`M${SUMMIT.x},${SUMMIT.y - 4.5} L${SUMMIT.x - 4},${SUMMIT.y + 2.5} L${SUMMIT.x + 4},${SUMMIT.y + 2.5} Z`} fill={INK} />
-      {labels && <Label x={SUMMIT.x + 6} y={SUMMIT.y - 5} size={9} weight="800">{`山頂 ${summit}m`}</Label>}
+      {showLabels && <Label x={SUMMIT.x + 6} y={SUMMIT.y - 5} size={9} weight="800">{`山頂 ${summit}m`}</Label>}
       {profile && (
         <g>
           <line x1={A} x2={B} y1={PROFILE_Y} y2={PROFILE_Y} stroke="#b91c1c" strokeWidth="1" strokeDasharray="4 3" />
@@ -196,7 +197,7 @@ function ContourDiagram({ labels = true, profile = true, marks = [] }) {
           <Label x={B + 1} y={PROFILE_Y + 12} size={9.5} weight="800" color="#b91c1c" anchor="middle">B</Label>
         </g>
       )}
-      {labels && (
+      {showLabels && (
         <g>
           <Label x={MARK_AT.ridge[0] - 14} y={MARK_AT.ridge[1] + 2} size={10} weight="800" color="#7c2d12" anchor="end">尾根</Label>
           <Label x={MARK_AT.valley[0] + 10} y={MARK_AT.valley[1] + 4} size={10} weight="800" color={RIVER}>谷</Label>

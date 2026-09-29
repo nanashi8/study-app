@@ -7,7 +7,7 @@
 //   演習：図を見て考える問題に図を付け、答えたあとの解説に「図の読み取り方」（read）を出す。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { ALL_SUBJECT_QUESTIONS, ALL_SUBJECT_UNITS, getSubjectUnit } from '../src/data/subjects/index.js'
 import { CLIMATE_STATIONS } from '../src/data/subjects/climate.js'
 import { JAPAN_MAP, WORLD_MAP } from '../src/data/subjects/maps.js'
@@ -53,7 +53,7 @@ function figureProblems(figure, where) {
       }
     }
   }
-  for (const point of [...(figure.points ?? []), ...(figure.labels ?? [])]) {
+  for (const point of [...(Array.isArray(figure.points) ? figure.points : []), ...(Array.isArray(figure.labels) ? figure.labels : [])]) {
     if (!lonOk(point.lon) || !latOk(point.lat)) problems.push(`${where}: 緯度・経度がおかしい（${point.text ?? point.label}）`)
   }
   for (const arrow of figure.arrows ?? []) {
@@ -108,9 +108,19 @@ test('図の種類・図解の一覧と、図の部品が一致する', () => {
   const figureSource = read('src/components/SubjectFigure.jsx')
   const registry = figureSource.slice(figureSource.indexOf('const FIGURES = Object.freeze({'), figureSource.indexOf('export const SUBJECT_FIGURE_TYPES'))
   assert.deepEqual([...registry.matchAll(/^\s+(\w+): \w+,$/gm)].map((match) => match[1]), [...SUBJECT_FIGURE_KINDS])
-  const diagramSource = read('src/components/SubjectDiagrams.jsx')
-  const diagrams = diagramSource.slice(diagramSource.indexOf('export const SUBJECT_DIAGRAMS = Object.freeze({'))
-  assert.deepEqual([...diagrams.slice(0, diagrams.indexOf('})')).matchAll(/^\s+(\w+): \w+,$/gm)].map((match) => match[1]), [...SUBJECT_DIAGRAM_NAMES])
+  // 図解の一覧は SubjectDiagrams.jsx の SUBJECT_DIAGRAMS。分けたファイルの一覧（...MAP_READING_DIAGRAMS など）は、そのファイルの中を読む。
+  const registryNames = (source, name) => {
+    const start = source.indexOf(`export const ${name} = Object.freeze({`)
+    assert.ok(start >= 0, `${name} が見つからない`)
+    const body = source.slice(start, source.indexOf('})', start))
+    return [...body.matchAll(/^\s+(?:(\w+): \w+|\.\.\.(\w+)),$/gm)].flatMap((match) => {
+      if (match[1]) return [match[1]]
+      const file = readdirSync('src/components').find((entry) => /^Subject\w*Diagrams\.jsx$/.test(entry) && read(`src/components/${entry}`).includes(`export const ${match[2]} = Object.freeze({`))
+      assert.ok(file, `${match[2]} のファイルが見つからない`)
+      return registryNames(read(`src/components/${file}`), match[2])
+    })
+  }
+  assert.deepEqual(registryNames(read('src/components/SubjectDiagrams.jsx'), 'SUBJECT_DIAGRAMS'), [...SUBJECT_DIAGRAM_NAMES])
 })
 
 test('図を見て考える演習には図の読み取り方があり、問題文が図を指す演習はすべて図を持つ', () => {
@@ -158,10 +168,10 @@ const WORLD_CLIMATES = Object.freeze([
   ['サバナ気候', 'bangkok', ['雨季', '乾季']],
   ['砂漠気候', 'riyadh', ['年降水量']],
   ['ステップ気候', 'ulaanbaatar', ['年降水量']],
-  ['温暖湿潤気候', 'tokyo', ['-3℃']],
+  ['温暖湿潤気候', 'tokyo', ['−3℃']],
   ['西岸海洋性気候', 'london', ['偏西風']],
   ['地中海性気候', 'lisbon', ['夏']],
-  ['冷帯', 'moscow', ['-3℃', '10℃']],
+  ['冷帯', 'moscow', ['−3℃', '10℃']],
   ['ツンドラ気候', 'barrow', ['10℃']],
   ['氷雪気候', 'mirny', ['0℃']],
   ['高山気候', 'lapaz', ['標高']],
@@ -191,7 +201,7 @@ test('雨温図：世界の気候11区分と日本の6つの気候に、判断�
   if (!decisions.length) problems.push('気候帯を見分ける手順の図がない')
   else {
     const text = decisions[0].figure.steps.map((step) => `${step.ask}${step.yes}`).join('') + decisions[0].figure.otherwise
-    for (const word of ['10℃', '18℃', '-3℃', '年降水量', '寒帯', '乾燥帯', '熱帯', '温帯', '冷帯']) if (!text.includes(word)) problems.push(`気候帯を見分ける手順に「${word}」がない`)
+    for (const word of ['10℃', '18℃', '−3℃', '年降水量', '寒帯', '乾燥帯', '熱帯', '温帯', '冷帯']) if (!text.includes(word)) problems.push(`気候帯を見分ける手順に「${word}」がない`)
   }
   // 雨温図を使う演習は、どれも図の読み取り方を持つ。
   for (const question of ALL_SUBJECT_QUESTIONS.filter((item) => flatFigures(item.figure).some((figure) => figure.type === 'climate'))) {
