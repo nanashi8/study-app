@@ -521,7 +521,9 @@ function adverbialExplanation(unit) {
   const kind = ADVERBIAL_KIND_NAMES[unit.detail] ?? ''
   const subject = roleText(elements, ['S', '仮S'])
   const verb = verbGroupText(elements)
-  const target = unit.containerVerb ? `動詞 ${unit.containerVerb} を修飾します` : '文の内容を修飾します'
+  const target = unit.containerRole === 'C' && unit.wholeContainer && unit.containerVerb
+    ? `${unit.containerVerb} の補語にします`
+    : unit.containerVerb ? `動詞 ${unit.containerVerb} を修飾します` : '文の内容を修飾します'
   // however serious … のように、however＋形容詞が節の先頭に出る譲歩。
   if (lead?.role !== '接' && /^however\b/i.test(leadText)) {
     const adjective = leadText.split(/\s+/).slice(1).join(' ')
@@ -628,6 +630,15 @@ function nounClauseExplanation(unit) {
   const verb = verbGroupText(elements)
   switch (unit.base) {
     case 'that節':
+      // fear lest … should ～（…が～しないかと恐れる）の lest は、恐れる中身を表す名詞節を作る。
+      if (/^lest$/i.test(leadText)) {
+        return {
+          word: leadText,
+          chip: '接続詞',
+          kind: '接続詞 lest（〜しないかと）',
+          explanation: `lest は「〜しないかと・〜するといけないと」という接続詞です。fear lest … で「…ではないかと恐れる」となり、後ろの主語 ${subject} と動詞 ${verb} の節が、恐れている中身を表します。lest の節では should がよく使われます。`,
+        }
+      }
       return {
         word: leadText,
         chip: '接続詞',
@@ -750,6 +761,25 @@ const CONJUNCTIVE_ADVERBS = Object.freeze({
   meanwhile: '「その一方で」と同時の別の内容',
 })
 
+// and happy indeed I was のように、接続語のすぐ後ろに補語・目的語を前に出した節があれば、その節の主語を返す。
+// 前に出したのなら、動詞の後ろには補語も目的語も残らない（… and national achievement to another; a monument may be
+// seen as heritage の national achievement は並んだ目的語で、後ろの主語 a monument の節のものではない）。
+export function frontedSubjectAfter(elements, fronted) {
+  if (!fronted || !['C', 'O'].includes(fronted.role)) return null
+  const rest = elements.slice(elements.indexOf(fronted) + 1)
+  const subjectAt = rest.findIndex((item) => item.role !== 'M')
+  const subject = rest[subjectAt]
+  if (!subject || !['S', '仮S'].includes(subject.role)) return null
+  const afterSubject = rest.slice(subjectAt + 1)
+  const verbAt = afterSubject.findIndex((item) => item.role !== 'M')
+  if (afterSubject[verbAt]?.role !== 'V') return null
+  for (const item of afterSubject.slice(verbAt + 1)) {
+    if (item.role === '接') break
+    if (['C', 'O', 'O1', 'O2', '真S', '真O'].includes(item.role)) return null
+  }
+  return subject
+}
+
 // 接続語の要素 [接 …] と、文をつなぐ副詞 [M however] の説明。
 // elements は同じ節（または文全体）の要素の並び、index はその中の位置。
 export function describeLinkElement(element, elements, index, options = {}) {
@@ -797,7 +827,11 @@ export function describeLinkElement(element, elements, index, options = {}) {
   const isAdverbialClause = (item) => item?.role === 'M' &&
     item.children.some((child) => child.kind === 'unit' && child.base === '副詞節')
   // 前にも後ろにも副詞節があるときだけ、副詞節どうしを並べている（; for as you are …, Mr. Bingley … の for は節をつなぐ）。
-  const nextIsAdverbialClause = isAdverbialClause(nextElement) && isAdverbialClause(previousElement)
+  // ただし and (though …) yet I cannot … のように、後ろの副詞節のあとに主語が続けば、節どうしをつないでいる。
+  // （前に主節の動詞がなく副詞節だけが並ぶ Whenever …; and especially whenever … — then, I … の and は副詞節どうし）
+  const verbBefore = elements.slice(0, index).some((item) => item.role === 'V')
+  const nextIsAdverbialClause = isAdverbialClause(nextElement) && isAdverbialClause(previousElement) &&
+    !(verbBefore && next && ['S', '仮S', 'V'].includes(next.role))
   if (nextIsAdverbialClause) {
     return {
       word: text,
@@ -811,9 +845,24 @@ export function describeLinkElement(element, elements, index, options = {}) {
   const nextIndex = next ? elements.indexOf(next) : -1
   const afterVerb = nextIndex >= 0 ? elements.slice(nextIndex + 1).find((item) => item.role !== 'M') : null
   const invertedSubject = next?.role === 'V' && afterVerb && ['S', '仮S'].includes(afterVerb.role) ? afterVerb : null
+  // 補語を前に出して、動詞が主語の前に来る倒置（but more marvellous than anything is the suffering …）。
+  const frontedRest = next && ['C', 'O'].includes(next.role)
+    ? elements.slice(nextIndex + 1).filter((item) => item.role !== 'M')
+    : []
+  const invertedAfterFronted = frontedRest[0]?.role === 'V' && ['S', '仮S'].includes(frontedRest[1]?.role) ? frontedRest : null
+  // and happy indeed I was のように、補語・目的語を前に出した節。
+  const frontedSubject = frontedSubjectAfter(elements, next)
   if (next && ['S', '仮S'].includes(next.role)) {
     joins = '前の節と後ろの節'
-    tip = `後ろに主語 ${plain(next)} が続くので、節と節をつないでいると分かります。`
+    tip = isAdverbialClause(nextElement)
+      ? `後ろに副詞節をはさんで主語 ${plain(next)} が続くので、節と節をつないでいると分かります。`
+      : `後ろに主語 ${plain(next)} が続くので、節と節をつないでいると分かります。`
+  } else if (invertedAfterFronted) {
+    joins = '前の節と後ろの節'
+    tip = `後ろは、${next.role === 'C' ? '補語' : '目的語'} ${plain(next)} を前に出し、動詞 ${plain(invertedAfterFronted[0])} が主語 ${plain(invertedAfterFronted[1])} の前に来た倒置の節なので、節と節をつないでいると分かります。`
+  } else if (frontedSubject) {
+    joins = '前の節と後ろの節'
+    tip = `後ろは、${next.role === 'C' ? '補語' : '目的語'} ${plain(next)} を前に出し、主語 ${plain(frontedSubject)} が続く節なので、節と節をつないでいると分かります。`
   } else if (invertedSubject) {
     joins = '前の節と後ろの節'
     tip = `後ろは、動詞 ${plain(next)} が主語 ${plain(invertedSubject)} の前に出た倒置の節なので、節と節をつないでいると分かります。`
@@ -841,6 +890,9 @@ export function shortConnectorNote(info, unit = null) {
   const antecedent = unit?.antecedent ?? ''
   const kind = info.kind
   if (kind === '前の節の内容を受ける関係代名詞') return `${word} は前の節の内容を受ける関係代名詞です。`
+  if (kind === '関係副詞（非制限用法）' && antecedent === '前の内容') {
+    return `${word} は関係副詞の非制限用法で、前の節の${word === 'where' ? '場所' : '時'}を受けて前から順に読みます。`
+  }
   if (kind.startsWith('関係代名詞') || kind.startsWith('関係副詞（') || kind === '関係副詞') {
     return `${word} は${kind}で、先行詞 ${antecedent} を受けます。`
   }
@@ -863,6 +915,7 @@ export function shortConnectorNote(info, unit = null) {
   }
   if (kind === '接続詞 than（比較）') return 'than は比べる相手を表す接続詞です。'
   if (kind === '接続詞 for（理由）') return 'for は「というのも〜だから」と理由を付け足す接続詞です。'
+  if (kind === '接続詞 lest（〜しないかと）') return 'lest は「〜しないかと」という接続詞で、恐れる中身を表します。'
   if (kind === '関係代名詞 what') return 'what は先行詞を含む関係代名詞で、「〜すること」という名詞節を作ります。'
   if (kind.startsWith('複合関係代名詞')) return `${word} は先行詞を含む複合関係代名詞で、名詞節を作ります。`
   if (kind === '強調構文の that') return 'It is と that で強調したい語句をはさむ強調構文です。'

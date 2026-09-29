@@ -30,6 +30,7 @@ import {
   describeUnitConnector,
   relativeThatActsAsAdverb,
   shortConnectorNote,
+  frontedSubjectAfter,
 } from './reading-structure-connectors.js'
 
 export const STRUCTURE_ROLES = Object.freeze([
@@ -559,9 +560,13 @@ function clauseGroups(elements) {
     }
     // she felt nervous; “for it might end,” said Alice のように、完結した節のあとで引用の目的語が
     // said・thought などの前に来たら、その引用から新しい節（引用を目的語にする節）。
+    // and saw — Ah! what did he see? のように、疑問詞の目的語を前に出した疑問文（O＋助動詞＋S＋V）も新しい節。
+    const afterObject = elements.slice(index + 1).filter((item) => item.role !== 'M')
+    const questionObject = element.role === 'O' && /^(?:what|which|who|whom|whose|how)\b/i.test(normalizeStructureText(rawText(element.children))) &&
+      afterObject[0]?.role === 'V' && ['S', '仮S'].includes(afterObject[1]?.role)
     if (
-      element.role === 'O' && isQuoteElement(element) &&
-      ['V', 'S'].includes(elements.slice(index + 1).find((item) => item.role !== 'M')?.role) &&
+      element.role === 'O' &&
+      ((isQuoteElement(element) && ['V', 'S'].includes(afterObject[0]?.role)) || questionObject) &&
       current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements))
     ) {
       groups.push(current)
@@ -579,7 +584,15 @@ function clauseGroups(elements) {
     if (element.role === '接' && current.elements.some((item) => item.role === 'V')) {
       // 接続語の直後（修飾語を除く）が主語か動詞のときだけ、新しい節・述語とする。
       // and national achievement to another のように動詞を省いた並列は同じ節に含める。
-      const next = elements.slice(index + 1).find((item) => item.role !== 'M')
+      // and happy indeed I was のように補語・目的語を前に出した節も、主語が続けば新しい節。
+      let next = elements.slice(index + 1).find((item) => item.role !== 'M')
+      const fronted = frontedSubjectAfter(elements, next)
+      if (fronted) next = fronted
+      // but more marvellous than anything is the suffering のように、補語を前に出して動詞が主語の前に来る倒置も新しい節。
+      if (next && ['C', 'O'].includes(next.role)) {
+        const rest = elements.slice(elements.indexOf(next) + 1).filter((item) => item.role !== 'M')
+        if (rest[0]?.role === 'V' && ['S', '仮S'].includes(rest[1]?.role)) next = rest[0]
+      }
       if (next && ['S', '仮S', 'V'].includes(next.role)) {
         groups.push(current)
         current = {
@@ -696,6 +709,8 @@ function prepositionBeforeUnit(parent, unit) {
   const multi = /(?:^|\s)(instead of|because of|in spite of|as well as|according to|in addition to|rather than|such as|by means of|in terms of|apart from|out of)$/.exec(joined)
   if (multi) return words.slice(-multi[1].split(' ').length).join(' ')
   const last = words.at(-1).toLowerCase()
+  // cannot choose but weep・nothing but A の but は、前置詞句の先頭に置かれたときだけ「〜以外に」という前置詞。
+  if (parent.kind === 'unit' && parent.base === '前' && words.length === 1 && /^(?:but|except)$/.test(last)) return words[0]
   const prepositions = new Set(['about', 'after', 'against', 'as', 'at', 'before', 'by', 'during', 'for', 'from', 'in', 'into', 'like', 'of', 'on', 'over', 'than', 'through', 'to', 'toward', 'towards', 'under', 'until', 'upon', 'with', 'within', 'without', 'beyond', 'despite', 'among', 'between', 'behind', 'besides', 'since', 'across', 'around', 'along', 'onto'])
   return prepositions.has(last) ? words.at(-1) : ''
 }
@@ -819,6 +834,12 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
       const kind = ADVERBIAL_CLAUSE_KINDS[unit.detail]
       if (unit.detail === '比較' && container && container.role !== 'M') {
         return `${inside}比べる相手を表します${partOf}。`
+      }
+      // That is because … のように、be動詞のあとで補語になる副詞節。
+      if (container?.role === 'C' && containerText === unitText(unit)) {
+        return unit.detail === '理由'
+          ? `${inside}be動詞のあとの補語Cになり、理由を表します（That is because … で「それは…だからだ」）。`
+          : `${inside}be動詞のあとの補語Cになり、${kind}を表します。`
       }
       return scopeUnit
         ? `${inside}${kind}を表す修飾語Mとして働きます。`
@@ -1014,7 +1035,7 @@ function isPrepositionObject(unit, parent) {
   const before = parent.children.slice(0, parent.children.indexOf(unit))
   if (before[0]?.kind !== 'text') return false
   const words = structureWords(before.filter((node) => node.kind === 'text').map((node) => node.text).join(' '))
-  const preposition = leadingPreposition(words)
+  const preposition = leadingPreposition(words) || (/^but$/i.test(words[0] ?? '') ? 'but' : '')
   if (!preposition) return false
   return words.slice(preposition.split(' ').length).every((word) => {
     const lower = word.toLowerCase()
@@ -1189,6 +1210,8 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       antecedent: node.antecedent,
       text: unitText(node),
       containerRole: containerElement?.role ?? '',
+      // 要素そのものがこのまとまりだけでできているか（That is because … の because の節は補語C全体）。
+      wholeContainer: Boolean(containerElement) && nodeText(containerElement) === unitText(node),
       functionText: unitFunctionText(node, containerElement, scopeElements, scopeUnit, parent ?? containerElement),
       containerVerb: containerElement ? nearestVerb(scopeElements, containerElement) : '',
       // glad (that) … の glad のように、名詞節がすぐ後ろで中身を説明する語。

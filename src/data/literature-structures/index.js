@@ -3,6 +3,7 @@
 // 並べた文をつなぐと作品の本文と一字一句同じになる（tests/literature-sentence-structures.test.mjs）。
 
 import alice from './alice.js'
+import happyPrince from './happy-prince.js'
 import mobyDick from './moby-dick.js'
 import prideAndPrejudice from './pride-and-prejudice.js'
 import taleOfTwoCities from './tale-of-two-cities.js'
@@ -12,4 +13,5 @@ export const LITERATURE_SENTENCE_STRUCTURES = Object.freeze({
   lit_en_pride_prejudice_netherfield: prideAndPrejudice,
   lit_en_tale_two_cities_times: taleOfTwoCities,
   lit_en_alice_rabbit_hole: alice,
+  lit_en_happy_prince_statue: happyPrince,
 })
