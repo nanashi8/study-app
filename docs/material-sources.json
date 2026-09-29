@@ -1,0 +1,1184 @@
+{
+  "about": "教材づくりに使える無償・商用可の素材・データ・道具の台帳。利用条件は一次資料で確かめ、根拠の一文を evidence に写す。ready＝出典の表示が要らず商用・改変ができ、scripts/materials/sources.mjs で取り出して確かめたもの。needs-user＝出典の表示が条件などで、使うかは利用者が決める。rejected＝非商用などで使えない。教材に使うときは、素材ごとの出どころと権利をデータに持ち、画面には出さない。検査は node scripts/materials/check-material-sources.mjs",
+  "kinds": [
+    {
+      "id": "map-shapes",
+      "name": "地図の形（海岸線・県境・湖・領土）"
+    },
+    {
+      "id": "rivers",
+      "name": "川・水系の線"
+    },
+    {
+      "id": "elevation",
+      "name": "標高・地形"
+    },
+    {
+      "id": "facts",
+      "name": "事実のデータ（長さ・高さ・年・座標）"
+    },
+    {
+      "id": "statistics",
+      "name": "統計・気候の数値"
+    },
+    {
+      "id": "art-history",
+      "name": "美術・歴史資料の画像"
+    },
+    {
+      "id": "nature-photos",
+      "name": "自然の写真（鉱物・化石・天体・宇宙）"
+    },
+    {
+      "id": "drawings",
+      "name": "生物などの絵・図版・シルエット・クリップアート"
+    },
+    {
+      "id": "fonts",
+      "name": "字体"
+    },
+    {
+      "id": "drawing-tools",
+      "name": "図を作る道具（化学式・天体・地図・等高線・手描き風・画像化）"
+    },
+    {
+      "id": "illustrator-tools",
+      "name": "人が描く・描き直す道具"
+    },
+    {
+      "id": "photo-search",
+      "name": "写真や絵を探す道具"
+    }
+  ],
+  "sources": [
+    {
+      "id": "natural-earth-japan",
+      "kind": "map-shapes",
+      "name": "Natural Earth（10m の県境・日本の見方の国境・湖）",
+      "url": "https://www.naturalearthdata.com/",
+      "use": "47都道府県の形、北方領土・竹島・尖閣諸島（日本の見方の国境から）、琵琶湖。白地図・県の問題・地図の下地に使う",
+      "license": "パブリックドメイン",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [],
+      "evidence": [
+        {
+          "url": "https://www.naturalearthdata.com/about/terms-of-use/",
+          "quote": "All versions of Natural Earth raster + vector map data found on this website are in the public domain."
+        },
+        {
+          "url": "https://www.naturalearthdata.com/about/terms-of-use/",
+          "quote": "No permission is needed to use Natural Earth. Crediting the authors is unnecessary."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "natural-earth-japan",
+        "options": {
+          "tolerance": 0.004
+        }
+      },
+      "notes": "県境のデータ（admin-1）には北方領土が入っていないので、日本の見方の国境（ne_10m_admin_0_countries_jpn）から足す。沖縄・小さな島も入っている",
+      "verified": {
+        "on": "2026-09-29",
+        "items": 47,
+        "bytes": 324156,
+        "sha256": "af9fb6dc4f5051832371f7a13e5b4a5b93201e826a8dd59b9f403a4109ec9185",
+        "detail": "都道府県 47、北方領土 4 島・竹島 1・尖閣諸島 3（データに無い：なし）、琵琶湖"
+      }
+    },
+    {
+      "id": "gsi-maps",
+      "kind": "map-shapes",
+      "name": "国土地理院のコンテンツ（地理院地図・地理院タイル）",
+      "url": "https://www.gsi.go.jp/",
+      "use": "地形図・地図記号・空中写真・細かい地図の下地",
+      "license": "公共データ利用規約（第1.0版）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "出典の記載",
+        "編集・加工したときはそのことの記載"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+          "quote": "本サイトのコンテンツには特段の記載が無い限り 公共データ利用規約（第1.0 版） （PDL1.0）が適用されています。"
+        },
+        {
+          "url": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+          "quote": "コンテンツを利用する際は、出典を記載してください。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示が条件。出典をまとめて出す画面を1つ作るなら使える"
+    },
+    {
+      "id": "ksj-admin",
+      "kind": "map-shapes",
+      "name": "国土数値情報 行政区域（N03）",
+      "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2024.html",
+      "use": "市区町村までの細かい境界",
+      "license": "CC BY 4.0（国土地理院への申請が要る場合あり）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "出典の記載",
+        "二次利用で国土地理院への申請が要る場合がある"
+      ],
+      "evidence": [
+        {
+          "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2024.html",
+          "quote": "このデータの使用許諾条件 オープンデータ（CC_BY_4.0） ※本データを二次利用する場合には、国土地理院に申請等必要な場合があります。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示が条件で、国土地理院への申請が要る場合もある。県までなら Natural Earth で足りるので、市区町村の境界が要るときだけ検討する"
+    },
+    {
+      "id": "natural-earth-rivers",
+      "kind": "rivers",
+      "name": "Natural Earth（10m の川）",
+      "url": "https://www.naturalearthdata.com/",
+      "use": "川の線。ただし日本の川は石狩川・利根川・最上川の3本だけ",
+      "license": "パブリックドメイン",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [],
+      "evidence": [
+        {
+          "url": "https://www.naturalearthdata.com/about/terms-of-use/",
+          "quote": "All versions of Natural Earth raster + vector map data found on this website are in the public domain."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "natural-earth-rivers",
+        "options": {}
+      },
+      "notes": "信濃川・北上川・木曽川など、中学の地図に出る川のほとんどが入っていない。主な川の線を出典の表示なしで使える公開データは見つからなかった",
+      "verified": {
+        "on": "2026-09-29",
+        "items": 3,
+        "bytes": 7297,
+        "sha256": "07f81bcbeecf5cf59f639950b911b1d93bcc26a891687fbb0334032b9aa64632",
+        "detail": "Ishikari・Tone・Mogami"
+      }
+    },
+    {
+      "id": "openstreetmap",
+      "kind": "rivers",
+      "name": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/",
+      "use": "主な川の正確な線（信濃川なども番号で取れる）、道路・鉄道・建物の位置",
+      "license": "ODbL（Open Database License）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "OpenStreetMap とその貢献者の表示",
+        "改変したデータは同じライセンスで公開"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.openstreetmap.org/copyright/ja",
+          "quote": "OpenStreetMap とその貢献者をクレジットするという条件のもと、当方のデータは自由に複写し配布し送信し利用を認めています。当方のデータを改変もしくは翻案した場合は、元データと同じライセンスの適用によって配布が認められます。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示と、作った川のデータを同じライセンスで公開することが条件。出典をまとめて出す画面を作るなら、主な川の問題に使える"
+    },
+    {
+      "id": "hydrorivers",
+      "kind": "rivers",
+      "name": "HydroRIVERS（HydroSHEDS）",
+      "url": "https://www.hydrosheds.org/products/hydrorivers",
+      "use": "世界の川の線（標高データから計算した川。名前は付いていない）",
+      "license": "HydroSHEDS の使用許諾（出典の表示などの条件あり）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "使用許諾に定める出典の表示"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.hydrosheds.org/products/hydrorivers",
+          "quote": "The HydroRIVERS database is freely available for scientific, educational and commercial use."
+        },
+        {
+          "url": "https://www.hydrosheds.org/products/hydrosheds",
+          "quote": "For all regulations regarding license grants, copyright, redistribution restrictions, required attributions, disclaimer of warranty, indemnification, liability, and waiver of damages, please refer to the license agreement."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示が条件。OpenStreetMap と違い、作ったデータを同じ条件で公開する決まりはない。川の名前は Wikidata などで別に付ける"
+    },
+    {
+      "id": "ksj-rivers",
+      "kind": "rivers",
+      "name": "国土数値情報 河川（W05）",
+      "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W05.html",
+      "use": "全国の河川の線（1/25000 レベル）",
+      "license": "非商用",
+      "commercial": false,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "非商用に限る"
+      ],
+      "evidence": [
+        {
+          "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W05.html",
+          "quote": "このデータの使用許諾条件 非商用"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "rejected",
+      "reason": "非商用に限られるため、商用にも使える素材にならない"
+    },
+    {
+      "id": "noaa-etopo",
+      "kind": "elevation",
+      "name": "NOAA ETOPO1（全球の標高・水深）",
+      "url": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+      "use": "日本全体の起伏・海の深さの図、山地と平野の色分け。1分角（約1.8km）ごとなので、山ひとつの等高線には粗い",
+      "license": "自由に使え、配ってよい（米国政府のデータ）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "法的な用途には使わない（誤差がありうる）"
+      ],
+      "evidence": [
+        {
+          "url": "https://upwell.pfeg.noaa.gov/erddap/info/etopo180/index.html",
+          "quote": "The data may be used and redistributed for free but is not intended for legal use, since it may contain inaccuracies."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "noaa-etopo",
+        "options": {
+          "south": 35.2,
+          "north": 35.5,
+          "west": 138.6,
+          "east": 138.9,
+          "stride": 1
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 361,
+        "bytes": 20446,
+        "sha256": "d037f9eba2d83a10feaecf54fd761cd017494f62752a24b335692b60bc5d9991",
+        "detail": "361 点、最も高い点 3481m（北緯 35.36666666666666・東経 138.73333333333335）"
+      }
+    },
+    {
+      "id": "gsi-dem",
+      "kind": "elevation",
+      "name": "国土地理院の標高タイル",
+      "url": "https://maps.gsi.go.jp/development/demtile.html",
+      "use": "日本の細かい標高（山ひとつの等高線・断面図）",
+      "license": "公共データ利用規約（第1.0版）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "出典の記載",
+        "編集・加工したときはそのことの記載"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html",
+          "quote": "コンテンツを利用する際は、出典を記載してください。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示が条件。実在の山の細かい等高線が要るときに検討する（等高線の読み方の練習は、架空の地形を計算で作れば出典は要らない）"
+    },
+    {
+      "id": "wikidata",
+      "kind": "facts",
+      "name": "Wikidata",
+      "url": "https://www.wikidata.org/",
+      "use": "川の長さ・山の高さ・人物の生没年・建物の建てられた年・座標などの事実",
+      "license": "CC0",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [],
+      "evidence": [
+        {
+          "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+          "quote": "All structured data (i.e. the main, Property, Lexeme, and EntitySchema namespaces) is released into the public domain under Creative Commons Zero."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "wikidata",
+        "options": {}
+      },
+      "notes": "誤りもあるので、教材に使う値は史実の台帳と同じく1件ずつ確かめる",
+      "verified": {
+        "on": "2026-09-29",
+        "items": 13,
+        "bytes": 4475,
+        "sha256": "8053688549038ea5926b8334d3475a07f4648f2191448f1e8c8483eb8c071c6d",
+        "detail": "13 件（367 信濃川、322 利根川、268 石狩川 …）"
+      }
+    },
+    {
+      "id": "estat-dashboard",
+      "kind": "statistics",
+      "name": "統計ダッシュボード（総務省統計局）",
+      "url": "https://dashboard.e-stat.go.jp/",
+      "use": "人口・産業・経済などの都道府県別の数値（グラフは数値からアプリで描く）",
+      "license": "公共データ利用規約（第1.0版）。数値データは規約の適用外で自由に使える",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "数値として使う（サイトのグラフや図の画像そのものは出典の記載が要る）"
+      ],
+      "evidence": [
+        {
+          "url": "https://dashboard.e-stat.go.jp/static/terms",
+          "quote": "当サイトで公開している情報（以下「コンテンツ」といいます。）は、権利表記の記載がない限り「 公共データ利用規約（第1.0版） 」（PDL1.0）が適用されています。"
+        },
+        {
+          "url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+          "quote": "なお、数値データ、簡単な表・グラフ等は著作権による保護の対象ではありませんので、これらについては本利用ルールの適用はなく、自由に利用できます。"
+        },
+        {
+          "url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+          "quote": "商用利用も可能です。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "estat-dashboard",
+        "options": {
+          "indicator": "0201010000000010000",
+          "time": "2020CY00"
+        }
+      },
+      "notes": "統計の数字は年で変わるので、教材の値にはデータの年を持たせる",
+      "verified": {
+        "on": "2026-09-29",
+        "items": 47,
+        "bytes": 3588,
+        "sha256": "9e17a05f1d5d46bb0a5b2d97c857fccf54504548c33b87480c5638e13a1d8f0f",
+        "detail": "47都道府県（北海道 5,224,614、東京都 14,047,594）"
+      }
+    },
+    {
+      "id": "jma-normals",
+      "kind": "statistics",
+      "name": "気象庁の平年値",
+      "url": "https://www.data.jma.go.jp/stats/etrn/",
+      "use": "雨温図（月ごとの平均気温・降水量）、気候の比べ方",
+      "license": "公共データ利用規約（第1.0版）。数値データは規約の適用外で自由に使える",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "数値として使う（気象庁の図や画像そのものは出典の記載が要る）"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.jma.go.jp/jma/kishou/info/coment.html",
+          "quote": "気象庁ホームページで公開している情報（以下「コンテンツ」といいます。）は、権利表記の記載がない限り「公共データ利用規約（第1.0版）」に準拠した利用条件の下で、利用することができます。"
+        },
+        {
+          "url": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0",
+          "quote": "なお、数値データ、簡単な表・グラフ等は著作権による保護の対象ではありませんので、これらについては本利用ルールの適用はなく、自由に利用できます。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "jma-normals",
+        "options": {
+          "prec": 44,
+          "block": 47662
+        }
+      },
+      "notes": "平年値は10年ごとに更新される（いまは 1991〜2020 年）。教材の値には期間を持たせる",
+      "verified": {
+        "on": "2026-09-29",
+        "items": 12,
+        "bytes": 1843,
+        "sha256": "5c901c08c82ecd2de43f79793c654391b83a8acfc5d3b0a53d4089acfb87ff99",
+        "detail": "1月 5.4℃・8月 26.9℃、年降水量 1598.2mm"
+      }
+    },
+    {
+      "id": "met-open-access",
+      "kind": "art-history",
+      "name": "メトロポリタン美術館 Open Access",
+      "url": "https://www.metmuseum.org/",
+      "use": "浮世絵（北斎・広重など）・日本と世界の美術作品の画像",
+      "license": "CC0（パブリックドメインの作品）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "requested",
+      "conditions": [
+        "isPublicDomain が true の作品だけ"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/metmuseum/openaccess",
+          "quote": "The Metropolitan Museum of Art provides select datasets of information on more than 470,000 artworks in its Collection for unrestricted commercial and noncommercial use."
+        },
+        {
+          "url": "https://github.com/metmuseum/openaccess",
+          "quote": "Companion artworks listed in the dataset covered by the policy are identified in the Collection section of the Museum’s website  with the Creative Commons Zero (CC0) icon."
+        },
+        {
+          "url": "https://github.com/metmuseum/openaccess",
+          "quote": "Please consider attributing or citing The Metropolitan Museum of Art's CC0 select datasets, especially with respect to research or publication."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "met",
+        "options": {
+          "id": 45434
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 166783,
+        "sha256": "45d652c6357ae9691a309e2208da234e4ea9c34296365251bd70a48b09f23f97",
+        "detail": "Katsushika Hokusai「Under the Wave off Kanagawa (Kanagawa oki nami ura), also known as The Great Wave, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)」（ca. 1830–32）isPublicDomain=true"
+      }
+    },
+    {
+      "id": "aic-open-access",
+      "kind": "art-history",
+      "name": "シカゴ美術館 Open Access",
+      "url": "https://www.artic.edu/open-access/open-access-images",
+      "use": "浮世絵・美術作品の高精細な画像（IIIF で大きさを選べる）",
+      "license": "CC0（パブリックドメインの作品）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "requested",
+      "conditions": [
+        "is_public_domain が true の作品だけ"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.artic.edu/open-access/open-access-images",
+          "quote": "Such images are made available under Creative Commons Zero (CC0) designation and the Terms and Conditions of this website."
+        },
+        {
+          "url": "https://www.artic.edu/open-access/open-access-images",
+          "quote": "The museum requests that you include the following caption with reproductions of the images"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "aic",
+        "options": {
+          "id": 24645,
+          "width": 843
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 238956,
+        "sha256": "a23ef6293c4d1c79727127d66aeaaaba89bc4a157561e5fdf8325d6a1e59d82f",
+        "detail": "「Under the Wave off Kanagawa (Kanagawa oki nami ura), also known as The Great Wave, from the series \"Thirty-Six Views of Mount Fuji (Fugaku sanjūrokkei)\"」is_public_domain=true"
+      }
+    },
+    {
+      "id": "cma-open-access",
+      "kind": "art-history",
+      "name": "クリーブランド美術館 Open Access",
+      "url": "https://www.clevelandart.org/open-access",
+      "use": "美術作品の画像",
+      "license": "CC0",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "share_license_status が CC0 の作品だけ"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.clevelandart.org/open-access",
+          "quote": "High-resolution images and data related to the CMA’s collection are made available under a Creative Commons Zero (CC0) designation."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "cma",
+        "options": {
+          "q": "hokusai"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 249744,
+        "sha256": "a242b8552d04d249ee6fec3f94d593a6367f0170979be3021767af8c1ee2e168",
+        "detail": "「South Wind, Clear Sky, from Thirty-Six Views of Mount Fuji」share_license_status=CC0"
+      }
+    },
+    {
+      "id": "colbase",
+      "kind": "art-history",
+      "name": "ColBase（国立文化財機構所蔵品統合検索システム）",
+      "url": "https://colbase.nich.go.jp/",
+      "use": "国宝・重要文化財（絵巻・仏像・土器・埴輪など）の画像",
+      "license": "出典の明記を条件に自由に利用できる",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "出典の明記"
+      ],
+      "evidence": [
+        {
+          "url": "https://cpcp.nich.go.jp/modules/r_free_page/index.php?id=122",
+          "quote": "出典を明記いただければ、申請不要、かつ無料で、営利・非営利問わずご利用いただけます。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の表示が条件。日本の歴史の資料（土器・埴輪・絵巻・仏像）の画像はここが最も充実しているので、出典をまとめて出す画面を作るかで使えるかが決まる"
+    },
+    {
+      "id": "ndl-digital",
+      "kind": "art-history",
+      "name": "国立国会図書館デジタルコレクション（保護期間満了）",
+      "url": "https://dl.ndl.go.jp/",
+      "use": "古い本・錦絵・古地図・史料の画像",
+      "license": "著作権の保護期間が満了。当館のコンテンツを使用したことの記載を求める",
+      "commercial": true,
+      "modify": true,
+      "attribution": "required",
+      "conditions": [
+        "「国立国会図書館デジタルコレクションより」などの記載（巻末やエンドロールでもよい）"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.ndl.go.jp/jp/help/utilizing.html",
+          "quote": "定型の表現を用意しておりませんので、収録されているデータベース等の名称を用いて「国立国会図書館デジタルコレクションより」、または「国立国会図書館ウェブサイトより」など、当館のコンテンツを使用したことを記載してください。"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "出典の記載を求めている（巻末やエンドロールでもよい）。出典をまとめて出す画面を作るなら使える"
+    },
+    {
+      "id": "smithsonian-open-access",
+      "kind": "nature-photos",
+      "name": "スミソニアン Open Access",
+      "url": "https://www.si.edu/openaccess",
+      "use": "鉱物・岩石・化石・動植物の標本の写真、美術作品",
+      "license": "CC0",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "metadata_usage.access が CC0 のものだけ",
+        "API の鍵は api.data.gov（無料）。試すだけなら公開のデモ用の値で動く"
+      ],
+      "evidence": [
+        {
+          "url": "https://registry.opendata.aws/smithsonian-open-access/",
+          "quote": "On February 25th, 2020, the Smithsonian released over 2.8 million CC0 interdisciplinary 2-D and 3-D images, related metadata, and additionally, research data from researches across the Smithsonian."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "smithsonian",
+        "options": {
+          "q": "quartz"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 142218,
+        "sha256": "5a6d94b444dd4ab24f07fa0e05deeb23ed43ff1086e0eb687bfdccba6aad8080",
+        "detail": "「Quartz」（NMNHMINSCI）metadata_usage.access=CC0"
+      }
+    },
+    {
+      "id": "nasa-images",
+      "kind": "nature-photos",
+      "name": "NASA Image and Video Library",
+      "url": "https://images.nasa.gov/",
+      "use": "月・惑星・太陽・地球の写真（天体の単元）",
+      "license": "米国政府の著作物（米国では著作権の対象外）。NASA の利用の指針に従う",
+      "commercial": true,
+      "modify": true,
+      "attribution": "requested",
+      "conditions": [
+        "NASA の推薦に見える使い方をしない",
+        "NASA のロゴ・人物の写真は商用に使わない",
+        "第三者の著作権の記載がある画像は使わない"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "quote": "NASA content – images, audio, video, and media files used in the rendition of 3-dimensional models, such as texture maps and polygon data in any format – generally are not subject to copyright in the United States."
+        },
+        {
+          "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "quote": "If the NASA material is to be used for commercial purposes, including advertisements, it must not explicitly or implicitly convey NASA’s endorsement of commercial goods or services."
+        },
+        {
+          "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "quote": "NASA should be acknowledged as the source of the material."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "nasa",
+        "options": {
+          "q": "full moon"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 13520,
+        "sha256": "1897fb561e7b6973b711c293940d694fdea47ad46e958462943393cc1d141996",
+        "detail": "「It Full of Moons!」（PIA10569）"
+      }
+    },
+    {
+      "id": "wikimedia-commons-pd",
+      "kind": "drawings",
+      "name": "ウィキメディア・コモンズ（パブリックドメイン・CC0 のファイルだけ）",
+      "url": "https://commons.wikimedia.org/",
+      "use": "手描きの植物図譜・解剖図・古い図版など、著作権の切れた絵（例：ケーラーの薬用植物図譜のアブラナ）",
+      "license": "ファイルごとに違う。パブリックドメインと CC0 のものだけを使う",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "ファイルごとの権利（LicenseShortName）がパブリックドメインか CC0 のものだけ。CC BY・CC BY-SA のファイルは出典の表示が要るので使わない"
+      ],
+      "evidence": [
+        {
+          "url": "https://commons.wikimedia.org/wiki/Commons:Licensing",
+          "quote": "Wikimedia Commons only accepts free content, that is, images and other media files that are not subject to copyright restrictions which would prevent them being used by anyone, anytime, for any purpose."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "commons",
+        "options": {
+          "file": "Brassica napus - Köhler–s Medizinal-Pflanzen-169.jpg",
+          "width": 800
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 143031,
+        "sha256": "80f58ff09aa05e731fa7405debd05f3fa903c7c561d671b3bc62e90a531e6fe5",
+        "detail": "Brassica napus - Köhler–s Medizinal-Pflanzen-169.jpg（Public domain）"
+      }
+    },
+    {
+      "id": "phylopic",
+      "kind": "drawings",
+      "name": "PhyloPic（生き物のシルエット）",
+      "url": "https://www.phylopic.org/",
+      "use": "動物・植物の仲間分け（せきつい動物の5つのなかまなど）のシルエット",
+      "license": "画像ごとに違う。CC0・パブリックドメインマークのものだけを使う",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "画像ごとの license が CC0 かパブリックドメインマークのものだけ（API の filter_license_by・nc・sa を false にして探す）"
+      ],
+      "evidence": [
+        {
+          "url": "https://api.phylopic.org/images",
+          "quote": "\"license\":{\"href\":\"https://creativecommons.org/publicdomain/zero/1.0/\"}"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "phylopic",
+        "options": {}
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 6496,
+        "sha256": "36e7481e8e6024c01c5e2af0dbdf80a0706baa98a21bb467aa2070bc81080cbc",
+        "detail": "「Chasmataspis」https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    },
+    {
+      "id": "openclipart",
+      "kind": "drawings",
+      "name": "Openclipart",
+      "url": "https://openclipart.org/",
+      "use": "実験器具・道具などのクリップアート（SVG。質はまちまち）",
+      "license": "パブリックドメイン",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [],
+      "evidence": [
+        {
+          "url": "https://openclipart.org/share",
+          "quote": "Founded in 2004, Openclipart is an online media collection of more than 180,000 vectorial graphics, entirely in the public domain."
+        },
+        {
+          "url": "https://openclipart.org/share",
+          "quote": "We try to make it clear that you may use all clipart from Openclipart even for unlimited commercial use."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "openclipart",
+        "options": {
+          "q": "flask"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 6662,
+        "sha256": "5799722949cb21cc4efb646a941957b8705c4d9e43d592d30be98fa64ff83825",
+        "detail": "/detail/321709/ascii-flask（https://openclipart.org/download/321709/ascii-flask-arvin61r58.svg）"
+      }
+    },
+    {
+      "id": "irasutoya",
+      "kind": "drawings",
+      "name": "いらすとや",
+      "url": "https://www.irasutoya.com/",
+      "use": "人物・場面・道具のイラスト",
+      "license": "いらすとやの利用規定（商用は1つのデザインにつき20点まで無料）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "素材を21点以上使った商用デザインは有償",
+        "素材を主体としたコンテンツ・商品の再配布・販売をしない"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.irasutoya.com/p/terms.html",
+          "quote": "当サイトで配布している素材は規約の範囲内であれば、個人、法人、商用、非商用問わず無料でご利用頂けます。"
+        },
+        {
+          "url": "https://www.irasutoya.com/p/terms.html",
+          "quote": "素材を21点以上使った商用デザイン（重複はまとめて1点）"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "商用では1つのデザインにつき20点までが無料。アプリ全体を1つと数えると、使えるのは20点まで。使うかどうか、どう数えるかを決める"
+    },
+    {
+      "id": "font-klee-one",
+      "kind": "fonts",
+      "name": "Klee One（教科書体に近い字体）",
+      "url": "https://github.com/fontworks-fonts/Klee",
+      "use": "図の名前・ラベル・手書き風の文字（教科書に近い見た目）",
+      "license": "SIL Open Font License 1.1",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "字体のファイルを配るときは OFL の本文を添える（画面に出す必要はない）",
+        "字体だけを売らない"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/fontworks-fonts/Klee/blob/master/OFL.txt",
+          "quote": "This Font Software is licensed under the SIL Open Font License, Version 1.1."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-package",
+        "options": {
+          "name": "@fontsource/klee-one",
+          "expect": "\\.woff2$"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 527,
+        "bytes": 24180585,
+        "sha256": "b816e39f3ab33d66172a6bb0492711dfc6bfb20e59e7e3282267ce48da30ef6a",
+        "detail": "@fontsource/klee-one@5.3.0（OFL-1.1、527 ファイル）"
+      }
+    },
+    {
+      "id": "font-biz-udpgothic",
+      "kind": "fonts",
+      "name": "BIZ UDPゴシック（ユニバーサルデザインの字体）",
+      "url": "https://github.com/googlefonts/morisawa-biz-ud-gothic",
+      "use": "読み違えにくい図のラベル・数字",
+      "license": "SIL Open Font License 1.1",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "字体のファイルを配るときは OFL の本文を添える（画面に出す必要はない）",
+        "字体だけを売らない"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/googlefonts/morisawa-biz-ud-gothic/blob/main/OFL.txt",
+          "quote": "This Font Software is licensed under the SIL Open Font License, Version 1.1."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-package",
+        "options": {
+          "name": "@fontsource/biz-udpgothic",
+          "expect": "\\.woff2$"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 527,
+        "bytes": 16781606,
+        "sha256": "72d28e1876fc051705aaff7171bf0e09973c816066facbe56997ac1ba67669ec",
+        "detail": "@fontsource/biz-udpgothic@5.3.0（OFL-1.1、527 ファイル）"
+      }
+    },
+    {
+      "id": "katex-mhchem",
+      "kind": "drawing-tools",
+      "name": "KaTeX の化学式（mhchem）",
+      "url": "https://katex.org/",
+      "use": "化学反応式（2H₂ + O₂ → 2H₂O など）。アプリにもう入っている KaTeX に同梱",
+      "license": "MIT（化学式の読み取り部分は Apache License 2.0）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "配るコードにライセンスの記載を残す（画面に出す必要はない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/KaTeX/KaTeX/blob/main/contrib/mhchem/mhchem.js",
+          "quote": "This code, as other KaTeX code, is released under the MIT license."
+        },
+        {
+          "url": "https://github.com/KaTeX/KaTeX/blob/main/contrib/mhchem/mhchem.js",
+          "quote": "Licensed under the Apache License, Version 2.0 (the \"License\");"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "katex-mhchem",
+        "options": {}
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 5197,
+        "sha256": "1cf10401e9b84c243ef137ca57c15104fa6e2b212a743b72e4fc5accaf6b6569",
+        "detail": "\\ce{2H2 + O2 -> 2H2O} → HTML 5189 文字"
+      }
+    },
+    {
+      "id": "astronomy-engine",
+      "kind": "drawing-tools",
+      "name": "Astronomy Engine",
+      "url": "https://github.com/cosinekitty/astronomy",
+      "use": "太陽・月・惑星の位置、月の満ち欠け、日の出・日の入り（天体の動きの図を正しい値で描く）",
+      "license": "MIT",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "配るコードにライセンスの記載を残す（画面に出す必要はない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/cosinekitty/astronomy/blob/master/LICENSE",
+          "quote": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-run",
+        "options": {
+          "packages": "astronomy-engine@2",
+          "snippet": "moon-phase"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 38,
+        "sha256": "604110fc7d47917b30d790fb89d08118ccf3b1b0f8b0f7038d32dc2bb20a2a32",
+        "detail": "astronomy-engine@^2.1.19：月の位相角 209.6°、月齢 17.2"
+      }
+    },
+    {
+      "id": "d3-geo-contour",
+      "kind": "drawing-tools",
+      "name": "d3-geo・d3-contour",
+      "url": "https://github.com/d3/d3-geo",
+      "use": "地図の投影（経度・緯度→画面の座標）、等高線・等圧線を引く",
+      "license": "ISC",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "配るコードにライセンスの記載を残す（画面に出す必要はない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/d3/d3-geo/blob/main/LICENSE",
+          "quote": "Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-run",
+        "options": {
+          "packages": "d3-geo@3 d3-contour@4",
+          "snippet": "contour"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 37,
+        "sha256": "ec925e2200150a492e4d9be9e97617829c649505445161de0982dce4eb1b6203",
+        "detail": "d3-contour@^4.0.2・d3-geo@^3.1.1：等高線 1 本、地図の投影 OK"
+      }
+    },
+    {
+      "id": "turf-point-in-polygon",
+      "kind": "drawing-tools",
+      "name": "Turf（点が形の中にあるかの判定）",
+      "url": "https://github.com/Turfjs/turf",
+      "use": "川の線が説明に書いた県を通るか、河口が書いた海にあるかを計算で確かめる検査",
+      "license": "MIT",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "配るコードにライセンスの記載を残す（画面に出す必要はない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/Turfjs/turf/blob/master/LICENSE",
+          "quote": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-run",
+        "options": {
+          "packages": "@turf/boolean-point-in-polygon@7",
+          "snippet": "point-in-polygon"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 37,
+        "sha256": "ae2c58aa84a37cbec497a9071b5f87e9db8075858800b0d671c1f370e365d9a2",
+        "detail": "@turf/boolean-point-in-polygon@^7.4.0：点が形の中か外かの判定 OK"
+      }
+    },
+    {
+      "id": "roughjs",
+      "kind": "drawing-tools",
+      "name": "Rough.js（手描き風の線）",
+      "url": "https://github.com/rough-stuff/rough",
+      "use": "SVG の図を手描き風の線で描く（板書・ノート風の図）",
+      "license": "MIT",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "配るコードにライセンスの記載を残す（画面に出す必要はない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/rough-stuff/rough/blob/master/LICENSE",
+          "quote": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "npm-run",
+        "options": {
+          "packages": "roughjs@4",
+          "snippet": "rough-svg"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 61,
+        "sha256": "fffd49953031be1f8c9f7285ab6b07a478f415690fc995b133d7a74e62d0924a",
+        "detail": "roughjs@^4.6.6：手描き風の四角 1 本の線、最初の線 1186 文字"
+      }
+    },
+    {
+      "id": "playwright-render",
+      "kind": "drawing-tools",
+      "name": "Playwright（図を画像にして確かめる）",
+      "url": "https://github.com/microsoft/playwright",
+      "use": "作った図を 375px 幅・ダークモードなどで画像にして、見た目と重なりを確かめる。テストにもう入っている",
+      "license": "Apache License 2.0",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [],
+      "evidence": [
+        {
+          "url": "https://github.com/microsoft/playwright/blob/main/LICENSE",
+          "quote": "Apache License Version 2.0, January 2004"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "playwright-render",
+        "options": {}
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 1,
+        "bytes": 3810,
+        "sha256": "aaa2281af9810c6dbfe5221b3da474afd3211788ebadd9bee03bb4282fdc23a1",
+        "detail": "PNG 3810 バイト（400×240）"
+      }
+    },
+    {
+      "id": "inkscape",
+      "kind": "illustrator-tools",
+      "name": "Inkscape（SVG を描く・直すアプリ）",
+      "url": "https://inkscape.org/",
+      "use": "人が図を描いたり、作った SVG を手で直したりする。部品ごとに id を付けて書き出せる",
+      "license": "GNU GPL 2（アプリ。描いた絵の権利は描いた人のもの）",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "パソコンに入れる必要がある（このリポジトリには入れない）"
+      ],
+      "evidence": [
+        {
+          "url": "https://inkscape.org/learn/faq/",
+          "quote": "In short, this means you are free to use and distribute Inkscape for any purpose, commercial or non-commercial, without any restrictions."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "人が描く・直す道具として、パソコンに入れるかどうか（入れるのは利用者の判断）"
+    },
+    {
+      "id": "openverse",
+      "kind": "photo-search",
+      "name": "Openverse（オープンな写真・絵の検索）",
+      "url": "https://openverse.org/",
+      "use": "CC0・パブリックドメインの写真や絵を、いろいろなサイトから探す",
+      "license": "画像ごとに違う。CC0・PDM に絞って検索する",
+      "commercial": true,
+      "modify": true,
+      "attribution": "none",
+      "conditions": [
+        "検索で license=cc0,pdm に絞る。見つけた画像の元のページで権利を確かめてから使う"
+      ],
+      "evidence": [
+        {
+          "url": "https://docs.openverse.org/",
+          "quote": "Openverse is a search engine for openly licensed media."
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "ready",
+      "tool": {
+        "id": "openverse",
+        "options": {
+          "q": "volcano"
+        }
+      },
+      "verified": {
+        "on": "2026-09-29",
+        "items": 240,
+        "bytes": 27875,
+        "sha256": "daacdc5980d68c5de17d19463251f26c136d543324c40cf94fbfb22f1bef738f",
+        "detail": "CC0・PDM で 240 件（例「Volcano Types Diagram」cc0）"
+      }
+    },
+    {
+      "id": "unsplash",
+      "kind": "photo-search",
+      "name": "Unsplash（写真。コネクタで探せる）",
+      "url": "https://unsplash.com/",
+      "use": "風景・都市・農業などの写真（社会の場面の写真）",
+      "license": "Unsplash License",
+      "commercial": true,
+      "modify": true,
+      "attribution": "requested",
+      "conditions": [
+        "大きく手を加えずに写真を売らない",
+        "Unsplash の写真を集めて似たサービスを作らない",
+        "写っているものが正しいかは自分で確かめる"
+      ],
+      "evidence": [
+        {
+          "url": "https://unsplash.com/license",
+          "quote": "Commercial and non-commercial purposes"
+        },
+        {
+          "url": "https://unsplash.com/license",
+          "quote": "No permission needed (though attribution is appreciated!)"
+        }
+      ],
+      "checkedOn": "2026-09-29",
+      "status": "needs-user",
+      "question": "使うには Unsplash のコネクタをつなぐか、API の鍵を登録する必要がある（つなぐのは利用者）"
+    }
+  ]
+}

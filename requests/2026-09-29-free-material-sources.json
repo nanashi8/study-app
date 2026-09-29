@@ -1,0 +1,60 @@
+{
+  "id": "2026-09-29-free-material-sources",
+  "title": "教材づくりに使える無償・商用可の素材・データ・道具を調べ、使えるようにして報告する",
+  "asked": [
+    "教材作成に使える無償で商用利用も可能なものがあれば使えるようにして報告しなさい。"
+  ],
+  "sessions": [
+    "6e6f58b9-978c-4168-a59a-8209991f2b32"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "kinds-covered",
+      "text": "教材づくりに使う素材の種類12種（地図の形・川・標高と地形・事実のデータ・統計と気候・美術と歴史資料の画像・自然の写真・生物などの絵・字体・図を作る道具・人に描いてもらう道具・写真を探す道具）のすべてで、無償で商用にも使える候補を調べる。候補ごとに、利用条件を一次資料（利用条件のページ・ライセンスの本文）で確かめ、商用利用・出典表示の要否・改変の可否・確かめた日・根拠の一文を docs/material-sources.json に記録する",
+      "population": "素材の種類12種と、台帳に挙げた候補の全件",
+      "check": "node scripts/materials/check-material-sources.mjs",
+      "status": "done",
+      "verifiedBy": "素材の種類12種すべてに候補がある（計34件：地図の形3・川4・標高2・事実1・統計2・美術と歴史資料5・自然の写真2・絵とシルエット4・字体2・図の道具6・人が描く道具1・探す道具2）。34件すべてに一次資料の URL と原文の一文、確かめた日（2026-09-29）がある。原文はページ・ライセンスのファイル・API の返す値から写し、引用が原文と一致することを確かめた"
+    },
+    {
+      "id": "ready-verified",
+      "text": "出典の表示が要らず、商用利用と改変ができる候補（今の「画面に出典を出さない」決まりのまま使えるもの）は、取り出す道具を scripts/materials/ に作り、実際に取り出して動くことを確かめ、確かめた日・取り出した件数・sha256 を台帳に記録する",
+      "population": "台帳で状態が ready の全件",
+      "check": "node scripts/materials/check-material-sources.mjs --require-verified",
+      "status": "done",
+      "verifiedBy": "ready の23件すべてを 2026-09-29 に取り出して確かめ、件数・大きさ・sha256 を台帳の verified に書いた（47都道府県と北方領土4島・竹島・尖閣諸島3・琵琶湖、川3本、富士山付近の標高361点、200km以上の川13件、都道府県の人口47、東京の平年値12か月、北斎の浮世絵3館、水晶の標本、月の写真、アブラナの図譜、生き物のシルエット、クリップアート、Openverse の CC0・PDM 240件、字体2、化学式・月齢・等高線・県の中か外か・手描き風・画像化の6つの道具）。取り出しで見つけた誤り（Natural Earth の川にロシア・中国の川が混ざる、Wikidata の長さの単位が km と m で混ざる、シカゴ美術館は AIC-User-Agent が要る、スミソニアンは画像ごとの CC0 で探す、Openclipart のダウンロード先の形）は道具で直した"
+    },
+    {
+      "id": "attribution-decision",
+      "text": "出典の表示が条件の候補（CC BY・ODbL・国の利用規約など）は ready にしない。「画面に出典を出さない」決まりと合わないので、出典をまとめて出す画面を作るかどうかを利用者に聞く",
+      "population": "台帳で出典の表示が条件の全件",
+      "check": "node scripts/materials/check-material-sources.mjs",
+      "status": "needs-user",
+      "question": "出典の表示が条件の7件（OpenStreetMap・HydroRIVERS の川の線、国土地理院の地図と標高、国土数値情報の県境、ColBase、国立国会図書館デジタルコレクション）を使うために、出典をまとめて出す画面を1つ作ってよいか。あわせて、いらすとや（商用は1つのデザインにつき20点まで）を使うか、Inkscape をパソコンに入れるか、Unsplash のコネクタをつなぐかも決めてほしい",
+      "verifiedBy": "出典の表示が条件の7件はどれも ready ではない（needs-user）。check が通る"
+    },
+    {
+      "id": "guarded-by-tests",
+      "text": "台帳の決まり（12種すべてに候補がある、根拠の一文と確かめた日がある、出典の表示が条件のものと非商用・改変禁止のものを ready にしない、ready は取り出して確かめてある）を tests/material-sources.test.mjs で npm test から守る",
+      "population": "台帳の全件と、決まり5つ",
+      "check": "node --test tests/material-sources.test.mjs",
+      "status": "done",
+      "verifiedBy": "tests/material-sources.test.mjs の12件が通る（台帳の決まり5つを今の台帳で確かめる5件と、決まりに反する台帳を検査が見逃さないことを確かめる7件）"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更（台帳・道具・テスト・依頼台帳）を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイが成功したことを確かめる",
+      "population": "この依頼で足したファイルすべてと、main・公開版",
+      "check": "git fetch -q origin main && git diff --quiet origin/main -- docs/material-sources.json scripts/materials tests/material-sources.test.mjs && node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない（この端末の study-app の複製すべてと共有の作業ツリー）",
+      "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones",
+      "status": "todo"
+    }
+  ]
+}
