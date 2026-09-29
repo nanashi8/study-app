@@ -1492,4 +1492,408 @@ export default Object.freeze([
       '“about me.': 'about me は、前の mistake に続いて「ぼくのことで（思いちがいしないで）」。',
     },
   }),
+  // 121
+  ls('[S I] [V don’t think] [O {that省略| [M there][V ’s] [S anything {前| in the way {前| of {並列| a haircut | or a shave | or a shampoo}}} {関係>anything| [S that] [V could make] [O me] [C {原形| [V like] [O my girl] [M any less]}]}]}].', {
+    ja: '髪を切ったって、ひげをそったって、髪を洗ったって、そんなことで、ぼくが自分の奥さんを少しでも好きじゃなくなるなんてことはないと思うよ。',
+    chunks: [
+      ['I don’t think there’s anything in the way', 'そんなものは何もないと思う'],
+      ['of a haircut or a shave or a shampoo', '散髪とか、ひげそりとか、洗髪とかのたぐいで'],
+      ['that could make me like my girl any less.', 'ぼくが奥さんを少しでも好きでなくなるようなものは'],
+    ],
+    notes: {
+      'I don’t think there’s anything in the way': 'I don’t think … で「…ではないと思う」。there’s は there is の短縮形です。in the way of A で「A のようなもの（のたぐい）で」。',
+      'of a haircut or a shave or a shampoo': 'haircut（散髪）・shave（ひげそり）・shampoo（洗髪）が or で並んでいます。',
+      'that could make me like my girl any less.': 'that は anything を説明する関係代名詞です。make A do で「A に〜させる」。any less は「少しでも少なく」。my girl は「ぼくの奥さん（彼女）」。',
+    },
+  }),
+  // 122
+  ls('[接 But] [M {副詞節:条件| [接 if] [S you][V ’ll unwrap] [O that package]}] [S you] [V may see] [O {疑問詞節| [M why] [S you] [V had] [O me] [C {現在分詞:補語| [V going]}] [M a while] [M {前| at first}]}].”', {
+    ja: 'でも、その包みを開けてみれば、どうしてさっき、ぼくがしばらくぼうぜんとしていたのか、分かるかもしれない」',
+    chunks: [
+      ['But if you’ll unwrap that package', 'でも、その包みを開けてくれれば'],
+      ['you may see why you had me going', 'どうしてきみがぼくをまごつかせたのか、分かるかもしれない'],
+      ['a while at first.”', '最初、しばらくのあいだ」'],
+    ],
+    notes: {
+      'But if you’ll unwrap that package': 'if you’ll … の will は「〜してくれるなら」という相手の意志を表します。unwrap は「（包みを）開ける」。',
+      'you may see why you had me going': 'why … は「なぜ…なのか」という疑問詞の節で、see の目的語です。have A going は「A をまごつかせる」。',
+      'a while at first.”': 'a while は「しばらく」、at first は「最初は」。',
+    },
+  }),
+  // 123
+  ls('[S White fingers {形容詞>White fingers| [接 and] nimble}] [V tore at] [O {並列| the string | and paper}].', {
+    p: true,
+    ja: '白くすばしこい指が、ひもと包み紙をむしるようにほどいた。',
+    chunks: [
+      ['White fingers and nimble tore at the string and paper.', '白くすばしこい指が、ひもと包み紙をむしるようにほどいた'],
+    ],
+    notes: {
+      'White fingers and nimble tore at the string and paper.': 'White fingers and nimble は white and nimble fingers（白くすばしこい指）の形容詞 nimble を、詩のように後ろに回した言い方です。tear at A で「A を引きちぎろうとする」。tore は tear の過去形です。',
+    },
+  }),
+  // 124
+  ls('[接 And] [M then] [独 an ecstatic scream {前| of joy}]; [接 and] [M then], [独 alas]! [独 a quick feminine change {前| to hysterical {並列| tears | and wails}}, {現在分詞>a quick feminine change| [V necessitating] [O the immediate employment {前| of all the comforting powers {前| of the lord {前| of the flat}}}]}].', {
+    fragment: true,
+    ja: 'そして、うっとりとした喜びの叫び声。それから、ああ、たちまち女らしくヒステリックな涙と泣き声に変わってしまい、この家のあるじは、ありったけのなぐさめの力をすぐに使わなければならなかった。',
+    chunks: [
+      ['And then an ecstatic scream of joy;', 'そして、うっとりとした喜びの叫び声'],
+      ['and then, alas!', 'それから、ああ'],
+      ['a quick feminine change to hysterical tears and wails,', 'たちまち女らしく、ひどく取り乱した涙と泣き声に変わって'],
+      ['necessitating the immediate employment', 'すぐに使わなければならなくなった'],
+      ['of all the comforting powers of the lord of the flat.', 'この部屋のあるじの、ありったけのなぐさめの力を'],
+    ],
+    marks: [
+      [';', 'セミコロンで、「歓喜の叫び」と、その直後の「涙と泣き声への急な変化」という2つの場面を区切って並べます。'],
+    ],
+    notes: {
+      'And then an ecstatic scream of joy;': '動詞のない文です。ecstatic は「うっとりするほどの」、scream of joy は「喜びの叫び」。',
+      'and then, alas!': 'alas は「ああ（悲しいかな）」。',
+      'a quick feminine change to hysterical tears and wails,': 'change to A で「A への変化」。hysterical は「ひどく取り乱した」、wail は「泣き叫ぶ声」。',
+      'necessitating the immediate employment': 'necessitating … は a quick feminine change を説明し、「〜を必要とさせる（変化）」。employment はここでは「使うこと」。',
+      'of all the comforting powers of the lord of the flat.': 'the lord of the flat は「この部屋のあるじ」で、ジムのことをおどけて言っています。',
+    },
+  }),
+  // 125
+  ls('[接 For] [M there] [V lay] [S The Combs — {同格>The Combs| the set {前| of combs}, {並列| side | and back}, {関係>the set of combs| [O that] [S Della] [V had worshipped] [M long] [M {前| in a Broadway window}]}}].', {
+    p: true,
+    ja: 'というのも、そこにあったのは、あの「くし」だったのだ——横と後ろにさす一そろいのくしで、デラがブロードウェイの店の窓で、長いあいだあこがれていたものだった。',
+    chunks: [
+      ['For there lay The Combs —', 'というのも、そこにはあの「くし」があったのだ——'],
+      ['the set of combs, side and back,', '横と後ろにさす、一そろいのくし'],
+      ['that Della had worshipped long in a Broadway window.', 'デラがブロードウェイの店の窓で、長いあいだあこがれていた（くし）'],
+    ],
+    marks: [
+      ['—', 'ダッシュで、「あのくし」がどんなものかを、「横と後ろにさす一そろいのくしで、デラが長いあいだ店の窓であこがれていたもの」と言いかえて説明します。'],
+    ],
+    notes: {
+      'For there lay The Combs —': 'For は「というのも」。there lay A は「そこに A があった」（there is の形で、動詞 lie の過去形 lay を使っています）。The Combs と大文字で書いて、特別なものだと強めています。',
+      'the set of combs, side and back,': 'the set of combs は The Combs を言いかえた同格の語句です。side and back は「横にさすのと、後ろにさすの」。',
+      'that Della had worshipped long in a Broadway window.': 'that は the set of combs を説明する関係代名詞です。worship は「あがめる」で、ここでは「うっとりながめる」。Broadway はニューヨークのにぎやかな大通りです。',
+    },
+  }),
+  // 126
+  ls('[独 Beautiful combs, {同格>Beautiful combs| pure tortoise shell}, {前| with jewelled rims}] — [独 just the shade {to:形容詞>the shade| [V to wear] [M {前| in the beautiful vanished hair}]}].', {
+    fragment: true,
+    ja: '美しいくしで、本物のべっこうでできていて、ふちには宝石がはめこんである——今はもうない、あの美しい髪にさすのに、ちょうどぴったりの色合いだった。',
+    chunks: [
+      ['Beautiful combs, pure tortoise shell, with jewelled rims —', '美しいくし、本物のべっこう、宝石をはめたふち——'],
+      ['just the shade to wear in the beautiful vanished hair.', '消えてしまった美しい髪にさすのに、ちょうどいい色合い'],
+    ],
+    marks: [
+      ['—', 'ダッシュで、くしの見た目の説明に、「今はなくなった美しい髪にさすのにぴったりの色合い」という説明を付け足します。'],
+    ],
+    notes: {
+      'Beautiful combs, pure tortoise shell, with jewelled rims —': '動詞のない文です。tortoise shell は「べっこう」、jewelled rims は「宝石をはめたふち」（jewelled はイギリスのつづり）。',
+      'just the shade to wear in the beautiful vanished hair.': 'shade は「色合い」。to wear が the shade を後ろから説明します。vanished は「消えてしまった」。',
+    },
+  }),
+  // 127
+  ls('[S They] [V were] [C expensive combs], [M {挿入| she knew}], [接 and] [S her heart] [V had] [M simply] [V craved] [接 and] [V yearned] [M {前| over them}] [M {前| without the least hope {前| of possession}}].', {
+    ja: '高価なくしだということは、デラも分かっていた。自分のものになる望みなどまったくないまま、ただほしくて、ほしくて、心の中であこがれていたのだ。',
+    chunks: [
+      ['They were expensive combs, she knew,', '高価なくしだと、彼女は分かっていた'],
+      ['and her heart had simply craved', 'そして心はただ、ほしくてたまらなかった'],
+      ['and yearned over them without the least hope of possession.', 'そして自分のものになる望みもないまま、あこがれていた'],
+    ],
+    notes: {
+      'They were expensive combs, she knew,': 'she knew は「（それを）彼女は知っていた」という挿入です。',
+      'and her heart had simply craved': 'crave は「強くほしがる」。',
+      'and yearned over them without the least hope of possession.': 'yearn over A で「A にあこがれる」。without the least hope of A で「A の望みがまったくないまま」。possession は「自分のものにすること」。',
+    },
+  }),
+  // 128
+  ls('[接 And] [M now], [S they] [V were] [C hers], [接 but] [S the tresses {関係>the tresses| [S that] [V should have adorned] [O the coveted adornments]}] [V were] [C gone].', {
+    ja: 'そして今、くしはデラのものになった。けれども、そのあこがれの飾りを飾るはずだった髪は、もうなくなっていた。',
+    chunks: [
+      ['And now, they were hers,', 'そして今、それは彼女のものだった'],
+      ['but the tresses that should have adorned', 'けれど、飾るはずだった髪は'],
+      ['the coveted adornments were gone.', 'あこがれの飾りを（飾るはずだった髪は）、もうなかった'],
+    ],
+    notes: {
+      'And now, they were hers,': 'hers は「彼女のもの」。',
+      'but the tresses that should have adorned': 'tresses は「（女性の長い）髪」。should have done は「〜するはずだった（のにしなかった）」。adorn は「飾る」。',
+      'the coveted adornments were gone.': 'coveted adornments は「ほしくてたまらなかった飾り」で、くしのこと。髪がくしを飾る、と逆に言っているところがおもしろい言い方です。',
+    },
+  }),
+  // 129
+  ls('[接 But] [S she] [V hugged] [O them] [M {前| to her bosom}], [接 and] [M {前| at length}] [S she] [V was able to look up] [M {前| with {並列| dim eyes | and a smile}}] [接 and] [V say]: [O {引用| “[S My hair] [V grows] [M so fast], [独 Jim]!”}]', {
+    p: true,
+    ja: 'それでもデラは、くしを胸にしっかりと抱きしめた。そしてやっと、涙にかすんだ目で顔を上げ、ほほえんで言うことができた。「わたしの髪って、ほんとうに早く伸びるのよ、ジム！」',
+    chunks: [
+      ['But she hugged them to her bosom,', 'それでも彼女は、くしを胸に抱きしめた'],
+      ['and at length she was able to look up', 'そしてやっと、顔を上げることができた'],
+      ['with dim eyes and a smile and say:', 'かすんだ目とほほえみで。そして言うことができた'],
+      ['“My hair grows so fast, Jim!”', '「わたしの髪って、ほんとうに早く伸びるのよ、ジム」'],
+    ],
+    marks: [
+      [':', 'コロンで、「こう言った」の中身として、デラの言葉そのものを示します。'],
+    ],
+    notes: {
+      'But she hugged them to her bosom,': 'hug A to one’s bosom で「A を胸に抱きしめる」。',
+      'and at length she was able to look up': 'at length は「やっと・ようやく」。be able to do で「〜することができる」。',
+      'with dim eyes and a smile and say:': 'dim eyes は「（涙で）かすんだ目」。look up と say が並んでいます。',
+      '“My hair grows so fast, Jim!”': '髪がすぐ伸びるから、くしはまた使える、と自分をはげましています。',
+    },
+  }),
+  // 130
+  ls('[接 And] [M then] [S Della] [V leaped up] [M {前| like a little singed cat}] [接 and] [V cried], [O {引用| “[独 Oh], [独 oh]!”}]', {
+    p: true,
+    ja: 'それからデラは、毛をこがした子猫のようにとび上がって、「そうだ、そうだった！」と叫んだ。',
+    chunks: [
+      ['And then Della leaped up like a little singed cat and cried,', 'それからデラは、毛をこがした子猫のようにとび上がって叫んだ'],
+      ['“Oh, oh!”', '「そうだ、そうだった」'],
+    ],
+    notes: {
+      'And then Della leaped up like a little singed cat and cried,': 'leap up は「とび上がる」。singed は「（毛を）こがした」。like A で「A のように」。',
+      '“Oh, oh!”': 'Oh, oh! は、大事なことを思い出したときの声です。',
+    },
+  }),
+  // 131
+  ls('[S Jim] [V had not] [M yet] [V seen] [O his beautiful present].', {
+    p: true,
+    ja: 'ジムは、まだ自分へのすてきな贈り物を見ていなかったのだ。',
+    chunks: [
+      ['Jim had not yet seen his beautiful present.', 'ジムは、まだ自分へのすてきな贈り物を見ていなかった'],
+    ],
+    notes: {
+      'Jim had not yet seen his beautiful present.': 'had not yet seen は過去完了で「（そのときまで）まだ見ていなかった」。his beautiful present は、デラがジムに買った鎖のことです。',
+    },
+  }),
+  // 132
+  ls('[S She] [V held] [O it] [M out] [M {前| to him}] [M eagerly] [M {前| upon her open palm}].', {
+    ja: 'デラは、広げた手のひらにのせて、それをいそいそとジムに差し出した。',
+    chunks: [
+      ['She held it out to him eagerly upon her open palm.', '彼女は広げた手のひらにのせて、それをいそいそとジムに差し出した'],
+    ],
+    notes: {
+      'She held it out to him eagerly upon her open palm.': 'hold A out で「A を差し出す」。eagerly は「いそいそと・熱心に」。palm は「手のひら」。',
+    },
+  }),
+  // 133
+  ls('[S The dull precious metal] [V seemed] [C {to:補語| [V to flash] [M {前| with a reflection {前| of her {並列| bright | and ardent} spirit}}]}].', {
+    ja: 'くすんだ色の貴金属が、デラの明るく熱い心を映して、きらりと光ったようだった。',
+    chunks: [
+      ['The dull precious metal seemed to flash', 'くすんだ色の貴金属が、きらりと光ったようだった'],
+      ['with a reflection of her bright and ardent spirit.', '彼女の明るく熱い心を映して'],
+    ],
+    notes: {
+      'The dull precious metal seemed to flash': 'dull は「つやのない・くすんだ」。precious metal は「貴金属」で、プラチナのこと。seem to do で「〜するように見える」。',
+      'with a reflection of her bright and ardent spirit.': 'reflection は「映り・反射」。ardent は「熱い・熱烈な」。spirit は「心・気持ち」。',
+    },
+  }),
+  // 134
+  ls('“[V Isn’t] [S it] [C a dandy], [独 Jim]?', {
+    p: true,
+    ja: '「すてきでしょう、ジム？',
+    chunks: [
+      ['“Isn’t it a dandy, Jim?', '「すてきでしょう、ジム'],
+    ],
+    notes: {
+      '“Isn’t it a dandy, Jim?': 'Isn’t it …? は「〜でしょう？」と同意を求める言い方です。dandy はくだけた言い方で「すてきなもの・逸品」。',
+    },
+  }),
+  // 135
+  ls('[S I] [V hunted] [M all {前| over town}] [M {to:副詞(目的)| [V to find] [O it]}].', {
+    ja: '町じゅうを探し回って、見つけたのよ。',
+    chunks: [
+      ['I hunted all over town to find it.', 'それを見つけるために、町じゅうを探し回ったのよ'],
+    ],
+    notes: {
+      'I hunted all over town to find it.': 'hunt は「探し回る」。all over A で「A じゅうを」。to find it は目的で「見つけるために」。',
+    },
+  }),
+  // 136
+  ls('[S You][V ’ll have to look] [M {前| at the time}] [M a hundred times a day] [M now].', {
+    ja: 'これからは、一日に百回は時間を見なくちゃいけないわね。',
+    chunks: [
+      ['You’ll have to look at the time', '時間を見なくちゃいけないわね'],
+      ['a hundred times a day now.', 'これからは一日に百回は'],
+    ],
+    notes: {
+      'You’ll have to look at the time': 'You’ll は You will の短縮形です。have to do で「〜しなければならない」。',
+      'a hundred times a day now.': 'a hundred times a day は「一日に百回」。すてきな鎖ができたので、何度も時計を見たくなるでしょう、というのです。',
+    },
+  }),
+  // 137
+  ls('[V Give] [O1 me] [O2 your watch].', {
+    ja: '時計を貸して。',
+    chunks: [
+      ['Give me your watch.', '時計を貸して'],
+    ],
+    notes: {
+      'Give me your watch.': 'Give A B で「A に B をちょうだい」。',
+    },
+  }),
+  // 138
+  ls('[S I] [V want] [O {to:名詞| [V to see] [O {疑問詞節| [C how] [S it] [V looks] [M {前| on it}]}]}].”', {
+    ja: '時計につけたら、どんなふうに見えるか見たいの」',
+    chunks: [
+      ['I want to see how it looks on it.”', '時計につけたらどう見えるか、見たいの」'],
+    ],
+    notes: {
+      'I want to see how it looks on it.”': 'how it looks on it は「それ（鎖）がそれ（時計）につけるとどう見えるか」。how は looks の補語です。',
+    },
+  }),
+  // 139
+  ls('[M {前| Instead of {動名詞| [V obeying]}}], [S Jim] [V tumbled down] [M {前| on the couch}] [接 and] [V put] [O his hands] [M {前| under the back {前| of his head}}] [接 and] [V smiled].', {
+    p: true,
+    ja: 'ジムは言われたとおりにはせずに、長いすにどさりとたおれこむと、両手を頭のうしろに組んで、にっこりほほえんだ。',
+    chunks: [
+      ['Instead of obeying,', '言われたとおりにするかわりに'],
+      ['Jim tumbled down on the couch', 'ジムは長いすにどさりとたおれこんだ'],
+      ['and put his hands under the back of his head and smiled.', 'そして両手を頭のうしろに組んで、ほほえんだ'],
+    ],
+    notes: {
+      'Instead of obeying,': 'instead of doing で「〜するかわりに」。obey は「（言われたことに）従う」。',
+      'Jim tumbled down on the couch': 'tumble down は「どさりとたおれこむ」。',
+      'and put his hands under the back of his head and smiled.': 'tumbled・put・smiled の3つの動詞が並んでいます。',
+    },
+  }),
+  // 140
+  ls('[O {引用| “[独 Dell],”}] [V said] [S he], [O {引用| “[V let][O ’s] [C {原形| [V put] [O our Christmas presents] [M away] [接 and] [V keep] [O ’em] [M a while]}].}]', {
+    p: true,
+    ja: '「デル」とジムは言った。「クリスマスの贈り物は、二人ともしばらくしまっておこうよ。',
+    chunks: [
+      ['“Dell,” said he,', '「デル」と彼は言った'],
+      ['“let’s put our Christmas presents away', '「クリスマスの贈り物をしまっておこう'],
+      ['and keep ’em a while.', 'そして、しばらく取っておこう'],
+    ],
+    notes: {
+      '“Dell,” said he,': 'said he は動詞が主語の前に出た形です。',
+      '“let’s put our Christmas presents away': 'let’s は let us の短縮形で「〜しよう」。put A away で「A をしまう」。',
+      'and keep ’em a while.': '’em は them のくだけた言い方です。a while は「しばらく」。',
+    },
+  }),
+  // 141
+  ls('[S They][V ’re] [C too nice {to:副詞(程度)| [V to use]}] [M just {前| at present}].', {
+    ja: '今すぐ使うには、すてきすぎるからね。',
+    chunks: [
+      ['They’re too nice to use just at present.', '今のところ、使うにはすてきすぎるよ'],
+    ],
+    notes: {
+      'They’re too nice to use just at present.': 'too … to do で「〜するには…すぎる」。at present は「今のところ」。本当は、使えないからしまっておこう、と言っています。',
+    },
+  }),
+  // 142
+  ls('[S I] [V sold] [O the watch] [M {to:副詞(目的)| [V to get] [O the money {to:形容詞>the money| [V to buy] [O your combs]}]}].', {
+    ja: 'きみのくしを買うお金をつくるために、時計を売ったんだ。',
+    chunks: [
+      ['I sold the watch to get the money to buy your combs.', 'きみのくしを買うお金を手に入れるために、時計を売ったんだ'],
+    ],
+    notes: {
+      'I sold the watch to get the money to buy your combs.': 'to get … は目的で「〜を手に入れるために」。to buy your combs が the money を後ろから説明し、「くしを買うためのお金」。デラが時計の鎖を買ったのに、ジムはその時計を売っていたのです。',
+    },
+  }),
+  // 143
+  ls('[接 And] [M now] [V suppose] [O {that省略| [S you] [V put] [O the chops] [M on]}].”', {
+    ja: 'さあ、それじゃあ、お肉を焼いてくれないか」',
+    chunks: [
+      ['And now suppose you put the chops on.”', 'さあ、それじゃあ、お肉を火にかけてくれないか」'],
+    ],
+    notes: {
+      'And now suppose you put the chops on.”': 'suppose (that) … はここでは「〜したらどうだろう」という提案の言い方です。put the chops on は「肉を火にかける」。',
+    },
+  }),
+  // 144
+  ls('[S The magi], [M {副詞節:様態| [接 as] [S you] [V know]}], [V were] [C wise men — {同格>wise men| wonderfully wise men} — {関係>wise men| [S who] [V brought] [O gifts] [M {前| to the Babe {前| in the manger}}]}].', {
+    p: true,
+    ja: '東方の三博士は、ご存じのように、賢い人たち——驚くほど賢い人たち——で、飼い葉おけに寝ている赤ん坊のイエスに、贈り物を届けた人たちだった。',
+    chunks: [
+      ['The magi, as you know, were wise men —', '東方の三博士は、ご存じのように、賢い人たちだった——'],
+      ['wonderfully wise men —', '驚くほど賢い人たち——'],
+      ['who brought gifts to the Babe in the manger.', '飼い葉おけの赤ん坊に贈り物を届けた（人たち）'],
+    ],
+    marks: [
+      ['— —', 'ダッシュ2つで、「賢い人たち」を「驚くほど賢い人たち」と言い直して強める語句をはさみます。'],
+    ],
+    notes: {
+      'The magi, as you know, were wise men —': 'as you know は「ご存じのように」。the magi は東方の三博士です。',
+      'wonderfully wise men —': 'wise men を「驚くほど賢い人たち」と言い直して強めています。',
+      'who brought gifts to the Babe in the manger.': 'who は wise men を説明する関係代名詞です。the Babe in the manger は「飼い葉おけに寝ている赤ん坊（イエス）」。',
+    },
+  }),
+  // 145
+  ls('[S They] [V invented] [O the art {前| of {動名詞| [V giving] [O Christmas presents]}}].', {
+    ja: 'クリスマスに贈り物をするならわしを始めたのは、この人たちだ。',
+    chunks: [
+      ['They invented the art of giving Christmas presents.', '彼らが、クリスマスに贈り物をするならわしを始めた'],
+    ],
+    notes: {
+      'They invented the art of giving Christmas presents.': 'invent は「考え出す・始める」。the art of doing は「〜するわざ・ならわし」。',
+    },
+  }),
+  // 146
+  ls('[M {分詞構文:理由| [V Being] [C wise]}], [S their gifts] [V were] [M {成句| no doubt}] [C wise ones], [M {分詞構文:付帯状況| [M possibly] [V bearing] [O the privilege {前| of exchange}] [M {前| in case of duplication}]}].', {
+    ja: '賢い人たちなのだから、その贈り物もきっと賢いもので、もしかすると、ほかの人の贈り物とかち合ったときには取りかえてもらえる特典まで付いていたかもしれない。',
+    chunks: [
+      ['Being wise, their gifts were no doubt wise ones,', '賢い人たちなので、その贈り物もきっと賢いものだった'],
+      ['possibly bearing the privilege of exchange', 'もしかすると、取りかえてもらえる特典が付いていて'],
+      ['in case of duplication.', '贈り物がかち合った場合には'],
+    ],
+    notes: {
+      'Being wise, their gifts were no doubt wise ones,': 'Being wise は分詞構文で「賢いので」。意味の上の主語は三博士ですが、文の主語は their gifts になっています（語り手のくだけた書き方）。no doubt は「きっと」。ones は gifts のことです。',
+      'possibly bearing the privilege of exchange': 'bear the privilege of A で「A の特典が付いている」。exchange は「交換」。',
+      'in case of duplication.': 'in case of A で「A の場合には」。duplication は「（贈り物の）重なり」。',
+    },
+  }),
+  // 147
+  ls('[接 And] [M here] [S I] [V have] [M lamely] [V related] [M {前| to you}] [O the uneventful chronicle {前| of two foolish children {前| in a flat} {関係>two foolish children| [S who] [M most unwisely] [V sacrificed] [M {前| for each other}] [O the greatest treasures {前| of their house}]}}].', {
+    ja: 'さて、ここにわたしは、部屋を借りて暮らす二人のおろかな子どもたちの、何ということもない話を、へたなりにお話しした。二人は、自分たちの家のいちばんの宝物を、まことに賢くないやり方で、おたがいのためにぎせいにしてしまったのだった。',
+    chunks: [
+      ['And here I have lamely related', 'さて、ここにわたしは、へたなりにお話しした'],
+      ['to you the uneventful chronicle of two foolish children', 'みなさんに、二人のおろかな子どもたちの、何ということもない話を'],
+      ['in a flat who most unwisely sacrificed', '部屋を借りて暮らす（二人）で、まことに賢くないやり方でぎせいにした'],
+      ['for each other the greatest treasures of their house.', 'おたがいのために、家のいちばんの宝物を'],
+    ],
+    notes: {
+      'And here I have lamely related': 'have related は現在完了で「（今まで）語ってきた」。lamely は「へたに・ぎこちなく」。',
+      'to you the uneventful chronicle of two foolish children': 'relate A to B で「A を B に話す」で、ここでは to you が先に来ています。uneventful chronicle は「特に事件もない記録（話）」。',
+      'in a flat who most unwisely sacrificed': 'who は two foolish children を説明する関係代名詞です。most unwisely は「まことに賢くないやり方で」。',
+      'for each other the greatest treasures of their house.': 'sacrifice A for B で「B のために A をぎせいにする」。',
+    },
+  }),
+  // 148
+  ls('[接 But] [M {前| in a last word {前| to the wise {前| of these days}}}] [V let] [仮O it] [C {原形| [V be said]}] [真O {that節| [接 that] [M {前| of all {関係>all| [S who] [V give] [O gifts]}}] [S these two] [V were] [C the wisest]}].', {
+    ja: 'けれども、今の世の賢い人たちに、最後にひとこと言っておこう。贈り物をする人たちのうちで、この二人こそ、いちばん賢かったのだ、と。',
+    chunks: [
+      ['But in a last word to the wise of these days', 'けれども、今の世の賢い人たちへの最後のひとことで'],
+      ['let it be said that', 'こう言わせてもらおう'],
+      ['of all who give gifts these two were the wisest.', '贈り物をする人すべてのうちで、この二人がいちばん賢かったと'],
+    ],
+    notes: {
+      'But in a last word to the wise of these days': 'a last word は「最後のひとこと」。the wise は「賢い人たち」（the＋形容詞）。of these days は「今の時代の」。',
+      'let it be said that': 'let it be said that … で「…と言わせてもらおう」。it は形式目的語で、中身は that 以下です。',
+      'of all who give gifts these two were the wisest.': 'of all who give gifts は「贈り物をする人すべてのうちで」。the wisest は「いちばん賢い」。',
+    },
+  }),
+  // 149
+  ls('[M {前| Of all {関係>all| [S who] [V give] [接 and] [V receive] [O gifts]}}], [S {成句| such as they}] [V are] [C wisest].', {
+    ja: '贈り物をしたり、もらったりする人たちのうちで、こういう人たちこそ、いちばん賢いのだ。',
+    chunks: [
+      ['Of all who give and receive gifts, such as they are wisest.', '贈り物をしたりもらったりする人のうちで、こういう人たちがいちばん賢い'],
+    ],
+    notes: {
+      'Of all who give and receive gifts, such as they are wisest.': 'Of all who … は「…する人すべてのうちで」。such as they は「彼らのような人たち」。wisest は最上級で、ここでは the が省かれています。',
+    },
+  }),
+  // 150
+  ls('[M Everywhere] [S they] [V are] [C wisest].', {
+    ja: 'どこにいようと、この人たちがいちばん賢い。',
+    chunks: [
+      ['Everywhere they are wisest.', 'どこでも、この人たちがいちばん賢い'],
+    ],
+    notes: {
+      'Everywhere they are wisest.': 'everywhere は「どこでも」。同じ wisest をくり返して、強く言い切っています。',
+    },
+  }),
+  // 151
+  ls('[S They] [V are] [C the magi].', {
+    ja: 'この人たちこそ、東方の三博士なのだ。',
+    chunks: [
+      ['They are the magi.', 'この人たちこそ、東方の三博士なのだ'],
+    ],
+    notes: {
+      'They are the magi.': 'the magi（東方の三博士）は、賢い贈り物の元祖です。自分のいちばんの宝物を手放して相手に贈った二人こそ、本当の賢者だ、と物語は結ばれます。',
+    },
+  }),
 ])
