@@ -5,6 +5,7 @@ import {
   literatureCompletionCount,
   literatureWordCount,
 } from '../data/public-domain-literature.js'
+import { literatureParagraphs, literatureSentences } from '../data/literature-sentences.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Chip, cx } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
@@ -62,7 +63,9 @@ export function LiteratureLibraryScreen() {
                 一息ずつ、原文と訳を往復
               </h1>
               <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">
-                英語は英語→対応する日本語、古典は古文→現代語訳、漢文は原文を見ながら書き下し→現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
+                {'英語は英語→対応する日本語、古典は古文→現代語訳、漢文は原文を見ながら書き下し→現代語訳。'}
+                {'朗読で間を置くまとまりごとに交互に読み上げます。'}
+                {'本文は全文で読め、分からない文を押すと、その文の解説が開きます。'}
               </p>
             </div>
           </div>
@@ -153,7 +156,7 @@ export function LiteratureLibraryScreen() {
 
                   <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-ink/5 pt-3 text-[11px] font-extrabold text-ink/40">
                     <span>{work.authorJa}（{work.authorYears}）</span>
-                    <span>{work.scenes.length}場面</span>
+                    <span>{literatureParagraphs(work).length}段落・{literatureSentences(work).length}文</span>
                     {work.kind === 'english' && <span>原文 {literatureWordCount(work)}語</span>}
                   </div>
                 </button>

@@ -10,6 +10,7 @@ export const READING_ROLE_CODES = Object.freeze([
   'M',
   'LINK',
   'IND',
+  'INS',
   'S_FORMAL',
   'S_REAL',
   'O_FORMAL',
@@ -20,12 +21,14 @@ const READING_ROLE_CODE_SET = new Set(READING_ROLE_CODES)
 const ENGLISH_WORD_PATTERN = /[A-Za-z][A-Za-z'’\u2010-\u2015-]*/g
 
 // 主語と動詞の短縮形（it’s・I’ll など）は、構造台帳と同じく主語と動詞の2語に分けて数える。
+// 動詞と目的語の短縮形（keep’em＝keep them）も、動詞と目的語の2語に分ける。
 const VERB_CONTRACTION = /^(.+?)(['’])(ll|ve|re|m|d)$/i
 const IS_CONTRACTION = /^(it|that|there|here|he|she|what|who|where|how|let)(['’])(s)$/i
+const OBJECT_CONTRACTION = /^(.+?)(['’])(em)$/i
 
 function englishWordMatches(text = '') {
   return [...`${text}`.matchAll(ENGLISH_WORD_PATTERN)].flatMap((match) => {
-    const split = VERB_CONTRACTION.exec(match[0]) ?? IS_CONTRACTION.exec(match[0])
+    const split = VERB_CONTRACTION.exec(match[0]) ?? IS_CONTRACTION.exec(match[0]) ?? OBJECT_CONTRACTION.exec(match[0])
     if (!split) return [match]
     const head = Object.assign([split[1]], { index: match.index })
     const tail = Object.assign([split[3]], { index: (match.index ?? 0) + split[1].length + split[2].length })

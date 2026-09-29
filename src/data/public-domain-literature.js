@@ -1,17 +1,15 @@
-// 著作権保護期間が満了した原文を、短い場面ごとに原文→訳で味わう朗読教材。
+// 著作権保護期間が満了した原文を、全文で読み、分からない文を押して解説を開く名作教材。
+// 朗読は、息継ぎする短い区切りごとに原文→訳で読み上げる。
 //
-// original は出典に照らした原文、speech は古文を端末音声で読みやすくするための
-// 読み仮名、translation / guide は本アプリ独自の現代語訳・読解案内。
+// 英語は文ごとの構造台帳（literature-structures/）が本文・和訳・朗読の区切りの正本で、段落を場面にする。
+// 古典・漢文は scenes（朗読の場面）と区切り（literature-narration-segments.js）を持ち、
+// 文ごとの解説は literature-classics-notes.js にある。original は出典に照らした原文、speech は
+// 端末音声で読みやすくするための読み、translation は本アプリ独自の現代語訳。
 // 既存の長文・古典IDとは別名前空間にして、保存済み進捗との衝突を避ける。
 
 import { LITERATURE_NARRATION_SEGMENTS } from './literature-narration-segments.js'
 import { parseKanbunMarkedText } from '../lib/kanbun-marks.js'
 import { englishLiteratureWordIds } from './literature-vocabulary.js'
-import { LITERATURE_FULL_TEXT } from './literature-full-text/index.js'
-import {
-  LITERATURE_SCENE_TRANSLATION_OVERRIDES,
-  LITERATURE_SEGMENT_TRANSLATION_OVERRIDES,
-} from './literature-full-text/translation-review.js'
 import { tokenize } from '../lib/text.js'
 import { LITERATURE_SENTENCE_STRUCTURES } from './literature-structures/index.js'
 
@@ -95,72 +93,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'Herman Melville',
     authorJa: 'ハーマン・メルヴィル',
     authorYears: '1819–1891',
-    excerpt: 'Chapter 1: Loomings・海へ引かれる人々',
+    excerpt: 'Chapter 1: Loomings・第1章全文',
     emoji: '🐋',
     blurb: '島の町マンハッタンで、人々がなぜか水辺へ集まる姿から、海が人を引きつける力を描く場面。',
     focus: '場所を先に出す倒置と反復を追い、人々の視線が海へ集まる理由を考える',
-    wordIds: [
-      'surround',
-      'extreme',
-      'previous',
-      'crowd',
-      'silent',
-      'mortal',
-      'fix',
-      'content',
-      'limit',
-      'attract',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1819–1891', '1851年'),
     source: source(
       'Project Gutenberg eBook #2701',
       'https://www.gutenberg.org/ebooks/2701',
-      '2026-08-22',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'There now is your insular city of the Manhattoes, belted round by wharves as Indian isles by coral reefs—commerce surrounds it with her surf.',
-        'そこに、島の町マンハッタンがあります。インド諸島が珊瑚礁に縁取られるように波止場に囲まれ、商業の波が町を取り巻いています。',
-        '都市を「島」として見せ、波止場を珊瑚礁、商業を打ち寄せる波にたとえています。',
-      ),
-      scene(
-        'Right and left, the streets take you waterward. Its extreme downtown is the battery, where that noble mole is washed by waves, and cooled by breezes, which a few hours previous were out of sight of land. Look at the crowds of water-gazers there.',
-        '右へ行っても左へ行っても、通りはあなたを水辺へ導きます。町の最南端は砲台のある岬で、立派な防波堤が波に洗われ、数時間前には陸から見えなかった風に冷やされています。そこに集まる、水を見つめる人々を見てください。',
-        'take you waterward から Look at ... まで、読者の視線を通り、岬、人の群れへ順に動かします。',
-      ),
-      scene(
-        'Circumambulate the city of a dreamy Sabbath afternoon. Go from Corlears Hook to Coenties Slip, and from thence, by Whitehall, northward. What do you see?—Posted like silent sentinels all around the town, stand thousands upon thousands of mortal men fixed in ocean reveries.',
-        '夢見るような安息日の午後に、町をぐるりと歩いてみてください。コーリアーズ・フックからコエンティーズ・スリップへ、そこからホワイトホールを通って北へ進みます。何が見えるでしょう。町のあちこちに静かな見張り番のように立ち、海の物思いに心を奪われた何千何万もの人々です。',
-        '命令文で読者を歩かせたあと、Posted ... を先に出す倒置で、立ち並ぶ人々を一気に見せます。',
-      ),
-      scene(
-        'Some leaning against the spiles; some seated upon the pier-heads; some looking over the bulwarks of ships from China; some high aloft in the rigging, as if striving to get a still better seaward peep.',
-        'ある者は杭にもたれ、ある者は桟橋の先に腰掛け、ある者は中国から来た船の舷側越しに眺め、ある者は帆柱の綱具の高い所にいて、もっとよく海をのぞこうとしているかのようです。',
-        'Some ... を四度重ねます。動作と居場所は違っても、全員の視線が海へ向く構図です。',
-      ),
-      scene(
-        'But these are all landsmen; of week days pent up in lath and plaster—tied to counters, nailed to benches, clinched to desks. How then is this? Are the green fields gone? What do they here?',
-        'しかし、彼らはみな陸で暮らす人々です。平日には木ずりとしっくいの建物に閉じ込められ、売り台につながれ、作業台に釘付けにされ、机に留められています。それなのに、これはどういうことでしょう。緑の野原は消えたのでしょうか。彼らはここで何をしているのでしょう。',
-        'tied、nailed、clinched は仕事に拘束される比喩です。続く三つの疑問が、水辺へ来た理由を問い直します。',
-      ),
-      scene(
-        'But look! here come more crowds, pacing straight for the water, and seemingly bound for a dive. Strange! Nothing will content them but the extremest limit of the land; loitering under the shady lee of yonder warehouses will not suffice. No.',
-        'しかし見てください。さらに多くの人々が、水へ向かってまっすぐ歩き、今にも飛び込みそうにやって来ます。不思議なことです。陸のいちばん端でなければ、彼らは満足しません。向こうの倉庫の風下の日陰でぶらぶらするだけでは足りないのです。決して。',
-        'look と here come の倒置で新しい群衆を登場させ、Nothing ... but で「陸の端だけ」を強調します。',
-      ),
-      scene(
-        'They must get just as nigh the water as they possibly can without falling in. And there they stand—miles of them—leagues. Inlanders all, they come from lanes and alleys, streets and avenues—north, east, south, and west. Yet here they all unite.',
-        '彼らは水に落ちないぎりぎりまで、できるだけ水へ近づかずにはいられません。そしてそこに、何マイルも、何リーグも続くほど立っています。みな内陸の人なのに、小道や路地、通りや大通りから、北、東、南、西のあらゆる方角からやって来ます。それでも、ここで全員が一つになります。',
-        '方角と道の列挙を Yet here they all unite が受けます。ばらばらの出発点が一つの水辺へ収束します。',
-      ),
-      scene(
-        'Tell me, does the magnetic virtue of the needles of the compasses of all those ships attract them thither?',
-        '教えてください。あのすべての船の羅針盤の針が持つ磁力が、彼らをそこへ引き寄せるのでしょうか。',
-        '羅針盤の磁力を、人を海へ引く不思議な力に重ねた問いです。答えを言わず、次の思索へつなぎます。',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'chapter',
+      label: '第1章全文',
+      sourceUnit: 'Chapter 1: Loomings',
+      complete: true,
+      sourceWordCount: 2237,
+      maxWordTarget: 5000,
+      limitNote: '長編のため、5,000語以内で完結する第1章を全文収録',
+      startMarker: 'Call me Ishmael. Some years ago — never mind how long precisely — having little ',
+      endMarker: 'ions of the whale, and, mid most of them all, one grand hooded phantom, like a snow hill in the air.',
+      sourceSha256: '63b5820f4cbf86855bcba35dd01f473264bee6ea2e3b639b12c05981f09094b2',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -173,73 +130,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'Jane Austen',
     authorJa: 'ジェイン・オースティン',
     authorYears: '1775–1817',
-    excerpt: 'Chapter 1・ネザーフィールドの知らせ',
+    excerpt: 'Chapter 1・第1章全文',
     emoji: '🏡',
     blurb: '裕福な独身男性が近所へ来るという知らせをめぐり、ベネット夫妻の考え方の違いが会話に表れる冒頭。',
     focus: '皮肉な語りと会話の応酬から、語り手と夫妻それぞれの見方を区別する',
-    wordIds: [
-      'truth',
-      'acknowledge',
-      'possession',
-      'fortune',
-      'feeling',
-      'view',
-      'neighborhood',
-      'surround',
-      'reply',
-      'objection',
-      'invitation',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1775–1817', '1813年'),
     source: source(
       'Project Gutenberg eBook #1342',
       'https://www.gutenberg.org/ebooks/1342',
-      '2026-08-22',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.',
-        '十分な財産を持つ独身男性は妻を求めているに違いない――これは世間一般に認められた真理です。',
-        '断定的な truth で始まりますが、実際には周囲の家族の期待を皮肉に語る有名な一文です。',
-      ),
-      scene(
-        'However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters.',
-        'その男性が近所へ来たばかりで、本人の気持ちや考えがほとんど知られていなくても、この「真理」は周囲の家族の心に固く根づいています。そのため彼は、どこかの家の娘が当然手に入れるべき相手だと見なされます。',
-        'However little ... may be が譲歩を作り、so ... that ... が家族の思い込みの強さと結果を示します。',
-      ),
-      scene(
-        '“My dear Mr. Bennet,” said his lady to him one day, “have you heard that Netherfield Park is let at last?”',
-        '「あなた、ベネットさん」と、ある日夫人が夫に言いました。「ネザーフィールド・パークがとうとう貸し出されたって、聞きました？」',
-        '引用の途中に said his lady to him one day が入ります。後半の現在完了が、新しい知らせを持ち出します。',
-      ),
-      scene(
-        'Mr. Bennet replied that he had not. “But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.”',
-        'ベネット氏は、聞いていないと答えました。「でも本当なのよ」と夫人は返しました。「ロング夫人がたった今ここへ来て、全部教えてくれたの。」',
-        'that he had not では heard が省略されています。夫人は for 以下で、知らせが確かな理由をすぐに加えます。',
-      ),
-      scene(
-        'Mr. Bennet made no answer. “Do you not want to know who has taken it?” cried his wife impatiently. “You want to tell me, and I have no objection to hearing it.”',
-        'ベネット氏は答えませんでした。「誰が借りたのか知りたくないの？」と妻はいらだって叫びました。「君が話したいんだろう。私は聞くことに反対はしないよ。」',
-        '妻の Do you not want ... に対し、夫は主語を you に置き換えます。短いやり取りだけで二人の性格が見えます。',
-      ),
-      scene(
-        'This was invitation enough. “Why, my dear, you must know, Mrs. Long says that Netherfield is taken by a young man of large fortune from the north of England; that he came down on Monday in a chaise and four to see the place, and was so much delighted with it, that he agreed with Mr. Morris immediately; that he is to take possession before Michaelmas, and some of his servants are to be in the house by the end of next week.”',
-        'それだけで話し始めるには十分でした。「ねえ、あなた。ロング夫人によると、ネザーフィールドを借りたのはイングランド北部から来た大金持ちの若者ですって。月曜日に四頭立ての馬車で屋敷を見に来て、とても気に入ったので、その場でモリスさんと契約したそうよ。ミカエル祭の前には入居し、来週末までには使用人の一部が屋敷へ入るんですって。」',
-        'Mrs. Long says の内容を三つの that 節で連ねます。夫人が集めた情報の多さと話す勢いが長文に表れます。',
-      ),
-      scene(
-        '“What is his name?” “Bingley.” “Is he married or single?”',
-        '「名前は？」「ビングリーよ。」「結婚しているのか、それとも独身なのか？」',
-        '短い質問と一語の答えが続きます。氏名の次に marital status を尋ねることで、夫も話の狙いを見抜いています。',
-      ),
-      scene(
-        '“Oh! Single, my dear, to be sure! A single man of large fortune; four or five thousand a year. What a fine thing for our girls!”',
-        '「まあ、もちろん独身よ、あなた！ 財産のある独身男性で、年収は四千か五千ポンド。うちの娘たちにとって、なんてすばらしいことでしょう！」',
-        'Single と財産・年収を畳みかけ、最後の our girls で夫人が最初から娘たちの結婚を考えていたと分かります。',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'chapter',
+      label: '第1章全文',
+      sourceUnit: 'Chapter I',
+      complete: true,
+      sourceWordCount: 853,
+      maxWordTarget: 5000,
+      limitNote: '長編のため、5,000語以内で完結する第1章を全文収録',
+      startMarker: 'It is a truth universally acknowledged, that a single man in possession of a goo',
+      endMarker: 'ervous. The business of her life was to get her daughters married: its solace was visiting and news.',
+      sourceSha256: 'd856fe2e6f1c93d3a7f506efcfc643c2b12a7d9aaa61e5e9867d1494f47fd09f',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -252,58 +167,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'Charles Dickens',
     authorJa: 'チャールズ・ディケンズ',
     authorYears: '1812–1870',
-    excerpt: 'Book the First, Chapter I・時代',
+    excerpt: 'Book the First, Chapter I・第1章全文',
     emoji: '⏳',
     blurb: '相反する言葉を繰り返し、革命前夜のイギリスとフランスが抱えた矛盾を大きく映し出す冒頭。',
     focus: '対照表現と反復のリズムをつかみ、「一つに決められない時代像」を読む',
-    wordIds: [
-      'wisdom',
-      'foolishness',
-      'epoch',
-      'belief',
-      'darkness',
-      'despair',
-      'period',
-      'authority',
-      'insist',
-      'comparison',
-      'spiritual',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1812–1870', '1859年'),
     source: source(
       'Project Gutenberg eBook #98',
       'https://www.gutenberg.org/ebooks/98',
-      '2026-08-22',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way—in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.',
-        'それは最良の時代であり、最悪の時代でした。知恵の時代であり、愚かさの時代、信じる時代であり、疑う時代、光の季節であり、闇の季節、希望の春であり、絶望の冬でした。私たちの前にはすべてがあり、同時に何もありませんでした。私たちはみな天国へまっすぐ向かい、同時にその反対へ向かっていました。要するに、その時代は今の時代とよく似ていて、声の大きな論者たちは、良いにせよ悪いにせよ、最上級だけで評価するよう強く求めたのです。',
-        'It was ... の反復に正反対の語を重ね、最後は so ... that ... で、最上級だけで時代を語る態度そのものを皮肉ります。',
-      ),
-      scene(
-        'There were a king with a large jaw and a queen with a plain face, on the throne of England; there were a king with a large jaw and a queen with a fair face, on the throne of France.',
-        'イングランドの王座には大きなあごの王と地味な顔の王妃がいました。フランスの王座には大きなあごの王と美しい顔の王妃がいました。',
-        'There were ... を二国で反復します。似た王を置き、王妃の描写だけを変えて二つの国を並べます。',
-      ),
-      scene(
-        'In both countries it was clearer than crystal to the lords of the State preserves of loaves and fishes, that things in general were settled for ever.',
-        'どちらの国でも、国家というパンと魚の保護区を支配する人々には、世の中は全体として永久に安定していることが、水晶より明らかに思えました。',
-        'clearer than crystal は強い比較です。権力者には現状が永遠に続くように見えた、という後の変化を予告します。',
-      ),
-      scene(
-        'It was the year of Our Lord one thousand seven hundred and seventy-five.',
-        '時は西暦1775年でした。',
-        '反復的な時代描写のあと、具体的な1775年を示し、革命前の歴史的な時間へ焦点を合わせます。',
-      ),
-      scene(
-        'Spiritual revelations were conceded to England at that favoured period, as at this. Mrs. Southcott had recently attained her five-and-twentieth blessed birthday, of whom a prophetic private in the Life Guards had heralded the sublime appearance by announcing that arrangements were made for the swallowing up of London and Westminster.',
-        'その恵まれた時代のイングランドでは、今と同じように霊的なお告げも認められていました。サウスコット夫人は少し前に25歳の誕生日を迎えたとされ、近衛騎兵隊の予言好きな一兵卒は、ロンドンとウェストミンスターがのみ込まれる手はずが整ったと告げて、彼女の崇高な登場を予告していました。',
-        'as at this で作者の時代にも重ねます。大げさな予言を具体例にし、「信じる時代」の熱狂を皮肉に描きます。',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'chapter',
+      label: '第1章全文',
+      sourceUnit: 'Book the First, Chapter I: The Period',
+      complete: true,
+      sourceWordCount: 1015,
+      maxWordTarget: 5000,
+      limitNote: '長編のため、5,000語以内で完結する第1章を全文収録',
+      startMarker: 'It was the best of times, it was the worst of times, it was the age of wisdom, i',
+      endMarker: 'l creatures — the creatures of this chronicle among the rest — along the roads that lay before them.',
+      sourceSha256: '36c18eaad0a58a76426407cef9698deb40a3717204abb38ac61b4458e66403b1',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -316,65 +204,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'Lewis Carroll',
     authorJa: 'ルイス・キャロル',
     authorYears: '1832–1898',
-    excerpt: 'Chapter I: Down the Rabbit-Hole 冒頭',
+    excerpt: 'Chapter I: Down the Rabbit-Hole・第1章全文',
     emoji: '🐇',
     blurb: '退屈な午後、時計を持つ白ウサギが日常の景色を一変させる場面。',
     focus: '長い一文の流れと、アリスの好奇心を追う',
-    wordIds: [
-      'bank',
-      'conversation',
-      'rabbit',
-      'field',
-      'remarkable',
-      'curiosity',
-      'pocket',
-      'natural',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1832–1898', '1865年'),
     source: source(
       'Project Gutenberg eBook #11',
       'https://www.gutenberg.org/ebooks/11',
-      '2026-07-29',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do.',
-        'アリスは、川岸でお姉さんのそばに座り、何もすることがないのに、だんだんうんざりしてきました。',
-        'begin to は「し始める」。of sitting と of having が並び、退屈の理由を二つ重ねています。',
-      ),
-      scene(
-        'Once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.',
-        '一度か二度、お姉さんが読んでいる本をのぞいてみましたが、その本には絵も会話もありませんでした。',
-        'had peeped は、その時までに「ちらっとのぞいてみた」ことを表します。',
-      ),
-      scene(
-        '“And what is the use of a book,” thought Alice, “without pictures or conversations?”',
-        '「絵も会話もない本なんて、いったい何の役に立つの？」とアリスは思いました。',
-        'What is the use of ...? は「…が何の役に立つのか」という不満をこめた問いです。',
-      ),
-      scene(
-        'There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “Oh dear! Oh dear! I shall be late!”',
-        'それだけなら、たいして不思議ではありません。ウサギが「たいへんだ、遅れちゃう！」と独り言を言っても、アリスはそれほど変だとは思いませんでした。',
-        'nor did Alice think ... は否定を前に出した倒置。「アリスも…とは思わなかった」とつなぎます。',
-      ),
-      scene(
-        'But when the Rabbit actually took a watch out of its waistcoat-pocket, and looked at it, and then hurried on, Alice started to her feet.',
-        'けれども、そのウサギが本当にチョッキのポケットから時計を取り出し、時刻を見て、急いで行ってしまうと、アリスはぱっと立ち上がりました。',
-        'took, looked, hurried と動作が連続し、started to her feet で場面が一気に動きます。',
-      ),
-      scene(
-        'Burning with curiosity, she ran across the field after it, and was just in time to see it pop down a large rabbit-hole under the hedge.',
-        '好奇心でいっぱいになったアリスは、ウサギを追って野原を走り、ちょうど生け垣の下の大きな穴へ飛び込むところを目にしました。',
-        'Burning with curiosity は「好奇心に燃えて」。was just in time to は「ちょうど間に合って…した」です。',
-      ),
-      scene(
-        'In another moment down went Alice after it, never once considering how in the world she was to get out again.',
-        '次の瞬間、アリスもそのあとを追って穴の中へ。どうやって外へ戻るのかなど、一度も考えませんでした。',
-        'down went Alice は語順を入れ替え、落下の勢いを先に聞かせる表現です。',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'chapter',
+      label: '第1章全文',
+      sourceUnit: 'Chapter I: Down the Rabbit-Hole',
+      complete: true,
+      sourceWordCount: 2162,
+      maxWordTarget: 5000,
+      limitNote: '長編のため、5,000語以内で完結する第1章を全文収録',
+      startMarker: 'Alice was beginning to get very tired of sitting by her sister on the bank, and ',
+      endMarker: 'stupid for life to go on in the common way. So she set to work, and very soon finished off the cake.',
+      sourceSha256: 'd372af777f1f642fdfebfae6eee4aab8158ab8dc838eca2048bd65fa1583eb34',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -387,70 +241,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'Oscar Wilde',
     authorJa: 'オスカー・ワイルド',
     authorYears: '1854–1900',
-    excerpt: '物語冒頭・黄金の像',
+    excerpt: 'The Happy Prince・短編全文',
     emoji: '👑',
     blurb: '町を見下ろす美しい王子の像を、人々がそれぞれの価値観で語る場面。',
     focus: '描写と会話から、見た目と本当の価値のずれを読む',
-    wordIds: [
-      'column',
-      'statue',
-      'prince',
-      'admire',
-      'reputation',
-      'sensible',
-      'practical',
-      'dream',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1854–1900', '1888年'),
     source: source(
       'Project Gutenberg eBook #902',
       'https://www.gutenberg.org/ebooks/902',
-      '2026-07-29',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'High above the city, on a tall column, stood the statue of the Happy Prince.',
-        '町のはるか高いところ、背の高い柱の上に、幸福な王子の像が立っていました。',
-        '場所を先に置いた倒置で、読者の視線を町から高い柱へ持ち上げています。',
-      ),
-      scene(
-        'He was gilded all over with thin leaves of fine gold, for eyes he had two bright sapphires, and a large red ruby glowed on his sword-hilt.',
-        '像の全身は薄い純金の葉でおおわれ、両目には明るく輝く二つのサファイア、剣の柄には大きな赤いルビーが光っていました。',
-        '三つの装飾を順に並べ、王子がどれほど豪華に見えるかを映像のように描きます。',
-      ),
-      scene(
-        'He was very much admired indeed.',
-        '王子の像は、ほんとうに大勢の人からほめたたえられていました。',
-        'was admired は受け身。「人々が像を称賛した」を像の側から描いています。',
-      ),
-      scene(
-        '“He is as beautiful as a weathercock,” remarked one of the Town Councillors who wished to gain a reputation for having artistic tastes.',
-        '「風見鶏と同じくらい美しい」と、芸術の趣味があると思われたがっている町会議員の一人が評しました。',
-        'who wished ... は議員を説明し、ほめ言葉の裏にある見栄まで見せています。',
-      ),
-      scene(
-        '“Only not quite so useful,” he added, fearing lest people should think him unpractical.',
-        '「ただし、風見鶏ほど役には立たないがね」と彼は付け足しました。自分が現実離れした人間だと思われるのを恐れたのです。',
-        'lest ... should は「…するといけないので」。発言よりも世間の評価を気にしています。',
-      ),
-      scene(
-        '“Why can’t you be like the Happy Prince?” asked a sensible mother of her little boy who was crying for the moon.',
-        '「どうして幸福な王子のようにできないの？」と、月が欲しいと泣く幼い息子に、分別のある母親が尋ねました。',
-        'cry for the moon は、文字どおりの場面と「手に入らない物を望む」という響きを重ねます。',
-      ),
-      scene(
-        '“The Happy Prince never dreams of crying for anything.”',
-        '「幸福な王子は、何かを欲しがって泣こうなんて、夢にも思わないのよ。」',
-        'never dreams of ... は「…など夢にも思わない」。母親は像の外見だけを見ています。',
-      ),
-      scene(
-        '“I am glad there is some one in the world who is quite happy,” muttered a disappointed man as he gazed at the wonderful statue.',
-        '「この世界に、心から幸せな者が一人でもいるのはうれしいことだ」と、失望した男が見事な像を眺めながらつぶやきました。',
-        '読者はまだ王子の心を知りません。題名と外見だけで「幸福だ」と決める人々の見方が重なっていきます。',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'story',
+      label: '短編全文',
+      sourceUnit: 'The Happy Prince',
+      complete: true,
+      sourceWordCount: 3499,
+      maxWordTarget: 5000,
+      limitNote: '短編集のうち、5,000語以内で完結する表題作を全文収録',
+      startMarker: 'HIGH above the city, on a tall column, stood the statue of the Happy Prince. He ',
+      endMarker: ' this little bird shall sing for evermore, and in my city of gold the Happy Prince shall praise me.”',
+      sourceSha256: '6cb9a50e99700abb4a285fceb9cae02c17bd3064ee0c81491315ae0f6dd4a253',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -463,73 +278,31 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     author: 'O. Henry',
     authorJa: 'O・ヘンリー',
     authorYears: '1862–1910',
-    excerpt: '物語冒頭・1ドル87セント',
+    excerpt: 'The Gift of the Magi・短編全文',
     emoji: '🎁',
     blurb: 'クリスマス前日、デラが手元の小銭を数える印象的な導入。',
     focus: '短文の反復とユーモアから、貧しさと愛情を感じ取る',
-    wordIds: [
-      'dollar',
-      'save',
-      'vegetable',
-      'cheek',
-      'silent',
-      'deal',
-      'shabby',
-      'moral',
-      'sob',
-      'gradually',
-    ],
     kotenWordIds: [],
     grammarIds: [],
     rights: englishRights('1862–1910', '1905年'),
     source: source(
       'Project Gutenberg eBook #7256',
       'https://www.gutenberg.org/ebooks/7256',
-      '2026-07-29',
+      '2026-08-27',
     ),
-    scenes: Object.freeze([
-      scene(
-        'One dollar and eighty-seven cents. That was all.',
-        '1ドル87セント。それが、すべてでした。',
-        '極端に短い二文で金額を刻み、デラの切迫した状況を最初に突きつけます。',
-      ),
-      scene(
-        'And sixty cents of it was in pennies.',
-        'しかも、そのうち60セントは、1セント硬貨でたまったものでした。',
-        'And を文頭に置き、「そのうえ小銭ばかり」という苦しさを重ねています。',
-      ),
-      scene(
-        'Pennies saved one and two at a time by bulldozing the grocer and the vegetable man and the butcher until one’s cheeks burned with the silent imputation of parsimony that such close dealing implied.',
-        '食料品店や八百屋や肉屋で、一度に1セント、2セントと値切って貯めた小銭です。そんな細かな値切りが「けちだ」と無言で責めているようで、頬が熱くなるほどでした。',
-        '長い一文は「どう貯めたか」から「その時の恥ずかしさ」へ進みます。parsimony は行き過ぎた倹約です。',
-      ),
-      scene(
-        'Three times Della counted it. One dollar and eighty-seven cents. And the next day would be Christmas.',
-        'デラは三度、そのお金を数えました。1ドル87セント。そして翌日はクリスマスでした。',
-        '金額の反復のあとに Christmas を置き、贈り物を買いたい気持ちとの落差を強めています。',
-      ),
-      scene(
-        'There was clearly nothing to do but flop down on the shabby little couch and howl. So Della did it.',
-        'できることといえば、みすぼらしい小さな長椅子に倒れ込み、声をあげて泣くことだけでした。だからデラは、そうしました。',
-        'nothing to do but ... は「…するほかない」。So Della did it. の短さに語り手のユーモアがあります。',
-      ),
-      scene(
-        'Which instigates the moral reflection that life is made up of sobs, sniffles, and smiles, with sniffles predominating.',
-        'ここで、人生はむせび泣きと鼻をすする音と笑顔からできていて、その中では鼻をすする音がいちばん多い、という教訓めいた考えが浮かびます。',
-        'sobs, sniffles, smiles の頭韻を生かした語り。深刻さの中へ、少しおかしみを差し込みます。',
-      ),
-      scene(
-        'While the mistress of the home is gradually subsiding from the first stage to the second, take a look at the home.',
-        '家の女主人が、激しく泣く第一段階から鼻をすする第二段階へ少しずつ落ち着くあいだに、その住まいを見てみましょう。',
-        '語り手が読者へ直接呼びかけ、泣くデラから部屋の描写へカメラを切り替えます。',
-      ),
-      scene(
-        'A furnished flat at $8 per week.',
-        '家具付きで、週8ドルのアパートでした。',
-        '動詞を省いた一文が、部屋の簡素さと生活の厳しさを端的に示します。',
-        'A furnished flat at eight dollars per week.',
-      ),
-    ]),
+    coverage: Object.freeze({
+      unitType: 'story',
+      label: '短編全文',
+      sourceUnit: 'The Gift of the Magi',
+      complete: true,
+      sourceWordCount: 2071,
+      maxWordTarget: 5000,
+      limitNote: '短編集のうち、5,000語以内で完結する表題作を全文収録',
+      startMarker: 'One dollar and eighty-seven cents. That was all. And sixty cents of it was in pe',
+      endMarker: ' who give and receive gifts, such as they are wisest. Everywhere they are wisest. They are the magi.',
+      sourceSha256: '1912e0386e1ac11256d62ec17df9c0d6407e96a74891246b71bcd462ff5cb1a8',
+      checkedOn: '2026-08-27',
+    }),
   }),
 
   Object.freeze({
@@ -664,14 +437,14 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         'ごくらくじ、こうらなどをおがみて、かばかりとこころえて、かえりにけり。',
       ),
       scene(
-        'さて、かたへの人にあひて、「年ごろ思ひつること、果たし侍りぬ。聞きしにも過ぎて、尊くこそおはしけれ。」',
-        'そして仲間に会い、「長年願っていたことを果たしました。うわさに聞いていた以上に、ほんとうに尊い所でしたよ」と話しました。',
+        'さて、かたへの人にあひて、「年ごろ思ひつること、果たし侍りぬ。聞きしにも過ぎて、尊くこそおはしけれ。',
+        'そして仲間に会い、こう話しました。「長年願っていたことを果たしました。うわさに聞いていた以上に、ほんとうに尊い所でしたよ。',
         '「こそ…おはしけれ」は係り結び。「こそ」が強意となり、結びが已然形になります。',
         'さて、かたえのひとにあいて、としごろおもいつること、はたしはべりぬ。ききしにもすぎて、とうとくこそおわしけれ。',
       ),
       scene(
-        '「そも、参りたる人ごとに山へ登りしは、何事かありけむ。ゆかしかりしかど、神へ参るこそ本意なれと思ひて、山までは見ず」とぞ言ひける。',
-        '「それにしても、参拝した人がみな山へ登っていったのは、何があったのでしょう。知りたかったのですが、神様へ参ることこそ目的だと思って、山の上までは見ませんでした」と言いました。',
+        'そも、参りたる人ごとに山へ登りしは、何事かありけむ。ゆかしかりしかど、神へ参るこそ本意なれと思ひて、山までは見ず」とぞ言ひける。',
+        'それにしても、参拝した人がみな山へ登っていったのは、何があったのでしょう。知りたかったのですが、神様へ参ることこそ目的だと思って、山の上までは見ませんでした」と言いました。',
         '本殿はその山の上でした。「何事かありけむ」は、過去の理由を推量して「何があったのだろう」。',
         'そも、まいりたるひとごとにやまへのぼりしは、なにごとかありけん。ゆかしかりしかど、かみへまいるこそほいなれとおもいて、やままではみず、とぞいいける。',
       ),
@@ -818,20 +591,20 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     ),
     scenes: Object.freeze([
       scene(
-        '子曰：「學而時習之、不亦說乎？」',
-        '孔子先生は言いました。「学んだことを時に応じて繰り返し身につけるのは、なんとうれしいことではないか。」',
+        '子曰：「學而時習之、不亦說乎？',
+        '孔子先生は言いました。「学んだことを時に応じて繰り返し身につけるのは、なんとうれしいことではないか。',
         '「不亦…乎」は「なんと…ではないか」という反語。「說」はここでは「よろこぶ」という意味です。',
-        '子曰く、「学びて時にこれを習う、また喜ばしからずや。」',
-        '子曰ハク：「學ビテ而時ニ習フ㆑之ヲ、不㆓亦タ說バシカラ㆒乎？」',
-        '子曰はく、「学びて時に之を習ふ、亦た説ばしからずや。」',
+        '子曰く、「学びて時にこれを習う、また喜ばしからずや。',
+        '子曰ハク：「學ビテ而時ニ習フ㆑之ヲ、不㆓亦タ說バシカラ㆒乎？',
+        '子曰はく、「学びて時に之を習ふ、亦た説ばしからずや。',
       ),
       scene(
-        '有朋自遠方來、不亦樂乎？人不知而不慍、不亦君子乎？',
-        '同じ学びを志す友が遠くから訪ねて来るのは、なんと楽しいことではないか。人が自分を理解しなくても腹を立てないのは、なんと君子らしいことではないか。',
+        '有朋自遠方來、不亦樂乎？人不知而不慍、不亦君子乎？」',
+        '同じ学びを志す友が遠くから訪ねて来るのは、なんと楽しいことではないか。人が自分を理解しなくても腹を立てないのは、なんと君子らしいことではないか。」',
         '「不亦…乎」を二度重ねます。友に理解される喜びのあと、自分が理解されなくても怒らない心へ進みます。',
-        '朋あり遠方より来たる、また楽しからずや。人知らずしてうらみず、また君子ならずや。',
-        '有リ㆑朋自リ㆓遠方㆒來タル、不㆓亦タ樂シカラ㆒乎？人不シテ㆑知ラ而不㆑慍ミ、不㆓亦タ君子ナラ㆒乎？',
-        '朋有り遠方より来たる、亦た楽しからずや。人知らずして慍みず、亦た君子ならずや。',
+        '朋あり遠方より来たる、また楽しからずや。人知らずしてうらみず、また君子ならずや。」',
+        '有リ㆑朋自リ㆓遠方㆒來タル、不㆓亦タ樂シカラ㆒乎？人不シテ㆑知ラ而不㆑慍ミ、不㆓亦タ君子ナラ㆒乎？」',
+        '朋有り遠方より来たる、亦た楽しからずや。人知らずして慍みず、亦た君子ならずや。」',
       ),
       scene(
         '子曰：「溫故而知新、可以爲師矣。」',
@@ -853,7 +626,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '知之爲知之、不知爲不知、是知也。',
         '知っていることは知っているとし、知らないことは知らないとする。それが本当の「知る」ということです。',
         '同じ「知」を重ね、知らないことを正直に認める態度まで知性に含めています。',
-        'これを知るをこれを知るとなし、知らざるを知らずとなし、これ知るなり。',
+        'これを知るをこれを知るとなし、知らざるを知らずとなす、これ知るなり。',
         '知ルヲ㆑之ヲ爲シ㆑知ルト㆑之ヲ、不ルヲ㆑知ラ爲ス㆑不ト㆑知ラ、是レ知ル也。',
         '之を知るを之を知ると為し、知らざるを知らずと為す、是れ知るなり。',
       ),
@@ -900,12 +673,12 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     ),
     scenes: Object.freeze([
       scene(
-        '孟子對曰：「王好戰、請以戰喻。」',
-        '孟子は答えました。「王は戦いを好まれます。どうか、戦いを例にしてお話しさせてください。」',
+        '孟子對曰：「王好戰、請以戰喻。',
+        '孟子は答えました。「王は戦いを好まれます。どうか、戦いを例にしてお話しさせてください。',
         '「請ふ」は相手に許しを求める言い方。王の得意な戦いを使って説明を始めます。',
-        '孟子、答えて曰く、「王、戦いを好む。請う、戦いをもってたとえん。」',
-        '孟子對ヘテ曰ハク：「王好ム㆑戰ヒヲ、請フ以テ㆑戰ヒヲ喻ヘン。」',
-        '孟子対へて曰はく、「王戦ひを好む、請ふ戦ひを以て喩へん。」',
+        '孟子、答えて曰く、「王、戦いを好む。請う、戦いをもってたとえん。',
+        '孟子對ヘテ曰ハク：「王好ム㆑戰ヒヲ、請フ以テ㆑戰ヒヲ喻ヘン。',
+        '孟子対へて曰はく、「王戦ひを好む、請ふ戦ひを以て喩へん。',
       ),
       scene(
         '塡然鼓之、兵刃既接、棄甲曳兵而走。',
@@ -924,12 +697,12 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '或いは百歩にして後止まり、或いは五十歩にして後止まる。',
       ),
       scene(
-        '以五十步笑百步、則何如？',
-        '五十歩逃げた者が、百歩逃げた者を笑ったなら、どうでしょうか。',
+        '以五十步笑百步、則何如？」',
+        '五十歩逃げた者が、百歩逃げた者を笑ったなら、どうでしょうか。」',
         '「何如」は「どうであるか」。孟子は結論を先に言わず、王自身に判断させます。',
-        '五十歩をもって百歩を笑わば、すなわちいかん。',
-        '以テ㆓五十步ヲ㆒笑ハバ㆓百步ヲ㆒、則チ何如？',
-        '五十歩を以て百歩を笑はば、則ち何如。',
+        '五十歩をもって百歩を笑わば、すなわちいかん。」',
+        '以テ㆓五十步ヲ㆒笑ハバ㆓百步ヲ㆒、則チ何如？」',
+        '五十歩を以て百歩を笑はば、則ち何如。」',
       ),
       scene(
         '曰：「不可。直不百步耳、是亦走也。」',
@@ -943,7 +716,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '曰：「王如知此、則無望民之多於鄰國也。」',
         '孟子は言いました。「王がこのことをお分かりなら、民が隣国より多くなることを望んではなりません。」',
         '王の政治も隣国より少しましなだけで、本質は変わらないと、戦いのたとえを政治へ戻します。',
-        '曰く、「王もしこれを知らば、すなわち民の隣国より多からんことを望むなかれ。」',
+        '曰く、「王もしこれを知らば、すなわち民の隣国より多きを望むことなかれ。」',
         '曰ハク：「王如シ知ラバ㆑此ヲ、則チ無カレ㆑望ムコト㆔民之多キヲ㆓於鄰國ヨリ㆒也。」',
         '曰はく、「王如し此を知らば、則ち民の隣国より多きを望むこと無かれ。」',
       ),
@@ -996,7 +769,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '譽之曰：「吾楯之堅、物莫能陷也。」',
         'その人は楯をほめて言いました。「私の楯の堅さときたら、これを突き通せる物は何もない。」',
         '「莫能…」は「…できるものはない」。楯を例外のない最強の物として売り込みます。',
-        'これを誉めて曰く、「わが楯の堅きこと、物としてよく通すものなきなり。」',
+        'これを誉めて曰く、「わが楯の堅きこと、物のよく通すものなきなり。」',
         '譽メテ㆑之ヲ曰ハク：「吾ガ楯之堅キコト、物ノ莫キ㆓能ク陷スモノ㆒也。」',
         '之を誉めて曰はく、「吾が楯の堅きこと、物の能く陥すもの莫きなり。」',
       ),
@@ -1004,7 +777,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '又譽其矛曰：「吾矛之利、於物無不陷也。」',
         'また、その矛をほめて言いました。「私の矛の鋭さときたら、どんな物でも突き通さないことはない。」',
         '「無不…」は二重否定で「…しないものはない」。今度は矛にも例外がないと言います。',
-        'またその矛を誉めて曰く、「わが矛の鋭きこと、物において通さざるなきなり。」',
+        'またその矛を誉めて曰く、「わが矛のときこと、物において通さざるなきなり。」',
         '又譽メテ㆓其ノ矛ヲ㆒曰ハク：「吾ガ矛之利キコト、於イテ㆑物ニ無キ㆑不ル㆑陷サ也。」',
         '又其の矛を誉めて曰はく、「吾が矛の利きこと、物に於いて陥さざる無きなり。」',
       ),
@@ -1012,7 +785,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '或曰：「以子之矛、陷子之楯、何如？」',
         'ある人が言いました。「あなたの矛で、あなたの楯を突いたら、どうなるのですか。」',
         '二つの「例外なし」を同じ場面でぶつける質問です。「何如」で相手に結論を求めます。',
-        'あるひと曰く、「あなたの矛をもって、あなたの楯を通さば、いかん。」',
+        'あるひと曰く、「しの矛をもって、しの楯を通さば、いかん。」',
         '或ヒト曰ハク：「以テ㆓子之矛ヲ㆒、陷サバ㆓子之楯ヲ㆒、何如？」',
         '或ひと曰はく、「子の矛を以て、子の楯を陥さば、何如。」',
       ),
@@ -1020,7 +793,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '其人弗能應也。',
         'その人は、答えることができませんでした。',
         '「弗能…」は「…することができない」。短い一文で商人の主張が崩れます。',
-        'その人、こたうるあたわざるなり。',
+        'その人、こたうることあたわざるなり。',
         '其ノ人弗ル㆑能ハ㆑應フルコト也。',
         '其の人応ふること能はざるなり。',
       ),
@@ -1028,7 +801,7 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
         '夫不可陷之楯與無不陷之矛、不可同世而立。',
         'そもそも、突き通すことのできない楯と、何でも突き通す矛とは、同時にこの世に成り立つことができません。',
         '物語の結論です。互いに両立しない主張を並べたことから、現代の「矛盾」という語が生まれました。',
-        'それ通すべからざるの楯と、通さざるなきの矛とは、同じ世に立つべからず。',
+        'それ通すべからざるの楯と、通さざるなきの矛とは、世を同じくして立つべからず。',
         '夫レ不ル㆑可カラ㆑陷ス之楯ト與ハ㆓無キ㆑不ル㆑陷サ之矛㆒、不㆑可カラ㆓同ジクシテ㆑世ヲ而立ツ㆒。',
         '夫れ陥すべからざるの楯と陥さざる無きの矛とは、世を同じくして立つべからず。',
       ),
@@ -1104,15 +877,10 @@ function englishScenesFromLedger(entries) {
 export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
   BASE_PUBLIC_DOMAIN_LITERATURE.map((work) => {
     const ledger = work.kind === 'english' ? LITERATURE_SENTENCE_STRUCTURES[work.id] : null
-    const expanded = LITERATURE_FULL_TEXT[work.id]
-    const sourceScenes = ledger ? englishScenesFromLedger(ledger) : expanded?.scenes ?? work.scenes
+    const sourceScenes = ledger ? englishScenesFromLedger(ledger) : work.scenes ?? []
     const workWithSegments = {
       ...work,
-      excerpt: expanded?.excerpt ?? work.excerpt,
-      coverage: expanded?.coverage ?? LITERATURE_SELECTION_COVERAGE[work.id],
-      source: expanded
-        ? Object.freeze({ ...work.source, checkedOn: expanded.coverage.checkedOn })
-        : work.source,
+      coverage: work.coverage ?? LITERATURE_SELECTION_COVERAGE[work.id],
       kanbunVocabIds: work.kanbunVocabIds ?? [],
       scenes: Object.freeze(
         sourceScenes.map((item, sceneIndex) => {
@@ -1120,22 +888,10 @@ export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
             item.narrationSegments ??
             LITERATURE_NARRATION_SEGMENTS[work.id]?.[sceneIndex] ??
             Object.freeze([])
-          // 台帳から作った場面は、訳も台帳が正本なので、古い場面番号の訳の修正台帳を当てない。
-          const workOverrides = ledger ? null : LITERATURE_SEGMENT_TRANSLATION_OVERRIDES[work.id]
           return Object.freeze({
             ...item,
-            translation:
-              (ledger ? null : LITERATURE_SCENE_TRANSLATION_OVERRIDES[work.id]?.[sceneIndex + 1]) ??
-              item.translation,
             narrationSegments: Object.freeze(
-              withKanbunMarks(item.marked, segments).map((segment, segmentIndex) =>
-                Object.freeze({
-                  ...segment,
-                  translation:
-                    workOverrides?.[`${sceneIndex + 1}.${segmentIndex + 1}`] ??
-                    segment.translation,
-                }),
-              ),
+              withKanbunMarks(item.marked, segments).map((segment) => Object.freeze({ ...segment })),
             ),
           })
         }),

@@ -247,6 +247,9 @@ export default Object.freeze([
     },
   }),
   st('[S Responsible readers] [V are not] [C people {関係>people| [S who] [V doubt] [O everything]}]; [S they] [V are] [C people {関係>people| [S who] [V match] [O their confidence] [M {前| to the quality {前| of the evidence}}]}].', {
+    marks: [
+      [';', 'セミコロンで、「責任ある読み手は、何でも疑う人ではない」と否定したあと、本当はどんな人なのかを後ろで言い直します。'],
+    ],
     chunks: [
       ['Responsible readers are not people', '責任ある読み手とは、〜人ではありません（どんな人かは次へ）'],
       ['who doubt everything;', 'すべてを疑う（人では）'],

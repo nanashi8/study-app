@@ -6,10 +6,6 @@
 import { normalizeStructureText, parseSentenceStructure } from '../lib/reading-sentence-structure.js'
 import { LITERATURE_SENTENCE_STRUCTURES } from './literature-structures/index.js'
 import { LITERATURE_CLASSICS_NOTES } from './literature-classics-notes.js'
-import {
-  LITERATURE_ENGLISH_CONTEXT_GLOSS,
-  resolveLiteratureEnglishWord,
-} from './literature-vocabulary.js'
 
 const CACHE = new WeakMap()
 
@@ -231,17 +227,32 @@ export function literatureParagraphs(work) {
   return groups
 }
 
+// 長い1文を分けたとき、どこで分けたか（分けた部分どうしの境目の記号・語）。
+function partBreakLabel(before, after) {
+  const last = before.trim().slice(-1)
+  if (last === ';') return 'セミコロン（;）のところ'
+  if (last === ':') return 'コロン（:）のところ'
+  if (last === '—') return 'ダッシュ（—）のところ'
+  if (last === ')' || after.trim().startsWith('(')) return 'かっこに入った語りの前後'
+  const word = after.trim().match(/^[A-Za-z]+/)?.[0]
+  return word ? `${word} の前` : '区切りのところ'
+}
+
+// 分けた文の境目の説明（同じ説明はまとめる）。分けていない文は空。
+export function literaturePartBreaks(sentences, index) {
+  const sentence = sentences?.[index]
+  if (!sentence || sentence.partCount < 2) return []
+  const start = index - sentence.partIndex
+  const labels = []
+  for (let at = start; at < start + sentence.partCount - 1; at++) {
+    labels.push(partBreakLabel(sentences[at].text, sentences[at + 1].text))
+  }
+  return [...new Set(labels)]
+}
+
 // 朗読の区切り（場面番号・区切り番号）から、その区切りを含む文の番号を引く。
 export function literatureSentenceIndexForSegment(work, sceneIndex, segmentIndex) {
   return literatureSentences(work).findIndex((sentence) =>
     sentence.segments.some((segment) =>
       segment.sceneIndex === sceneIndex && segment.segmentIndex === segmentIndex))
-}
-
-// 英文の単語を押したときの意味。文が場面をまたぐときは、その語に場面ごとの語義がある場面を先に使う。
-export function resolveLiteratureSentenceWord(work, sentence, key) {
-  const glosses = LITERATURE_ENGLISH_CONTEXT_GLOSS[work?.id] ?? {}
-  const scenes = sentence?.sceneIndexes ?? [0]
-  const indexed = scenes.find((sceneIndex) => glosses[`${sceneIndex + 1}:${key}`])
-  return resolveLiteratureEnglishWord(key, { workId: work?.id, sceneIndex: indexed ?? scenes[0] })
 }

@@ -2178,8 +2178,8 @@ export function auditPhraseExplanations() {
     readingSentences.length === 990 &&
     longTargets.length === 33 &&
     PUBLIC_DOMAIN_LITERATURE.length === 12 &&
-    literatureSceneCount === 158 &&
-    literatureSegmentCount === 1632 &&
+    literatureSceneCount === 247 &&
+    literatureSegmentCount === 1725 &&
     readingMeaningMultiRoleCount > 0 &&
     longMeaningMultiRoleCount > 0 &&
     confirmedRuleCount === READING_PHRASE_RULES.length &&

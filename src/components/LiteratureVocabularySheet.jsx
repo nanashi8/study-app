@@ -38,8 +38,8 @@ function EntryMeta({ entry }) {
             : '共通辞書'}
       </span>
       {entry.occurrences > 1 && <span>{entry.occurrences}回出現</span>}
-      {entry.sceneNumbers?.length > 0 && (
-        <span>場面 {entry.sceneNumbers.join('・')}</span>
+      {entry.paragraphNumbers?.length > 0 && (
+        <span>段落 {entry.paragraphNumbers.join('・')}</span>
       )}
     </div>
   )
@@ -200,7 +200,7 @@ export function LiteratureVocabularySheet({
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="語・意味・場面を検索"
+                placeholder="語・意味を検索"
                 className="min-w-0 flex-1 bg-transparent py-3 text-sm font-bold text-ink outline-none placeholder:text-ink/30"
                 aria-label="本文語彙を検索"
               />
@@ -345,13 +345,13 @@ export function LiteratureVocabularySheet({
                       {card.meanings.join('・')}
                     </p>
                   </div>
-                  {card.firstSceneOriginal && (
+                  {card.firstSentenceOriginal && (
                     <div className="rounded-2xl bg-paper p-3 text-left">
                       <p lang="en" className="text-xs font-bold leading-relaxed text-ink">
-                        {card.firstSceneOriginal}
+                        {card.firstSentenceOriginal}
                       </p>
                       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                        {card.firstSceneTranslation}
+                        {card.firstSentenceTranslation}
                       </p>
                     </div>
                   )}

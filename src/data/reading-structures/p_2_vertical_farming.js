@@ -230,6 +230,9 @@ export default Object.freeze([
     },
   }),
   st('[S A fair study] [V compares] [O farms {関係>farms| [S that] [V produce] [O the same crop] [M {前| for the same {並列| season | and destination}}]}]; [S it] [V does not compare] [O one city farm] [M {前| with a distant average}].', {
+    marks: [
+      [';', 'セミコロンで、「公平な研究は同じ条件の農場どうしを比べる」ことと、その裏返しの「都市の農場一つを遠くの平均と比べることはしない」を並べます。'],
+    ],
     chunks: [
       ['A fair study compares farms', '公平な調べ方は、農場どうしを比べます（どんな農場かは次へ）'],
       ['that produce the same crop', '同じ作物を作る（農場を）'],

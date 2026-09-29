@@ -151,17 +151,13 @@ import {
 } from '../src/data/public-domain-literature.js'
 import { buildLiteratureVocabulary } from '../src/data/literature-vocabulary.js'
 import {
-  LITERATURE_TRANSLATION_REVIEW,
-  LITERATURE_SCENE_TRANSLATION_OVERRIDES,
-  LITERATURE_SEGMENT_TRANSLATION_OVERRIDES,
-} from '../src/data/literature-full-text/translation-review.js'
+  literatureSentenceErrors,
+  literatureSentences,
+} from '../src/data/literature-sentences.js'
+import { parseSentenceStructure } from '../src/lib/reading-sentence-structure.js'
 import { getKanbunVocab } from '../src/data/kanbun-vocab.js'
-import {
-  getLiteratureReadingGuide,
-  getLiteratureReadingQuestions,
-} from '../src/data/literature-reading.js'
+import { getLiteratureReadingQuestions } from '../src/data/literature-reading.js'
 import { buildLiteratureNarration } from '../src/lib/literature.js'
-import { buildReadingRoleAnnotation } from '../src/lib/reading-role-annotations.js'
 import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
 import {
   WRITING_EXERCISES,
@@ -2434,11 +2430,12 @@ if (listeningIds.size !== LISTENING_ITEMS.length) {
   errors.push(`リスニング: id一意件数が全問題数と不一致 (${listeningIds.size}/${LISTENING_ITEMS.length})`)
 }
 
-// ── 名作に親しむ：権利カード、原文→訳の順序、共通SRS参照を全作品で検証 ──
+// ── 名作に親しむ：権利カード、文ごとの解説、原文→訳の順序、共通SRS参照を全作品で検証 ──
 const literatureIds = new Set()
 let literatureSceneCount = 0
+let literatureSentenceCount = 0
 let literatureNarrationSegmentCount = 0
-let englishLiteratureSyntaxSceneCount = 0
+let englishLiteratureSyntaxSentenceCount = 0
 let englishLiteratureQuestionCount = 0
 let literatureVocabularyOccurrenceCount = 0
 let literatureVocabularyCoveredCount = 0
@@ -2512,11 +2509,37 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     }
   }
 
+  // 押して解説を開く単位（文）。台帳の文と朗読の区切りが食い違わず、どの文にも訳と解説がある。
+  for (const error of literatureSentenceErrors(work)) errors.push(`${at}: ${error}`)
+  for (const sentence of literatureSentences(work)) {
+    const sentenceAt = `${at} ${sentence.number}番目の文`
+    literatureSentenceCount += 1
+    if (!sentence.ja?.trim() || literatureTranslationArtifacts.test(sentence.ja)) {
+      errors.push(`${sentenceAt}: 文の訳が無いか破損あり`)
+    }
+    if (work.kind === 'english') {
+      const { error } = parseSentenceStructure(sentence.entry.markup ?? '')
+      if (error || !sentence.entry.chunks?.length) {
+        errors.push(`${sentenceAt}: 構造台帳の記法または語順訳が不正${error ? ` (${error})` : ''}`)
+      } else {
+        englishLiteratureSyntaxSentenceCount += 1
+      }
+    } else {
+      const entry = sentence.entry
+      if (!entry.point?.trim() || !entry.words?.length && !entry.grammar?.length) {
+        errors.push(`${sentenceAt}: 読みのポイント・語句・文法の解説が不足`)
+      }
+      if (work.kind === 'kanbun' && (!entry.kakikudashi?.trim() || !entry.reading?.trim())) {
+        errors.push(`${sentenceAt}: 書き下し文または読みが不足`)
+      }
+    }
+  }
+
   for (const [index, item] of (work.scenes ?? []).entries()) {
     const sceneAt = `${at} 場面${index + 1}`
     literatureSceneCount += 1
-    if (!item.original?.trim() || !item.translation?.trim() || !item.guide?.trim()) {
-      errors.push(`${sceneAt}: 原文/訳/読みのポイント不足`)
+    if (!item.original?.trim() || !item.translation?.trim()) {
+      errors.push(`${sceneAt}: 原文/訳不足`)
     }
     if (literatureTranslationArtifacts.test(item.translation ?? '')) {
       errors.push(`${sceneAt}: 場面訳に生成途中の記号または破損あり`)
@@ -2524,24 +2547,11 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     if (work.kind !== 'english' && !item.speech?.trim()) {
       errors.push(`${sceneAt}: 古文・漢文の読み上げ文不足`)
     }
-    if (work.kind === 'english') {
-      const guide = getLiteratureReadingGuide(work.id, index, item)
-      if (!guide?.parts?.length || !guide.note?.trim()) {
-        errors.push(`${sceneAt}: 長文型のSVOCMまたは場面別解説が不足`)
-      } else {
-        const annotation = buildReadingRoleAnnotation(item.original, guide.parts, {
-          allowVerbOmission: guide.allowVerbOmission,
-        })
-        if (annotation.errors.length) {
-          errors.push(`${sceneAt}: SVOCM原文対応が不正 (${annotation.errors.map((error) => error.type).join(', ')})`)
-        }
-        englishLiteratureSyntaxSceneCount += 1
-      }
-    }
 
     const narrationSegments = item.narrationSegments ?? []
-    if (narrationSegments.length < 2) {
-      errors.push(`${sceneAt}: 間で区切った朗読が2組未満`)
+    // 英語は段落を場面にしているので、会話1行だけの段落は区切りが1つになる。古典・漢文の場面は2組以上。
+    if (narrationSegments.length < (work.kind === 'english' ? 1 : 2)) {
+      errors.push(`${sceneAt}: 間で区切った朗読が${work.kind === 'english' ? '無い' : '2組未満'}`)
     }
     literatureNarrationSegmentCount += narrationSegments.length
     const joiner = work.kind === 'english' ? ' ' : ''
@@ -2658,80 +2668,23 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
       if (!Number.isInteger(item.answer) || !item.choices?.[item.answer]) {
         errors.push(`${at} ${item.id}: 正解番号が不正`)
       }
-      if (!item.explanation?.trim() || !work.scenes[item.evidenceScene]?.original) {
-        errors.push(`${at} ${item.id}: 解説または根拠場面が不足`)
+      if (!item.explanation?.trim() || !literatureSentences(work)[item.evidenceSentence]?.text) {
+        errors.push(`${at} ${item.id}: 解説または根拠の文が不足`)
       }
     }
   }
 }
-const reviewedEnglishLiterature = PUBLIC_DOMAIN_LITERATURE.filter(
-  (work) => work.kind === 'english',
-)
-const reviewedSceneCount = reviewedEnglishLiterature.reduce(
-  (count, work) => count + work.scenes.length,
-  0,
-)
-const reviewedSegmentCount = reviewedEnglishLiterature.reduce(
-  (count, work) =>
-    count + work.scenes.reduce(
-      (sceneTotal, item) => sceneTotal + item.narrationSegments.length,
-      0,
-    ),
-  0,
-)
-const translationReviewPayload = reviewedEnglishLiterature.map((work) => ({
-  id: work.id,
-  scenes: work.scenes.map((item) => ({
-    original: item.original,
-    translation: item.translation,
-    segments: item.narrationSegments.map((segment) => [
-      segment.original,
-      segment.translation,
-    ]),
-  })),
-}))
-const translationReviewSha256 = createHash('sha256')
-  .update(JSON.stringify(translationReviewPayload))
-  .digest('hex')
-if (
-  LITERATURE_TRANSLATION_REVIEW.englishWorkCount !== reviewedEnglishLiterature.length ||
-  LITERATURE_TRANSLATION_REVIEW.sceneCount !== reviewedSceneCount ||
-  LITERATURE_TRANSLATION_REVIEW.segmentCount !== reviewedSegmentCount ||
-  LITERATURE_TRANSLATION_REVIEW.contentSha256 !== translationReviewSha256
-) {
-  errors.push(
-    `英語名作の全訳レビュー台帳が本文と不一致 (作品${reviewedEnglishLiterature.length}/${LITERATURE_TRANSLATION_REVIEW.englishWorkCount}・場面${reviewedSceneCount}/${LITERATURE_TRANSLATION_REVIEW.sceneCount}・区切り${reviewedSegmentCount}/${LITERATURE_TRANSLATION_REVIEW.segmentCount})`,
-  )
-}
-for (const [workId, overrides] of Object.entries(LITERATURE_SEGMENT_TRANSLATION_OVERRIDES)) {
-  const work = PUBLIC_DOMAIN_LITERATURE.find((item) => item.id === workId)
-  for (const [key, translation] of Object.entries(overrides)) {
-    const [sceneNumber, segmentNumber] = key.split('.').map(Number)
-    const segment = work?.scenes?.[sceneNumber - 1]?.narrationSegments?.[segmentNumber - 1]
-    if (!segment || segment.translation !== translation) {
-      errors.push(`名作訳レビュー ${workId} ${key}: 修正先が無いか修正が未適用`)
-    }
-  }
-}
-for (const [workId, overrides] of Object.entries(LITERATURE_SCENE_TRANSLATION_OVERRIDES)) {
-  const work = PUBLIC_DOMAIN_LITERATURE.find((item) => item.id === workId)
-  for (const [sceneNumber, translation] of Object.entries(overrides)) {
-    if (work?.scenes?.[Number(sceneNumber) - 1]?.translation !== translation) {
-      errors.push(`名作場面訳レビュー ${workId} ${sceneNumber}: 修正先が無いか修正が未適用`)
-    }
-  }
-}
-const expectedEnglishLiteratureSceneCount = PUBLIC_DOMAIN_LITERATURE
+const expectedEnglishLiteratureSentenceCount = PUBLIC_DOMAIN_LITERATURE
   .filter((work) => work.kind === 'english')
-  .reduce((count, work) => count + work.scenes.length, 0)
+  .reduce((count, work) => count + literatureSentences(work).length, 0)
 const expectedEnglishLiteratureQuestionCount = PUBLIC_DOMAIN_LITERATURE
   .filter((work) => work.kind === 'english').length * 3
 if (
-  englishLiteratureSyntaxSceneCount !== expectedEnglishLiteratureSceneCount ||
+  englishLiteratureSyntaxSentenceCount !== expectedEnglishLiteratureSentenceCount ||
   englishLiteratureQuestionCount !== expectedEnglishLiteratureQuestionCount
 ) {
   errors.push(
-    `英語名作の長文型構成が全件ではない (構文${englishLiteratureSyntaxSceneCount}/${expectedEnglishLiteratureSceneCount}場面・設問${englishLiteratureQuestionCount}/${expectedEnglishLiteratureQuestionCount}問)`,
+    `英語名作の長文型構成が全件ではない (構文${englishLiteratureSyntaxSentenceCount}/${expectedEnglishLiteratureSentenceCount}文・設問${englishLiteratureQuestionCount}/${expectedEnglishLiteratureQuestionCount}問)`,
   )
 }
 if (literatureVocabularyCoveredCount !== literatureVocabularyOccurrenceCount) {
@@ -2881,4 +2834,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSentenceCount}文・${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSentenceCount}文・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

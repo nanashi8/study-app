@@ -3,6 +3,9 @@
 //   例: 未ダ〈ズ〉㆑見㆓其ノ人ヲ㆒。 → 未だ其の人を見ず。
 // 返り点は Unicode の漢文用記号で書く。本文の「天下」「其一」と同じ字を使わないので、
 // どれが返り点でどれが本文かを推し量る必要がない。label は画面に出す形。
+// 置き字：書き下し文では読まない字（読む順の表示では「読まない」と添える）。
+export const KANBUN_PLACEHOLDER_CHARACTERS = Object.freeze(new Set(['而', '於', '于', '矣', '焉', '兮']))
+
 const RETURN_MARK_META = Object.freeze({
   '㆑': Object.freeze({ name: 'レ点', label: 'レ', family: 're', rank: 0 }),
   '㆒': Object.freeze({ name: '一点', label: '一', family: 'number', rank: 0 }),

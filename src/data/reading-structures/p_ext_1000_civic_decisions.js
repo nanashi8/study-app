@@ -361,6 +361,9 @@ export default Object.freeze([
     },
   }),
   st('[S Every public promise] [V spends] [O something: the {並列| time, | labor, | land, | or money} {関係>the time, labor, land, or money| [S that] [V could have served] [O another goal]}].', {
+    marks: [
+      [':', 'コロンで、「何かを使う」の「何か（something）」の中身を、後ろで具体的に並べます（ほかの目的に使えたはずの時間・労力・土地・お金）。'],
+    ],
     chunks: [
       ['Every public promise spends something:', 'どの公的な約束も、何かを費やします'],
       ['the time, labor, land, or money', 'つまり時間や労働や土地やお金を'],
@@ -470,6 +473,9 @@ export default Object.freeze([
     },
   }),
   st('[S A budget {関係>A budget| [S that] [V plans] [M {前| for the second outcome}]}] [V is not] [C pessimistic]; [S it] [V is] [M simply] [C honest].', {
+    marks: [
+      [';', 'セミコロンで、「悲観的ではない」と否定したあと、本当は何なのか（ただ正直なだけ）を後ろで言い直します。'],
+    ],
     chunks: [
       ['A budget that plans for the second outcome', '後のほうの結末に備える予算は'],
       ['is not pessimistic;', '悲観的なのではなく'],

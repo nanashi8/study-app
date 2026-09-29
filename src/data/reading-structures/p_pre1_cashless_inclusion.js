@@ -71,6 +71,9 @@ export default Object.freeze([
     },
   }),
   st('[M {前| For these users}], [S {動名詞| [V refusing] [O cash]}] [V does] [O more {前| than {原形| [V remove] [O a familiar habit]}}]; [S it] [V can limit] [O access {前| to {並列| food, | transport, | and public life}}].', {
+    marks: [
+      [';', 'セミコロンで、「現金を断ることは、慣れた習慣をなくす以上のことだ」と言ったあと、具体的に何が起こるのかを後ろで説明します。'],
+    ],
     chunks: [
       ['For these users,', 'こうした利用者にとって'],
       ['refusing cash', '現金を受け付けないことは'],

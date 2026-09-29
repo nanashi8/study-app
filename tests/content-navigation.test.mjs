@@ -35,15 +35,23 @@ test('主要コンテンツは指定順を保ち、英語アプリから英和�
 })
 
 test('英語名作画面は準備・構文・読解ルール・根拠付き設問・完了ゲートを備える', async () => {
-  const source = await readFile(new URL('../src/screens/LiteratureReader.jsx', import.meta.url), 'utf8')
-  for (const contract of [
-    'data-literature-reading-preparation',
-    'data-literature-syntax-trigger',
-    'data-reading-role-card="direct-labels"',
-    'data-literature-sentence-rules',
-    'data-literature-reading-check',
-    'item.evidenceScene',
-    'disabled={isEnglish && !completed && !allQuestionsAnswered}',
+  const read = (path) => readFile(new URL(path, import.meta.url), 'utf8')
+  const reader = await read('../src/screens/LiteratureReader.jsx')
+  const fullText = await read('../src/components/LiteratureFullText.jsx')
+  const sheet = await read('../src/components/LiteratureSentenceSheet.jsx')
+  const detail = await read('../src/components/ReadingSentenceDetail.jsx')
+  // 読む画面は全文を段落ごとに見せ、文を押すと長文読解と同じ一文の構文解説（読解ルールつき）が開く。
+  for (const [source, contract] of [
+    [reader, 'data-literature-reading-preparation'],
+    [reader, '<LiteratureFullText'],
+    [reader, '<LiteratureSentenceSheet'],
+    [fullText, 'data-literature-syntax-trigger'],
+    [sheet, '<ReadingSentenceDetail'],
+    [detail, 'data-reading-role-card="direct-labels"'],
+    [detail, 'data-reading-rules-for-sentence'],
+    [reader, 'data-literature-reading-check'],
+    [reader, 'item.evidenceSentence'],
+    [reader, 'disabled={isEnglish && !completed && !allQuestionsAnswered}'],
   ]) {
     assert.ok(source.includes(contract), `英語名作の構成要件が不足: ${contract}`)
   }

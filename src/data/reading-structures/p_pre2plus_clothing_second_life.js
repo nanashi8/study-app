@@ -91,6 +91,9 @@ export default Object.freeze([
     },
   }),
   st('[S A repair] [V did not need] [O {to:名詞| [V to look] [C perfect]}]; [S it] [V needed] [O {to:名詞| [V to make] [O the item] [C {並列| safe | and useful}]}].', {
+    marks: [
+      [';', 'セミコロンで、「修理は完ぺきに見えなくてよかった」と否定したあと、本当に必要だったこと（安全で役に立つようにすること）を後ろで言い直します。'],
+    ],
     chunks: [
       ['A repair did not need to look perfect;', '修理は見た目が完璧である必要はありませんでした'],
       ['it needed to make the item', 'その品を〜にする必要がありました（どんな状態かは次へ）'],
@@ -249,6 +252,9 @@ export default Object.freeze([
     },
   }),
   st('[S The organizers] [V reported] [O {並列| successful exchanges | and waste {関係省略:目的格>waste| [S they] [V could not process]}}]; [S they] [V did not publish] [O only a cheerful total].', {
+    marks: [
+      [';', 'セミコロンで、「成功した交換も、処理できなかったごみも報告した」ことと、それを裏から言いかえた「明るい合計だけを発表したのではなかった」を並べます。'],
+    ],
     chunks: [
       ['The organizers reported successful exchanges', '主催者は、うまくいった交換を報告しました'],
       ['and waste they could not process;', 'そして、処理できなかった廃棄物も（報告しました）'],

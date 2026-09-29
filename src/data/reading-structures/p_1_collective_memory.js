@@ -159,6 +159,9 @@ export default Object.freeze([
     },
   }),
   st('[S Preservation], [M therefore], [V is not] [M merely] [C the retention {前| of data}]; [S it] [V includes] [O {動名詞| [V maintaining] [O the pathways {関係>the pathways| [S that] [V make] [O data] [C {並列| intelligible | and discoverable}]}]}].', {
+    marks: [
+      [';', 'セミコロンで、「保存は単にデータを残すことではない」と否定したあと、本当は何を含むのかを後ろで言い直します。'],
+    ],
     chunks: [
       ['Preservation', '保存とは'],
       ['therefore,', 'したがって'],
@@ -288,6 +291,9 @@ export default Object.freeze([
     },
   }),
   st('[S A photograph] [V may reveal] [O suffering] [M {前| to one group}] [接 and] [O national achievement] [M {前| to another}]; [S a monument] [V may be seen] [C {前| as heritage}] [M {前| by some}] [接 and] [C {前| as exclusion}] [M {前| by others}].', {
+    marks: [
+      [';', 'セミコロンで、「写真」の例と「記念碑」の例という、同じ形の2つの文を並べます。どちらも、見る人によって受け取り方が違うことを示す例です。'],
+    ],
     chunks: [
       ['A photograph', '一枚の写真は'],
       ['may reveal suffering', '苦しみを示すかもしれません'],

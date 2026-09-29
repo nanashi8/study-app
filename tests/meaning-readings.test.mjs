@@ -42,7 +42,9 @@ test('英単語の意味を出す画面は、読みを添える部品を通し�
     'src/screens/EtymologyStudy.jsx',
     'src/screens/ReadingSummary.jsx',
     'src/screens/WritingPlay.jsx',
-    'src/screens/LiteratureReader.jsx',
+    // 名作は全文表示の段落ごとの和訳と、文を押した解説（英語は ReadingSentenceDetail）で出す。
+    'src/components/LiteratureFullText.jsx',
+    'src/components/LiteratureSentenceSheet.jsx',
     'src/components/WordBits.jsx',
     'src/components/WordRelations.jsx',
     'src/components/ExtendedReader.jsx',

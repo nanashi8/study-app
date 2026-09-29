@@ -9,10 +9,12 @@ import { ReadingSentenceDetail } from './ReadingSentenceDetail.jsx'
 import { Button, cx } from './ui.jsx'
 import { SpeakerWave } from './Icons.jsx'
 import { analyzeLiteratureSentence } from '../lib/literature-sentence-analysis.js'
-import { kanbunReadingOrder, parseKanbunMarkedText } from '../lib/kanbun-marks.js'
-
-// 置き字：書き下し文では読まない字。読む順の表示では「読まない」と添える。
-const PLACEHOLDER_CHARACTERS = new Set(['而', '於', '于', '矣', '焉', '兮'])
+import { literaturePartBreaks } from '../data/literature-sentences.js'
+import {
+  KANBUN_PLACEHOLDER_CHARACTERS,
+  kanbunReadingOrder,
+  parseKanbunMarkedText,
+} from '../lib/kanbun-marks.js'
 
 function SectionTitle({ children }) {
   return <h3 className="text-[11px] font-extrabold tracking-wide text-ink/55">{children}</h3>
@@ -28,7 +30,9 @@ function SegmentList({ sentence, kanbun }) {
           <li key={`${segment.sceneIndex}:${segment.segmentIndex}`} className="border-l-2 border-teal-200 pl-2.5">
             <p className="font-serif text-base font-bold leading-relaxed text-ink">
               <span className="mr-1.5 font-sans text-[10px] font-black text-teal-700">{index + 1}</span>
-              {kanbun ? <KanbunText>{segment.speech}</KanbunText> : <KotenText>{segment.original}</KotenText>}
+              {kanbun
+                ? <KanbunText readings={sentence.entry.ruby}>{segment.speech}</KanbunText>
+                : <KotenText>{segment.original}</KotenText>}
             </p>
             <p className="mt-0.5 text-sm font-bold leading-relaxed text-amber-900">{segment.translation}</p>
           </li>
@@ -155,7 +159,7 @@ function ReadingOrder({ marked }) {
       <ol className="mt-2 flex flex-wrap items-center gap-1.5" lang="ja">
         {order.order.map((index, position) => {
           const unit = parsed.units[index]
-          const placeholder = PLACEHOLDER_CHARACTERS.has(unit.character) && !unit.okurigana
+          const placeholder = KANBUN_PLACEHOLDER_CHARACTERS.has(unit.character) && !unit.okurigana
           return (
             <li key={`${index}-${position}`} className="flex items-center gap-1.5">
               {position > 0 && <span aria-hidden="true" className="text-xs font-black text-rose-300">›</span>}
@@ -190,10 +194,10 @@ function KanbunSentenceDetail({ sentence, onOpenWord, onOpenGrammar }) {
       </div>
       <div className="rounded-2xl bg-white p-3 ring-1 ring-rose-100">
         <SectionTitle>書き下し文</SectionTitle>
-        <p className="mt-1 font-serif text-lg font-bold leading-[2] text-ink"><KanbunText>{entry.kakikudashi}</KanbunText></p>
-        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55">
+        <p className="mt-1 font-serif text-lg font-bold leading-[2] text-ink"><KanbunText readings={entry.ruby}>{entry.kakikudashi}</KanbunText></p>
+        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55" data-literature-kanbun-reading>
           <span className="mr-1 text-[10px] font-black text-rose-700">読み</span>
-          {sentence.speech}
+          {entry.reading || sentence.speech}
         </p>
       </div>
       <ReadingOrder marked={sentence.marked} />
@@ -206,7 +210,78 @@ function KanbunSentenceDetail({ sentence, onOpenWord, onOpenGrammar }) {
   )
 }
 
-// 本文の文を押したときに開く、一文の解説。英語は長文読解と同じ構文解説、古文・漢文は語句・文法・訳。
+// シートの下の、前の文・次の文への移動。
+export function LiteratureSentenceNavigation({ index, count, onMove }) {
+  return (
+    <nav className="flex items-center justify-between gap-2" aria-label="文の移動" data-literature-sentence-navigation>
+      <Button variant="secondary" size="sm" className="min-h-12" disabled={index === 0} onClick={() => onMove(index - 1)}>
+        ← 前の文
+      </Button>
+      <span className="text-xs font-bold text-ink/40" aria-live="polite">{index + 1}/{count}</span>
+      <Button variant="secondary" size="sm" className="min-h-12" disabled={index >= count - 1} onClick={() => onMove(index + 1)}>
+        次の文 →
+      </Button>
+    </nav>
+  )
+}
+
+// 一文の解説の中身。英語は長文読解と同じ構文解説、古文・漢文は語句・文法・訳。
+export function LiteratureSentenceBody({
+  work,
+  sentences,
+  index,
+  onClose,
+  onPlayFrom,
+  playEnabled,
+  activeWord,
+  onWordTap,
+  resolveWord,
+  onOpenWord,
+  onOpenGrammar,
+}) {
+  const sentence = sentences[index]
+  if (!sentence) return null
+  const english = work.kind === 'english'
+  const analysis = english ? analyzeLiteratureSentence(sentence) : null
+  const partLabel = sentence.partCount > 1
+    ? `（長い1文を${sentence.partCount}つに分けた${sentence.partIndex + 1}つ目）`
+    : ''
+  const partBreaks = english ? literaturePartBreaks(sentences, index) : []
+  return (
+    <div className="space-y-4" data-literature-sentence-sheet={sentence.number}>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-extrabold text-ink/45">
+          {`第${sentence.paragraphIndex + 1}段落・${sentence.number}番目の文${partLabel}`}
+        </p>
+        <Button size="sm" variant="soft" disabled={!playEnabled} onClick={() => onPlayFrom(index)}>
+          <SpeakerWave size={15} /> ここから交互再生
+        </Button>
+      </div>
+      {english ? (
+        <ReadingSentenceDetail
+          sentence={sentence}
+          sentenceAnalysis={analysis}
+          activeWord={activeWord}
+          onWordTap={onWordTap}
+          onNavigateAway={onClose}
+          resolveWord={resolveWord}
+        />
+      ) : work.kind === 'kanbun' ? (
+        <KanbunSentenceDetail sentence={sentence} onOpenWord={onOpenWord} onOpenGrammar={onOpenGrammar} />
+      ) : (
+        <ClassicalSentenceDetail sentence={sentence} onOpenWord={onOpenWord} onOpenGrammar={onOpenGrammar} />
+      )}
+      {partBreaks.length > 0 && (
+        <p className="text-xs font-bold leading-relaxed text-ink/50" data-literature-sentence-part>
+          <MeaningText>{`この文はとても長いので、${partBreaks.join('・')}で${sentence.partCount}つに分けて解説しています。`}</MeaningText>
+          <MeaningText>{'前の文・次の文で、同じ文の続きへ移れます。'}</MeaningText>
+        </p>
+      )}
+    </div>
+  )
+}
+
+// 本文の文を押したときに開く、一文の解説のシート。
 export function LiteratureSentenceSheet({
   work,
   sentences,
@@ -222,70 +297,38 @@ export function LiteratureSentenceSheet({
 }) {
   const navigate = useStore((state) => state.navigate)
   const sentence = index != null ? sentences[index] : null
-  const english = work.kind === 'english'
-  const analysis = english && sentence ? analyzeLiteratureSentence(sentence) : null
+  // カードへ移るときはシートを閉じない（開いている文は読む画面の params にあるので、戻るとこの文の解説へ戻る）。
   const openWord = (word) => {
-    onClose()
     if (work.kind === 'classical') navigate('kotenWordDetail', { id: word.id })
     else navigate('kanbunStudy', { domain: 'vocab', ids: [word.id], title: `${work.titleJa}・${word.term}` })
   }
   const openGrammar = (item) => {
-    onClose()
     if (work.kind === 'classical') navigate('kotenGrammarStudy', { ids: [item.id], title: `${work.titleJa}・${item.term}` })
     else navigate('kanbunStudy', { domain: 'grammar', ids: [item.id], title: `${work.titleJa}・${item.term}` })
   }
-  const partLabel = sentence && sentence.partCount > 1
-    ? `（長い1文を${sentence.partCount}つに分けた${sentence.partIndex + 1}つ目）`
-    : ''
   return (
     <Sheet
       open={sentence != null}
       onClose={onClose}
-      title={english ? '一文の構文解説' : '一文の解説'}
+      title={work.kind === 'english' ? '一文の構文解説' : '一文の解説'}
       maxH="88vh"
       scrollAreaRef={scrollAreaRef}
-      footer={sentence ? (
-        <nav className="flex items-center justify-between gap-2" aria-label="文の移動" data-literature-sentence-navigation>
-          <Button variant="secondary" size="sm" className="min-h-12" disabled={index === 0} onClick={() => onMove(index - 1)}>
-            ← 前の文
-          </Button>
-          <span className="text-xs font-bold text-ink/40" aria-live="polite">{index + 1}/{sentences.length}</span>
-          <Button variant="secondary" size="sm" className="min-h-12" disabled={index >= sentences.length - 1} onClick={() => onMove(index + 1)}>
-            次の文 →
-          </Button>
-        </nav>
-      ) : null}
+      footer={sentence ? <LiteratureSentenceNavigation index={index} count={sentences.length} onMove={onMove} /> : null}
     >
       {sentence && (
-        <div className="space-y-4" data-literature-sentence-sheet={sentence.number}>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-extrabold text-ink/45">
-              {`第${sentence.paragraphIndex + 1}段落・${sentence.number}番目の文${partLabel}`}
-            </p>
-            <Button size="sm" variant="soft" disabled={!playEnabled} onClick={() => onPlayFrom(index)}>
-              <SpeakerWave size={15} /> ここから交互再生
-            </Button>
-          </div>
-          {english ? (
-            <ReadingSentenceDetail
-              sentence={sentence}
-              sentenceAnalysis={analysis}
-              activeWord={activeWord}
-              onWordTap={onWordTap}
-              onNavigateAway={onClose}
-              resolveWord={resolveWord}
-            />
-          ) : work.kind === 'kanbun' ? (
-            <KanbunSentenceDetail sentence={sentence} onOpenWord={openWord} onOpenGrammar={openGrammar} />
-          ) : (
-            <ClassicalSentenceDetail sentence={sentence} onOpenWord={openWord} onOpenGrammar={openGrammar} />
-          )}
-          {english && sentence.partCount > 1 && (
-            <p className="text-xs font-bold leading-relaxed text-ink/50" data-literature-sentence-part>
-              <MeaningText>{'この文はとても長いので、セミコロン・コロンで区切られた独立した節ごとに分けて解説しています。前の文・次の文で、同じ文の続きへ移れます。'}</MeaningText>
-            </p>
-          )}
-        </div>
+        <LiteratureSentenceBody
+          work={work}
+          sentences={sentences}
+          index={index}
+          onClose={onClose}
+          onPlayFrom={onPlayFrom}
+          playEnabled={playEnabled}
+          activeWord={activeWord}
+          onWordTap={onWordTap}
+          resolveWord={resolveWord}
+          onOpenWord={openWord}
+          onOpenGrammar={openGrammar}
+        />
       )}
     </Sheet>
   )

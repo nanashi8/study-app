@@ -48,6 +48,7 @@ export const STRUCTURE_DISPLAY_ROLE = Object.freeze({
   M: 'M',
   接: 'LINK',
   独: 'IND',
+  挿入文: 'INS',
   仮S: 'S_FORMAL',
   真S: 'S_REAL',
   仮O: 'O_FORMAL',
@@ -1763,6 +1764,27 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
       hasUnit: element.children.some((child) => child.kind === 'unit'),
       connector: chipByElement.get(element) ?? '',
     }))),
+    // 「文の要素」の下線と英語順の役割に使う並び。主節の要素に、語り手が文の途中に差し込んだ文（挿入文）を
+    // 本文の順に加える（挿入文は主節のどの要素にも属さないので、elements には入れない）。
+    displayElements: Object.freeze(root
+      .filter((node) => node.kind === 'element' || (node.kind === 'unit' && node.base === '挿入文'))
+      .map((node) => Object.freeze(node.kind === 'element'
+        ? {
+            role: node.role,
+            displayRole: STRUCTURE_DISPLAY_ROLE[node.role],
+            text: normalizeStructureText(rawText(node.children)),
+            trimmed: nodeText(node),
+            hasUnit: node.children.some((child) => child.kind === 'unit'),
+            connector: chipByElement.get(node) ?? '',
+          }
+        : {
+            role: '挿入文',
+            displayRole: STRUCTURE_DISPLAY_ROLE.挿入文,
+            text: normalizeStructureText(rawText(node.children)),
+            trimmed: normalizeStructureText(rawText(node.children)).replace(/^[(（]\s*|\s*[)）]$/gu, ''),
+            hasUnit: true,
+            connector: '',
+          }))),
     // 「文の要素」の下線表示に使う、括弧つきで句点も残した英文。
     markedSentence,
     // and・or・but で並ぶもの（本文の語の番号の範囲）。表示で改行して縦にそろえる。

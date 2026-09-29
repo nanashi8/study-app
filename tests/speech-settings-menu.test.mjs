@@ -487,7 +487,7 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全31 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -501,8 +501,10 @@ test('読み上げを持つ全31 UIモジュールが共通プレイヤー経由
   )
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
-  assert.equal(speechUi.length, 31)
+  // 2026-09-29、名作の文を押したときの一文の解説（components/LiteratureSentenceSheet.jsx）で1つ増えた。
+  assert.equal(speechUi.length, 32)
   assert.equal(screenCount, 21)
+  assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureSentenceSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/GrammarReferenceParts.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/WordRelations.jsx'))

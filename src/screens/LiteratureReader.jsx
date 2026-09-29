@@ -7,12 +7,11 @@ import {
 } from '../data/public-domain-literature.js'
 import { getLiteratureReadingQuestions } from '../data/literature-reading.js'
 import { readingRulesForPassage } from '../data/reading-rules.js'
-import { buildLiteratureVocabulary } from '../data/literature-vocabulary.js'
+import { buildLiteratureVocabulary, resolveLiteratureSentenceWord } from '../data/literature-vocabulary.js'
 import {
   literatureParagraphs,
   literatureSentences,
   literatureSentenceIndexForSegment,
-  resolveLiteratureSentenceWord,
 } from '../data/literature-sentences.js'
 import { buildLiteratureNarration } from '../lib/literature.js'
 import { isTTSSupported } from '../lib/tts.js'
@@ -45,7 +44,7 @@ const NARRATION_PAUSE_MS = {
 
 const READER_COPY = Object.freeze({
   english: Object.freeze({
-    help: '分からない文を押すと、その文の構文解説（文の要素・語順訳・記号の働き・和訳）が開きます。',
+    help: '分からない文を押すと、その文の構文解説（文の要素・記号の働き・区切りごとの日本語・節と句の解説・きれいな日本語訳）が開きます。',
     translationToggle: '和訳',
     narration: '英語を一息ぶん読み、その区切りに対応する日本語を続けて読みます。',
     gradient: 'linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e)',

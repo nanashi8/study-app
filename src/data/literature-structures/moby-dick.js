@@ -248,7 +248,7 @@ export default Object.freeze([
       'Some leaning against the spiles;': '前の文の thousands of mortal men の様子を、動詞のない語句で並べています（Some are leaning … の are が省かれた形とも読めます）。spile は「杭」。',
       'some seated upon the pier-heads;': 'seated は「座っている」（be seated で「座る」）。pier-head は「桟橋の先端」。',
       'some looking over the bulwarks of ships from China;': 'bulwarks は「舷側（船べりの囲い）」。',
-      'some high aloft in the rigging,': 'aloft は「高い所に」。rigging は帆を張るための綱や柱の全体（索具）。',
+      'some high aloft in the rigging,': 'aloft は「高い所に」。rigging は帆を張るための綱や柱の全体です。',
       'as if striving to get a still better seaward peep.': 'as if (they were) striving … の they were が省かれています。still better は比較級を強めて「さらによい」、seaward peep は「海のほうをのぞくこと」。',
     },
   }),
@@ -417,7 +417,7 @@ export default Object.freeze([
       ['attract them thither?', '彼らをそこへ引き寄せるのか？'],
     ],
     notes: {
-      'does the magnetic virtue of the needles': 'virtue はここでは「力・効き目」。of が3回重なり、磁力の持ち主を「針 → 羅針盤 → あの船々」とたどります。',
+      'does the magnetic virtue of the needles': 'virtue はここでは「力・効き目」。of が3回重なり、磁力の持ち主を「針 → 羅針盤 → あの船たち」とたどります。',
       'attract them thither?': 'thither は「そこへ」の古い言い方（今の there）。',
     },
   }),
@@ -498,15 +498,15 @@ export default Object.freeze([
   }),
   // 35
   ls('[M {副詞節:条件| [V Should] [S you] [M ever] [V be] [C athirst] [M {前| in the great American desert}]}], [V try] [O this experiment], [M {副詞節:条件| [接 if] [S your caravan] [V happen] [C {to:補語| [V to be supplied] [M {前| with a metaphysical professor}]}]}].', {
-    ja: 'もしも広大なアメリカの砂漠で喉が渇くことがあったら、この実験を試してみるといい。隊商にたまたま形而上学の教授が一人加わっていればの話だが。',
+    ja: 'もしも広大なアメリカの砂漠で喉が渇くことがあったら、この実験を試してみるといい。隊商にたまたま哲学の教授が一人加わっていればの話だが。',
     chunks: [
       ['Should you ever be athirst in the great American desert,', 'もしも広大なアメリカの砂漠で喉が渇いたら'],
       ['try this experiment,', 'この実験を試してみよ'],
-      ['if your caravan happen to be supplied with a metaphysical professor.', 'もし隊商にたまたま形而上学の教授が加わっているならだが'],
+      ['if your caravan happen to be supplied with a metaphysical professor.', 'もし隊商にたまたま哲学の教授が加わっているならだが'],
     ],
     notes: {
       'Should you ever be athirst in the great American desert,': 'athirst は「喉が渇いて」の古い言い方。should は「万一〜なら」と、起こりそうにないことを仮定します。',
-      'if your caravan happen to be supplied with a metaphysical professor.': 'happen は仮定法（-s が付かない形）で、happen to do は「たまたま〜する」。形而上学の教授は、いつも物思いにふける人の代表として冗談めかして出しています。',
+      'if your caravan happen to be supplied with a metaphysical professor.': 'happen は仮定法（-s が付かない形）で、happen to do は「たまたま〜する」。metaphysical professor（形のない世界を考える哲学の教授）は、いつも物思いにふける人の代表として冗談めかして出しています。',
     },
   }),
   // 36
@@ -558,9 +558,9 @@ export default Object.freeze([
   }),
   // 40
   ls('[M There] [V stand] [S his trees, {同格>his trees| each {前| with a hollow trunk}}], [M {副詞節:様態| [接 as if] [S {並列| a hermit | and a crucifix}] [V were] [M within]}]; [接 and] [M here] [V sleeps] [S his meadow], [接 and] [M there] [V sleep] [S his cattle]; [接 and] [M up] [M {前| from yonder cottage}] [V goes] [S a sleepy smoke].', {
-    ja: 'そこには彼の木々が立ち、どの木の幹にも、中に隠者と十字架があるかのような洞がある。ここには彼の牧場が眠り、あそこには彼の牛たちが眠っている。そして向こうの小屋からは、眠たげな煙が立ちのぼっている。',
+    ja: 'そこには彼の木々が立ち、どの木の幹も、中に隠者と十字架があるかのように空洞になっている。ここには彼の牧場が眠り、あそこには彼の牛たちが眠っている。そして向こうの小屋からは、眠たげな煙が立ちのぼっている。',
     chunks: [
-      ['There stand his trees, each with a hollow trunk,', 'そこに彼の木々が立っている、どれも幹に洞があり'],
+      ['There stand his trees, each with a hollow trunk,', 'そこに彼の木々が立っている、どれも幹が空洞で'],
       ['as if a hermit and a crucifix were within;', 'まるで中に隠者と十字架があるかのようだ'],
       ['and here sleeps his meadow, and there sleep his cattle;', 'ここには彼の牧場が眠り、あそこには彼の牛たちが眠る'],
       ['and up from yonder cottage goes a sleepy smoke.', 'そして向こうの小屋からは、眠たげな煙が立ちのぼる'],
@@ -570,7 +570,7 @@ export default Object.freeze([
       [';', 'セミコロンのあとで、最後の描写（小屋から立ちのぼる煙）を加えます。and を重ねて、絵の中を見回すように続けています。'],
     ],
     notes: {
-      'There stand his trees, each with a hollow trunk,': 'There stand his trees は、動詞 stand が主語 his trees の前に出た倒置の文。each with a hollow trunk は「どれも幹に洞があって」と、his trees を言いかえて説明します。',
+      'There stand his trees, each with a hollow trunk,': 'There stand his trees は、動詞 stand が主語 his trees の前に出た倒置の文。each with a hollow trunk は「どれも幹が空洞で」と、his trees を言いかえて説明します。',
       'as if a hermit and a crucifix were within;': 'as if の後ろの were は仮定法で「まるで〜であるかのように」。hermit は「隠者（人里を離れて暮らす修行者）」、crucifix は「十字架」。',
       'and here sleeps his meadow, and there sleep his cattle;': 'here sleeps his meadow・there sleep his cattle も、動詞が主語の前に出た倒置。単数の meadow には sleeps、複数の cattle には sleep と、動詞の形が主語に合っています。',
       'and up from yonder cottage goes a sleepy smoke.': 'up from yonder cottage を前に出し、goes を主語 a sleepy smoke の前に置いた倒置。yonder は「あそこの」。',
@@ -1063,14 +1063,14 @@ export default Object.freeze([
   }),
   // 74
   ls('[独 Well], [M then], [M {副詞節:譲歩| [M however] [S the old sea-captains] [V may order] [O me] [M about]}] — [M {副詞節:譲歩| [M however] [S they] [V may {並列| thump | and punch}] [O me] [M about]}], [S I] [V have] [O the satisfaction {前| of {動名詞| [V knowing] [O {that節| [接 that] [S it] [V is] [C all right]}; {that節| [接 that] [S everybody else] [V is] [M {成句| one way or other}] [V served] [M {前| in much the same way}] — [M either {前| in a {並列| physical | or metaphysical} point {前| of view}}], [M {成句| that is}]}]}}]; [接 and] [M so] [S the universal thump] [V is passed round], [接 and] [S all hands] [V should rub] [O each other’s shoulder-blades], [接 and] [V be] [C content].', {
-    ja: 'さて、それなら、老船長たちがどんなに私をこき使おうと——どんなに殴ったりこづいたりしようと、私にはそれで構わないのだと分かっているという満足がある。ほかの誰もが、何らかの形で——つまり肉体的にか、形而上的にかという意味でだが——ほとんど同じように扱われているのだと分かっているのだ。だから、げんこつは世の中の皆にぐるりと回ってくるのであり、みんな互いの肩甲骨をさすり合って、満足していればよいのだ。',
+    ja: 'さて、それなら、老船長たちがどんなに私をこき使おうと——どんなに殴ったりこづいたりしようと、私にはそれで構わないのだと分かっているという満足がある。ほかの誰もが、何らかの形で——つまり体の面でか、心の面でかという意味でだが——ほとんど同じように扱われているのだと分かっているのだ。だから、げんこつは世の中の皆にぐるりと回ってくるのであり、みんな互いの肩甲骨をさすり合って、満足していればよいのだ。',
     chunks: [
       ['Well, then, however the old sea-captains may order me about —', 'さて、それなら、老船長たちがどんなに私をこき使おうと——'],
       ['however they may thump and punch me about,', 'どんなに私を殴ったりこづいたりしようと'],
       ['I have the satisfaction of knowing that it is all right;', '私には、それで構わないのだと分かっている満足がある'],
       ['that everybody else is one way or other served', 'ほかの誰もが何らかの形で扱われているのだと'],
       ['in much the same way —', 'ほとんど同じように——'],
-      ['either in a physical or metaphysical point of view, that is;', 'つまり、肉体的にか、形而上的にかという意味でだが'],
+      ['either in a physical or metaphysical point of view, that is;', 'つまり、体の面でか、心の面でかという意味でだが'],
       ['and so the universal thump is passed round,', 'だから、皆へのげんこつはぐるりと回され'],
       ['and all hands should rub each other’s shoulder-blades, and be content.', 'みんな互いの肩甲骨をさすり合って、満足すべきなのだ'],
     ],
@@ -1081,7 +1081,7 @@ export default Object.freeze([
     marks: [
       ['—', 'ダッシュのあとに、同じ however … の形をもう一度重ねて（どんなに殴られようと）、譲歩を強めています。'],
       [';', 'セミコロンのあとの that 節は、前の that it is all right と並んで knowing の目的語になります。「満足」の中身を2つ目として付け足しています。'],
-      ['—', 'ダッシュのあとで、in much the same way（ほとんど同じように）の中身を「肉体的にか、形而上的にか」と補っています。'],
+      ['—', 'ダッシュのあとで、in much the same way（ほとんど同じように）の中身を「体の面でか、心の面でか」と補っています。'],
       [';', 'セミコロンで補足を閉じ、and so（だから）で結論（げんこつは皆に回ってくる）へ進みます。'],
     ],
     notes: {
@@ -1089,7 +1089,7 @@ export default Object.freeze([
       'however they may thump and punch me about,': 'thump と punch はどちらも「げんこつで殴る」。about は「あちこち」。',
       'I have the satisfaction of knowing that it is all right;': 'the satisfaction of doing で「〜するという満足」。it is all right は「それで構わない」。',
       'that everybody else is one way or other served': 'serve はここでは「（人を）扱う」。is served で「扱われる」。',
-      'either in a physical or metaphysical point of view, that is;': 'either A or B で「A か B のどちらか」。physical（肉体的な）と metaphysical（形而上の・精神的な）を対にしています。',
+      'either in a physical or metaphysical point of view, that is;': 'either A or B で「A か B のどちらか」。physical（体の・物質の）と metaphysical（心の・目に見えない世界の）を対にしています。',
       'and so the universal thump is passed round,': 'universal thump は「誰もが受けるげんこつ」。pass round は「順に回す」。',
       'and all hands should rub each other’s shoulder-blades, and be content.': 'all hands は「全員」（船では乗組員全員）。互いの肩をさすり合う、つまり慰め合うということです。',
     },
@@ -1289,9 +1289,9 @@ export default Object.freeze([
   }),
   // 88
   ls('[S It] [V came in] [M {前| as a sort {前| of brief {並列| interlude | and solo}}}] [M {前| between more extensive performances}].', {
-    ja: 'それは、もっと大がかりな出し物の合間にはさまれた、短い幕間劇か独奏のようなものだった。',
+    ja: 'それは、もっと大がかりな出し物の合間にはさまれた、短い劇か独奏のようなものだった。',
     chunks: [
-      ['It came in as a sort of brief interlude', 'それは一種の短い幕間劇として入った'],
+      ['It came in as a sort of brief interlude', 'それは一種の、合間の短い劇として入った'],
       ['and solo between more extensive performances.', 'あるいは独奏として、もっと大がかりな出し物の合間に'],
     ],
     notes: {
@@ -1353,14 +1353,14 @@ export default Object.freeze([
   // 93
   ls('[M {副詞節:譲歩| [接 Though] [S I] [V cannot tell] [O {疑問詞節| [M why] [S it] [V was] [M exactly] [M {強調| [接 that] [S those stage managers, {同格>those stage managers| the Fates},] [V put] [O me] [M down] [M {前| for this shabby part {前| of a whaling voyage}}], [M {副詞節:時| [接 when] [S others] [V were set down] [M {前| for {並列| magnificent parts {前| in high tragedies}, | and {並列| short | and easy} parts {前| in genteel comedies}, | and jolly parts {前| in farces}}}]}]}]}]}] — [M {副詞節:譲歩| [接 though] [S I] [V cannot tell] [O {疑問詞節| [M why] [S this] [V was] [M exactly]}]}]; [M yet], [M {副詞節:理由| [接 now that] [S I] [V recall] [O all the circumstances]}], [S I] [V think] [O {that省略| [S I] [V can see] [M a little] [M {前| into the {並列| springs | and motives} {関係>the springs and motives| [S which] [M {分詞構文:理由| [V being] [M cunningly] [V presented] [M {前| to me}] [M {前| under various disguises}]}], [V induced] [O me] [C {to:補語| [V to set about] [O {動名詞| [V performing] [O the part {関係省略:目的格>the part| [S I] [V did]}]}]}], [M {前| besides {動名詞| [V cajoling] [O me] [M {前| into the delusion {同格that>the delusion| [接 that] [S it] [V was] [C a choice {現在分詞>a choice| [V resulting] [M {前| from my own unbiased {並列| freewill | and discriminating judgment}}]}]}}]}}]}}]}].', {
     p: true,
-    ja: 'ほかの者たちには格調高い悲劇の堂々たる役や、上品な喜劇の短く楽な役や、笑劇の陽気な役が割り当てられたというのに、なぜあの舞台監督たち、つまり運命の女神たちが、私には捕鯨の航海というこのみすぼらしい役を割り当てたのか、はっきりとは言えない——それがなぜなのか、はっきりとは言えないのだけれど、それでも、今こうしていきさつを残らず思い返すと、物事を動かしたぜんまいや動機がいくらか見通せる気がする。それらはさまざまに姿を変えて巧みに私の前に差し出され、私があの役を演じ始めるよう仕向けただけでなく、それが私自身のかたよりのない自由意志と、よく見分ける判断から生まれた選択なのだと、私をおだてて思い込ませたのだ。',
+    ja: 'ほかの者たちには格調高い悲劇の堂々たる役や、上品な喜劇の短く楽な役や、どたばた喜劇の陽気な役が割り当てられたというのに、なぜあの舞台監督たち、つまり運命の女神たちが、私には捕鯨の航海というこのみすぼらしい役を割り当てたのか、はっきりとは言えない——それがなぜなのか、はっきりとは言えないのだけれど、それでも、今こうしていきさつを残らず思い返すと、物事を動かしたぜんまいや動機がいくらか見通せる気がする。それらはさまざまに姿を変えて巧みに私の前に差し出され、私があの役を演じ始めるよう仕向けただけでなく、それが私自身のかたよりのない自由意志と、よく見分ける判断から生まれた選択なのだと、私をおだてて思い込ませたのだ。',
     chunks: [
       ['Though I cannot tell why it was exactly', 'はっきりとは言えないのだが、それがなぜなのか'],
       ['that those stage managers, the Fates,', 'あの舞台監督たち、つまり運命の女神たちが'],
       ['put me down for this shabby part of a whaling voyage,', '私に捕鯨の航海というこのみすぼらしい役を割り当てたのは'],
       ['when others were set down for magnificent parts in high tragedies,', 'ほかの者たちには、格調高い悲劇の堂々たる役や'],
       ['and short and easy parts in genteel comedies,', '上品な喜劇の短くて楽な役や'],
-      ['and jolly parts in farces —', '笑劇の陽気な役が割り当てられたというのに——'],
+      ['and jolly parts in farces —', 'どたばた喜劇の陽気な役が割り当てられたというのに——'],
       ['though I cannot tell why this was exactly;', 'それがなぜなのかは、はっきりとは言えないけれど'],
       ['yet, now that I recall all the circumstances,', 'それでも、今こうしていきさつを残らず思い返すと'],
       ['I think I can see a little', '私にもいくらか見通せる気がする（何をかは次へ）'],
@@ -1380,7 +1380,7 @@ export default Object.freeze([
       'that those stage managers, the Fates,': 'the Fates は those stage managers を言いかえた同格の語句。運命の女神たちを、役を割り振る舞台監督にたとえています。',
       'put me down for this shabby part of a whaling voyage,': 'put A down for B で「A を B に割り当てる」。shabby は「みすぼらしい」。',
       'when others were set down for magnificent parts in high tragedies,': 'when はここでは「〜だというのに」という対比の気持ちを含みます。set down for は put down for の受け身と同じ意味です。',
-      'and short and easy parts in genteel comedies,': 'genteel は「上品ぶった」、comedy は「喜劇」、farce は「笑劇・どたばた喜劇」。',
+      'and short and easy parts in genteel comedies,': 'genteel は「上品ぶった」、comedy は「喜劇」、farce は「どたばた喜劇」。',
       'yet, now that I recall all the circumstances,': 'now that … は「今や〜なので」。yet は Though と組んで「それでも」。',
       'into the springs and motives': 'springs はここでは「（時計の）ぜんまい」、つまり物事を動かすもとです。',
       'which being cunningly presented to me under various disguises,': 'which は springs and motives を受ける関係代名詞で、節の動詞は induced。間に being … disguises の分詞構文がはさまっています。',

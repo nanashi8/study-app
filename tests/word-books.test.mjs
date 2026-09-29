@@ -249,13 +249,16 @@ test('長文・辞書・名作・写真の読み取り・英作文・自作単�
     'src/screens/VocabSearch.jsx': /data-dictionary-word-book/,
     'src/components/ReadingSentenceDetail.jsx': /data-reading-word-book/,
     'src/components/ExtendedReader.jsx': /data-extended-reading-word-book/,
-    'src/screens/LiteratureReader.jsx': /data-literature-word-book/,
+    // 名作の本文語彙をまとめて入れるボタン。押した英単語は、一文の構文解説（ReadingSentenceDetail）から入れる。
+    'src/screens/LiteratureReader.jsx': /data-literature-save-words/,
     'src/screens/ReadingPrep.jsx': /data-reading-prep-word-book/,
     'src/screens/ReadingSummary.jsx': /data-reading-summary-word-book/,
     'src/screens/VocabCamera.jsx': /data-ocr-word-book/,
     'src/screens/WritingPlay.jsx': /data-writing-word-book/,
     'src/screens/CustomWords.jsx': /data-custom-word-book-select/,
   }
+  // 名作の文を押したシートは、英語なら長文と同じ一文の構文解説の部品で描く（押した単語の単語帳ボタンもその部品）。
+  assert.match(read('../src/components/LiteratureSentenceSheet.jsx'), /<ReadingSentenceDetail/)
   for (const [path, marker] of Object.entries(savers)) {
     const source = read(`../${path}`)
     assert.match(source, marker, path)

@@ -19,12 +19,15 @@ import {
   resolveLiteratureEnglishWord,
 } from '../src/data/literature-vocabulary.js'
 import { LITERATURE_FULL_TEXT_GLOSS } from '../src/data/literature-full-text/gloss.js'
+import { literatureSentences } from '../src/data/literature-sentences.js'
 import { tokenize } from '../src/lib/text.js'
 
 const here = new URL('../', import.meta.url)
 const source = (path) => readFileSync(new URL(path, here), 'utf8')
 
-test('全12作品・全158場面の本文語彙が未対応0件で全3,801枚の予習カードになる', () => {
+// 英語は段落を場面にしている（2026-09-29 全文表示へ）。高慢と偏見は挿絵の説明7語を本文から外し、
+// 孟子は返り点が区切りをまたぐ2区切りを1つにした。
+test('全12作品・全247場面の本文語彙が未対応0件で全3,799枚の予習カードになる', () => {
   let sceneCount = 0
   let occurrenceCount = 0
   let coveredCount = 0
@@ -61,13 +64,13 @@ test('全12作品・全158場面の本文語彙が未対応0件で全3,801枚の
     }
   }
 
-  assert.equal(sceneCount, 158)
-  assert.equal(occurrenceCount, 11916)
-  assert.equal(coveredCount, 11916)
-  assert.equal(cardCount, 3800)
+  assert.equal(sceneCount, 247)
+  assert.equal(occurrenceCount, 11908)
+  assert.equal(coveredCount, 11908)
+  assert.equal(cardCount, 3799)
 })
 
-test('英語6作品は本文11,765語・出現形3,902種を全件解決し、共通辞書2,880語へ接続する', () => {
+test('英語6作品は本文11,758語・出現形3,902種を全件解決し、共通辞書2,880語へ接続する', () => {
   let tokenCount = 0
   let uniqueFormCount = 0
   let sharedCardCount = 0
@@ -97,7 +100,7 @@ test('英語6作品は本文11,765語・出現形3,902種を全件解決し、�
     for (const id of work.wordIds) assert.ok(getWord(id), `${work.id}: ${id}`)
   }
 
-  assert.equal(tokenCount, 11765)
+  assert.equal(tokenCount, 11758)
   assert.equal(uniqueFormCount, 3902)
   assert.equal(sharedCardCount, 2880)
   assert.deepEqual(
@@ -135,42 +138,48 @@ test('空白のない句読点でも語を落とさず、作品文脈の意味�
     }
   }
 
+  // 同じ作品でも文によって意味が変わる語は、文の番号つきの語義を使う（番号は literature-sentences.js の文の番号）。
   const contextCases = [
-    ['lit_en_moby_dick_water_gazers', 2, 'right', 'right', '右へ'],
-    ['lit_en_pride_prejudice_netherfield', 0, 'little', 'little', 'ほとんど〜ない'],
-    ['lit_en_tale_two_cities_times', 2, 'lord', 'lord', '主・キリスト'],
-    ['lit_en_alice_rabbit_hole', 1, 'out', 'out', '普通から外れて'],
-    ['lit_en_happy_prince_statue', 0, 'leaves', 'leaf', '薄い葉・箔（leafの複数）'],
-    ['lit_en_gift_of_magi_opening', 0, 'made', 'make', '〜からできている'],
-    ['lit_en_gift_of_magi_opening', 1, '8', null, '8ドル（金額）'],
+    ['lit_en_moby_dick_water_gazers', 10, 'right', 'right', '右へ'],
+    ['lit_en_pride_prejudice_netherfield', 2, 'little', 'little', 'ほとんど〜ない'],
+    ['lit_en_tale_two_cities_times', 5, 'lord', 'lord', '主・キリスト'],
+    ['lit_en_alice_rabbit_hole', 4, 'out', 'out', '普通から外れて'],
+    ['lit_en_happy_prince_statue', 2, 'leaves', 'leaf', '薄い葉・箔（leafの複数）'],
+    ['lit_en_gift_of_magi_opening', 10, 'made', 'make', '〜からできている'],
+    ['lit_en_gift_of_magi_opening', 12, '8', null, '8ドル（金額）'],
   ]
-  for (const [workId, sceneIndex, key, id, ja] of contextCases) {
+  for (const [workId, sentenceNumber, key, id, ja] of contextCases) {
     assert.deepEqual(
-      resolveLiteratureEnglishWord(key, { workId, sceneIndex }),
+      resolveLiteratureEnglishWord(key, { workId, sentenceNumber }),
       { ja, id, literatureOnly: !id },
       `${workId}: ${key}`,
     )
   }
+  // 場面ごとに引いていたころは、同じ場面の別の文の out（take a watch out of …）・went（the rabbit-hole went …）にも
+  // 「普通から外れて」「入って行った」を出していた。文ごとに引くので、その文では共通辞書の意味になる。
+  assert.equal(resolveLiteratureEnglishWord('out', { workId: 'lit_en_alice_rabbit_hole', sentenceNumber: 5 }).ja, '外へ・外に')
+  assert.equal(resolveLiteratureEnglishWord('went', { workId: 'lit_en_alice_rabbit_hole', sentenceNumber: 8 }).ja, '行った（goの過去形）')
 
   for (const [key, alias] of Object.entries(LITERATURE_ENGLISH_FORM_ALIASES)) {
     assert.ok(getWord(alias.id), `${key}: ${alias.id}`)
   }
 
   for (const work of literatureByKind('english')) {
-    const tokenKeysByScene = work.scenes.map((scene) => new Set(
-      tokenize(scene.original).filter((token) => token.word).map((token) => token.key),
+    const tokenKeysBySentence = literatureSentences(work).map((sentence) => new Set(
+      tokenize(sentence.text).filter((token) => token.word).map((token) => token.key),
     ))
     for (const key of Object.keys(LITERATURE_ENGLISH_CONTEXT_GLOSS[work.id] ?? {})) {
-      const sceneKey = key.match(/^(\d+):(.*)$/)
-      const found = sceneKey
-        ? tokenKeysByScene[Number(sceneKey[1]) - 1]?.has(sceneKey[2])
-        : tokenKeysByScene.some((keys) => keys.has(key))
+      assert.doesNotMatch(key, /^\d+:/, `${work.id}: 場面の番号で引く語義 ${key} が残っている`)
+      const sentenceKey = key.match(/^s(\d+):(.*)$/)
+      const found = sentenceKey
+        ? tokenKeysBySentence[Number(sentenceKey[1]) - 1]?.has(sentenceKey[2])
+        : tokenKeysBySentence.some((keys) => keys.has(key))
       assert.ok(found, `${work.id}: unused context gloss ${key}`)
     }
   }
 })
 
-test('古典3作品は共通古典単語35語と本文103区切りを、漢文3作品は共通漢語35語と本文48区切りを学べる', () => {
+test('古典3作品は共通古典単語35語と本文103区切りを、漢文3作品は共通漢語35語と本文47区切りを学べる', () => {
   const classical = literatureByKind('classical')
   const kanbun = literatureByKind('kanbun')
 
@@ -195,12 +204,14 @@ test('古典3作品は共通古典単語35語と本文103区切りを、漢文3�
   }
 
   assert.equal(classicalSegments, 103)
-  assert.equal(kanbunSegments, 48)
+  assert.equal(kanbunSegments, 47)
 })
 
 test('全作品の読む前に共通予習導線があり、一覧・検索・カード・3分野の保存先を備える', () => {
   const reader = source('src/screens/LiteratureReader.jsx')
   const sheet = source('src/components/LiteratureVocabularySheet.jsx')
+  const sentenceSheet = source('src/components/LiteratureSentenceSheet.jsx')
+  const detail = source('src/components/ReadingSentenceDetail.jsx')
 
   assert.match(reader, /data-literature-vocabulary-preparation=\{work\.id\}/)
   assert.match(reader, /data-literature-vocabulary-open/)
@@ -208,7 +219,9 @@ test('全作品の読む前に共通予習導線があり、一覧・検索・�
   // 本文語彙は、英語・古典・漢文のどの作品でも、画面下部の「単語帳」で選んだ登録先へまとめて入れる（1語ずつも同じ）。
   assert.match(reader, /useWordBookSlot\(notebookRefs\(sharedWordDomain, sharedWordIds\)/)
   assert.match(reader, /: work\?\.kind === 'classical'\s*\? 'kotenVocab'\s*: 'kanbunVocab'/)
-  assert.match(reader, /useWordBookSlot\(activeWord\?\.id \? notebookRefs\('vocab', activeWord\.id\) : \[\]/)
+  // 本文の英単語を押したときの単語帳ボタンは、一文の構文解説（長文読解と同じ部品）が持つ。
+  assert.match(sentenceSheet, /<ReadingSentenceDetail/)
+  assert.match(detail, /useWordBookSlot\(activeWord\?\.id \? \[wordBookRef\(activeWord\.id\)\] : \[\]/)
   assert.match(reader, /useWordBookSlot\(notebookRefs\('kotenGrammar', work\?\.grammarIds \?\? \[\]\)/)
   assert.doesNotMatch(reader, /<WordListSheet/)
   // フックは作品が見つからないときの早期 return より前に置く。

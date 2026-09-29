@@ -297,6 +297,9 @@ export default Object.freeze([
     },
   }),
   st('[S Context] [V does not excuse] [O every poor result]; [S it] [V helps] [O institutions] [C {原形| [V distinguish] [O causes {関係>causes| [S that] [V demand] [O different responses]}]}].', {
+    marks: [
+      [';', 'セミコロンで、「背景はすべての悪い結果の言い訳にはならない」と否定したあと、では背景は何の役に立つのかを後ろで言い直します。'],
+    ],
     chunks: [
       ['Context does not excuse every poor result;', '背景事情があっても、すべての悪い結果が許されるわけではありません'],
       ['it helps institutions distinguish causes', 'それは、機関が原因を見分ける助けになります（どんな原因かは次へ）'],
@@ -472,6 +475,9 @@ export default Object.freeze([
     },
   }),
   st('[S The inability {to:形容詞>The inability| [V to assign] [O a clean number]}] [V is not] [C evidence {同格that>evidence| [接 that] [S a value] [V is] [C unreal]}]; [S it] [V is] [C a warning {同格that>a warning| [接 that] [S judgment] [V must remain] [C {並列| visible | and contestable}]}].', {
+    marks: [
+      [';', 'セミコロンで、「きれいな数字にできないことは、価値がない証拠ではない」と否定したあと、本当は何のしるしなのか（判断を見える形に残せという警告）を後ろで言い直します。'],
+    ],
     chunks: [
       ['The inability to assign a clean number', 'はっきりした数字をあてはめられないことは'],
       ['is not evidence', '証拠ではありません（何の証拠かは次へ）'],

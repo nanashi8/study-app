@@ -27,6 +27,9 @@ export default Object.freeze([
     },
   }),
   st('[S These features] [V form] [O a choice architecture: {同格>a choice architecture| the environment {関係>the environment| [M within which] [S people] [V decide]}}].', {
+    marks: [
+      [':', 'コロンで、choice architecture（選択の設計）という言葉が何を指すのかを、後ろで「人がものごとを決める場の環境」と言い表します。'],
+    ],
     chunks: [
       ['These features form a choice architecture:', 'こうした特徴が、選択のしくみを作ります（言いかえは次へ）'],
       ['the environment within which people decide', 'つまり、人が決めるときの環境です'],
@@ -195,6 +198,9 @@ export default Object.freeze([
     },
   }),
   st('[M Formally], [S customers] [V retain] [O a choice]; [M practically], [S friction] [V has been distributed] [M {to:副詞(目的)| [V to protect] [O one side]}].', {
+    marks: [
+      [';', 'セミコロンで、Formally（形の上では）と practically（実際には）という、対になる2つの見方を並べます。'],
+    ],
     chunks: [
       ['Formally, customers retain a choice;', '形の上では、客は選ぶ自由を保っています'],
       ['practically, friction has been distributed', '実際には、手間が割りふられています（何のためかは次へ）'],

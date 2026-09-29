@@ -89,7 +89,7 @@ export function LiteratureFullText({
                       <KanbunMarkedText marked={sentence.marked} showLegend={false} align="start" size="sm" inline />
                       {showKakikudashi && (
                         <span className="mt-1 block text-sm font-bold leading-relaxed text-ink/60">
-                          <KanbunText>{sentence.entry.kakikudashi}</KanbunText>
+                          <KanbunText readings={sentence.entry.ruby}>{sentence.entry.kakikudashi}</KanbunText>
                         </span>
                       )}
                     </>

@@ -75,9 +75,11 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   assert.equal(audit.longSentences.meaningPhraseCount, 104)
   assert.equal(audit.longSentences.meaningMultiRoleCount, 65)
   assert.equal(audit.literature.workCount, 12)
-  assert.equal(audit.literature.sceneCount, 158)
-  assert.equal(audit.literature.segmentCount, 1632)
-  assert.equal(audit.literature.englishSegmentCount, 1481)
+  // 2026-09-29、名作を全文表示にし、英語は段落を場面・文ごとの構造台帳の語順訳のまとまりを朗読の区切りにした
+  // （英語 211段落・1,575区切り、古典 19場面・103区切り、漢文 17場面・47区切り）。
+  assert.equal(audit.literature.sceneCount, 247)
+  assert.equal(audit.literature.segmentCount, 1725)
+  assert.equal(audit.literature.englishSegmentCount, 1575)
 
   for (const issueName of substantiveReadingIssueNames) {
     assert.equal(audit.reading.issues[issueName].length, 0, `長文: ${issueName}`)

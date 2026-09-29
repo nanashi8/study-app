@@ -132,6 +132,9 @@ export default Object.freeze([
     },
   }),
   st('[S This] [V illustrates] [O a problem {関係>a problem| [O that] [S researchers] [V call] [C maladaptation]}]: [S an attempt {to:形容詞>an attempt| [V to reduce] [O one risk]}] [V can create] [O a new risk] [接 or] [V deepen] [O an old inequality].', {
+    marks: [
+      [':', 'コロンで、研究者が maladaptation（適応の失敗）と呼ぶ問題とは何かを、後ろで具体的に説明します（ある危険を減らそうとして、新しい危険を生んだり、不平等を深めたりすること）。'],
+    ],
     chunks: [
       ['This', 'このことは'],
       ['illustrates a problem', 'ある問題を示しています'],
@@ -254,6 +257,9 @@ export default Object.freeze([
     },
   }),
   st('[S Such observations] [V do not replace] [O scientific data]; [S they] [V reveal] [O {疑問詞節| [M where] [S additional measurement] [V is needed]}].', {
+    marks: [
+      [';', 'セミコロンで、「科学のデータの代わりにはならない」ことと、「では何の役に立つのか（追加の測定が必要な場所を示す）」を、対にして並べます。'],
+    ],
     chunks: [
       ['Such observations', 'そうした観察は'],
       ['do not replace scientific data', '科学的なデータに代わるものではありません'],

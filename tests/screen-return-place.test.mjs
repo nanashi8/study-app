@@ -245,7 +245,8 @@ test('一覧の見え方は params に置き、戻ったときも同じ一覧・
     'src/screens/Grammar.jsx': ['view', 'level', 'strand', 'questionType'],
     'src/screens/Writing.jsx': ['level', 'mode', 'track'],
     'src/screens/LiteratureLibrary.jsx': ['kind'],
-    'src/screens/LiteratureReader.jsx': ['scene', 'segment'],
+    // 名作は全文表示で、読んでいる文・開いていた文・訳と書き下し文の表示を置く（2026-09-29）。
+    'src/screens/LiteratureReader.jsx': ['sentence', 'open', 'showJa', 'showKakikudashi'],
     'src/screens/MyList.jsx': ['tab', 'domain', 'filter', 'query', 'shown', 'setId'],
     'src/screens/ReadingPrep.jsx': ['view', 'listTab'],
     'src/screens/Reader.jsx': ['showJa', 'showParagraphGuide'],

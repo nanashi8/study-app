@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-29T04:27:10.426Z",
+  "auditedAt": "2026-09-29T14:47:25.785Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 18639,
     "storedAndGeneratedQuestionPathCount": 5353,
     "storedAndGeneratedChoicePathCount": 20707,
-    "overallContentSha256": "85eec19e1294b4eb2355bbc8f9b71fc9b0bcf0fd1bc458d2d3b4e9fa189af185"
+    "overallContentSha256": "98af157e04ebde3512bc8c235ac4f78ac118783ee1220940585b113cb65d213e"
   },
   "completionCriteria": [
     "全20教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -112,7 +112,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "3feaf3e1fbd4d3638ec026fb9193c73ea0142f5de934d6d26b19eb5aaf83a986",
+    "sha256": "4b9259640623d1734a03571f1be5e698d573164e07bb3426f3bf119ffa60ab65",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -246,7 +246,11 @@
       "tests/learning-power.test.mjs",
       "tests/leftover-changes.test.mjs",
       "tests/listening-speaker-voices.test.mjs",
+      "tests/literature-classics-notes.test.mjs",
+      "tests/literature-full-text-reader.test.mjs",
       "tests/literature-reading.test.mjs",
+      "tests/literature-sentence-structures.test.mjs",
+      "tests/literature-sentences.test.mjs",
       "tests/literature-vocabulary.test.mjs",
       "tests/literature.test.mjs",
       "tests/long-sentence-translations.test.mjs",
@@ -277,6 +281,7 @@
       "tests/reading-parallel-layout.test.mjs",
       "tests/reading-phrase-explanations.test.mjs",
       "tests/reading-prep-record-list.test.mjs",
+      "tests/reading-punctuation-notes.test.mjs",
       "tests/reading-question-translations.test.mjs",
       "tests/reading-regressions.test.mjs",
       "tests/reading-role-annotations.test.mjs",
@@ -723,7 +728,7 @@
       "quizItemCount": 12,
       "learningIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
       "quizIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
-      "contentSha256": "dac376a722d7e657f8b002a4bf0baca404db97a59667abed879b2804958dc908",
+      "contentSha256": "da8c76b94a6a924deaf8b5d83e9ce1463ac25f06e261d3a8eed3799e6b2a7243",
       "auditGateIds": [
         "inventory",
         "coreData",

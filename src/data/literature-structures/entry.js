@@ -4,7 +4,8 @@ import { st } from '../reading-structures/entry.js'
 // markup: 構造の記法（src/lib/reading-sentence-structure.js の先頭。長文の構造台帳と同じ）
 // ja: その文の自然な和訳
 // p: 段落の始まり（原文の段落どおり）
-// part: 長い文をセミコロン・コロンの位置で独立した節ごとに分けたとき、後ろに同じ文の続きがある部分
+// part: とても長い1文を、セミコロン・コロン・ダッシュや、会話にはさまる語り（かっこ）・and の前で分けたとき、
+//   後ろに同じ文の続きがある部分（分けた位置は画面で説明する。literature-sentences.js の literaturePartBreaks）
 // fragment: 動詞のない文（Strange! や “Bingley.” など）。文型を出さず、独立語などの役割だけを示す
 // marks: 記号（— ： ；）がこの文で何を表すか。[記号, 説明] の並びで、本文に出る順に書く。
 //   記号は '—' '：' ではなく本文の文字（'—' ':' ';'）で書き、挿入をはさむ一対のダッシュは '— —' と書く

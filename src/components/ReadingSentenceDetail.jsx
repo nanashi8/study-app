@@ -31,6 +31,7 @@ const ROLE_STYLE = {
   M: 'border-violet-200 bg-violet-50 text-violet-800',
   LINK: 'border-slate-200 bg-slate-50 text-slate-700',
   IND: 'border-stone-200 bg-stone-50 text-stone-700',
+  INS: 'border-stone-200 bg-white text-stone-600',
   並列: 'border-slate-200 bg-slate-50 text-slate-700',
 }
 
@@ -167,7 +168,7 @@ function PunctuationNotes({ notes }) {
 }
 
 // 一文をタップしたときの構文詳細。受験長文と語彙強化ロングリーディング、名作（英語）で共通。
-// resolveWord は、押した英単語の意味の引き方（名作は作品・場面ごとの語義を使う）。
+// resolveWord は、押した英単語の意味の引き方（名作は作品・文ごとの語義を使う）。
 export function ReadingSentenceDetail({
   sentence,
   sentenceAnalysis,
@@ -215,7 +216,7 @@ export function ReadingSentenceDetail({
               <ReadingRoleSentence
                 sentence={structure ? structure.markedSentence : sentence.en}
                 parts={structure
-                  ? structureDisplayParts(structure.elements)
+                  ? structureDisplayParts(structure.displayElements)
                   : sentenceFlowParts(sentenceAnalysis)}
                 parallel={structure?.parallel ?? []}
                 activeWord={activeWord?.word}
@@ -319,7 +320,7 @@ export function ReadingSentenceDetail({
               </p>
               <div className="mt-3">
                 <SvocFlow parts={structure
-                  ? structure.elements.map((element) => ({
+                  ? structure.displayElements.map((element) => ({
                     role: element.displayRole,
                     text: element.trimmed,
                   }))

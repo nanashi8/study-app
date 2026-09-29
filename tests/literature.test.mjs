@@ -24,7 +24,7 @@ import {
   kanbunPlainText,
   parseKanbunMarkedText,
 } from '../src/lib/kanbun-marks.js'
-import { LITERATURE_TRANSLATION_REVIEW } from '../src/data/literature-full-text/translation-review.js'
+import { literatureSentences } from '../src/data/literature-sentences.js'
 import { createLearningAnalytics } from '../src/lib/learningAnalytics.js'
 import { useStore } from '../src/store/useStore.js'
 
@@ -51,8 +51,9 @@ test('名作に親しむは英語6作品・古典3作品・漢文3作品を一�
 
 test('英語名作6作品は5,000語以内の章または短編を全文収録する', () => {
   const works = literatureByKind('english')
-  assert.deepEqual(works.map((work) => work.coverage.sourceWordCount), [2237, 860, 1015, 2162, 3499, 2071])
-  assert.deepEqual(works.map(literatureWordCount), [2217, 856, 1004, 2143, 3472, 2073])
+  // 高慢と偏見は、本文の途中に入っていた挿絵の説明（“He came down to see the place”・7語）を本文から外した（2026-09-29）。
+  assert.deepEqual(works.map((work) => work.coverage.sourceWordCount), [2237, 853, 1015, 2162, 3499, 2071])
+  assert.deepEqual(works.map(literatureWordCount), [2217, 849, 1004, 2143, 3472, 2073])
   for (const work of works) {
     const fullText = work.scenes.map((scene) => scene.original).join(' ')
     assert.ok(work.coverage.sourceWordCount <= 5000, work.id)
@@ -67,7 +68,9 @@ test('英語名作6作品は5,000語以内の章または短編を全文収録�
   }
 })
 
-test('全158場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
+// 英語は段落を場面にし、文ごとの構造台帳の語順訳のまとまりを朗読の区切りにする（会話1行の段落は区切り1つ）。
+// 古典・漢文は朗読の場面ごとに2組以上の区切りを持つ。
+test('全247場面（英語は段落）が原文・訳と、間で区切った一対一の朗読データを持つ', () => {
   let sceneCount = 0
   let segmentCount = 0
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
@@ -76,9 +79,8 @@ test('全158場面が原文・訳・解説と、間で区切った一対一の�
       sceneCount += 1
       assert.ok(scene.original.trim(), `${at}: 原文`)
       assert.ok(scene.translation.trim(), `${at}: 訳`)
-      assert.ok(scene.guide.trim(), `${at}: 解説`)
       if (work.kind !== 'english') assert.ok(scene.speech?.trim(), `${at}: 読み上げ文`)
-      assert.ok(scene.narrationSegments.length >= 2, `${at}: 間の区切り`)
+      assert.ok(scene.narrationSegments.length >= (work.kind === 'english' ? 1 : 2), `${at}: 間の区切り`)
       segmentCount += scene.narrationSegments.length
 
       const joiner = work.kind === 'english' ? ' ' : ''
@@ -104,53 +106,28 @@ test('全158場面が原文・訳・解説と、間で区切った一対一の�
       assert.ok(literatureWordCount(work) >= 130, `${work.id}: 長文語数`)
     }
   }
-  assert.equal(sceneCount, 158)
-  assert.equal(segmentCount, 1632)
+  assert.equal(sceneCount, 247)
+  assert.equal(segmentCount, 1725)
 })
 
-test('英語名作6作品122場面・1,481区切りの全訳レビュー台帳が現在の本文と一致する', () => {
-  const works = literatureByKind('english')
-  const payload = works.map((work) => ({
-    id: work.id,
-    scenes: work.scenes.map((scene) => ({
-      original: scene.original,
-      translation: scene.translation,
-      segments: scene.narrationSegments.map((segment) => [
-        segment.original,
-        segment.translation,
-      ]),
-    })),
-  }))
+// 英語の和訳と語順訳の日本語は、文ごとの構造台帳（literature-structures/）が持つ。
+test('英語名作6作品の全624文の和訳と全1,575区切りの対応する日本語に、生成途中の記号や英語の残りがない', () => {
   const artifact = /翻訳エラー|star_border|さらに表示|\d{8,}[|｜]|\[SEG|⟦SEG|ZXQ|[<>]|\bnull\b/i
-
-  assert.equal(works.length, LITERATURE_TRANSLATION_REVIEW.englishWorkCount)
-  assert.equal(
-    works.reduce((count, work) => count + work.scenes.length, 0),
-    LITERATURE_TRANSLATION_REVIEW.sceneCount,
-  )
-  assert.equal(
-    works.reduce(
-      (count, work) =>
-        count + work.scenes.reduce(
-          (sceneTotal, scene) => sceneTotal + scene.narrationSegments.length,
-          0,
-        ),
-      0,
-    ),
-    LITERATURE_TRANSLATION_REVIEW.segmentCount,
-  )
-  assert.equal(
-    createHash('sha256').update(JSON.stringify(payload)).digest('hex'),
-    LITERATURE_TRANSLATION_REVIEW.contentSha256,
-  )
-  for (const work of works) {
-    for (const scene of work.scenes) {
-      assert.doesNotMatch(scene.translation, artifact)
-      for (const segment of scene.narrationSegments) {
-        assert.doesNotMatch(segment.translation, artifact)
+  let sentenceCount = 0
+  let segmentCount = 0
+  for (const work of literatureByKind('english')) {
+    for (const sentence of literatureSentences(work)) {
+      sentenceCount += 1
+      assert.ok(sentence.ja.trim(), `${sentence.id}: 和訳`)
+      assert.doesNotMatch(sentence.ja, artifact, sentence.id)
+      for (const segment of sentence.segments) {
+        segmentCount += 1
+        assert.doesNotMatch(segment.translation, artifact, `${sentence.id}: ${segment.original}`)
       }
     }
   }
+  assert.equal(sentenceCount, 624)
+  assert.equal(segmentCount, 1575)
 })
 
 test('朗読順は全作品・全区切りで必ず原文→対応する日本語になる', () => {
@@ -198,14 +175,14 @@ test('朗読順は全作品・全区切りで必ず原文→対応する日本�
   }
 })
 
-test('アリスが時計を見て追いかける場面も全文の中で対応訳と音声を保つ', () => {
+test('アリスが時計を見て追いかける段落も全文の中で対応訳と音声を保つ', () => {
   const work = getLiteratureWork('lit_en_alice_rabbit_hole')
   const sceneIndex = work.scenes.findIndex((scene) => scene.original.includes('waistcoat-pocket'))
   const segmentIndex = work.scenes[sceneIndex].narrationSegments.findIndex(
     (segment) => segment.original.includes('actually took a watch'),
   )
   const segment = work.scenes[sceneIndex].narrationSegments[segmentIndex]
-  assert.equal(segment.translation, 'しかし、実際にウサギがチョッキのポケットから時計を取り出し、')
+  assert.equal(segment.translation, 'ところが、ウサギが本当に時計を取り出して')
   const translationStep = buildLiteratureNarration(work).find(
     (step) => step.sceneIndex === sceneIndex && step.segmentIndex === segmentIndex && step.phase === 'translation',
   )
@@ -215,15 +192,17 @@ test('アリスが時計を見て追いかける場面も全文の中で対応�
   assert.doesNotMatch(translationStep.text, /[（）()]/u)
 })
 
-test('アリスが穴へ飛び込む場面は8区切りで英語→対応する日本語になる', () => {
+test('アリスが穴へ飛び込む2段落は8区切りで英語→対応する日本語になる', () => {
   const work = getLiteratureWork('lit_en_alice_rabbit_hole')
-  const segments = work.scenes[2].narrationSegments
+  const first = work.scenes.findIndex((scene) => scene.original.startsWith('In another moment down went Alice'))
+  assert.ok(first > 0)
+  const sceneIndexes = [first, first + 1]
   assert.deepEqual(
-    segments.map((segment) => segment.original),
+    sceneIndexes.flatMap((sceneIndex) => work.scenes[sceneIndex].narrationSegments.map((segment) => segment.original)),
     [
       'In another moment down went Alice after it,',
-      'never once considering how in the world she was',
-      'to get out again.',
+      'never once considering how in the world',
+      'she was to get out again.',
       'The rabbit-hole went straight on like a tunnel for some way,',
       'and then dipped suddenly down,',
       'so suddenly that Alice had not a moment',
@@ -233,26 +212,9 @@ test('アリスが穴へ飛び込む場面は8区切りで英語→対応する�
   )
   assert.deepEqual(
     buildLiteratureNarration(work)
-      .filter((step) => step.sceneIndex === 2)
+      .filter((step) => sceneIndexes.includes(step.sceneIndex))
       .map((step) => step.phase),
-    [
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-      'original',
-      'translation',
-    ],
+    Array.from({ length: 8 }, () => ['original', 'translation']).flat(),
   )
 })
 
@@ -388,24 +350,17 @@ test('名作読了は既存の同期対象へ保存し、初回だけ分野別�
 })
 
 test('画面導線・連続TTS・通常長文の分離集計を実装している', () => {
-  const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
-  const reader = readFileSync(
-    new URL('../src/screens/LiteratureReader.jsx', import.meta.url),
-    'utf8',
-  )
-  const library = readFileSync(
-    new URL('../src/screens/LiteratureLibrary.jsx', import.meta.url),
-    'utf8',
-  )
-  const contents = readFileSync(new URL('../src/data/contents.js', import.meta.url), 'utf8')
-  const koten = readFileSync(new URL('../src/screens/KotenList.jsx', import.meta.url), 'utf8')
-  const kanbun = readFileSync(new URL('../src/screens/KanbunHome.jsx', import.meta.url), 'utf8')
-  const map = readFileSync(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8')
-  const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
-  const sceneNavigator = readFileSync(
-    new URL('../src/components/LiteratureSceneNavigator.jsx', import.meta.url),
-    'utf8',
-  )
+  const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
+  const app = read('../src/App.jsx')
+  const reader = read('../src/screens/LiteratureReader.jsx')
+  const library = read('../src/screens/LiteratureLibrary.jsx')
+  const fullText = read('../src/components/LiteratureFullText.jsx')
+  const sheet = read('../src/components/LiteratureSentenceSheet.jsx')
+  const contents = read('../src/data/contents.js')
+  const koten = read('../src/screens/KotenList.jsx')
+  const kanbun = read('../src/screens/KanbunHome.jsx')
+  const map = read('../src/screens/EnglishMap.jsx')
+  const store = read('../src/store/useStore.js')
 
   assert.match(app, /literatureLibrary:\s*LiteratureLibraryScreen/)
   assert.match(app, /literatureReader:\s*LiteratureReaderScreen/)
@@ -414,21 +369,26 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.match(reader, /NARRATION_PAUSE_MS/)
   assert.match(reader, /対応する日本語/)
   assert.doesNotMatch(reader, /前からの直訳|フレーズ訳|区切りの直訳/)
-  assert.match(reader, /書き下し（朗読）/)
   assert.match(reader, /markLiteratureDone\(/)
-  assert.match(reader, /<LiteratureSceneNavigator/)
+  // 本文は場面ごとに切り替えず、全文を段落ごとに見せる。文を押すと一文の解説が開き、前後の文へ移れる。
+  assert.match(reader, /<LiteratureFullText/)
+  assert.match(reader, /<LiteratureSentenceSheet/)
+  assert.doesNotMatch(reader, /LiteratureSceneNavigator|前の場面|次の場面/)
+  assert.match(reader, /data-literature-kakikudashi-toggle/)
   assert.doesNotMatch(reader, /grid grid-cols-4 gap-2/)
-  assert.match(sceneNavigator, /data-literature-scene-navigation/)
-  assert.match(sceneNavigator, /aria-label="前の場面へ"/)
-  assert.match(sceneNavigator, /aria-label="次の場面へ"/)
-  assert.match(sceneNavigator, /aria-live="polite"/)
-  assert.match(sceneNavigator, /role="group"/)
-  assert.doesNotMatch(sceneNavigator, /role="listitem"/)
-  assert.match(sceneNavigator, /min-h-11 min-w-11/)
-  assert.match(sceneNavigator, /addEventListener\('resize', handleResize\)/)
+  assert.match(fullText, /data-literature-full-text=\{work\.id\}/)
+  assert.match(fullText, /'data-literature-sentence': sentence\.number/)
+  assert.match(fullText, /role: 'button'/)
+  assert.match(fullText, /event\.key !== 'Enter'/)
+  assert.match(sheet, /data-literature-sentence-navigation/)
+  assert.match(sheet, /← 前の文/)
+  assert.match(sheet, /次の文 →/)
+  assert.match(sheet, /aria-live="polite"/)
   assert.match(library, /title="名作に親しむ"/)
+  assert.match(library, /段落・/)
+  assert.doesNotMatch(library, /scenes\.length\}場面/)
   // 権利・出典・収録範囲の確認は教材を用意する側の管理情報で、生徒の学習には使わない。
-  for (const source of [reader, library]) {
+  for (const source of [reader, library, fullText, sheet]) {
     assert.doesNotMatch(source, /work\.rights|work\.source|work\.coverage/)
     assert.doesNotMatch(source, /出典|著作権|権利を確認|パブリックドメイン|本アプリ独自|音声合成です|文化庁/)
   }

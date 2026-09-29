@@ -1521,7 +1521,7 @@ export default Object.freeze([
     },
   }),
   // 123
-  ls('[S White fingers {形容詞>White fingers| [接 and] nimble}] [V tore at] [O {並列| the string | and paper}].', {
+  ls('[S White fingers {形容詞>White fingers| [接 and] [M nimble]}] [V tore at] [O {並列| the string | and paper}].', {
     p: true,
     ja: '白くすばしこい指が、ひもと包み紙をむしるようにほどいた。',
     chunks: [

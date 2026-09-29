@@ -48,11 +48,16 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-09-29、数学の入試演習で画面・部品・lib が7ファイル（src/screens/MathExam.jsx・MathExamUnit.jsx・
   // MathExamSolve.jsx・src/components/MathAnswerPad.jsx・MathExamFigure.jsx・src/lib/mathExam.js・mathExamLog.js）、
   // 問題データが11ファイル（src/data/math-exam.js と src/data/math-exam/ の10ファイル）増えた。
-  assert.equal(result.learnerFiles, 308)
-  assert.equal(result.learnerJapaneseEntries, 15325)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11450)
-  assert.equal(result.sourceFiles, 769)
-  assert.equal(result.sourceJapaneseEntries, 205201)
+  // 2026-09-29、名作に親しむを全文表示にして、画面・部品・lib が3ファイル増えた（src/components/LiteratureFullText.jsx・
+  // LiteratureSentenceSheet.jsx・src/lib/literature-sentence-analysis.js・punctuation-notes.js の4つを足し、
+  // src/components/LiteratureSceneNavigator.jsx を外した）。ソース全体は、文ごとの台帳（literature-sentences.js・
+  // literature-classics-notes.js・literature-structures/ の8ファイル）を足し、英語名作の古い全文の場面ファイル・
+  // 訳の修正台帳（src/data/literature-full-text/ の12ファイル）を外して、差し引き1ファイル増えた。
+  assert.equal(result.learnerFiles, 311)
+  assert.equal(result.learnerJapaneseEntries, 15516)
+  assert.equal(result.learnerUniqueJapaneseEntries, 11529)
+  assert.equal(result.sourceFiles, 770)
+  assert.equal(result.sourceJapaneseEntries, 208184)
   assert.equal(result.issues.length, 0)
 })
 

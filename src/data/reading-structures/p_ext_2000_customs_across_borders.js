@@ -488,6 +488,9 @@ export default Object.freeze([
     },
   }),
   st('[S Many festivals] [M now] [V serve] [O two audiences] [M {前| at once}]: [O {同格>two audiences|{並列| the community {関係>the community| [S that] [V keeps] [O them]} | and the visitors {関係>the visitors| [S who] [V photograph] [O them]}}}].', {
+    marks: [
+      [':', 'コロンで、「2種類の観客」とは誰と誰なのかを、後ろで具体的に示します（祭りを守る地域の人々と、写真をとる訪問者）。'],
+    ],
     chunks: [
       ['Many festivals now serve two audiences at once:', '今日、多くの祭りは二つの相手に同時に応えています'],
       ['the community that keeps them', 'それを続ける共同体と'],

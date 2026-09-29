@@ -12,6 +12,13 @@ export const TRANSLATION_ROLE_META = Object.freeze({
     question: '呼びかけ・感動・答えなど、文の骨組みの外にある語句',
     japaneseShape: '「ああ」「ねえ、あなた」「いいえ」など、文の頭や途中に添える形',
   }),
+  // 語り手が文の途中にかっこなどで差し込んだ文（挿入文）。文の骨組み（S・V・O・C）の外に置く。
+  INS: Object.freeze({
+    code: '挿入',
+    label: '挿入文',
+    question: '語り手が文の途中にはさんだ補足',
+    japaneseShape: '（　）に入れた補足として訳し、前後の文をつないで読む',
+  }),
   S: Object.freeze({
     code: 'S',
     label: '主語',
