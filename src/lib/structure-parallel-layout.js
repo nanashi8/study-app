@@ -11,7 +11,7 @@
 // 並ぶものの範囲は構造台帳から作る（reading-sentence-structure.js の parallel。本文の語の番号）。
 // ここでは括弧つきの英文を語・括弧・記号の小片に分け、並列の範囲で行とそろえ位置の入れ子を組む。
 
-import { STRUCTURE_WORD_SOURCE } from './reading-sentence-structure.js'
+import { structureWordMatches } from './reading-sentence-structure.js'
 
 const OPENERS = new Set(['(', '<'])
 const CLOSERS = new Set([')', '>'])
@@ -36,11 +36,11 @@ function otherPieces(text, extra) {
 export function textPieces(text = '', extra = {}) {
   const pieces = []
   let cursor = 0
-  for (const match of `${text}`.matchAll(new RegExp(STRUCTURE_WORD_SOURCE, 'g'))) {
-    const index = match.index ?? 0
+  for (const match of structureWordMatches(text)) {
+    const index = match.index
     pieces.push(...otherPieces(text.slice(cursor, index), extra))
-    pieces.push({ ...extra, text: match[0], type: 'word' })
-    cursor = index + match[0].length
+    pieces.push({ ...extra, text: match.word, type: 'word' })
+    cursor = index + match.word.length
   }
   pieces.push(...otherPieces(text.slice(cursor), extra))
   return pieces

@@ -19,8 +19,18 @@ export const READING_ROLE_CODES = Object.freeze([
 const READING_ROLE_CODE_SET = new Set(READING_ROLE_CODES)
 const ENGLISH_WORD_PATTERN = /[A-Za-z][A-Za-z'’\u2010-\u2015-]*/g
 
+// 主語と動詞の短縮形（it’s・I’ll など）は、構造台帳と同じく主語と動詞の2語に分けて数える。
+const VERB_CONTRACTION = /^(.+?)(['’])(ll|ve|re|m|d)$/i
+const IS_CONTRACTION = /^(it|that|there|here|he|she|what|who|where|how|let)(['’])(s)$/i
+
 function englishWordMatches(text = '') {
-  return [...`${text}`.matchAll(ENGLISH_WORD_PATTERN)]
+  return [...`${text}`.matchAll(ENGLISH_WORD_PATTERN)].flatMap((match) => {
+    const split = VERB_CONTRACTION.exec(match[0]) ?? IS_CONTRACTION.exec(match[0])
+    if (!split) return [match]
+    const head = Object.assign([split[1]], { index: match.index })
+    const tail = Object.assign([split[3]], { index: (match.index ?? 0) + split[1].length + split[2].length })
+    return [head, tail]
+  })
 }
 
 function normalizedEnglishWord(word = '') {

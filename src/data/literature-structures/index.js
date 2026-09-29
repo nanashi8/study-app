@@ -2,6 +2,7 @@
 // 入れ子で書いた正解。画面の一文の構文解説（文の要素・構造図・文型・節・句の解説・語順訳）はここから作る。
 // 並べた文をつなぐと作品の本文と一字一句同じになる（tests/literature-sentence-structures.test.mjs）。
 
+import alice from './alice.js'
 import mobyDick from './moby-dick.js'
 import prideAndPrejudice from './pride-and-prejudice.js'
 import taleOfTwoCities from './tale-of-two-cities.js'
@@ -10,4 +11,5 @@ export const LITERATURE_SENTENCE_STRUCTURES = Object.freeze({
   lit_en_moby_dick_water_gazers: mobyDick,
   lit_en_pride_prejudice_netherfield: prideAndPrejudice,
   lit_en_tale_two_cities_times: taleOfTwoCities,
+  lit_en_alice_rabbit_hole: alice,
 })

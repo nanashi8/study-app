@@ -115,8 +115,12 @@ const CLAUSE_TYPES = new Set([
   'whether節', 'if節', 'what節', '副詞節', '強調',
 ])
 
-// 直接話法の引用（“…,” said he の “…”）。発言の中の要素を並べるが、節の ( ) も句の < > も付けない。
-const QUOTE_TYPES = new Set(['引用'])
+// 直接話法の引用（“…,” said he の “…”）と、かっこの中に差し込まれた語り手の補足の文（挿入文）。
+// 中の要素を一つの文として並べるが、節の ( ) も句の < > も付けない。
+const QUOTE_TYPES = new Set(['引用', '挿入文'])
+
+// neither A nor B・both A and B のような相関の語は、後ろの that節の中身を説明する形容詞ではない。
+const CORRELATIVE_LEADS = /^(?:neither|either|both|not|nor|and|or|but|only|also|just|even)$/i
 
 const PHRASE_TYPES = new Set([
   'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前', '数量', '反復',
@@ -142,7 +146,7 @@ export const MULTIWORD_PREPOSITIONS = Object.freeze([
   'according to', 'ahead of', 'along with', 'apart from', 'as for', 'aside from', 'because of',
   'close to', 'due to', 'except for', 'far from', 'instead of', 'next to', 'out of', 'owing to',
   'prior to', 'rather than', 'regardless of', 'such as', 'thanks to', 'together with', 'up to',
-  'by reason of', 'as to',
+  'by reason of', 'as to', 'on to',
 ])
 
 export const SINGLE_PREPOSITIONS = new Set([
@@ -151,7 +155,7 @@ export const SINGLE_PREPOSITIONS = new Set([
   'before', 'behind', 'below', 'beneath', 'beside', 'besides', 'between', 'beyond', 'by',
   'concerning', 'despite', 'down', 'during', 'except', 'for', 'from', 'in', 'including', 'inside',
   'into', 'like', 'near', 'of', 'off', 'on', 'onto', 'outside', 'over', 'past', 'per', 'regarding',
-  'since', 'than', 'through', 'throughout', 'to', 'toward', 'towards', 'under', 'underneath',
+  'round', 'since', 'than', 'through', 'throughout', 'to', 'toward', 'towards', 'under', 'underneath',
   'unlike', 'until', 'up', 'upon', 'versus', 'via', 'with', 'within', 'without',
 ])
 
@@ -171,8 +175,29 @@ export const STRUCTURE_WORD_SOURCE = WORD_PATTERN.source
 const TRAILING_PUNCTUATION = /[\s,;:—–-]+$/u
 const LEADING_PUNCTUATION = /^[\s,;:—–-]+/u
 
+// 主語と動詞がくっついた短縮形（it’s・I’ll・they’re・I’ve・that’s など）は、台帳で [S it][V ’s] と
+// 主語と動詞に分けて書けるよう、語を数えるときも2語に分ける。否定の don’t や所有の Alice’s は1語のまま。
+const VERB_CONTRACTION = /^(.+?)(['’])(ll|ve|re|m|d)$/i
+const IS_CONTRACTION = /^(it|that|there|here|he|she|what|who|where|how|let)(['’])(s)$/i
+
+export function structureWordMatches(text = '') {
+  const words = []
+  for (const match of `${text}`.matchAll(WORD_PATTERN)) {
+    const word = match[0]
+    const index = match.index ?? 0
+    const split = VERB_CONTRACTION.exec(word) ?? IS_CONTRACTION.exec(word)
+    if (split) {
+      words.push({ word: split[1], index })
+      words.push({ word: split[3], index: index + split[1].length + split[2].length })
+      continue
+    }
+    words.push({ word, index })
+  }
+  return words
+}
+
 export function structureWords(text = '') {
-  return [...`${text}`.matchAll(WORD_PATTERN)].map((match) => match[0])
+  return structureWordMatches(text).map((match) => match.word)
 }
 
 export function normalizeStructureText(text = '') {
@@ -443,6 +468,8 @@ export function structureUnitLabel(unit) {
       return '決まった言い方'
     case '引用':
       return '直接話法の引用（発言そのもの）'
+    case '挿入文':
+      return '差し込まれた文（語り手の補足）'
     default:
       return 'まとまり'
   }
@@ -466,7 +493,8 @@ function patternFromRoles(roles) {
   return `${subject ? 'S' : '(S)'}${core}`
 }
 
-const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always|cannot|can't|couldn't|won't|wouldn't|shouldn't|mustn't|don't|doesn't|didn't|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't)(?:\s+(?:not|never))?$/i
+// ’ll・’ve・’s などは、[S it][V ’ll] のように主語と分けて書いた短縮形の助動詞・be動詞。
+const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always|cannot|can['’]t|couldn['’]t|won['’]t|wouldn['’]t|shouldn['’]t|mustn['’]t|don['’]t|doesn['’]t|didn['’]t|isn['’]t|aren['’]t|wasn['’]t|weren['’]t|hasn['’]t|haven['’]t|hadn['’]t|['’](?:ll|d|ve|s|re|m))(?:\s+(?:not|never))?$/i
 
 // 助動詞だけの形（will / is / has など）でも、後ろ（修飾語を除く）に動詞が続かなければ、
 // それ自体が述語動詞（is not merely … の is not など）。
@@ -475,19 +503,38 @@ function verbIsComplete(element, elements = []) {
   if (!AUXILIARY_ONLY.test(text)) return true
   const index = elements.indexOf(element)
   if (index < 0) return false
+  // And so it was: … の was のように、同じ節の前に補語 C がある be動詞は、それだけで完結している。
+  if (/^(?:am|is|are|was|were)(?:\s+not)?$/i.test(text)) {
+    for (const item of elements.slice(0, index).reverse()) {
+      if (['接', 'V'].includes(item.role)) break
+      if (item.role === 'C') return true
+    }
+  }
   // Nor does S … guarantee のような倒置も、主語をはさんで動詞が続くので未完結。
   // ただし There is A — B surrounds … のように主語が2つ続けば、2つ目の主語から新しい節なので完結。
+  // There was not a moment …: away went Alice のように、後ろの動詞がその後ろに自分の主語を持つ倒置の節なら、
+  // 前の be動詞は完結している。
   let seenSubject = false
-  for (const item of elements.slice(index + 1)) {
+  const rest = elements.slice(index + 1)
+  for (const [offset, item] of rest.entries()) {
     if (item.role === 'M') continue
     if (['S', '仮S'].includes(item.role)) {
       if (seenSubject) return true
       seenSubject = true
       continue
     }
-    return item.role !== 'V'
+    if (item.role !== 'V') return true
+    if (!seenSubject) return false
+    const after = rest.slice(offset + 1).find((next) => next.role !== 'M')
+    return Boolean(after && ['S', '仮S'].includes(after.role))
   }
   return true
+}
+
+// 直接話法の引用だけでできた要素（[O {引用| “…”}]）か。
+function isQuoteElement(element) {
+  const children = element.children.filter((child) => child.kind !== 'text' || child.text.trim())
+  return children.length === 1 && children[0].kind === 'unit' && children[0].base === '引用'
 }
 
 function clauseGroups(elements) {
@@ -497,9 +544,24 @@ function clauseGroups(elements) {
   let current = { elements: [], sharedSubject: false }
   for (const [index, element] of elements.entries()) {
     // セミコロン・コロンの後ろなど、接続語なしで新しい主語が来たら新しい節。
+    // ただし There was not a moment: away went Alice のように、後ろの動詞が自分の主語を後ろに持つ倒置なら、
+    // この主語は前の動詞のもの。
+    const nextIndex = elements.findIndex((item, at) => at > index && item.role !== 'M')
+    const nextIsInverted = nextIndex >= 0 &&
+      ['S', '仮S'].includes(elements.slice(nextIndex + 1).find((item) => item.role !== 'M')?.role)
     if (
       ['S', '仮S'].includes(element.role) &&
-      elements.slice(index + 1).find((item) => item.role !== 'M')?.role === 'V' &&
+      elements[nextIndex]?.role === 'V' && !nextIsInverted &&
+      current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements))
+    ) {
+      groups.push(current)
+      current = { elements: [], sharedSubject: false }
+    }
+    // she felt nervous; “for it might end,” said Alice のように、完結した節のあとで引用の目的語が
+    // said・thought などの前に来たら、その引用から新しい節（引用を目的語にする節）。
+    if (
+      element.role === 'O' && isQuoteElement(element) &&
+      ['V', 'S'].includes(elements.slice(index + 1).find((item) => item.role !== 'M')?.role) &&
       current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements))
     ) {
       groups.push(current)
@@ -508,7 +570,8 @@ function clauseGroups(elements) {
     if (
       element.role === 'V' &&
       current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements)) &&
-      current.elements.at(-1)?.role !== '接'
+      current.elements.at(-1)?.role !== '接' &&
+      !(current.elements.length && current.elements.every((item) => item.role === 'O' && isQuoteElement(item)))
     ) {
       groups.push(current)
       current = { elements: [], sharedSubject: true }
@@ -531,14 +594,18 @@ function clauseGroups(elements) {
   return groups.filter((group) => group.elements.some((item) => item.role === 'V'))
 }
 
-function patternsForScope(elements, { root = false } = {}) {
+function patternsForScope(elements, { root = false, quote = false } = {}) {
   const groups = clauseGroups(elements)
   let previousHadSubject = false
-  return groups.map((group) => {
+  // “I’ll look first,” she said, “and see …” の2つ目の引用のように、and などで始まる引用は、
+  // 前の引用の主語を受けて続く述語で、命令文ではない。
+  const continuesQuote = quote && elements[0]?.role === '接'
+  return groups.map((group, groupIndex) => {
     const roles = group.elements.map((element) => element.role)
     const inherits = group.sharedSubject && previousHadSubject
     const pattern = patternFromRoles(inherits ? ['S', ...roles] : roles)
     previousHadSubject = roles.some((role) => ['S', '仮S'].includes(role)) || inherits
+    if (continuesQuote && groupIndex === 0) return pattern
     // 文全体の主節に主語がなければ、主語 you を省いた命令文。
     return root && pattern.startsWith('(S)') ? `(you)${pattern.slice(3)}` : pattern
   }).filter(Boolean)
@@ -720,10 +787,14 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
     case '成句':
       return `${inside}語の組み合わせ全体で一つの意味を表す決まった言い方です${partOf}。`
+    case '挿入文':
+      return `${inside}文の途中にかっこなどで差し込まれた、語り手の補足の文です。外して読むと、前後がつながります。`
     // 直接話法の引用は、said・cried などの目的語として、話した言葉をそのまま示す。
     case '引用': {
       if (container && ['O', 'O2'].includes(container.role)) {
-        const verb = nearestVerb(scopeElements, container)
+        // “…,” said she のように引用のすぐ後ろに動詞があれば、その動詞の目的語（前の節の動詞と取り違えない）。
+        const next = scopeElements[scopeElements.indexOf(container) + 1]
+        const verb = next?.role === 'V' ? verbGroupAround(scopeElements, next) : nearestVerb(scopeElements, container)
         return `${inside}${verb ? `${verb} の` : ''}目的語Oで、話した言葉をそのまま引いています。`
       }
       return `${inside}話した言葉をそのまま引いています${partOf}。`
@@ -807,6 +878,15 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
       }
       return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
     }
+    case 'that節':
+    case 'that省略':
+    case '疑問詞節':
+    case 'whether節':
+    case 'if節': {
+      const head = nounClauseHead(unit, container, parent)
+      if (head) return `${inside}直前の ${head} の中身を、後ろから具体的に説明します${partOf}。`
+      return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
+    }
     default:
       return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
   }
@@ -814,6 +894,18 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
 
 function unitText(unit) {
   return trimPhraseText(rawText(unit.children))
+}
+
+// be glad (that) …・sure that … や have no idea what … のように、要素の中で語のすぐ後ろに置かれた名詞節は、
+// 要素そのもの（目的語・補語）ではなく、直前の語（glad・idea）の中身を説明する。その語を返す（なければ空）。
+function nounClauseHead(unit, container, parent) {
+  if (!['that節', 'that省略', '疑問詞節', 'whether節', 'if節'].includes(unit.base)) return ''
+  if (!container || parent !== container || !['S', 'O', 'C'].includes(container.role)) return ''
+  const siblingsBefore = parent.children.slice(0, Math.max(0, parent.children.indexOf(unit)))
+  if (!siblingsBefore.length || !siblingsBefore.every((child) => child.kind === 'text')) return ''
+  if (prepositionBeforeUnit(parent, unit)) return ''
+  const word = structureWords(rawText(siblingsBefore)).at(-1) ?? ''
+  return word && !CORRELATIVE_LEADS.test(word) ? word : ''
 }
 
 function unitMarker(unit) {
@@ -825,11 +917,16 @@ function unitMarker(unit) {
 //   <about the future> <of a city>、<to help them> <explore the town> <without getting lost>
 // 前置詞の目的語になる動名詞・原形などの句は、前置詞と一つの < > にまとめる（<from losing their ability>）。
 // 後ろから入った句のあとに外側の句の語が残るときは、残りを < > で閉じ直す（<to charge the fee> <for one year> <and publish the results>）。
+// 本文そのものにあるかっこ（名作の語り手のかっこ書き。文をまたいで閉じることもある）は、構造図の節の ( ) と
+// 見分けがつくように、全角の（ ）で書く。
+const literalBrackets = (text) => `${text}`.replace(/\(/g, '（').replace(/\)/g, '）')
+
 function markedText(nodes) {
   const out = []
   const emit = (text) => out.push(text)
   const walk = (list, phrase, parentUnit = null) => {
-    for (const [index, node] of list.entries()) {
+    for (const [index, rawNode] of list.entries()) {
+      const node = rawNode.kind === 'text' ? { ...rawNode, text: literalBrackets(rawNode.text) } : rawNode
       if (node.kind === 'text') {
         // and・or だけが残るときは括らない（<across places> and <over time>）。
         const reopenWords = structureWords(node.text).filter((word) => !OBJECT_COORDINATORS.has(word.toLowerCase()))
@@ -869,7 +966,7 @@ function markedText(nodes) {
       }
       // 同格の語句・名詞を後ろから説明する形容詞は、句を名詞のところで閉じ、それ自体は括らず中の句・節だけを括る
       // （Ms. Brown, one <of the librarians>、<than a harsh law> full <of loopholes>）。
-      if (['同格', '形容詞', '引用'].includes(node.base)) {
+      if (['同格', '形容詞', '引用', '挿入文'].includes(node.base)) {
         if (phrase?.open) {
           emit('> ')
           phrase.open = false
@@ -897,8 +994,8 @@ function markedText(nodes) {
   return out.join('')
     .replace(/<\s*>/g, '')
     .replace(/\s+/g, ' ')
-    .replace(/([(<])\s+/g, '$1')
-    .replace(/\s+([)>])/g, '$1')
+    .replace(/([(<（])\s+/g, '$1')
+    .replace(/\s+([)>）])/g, '$1')
     .replace(/([,;:])>/g, '>$1')
 }
 
@@ -928,11 +1025,11 @@ function isPrepositionObject(unit, parent) {
 function collectWords(nodes, scopes, elements, output) {
   for (const node of nodes) {
     if (node.kind === 'text') {
-      for (const match of `${node.text}`.matchAll(WORD_PATTERN)) {
+      for (const match of structureWordMatches(node.text)) {
         output.push({
-          word: match[0],
+          word: match.word,
           node,
-          offset: match.index ?? 0,
+          offset: match.index,
           scopes: [...scopes],
           elements: [...elements],
         })
@@ -957,7 +1054,8 @@ function validateTree(nodes, errors, scopeUnit = null) {
       continue
     }
     if (node.kind === 'unit') {
-      errors.push(`まとまり「${unitText(node)}」は要素の中に置く必要があります`)
+      // 語り手が文の途中に差し込んだ文（挿入文）は、外側の文のどの要素にも属さない。
+      if (node.base !== '挿入文') errors.push(`まとまり「${unitText(node)}」は要素の中に置く必要があります`)
       validateUnit(node, errors)
       continue
     }
@@ -1093,6 +1191,8 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       containerRole: containerElement?.role ?? '',
       functionText: unitFunctionText(node, containerElement, scopeElements, scopeUnit, parent ?? containerElement),
       containerVerb: containerElement ? nearestVerb(scopeElements, containerElement) : '',
+      // glad (that) … の glad のように、名詞節がすぐ後ろで中身を説明する語。
+      headWord: nounClauseHead(node, containerElement, parent ?? containerElement),
       parts: innerElements.map((element) => Object.freeze({
         role: element.role,
         text: nodeText(element),
@@ -1100,7 +1200,7 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       // 引用の中は一つの文として読む（主語のない Tell me は命令文）。
       patterns: clause
         ? patternsForScope(innerElements)
-        : QUOTE_TYPES.has(node.base) ? patternsForScope(innerElements, { root: true }) : [],
+        : QUOTE_TYPES.has(node.base) ? patternsForScope(innerElements, { root: true, quote: node.base === '引用' }) : [],
       // 節・句そのものを括弧つきで示す文字列（外側の括弧も含む）。
       marked: normalizeStructureText(markedText([node])),
     })
@@ -1690,10 +1790,14 @@ function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   if (found === 'as' && (/ly$/.test(next) || next === 'well')) return true
   // as powerful as fear is のように、後ろに as で始まる比較のまとまりがあるときの1つ目の as も副詞。
   if (found === 'as' && options.hasAsComparison) return true
-  // the past・of the past の past は名詞。
-  if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
+  // the past・of the past の past、a round dozen の round は名詞・形容詞。
+  if (['past', 'round'].includes(found) && DETERMINERS_BEFORE_NOUN.has(previous)) return true
+  // down here・up there の down・up は、場所の副詞 here・there と組む副詞。
+  if (next === 'here' || next === 'there') return true
   // 目的語が続かない語は前置詞ではない（its own past の past、once before の before など）。
   if (!next && !(nextNode?.kind === 'unit')) return true
+  // so … as to do の as のように、すぐ後ろが to不定詞なら前置詞ではない。
+  if (!next && nextNode?.kind === 'unit' && nextNode.base === 'to') return true
   // すぐ後ろが別の前置詞句なら、目的語を取らない副詞（fired … in among them の in、the swallowing up of の up）。
   if (!next && nextNode?.kind === 'unit' && nextNode.base === '前') return true
   // by about a third の about は「約」という副詞で、後ろの数量にかかる。
@@ -1779,9 +1883,9 @@ function textForWordRange(structure, start, end) {
         continue
       }
       let cursor = 0
-      for (const match of `${node.text}`.matchAll(WORD_PATTERN)) {
-        const matchStart = match.index ?? 0
-        const matchEnd = matchStart + match[0].length
+      for (const match of structureWordMatches(node.text)) {
+        const matchStart = match.index
+        const matchEnd = matchStart + match.word.length
         if (wordIndex === start) {
           collecting = true
           cursor = matchStart

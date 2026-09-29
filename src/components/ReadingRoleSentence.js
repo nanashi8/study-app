@@ -56,6 +56,10 @@ function renderRoleText(segment, {
     if (!token.word) {
       return createElement('span', { key: `punctuation-${tokenIndex}` }, token.pre)
     }
+    // [S it][V ’s] と分けた短縮形の後ろ半分（’s・’ll など）は、単語として引かずにそのまま出す。
+    if (/['’]$/.test(token.pre) && /^(?:s|ll|ve|re|m|d)$/i.test(token.word)) {
+      return createElement('span', { key: `contraction-${tokenIndex}` }, `${token.pre}${token.word}${token.post}`)
+    }
     const known = isKnownWord(token)
     return createElement(
       'span',

@@ -261,6 +261,17 @@ function relativeExplanation(unit) {
   const verb = verbGroupText(elements, 1)
   const nonRestrictive = unit.base === '関係,'
 
+  // …, when suddenly … のように、コンマの後ろで前の節の時・場所を受けて話を先へ進める関係副詞。
+  if (antecedent === '前の内容' && /^(?:when|where)$/.test(leadLower)) {
+    return {
+      word: leadText,
+      chip: '関係副詞',
+      kind: '関係副詞（非制限用法）',
+      explanation: leadLower === 'when'
+        ? `コンマの後ろの when は、関係副詞の非制限用法です。前の節で述べた時を受けて「すると、そのとき〜」と話を先へ進めるので、前から順に読みます。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`
+        : `コンマの後ろの where は、関係副詞の非制限用法です。前の節で述べた場所を受けて「そしてそこで〜」と話を先へ進めるので、前から順に読みます。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`,
+    }
+  }
   if (antecedent === '前の内容') {
     return {
       word: leadText,
@@ -584,6 +595,15 @@ function adverbialExplanation(unit) {
       explanation: `${head}${leadText} の後ろは ${restText} だけで、主節と同じ動詞が省かれています。前の動詞を補って読みます。このまとまりが${target}。`,
     }
   }
+  // for は「というのも」と理由をあとから付け足す接続詞（等位接続詞）。節の中の for も同じ働き。
+  if (leadLower === 'for') {
+    return {
+      word: leadText,
+      chip: '接続詞',
+      kind: '接続詞 for（理由）',
+      explanation: `for は「というのも〜だから」と、前の内容の理由をあとから付け足す接続詞です。後ろの主語 ${subject} と動詞 ${verb} の節が、その理由を表します。`,
+    }
+  }
   if (leadLower === 'than') {
     return {
       word: leadText,
@@ -619,7 +639,7 @@ function nounClauseExplanation(unit) {
         word: '',
         chip: '',
         kind: '接続詞 that の省略',
-        explanation: `${unit.containerVerb ? `${unit.containerVerb} の後ろで、` : ''}接続詞 that が省略されています。主語 ${subject} と動詞 ${verb} から始まるまとまりが、「〜ということ」という名詞節です。`,
+        explanation: `${unit.headWord || unit.containerVerb ? `${unit.headWord || unit.containerVerb} の後ろで、` : ''}接続詞 that が省略されています。主語 ${subject} と動詞 ${verb} から始まるまとまりが、「〜ということ」という名詞節です。`,
       }
     case '同格that': {
       const noun = unit.antecedent
@@ -842,6 +862,7 @@ export function shortConnectorNote(info, unit = null) {
     return `${word} は接続詞で、「〜かどうか」という名詞節を作ります。`
   }
   if (kind === '接続詞 than（比較）') return 'than は比べる相手を表す接続詞です。'
+  if (kind === '接続詞 for（理由）') return 'for は「というのも〜だから」と理由を付け足す接続詞です。'
   if (kind === '関係代名詞 what') return 'what は先行詞を含む関係代名詞で、「〜すること」という名詞節を作ります。'
   if (kind.startsWith('複合関係代名詞')) return `${word} は先行詞を含む複合関係代名詞で、名詞節を作ります。`
   if (kind === '強調構文の that') return 'It is と that で強調したい語句をはさむ強調構文です。'
