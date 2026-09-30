@@ -86,6 +86,26 @@
       "decision": "figure",
       "sha256": "84ad083d813083766496f8832523dc13f6c0a8dc9af32520c178d4006d817299"
     },
+    "civ-05#1": {
+      "decision": "figure",
+      "sha256": "04bf6ce7b1aad470aa27a2687abcb559cadd7cbcd02d3fb6c1be5f4808c5c58d"
+    },
+    "civ-05#2": {
+      "decision": "figure",
+      "sha256": "658289c0a830e709d3501bf784c635dafaae6a0d9012703223c4b22eaae6d0e8"
+    },
+    "civ-05#3": {
+      "decision": "figure",
+      "sha256": "c72bb86b9c0932823e2f0c9fd9f52f855cd3e58035684600c151dbfe9027afc4"
+    },
+    "civ-05#4": {
+      "decision": "figure",
+      "sha256": "1d60735915a477861d4c560a4c2914d2ef53cb2dd3a388332222340b630056ca"
+    },
+    "civ-05#5": {
+      "decision": "figure",
+      "sha256": "7e6ec9e456876bccb9ec73448a2e3550b00623bb7bc9ec472f783a732074402e"
+    },
     "geo-01#1": {
       "decision": "figure",
       "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
@@ -1055,6 +1075,42 @@
     "civ-04-q09": {
       "decision": "none",
       "sha256": "518ebd6045d5e99fca35be9d0c3d4f1b768949b174beb530c94c1f515ac93fc4"
+    },
+    "civ-05-q01": {
+      "decision": "none",
+      "sha256": "0c2db49efbfef7b520154edbd1cd3ae5c2e0400effcf92fbb3a91db598c1739d"
+    },
+    "civ-05-q02": {
+      "decision": "none",
+      "sha256": "5651e52594a2aff9860ff8bae537c9713b84b68b2ec2ce267c9970c42a2c3735"
+    },
+    "civ-05-q03": {
+      "decision": "none",
+      "sha256": "3acca2bd8e2ac320001e51baf468e195ec5b35c059f9868948a30f4aabea29c9"
+    },
+    "civ-05-q04": {
+      "decision": "none",
+      "sha256": "0bc987f4b0d3f741846c3a1594241868f8304b3aabbfcb03e41571b14a9308b6"
+    },
+    "civ-05-q05": {
+      "decision": "none",
+      "sha256": "ee99ebcda9d006754611b497ae397fbc5c1398bb0b331cee5d2eaf27bfc04b55"
+    },
+    "civ-05-q06": {
+      "decision": "none",
+      "sha256": "7929fd0afa29fff9e6f4237c7fe2fb0d4ac04f015ab67e21a9c7287fe945cb61"
+    },
+    "civ-05-q07": {
+      "decision": "none",
+      "sha256": "977c610716291673929467dea7565190294538cecd13284cc0ff47bec64c936c"
+    },
+    "civ-05-q08": {
+      "decision": "none",
+      "sha256": "b4e1b4d646c9638d3d9627af7914242717dc5862981052358713d28dbf35c461"
+    },
+    "civ-05-q09": {
+      "decision": "none",
+      "sha256": "aa1342c5ebbf56d1406ab3380d5c8ae717f019667b2368c33c68790ed81acef6"
     },
     "geo-01-q01": {
       "decision": "none",
