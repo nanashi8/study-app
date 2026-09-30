@@ -896,6 +896,182 @@ function RockTexturesDiagram() {
   )
 }
 
+const starPath = (cx, cy, r) => Array.from({ length: 10 }, (_, i) => {
+  const angle = -Math.PI / 2 + (i * Math.PI) / 5
+  const radius = i % 2 ? r * 0.45 : r
+  return `${i ? 'L' : 'M'}${(cx + radius * Math.cos(angle)).toFixed(1)},${(cy + radius * Math.sin(angle)).toFixed(1)}`
+}).join(' ') + ' Z'
+
+function DoubleArrow({ x1, x2, y, color = LINE }) {
+  return (
+    <g>
+      <line x1={x1 + 4} y1={y} x2={x2 - 4} y2={y} stroke={color} strokeWidth="1" />
+      <path d={`M${x1},${y} L${x1 + 6},${y - 3} L${x1 + 6},${y + 3} Z`} fill={color} />
+      <path d={`M${x2},${y} L${x2 - 6},${y - 3} L${x2 - 6},${y + 3} Z`} fill={color} />
+    </g>
+  )
+}
+
+// ── 震源・震央と地震計の記録 ──────────────────────────────────────────────
+//   { name: 'quakeRecord' }
+// 上：地下の震源（★）と、その真上の震央、はなれた観測点。下：観測点の地震計の記録。P波が届くと初期微動、S波が届くと主要動が始まる。
+function QuakeRecordDiagram() {
+  const surface = 46
+  const focus = [64, 104]
+  const station = 236
+  const base = 192
+  const pAt = 64
+  const sAt = 144
+  const trace = []
+  for (let x = 16; x <= 288; x += 1) {
+    let y = base
+    if (x >= pAt && x < sAt) y = base - 4.5 * Math.sin((x - pAt) * 1.35) * (0.7 + 0.3 * Math.sin(x * 0.37))
+    if (x >= sAt) y = base - (30 * Math.exp(-(x - sAt) / 70) + 3) * Math.sin((x - sAt) * 0.62)
+    trace.push(`${x === 16 ? 'M' : 'L'}${x},${y.toFixed(1)}`)
+  }
+  return (
+    <svg viewBox="0 0 300 264" className="h-auto w-full" role="img" aria-label="震源・震央と地震計の記録" data-subject-diagram="quakeRecord">
+      <rect x="8" y={surface} width="284" height="76" fill="#f5f5f4" />
+      <line x1="8" y1={surface} x2="292" y2={surface} stroke={DARK} strokeWidth="1.6" />
+      <line x1={focus[0]} y1={focus[1]} x2={focus[0]} y2={surface} stroke={LINE} strokeWidth="1" strokeDasharray="3 3" />
+      <line x1={focus[0]} y1={focus[1]} x2={station} y2={surface} stroke="#dc2626" strokeWidth="1.2" strokeDasharray="4 3" />
+      <path d={starPath(focus[0], focus[1], 8)} fill="#dc2626" />
+      <circle cx={focus[0]} cy={surface} r="3.2" fill={INK} />
+      <path d={`M${station - 8},${surface} L${station},${surface - 12} L${station + 8},${surface} Z`} fill="#94a3b8" stroke={LINE} strokeWidth="1" />
+      <Label x={focus[0]} y={20} anchor="middle" size={10} weight="800">震央</Label>
+      <Label x={station} y={20} anchor="middle" size={10} weight="800">観測点（地震計）</Label>
+      <DoubleArrow x1={focus[0] + 6} x2={station - 10} y={34} />
+      <Label x={150} y={30} anchor="middle" size={8.5} color={LINE}>震央からの距離</Label>
+      <Label x={focus[0] + 12} y={focus[1] + 4} size={10} weight="800" color="#dc2626">震源</Label>
+      <Label x={150} y={98} size={8.5} color="#dc2626">震源からの距離</Label>
+
+      <Label x={16} y={134} size={9} weight="800">観測点の地震計の記録</Label>
+      <line x1={pAt} y1={146} x2={pAt} y2={230} stroke={LINE} strokeWidth="0.9" strokeDasharray="3 3" />
+      <line x1={sAt} y1={146} x2={sAt} y2={230} stroke={LINE} strokeWidth="0.9" strokeDasharray="3 3" />
+      <Label x={pAt} y={152} anchor="middle" size={8.5} color={LINE}>P波が届く</Label>
+      <Label x={sAt} y={152} anchor="middle" size={8.5} color={LINE}>S波が届く</Label>
+      <path d={trace.join(' ')} fill="none" stroke="#2563eb" strokeWidth="1.3" />
+      <Label x={(pAt + sAt) / 2} y={178} anchor="middle" size={9} weight="800">初期微動</Label>
+      <Label x={256} y={164} anchor="middle" size={9} weight="800">主要動</Label>
+      <DoubleArrow x1={pAt} x2={sAt} y={238} color="#15803d" />
+      <Label x={(pAt + sAt) / 2} y={254} anchor="middle" size={8.5} color="#15803d">初期微動継続時間</Label>
+      <Label x={288} y={254} anchor="end" size={8.5} color={DARK}>時間 →</Label>
+    </svg>
+  )
+}
+
+// ── 日本付近のプレートの断面と震源の分布 ─────────────────────────────────────────
+//   { name: 'plateSubduction' }
+// 東北地方を東西に切ったようす。左が日本海側、右が太平洋側。海洋プレートが海溝から大陸プレートの下へ沈みこむ。●は震源。
+function PlateSubductionDiagram() {
+  const land = 'M8,52 L50,50 L92,40 L118,30 L140,26 L164,36 L186,46 L198,52'
+  const slabQuakes = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9].map((t, i) => [200 - 150 * t + 2.7 + (i % 2 ? 2 : -2), 78 + 98 * t + 4.2 + (i % 3) * 1.5])
+  const nearTrench = [[194, 84], [186, 90], [180, 86]]
+  const inland = [[100, 62], [126, 58], [150, 66], [112, 72]]
+  return (
+    <svg viewBox="0 0 300 224" className="h-auto w-full" role="img" aria-label="日本付近のプレートの断面と震源の分布" data-subject-diagram="plateSubduction">
+      <path d="M198,52 L292,52 L292,66 L212,66 L206,74 Z" fill="#dbeafe" />
+      <line x1="198" y1="52" x2="292" y2="52" stroke="#60a5fa" strokeWidth="1" />
+      <path d={`${land} L206,74 L184,86 L8,86 Z`} fill="#fde68a" stroke="#92400e" strokeWidth="1.1" />
+      <path d="M292,66 L212,66 L206,74 L184,86 L44,178 L57,198 L197,106 L216,92 L292,92 Z" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1.1" />
+      {[...slabQuakes, ...nearTrench, ...inland].map(([x, y], index) => <circle key={index} cx={x} cy={y} r="2.3" fill="#dc2626" />)}
+      <Label x={10} y={16} size={9} weight="800" color={LINE}>日本海側</Label>
+      <Label x={290} y={16} anchor="end" size={9} weight="800" color={LINE}>太平洋側</Label>
+      <Label x={60} y={77} anchor="middle" size={9} weight="800" color="#92400e">大陸プレート</Label>
+      <Label x={254} y={83} anchor="middle" size={9} weight="800" color="#1d4ed8">海洋プレート</Label>
+      <Callout from={[206, 74]} to={[232, 40]} text="海溝" />
+      <Callout from={[126, 58]} to={[140, 12]} text="内陸の地震" />
+      <Callout from={[194, 84]} to={[226, 150]} text="海溝型地震" />
+      <line x1="284" y1="104" x2="242" y2="104" stroke={INK} strokeWidth="1.6" />
+      <path d="M236,104 L244,100 L244,108 Z" fill={INK} />
+      <Label x={262} y={119} anchor="middle" size={8.5} color={LINE}>動く向き</Label>
+      <circle cx="226" cy="211" r="2.3" fill="#dc2626" />
+      <Label x={232} y={214.5} size={8.5} color={LINE}>震源</Label>
+      <Label x={132} y={214.5} anchor="middle" size={8.5} color={LINE}>震源は日本海側ほど深い</Label>
+    </svg>
+  )
+}
+
+// ── 地層の変形（断層・しゅう曲） ───────────────────────────────────────────────
+//   { name: 'layerDeformation', kinds: ['normal', 'reverse', 'fold'] }
+// 地層に力がはたらいてできるつくりを、上から順に並べる。normal：引っぱる力でできる正断層、reverse：おす力でできる逆断層、
+// fold：おす力でできるしゅう曲。断層は赤い線で、左の地層が断層面に沿ってずれる。
+const DEFORMATION = {
+  normal: { title: '正断層', force: '左右から引っぱる力', inward: false },
+  reverse: { title: '逆断層', force: '左右からおす力', inward: true },
+  fold: { title: 'しゅう曲', force: '左右からおす力', inward: true },
+}
+function LayerDeformationDiagram({ kinds = ['normal', 'reverse'] }) {
+  const rowH = 106
+  const left = 90
+  const width = 120
+  const height = 56
+  const layer = height / 4
+  const colors = ['#fde68a', '#fdba74', '#d6d3d1', '#a8a29e', '#bbf7d0']
+  const run = 20 / height
+  const arrow = (x1, x2, y) => {
+    const dir = Math.sign(x2 - x1)
+    return (
+      <g>
+        <line x1={x1} y1={y} x2={x2 - dir * 6} y2={y} stroke="#dc2626" strokeWidth="2.4" />
+        <path d={`M${x2},${y} L${x2 - dir * 9},${y - 5} L${x2 - dir * 9},${y + 5} Z`} fill="#dc2626" />
+      </g>
+    )
+  }
+  return (
+    <svg viewBox={`0 0 300 ${kinds.length * rowH}`} className="h-auto w-full" role="img" aria-label="地層の変形" data-subject-diagram="layerDeformation">
+      {kinds.map((kind, index) => {
+        const { title, force, inward } = DEFORMATION[kind]
+        const y0 = index * rowH
+        const top = y0 + 28
+        const mid = top + height / 2
+        const xa = left + 70
+        const slip = kind === 'normal' ? 11 : -11
+        const shift = [-(20 / Math.hypot(20, height)) * slip, (height / Math.hypot(20, height)) * slip]
+        const blockPath = (side) => {
+          const deep = top + height + 16
+          const xDeep = xa - (deep - top) * run
+          return side === 'left'
+            ? `M${left - 10},${top - 16} L${xa + 16 * run},${top - 16} L${xDeep},${deep} L${left - 10},${deep} Z`
+            : `M${xa + 16 * run},${top - 16} L${left + width + 10},${top - 16} L${left + width + 10},${deep} L${xDeep},${deep} Z`
+        }
+        const layers = (dy) => colors.map((color, k) => <rect key={k} x={left - 10} y={top + dy + k * layer} width={width + 20} height={layer} fill={color} stroke="#78716c" strokeWidth="0.6" />)
+        return (
+          <g key={kind}>
+            <Label x={16} y={y0 + 16} size={10} weight="800">{title}</Label>
+            <defs>
+              <clipPath id={`deform-frame-${index}`}><rect x={left} y={top - 16} width={width} height={height + 16} /></clipPath>
+              <clipPath id={`deform-left-${index}`}><path d={blockPath('left')} /></clipPath>
+              <clipPath id={`deform-right-${index}`}><path d={blockPath('right')} /></clipPath>
+            </defs>
+            {kind === 'fold' ? (
+              <g>
+                {[0, 1, 2, 3].map((k) => {
+                  const edge = (j) => Array.from({ length: 41 }, (_, i) => [left + (width * i) / 40, top + j * layer + 10 * Math.sin((i / 40) * 2 * Math.PI)])
+                  const upper = edge(k)
+                  const lower = edge(k + 1).reverse()
+                  return <path key={k} d={`M${[...upper, ...lower].map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' L')} Z`} fill={colors[k]} stroke="#78716c" strokeWidth="0.6" />
+                })}
+              </g>
+            ) : (
+              <g clipPath={`url(#deform-frame-${index})`}>
+                <g clipPath={`url(#deform-right-${index})`}>{layers(0)}</g>
+                <g transform={`translate(${shift[0].toFixed(2)} ${shift[1].toFixed(2)})`}>
+                  <g clipPath={`url(#deform-left-${index})`}>{layers(0)}</g>
+                </g>
+                <line x1={xa - Math.min(0, shift[1]) * run} y1={top + Math.min(0, shift[1])} x2={xa - height * run} y2={top + height} stroke="#dc2626" strokeWidth="1.8" />
+              </g>
+            )}
+            {inward ? arrow(38, 82, mid) : arrow(82, 38, mid)}
+            {inward ? arrow(262, 218, mid) : arrow(218, 262, mid)}
+            <Label x={150} y={y0 + rowH - 6} anchor="middle" size={9} color={LINE}>{force}</Label>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -922,4 +1098,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   forceBalance: ForceBalanceDiagram,
   volcanoShapes: VolcanoShapesDiagram,
   rockTextures: RockTexturesDiagram,
+  quakeRecord: QuakeRecordDiagram,
+  plateSubduction: PlateSubductionDiagram,
+  layerDeformation: LayerDeformationDiagram,
 })
