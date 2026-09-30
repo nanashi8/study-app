@@ -71,4 +71,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'moleculeModels',
   'reactionModels',
   'cellStructure',
+  'photosynthesis',
+  'stemSections',
+  'leafSection',
 ])

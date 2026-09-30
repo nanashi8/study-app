@@ -1434,6 +1434,119 @@ function CellStructureDiagram() {
   )
 }
 
+function Arrow({ from, to, color = INK, width = 1.8 }) {
+  const [x1, y1] = from
+  const [x2, y2] = to
+  const angle = Math.atan2(y2 - y1, x2 - x1)
+  const tip = (a) => `${(x2 + 8 * Math.cos(angle + a)).toFixed(1)},${(y2 + 8 * Math.sin(angle + a)).toFixed(1)}`
+  return (
+    <g>
+      <line x1={x1} y1={y1} x2={x2 - 5 * Math.cos(angle)} y2={y2 - 5 * Math.sin(angle)} stroke={color} strokeWidth={width} />
+      <path d={`M${x2},${y2} L${tip(Math.PI * 0.85)} L${tip(-Math.PI * 0.85)} Z`} fill={color} />
+    </g>
+  )
+}
+
+// ── 光合成の材料とできるもの ──────────────────────────────────────────────────
+//   { name: 'photosynthesis' }
+// 葉に入るもの（光・二酸化炭素・水）と、できるもの（デンプンなど・酸素）を矢印で示す。
+function PhotosynthesisDiagram() {
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="光合成の材料とできるもの" data-subject-diagram="photosynthesis">
+      <path d="M70,108 Q150,30 240,108 Q150,186 70,108 Z" fill="#bbf7d0" stroke="#15803d" strokeWidth="1.4" />
+      <path d="M70,108 L240,108" stroke="#15803d" strokeWidth="1.2" />
+      <path d="M70,108 Q56,130 36,150" fill="none" stroke="#15803d" strokeWidth="3" />
+      <circle cx="36" cy="30" r="13" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Arrow from={[52, 44]} to={[100, 80]} color="#ca8a04" />
+      <Label x={62} y={36} size={9.5} weight="800" color="#a16207">光</Label>
+      <Arrow from={[254, 36]} to={[206, 72]} color="#475569" />
+      <Label x={296} y={24} anchor="end" size={9} weight="800">二酸化炭素（気孔から入る）</Label>
+      <Arrow from={[24, 186]} to={[96, 132]} color="#2563eb" />
+      <Label x={8} y={204} size={9} weight="800" color="#1d4ed8">水（根から道管を通って）</Label>
+      <Arrow from={[204, 146]} to={[252, 180]} color="#dc2626" />
+      <Label x={296} y={204} anchor="end" size={9} weight="800" color="#b91c1c">酸素（気孔から出る）</Label>
+      <Label x={155} y={100} anchor="middle" size={12} weight="800" color="#14532d">光合成</Label>
+      <Label x={155} y={124} anchor="middle" size={9} color="#14532d">葉緑体でデンプンなどができる</Label>
+    </svg>
+  )
+}
+
+// ── 茎の断面と維管束 ─────────────────────────────────────────────────────────
+//   { name: 'stemSections' }
+// 左：双子葉類（ホウセンカ）は維管束が輪のように並ぶ。右：単子葉類（トウモロコシ）は散らばる。
+// 維管束の内側（中心側・赤）が道管、外側（緑）が師管。
+function StemSectionsDiagram() {
+  const ring = Array.from({ length: 8 }, (_, i) => (i * Math.PI) / 4 - Math.PI / 2)
+  const scattered = [[-30, -24], [0, -38], [28, -26], [-40, 4], [-12, -10], [16, -4], [40, 8], [-26, 26], [4, 22], [30, 32], [-6, 42], [-40, -16], [44, -12]]
+  const bundle = (cx, cy, ux, uy, size = 1) => (
+    <g>
+      <circle cx={cx} cy={cy} r={5.5 * size} fill="#fca5a5" stroke="#b91c1c" strokeWidth="0.7" />
+      <circle cx={cx + ux * 9 * size} cy={cy + uy * 9 * size} r={4.2 * size} fill="#86efac" stroke="#15803d" strokeWidth="0.7" />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="茎の断面と維管束" data-subject-diagram="stemSections">
+      <circle cx="78" cy="92" r="58" fill="#f0fdf4" stroke="#15803d" strokeWidth="1.4" />
+      {ring.map((a) => <g key={a}>{bundle(78 + 32 * Math.cos(a), 92 + 32 * Math.sin(a), Math.cos(a), Math.sin(a))}</g>)}
+      <circle cx="222" cy="92" r="58" fill="#f0fdf4" stroke="#15803d" strokeWidth="1.4" />
+      {scattered.map(([dx, dy]) => {
+        const d = Math.hypot(dx, dy) || 1
+        return <g key={`${dx}-${dy}`}>{bundle(222 + dx, 92 + dy, dx / d, dy / d, 0.7)}</g>
+      })}
+      <Callout from={[74, 62]} to={[40, 18]} text="道管" />
+      <Callout from={[80, 50]} to={[110, 18]} text="師管" />
+      <Callout from={[250, 66]} to={[266, 22]} text="維管束" />
+      <Label x={78} y={170} anchor="middle" size={9.5} weight="800">ホウセンカ（双子葉類）</Label>
+      <Label x={78} y={186} anchor="middle" size={8.5} color={LINE}>維管束が輪のように並ぶ</Label>
+      <Label x={222} y={170} anchor="middle" size={9.5} weight="800">トウモロコシ（単子葉類）</Label>
+      <Label x={222} y={186} anchor="middle" size={8.5} color={LINE}>維管束が全体に散らばる</Label>
+    </svg>
+  )
+}
+
+// ── 葉の断面と気孔 ───────────────────────────────────────────────────────────
+//   { name: 'leafSection' }
+// 葉を輪切りにしたようす。上下の表皮、葉緑体をもつ細胞、葉脈（維管束：上が道管・下が師管）、裏側の表皮の気孔と孔辺細胞。
+// 左下は、表皮を上から見た気孔。
+function LeafSectionDiagram() {
+  const palisade = Array.from({ length: 19 }, (_, i) => 12 + i * 14.4)
+  const spongy = [[24, 84], [46, 96], [30, 110], [66, 86], [84, 104], [60, 114], [104, 84], [112, 112], [190, 84], [206, 106], [226, 88], [246, 108], [262, 86], [280, 104], [186, 114], [236, 116], [270, 118], [90, 90]]
+  return (
+    <svg viewBox="0 0 300 218" className="h-auto w-full" role="img" aria-label="葉の断面と気孔" data-subject-diagram="leafSection">
+      {Array.from({ length: 14 }, (_, i) => <rect key={`u${i}`} x={10 + i * 20} y="24" width="20" height="8" fill="#f8fafc" stroke="#94a3b8" strokeWidth="0.7" />)}
+      {palisade.map((x) => (
+        <g key={`p${x}`}>
+          <rect x={x} y="34" width="12" height="36" rx="4" fill="#dcfce7" stroke="#16a34a" strokeWidth="0.7" />
+          {[42, 52, 62].map((y) => <circle key={y} cx={x + 6} cy={y} r="1.9" fill="#22c55e" />)}
+        </g>
+      ))}
+      {spongy.map(([x, y]) => (
+        <g key={`s${x}-${y}`}>
+          <ellipse cx={x} cy={y} rx="9" ry="7" fill="#dcfce7" stroke="#16a34a" strokeWidth="0.7" />
+          <circle cx={x - 2} cy={y} r="1.7" fill="#22c55e" />
+        </g>
+      ))}
+      <ellipse cx="150" cy="98" rx="24" ry="22" fill="#fef3c7" stroke="#b45309" strokeWidth="1" />
+      {[[140, 90], [150, 87], [160, 90]].map(([x, y]) => <circle key={`x${x}`} cx={x} cy={y} r="4.2" fill="#ffffff" stroke="#b91c1c" strokeWidth="1" />)}
+      {[[142, 107], [150, 109], [158, 107]].map(([x, y]) => <circle key={`f${x}`} cx={x} cy={y} r="3" fill="#bbf7d0" stroke="#15803d" strokeWidth="0.8" />)}
+      {Array.from({ length: 14 }, (_, i) => i).filter((i) => i !== 11).map((i) => <rect key={`l${i}`} x={10 + i * 20} y="124" width="20" height="8" fill="#f8fafc" stroke="#94a3b8" strokeWidth="0.7" />)}
+      <ellipse cx="235" cy="128" rx="5" ry="4.5" fill="#86efac" stroke="#15803d" strokeWidth="0.8" />
+      <ellipse cx="245" cy="128" rx="5" ry="4.5" fill="#86efac" stroke="#15803d" strokeWidth="0.8" />
+      <Callout from={[40, 28]} to={[48, 10]} text="表皮" />
+      <Callout from={[80, 52]} to={[92, 10]} text="葉緑体" />
+      <Callout from={[150, 87]} to={[176, 10]} text="道管" />
+      <Callout from={[150, 109]} to={[124, 156]} text="師管" />
+      <Callout from={[172, 104]} to={[186, 156]} text="葉脈（維管束）" />
+      <Callout from={[240, 131]} to={[256, 196]} text="気孔" />
+      <Callout from={[233, 131]} to={[222, 196]} text="孔辺細胞" />
+      <ellipse cx="52" cy="186" rx="7" ry="15" fill="#86efac" stroke="#15803d" strokeWidth="0.8" />
+      <ellipse cx="68" cy="186" rx="7" ry="15" fill="#86efac" stroke="#15803d" strokeWidth="0.8" />
+      <ellipse cx="60" cy="186" rx="2.6" ry="9" fill="#475569" />
+      <Label x={60} y={214} anchor="middle" size={8.5} color={LINE}>表皮を上から見た気孔</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1470,4 +1583,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   moleculeModels: MoleculeModelsDiagram,
   reactionModels: ReactionModelsDiagram,
   cellStructure: CellStructureDiagram,
+  photosynthesis: PhotosynthesisDiagram,
+  stemSections: StemSectionsDiagram,
+  leafSection: LeafSectionDiagram,
 })
