@@ -98,4 +98,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'crookesTube',
   'electronFlow',
   'radiationPenetration',
+  'circuitSymbols',
+  'seriesParallel',
+  'meterConnection',
 ])

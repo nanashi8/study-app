@@ -2412,6 +2412,159 @@ function RadiationPenetrationDiagram() {
   )
 }
 
+// 電気用図記号（線の太さ・大きさは回路図の中でそろえる）
+function CellSymbol({ x, y, vertical = false }) {
+  if (vertical) {
+    return (
+      <g>
+        <line x1={x - 12} y1={y - 4} x2={x + 12} y2={y - 4} stroke={INK} strokeWidth="1.6" />
+        <line x1={x - 7} y1={y + 4} x2={x + 7} y2={y + 4} stroke={INK} strokeWidth="3.4" />
+      </g>
+    )
+  }
+  return (
+    <g>
+      <rect x={x - 8} y={y - 14} width="16" height="28" fill="#ffffff" />
+      <line x1={x - 4} y1={y - 12} x2={x - 4} y2={y + 12} stroke={INK} strokeWidth="1.6" />
+      <line x1={x + 4} y1={y - 7} x2={x + 4} y2={y + 7} stroke={INK} strokeWidth="3.4" />
+    </g>
+  )
+}
+function BulbSymbol({ x, y, r = 9 }) {
+  const d = r * 0.7
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+      <path d={`M${x - d},${y - d} L${x + d},${y + d} M${x + d},${y - d} L${x - d},${y + d}`} stroke={INK} strokeWidth="1.2" />
+    </g>
+  )
+}
+function ResistorSymbol({ x, y, vertical = false }) {
+  return vertical
+    ? <rect x={x - 5} y={y - 13} width="10" height="26" fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+    : <rect x={x - 13} y={y - 5} width="26" height="10" fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+}
+function MeterSymbol({ x, y, letter }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r="10" fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+      <text x={x} y={y + 4} fontSize="11" fontWeight="800" textAnchor="middle" fill={INK}>{letter}</text>
+    </g>
+  )
+}
+
+// ── 電気用図記号 ──────────────────────────────────────────────────────────
+//   { name: 'circuitSymbols' }
+function CircuitSymbolsDiagram() {
+  const cells = [
+    ['電源（電池）', (x, y) => <g><line x1={x - 20} y1={y} x2={x - 4} y2={y} stroke={INK} strokeWidth="1.4" /><line x1={x + 4} y1={y} x2={x + 20} y2={y} stroke={INK} strokeWidth="1.4" /><CellSymbol x={x} y={y} /><text x={x - 12} y={y - 12} fontSize="9" fontWeight="800" textAnchor="middle" fill="#b91c1c">＋</text><text x={x + 12} y={y - 12} fontSize="9" fontWeight="800" textAnchor="middle" fill="#1d4ed8">－</text></g>],
+    ['電球', (x, y) => <g><line x1={x - 22} y1={y} x2={x + 22} y2={y} stroke={INK} strokeWidth="1.4" /><BulbSymbol x={x} y={y} /></g>],
+    ['抵抗器（電熱線）', (x, y) => <g><line x1={x - 24} y1={y} x2={x + 24} y2={y} stroke={INK} strokeWidth="1.4" /><ResistorSymbol x={x} y={y} /></g>],
+    ['スイッチ', (x, y) => <g><line x1={x - 22} y1={y} x2={x - 10} y2={y} stroke={INK} strokeWidth="1.4" /><line x1={x + 10} y1={y} x2={x + 22} y2={y} stroke={INK} strokeWidth="1.4" /><circle cx={x - 10} cy={y} r="2" fill="#ffffff" stroke={INK} strokeWidth="1.2" /><circle cx={x + 10} cy={y} r="2" fill="#ffffff" stroke={INK} strokeWidth="1.2" /><line x1={x - 9} y1={y - 1} x2={x + 10} y2={y - 11} stroke={INK} strokeWidth="1.4" /></g>],
+    ['電流計', (x, y) => <g><line x1={x - 22} y1={y} x2={x + 22} y2={y} stroke={INK} strokeWidth="1.4" /><MeterSymbol x={x} y={y} letter="A" /></g>],
+    ['電圧計', (x, y) => <g><line x1={x - 22} y1={y} x2={x + 22} y2={y} stroke={INK} strokeWidth="1.4" /><MeterSymbol x={x} y={y} letter="V" /></g>],
+    ['導線がつながる', (x, y) => <g><line x1={x - 18} y1={y} x2={x + 18} y2={y} stroke={INK} strokeWidth="1.4" /><line x1={x} y1={y - 14} x2={x} y2={y + 14} stroke={INK} strokeWidth="1.4" /><circle cx={x} cy={y} r="3" fill={INK} /></g>],
+    ['導線がつながらない', (x, y) => <g><line x1={x - 18} y1={y} x2={x + 18} y2={y} stroke={INK} strokeWidth="1.4" /><line x1={x} y1={y - 14} x2={x} y2={y + 14} stroke={INK} strokeWidth="1.4" /></g>],
+  ]
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="電気用図記号" data-subject-diagram="circuitSymbols">
+      {cells.map(([name, draw], index) => {
+        const x = 38 + (index % 4) * 75
+        const y = 36 + Math.floor(index / 4) * 84
+        return (
+          <g key={name}>
+            {draw(x, y)}
+            <Label x={x} y={y + 36} anchor="middle" size={8}>{name}</Label>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+// ── 直列回路と並列回路の電流・電圧 ───────────────────────────────────────────────
+//   { name: 'seriesParallel', show: 'current' | 'voltage' }（show がなければ回路だけ）
+// 左：直列回路（豆電球2個が1本の道筋）。右：並列回路（道筋が枝分かれ）。
+// current：直列はどこも同じ電流、並列は枝分かれ後の和が全体の電流。voltage：直列は各部分の和が電源の電圧、並列はどこも電源の電圧。
+function SeriesParallelDiagram({ show }) {
+  const wire = { fill: 'none', stroke: INK, strokeWidth: 1.4 }
+  const tag = (x, y, text, color = '#b91c1c') => <Label x={x} y={y} anchor="middle" size={8.5} weight="800" color={color}>{text}</Label>
+  const current = show === 'current'
+  const voltage = show === 'voltage'
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="直列回路と並列回路" data-subject-diagram="seriesParallel">
+      <Label x={75} y={14} anchor="middle" size={10} weight="800">直列回路</Label>
+      <rect x="20" y="40" width="110" height="100" {...wire} />
+      <BulbSymbol x={50} y={40} />
+      <BulbSymbol x={100} y={40} />
+      <CellSymbol x={75} y={140} />
+      <Label x={62} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
+      <Label x={88} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+
+      <Label x={225} y={14} anchor="middle" size={10} weight="800">並列回路</Label>
+      <rect x="170" y="40" width="110" height="100" {...wire} />
+      <line x1="170" y1="90" x2="280" y2="90" {...wire} />
+      <circle cx="170" cy="90" r="2.6" fill={INK} />
+      <circle cx="280" cy="90" r="2.6" fill={INK} />
+      <BulbSymbol x={225} y={40} />
+      <BulbSymbol x={225} y={90} />
+      <CellSymbol x={225} y={140} />
+      <Label x={212} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
+      <Label x={238} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+
+      {current && (
+        <g>
+          {tag(20 + 14, 90, '0.3A')}
+          {tag(75, 32, '0.3A')}
+          {tag(130 - 14, 90, '0.3A')}
+          {tag(196, 32, '0.2A')}
+          {tag(196, 84, '0.3A')}
+          {tag(265, 134, '0.5A')}
+          <Label x={75} y={180} anchor="middle" size={8.5} color={LINE}>電流はどこも同じ大きさ</Label>
+          <Label x={225} y={180} anchor="middle" size={8.5} color={LINE}>0.2A＋0.3A＝0.5A</Label>
+        </g>
+      )}
+      {voltage && (
+        <g>
+          {tag(50, 64, '2V', '#1d4ed8')}
+          {tag(100, 64, '4V', '#1d4ed8')}
+          {tag(75, 126, '6V', '#1d4ed8')}
+          {tag(250, 32, '6V', '#1d4ed8')}
+          {tag(250, 82, '6V', '#1d4ed8')}
+          {tag(250, 132, '6V', '#1d4ed8')}
+          <Label x={75} y={180} anchor="middle" size={8.5} color={LINE}>2V＋4V＝6V（電源の電圧）</Label>
+          <Label x={225} y={180} anchor="middle" size={8.5} color={LINE}>どれも電源の電圧と同じ</Label>
+        </g>
+      )}
+    </svg>
+  )
+}
+
+// ── 電流計と電圧計のつなぎ方 ──────────────────────────────────────────────────
+//   { name: 'meterConnection' }
+// 電流計ははかりたい部分に直列に、電圧計ははかりたい部分（抵抗器）に並列につなぐ。
+function MeterConnectionDiagram() {
+  const wire = { fill: 'none', stroke: INK, strokeWidth: 1.4 }
+  return (
+    <svg viewBox="0 0 300 172" className="h-auto w-full" role="img" aria-label="電流計と電圧計のつなぎ方" data-subject-diagram="meterConnection">
+      <rect x="40" y="80" width="200" height="60" {...wire} />
+      <path d="M110,80 L110,40 L128,40 M152,40 L170,40 L170,80" {...wire} />
+      <circle cx="110" cy="80" r="2.6" fill={INK} />
+      <circle cx="170" cy="80" r="2.6" fill={INK} />
+      <ResistorSymbol x={140} y={80} />
+      <MeterSymbol x={140} y={40} letter="V" />
+      <rect x="228" y="96" width="24" height="28" fill="#ffffff" />
+      <MeterSymbol x={240} y={110} letter="A" />
+      <CellSymbol x={140} y={140} />
+      <Label x={126} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
+      <Label x={154} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+      <Label x={176} y={36} size={9} weight="800" color="#1d4ed8">電圧計（並列につなぐ）</Label>
+      <Label x={224} y={116} anchor="end" size={9} weight="800" color="#b91c1c">電流計（直列につなぐ）</Label>
+      <Label x={140} y={102} anchor="middle" size={8.5} color={LINE}>抵抗器</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2475,4 +2628,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   crookesTube: CrookesTubeDiagram,
   electronFlow: ElectronFlowDiagram,
   radiationPenetration: RadiationPenetrationDiagram,
+  circuitSymbols: CircuitSymbolsDiagram,
+  seriesParallel: SeriesParallelDiagram,
+  meterConnection: MeterConnectionDiagram,
 })
