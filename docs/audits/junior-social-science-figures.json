@@ -146,6 +146,26 @@
       "decision": "figure",
       "sha256": "bbe9a3cf0d309d2abd766bee6651e22bade72febe3b03124d95efbb0dbf7922b"
     },
+    "civ-08#1": {
+      "decision": "figure",
+      "sha256": "ab28475c77d56b6c0b0a4e7bcc53c853c92785a778600f75109548e0f8a8b5ee"
+    },
+    "civ-08#2": {
+      "decision": "figure",
+      "sha256": "8ac309ddfa14525e14548b61bd8eeb42aeacf5c06c77d12374e7a3a2d6acf2ab"
+    },
+    "civ-08#3": {
+      "decision": "figure",
+      "sha256": "448a1afd59e607e277e4aaad4649b3481a89bbd25e4e8da612021a63e094a104"
+    },
+    "civ-08#4": {
+      "decision": "figure",
+      "sha256": "f1725b4a8a039ef252ec0afb1e1f1b57287a3db9adf3facd1c501bc0a3461b7e"
+    },
+    "civ-08#5": {
+      "decision": "figure",
+      "sha256": "e002e8c50398c6df009aba01224c30158b98b2a292e21ab7e04f300653ae515e"
+    },
     "geo-01#1": {
       "decision": "figure",
       "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
@@ -896,11 +916,11 @@
     },
     "his-18#2": {
       "decision": "figure",
-      "sha256": "fa2fb1f7a45871a018c06310eca7494360e78c1cdce0266587716459a2009723"
+      "sha256": "eef3391c2d22fb489ec62cc8f546741c82f3f36182efef4e2234dbbde6698940"
     },
     "his-18#3": {
       "decision": "figure",
-      "sha256": "99b3f39c8fde24fe162e986aafb42a8f86a92061cdd399121d9e70408dd8f6ce"
+      "sha256": "8f16ef06af4ca8e05b592d1f843103f5bdb3453f4face7fbc3d97be9e3f2e26a"
     },
     "his-18#4": {
       "decision": "figure",
@@ -1223,6 +1243,42 @@
     "civ-07-q09": {
       "decision": "none",
       "sha256": "80109df480725dec8c175266bfa4fce3ca9df49d482c2f6a32cffbe9b646d13e"
+    },
+    "civ-08-q01": {
+      "decision": "none",
+      "sha256": "95f1803c65cd8e04c903bb017e84e507c53e8cf7d9e1cda449995a5e596c697a"
+    },
+    "civ-08-q02": {
+      "decision": "none",
+      "sha256": "c455ad31eaf4792bae9f6b87fa3bd095dea00d2d611f85cf3c9a72423614b827"
+    },
+    "civ-08-q03": {
+      "decision": "none",
+      "sha256": "9b5cf180b08d557d1f1720b9cd9b10b113bc6bfefbaa7169d23559871cb698d3"
+    },
+    "civ-08-q04": {
+      "decision": "none",
+      "sha256": "72d83aebe15872601d9495865711779bb2dff1fa973f16f3668071335237c220"
+    },
+    "civ-08-q05": {
+      "decision": "none",
+      "sha256": "f18d0e6f16d74e3f259ba6b0cdb8d91e9fce2963bfc24c344fce4145e2e81b72"
+    },
+    "civ-08-q06": {
+      "decision": "none",
+      "sha256": "baf965b8a5e308685d7f3c94d3f13355863c2d6b9c83eeeb0263a9202cece83d"
+    },
+    "civ-08-q07": {
+      "decision": "none",
+      "sha256": "1e7095e12862f59bb28d7ce452a834ead5ee0b54277dd83dcc9266552536ff75"
+    },
+    "civ-08-q08": {
+      "decision": "none",
+      "sha256": "42d51d6156618f47981dbe68c55b96be3fa9dac7d9147f416e30df50df142349"
+    },
+    "civ-08-q09": {
+      "decision": "none",
+      "sha256": "a9a78aa1cb677f360209ec71edd98e0494676425a812934c969251728e1db6a5"
     },
     "geo-01-q01": {
       "decision": "none",

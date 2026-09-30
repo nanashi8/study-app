@@ -6220,7 +6220,7 @@ export const HISTORY_UNITS = [
           items: [
             {
               type: 'worldMap',
-              view: { lon: [92, 206], lat: [-12, 47] },
+              view: { lon: [92, -154], lat: [-12, 47] },
               fills: {
                 JPN: '#fecaca',
                 KOR: '#fecaca',
@@ -6302,7 +6302,7 @@ export const HISTORY_UNITS = [
           items: [
             {
               type: 'worldMap',
-              view: { lon: [88, 200], lat: [-19, 57] },
+              view: { lon: [88, -160], lat: [-19, 57] },
               fills: { JPN: '#fecaca', KOR: '#fecaca', PRK: '#fecaca', TWN: '#fecaca' },
               legend: [['日本と、植民地の朝鮮・台湾', '#fecaca']],
               arrows: [
