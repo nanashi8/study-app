@@ -1,6 +1,6 @@
-// 社会・理科の文で、常用漢字にない字をふくむ語に読みがな（ルビ）を重ねる。
+// 社会・理科の文で、常用漢字にない字をふくむ語や読み方が特別な語に読みがな（ルビ）を重ねる。
 // 教材の文そのものは変えず、表示するときに src/data/subjects/readings.js の辞書を当てる。
-// すでに「琵琶湖（びわこ）」のように読みを書いてある語には、重ねない。
+// すでに「琵琶湖（びわこ）」「シャンハイ（上海）」のように読みを書いてある語には、重ねない。
 import { SUBJECT_READINGS } from '../data/subjects/readings.js'
 
 const ENTRIES = Object.freeze(
@@ -9,6 +9,14 @@ const ENTRIES = Object.freeze(
     .sort((a, b) => b.text.length - a.text.length),
 )
 const INLINE_READING = /^[(（][ぁ-ゖー・]/u
+// 「シャンハイ（上海）」のように読みが先に書いてあるか、「上海（シャンハイ）」のように後に書いてあるか。
+const writtenAround = (text, start, entry) => {
+  const end = start + entry.text.length
+  if (INLINE_READING.test(text.slice(end, end + 2))) return true
+  if (text.startsWith(`（${entry.reading}`, end) || text.startsWith(`(${entry.reading}`, end)) return true
+  const before = text.slice(Math.max(0, start - entry.reading.length - 1), start)
+  return before === `${entry.reading}（` || before === `${entry.reading}(`
+}
 
 /** 文を、読みがなを付ける語と、そのままの文に分ける。 */
 export function tokenizeSubjectText(value) {
@@ -19,7 +27,7 @@ export function tokenizeSubjectText(value) {
   let plainStart = 0
   while (cursor < text.length) {
     const match = ENTRIES.find((entry) => text.startsWith(entry.text, cursor))
-    if (!match || INLINE_READING.test(text.slice(cursor + match.text.length, cursor + match.text.length + 2))) {
+    if (!match || writtenAround(text, cursor, match)) {
       cursor += match ? match.text.length : 1
       continue
     }

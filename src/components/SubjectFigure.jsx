@@ -175,8 +175,9 @@ function LinesFigure({ figure }) {
             <text x={left - 4} y={sy(y) + 3.5} textAnchor="end" fontSize="10" fill={INK}>{y}</text>
           </g>
         ))}
+        {/* 横の目もりの文字は、縦の目もりのいちばん下の文字（左下の角）と重ならない高さに置く。 */}
         {xs.map((x) => (
-          <text key={x} x={sx(x)} y={height - bottom + 14} textAnchor="middle" fontSize="10" fill={INK}>{x}</text>
+          <text key={x} x={sx(x)} y={height - bottom + 16} textAnchor="middle" fontSize="10" fill={INK}>{x}</text>
         ))}
         <line x1={left} x2={left} y1={top} y2={height - bottom} stroke={INK} />
         <line x1={left} x2={width - right} y1={height - bottom} y2={height - bottom} stroke={INK} />

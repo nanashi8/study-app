@@ -222,11 +222,12 @@ function ContourDiagram({ showLabels = true, profile = true, marks = [] }) {
           {[0, 50, 100, 150, 200].map((h) => (
             <g key={`p-${h}`}>
               <line x1={A} x2={B} y1={py(h)} y2={py(h)} stroke="#e2e8f0" />
-              <text x={B + 3} y={py(h) + 3} fontSize="7.5" fill={MUTED}>{h}</text>
+              {/* 目もりの数は、図の右の端（幅300）をこえないように右の端にそろえる。 */}
+              <text x={299} y={py(h) + 3} textAnchor="end" fontSize="7.5" fill={MUTED}>{h}</text>
             </g>
           ))}
           <path d={`M${A},${py(0)} ${samples.map(([x, h]) => `L${x},${Math.round(py(h) * 10) / 10}`).join(' ')} L${B},${py(0)} Z`} fill="#e7d9b8" stroke={BROWN} strokeWidth="1.2" />
-          <text x={B + 3} y={profileTop - 4} fontSize="7.5" fill={MUTED}>m</text>
+          <text x={299} y={profileTop - 4} textAnchor="end" fontSize="7.5" fill={MUTED}>m</text>
           <Label x={A} y={py(0) + 12} size={9} weight="800" color="#b91c1c" anchor="middle">A</Label>
           <Label x={B} y={py(0) + 12} size={9} weight="800" color="#b91c1c" anchor="middle">B</Label>
         </g>

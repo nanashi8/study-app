@@ -261,9 +261,10 @@ test('常用漢字にない字をふくむ語には、どこでも読みがな�
     }
   }
   assert.deepEqual([...missing].map(([run, at]) => `${run}（${at}）`), [])
-  // 辞書の読みはひらがなで、語は重ならない。
+  // 辞書の読みはひらがな（中国・朝鮮の地名・人名で教科書が現地の読みを示すものはカタカナ）で、語は重ならない。
   const words = SUBJECT_READINGS.map(([word]) => word)
   assert.equal(new Set(words).size, words.length)
   // 常用漢字だけでも読みにくい語（浄瑠璃など）は、辞書に入れて読みがなを付けてよい。
-  for (const [word, reading] of SUBJECT_READINGS) assert.match(reading, /^[ぁ-ゖー]+$/u, word)
+  // カタカナの読みの語は tests/junior-social-science-katakana-names.test.mjs が記録と照らし合わせる。
+  for (const [word, reading] of SUBJECT_READINGS) assert.match(reading, /^([ぁ-ゖー]+|[ァ-ヺー]+)$/u, word)
 })

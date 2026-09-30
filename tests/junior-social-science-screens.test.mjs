@@ -28,6 +28,8 @@ import {
   subjectUnits,
 } from '../src/data/subjects/index.js'
 import { CREDIT_IDS } from '../src/data/credits.js'
+import { SUBJECT_READINGS } from '../src/data/subjects/readings.js'
+import { tokenizeSubjectText } from '../src/lib/subjectText.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
@@ -252,6 +254,48 @@ test('全102単元のページに、めあて・要点（図）・重要語句�
     assert.deepEqual(shape.levels, [['basic', 3], ['standard', 3], ['exam', 3]], `${unit.id}: 基礎・標準・入試の演習`)
     await checkWidth(`${unit.id}のページ`)
     await checkNoCredits(`${unit.id}のページ`)
+  }
+})
+
+// 2026-09-30 利用者「カタカナで読む名前も読みがなを付けなさい。」（requests/2026-09-30-subject-katakana-quality.json）
+test('漢字で書いてカタカナで読む中国・朝鮮の地名・人名に、単元のページでカタカナの読みがなが出る', async () => {
+  const katakana = SUBJECT_READINGS.filter(([, reading]) => /^[ァ-ヶー]+$/.test(reading))
+  assert.ok(katakana.length >= 6, 'カタカナで読む名前の数')
+  // 要点（図の文字・年表・図の読み方をふくむ）・重要語句・問題文の文字列と、地図のラベル（経度・緯度を持つ文字）。
+  const strings = (value) => (typeof value === 'string' ? [value] : value && typeof value === 'object' ? Object.values(value).flatMap(strings) : [])
+  const mapLabels = (value) => (Array.isArray(value) ? value.flatMap(mapLabels) : value && typeof value === 'object'
+    ? [...(typeof value.text === 'string' && 'lon' in value && 'lat' in value ? [value.text] : []), ...Object.values(value).flatMap(mapLabels)]
+    : [])
+  const shownStrings = (unit) => [
+    ...strings(unit.points),
+    ...unit.terms.flatMap((term) => [term.term, term.meaning, term.note]),
+    ...unit.questions.map((question) => question.text),
+  ].filter(Boolean)
+  // 「ペキン（北京）」のように読みを書き添えた所には重ねないので、読みがなが付く文があるかは付け方の関数で確かめる。
+  const rubied = (word, reading) => (text) => tokenizeSubjectText(text).some((segment) => segment.text === word && segment.reading === reading)
+  for (const [word, reading] of katakana) {
+    const unit = ALL_SUBJECT_UNITS.find((item) => shownStrings(item).some(rubied(word, reading)))
+    assert.ok(unit, `${word}: 読みがなが付いて単元のページに出る文がない`)
+    await open(SUBJECTS[unit.subject].screens.unit, { unitId: unit.id })
+    // 文の読みがな（ruby）と、地図のラベルの読みがな（ラベルの上に小さく出す svg の文字）。
+    const pairs = await page.evaluate((id) => {
+      const root = document.querySelector(`[data-subject-unit-page="${id}"]`)
+      const inText = [...root.querySelectorAll('ruby.subject-ruby')].map((ruby) => {
+        const copy = ruby.cloneNode(true)
+        copy.querySelectorAll('rt, rp').forEach((node) => node.remove())
+        return { base: copy.textContent, reading: ruby.querySelector('rt')?.textContent ?? '' }
+      })
+      const onMaps = [...root.querySelectorAll('[data-subject-halo]')].flatMap((halo) => {
+        const label = [...halo.querySelectorAll('text')].filter((text) => !text.closest('[data-subject-ruby]')).map((text) => text.textContent).join('')
+        return [...halo.querySelectorAll('[data-subject-ruby] text')].map((text) => ({ base: label, reading: text.textContent, map: true }))
+      })
+      return [...inText, ...onMaps]
+    }, unit.id)
+    assert.ok(pairs.some((pair) => (pair.map ? pair.base.includes(word) : pair.base === word) && pair.reading === reading), `${unit.id}のページで「${word}」に「${reading}」`)
+    if (mapLabels(unit.points).some(rubied(word, reading))) {
+      assert.ok(pairs.some((pair) => pair.map && pair.base.includes(word) && pair.reading === reading), `${unit.id}の地図のラベルで「${word}」に「${reading}」`)
+    }
+    await checkWidth(`${unit.id}のページ（${word}）`)
   }
 })
 

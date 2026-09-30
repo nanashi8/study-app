@@ -132,7 +132,7 @@ function Point({ x, y, label, text, u, flip = false, box = null }) {
   )
 }
 
-/** 白いふちどりの文字（地図の上でも読めるように）。常用漢字にない字をふくむ語には、上に小さく読みがなを出す。 */
+/** 白いふちどりの文字（地図の上でも読めるように）。読みがなの辞書にある語には、上に小さく読みがなを出す。 */
 export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor = 'start', italic = false, children }) {
   const common = {
     x,
@@ -154,11 +154,11 @@ export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor =
     }
   }
   return (
-    <g>
+    <g data-subject-halo>
       <text {...common} fill="none" stroke="#ffffff" strokeWidth={3 * u} strokeLinejoin="round">{children}</text>
       <text {...common} fill={color}>{children}</text>
       {rubies.map((ruby) => (
-        <g key={`${ruby.x}-${ruby.text}`}>
+        <g key={`${ruby.x}-${ruby.text}`} data-subject-ruby>
           <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill="none" stroke="#ffffff" strokeWidth={2 * u} strokeLinejoin="round">{ruby.text}</text>
           <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill={color}>{ruby.text}</text>
         </g>
@@ -484,7 +484,8 @@ export function AzimuthalMapFigure({ figure }) {
           })}
         </g>
         {[5000, 10000, 15000].map((distance) => {
-          const [x, y] = at(28, (distance / km) * R)
+          // 距離の文字は、大陸の名前とぶつからない南東の太平洋の上に置く。
+          const [x, y] = at(140, (distance / km) * R)
           return <Halo key={`d-${distance}`} x={x + 2 * u} y={y} u={u} size={8.5} color="#475569">{`${distance.toLocaleString('ja-JP')}km`}</Halo>
         })}
         {DIRECTIONS.map(([label, bearing]) => {

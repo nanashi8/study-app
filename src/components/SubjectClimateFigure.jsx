@@ -97,7 +97,8 @@ export function ClimateFigure({ figure }) {
   const width = 300
   const left = 30
   const right = 34
-  const top = 16
+  // 上の余白は、いちばん上の目もりの数字と、軸の単位（℃・mm）が重ならない高さ。
+  const top = 22
   const bottom = 24
   const tMin = figure.axis?.tMin ?? climateAxisMin(station)
   const tMax = figure.axis?.tMax ?? climateAxisMax(station, tMin)
@@ -189,8 +190,8 @@ export function ClimateFigure({ figure }) {
         {Array.from({ length: 12 }, (_, month) => (
           <text key={`m-${month}`} x={cx(month)} y={height - bottom + 12} textAnchor="middle" fontSize="9" fill={INK}>{month + 1}</text>
         ))}
-        <text x={left - 4} y={top - 5} textAnchor="end" fontSize="9" fontWeight="700" fill="#b91c1c">℃</text>
-        <text x={width - right + 4} y={top - 5} fontSize="9" fontWeight="700" fill="#1d4ed8">mm</text>
+        <text x={left - 4} y={top - 9} textAnchor="end" fontSize="9" fontWeight="700" fill="#b91c1c">℃</text>
+        <text x={width - right + 4} y={top - 9} fontSize="9" fontWeight="700" fill="#1d4ed8">mm</text>
         <text x={width / 2} y={height - 2} textAnchor="middle" fontSize="9" fill={INK}>月</text>
       </svg>
       {/* 行が折り返すときは「・」の切れ目で折り返す（数と単位を分けない）。 */}
