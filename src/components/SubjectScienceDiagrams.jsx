@@ -1205,30 +1205,44 @@ function ColumnSectionsDiagram({ sites = [], min = 50, max = 80 }) {
   )
 }
 
-// ── 炭酸水素ナトリウムの熱分解 ───────────────────────────────────────────────
-//   { name: 'thermalDecomposition' }
-// 試験管の口を少し下げて加熱し、出てきた気体をガラス管で石灰水に通す。口には液体（水）がつき、白い固体（炭酸ナトリウム）が残る。
-function ThermalDecompositionDiagram() {
+// ── 試験管で加熱して、出てきた気体を石灰水に通す実験 ─────────────────────────────────
+//   { name: 'thermalDecomposition', variant?: 'reduction' }
+// 既定：炭酸水素ナトリウムの熱分解。試験管の口を少し下げて加熱し、出てきた気体をガラス管で石灰水に通す。口には液体（水）がつく。
+// reduction：酸化銅と炭素の混合物を加熱する還元の実験。ゴム管とピンチコック（加熱をやめたら閉じる）を示す。
+function ThermalDecompositionDiagram({ variant }) {
+  const reduction = variant === 'reduction'
   const tube = 'M52,72 L172,86 L170,102 L50,88 Q40,80 52,72 Z'
   return (
-    <svg viewBox="0 0 300 222" className="h-auto w-full" role="img" aria-label="炭酸水素ナトリウムの熱分解" data-subject-diagram="thermalDecomposition">
+    <svg viewBox="0 0 300 222" className="h-auto w-full" role="img" aria-label={reduction ? '酸化銅と炭素の混合物を加熱する実験' : '炭酸水素ナトリウムの熱分解'} data-subject-diagram="thermalDecomposition">
       <path d={tube} fill={GLASS} stroke={LINE} strokeWidth="1.2" />
-      <path d="M50,84 Q46,80 52,76 L108,83 L106,95 L50,88 Z" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.8" />
-      {[[150, 92], [158, 94], [163, 91], [155, 97]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" fill="#0284c7" />)}
+      <path d="M50,84 Q46,80 52,76 L108,83 L106,95 L50,88 Z" fill={reduction ? '#374151' : '#f1f5f9'} stroke="#94a3b8" strokeWidth="0.8" />
+      {!reduction && [[150, 92], [158, 94], [163, 91], [155, 97]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" fill="#0284c7" />)}
       <rect x="168" y="84" width="12" height="20" rx="2" fill="#a8a29e" stroke={LINE} strokeWidth="1" transform="rotate(7 174 94)" />
       <path d="M180,93 L240,93 L240,172" fill="none" stroke={DARK} strokeWidth="2.4" />
+      {reduction && (
+        <g>
+          <line x1="196" y1="93" x2="224" y2="93" stroke="#1f2937" strokeWidth="5" />
+          <rect x="206" y="86" width="8" height="14" rx="1.5" fill="#94a3b8" stroke={LINE} strokeWidth="0.8" />
+        </g>
+      )}
       <path d="M230,112 L230,196 Q240,206 250,196 L250,112" fill={GLASS} stroke={LINE} strokeWidth="1.2" />
       <path d="M231,150 L231,196 Q240,205 249,196 L249,150 Z" fill="#e2e8f0" />
       {[164, 178, 188].map((y) => <circle key={y} cx="240" cy={y} r="2.4" fill="#ffffff" stroke="#64748b" strokeWidth="0.8" />)}
       <rect x="80" y="150" width="18" height="50" rx="2" fill={DARK} />
       <rect x="72" y="198" width="34" height="8" rx="2" fill={DARK} />
       <path d="M89,150 Q76,124 89,98 Q102,124 89,150 Z" fill="#93c5fd" stroke="#2563eb" strokeWidth="1" />
-      <Callout from={[80, 86]} to={[98, 36]} text="炭酸水素ナトリウム" />
-      <Callout from={[160, 93]} to={[196, 56]} text="液体（水）" />
-      <Callout from={[222, 93]} to={[250, 76]} text="ガラス管" />
-      <line x1="168" y1="102" x2="164" y2="164" stroke={LINE} strokeWidth="0.8" />
-      <circle cx="168" cy="102" r="1.6" fill={LINE} />
-      <Label x={164} y={176} anchor="middle">試験管の口を少し下げる</Label>
+      <Callout from={[80, 86]} to={[98, 36]} text={reduction ? '酸化銅と炭素の混合物' : '炭酸水素ナトリウム'} />
+      {reduction ? <Callout from={[210, 86]} to={[226, 56]} text="ピンチコック" /> : <Callout from={[160, 93]} to={[196, 56]} text="液体（水）" />}
+      <Callout from={[232, 93]} to={[250, 76]} text="ガラス管" />
+      {reduction ? (
+        <Label x={164} y={176} anchor="middle" size={9} color={LINE}>ピンチコックは加熱後に閉じる</Label>
+      ) : (
+        <g>
+          <line x1="168" y1="102" x2="164" y2="164" stroke={LINE} strokeWidth="0.8" />
+          <circle cx="168" cy="102" r="1.6" fill={LINE} />
+          <Label x={164} y={176} anchor="middle">試験管の口を少し下げる</Label>
+        </g>
+      )}
       <Callout from={[232, 184]} to={[196, 214]} text="石灰水" />
     </svg>
   )
