@@ -3279,6 +3279,46 @@ function PunnettSquareDiagram() {
   )
 }
 
+// ── 相同器官（前あしの骨格） ────────────────────────────────────────────────────
+//   { name: 'homologousLimbs' }
+// ヒトの腕・クジラの胸びれ・コウモリの翼。形やはたらきはちがうが、上腕の骨（赤）・前腕の骨（青）・手の骨（黄）の並び方が共通。
+function HomologousLimbsDiagram() {
+  const UPPER = '#dc2626'
+  const FORE = '#2563eb'
+  const HAND = '#ca8a04'
+  const bone = (x1, y1, x2, y2, color, w = 5) => <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={w} strokeLinecap="round" />
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="相同器官" data-subject-diagram="homologousLimbs">
+      {[[UPPER, '上腕の骨', 20], [FORE, '前腕の骨', 116], [HAND, '手の骨', 212]].map(([color, name, x]) => (
+        <g key={name}>
+          <line x1={x} y1="12" x2={x + 16} y2="12" stroke={color} strokeWidth="5" strokeLinecap="round" />
+          <Label x={x + 22} y={16} size={8.5}>{name}</Label>
+        </g>
+      ))}
+      {bone(50, 34, 50, 84, UPPER, 6)}
+      {bone(45, 90, 43, 130, FORE)}
+      {bone(55, 90, 57, 130, FORE)}
+      {[[40, 138], [47, 136], [54, 136], [61, 138]].map(([x, y]) => <circle key={x} cx={x} cy={y} r="3" fill={HAND} />)}
+      {[[-14, 164], [-7, 172], [0, 174], [7, 172], [14, 164]].map(([dx, y]) => <g key={dx}>{bone(50 + dx * 0.4, 144, 50 + dx, y, HAND, 2.6)}</g>)}
+
+      <path d="M130,40 Q124,90 132,140 Q142,184 150,186 Q160,184 168,140 Q176,90 170,40 Z" fill="#e2e8f0" stroke="#64748b" strokeWidth="1" />
+      {bone(150, 44, 150, 66, UPPER, 7)}
+      {bone(145, 72, 145, 90, FORE)}
+      {bone(155, 72, 155, 90, FORE)}
+      {[-12, -6, 0, 6, 12].map((dx) => <g key={dx}>{bone(150 + dx * 0.5, 98, 150 + dx, 172 - Math.abs(dx) * 2, HAND, 2.6)}</g>)}
+
+      <path d="M236,72 L270,122 L296,172 L282,178 L266,184 L250,178 L226,150 Z" fill="#e5e7eb" stroke="#94a3b8" strokeWidth="0.8" />
+      {bone(226, 40, 238, 74, UPPER, 6)}
+      {bone(240, 80, 264, 122, FORE, 4)}
+      {[[294, 170], [282, 178], [266, 184], [250, 178]].map(([x, y]) => <g key={x}>{bone(268, 126, x, y, HAND, 2.2)}</g>)}
+
+      <Label x={50} y={200} anchor="middle" size={9} weight="800">ヒトの腕</Label>
+      <Label x={150} y={200} anchor="middle" size={9} weight="800">クジラの胸びれ</Label>
+      <Label x={256} y={200} anchor="middle" size={9} weight="800">コウモリの翼</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3366,4 +3406,5 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   pollenTube: PollenTubeDiagram,
   geneCross: GeneCrossDiagram,
   punnettSquare: PunnettSquareDiagram,
+  homologousLimbs: HomologousLimbsDiagram,
 })

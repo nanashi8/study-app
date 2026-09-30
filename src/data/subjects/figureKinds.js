@@ -122,4 +122,5 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'pollenTube',
   'geneCross',
   'punnettSquare',
+  'homologousLimbs',
 ])
