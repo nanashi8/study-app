@@ -2,6 +2,26 @@
   "readMe": "社会・理科の全要点と全演習を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断した記録。figure＝図と図の読み方（要点）・図の読み取り方（演習）を付けた、none＝付けない（要点は理由を noFigure に書く）。sha256 は判断したときの中身の指紋。確認は node scripts/checks/junior-social-science-figures.mjs、押し直しは --stamp <単元ID>。",
   "reviewedOn": "2026-09-30",
   "points": {
+    "civ-01#1": {
+      "decision": "figure",
+      "sha256": "ef9006a1b63576375402d228546b522c7de5db2ec892d267b9cf8ede419bc9ff"
+    },
+    "civ-01#2": {
+      "decision": "figure",
+      "sha256": "1795f1db7e21c6fd09495a1b415c8479ee77e7c29506cbefb9ade0d79bc0d4fb"
+    },
+    "civ-01#3": {
+      "decision": "figure",
+      "sha256": "d92294d93f0aaa53088c5eb01be54da5712ff74aacac07fc55e2716288a941c4"
+    },
+    "civ-01#4": {
+      "decision": "figure",
+      "sha256": "8cb69a8cd5c1f4410d8b91d440a5a994bf2434a73822fb87743874214d05f67c"
+    },
+    "civ-01#5": {
+      "decision": "figure",
+      "sha256": "289b8b5a519c7e5ba4a6f63192a042202ca05ed87e9463c1ddfc9148bf4587d5"
+    },
     "geo-01#1": {
       "decision": "figure",
       "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
@@ -828,6 +848,42 @@
     }
   },
   "questions": {
+    "civ-01-q01": {
+      "decision": "none",
+      "sha256": "34e1e5d6b1959469f6d9f411cce58187e4b0e3f72fb8eee813baf85448693b23"
+    },
+    "civ-01-q02": {
+      "decision": "none",
+      "sha256": "0a9162fe746c12b2f4982ca98f205e0b3e7ab58f3d895b25ae115f94128f2f23"
+    },
+    "civ-01-q03": {
+      "decision": "none",
+      "sha256": "9524a416bff5e208a448db9312cf9d809925d7ff9ff44bca783260068f927de7"
+    },
+    "civ-01-q04": {
+      "decision": "none",
+      "sha256": "2d0f6f5be18708ebd61d5f779130265cdb2377785a3b3a9f19d9c90a88391598"
+    },
+    "civ-01-q05": {
+      "decision": "none",
+      "sha256": "a4bcb18f907cfda522d6c03e782072b98ffb8550da9af1f41f0e540ee58ccfab"
+    },
+    "civ-01-q06": {
+      "decision": "none",
+      "sha256": "a4cddaba8fdd8597d08f466cb1645182244e946e83f0744556ceea82a9f2ca9f"
+    },
+    "civ-01-q07": {
+      "decision": "none",
+      "sha256": "fc1c3b0d864b06323591f18ee167ce97d0c14cd560009a22331ddff5ec7e940b"
+    },
+    "civ-01-q08": {
+      "decision": "none",
+      "sha256": "716191c2147c9dcef2136209ce6066ed0e1042052986c29b02567e6cf618def0"
+    },
+    "civ-01-q09": {
+      "decision": "none",
+      "sha256": "1d83744db4f1bea2615b70a3fd441d8206106fa17ed1db663445017a372a05b1"
+    },
     "geo-01-q01": {
       "decision": "none",
       "sha256": "3969111840b0d2c76a3b01f33c922ef3c0eed75c94bb6f0b45bcac9a120a35b2"

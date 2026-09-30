@@ -8,8 +8,9 @@ export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 
 // 社会・理科の図。要点と演習の問題が、データ（figure）で図を指定する。種類は次のとおり。
 //   table    … 表。{ columns, rows, note?, layout?: 'cards' | 'grid' }（列が4つ以上で長い文があれば、行ごとのカードで見せる）
-//   bars     … 横棒グラフ。{ unit, items: [[名前, 値], …], note? }
-//   lines    … 折れ線グラフ。{ x: { label, ticks? }, y: { label, min?, max?, step? }, series: [{ name, points: [[x, y], …] }] }
+//   bars     … 横棒グラフ。{ unit, items: [[名前, 値], …], note?, digits?（小数の桁をそろえる） }
+//   lines    … 折れ線グラフ。{ x: { label, ticks? }, y: { label, min?, max?, step? }, series: [{ name, points: [[x, y], …] }],
+//               marks?: [{ x? | y?, text?, at?（横の線の文字を置く x） }] }
 //   climate  … 雨温図。{ station: 'tokyo', judge?, hideName?, label?, axis? }（SubjectClimateFigure.jsx）
 //   japanMap … 日本地図。worldMap … 世界地図（SubjectMapFigures.jsx。切り出し・緯線経線・点・矢印・文字）
 //   azimuthalMap … 東京を中心とした、中心からの距離と方位が正しい地図（正距方位図法）
@@ -127,7 +128,7 @@ function BarsFigure({ figure }) {
           <g key={label}>
             <text x={labelWidth - 6} y={y + 15} textAnchor="end" fontSize="11" fontWeight="700" fill={INK}>{label}</text>
             <rect x={labelWidth} y={y + 4} width={w} height={rowHeight - 10} rx="3" fill={highlight.has(index) ? '#be123c' : SERIES_COLORS[0]} opacity="0.85" />
-            <text x={labelWidth + w + 4} y={y + 15} fontSize="10.5" fontWeight="700" fill={INK}>{`${value.toLocaleString('ja-JP')}${figure.unit ?? ''}`}</text>
+            <text x={labelWidth + w + 4} y={y + 15} fontSize="10.5" fontWeight="700" fill={INK}>{`${value.toLocaleString('ja-JP', figure.digits === undefined ? undefined : { minimumFractionDigits: figure.digits, maximumFractionDigits: figure.digits })}${figure.unit ?? ''}`}</text>
           </g>
         )
       })}
@@ -183,7 +184,7 @@ function LinesFigure({ figure }) {
             {mark.x !== undefined && <line x1={sx(mark.x)} x2={sx(mark.x)} y1={top} y2={height - bottom} stroke="#94a3b8" strokeDasharray="3 3" />}
             {mark.y !== undefined && <line x1={left} x2={width - right} y1={sy(mark.y)} y2={sy(mark.y)} stroke="#94a3b8" strokeDasharray="3 3" />}
             {mark.text && (
-              <text x={mark.x !== undefined ? sx(mark.x) + 3 : left + 4} y={mark.y !== undefined ? sy(mark.y) - 4 : top + 10} fontSize="9.5" fontWeight="800" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">{mark.text}</text>
+              <text x={mark.x !== undefined ? sx(mark.x) + 3 : mark.at !== undefined ? sx(mark.at) : left + 4} y={mark.y !== undefined ? sy(mark.y) - 4 : top + 10} fontSize="9.5" fontWeight="800" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">{mark.text}</text>
             )}
           </g>
         ))}
