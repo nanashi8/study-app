@@ -4793,6 +4793,122 @@ function CarbonNeutralDiagram() {
   )
 }
 
+// ── 温室効果 ─────────────────────────────────────────────────────────────────
+//   { name: 'greenhouseEffect' }
+// 左：温室効果ガスが少ないとき、右：多いとき。黄は太陽の光、赤は地表から出る熱。
+// 温室効果ガスが熱の一部を吸収して地表にもどす。ガスがふえると、もどる熱がふえて気温が上がる。
+function GreenhouseEffectDiagram() {
+  const HEAT = '#ef4444'
+  const panel = (x0, title, gases, outs, returns, ground, note) => {
+    const rand = steadyRandom(x0 + 3)
+    return (
+      <g>
+        <rect x={x0} y="18" width="144" height="132" rx="6" fill="#eff6ff" />
+        <rect x={x0} y="46" width="144" height="54" fill="#dbeafe" />
+        {Array.from({ length: gases }, (_, i) => (
+          <circle key={i} cx={x0 + 8 + rand() * 128} cy={52 + rand() * 42} r="2.2" fill="#64748b" />
+        ))}
+        <rect x={x0} y="150" width="144" height="22" fill={ground} />
+        <Arrow from={[x0 + 12, 22]} to={[x0 + 38, 147]} color="#eab308" width={2.2} />
+        {outs.map((x) => <Arrow key={x} from={[x0 + x, 148]} to={[x0 + x, 24]} color={HEAT} width={1.8} />)}
+        {returns.map((x) => (
+          <g key={x}>
+            <path d={`M${x0 + x},148 L${x0 + x},76 Q${x0 + x + 7},64 ${x0 + x + 14},76 L${x0 + x + 14},140`} fill="none" stroke={HEAT} strokeWidth="1.8" />
+            <path d={`M${x0 + x + 14},148 L${x0 + x + 10},139 L${x0 + x + 18},139 Z`} fill={HEAT} />
+          </g>
+        ))}
+        <Label x={x0 + 72} y={12} anchor="middle" size={8.5} weight="800">{title}</Label>
+        <Label x={x0 + 72} y={186} anchor="middle" size={8}>{note}</Label>
+      </g>
+    )
+  }
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="温室効果のしくみ" data-subject-diagram="greenhouseEffect">
+      {panel(4, '温室効果ガスが少ないとき', 8, [64, 84], [106], '#bbf7d0', '熱の多くが宇宙へ出ていく')}
+      {panel(152, '温室効果ガスが多いとき', 26, [62], [82, 108], '#fecaca', 'もどる熱がふえ、気温が上がる')}
+      <line x1="30" y1="204" x2="46" y2="204" stroke="#eab308" strokeWidth="2.2" />
+      <Label x={50} y={207.5} size={8.5}>太陽の光</Label>
+      <line x1="130" y1="204" x2="146" y2="204" stroke={HEAT} strokeWidth="2.2" />
+      <Label x={150} y={207.5} size={8.5}>地表から出る熱</Label>
+    </svg>
+  )
+}
+
+// ── オゾン層のはたらき ───────────────────────────────────────────────────────
+//   { name: 'ozoneLayer' }
+// 左はオゾン層が紫外線を吸収しているところ、右はフロンでこわされて紫外線が地上に届くところ。
+function OzoneLayerDiagram() {
+  const UV = '#7c3aed'
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="オゾン層のはたらき" data-subject-diagram="ozoneLayer">
+      <Label x={10} y={14} size={8.5} weight="800" color={UV}>太陽からの紫外線</Label>
+      {[40, 84, 128].map((x) => (
+        <g key={x}>
+          <Arrow from={[x, 22]} to={[x, 56]} color={UV} width={1.8} />
+          <path d={`M${x - 5},62 L${x + 5},62`} stroke={UV} strokeWidth="1.6" />
+        </g>
+      ))}
+      {[190, 272].map((x) => <Arrow key={x} from={[x, 22]} to={[x, 138]} color={UV} width={1.8} />)}
+      <rect x="10" y="60" width="150" height="18" rx="4" fill="#c4b5fd" opacity="0.85" />
+      <rect x="164" y="60" width="126" height="18" rx="4" fill="#ede9fe" stroke="#a78bfa" strokeWidth="1" strokeDasharray="3 2" />
+      <Label x={85} y={96} anchor="middle" size={8.5} weight="800">オゾン層が紫外線を吸収する</Label>
+      <Label x={231} y={94} anchor="middle" size={8.5} weight="800">フロンで</Label>
+      <Label x={231} y={106} anchor="middle" size={8.5} weight="800">こわされた部分</Label>
+      <rect x="0" y="140" width="300" height="16" fill="#bbf7d0" />
+      <Label x={231} y={170} anchor="middle" size={8.5} color="#b91c1c">地上に届く紫外線がふえる</Label>
+      <Label x={85} y={170} anchor="middle" size={8.5} color="#15803d">地上の生物が守られる</Label>
+    </svg>
+  )
+}
+
+// ── 循環型社会のしくみ ───────────────────────────────────────────────────────
+//   { name: 'circularSociety' }
+// 生産→消費→廃棄の流れを、リサイクル（原料にもどす）とリユース（くり返し使う）で輪にする。
+// リデュースで、使う資源と出るごみそのものを減らす。うめ立て・焼却は最小限にする。
+function CircularSocietyDiagram() {
+  const GREEN = '#16a34a'
+  const nodes = [
+    ['生産（つくる）', 150, 46, '#f1f5f9', LINE],
+    ['消費（使う）', 244, 116, '#f1f5f9', LINE],
+    ['廃棄（すてる）', 150, 186, '#f1f5f9', LINE],
+    ['リサイクル', 56, 116, '#dcfce7', GREEN],
+  ]
+  const curve = (from, control, to, color) => {
+    const angle = Math.atan2(to[1] - control[1], to[0] - control[0])
+    const tip = (a) => `${(to[0] + 8 * Math.cos(angle + a)).toFixed(1)},${(to[1] + 8 * Math.sin(angle + a)).toFixed(1)}`
+    const end = [to[0] - 5 * Math.cos(angle), to[1] - 5 * Math.sin(angle)]
+    return (
+      <g>
+        <path d={`M${from[0]},${from[1]} Q${control[0]},${control[1]} ${end[0].toFixed(1)},${end[1].toFixed(1)}`} fill="none" stroke={color} strokeWidth="1.8" />
+        <path d={`M${to[0]},${to[1]} L${tip(Math.PI * 0.85)} L${tip(-Math.PI * 0.85)} Z`} fill={color} />
+      </g>
+    )
+  }
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="循環型社会のしくみ" data-subject-diagram="circularSociety">
+      <Label x={150} y={11} anchor="middle" size={8.5} weight="800">天然資源</Label>
+      <Arrow from={[150, 15]} to={[150, 32]} color={LINE} width={1.6} />
+      {curve([186, 44], [240, 48], [244, 102], LINE)}
+      {curve([244, 130], [240, 184], [186, 188], LINE)}
+      {curve([114, 188], [60, 184], [56, 130], GREEN)}
+      {curve([56, 102], [60, 48], [114, 44], GREEN)}
+      <path d="M280,122 C300,132 300,100 282,108" fill="none" stroke={GREEN} strokeWidth="1.8" />
+      <path d="M279,110 L288,103 L289,112 Z" fill={GREEN} />
+      <Label x={272} y={148} anchor="middle" size={8.5} weight="800" color="#15803d">リユース</Label>
+      {nodes.map(([name, x, y, fill, stroke]) => (
+        <g key={name}>
+          <rect x={x - 38} y={y - 13} width="76" height="26" rx="6" fill={fill} stroke={stroke} strokeWidth="1.1" />
+          <text x={x} y={y + 3.5} fontSize="9" fontWeight="800" textAnchor="middle" fill={INK}>{name}</text>
+        </g>
+      ))}
+      <Label x={150} y={112} anchor="middle" size={8.5} weight="800" color="#1d4ed8">リデュース：</Label>
+      <Label x={150} y={126} anchor="middle" size={8.5} color="#1d4ed8">資源とごみを減らす</Label>
+      <Arrow from={[150, 200]} to={[150, 214]} color={LINE} width={1.4} />
+      <Label x={150} y={230} anchor="middle" size={8.5}>うめ立て・焼却（できるだけ少なく）</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -4916,4 +5032,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   hazardMap: HazardMapDiagram,
   thermalPower: ThermalPowerDiagram,
   carbonNeutral: CarbonNeutralDiagram,
+  greenhouseEffect: GreenhouseEffectDiagram,
+  ozoneLayer: OzoneLayerDiagram,
+  circularSociety: CircularSocietyDiagram,
 })

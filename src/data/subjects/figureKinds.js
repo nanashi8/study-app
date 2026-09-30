@@ -158,4 +158,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'hazardMap',
   'thermalPower',
   'carbonNeutral',
+  'greenhouseEffect',
+  'ozoneLayer',
+  'circularSociety',
 ])
