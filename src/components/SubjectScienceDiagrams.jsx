@@ -1793,6 +1793,181 @@ function ArmMusclesDiagram() {
   )
 }
 
+// ── 面積と圧力（スポンジのへこみ） ─────────────────────────────────────────────
+//   { name: 'pressureFaces' }
+// 同じ直方体（重さ6N、20cm×10cm×5cm）を、ちがう面を下にしてスポンジに置く。面積が小さいほど圧力が大きく、深くへこむ。
+function PressureFacesDiagram() {
+  const cases = [[50, 72, 18, 3, '0.02m²', '300Pa'], [150, 72, 36, 6, '0.01m²', '600Pa'], [250, 36, 72, 12, '0.005m²', '1200Pa']]
+  return (
+    <svg viewBox="0 0 300 192" className="h-auto w-full" role="img" aria-label="面積と圧力" data-subject-diagram="pressureFaces">
+      <Label x={150} y={16} anchor="middle" size={9} color={LINE}>同じ直方体（重さ6N）を、ちがう面を下にして置く</Label>
+      {cases.map(([c, w, h, dent, area, pressure]) => (
+        <g key={c}>
+          <path d={`M${c - 44},122 L${c - w / 2 - 6},122 L${c - w / 2},${122 + dent} L${c + w / 2},${122 + dent} L${c + w / 2 + 6},122 L${c + 44},122 L${c + 44},150 L${c - 44},150 Z`} fill="#fef9c3" stroke="#ca8a04" strokeWidth="1" />
+          <rect x={c - w / 2} y={122 + dent - h} width={w} height={h} fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1.2" />
+          <Label x={c} y={166} anchor="middle" size={9}>{`面積 ${area}`}</Label>
+          <Label x={c} y={182} anchor="middle" size={9.5} weight="800" color="#dc2626">{`圧力 ${pressure}`}</Label>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+// ── 大気圧のはたらく向き ──────────────────────────────────────────────────────
+//   { name: 'airPressureAll' }
+// 大気圧は、物体のあらゆる面に、あらゆる向きから垂直にはたらく。
+function AirPressureAllDiagram() {
+  const arrows = [
+    [[150, 18], [150, 50]], [[110, 18], [110, 50]], [[190, 18], [190, 50]],
+    [[150, 152], [150, 120]], [[110, 152], [110, 120]], [[190, 152], [190, 120]],
+    [[40, 70], [72, 70]], [[40, 100], [72, 100]],
+    [[260, 70], [228, 70]], [[260, 100], [228, 100]],
+  ]
+  return (
+    <svg viewBox="0 0 300 180" className="h-auto w-full" role="img" aria-label="大気圧のはたらく向き" data-subject-diagram="airPressureAll">
+      <rect x="80" y="56" width="140" height="58" rx="6" fill="#e0f2fe" stroke="#0369a1" strokeWidth="1.4" />
+      <Label x={150} y={89} anchor="middle" size={10} weight="800">物体</Label>
+      {arrows.map(([from, to]) => <Arrow key={`${from}`} from={from} to={to} color="#dc2626" />)}
+      <Label x={150} y={174} anchor="middle" size={9} color={LINE}>大気圧は、あらゆる向きから面に垂直にはたらく</Label>
+    </svg>
+  )
+}
+
+// ── 高気圧・低気圧のまわりの風と、空気の上下の動き ──────────────────────────────────
+//   { name: 'pressureSystems', view: 'top' | 'side' }
+// top：北半球で上から見たようす。高気圧は時計回りにふき出し、低気圧は反時計回りにふきこむ。等圧線の間隔がせまいほど風が強い。
+// side：横から見たようす。高気圧は下降気流で晴れ、低気圧は上昇気流で雲ができる。
+function PressureSystemsDiagram({ view = 'top' }) {
+  if (view === 'side') {
+    return (
+      <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="高気圧と低気圧の空気の動き" data-subject-diagram="pressureSystems">
+        <line x1="8" y1="150" x2="292" y2="150" stroke={DARK} strokeWidth="2" />
+        <circle cx="122" cy="34" r="11" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+        <Arrow from={[78, 34]} to={[78, 124]} color="#2563eb" width={2.4} />
+        <Arrow from={[70, 140]} to={[22, 140]} color="#2563eb" />
+        <Arrow from={[86, 140]} to={[134, 140]} color="#2563eb" />
+        <Label x={84} y={92} size={9} weight="800" color="#1d4ed8">下降気流</Label>
+        <Label x={78} y={170} anchor="middle" size={10} weight="800">高気圧</Label>
+        <Label x={78} y={186} anchor="middle" size={8.5} color={LINE}>雲ができにくく、晴れ</Label>
+        <path d="M196,50 Q196,34 212,36 Q220,22 236,32 Q252,28 252,44 Q262,50 250,58 L200,58 Q188,56 196,50 Z" fill="#e2e8f0" stroke="#64748b" strokeWidth="1" />
+        {[206, 222, 238].map((x) => <line key={x} x1={x} y1="64" x2={x - 4} y2="74" stroke="#3b82f6" strokeWidth="1.4" />)}
+        <Arrow from={[170, 140]} to={[214, 140]} color="#dc2626" />
+        <Arrow from={[274, 140]} to={[230, 140]} color="#dc2626" />
+        <Arrow from={[222, 132]} to={[222, 80]} color="#dc2626" width={2.4} />
+        <Label x={228} y={112} size={9} weight="800" color="#b91c1c">上昇気流</Label>
+        <Label x={222} y={170} anchor="middle" size={10} weight="800">低気圧</Label>
+        <Label x={222} y={186} anchor="middle" size={8.5} color={LINE}>雲ができやすく、くもりや雨</Label>
+      </svg>
+    )
+  }
+  const spiral = (cx, cy, r0, r1, a0, turn) => {
+    const pts = Array.from({ length: 13 }, (_, i) => {
+      const t = i / 12
+      const a = a0 + turn * t
+      const r = r0 + (r1 - r0) * t
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a)]
+    })
+    return pts
+  }
+  const flow = (pts, color) => {
+    const [x2, y2] = pts[pts.length - 1]
+    const [x1, y1] = pts[pts.length - 2]
+    const angle = Math.atan2(y2 - y1, x2 - x1)
+    const tip = (a) => `${(x2 + 7 * Math.cos(angle + a)).toFixed(1)},${(y2 + 7 * Math.sin(angle + a)).toFixed(1)}`
+    return (
+      <g>
+        <path d={`M${pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' L')}`} fill="none" stroke={color} strokeWidth="1.8" />
+        <path d={`M${x2.toFixed(1)},${y2.toFixed(1)} L${tip(Math.PI * 0.85)} L${tip(-Math.PI * 0.85)} Z`} fill={color} />
+      </g>
+    )
+  }
+  const high = [[24, '1024'], [42, '1020'], [60, '1016']]
+  const low = [[18, '1000'], [32, '1004'], [46, '1008'], [60, '1012']]
+  return (
+    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="高気圧と低気圧のまわりの風" data-subject-diagram="pressureSystems">
+      {high.map(([r, text]) => (
+        <g key={text}>
+          <circle cx="76" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />
+          <Label x={76} y={92 - r + 4} anchor="middle" size={7.5} color={LINE}>{text}</Label>
+        </g>
+      ))}
+      <Label x={76} y={96} anchor="middle" size={12} weight="800" color="#1d4ed8">高</Label>
+      {[0, 1, 2, 3].map((k) => <g key={k}>{flow(spiral(76, 92, 14, 58, (k * Math.PI) / 2 + 0.3, 0.9), '#2563eb')}</g>)}
+      {low.map(([r, text]) => (
+        <g key={text}>
+          <circle cx="224" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />
+          <Label x={224} y={92 - r + 4} anchor="middle" size={7.5} color={LINE}>{text}</Label>
+        </g>
+      ))}
+      <Label x={224} y={96} anchor="middle" size={12} weight="800" color="#b91c1c">低</Label>
+      {[0, 1, 2, 3].map((k) => <g key={k}>{flow(spiral(224, 92, 62, 14, (k * Math.PI) / 2 + 0.3, -0.9), '#dc2626')}</g>)}
+      <Label x={76} y={172} anchor="middle" size={10} weight="800">高気圧</Label>
+      <Label x={76} y={188} anchor="middle" size={8.5} color={LINE}>時計回りにふき出す</Label>
+      <Label x={224} y={172} anchor="middle" size={10} weight="800">低気圧</Label>
+      <Label x={224} y={188} anchor="middle" size={8.5} color={LINE}>反時計回りにふきこむ</Label>
+    </svg>
+  )
+}
+
+// ── 天気記号と風向・風力 ───────────────────────────────────────────────────────
+//   { name: 'weatherSymbols' }
+// 上：日本式の天気記号（快晴・晴れ・くもり・雨・雪）。下：天気図での表し方の例（北東の風、風力3、晴れ）。
+// 矢は風がふいてくる方向にのばし、はねは矢の時計回りの側に、風力の数だけかく。
+function WeatherSymbol({ x, y, kind, r = 11 }) {
+  const ring = <circle cx={x} cy={y} r={r} fill={kind === 'rain' ? INK : '#ffffff'} stroke={INK} strokeWidth="1.6" />
+  if (kind === 'sunny') return <g>{ring}<line x1={x} y1={y - r} x2={x} y2={y + r} stroke={INK} strokeWidth="1.6" /></g>
+  if (kind === 'cloudy') return <g>{ring}<circle cx={x} cy={y} r={r * 0.5} fill="none" stroke={INK} strokeWidth="1.6" /></g>
+  if (kind === 'snow') {
+    const d = r * 0.71
+    return (
+      <g>
+        {ring}
+        <line x1={x - r} y1={y} x2={x + r} y2={y} stroke={INK} strokeWidth="1.6" />
+        <line x1={x - d} y1={y - d} x2={x + d} y2={y + d} stroke={INK} strokeWidth="1.6" />
+        <line x1={x - d} y1={y + d} x2={x + d} y2={y - d} stroke={INK} strokeWidth="1.6" />
+      </g>
+    )
+  }
+  return ring
+}
+function WeatherSymbolsDiagram() {
+  const kinds = [['clear', '快晴'], ['sunny', '晴れ'], ['cloudy', 'くもり'], ['rain', '雨'], ['snow', '雪']]
+  const cx = 110
+  const cy = 142
+  const angle = -Math.PI / 4
+  const ux = Math.cos(angle)
+  const uy = Math.sin(angle)
+  const start = [cx + 11 * ux, cy + 11 * uy]
+  const end = [cx + 62 * ux, cy + 62 * uy]
+  const side = [-uy, ux]
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="天気記号と風向・風力" data-subject-diagram="weatherSymbols">
+      {kinds.map(([kind, name], index) => (
+        <g key={kind}>
+          <WeatherSymbol x={34 + index * 58} y={28} kind={kind} />
+          <Label x={34 + index * 58} y={58} anchor="middle" size={9.5} weight="800">{name}</Label>
+        </g>
+      ))}
+      <line x1="8" y1="76" x2="292" y2="76" stroke="#e2e8f0" strokeWidth="1" />
+      <Label x={10} y={96} size={9} weight="800">天気図での表し方の例</Label>
+      <line x1={start[0]} y1={start[1]} x2={end[0]} y2={end[1]} stroke={INK} strokeWidth="1.8" />
+      {[0, 1, 2].map((k) => {
+        const along = 56 - k * 7
+        const bx = cx + along * ux
+        const by = cy + along * uy
+        return <line key={k} x1={bx} y1={by} x2={bx + 11 * side[0]} y2={by + 11 * side[1]} stroke={INK} strokeWidth="1.8" />
+      })}
+      <WeatherSymbol x={cx} y={cy} kind="sunny" />
+      <line x1="40" y1="186" x2="40" y2="160" stroke={LINE} strokeWidth="1" />
+      <path d="M40,154 L36,162 L44,162 Z" fill={LINE} />
+      <Label x={40} y={198} anchor="middle" size={8.5} color={LINE}>北</Label>
+      <Label x={186} y={116} size={9}>風向：北東（矢の向き）</Label>
+      <Label x={186} y={136} size={9}>風力：3（はねの数）</Label>
+      <Label x={186} y={156} size={9}>天気：晴れ（円の中）</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1839,4 +2014,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   senseOrgans: SenseOrgansDiagram,
   reflexPath: ReflexPathDiagram,
   armMuscles: ArmMusclesDiagram,
+  pressureFaces: PressureFacesDiagram,
+  airPressureAll: AirPressureAllDiagram,
+  pressureSystems: PressureSystemsDiagram,
+  weatherSymbols: WeatherSymbolsDiagram,
 })
