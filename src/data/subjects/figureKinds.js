@@ -153,4 +153,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'populationBalance',
   'decomposerPlate',
   'carbonCycle',
+  'tullgrenFunnel',
+  'satoyama',
+  'hazardMap',
 ])

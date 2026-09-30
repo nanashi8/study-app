@@ -4608,6 +4608,124 @@ function CarbonCycleDiagram() {
   )
 }
 
+// ── ツルグレン装置 ───────────────────────────────────────────────────────────
+//   { name: 'tullgrenFunnel' }
+// 電球で土を上からあたためると、明るさ・熱・乾燥をきらう小動物が下へにげ、
+// 金あみ→ろうとを通って、下のエタノールの入った容器に落ちる。
+function TullgrenFunnelDiagram() {
+  const top = 70
+  const neck = 150
+  const halfAt = (y) => 50 - (40 * (y - top)) / (neck - top)
+  const mesh = 96
+  const critters = [[140, 116], [158, 128], [150, 142], [146, 190], [156, 196]]
+  return (
+    <svg viewBox="0 0 300 218" className="h-auto w-full" role="img" aria-label="ツルグレン装置" data-subject-diagram="tullgrenFunnel">
+      <path d="M124,12 L176,12 L188,30 L112,30 Z" fill="#64748b" />
+      <circle cx="150" cy="36" r="8" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      {[-26, -12, 0, 12, 26].map((dx) => <line key={dx} x1={150 + dx * 0.4} y1="46" x2={150 + dx} y2="64" stroke="#facc15" strokeWidth="1.2" />)}
+      <path d={`M${150 - 50},${top} L${150 + 50},${top} L${150 + 10},${neck} L156,176 L144,176 L${150 - 10},${neck} Z`} fill="#f1f5f9" stroke={LINE} strokeWidth="1.2" />
+      <path d={`M${150 - halfAt(74)},74 L${150 + halfAt(74)},74 L${150 + halfAt(mesh)},${mesh} L${150 - halfAt(mesh)},${mesh} Z`} fill="#92400e" />
+      {[108, 122, 136, 150, 164, 178, 192].map((x, i) => <circle key={x} cx={x} cy={80 + (i % 3) * 5} r="1.3" fill="#d6a36b" />)}
+      <line x1={150 - halfAt(mesh)} y1={mesh} x2={150 + halfAt(mesh)} y2={mesh} stroke="#1f2937" strokeWidth="1.6" strokeDasharray="2 1.5" />
+      <rect x="122" y="162" width="56" height="46" rx="3" fill="#ffffff" stroke={LINE} strokeWidth="1.2" />
+      <rect x="123" y="184" width="54" height="23" fill="#bae6fd" />
+      {critters.map(([x, y]) => <ellipse key={`${x},${y}`} cx={x} cy={y} rx="2.4" ry="1.4" fill="#1f2937" />)}
+      <Arrow from={[128, 104]} to={[140, 134]} color="#dc2626" width={1.3} />
+      <Callout from={[158, 36]} to={[204, 26]} text="電球（光と熱）" />
+      <Callout from={[176, 84]} to={[210, 72]} text="土" />
+      <Callout from={[182, mesh]} to={[214, 100]} text="金あみ" />
+      <Callout from={[171, 124]} to={[214, 130]} text="ろうと" />
+      <Callout from={[172, 196]} to={[210, 196]} text="エタノール" />
+      <Label x={96} y={112} anchor="end" size={8.5} color="#b91c1c">明るさ・熱・</Label>
+      <Label x={96} y={124} anchor="end" size={8.5} color="#b91c1c">乾燥をきらって</Label>
+      <Label x={96} y={136} anchor="end" size={8.5} color="#b91c1c">下へにげる</Label>
+    </svg>
+  )
+}
+
+// ── 里山 ─────────────────────────────────────────────────────────────────────
+//   { name: 'satoyama' }
+// 雑木林・田・ため池・水路・集落がまとまった環境。人がまきや落ち葉をとり、下草をかることで林が明るく保たれる。
+function SatoyamaDiagram() {
+  const trees = [
+    [14, 76, 9, '#65a30d'], [30, 64, 10, '#22c55e'], [48, 56, 11, '#4ade80'], [66, 60, 9, '#16a34a'], [84, 68, 10, '#65a30d'],
+    [102, 74, 9, '#22c55e'], [24, 88, 9, '#4ade80'], [44, 80, 10, '#65a30d'], [64, 82, 9, '#22c55e'], [86, 90, 9, '#4ade80'],
+    [150, 70, 9, '#22c55e'], [168, 62, 10, '#65a30d'], [186, 66, 9, '#4ade80'],
+  ]
+  const paddies = []
+  for (let row = 0; row < 2; row += 1) {
+    for (let col = 0; col < 4; col += 1) paddies.push([128 + col * 40, 128 + row * 22])
+  }
+  return (
+    <svg viewBox="0 0 300 184" className="h-auto w-full" role="img" aria-label="里山のようす" data-subject-diagram="satoyama">
+      <path d="M0,72 Q56,30 118,66 Q170,40 226,60 Q268,48 300,58 L300,118 L0,118 Z" fill="#bbf7d0" />
+      <path d="M0,112 L300,112 L300,176 L0,176 Z" fill="#ecfccb" />
+      {trees.map(([x, y, r, color]) => (
+        <g key={`${x},${y}`}>
+          <rect x={x - 1.2} y={y + r - 2} width="2.4" height="7" fill="#78350f" />
+          <circle cx={x} cy={y} r={r} fill={color} stroke="#166534" strokeWidth="0.6" />
+        </g>
+      ))}
+      {paddies.map(([x, y]) => <rect key={`${x},${y}`} x={x} y={y} width="36" height="18" fill="#d9f99d" stroke="#84cc16" strokeWidth="1" />)}
+      <path d="M96,146 Q112,146 124,148 L290,148" fill="none" stroke="#60a5fa" strokeWidth="2.2" />
+      <ellipse cx="62" cy="146" rx="34" ry="13" fill="#93c5fd" stroke="#3b82f6" strokeWidth="1" />
+      {[[222, 98], [242, 102], [262, 96]].map(([x, y]) => (
+        <g key={x}>
+          <path d={`M${x - 8},${y} L${x},${y - 8} L${x + 8},${y} Z`} fill="#b45309" />
+          <rect x={x - 6} y={y} width="12" height="9" fill="#fef3c7" stroke="#92400e" strokeWidth="0.8" />
+        </g>
+      ))}
+      <Callout from={[48, 56]} to={[70, 16]} text="雑木林：まき・落ち葉をとり、下草をかる" />
+      <Callout from={[242, 94]} to={[258, 74]} text="集落" />
+      <Label x={62} y={150} anchor="middle" size={9} weight="800">ため池</Label>
+      <Label x={206} y={174} anchor="middle" size={9} weight="800">田と水路</Label>
+    </svg>
+  )
+}
+
+// ── ハザードマップの例（架空の町） ───────────────────────────────────────────
+//   { name: 'hazardMap' }
+// 川の近くの低い土地ほど、洪水のときの浸水が深いと予想される（色がこいほど深い）。
+// 山ぎわは土砂災害の危険がある。避難場所は、浸水の心配が少ない高い所にある。
+function HazardMapDiagram() {
+  return (
+    <svg viewBox="0 0 300 222" className="h-auto w-full" role="img" aria-label="ハザードマップの例" data-subject-diagram="hazardMap">
+      <rect x="0" y="0" width="300" height="176" fill="#fef08a" />
+      <path d="M40,0 L150,0 C152,24 168,48 196,66 C226,86 262,104 300,114 L300,176 L204,176 C178,154 150,140 122,128 C94,114 68,94 56,64 C48,44 42,22 40,0 Z" fill="#fda4af" />
+      <path d="M72,0 L122,0 C126,26 140,50 166,70 C198,94 250,116 300,124 L300,158 C262,156 222,144 188,126 C150,108 114,90 94,62 C84,44 76,22 72,0 Z" fill="#e879f9" />
+      <path d="M170,0 L300,0 L300,98 C268,88 236,72 214,56 C196,42 180,22 170,0 Z" fill="#e7e5e4" />
+      <path d="M204,0 C214,24 232,40 256,52 C272,60 288,64 300,66" fill="none" stroke="#a8a29e" strokeWidth="0.8" />
+      <path d="M240,0 C248,18 262,28 280,34 C290,37 296,38 300,38" fill="none" stroke="#a8a29e" strokeWidth="0.8" />
+      <path d="M170,0 C180,22 196,42 214,56 C236,72 268,88 300,98 L300,84 C272,74 246,62 226,46 C208,32 194,16 186,0 Z" fill="#d97706" opacity="0.5" />
+      <path d="M0,122 C28,114 58,122 82,138 C100,150 112,164 118,176 L0,176 Z" fill="#e7e5e4" />
+      <path d="M0,142 C24,136 50,142 70,156 C80,164 86,170 88,176" fill="none" stroke="#a8a29e" strokeWidth="0.8" />
+      <path d="M96,0 C102,38 120,68 152,90 C188,114 240,132 300,140" fill="none" stroke="#2563eb" strokeWidth="8" />
+      <path d="M24,166 L64,150 L152,90 L206,40 L236,32" fill="none" stroke="#64748b" strokeWidth="2.4" />
+      <rect x="0" y="0" width="300" height="176" fill="none" stroke="#cbd5e1" strokeWidth="1" />
+      {[[256, 30], [36, 154]].map(([x, y]) => (
+        <g key={x}>
+          <rect x={x - 8} y={y - 8} width="16" height="16" rx="3" fill="#16a34a" />
+          <text x={x} y={y + 3.5} fontSize="9" fontWeight="800" textAnchor="middle" fill="#ffffff">避</text>
+        </g>
+      ))}
+      <Label x={110} y={16} size={9} weight="800" color="#1d4ed8">川</Label>
+      <Label x={276} y={14} anchor="middle" size={8.5} weight="800">山</Label>
+      <Label x={70} y={170} anchor="middle" size={8.5} weight="800">高台</Label>
+      <text x={8} y={192} fontSize="8.5" fontWeight="800" fill={INK}>浸水の深さ</text>
+      {[['#fef08a', '0.5m未満'], ['#fda4af', '0.5〜3m'], ['#e879f9', '3m以上']].map(([color, text], i) => (
+        <g key={text}>
+          <rect x={60 + i * 74} y="184" width="12" height="10" fill={color} stroke="#94a3b8" strokeWidth="0.5" />
+          <text x={76 + i * 74} y={192} fontSize="8.5" fontWeight="700" fill={INK}>{text}</text>
+        </g>
+      ))}
+      <rect x="8" y="202" width="12" height="10" fill="#d97706" opacity="0.5" />
+      <text x={24} y={210} fontSize="8.5" fontWeight="700" fill={INK}>土砂災害の危険がある所</text>
+      <rect x="150" y="202" width="12" height="10" rx="2" fill="#16a34a" />
+      <text x={166} y={210} fontSize="8.5" fontWeight="700" fill={INK}>避難場所</text>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -4726,4 +4844,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   populationBalance: PopulationBalanceDiagram,
   decomposerPlate: DecomposerPlateDiagram,
   carbonCycle: CarbonCycleDiagram,
+  tullgrenFunnel: TullgrenFunnelDiagram,
+  satoyama: SatoyamaDiagram,
+  hazardMap: HazardMapDiagram,
 })
