@@ -289,6 +289,60 @@ function EyeFieldsDiagram() {
   )
 }
 
+// ── ガスバーナー ──────────────────────────────────────────────────────
+//   { name: 'gasBurner' }
+// 上が空気調節ねじ、下がガス調節ねじ。空気の量を増やすと、炎は赤っぽい色から青い色になる。
+function GasBurnerDiagram() {
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="ガスバーナーの各部分の名前" data-subject-diagram="gasBurner">
+      <path d="M150,14 C136,34 138,50 142,62 L158,62 C162,50 164,34 150,14 Z" fill="#93c5fd" stroke="#1d4ed8" strokeWidth="1.2" />
+      <path d="M150,34 C144,46 145,54 147,62 L153,62 C155,54 156,46 150,34 Z" fill="#dbeafe" />
+      <rect x="142" y="62" width="16" height="118" fill={METAL} stroke={LINE} strokeWidth="1.2" />
+      <rect x="134" y="120" width="32" height="12" rx="2" fill="#94a3b8" stroke={LINE} strokeWidth="1.2" />
+      <rect x="132" y="146" width="36" height="12" rx="2" fill={DARK} stroke={LINE} strokeWidth="1.2" />
+      <path d="M120,180 L180,180 L196,206 L104,206 Z" fill={DARK} />
+      <rect x="180" y="190" width="64" height="8" fill={METAL} stroke={LINE} strokeWidth="1" />
+      <rect x="220" y="184" width="10" height="20" rx="2" fill="#94a3b8" stroke={LINE} strokeWidth="1" />
+      <Callout from={[158, 40]} to={[206, 30]} text="炎" />
+      <Callout from={[166, 126]} to={[206, 112]} text="空気調節ねじ（上）" />
+      <Callout from={[168, 152]} to={[206, 150]} text="ガス調節ねじ（下）" />
+      <Callout from={[225, 184]} to={[206, 222]} text="コック" anchor="end" />
+      <Label x={16} y={40} size={9.5} color="#1d4ed8">空気を増やすと</Label>
+      <Label x={16} y={54} size={9.5} color="#1d4ed8">赤い炎 → 青い炎</Label>
+    </svg>
+  )
+}
+
+// ── メスシリンダーの目もりの読み方 ───────────────────────────────────────────
+//   { name: 'cylinderReading' }
+// 液面のへこんだ下の面を、真横から見て、最小目もり（1mL）の10分の1まで読む。例は45.5mL。
+function CylinderReadingDiagram() {
+  const y = (mL) => 150 - (mL - 43) * 20
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="メスシリンダーの目もりの読み方" data-subject-diagram="cylinderReading">
+      <path d={`M122,${y(45.5) - 6} Q148,${y(45.5) + 6} 174,${y(45.5) - 6} L174,166 L122,166 Z`} fill="#bae6fd" />
+      <line x1="122" y1="20" x2="122" y2="166" stroke={LINE} strokeWidth="1.6" />
+      <line x1="174" y1="20" x2="174" y2="166" stroke={LINE} strokeWidth="1.6" />
+      {[43, 44, 45, 46, 47, 48].map((mL) => (
+        <g key={mL}>
+          <line x1="174" y1={y(mL)} x2="186" y2={y(mL)} stroke={INK} strokeWidth="1" />
+          <Label x={190} y={y(mL) + 3.5} size={9}>{mL}</Label>
+        </g>
+      ))}
+      <line x1="40" y1={y(45.5)} x2="146" y2={y(45.5)} stroke="#15803d" strokeWidth="1.4" />
+      <circle cx="36" cy={y(45.5)} r="5" fill="#ffffff" stroke="#15803d" strokeWidth="1.4" />
+      <Label x={36} y={y(45.5) - 10} anchor="middle" size={9} color="#15803d">真横から見る</Label>
+      <line x1="40" y1="30" x2="140" y2={y(45.5)} stroke="#b91c1c" strokeWidth="1" strokeDasharray="3 3" />
+      <circle cx="36" cy="28" r="5" fill="#ffffff" stroke="#b91c1c" strokeWidth="1.2" />
+      <Label x={52} y={24} size={8.5} color="#b91c1c">上から見るのはまちがい</Label>
+      <Callout from={[148, y(45.5)]} to={[214, 62]} text="へこんだ下の面" />
+      <Label x={214} y={124} size={9.5} weight="800">読み：45.5mL</Label>
+      <Label x={214} y={138} size={8.5} color={LINE}>（1mLの10分の1</Label>
+      <Label x={214} y={150} size={8.5} color={LINE}>まで読む）</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -297,4 +351,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   monocotDicot: MonocotDicotDiagram,
   insectBody: InsectBodyDiagram,
   eyeFields: EyeFieldsDiagram,
+  gasBurner: GasBurnerDiagram,
+  cylinderReading: CylinderReadingDiagram,
 })
