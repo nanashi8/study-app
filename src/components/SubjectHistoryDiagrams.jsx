@@ -70,6 +70,37 @@ function CenturyLineDiagram() {
   )
 }
 
+// ── 前方後円墳 ─────────────────────────────────────────────────────────
+//   { name: 'keyholeTomb' }
+// 上から見た前方後円墳の形（後円部・前方部・周りの堀・埴輪）。大きさは実際の比ではない。
+function KeyholeTombDiagram() {
+  const haniwa = []
+  for (let a = 200; a <= 340; a += 20) {
+    const r = (a * Math.PI) / 180
+    haniwa.push([150 + 50 * Math.cos(r), 72 + 50 * Math.sin(r)])
+  }
+  // 前方部の左右のふち（(102,100)〜(84,190) と (198,100)〜(216,190)）の少し内側に並べる。
+  for (let t = 0.15; t <= 0.9; t += 0.25) {
+    haniwa.push([103.4 - 14 * t, 108 + 70 * t], [196.6 + 14 * t, 108 + 70 * t])
+  }
+  return (
+    <svg viewBox="0 0 300 228" className="h-auto w-full" role="img" aria-label="前方後円墳の形" data-subject-diagram="keyholeTomb">
+      <path d="M150,6 A72,72 0 0,1 214,104 L236,204 L64,204 L86,104 A72,72 0 0,1 150,6 Z" fill="#bfdbfe" stroke="#60a5fa" strokeWidth="1" />
+      <path d="M150,22 A56,56 0 0,1 198,100 L216,190 L84,190 L102,100 A56,56 0 0,1 150,22 Z" fill="#bbf7d0" stroke="#15803d" strokeWidth="1.4" />
+      {haniwa.map(([x, y], index) => <circle key={index} cx={x} cy={y} r="2.6" fill="#c2410c" />)}
+      <Label x={150} y={70} size={11} weight="800" anchor="middle">後円部（円い）</Label>
+      <Label x={150} y={86} size={8.5} anchor="middle" color={MUTED}>王や豪族をほうむった</Label>
+      <Label x={150} y={160} size={11} weight="800" anchor="middle">前方部（四角い）</Label>
+      <Label x={246} y={40} size={9} weight="800" color="#1d4ed8">堀</Label>
+      <line x1={244} y1={43} x2={214} y2={60} stroke="#1d4ed8" strokeWidth="1" />
+      <Label x={8} y={128} size={9} weight="800" color="#c2410c">埴輪</Label>
+      <line x1={36} y1={125} x2={96} y2={130} stroke="#c2410c" strokeWidth="1" />
+      <Label x={150} y={222} size={8} anchor="middle" color={MUTED}>※ 上から見た形（大きさは実際の比ではない）</Label>
+    </svg>
+  )
+}
+
 export const HISTORY_DIAGRAMS = Object.freeze({
   centuryLine: CenturyLineDiagram,
+  keyholeTomb: KeyholeTombDiagram,
 })
