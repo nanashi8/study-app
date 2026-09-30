@@ -460,6 +460,86 @@ function FiltrationDiagram() {
   )
 }
 
+// ── 状態変化と粒子のようす ─────────────────────────────────────────────────
+//   { name: 'statesParticles' }
+// 固体（規則正しく並ぶ）・液体（自由に動く）・気体（激しく飛び回る）。加熱すると右へ、冷やすと左へ変化する。
+function StatesParticlesDiagram() {
+  const solid = []
+  for (let r = 0; r < 4; r += 1) for (let c = 0; c < 4; c += 1) solid.push([-15 + c * 10, -15 + r * 10])
+  const liquid = [[-18, 12], [-7, 16], [5, 13], [16, 16], [-14, 2], [-2, 5], [10, 2], [20, 6], [-20, -9], [-6, -6], [7, -10], [18, -6], [-12, -18], [2, -17], [14, -19], [-1, -28]]
+  const gas = [[-26, -30], [10, -34], [28, -18], [-12, -12], [20, 4], [-28, 8], [2, 12], [-16, 30], [18, 30], [30, 34]]
+  const Box = ({ cx, dots, title, moving }) => (
+    <g>
+      <rect x={cx - 38} y="36" width="76" height="92" rx="6" fill="#f8fafc" stroke={LINE} strokeWidth="1.2" />
+      {dots.map(([dx, dy], index) => (
+        <g key={index}>
+          {moving && <line x1={cx + dx} y1={82 + dy} x2={cx + dx - 8} y2={82 + dy + (index % 2 ? 6 : -6)} stroke="#94a3b8" strokeWidth="1" />}
+          <circle cx={cx + dx} cy={82 + dy} r="4.2" fill="#60a5fa" stroke="#1d4ed8" strokeWidth="0.8" />
+        </g>
+      ))}
+      <Label x={cx} y={24} anchor="middle" size={11} weight="800">{title}</Label>
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="状態変化と粒子のようす" data-subject-diagram="statesParticles">
+      <Box cx={46} dots={solid} title="固体" />
+      <Box cx={150} dots={liquid} title="液体" />
+      <Box cx={254} dots={gas} title="気体" moving />
+      {[[86, 110], [190, 214]].map(([x1, x2]) => (
+        <g key={x1}>
+          <line x1={x1} y1="68" x2={x2} y2="68" stroke="#dc2626" strokeWidth="1.6" />
+          <path d={`M${x2 + 2},68 L${x2 - 5},64 L${x2 - 5},72 Z`} fill="#dc2626" />
+          <line x1={x2} y1="100" x2={x1} y2="100" stroke="#2563eb" strokeWidth="1.6" />
+          <path d={`M${x1 - 2},100 L${x1 + 5},96 L${x1 + 5},104 Z`} fill="#2563eb" />
+        </g>
+      ))}
+      <Label x={98} y={62} anchor="middle" size={8.5} color="#dc2626">加熱</Label>
+      <Label x={202} y={62} anchor="middle" size={8.5} color="#dc2626">加熱</Label>
+      <Label x={98} y={114} anchor="middle" size={8.5} color="#2563eb">冷却</Label>
+      <Label x={202} y={114} anchor="middle" size={8.5} color="#2563eb">冷却</Label>
+      <Label x={46} y={148} anchor="middle" size={8.5} color={LINE}>規則正しく並び</Label>
+      <Label x={46} y={160} anchor="middle" size={8.5} color={LINE}>その場でふるえる</Label>
+      <Label x={150} y={148} anchor="middle" size={8.5} color={LINE}>比較的自由に</Label>
+      <Label x={150} y={160} anchor="middle" size={8.5} color={LINE}>動き回る</Label>
+      <Label x={254} y={148} anchor="middle" size={8.5} color={LINE}>激しく飛び回り</Label>
+      <Label x={254} y={160} anchor="middle" size={8.5} color={LINE}>間隔がとても大きい</Label>
+      <Label x={150} y={186} anchor="middle" size={9} color={INK}>粒子の数は変わらない → 質量は変わらない</Label>
+    </svg>
+  )
+}
+
+// ── 蒸留の装置 ────────────────────────────────────────────────────────────
+//   { name: 'distillation' }
+// 枝つきフラスコで混合物を加熱し、出てきた気体を氷水で冷やした試験管に液体として集める。温度計の球部は枝の高さ。
+function DistillationDiagram() {
+  return (
+    <svg viewBox="0 0 300 220" className="h-auto w-full" role="img" aria-label="蒸留の装置" data-subject-diagram="distillation">
+      {/* 枝つきフラスコ */}
+      <circle cx="80" cy="140" r="34" fill="#f8fafc" stroke={LINE} strokeWidth="1.4" />
+      <path d="M47,148 A34,34 0 0,0 113,148 Z" fill="#e0f2fe" />
+      <rect x="72" y="40" width="16" height="70" fill="#f8fafc" stroke={LINE} strokeWidth="1.3" />
+      <rect x="70" y="36" width="20" height="10" fill="#94a3b8" stroke={LINE} strokeWidth="1" />
+      <line x1="80" y1="14" x2="80" y2="66" stroke="#dc2626" strokeWidth="1.8" />
+      <circle cx="80" cy="68" r="3" fill="#dc2626" />
+      {/* 枝と、つなぐ管 */}
+      <line x1="88" y1="68" x2="206" y2="120" stroke={LINE} strokeWidth="3" />
+      {/* 試験管と氷水 */}
+      <rect x="180" y="118" width="80" height="70" fill="#dbeafe" stroke={LINE} strokeWidth="1.3" />
+      <path d="M198,96 L198,176 Q206,186 214,176 L214,96" fill="#f8fafc" stroke={LINE} strokeWidth="1.3" />
+      <rect x="199" y="160" width="14" height="17" fill="#fef3c7" />
+      {/* 沸騰石と加熱 */}
+      {[[70, 166], [86, 168], [78, 162]].map(([x, y]) => <circle key={x} cx={x} cy={y} r="2.8" fill={DARK} />)}
+      <path d="M72,196 Q80,182 88,196 Z" fill="#fb923c" />
+      <Callout from={[80, 16]} to={[118, 14]} text="温度計" />
+      <Callout from={[83, 68]} to={[118, 40]} text="球部は枝の高さに" />
+      <Callout from={[92, 166]} to={[130, 196]} text="沸騰石" />
+      <Callout from={[56, 150]} to={[44, 116]} text="混合物" anchor="end" />
+      <Callout from={[260, 150]} to={[270, 106]} text="氷水" anchor="end" />
+      <Callout from={[213, 170]} to={[240, 210]} text="集めた液体" anchor="end" />
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -474,4 +554,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   ammoniaFountain: AmmoniaFountainDiagram,
   dissolvingParticles: DissolvingParticlesDiagram,
   filtration: FiltrationDiagram,
+  statesParticles: StatesParticlesDiagram,
+  distillation: DistillationDiagram,
 })
