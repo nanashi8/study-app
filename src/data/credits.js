@@ -119,6 +119,18 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'labor',
+    title: '労働の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'mhlw-nonregular',
+        name: '厚生労働省「『非正規雇用』の現状と課題」（総務省「労働力調査」をもとにした資料）',
+        url: 'https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/part_haken/index.html',
+        use: '公民「生産と労働」の、非正規雇用労働者の割合の移り変わりのグラフに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'election',
     title: '選挙の数値',
     items: Object.freeze([
