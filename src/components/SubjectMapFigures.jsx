@@ -509,29 +509,40 @@ export function AzimuthalMapFigure({ figure }) {
 }
 
 // ── 陸と海の世界全図（南極大陸まで。国境は描かない）─────────────────────────
-//   { type: 'worldOverview', labels?: [{ lon, lat, text, color? }] }
-// 太平洋を中央にした正距円筒図法（緯度・経度を等間隔の方眼にした図）。六大陸と三大洋の位置を見るための図。
+//   { type: 'worldOverview', west?: -25, labels?: [{ lon, lat, text, color? }], points?: [{ lon, lat, text?, label? }], arrows?: [{ path, color?, dashed?, head?, text?, textAt? }] }
+// 正距円筒図法（緯度・経度を等間隔の方眼にした図）。west は図の左の端の経度で、ふつうは太平洋を中央にした −25。
+// 大西洋をまたぐ航路などは、west: −180（大西洋を中央にした図）で描く。図の端をまたぐ道すじは、端で分けて2本の矢印にする。
 const OVERVIEW_WEST = -25
 const OVERVIEW_WIDTH = 360
 export function WorldOverviewFigure({ figure }) {
+  const west = figure.west ?? OVERVIEW_WEST
   const width = OVERVIEW_WIDTH
   const height = 180
   const u = width / SCREEN_WIDTH
-  const x = (lon) => ((lon < OVERVIEW_WEST ? lon + 360 : lon) - OVERVIEW_WEST) * (width / 360)
+  // 図の右の端（west + 360 度）ちょうどの経度は右の端に置く（端をまたぐ道すじを右の端から描き始められるように）。
+  const wrap = (lon) => (lon < west ? lon + 360 : lon > west + 360 ? lon - 360 : lon)
+  const x = (lon) => (wrap(lon) - west) * (width / 360)
   const y = (lat) => (90 - lat) * (height / 180)
+  const project = (lon, lat) => [x(lon), y(lat)]
+  const box = { x: 0, y: 0, w: width, h: height }
   const ringPath = (ring) => {
-    // 輪の重心が西経25度より西なら、輪ごと右側（東経335度側）へ回す（大陸が図の両端で切れないように）。
+    // 輪の重心が図の左の端より西なら、輪ごと右側へ回す（大陸が図の両端で切れないように）。
     const meanLon = ring.reduce((sum, [lon]) => sum + lon, 0) / ring.length
-    const shift = meanLon < OVERVIEW_WEST ? 360 : 0
-    return ring.map(([lon, lat], i) => `${i ? 'L' : 'M'}${((lon + shift - OVERVIEW_WEST) * (width / 360)).toFixed(1)},${y(lat).toFixed(1)}`).join(' ') + ' Z'
+    const shift = meanLon < west ? 360 : meanLon > west + 360 ? -360 : 0
+    return ring.map(([lon, lat], i) => `${i ? 'L' : 'M'}${((lon + shift - west) * (width / 360)).toFixed(1)},${y(lat).toFixed(1)}`).join(' ') + ' Z'
   }
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-label={figure.caption ?? '六大陸と三大洋の図'} data-subject-figure-overview>
       <rect x="0" y="0" width={width} height={height} fill={SEA} />
       {GLOBE_LAND.map((ring, index) => <path key={index} d={ringPath(ring)} fill="#d6e7c7" stroke="#9ca38f" strokeWidth={0.4 * u} />)}
       <line x1="0" x2={width} y1={y(0)} y2={y(0)} stroke="#94a3b8" strokeWidth={0.8 * u} strokeDasharray={`${3 * u} ${2 * u}`} />
+      <Arrows arrows={figure.arrows} project={project} u={u} box={box} />
+      {(figure.points ?? []).map((point, index) => {
+        const [px, py] = project(point.lon, point.lat)
+        return <Point key={`point-${index}`} x={px} y={py} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : px > width * 0.62} box={box} />
+      })}
       {(figure.labels ?? []).map((label, index) => (
-        <Halo key={index} x={clampTextX(x(label.lon), label.text, (label.size ?? 10) * u, { x: 0, w: width }, 'middle', 2 * u)} y={y(label.lat)} u={u} size={label.size ?? 10} weight="800" color={label.color ?? INK} anchor="middle">{label.text}</Halo>
+        <Halo key={index} x={clampTextX(x(label.lon), label.text, (label.size ?? 10) * u, box, 'middle', 2 * u)} y={y(label.lat)} u={u} size={label.size ?? 10} weight="800" color={label.color ?? INK} anchor="middle">{label.text}</Halo>
       ))}
     </svg>
   )
