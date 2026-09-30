@@ -402,6 +402,64 @@ function AmmoniaFountainDiagram() {
   )
 }
 
+// ── 物質が水にとけるようす（粒子のモデル） ────────────────────────────────────
+//   { name: 'dissolvingParticles' }
+// 砂糖を水に入れた直後・しばらくして・時間がたったあと。粒子は水全体に均一に広がり、下にたまらない。
+function DissolvingParticlesDiagram() {
+  // 粒子の位置は、決まった並びで描く（毎回同じ図になるように）。
+  const bottom = [[-18, 0], [-9, 0], [0, 0], [9, 0], [18, 0], [-14, -8], [-4, -8], [5, -8], [14, -8], [-8, -16], [2, -16], [11, -16]]
+  const middle = [[-20, 0], [-6, 2], [8, 0], [20, 2], [-14, -12], [2, -10], [16, -14], [-22, -24], [-6, -26], [10, -22], [-12, -40], [14, -38]]
+  const even = [[-20, -8], [-4, -4], [12, -8], [22, -2], [-14, -28], [2, -24], [18, -30], [-22, -50], [-4, -46], [12, -52], [-12, -70], [8, -68]]
+  const Beaker = ({ cx, dots, title }) => (
+    <g>
+      <Label x={cx} y={18} anchor="middle" size={9.5} weight="800">{title}</Label>
+      <rect x={cx - 38} y="44" width="76" height="92" fill="#e0f2fe" />
+      <path d={`M${cx - 38},34 L${cx - 38},136 L${cx + 38},136 L${cx + 38},34`} fill="none" stroke={LINE} strokeWidth="1.5" />
+      {dots.map(([dx, dy], index) => <circle key={index} cx={cx + dx} cy={128 + dy} r="3.2" fill="#f59e0b" stroke="#b45309" strokeWidth="0.6" />)}
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 168" className="h-auto w-full" role="img" aria-label="物質が水にとけるようす" data-subject-diagram="dissolvingParticles">
+      <Beaker cx={50} dots={bottom} title="入れた直後" />
+      <Beaker cx={150} dots={middle} title="しばらくすると" />
+      <Beaker cx={250} dots={even} title="時間がたつと" />
+      <path d="M94,90 L106,90 M100,86 L106,90 L100,94" fill="none" stroke={DARK} strokeWidth="1.6" />
+      <path d="M194,90 L206,90 M200,86 L206,90 L200,94" fill="none" stroke={DARK} strokeWidth="1.6" />
+      <Label x={150} y={160} anchor="middle" size={9} color={LINE}>●は砂糖の粒子。最後は水全体に均一に広がり、下にたまらない</Label>
+    </svg>
+  )
+}
+
+// ── ろ過のしかた ──────────────────────────────────────────────────────────
+//   { name: 'filtration' }
+// ろ紙を水でぬらしてろうとにつけ、ろうとのあしの長いほうをビーカーの壁につける。液はガラス棒を伝わらせて注ぐ。
+function FiltrationDiagram() {
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="ろ過のしかた" data-subject-diagram="filtration">
+      {/* ろうと台 */}
+      <line x1="28" y1="226" x2="28" y2="40" stroke={DARK} strokeWidth="3" />
+      <rect x="10" y="222" width="150" height="8" fill={DARK} />
+      <line x1="28" y1="100" x2="106" y2="100" stroke={DARK} strokeWidth="3" />
+      {/* ろうととろ紙 */}
+      <path d="M93,60 L173,60 L141,112 L125,112 Z" fill="#f8fafc" stroke={LINE} strokeWidth="1.4" />
+      <path d="M101,64 L165,64 L135,108 L131,108 Z" fill="#fef9c3" stroke="#ca8a04" strokeWidth="1" />
+      <path d="M127,112 L127,166 L133,158 L133,112 Z" fill="#f8fafc" stroke={LINE} strokeWidth="1.2" />
+      {/* ビーカーとろ液 */}
+      <path d="M126,140 L126,220 L196,220 L196,140" fill="none" stroke={LINE} strokeWidth="1.5" />
+      <rect x="127" y="196" width="68" height="23" fill="#e0f2fe" />
+      {/* ガラス棒とビーカー（注ぐ液） */}
+      <line x1="210" y1="18" x2="146" y2="78" stroke={LINE} strokeWidth="2.2" />
+      <Callout from={[200, 28]} to={[216, 40]} text="ガラス棒を" />
+      <Label x={219} y={56} size={10}>伝わらせて注ぐ</Label>
+      <Callout from={[106, 66]} to={[80, 56]} text="ろ紙" />
+      <Callout from={[109, 84]} to={[80, 80]} text="ろうと" />
+      <Callout from={[127, 160]} to={[118, 146]} text="あしの長いほうを" />
+      <Label x={115} y={164} size={10} anchor="end">ビーカーの壁につける</Label>
+      <Callout from={[196, 206]} to={[214, 200]} text="ろ液" />
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -414,4 +472,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   cylinderReading: CylinderReadingDiagram,
   gasCollection: GasCollectionDiagram,
   ammoniaFountain: AmmoniaFountainDiagram,
+  dissolvingParticles: DissolvingParticlesDiagram,
+  filtration: FiltrationDiagram,
 })
