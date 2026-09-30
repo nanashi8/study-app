@@ -123,4 +123,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'geneCross',
   'punnettSquare',
   'homologousLimbs',
+  'tickerTape',
+  'slopeForces',
 ])

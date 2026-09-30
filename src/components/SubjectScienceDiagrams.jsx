@@ -3319,6 +3319,87 @@ function HomologousLimbsDiagram() {
   )
 }
 
+// ── 記録タイマーのテープ ────────────────────────────────────────────────────
+//   { name: 'tickerTape' }
+// 上：だんだん速くなる運動のテープ。5打点ごと（1秒間に50回打点するとき0.1秒）の長さが長くなる。
+// 下：テープを0.1秒ごとに切って順に並べたもの。長さのふえ方が一定なら、速さは一定の割合でふえている。
+function TickerTapeDiagram() {
+  const groups = [18, 42, 66, 90]
+  let x = 24
+  const dots = [x]
+  const bounds = [x]
+  groups.forEach((length) => {
+    for (let i = 1; i <= 5; i += 1) dots.push(x + (length * i) / 5)
+    x += length
+    bounds.push(x)
+  })
+  return (
+    <svg viewBox="0 0 300 204" className="h-auto w-full" role="img" aria-label="記録タイマーのテープ" data-subject-diagram="tickerTape">
+      <Label x={150} y={12} anchor="middle" size={8.5} color={LINE}>打点の間隔が広いほど、速さが速い</Label>
+      <rect x="12" y="20" width="276" height="20" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+      {dots.map((dx, i) => <circle key={i} cx={dx} cy="30" r="1.8" fill={INK} />)}
+      {bounds.map((bx) => <line key={bx} x1={bx} y1="18" x2={bx} y2="42" stroke="#dc2626" strokeWidth="1" />)}
+      {groups.map((length, i) => (
+        <g key={i}>
+          <path d={`M${bounds[i] + 1},46 L${bounds[i] + 1},50 L${bounds[i + 1] - 1},50 L${bounds[i + 1] - 1},46`} fill="none" stroke={LINE} strokeWidth="0.8" />
+          <Label x={(bounds[i] + bounds[i + 1]) / 2} y={62} anchor="middle" size={8}>0.1秒</Label>
+        </g>
+      ))}
+      <line x1="40" y1="186" x2="200" y2="186" stroke={DARK} strokeWidth="1" />
+      {groups.map((length, i) => (
+        <g key={`c${i}`}>
+          <rect x={52 + i * 34} y={186 - length} width="24" height={length} fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+          {[0, 1, 2, 3, 4].map((k) => <circle key={k} cx={64 + i * 34} cy={186 - (length * k) / 5 - length / 10} r="1.6" fill={INK} />)}
+          <Label x={64 + i * 34} y={198} anchor="middle" size={8}>{`${i + 1}本目`}</Label>
+        </g>
+      ))}
+      <Label x={206} y={124} size={8.5}>0.1秒ごとに切って</Label>
+      <Label x={206} y={138} size={8.5}>順に並べたもの</Label>
+      <Label x={206} y={158} size={8.5} color="#b91c1c">長さ＝0.1秒間に</Label>
+      <Label x={206} y={172} size={8.5} color="#b91c1c">進んだ距離</Label>
+    </svg>
+  )
+}
+
+// ── 斜面上の物体にはたらく重力の分解 ───────────────────────────────────────────
+//   { name: 'slopeForces', angle?: 30 }
+// 重力を、斜面に平行な分力（運動の向き）と斜面に垂直な分力に分解する。点線は平行四辺形の残りの2辺。
+function SlopeForcesDiagram({ angle = 30 }) {
+  const t = (angle * Math.PI) / 180
+  const base = Math.min(260, 150 / Math.tan(t))
+  const left = 280 - base
+  const top = 180 - base * Math.tan(t)
+  const u = [-Math.cos(t), Math.sin(t)]
+  const nIn = [Math.sin(t), Math.cos(t)]
+  const along = 0.42 * Math.hypot(base, 180 - top)
+  const P = [280 + u[0] * along, top + u[1] * along]
+  const C = [P[0] - nIn[0] * 12, P[1] - nIn[1] * 12]
+  const g = 64
+  const G = [C[0], C[1] + g]
+  const par = [C[0] + u[0] * g * Math.sin(t), C[1] + u[1] * g * Math.sin(t)]
+  const per = [C[0] + nIn[0] * g * Math.cos(t), C[1] + nIn[1] * g * Math.cos(t)]
+  const f = (v) => v.toFixed(1)
+  return (
+    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="斜面上の物体にはたらく重力の分解" data-subject-diagram="slopeForces">
+      <path d={`M${f(left)},180 L280,180 L280,${f(top)} Z`} fill="#e7e5e4" stroke="#78716c" strokeWidth="1.2" />
+      <g transform={`translate(${f(C[0])} ${f(C[1])}) rotate(${-angle})`}>
+        <rect x="-18" y="-10" width="36" height="16" rx="3" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+        <circle cx="-10" cy="8" r="4" fill="#475569" />
+        <circle cx="10" cy="8" r="4" fill="#475569" />
+      </g>
+      <line x1={f(par[0])} y1={f(par[1])} x2={f(G[0])} y2={f(G[1])} stroke={LINE} strokeWidth="1" strokeDasharray="3 3" />
+      <line x1={f(per[0])} y1={f(per[1])} x2={f(G[0])} y2={f(G[1])} stroke={LINE} strokeWidth="1" strokeDasharray="3 3" />
+      <Arrow from={C} to={G} color="#dc2626" width={2.4} />
+      <Arrow from={C} to={par} color="#2563eb" width={2.2} />
+      <Arrow from={C} to={per} color="#15803d" width={2.2} />
+      <Label x={G[0] + 6} y={G[1] + 10} size={9} weight="800" color="#b91c1c">重力</Label>
+      <Label x={par[0] - 6} y={par[1] - 4} anchor="end" size={8.5} weight="800" color="#1d4ed8">斜面に平行な分力</Label>
+      <Label x={per[0] + 6} y={per[1] + 2} size={8.5} weight="800" color="#15803d">斜面に垂直な分力</Label>
+      <Label x={left + 34} y={174} size={8.5} color={LINE}>{`傾き${angle}°`}</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3407,4 +3488,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   geneCross: GeneCrossDiagram,
   punnettSquare: PunnettSquareDiagram,
   homologousLimbs: HomologousLimbsDiagram,
+  tickerTape: TickerTapeDiagram,
+  slopeForces: SlopeForcesDiagram,
 })
