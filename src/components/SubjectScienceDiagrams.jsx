@@ -825,6 +825,77 @@ function ForceBalanceDiagram() {
   )
 }
 
+// ── マグマのねばりけと火山の形 ─────────────────────────────────────────────────
+//   { name: 'volcanoShapes' }
+// 左から、ねばりけが強い（ドーム状）・中間（円すい形）・弱い（傾斜のゆるやかな形）。
+function VolcanoShapesDiagram() {
+  const base = 118
+  return (
+    <svg viewBox="0 0 300 218" className="h-auto w-full" role="img" aria-label="マグマのねばりけと火山の形" data-subject-diagram="volcanoShapes">
+      <path d={`M14,${base} C22,${base - 40} 70,${base - 40} 78,${base} Z`} fill="#e7e5e4" stroke="#78716c" strokeWidth="1.3" />
+      <path d={`M104,${base} L150,${base - 62} L196,${base} Z`} fill="#d6d3d1" stroke="#78716c" strokeWidth="1.3" />
+      <path d={`M210,${base} Q254,${base - 26} 298,${base} Z`} fill="#57534e" stroke="#44403c" strokeWidth="1.3" />
+      <line x1="6" y1={base} x2="298" y2={base} stroke="#a8a29e" strokeWidth="1" />
+      <Label x={46} y={base + 16} anchor="middle" size={9.5} weight="800">ドーム状</Label>
+      <Label x={46} y={base + 30} anchor="middle" size={8.5} color={LINE}>昭和新山など</Label>
+      <Label x={150} y={base + 16} anchor="middle" size={9.5} weight="800">円すい形</Label>
+      <Label x={150} y={base + 30} anchor="middle" size={8.5} color={LINE}>富士山・桜島など</Label>
+      <Label x={254} y={base + 16} anchor="middle" size={9.5} weight="800">傾斜がゆるやか</Label>
+      <Label x={254} y={base + 30} anchor="middle" size={8.5} color={LINE}>マウナロアなど</Label>
+      {[['マグマのねばりけ', '強い', '弱い', 174], ['噴火のようす', '激しい', 'おだやか', 192], ['溶岩の色', '白っぽい', '黒っぽい', 210]].map(([title, left, right, y]) => (
+        <g key={title}>
+          <line x1="96" y1={y - 4} x2="204" y2={y - 4} stroke={DARK} strokeWidth="1.2" />
+          <path d={`M92,${y - 4} L99,${y - 8} L99,${y} Z`} fill={DARK} />
+          <path d={`M208,${y - 4} L201,${y - 8} L201,${y} Z`} fill={DARK} />
+          <Label x={150} y={y - 8} anchor="middle" size={8.5} color={LINE}>{title}</Label>
+          <Label x={86} y={y} anchor="end" size={9} weight="800">{left}</Label>
+          <Label x={214} y={y} size={9} weight="800">{right}</Label>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+// ── 火山岩と深成岩のつくり ─────────────────────────────────────────────────
+//   { name: 'rockTextures' }
+// ルーペで見たつくり。左：はん状組織（石基の中にはん晶）。右：等粒状組織（大きな鉱物がすき間なく組み合う）。
+function RockTexturesDiagram() {
+  const phenocrysts = [[-18, -16, 0], [14, -20, 30], [-4, 4, -20], [20, 12, 10], [-22, 18, 40]]
+  const grains = [
+    'M-38,-6 L-20,-30 L-2,-24 L-6,-4 Z', 'M-2,-24 L18,-34 L34,-14 L10,-6 Z', 'M-6,-4 L10,-6 L14,16 L-10,18 Z',
+    'M10,-6 L34,-14 L38,10 L14,16 Z', 'M-38,-6 L-6,-4 L-10,18 L-34,22 Z', 'M-34,22 L-10,18 L-4,38 L-24,36 Z',
+    'M-10,18 L14,16 L18,36 L-4,38 Z', 'M14,16 L38,10 L30,32 L18,36 Z',
+  ]
+  const colors = ['#f8fafc', '#fecdd3', '#e2e8f0', '#1f2937', '#f1f5f9', '#475569', '#fde68a', '#e5e7eb']
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="火山岩と深成岩のつくり" data-subject-diagram="rockTextures">
+      <defs>
+        <clipPath id="rock-left"><circle cx="76" cy="82" r="50" /></clipPath>
+        <clipPath id="rock-right"><circle cx="224" cy="82" r="50" /></clipPath>
+      </defs>
+      <g clipPath="url(#rock-left)">
+        <rect x="26" y="32" width="100" height="100" fill="#cbd5e1" />
+        {Array.from({ length: 90 }, (_, i) => <circle key={i} cx={30 + ((i * 37) % 92)} cy={36 + ((i * 53) % 92)} r="1.3" fill="#64748b" />)}
+        {phenocrysts.map(([dx, dy, rot], index) => <rect key={index} x={76 + dx - 7} y={82 + dy - 4} width="14" height="8" fill={index % 2 ? '#f8fafc' : '#1f2937'} stroke="#334155" strokeWidth="0.8" transform={`rotate(${rot} ${76 + dx} ${82 + dy})`} />)}
+      </g>
+      <circle cx="76" cy="82" r="50" fill="none" stroke={LINE} strokeWidth="1.6" />
+      <g clipPath="url(#rock-right)">
+        <rect x="174" y="32" width="100" height="100" fill="#f1f5f9" />
+        <g transform="translate(224 82) scale(1.35)">
+          {grains.map((d, index) => <path key={index} d={d} fill={colors[index]} stroke="#334155" strokeWidth="0.7" />)}
+        </g>
+      </g>
+      <circle cx="224" cy="82" r="50" fill="none" stroke={LINE} strokeWidth="1.6" />
+      <Label x={76} y={20} anchor="middle" size={10.5} weight="800">はん状組織（火山岩）</Label>
+      <Label x={224} y={20} anchor="middle" size={10.5} weight="800">等粒状組織（深成岩）</Label>
+      <Label x={76} y={150} anchor="middle" size={8.5} color={LINE}>細かい粒の石基の中に</Label>
+      <Label x={76} y={163} anchor="middle" size={8.5} color={LINE}>大きな鉱物（はん晶）</Label>
+      <Label x={224} y={150} anchor="middle" size={8.5} color={LINE}>大きな鉱物が</Label>
+      <Label x={224} y={163} anchor="middle" size={8.5} color={LINE}>すき間なく組み合わさる</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -849,4 +920,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   waveforms: WaveformsDiagram,
   forceArrow: ForceArrowDiagram,
   forceBalance: ForceBalanceDiagram,
+  volcanoShapes: VolcanoShapesDiagram,
+  rockTextures: RockTexturesDiagram,
 })

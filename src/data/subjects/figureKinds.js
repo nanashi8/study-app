@@ -59,4 +59,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'waveforms',
   'forceArrow',
   'forceBalance',
+  'volcanoShapes',
+  'rockTextures',
 ])
