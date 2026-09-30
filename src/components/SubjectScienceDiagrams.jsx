@@ -2285,6 +2285,133 @@ function WinterMonsoonDiagram() {
   )
 }
 
+function Charge({ x, y, sign, r = 6.5 }) {
+  const plus = sign === '+'
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={plus ? '#fee2e2' : '#dbeafe'} stroke={plus ? '#dc2626' : '#2563eb'} strokeWidth="1" />
+      <text x={x} y={y + 3.4} fontSize="9.5" fontWeight="800" textAnchor="middle" fill={plus ? '#b91c1c' : '#1d4ed8'}>{plus ? '＋' : '－'}</text>
+    </g>
+  )
+}
+
+// ── こすり合わせて生じる静電気と、電気の力 ──────────────────────────────────────────
+//   { name: 'staticCharge' }
+// 上：こする前はどちらも＋と－が同じ数。こすると、ティッシュペーパーの電子（－）がストローに移る。
+// 下：同じ種類の電気はしりぞけ合い、ちがう種類の電気は引き合う。
+function StaticChargeDiagram() {
+  const body = (x, y, name, sub, pluses, minuses) => (
+    <g>
+      <rect x={x} y={y} width="118" height="30" rx="6" fill="#f8fafc" stroke={LINE} strokeWidth="1" />
+      {[...Array(pluses).fill('+'), ...Array(minuses).fill('-')].map((sign, i) => <Charge key={i} x={x + 14 + i * 15} y={y + 15} sign={sign} r={6} />)}
+      <Label x={x + 59} y={y + 44} anchor="middle" size={8.5} color={LINE}>{name}</Label>
+      {sub && <Label x={x + 59} y={y + 56} anchor="middle" size={8.5} weight="800" color={sub.includes('－') ? '#1d4ed8' : '#b91c1c'}>{sub}</Label>}
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 276" className="h-auto w-full" role="img" aria-label="静電気と電気の力" data-subject-diagram="staticCharge">
+      <Label x={10} y={14} size={9.5} weight="800">こする前（どちらも電気を帯びていない）</Label>
+      {body(16, 22, 'ストロー', null, 3, 3)}
+      {body(166, 22, 'ティッシュペーパー', null, 3, 3)}
+      <Label x={10} y={96} size={9.5} weight="800">こすったあと</Label>
+      {body(16, 108, 'ストロー', '－の電気を帯びる', 3, 4)}
+      {body(166, 108, 'ティッシュペーパー', '＋の電気を帯びる', 3, 2)}
+      <Arrow from={[164, 123]} to={[137, 123]} color="#2563eb" />
+      <Label x={150} y={104} anchor="middle" size={8} color="#1d4ed8">電子が移る</Label>
+
+      <line x1="8" y1="184" x2="292" y2="184" stroke="#e2e8f0" strokeWidth="1" />
+      <Charge x={48} y={212} sign="-" r={10} />
+      <Charge x={100} y={212} sign="-" r={10} />
+      <Arrow from={[38, 212]} to={[14, 212]} color={INK} />
+      <Arrow from={[110, 212]} to={[134, 212]} color={INK} />
+      <Label x={74} y={246} anchor="middle" size={9} weight="800">同じ種類：しりぞけ合う</Label>
+      <Charge x={196} y={212} sign="+" r={10} />
+      <Charge x={262} y={212} sign="-" r={10} />
+      <Arrow from={[208, 212]} to={[224, 212]} color={INK} />
+      <Arrow from={[250, 212]} to={[234, 212]} color={INK} />
+      <Label x={229} y={246} anchor="middle" size={9} weight="800">ちがう種類：引き合う</Label>
+      <Label x={150} y={270} anchor="middle" size={8.5} color={LINE}>電気の力は、はなれていてもはたらく</Label>
+    </svg>
+  )
+}
+
+// ── 電子線（陰極線）の曲がり方 ───────────────────────────────────────────────────
+//   { name: 'crookesTube' }
+// 真空放電管の－極から出た電子線が、上下の電極板に加えた電圧で、＋極（上）の側に曲がる。
+function CrookesTubeDiagram() {
+  return (
+    <svg viewBox="0 0 300 190" className="h-auto w-full" role="img" aria-label="電子線の曲がり方" data-subject-diagram="crookesTube">
+      <path d="M30,70 Q18,90 30,110 L270,120 Q284,90 270,60 Z" fill="#f8fafc" stroke={LINE} strokeWidth="1.3" />
+      <rect x="34" y="80" width="8" height="20" fill="#2563eb" />
+      <rect x="262" y="68" width="6" height="44" fill="#dc2626" />
+      <rect x="64" y="84" width="4" height="12" fill={DARK} />
+      <line x1="120" y1="72" x2="190" y2="72" stroke="#dc2626" strokeWidth="3" />
+      <line x1="120" y1="108" x2="190" y2="108" stroke="#2563eb" strokeWidth="3" />
+      <path d="M42,90 L120,90 Q170,90 240,70" fill="none" stroke="#16a34a" strokeWidth="2.2" />
+      <path d="M120,90 L240,90" fill="none" stroke="#16a34a" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+      <Label x={38} y={134} anchor="middle" size={9} weight="800" color="#1d4ed8">－極</Label>
+      <Label x={266} y={140} anchor="middle" size={9} weight="800" color="#b91c1c">＋極</Label>
+      <Label x={155} y={62} anchor="middle" size={8.5} weight="800" color="#b91c1c">電極板（＋）</Label>
+      <Label x={155} y={124} anchor="middle" size={8.5} weight="800" color="#1d4ed8">電極板（－）</Label>
+      <Callout from={[90, 90]} to={[80, 40]} text="電子線" />
+      <Callout from={[236, 72]} to={[214, 34]} text="＋極の側に曲がる" />
+      <Label x={150} y={168} anchor="middle" size={8.5} color={LINE}>電圧を加えないとき、電子線は点線のようにまっすぐ進む</Label>
+    </svg>
+  )
+}
+
+// ── 回路の電流と電子の移動 ────────────────────────────────────────────────────
+//   { name: 'electronFlow' }
+// 電流は＋極から－極へ流れ（赤）、電子は－極から＋極へ移動する（青）。向きは反対。
+function ElectronFlowDiagram() {
+  return (
+    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="回路の電流と電子の移動" data-subject-diagram="electronFlow">
+      <rect x="60" y="40" width="180" height="110" fill="none" stroke={INK} strokeWidth="2" />
+      <rect x="130" y="138" width="40" height="24" fill="#ffffff" />
+      <line x1="140" y1="132" x2="140" y2="168" stroke={INK} strokeWidth="3" />
+      <line x1="158" y1="140" x2="158" y2="160" stroke={INK} strokeWidth="5" />
+      <Label x={134} y={186} anchor="middle" size={9} weight="800" color="#b91c1c">＋極</Label>
+      <Label x={166} y={186} anchor="middle" size={9} weight="800" color="#1d4ed8">－極</Label>
+      <circle cx="150" cy="40" r="11" fill="#fef9c3" stroke={INK} strokeWidth="1.4" />
+      <path d="M143,33 L157,47 M157,33 L143,47" stroke={INK} strokeWidth="1.2" />
+      <Label x={150} y={20} anchor="middle" size={8.5} color={LINE}>豆電球</Label>
+      <Arrow from={[40, 130]} to={[40, 64]} color="#dc2626" width={2.4} />
+      <Arrow from={[92, 24]} to={[118, 24]} color="#dc2626" width={2.4} />
+      <Label x={36} y={100} anchor="end" size={8.5} weight="800" color="#b91c1c">電流</Label>
+      {[[82, 58], [218, 58], [218, 130]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="4" fill="#dbeafe" stroke="#2563eb" strokeWidth="1" />)}
+      <Arrow from={[260, 130]} to={[260, 64]} color="#2563eb" width={2.4} />
+      <Arrow from={[208, 24]} to={[182, 24]} color="#2563eb" width={2.4} />
+      <Label x={264} y={100} size={8.5} weight="800" color="#1d4ed8">電子</Label>
+      <Label x={150} y={102} anchor="middle" size={8.5} color={LINE}>電流：＋極 → 豆電球 → －極</Label>
+      <Label x={150} y={118} anchor="middle" size={8.5} color={LINE}>電子：－極 → 豆電球 → ＋極</Label>
+    </svg>
+  )
+}
+
+// ── 放射線の通りぬけ方 ──────────────────────────────────────────────────────
+//   { name: 'radiationPenetration' }
+// α線は紙1枚で、β線はうすいアルミニウムの板で止まる。γ線やX線は通りぬけやすく、鉛の板などで止める。
+function RadiationPenetrationDiagram() {
+  const rows = [['α線', 44, 108], ['β線', 84, 168], ['γ線・X線', 124, 228]]
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="放射線の通りぬけ方" data-subject-diagram="radiationPenetration">
+      <rect x="104" y="28" width="4" height="116" fill="#fef3c7" stroke="#a16207" strokeWidth="0.8" />
+      <rect x="162" y="28" width="8" height="116" fill="#cbd5e1" stroke="#475569" strokeWidth="0.8" />
+      <rect x="222" y="28" width="18" height="116" fill="#64748b" stroke="#334155" strokeWidth="0.8" />
+      <Label x={106} y={20} anchor="middle" size={8.5} weight="800">紙</Label>
+      <Label x={166} y={20} anchor="middle" size={8.5} weight="800">アルミニウム板</Label>
+      <Label x={231} y={20} anchor="middle" size={8.5} weight="800">鉛板</Label>
+      {rows.map(([name, y, stop]) => (
+        <g key={name}>
+          <Label x={8} y={y + 4} size={9} weight="800" color="#b91c1c">{name}</Label>
+          <Arrow from={[58, y]} to={[stop - 2, y]} color="#dc2626" width={2.2} />
+        </g>
+      ))}
+      <Label x={150} y={166} anchor="middle" size={8.5} color={LINE}>放射線は種類によって、物質を通りぬける力（透過性）がちがう</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2344,4 +2471,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   midLatitudeCyclone: MidLatitudeCycloneDiagram,
   seaLandBreeze: SeaLandBreezeDiagram,
   winterMonsoon: WinterMonsoonDiagram,
+  staticCharge: StaticChargeDiagram,
+  crookesTube: CrookesTubeDiagram,
+  electronFlow: ElectronFlowDiagram,
+  radiationPenetration: RadiationPenetrationDiagram,
 })

@@ -1713,6 +1713,26 @@
     "sc2-12#7": {
       "decision": "figure",
       "sha256": "f47cb8c42cbe9c9d79d3507886f65f6c16ac73c16080542e87b5c0e78e7646bf"
+    },
+    "sc2-13#1": {
+      "decision": "figure",
+      "sha256": "ad828340f1cb9aaf655ff186e1a839e4dd3ed6a50c4648322ccdaafa6f3340fb"
+    },
+    "sc2-13#2": {
+      "decision": "figure",
+      "sha256": "2dc28922e3ab2f7785c3d437432898034bb5b3b9c526529b2cbf9d8733379c73"
+    },
+    "sc2-13#3": {
+      "decision": "figure",
+      "sha256": "443576549c31e95716ec595f18517e3c851bcaac19a46fffe56b018894600bf9"
+    },
+    "sc2-13#4": {
+      "decision": "figure",
+      "sha256": "ee7e431782f060a504ea5c0508953a23fcf3b6e828d72a7c5f24ed23c383818b"
+    },
+    "sc2-13#5": {
+      "decision": "figure",
+      "sha256": "67e1b1ff610bdcc8c344b852dfe1375ebe7f93734f29c619b8a7204f77732cb9"
     }
   },
   "questions": {
@@ -4703,6 +4723,42 @@
     "sc2-12-q09": {
       "decision": "none",
       "sha256": "5fac40abb54d45873563046ff08b45cef1834dfcb4d7aef735abd816b773781b"
+    },
+    "sc2-13-q01": {
+      "decision": "none",
+      "sha256": "9d3d482fcc06d07c4554f47fe7b80fd3abe115aa13f139ed6841d69ee3456cde"
+    },
+    "sc2-13-q02": {
+      "decision": "none",
+      "sha256": "418fb2f6ba1da88e0927b250d06bb019d3fe7e02e5257639768d56a9784995d2"
+    },
+    "sc2-13-q03": {
+      "decision": "none",
+      "sha256": "b2ada3f5c42d35a486d219b92503eb189814d10d0ff5a79f90114540cfa4b0a5"
+    },
+    "sc2-13-q04": {
+      "decision": "none",
+      "sha256": "1087b861c1b39ed33f38618afc4acf9b62a1f9a13cb3790fba6f648b8a59a1ee"
+    },
+    "sc2-13-q05": {
+      "decision": "none",
+      "sha256": "7cafbc365762ec14da4a494422e93b9e4c373983bbd64825f66ee1977aec92bb"
+    },
+    "sc2-13-q06": {
+      "decision": "none",
+      "sha256": "ebaa88548feb3f3a602ee077255d4280778778d8f6f6c55f81f8a0986b415043"
+    },
+    "sc2-13-q07": {
+      "decision": "none",
+      "sha256": "a4daa1efcb9e19ad725adafbd435d1d1bb9a4aabd3ce4f4aeb876ef37da32d14"
+    },
+    "sc2-13-q08": {
+      "decision": "none",
+      "sha256": "ae97ae43e9fc973eefb4103e3ef39b26683b9109f9f0dd488b1993a7eca6866a"
+    },
+    "sc2-13-q09": {
+      "decision": "none",
+      "sha256": "b0abe3d1be1d74fdf1fbded18ba3be7af40c6cb1f45cc991175bbab9d49ddd2f"
     }
   }
 }
