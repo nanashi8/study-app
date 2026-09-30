@@ -1547,6 +1547,134 @@ function LeafSectionDiagram() {
   )
 }
 
+// ── 消化にかかわる器官 ─────────────────────────────────────────────────────────
+//   { name: 'digestiveSystem' }
+// 正面から見たようす（図の左がからだの右側）。口→食道→胃→小腸→大腸→肛門の消化管と、だ液せん・肝臓・胆のう・すい臓。
+function DigestiveSystemDiagram() {
+  return (
+    <svg viewBox="0 0 300 284" className="h-auto w-full" role="img" aria-label="消化にかかわる器官" data-subject-diagram="digestiveSystem">
+      <path d="M92,236 L86,178 L198,176 L200,250 Q182,262 146,262" fill="none" stroke="#d6a676" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M140,144 L148,166 C120,172 100,184 110,196 C122,208 176,196 178,212 C180,226 112,214 108,230 C106,238 100,238 94,234" fill="none" stroke="#f59e0b" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="130" y1="30" x2="140" y2="94" stroke="#fca5a5" strokeWidth="6" strokeLinecap="round" />
+      <path d="M60,98 Q56,80 96,78 L134,82 Q138,100 118,110 Q90,120 66,112 Z" fill="#c2410c" stroke="#7c2d12" strokeWidth="1" />
+      <ellipse cx="104" cy="118" rx="7" ry="5" fill="#86efac" stroke="#15803d" strokeWidth="0.8" />
+      <path d="M140,92 C170,84 198,100 192,126 C186,152 150,156 138,140 C150,142 168,136 170,122 C172,108 156,102 140,104 Z" fill="#fca5a5" stroke="#b91c1c" strokeWidth="1" />
+      <path d="M118,160 Q150,150 192,156 Q194,165 150,167 Q126,169 118,160 Z" fill="#fde68a" stroke="#b45309" strokeWidth="0.8" />
+      <ellipse cx="130" cy="22" rx="12" ry="6" fill="#fecaca" stroke="#b91c1c" strokeWidth="0.8" />
+      <ellipse cx="112" cy="34" rx="6" ry="4" fill="#fde68a" stroke="#b45309" strokeWidth="0.8" />
+      <Callout from={[118, 22]} to={[92, 14]} text="口" />
+      <Callout from={[108, 35]} to={[92, 40]} text="だ液せん" />
+      <Callout from={[70, 100]} to={[42, 90]} text="肝臓" />
+      <Callout from={[98, 120]} to={[42, 126]} text="胆のう" />
+      <Callout from={[88, 214]} to={[42, 214]} text="大腸" />
+      <Callout from={[136, 62]} to={[226, 56]} text="食道" />
+      <Callout from={[188, 112]} to={[226, 104]} text="胃" />
+      <Callout from={[190, 160]} to={[226, 152]} text="すい臓" />
+      <Callout from={[178, 212]} to={[226, 206]} text="小腸" />
+      <Callout from={[148, 262]} to={[226, 270]} text="肛門" />
+    </svg>
+  )
+}
+
+// ── 小腸の柔毛 ───────────────────────────────────────────────────────────
+//   { name: 'villus' }
+// 柔毛1本を大きくしたようす。ブドウ糖・アミノ酸は毛細血管へ、脂肪酸とモノグリセリドは再び脂肪になってリンパ管へ入る。
+function VillusDiagram() {
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="小腸の柔毛" data-subject-diagram="villus">
+      <rect x="50" y="184" width="200" height="12" fill="#fecaca" stroke="#b91c1c" strokeWidth="0.8" />
+      <path d="M104,186 L104,70 Q140,14 176,70 L176,186" fill="#fde68a" stroke="#b45309" strokeWidth="1.2" />
+      <path d="M114,186 L114,76 Q140,36 166,76 L166,186" fill="none" stroke="#dc2626" strokeWidth="2" />
+      {[100, 128, 156].map((y) => <path key={y} d={`M114,${y} Q140,${y + 10} 166,${y}`} fill="none" stroke="#dc2626" strokeWidth="1.4" />)}
+      <path d="M140,186 L140,78" stroke="#eab308" strokeWidth="6" strokeLinecap="round" />
+      <Callout from={[104, 120]} to={[70, 104]} text="柔毛" />
+      <Callout from={[166, 118]} to={[196, 88]} text="毛細血管" />
+      <Label x={199} y={104} size={8.5} color={LINE}>ブドウ糖・アミノ酸</Label>
+      <Label x={199} y={116} size={8.5} color={LINE}>が入る</Label>
+      <Callout from={[140, 150]} to={[196, 150]} text="リンパ管" />
+      <Label x={199} y={166} size={8.5} color={LINE}>脂肪になって入る</Label>
+      <Label x={150} y={210} anchor="middle" size={8.5} color={LINE}>小腸の内側の壁</Label>
+    </svg>
+  )
+}
+
+// ── 肺胞での気体の交換 ────────────────────────────────────────────────────────
+//   { name: 'alveolus' }
+// 左：気管→気管支→肺胞のふさ。右：肺胞1つを大きくしたようす。血液に酸素がとり入れられ、二酸化炭素が出される。
+function AlveolusDiagram() {
+  const clusterA = [[36, 108], [54, 104], [44, 124], [62, 122], [52, 140]]
+  const clusterB = [[82, 104], [100, 108], [88, 124], [106, 126], [96, 142]]
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="肺胞での気体の交換" data-subject-diagram="alveolus">
+      <path d="M72,12 L72,64 L50,96 M72,64 L92,96" fill="none" stroke="#94a3b8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+      {[...clusterA, ...clusterB].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="9.5" fill="#fee2e2" stroke="#be123c" strokeWidth="1" />)}
+      <circle cx="54" cy="104" r="14" fill="none" stroke={LINE} strokeWidth="0.9" strokeDasharray="3 2" />
+      <line x1="66" y1="96" x2="160" y2="66" stroke={LINE} strokeWidth="0.9" strokeDasharray="3 2" />
+      <circle cx="206" cy="100" r="50" fill="#fee2e2" stroke="#be123c" strokeWidth="1.4" />
+      <path d="M146,150 C168,190 244,194 268,150" fill="none" stroke="#3b82f6" strokeWidth="11" strokeLinecap="round" />
+      <path d="M268,150 C282,124 280,84 262,62" fill="none" stroke="#dc2626" strokeWidth="11" strokeLinecap="round" />
+      <Arrow from={[214, 118]} to={[232, 164]} color="#dc2626" />
+      <Label x={236} y={132} size={9} weight="800" color="#b91c1c">酸素</Label>
+      <Arrow from={[180, 168]} to={[186, 126]} color="#1d4ed8" />
+      <Label x={140} y={132} size={9} weight="800" color="#1d4ed8">二酸化炭素</Label>
+      <Label x={206} y={84} anchor="middle" size={9.5} weight="800">肺胞（中は空気）</Label>
+      <Callout from={[170, 184]} to={[130, 198]} text="毛細血管" />
+      <Callout from={[76, 30]} to={[98, 22]} text="気管" />
+      <Callout from={[84, 80]} to={[112, 88]} text="気管支" />
+      <Callout from={[52, 150]} to={[62, 180]} text="肺胞" />
+    </svg>
+  )
+}
+
+// ── 血液の循環 ──────────────────────────────────────────────────────────────
+//   { name: 'circulation' }
+// 正面から見たようす（図の左がからだの右側）。赤は動脈血、青は静脈血。上の輪が肺循環、下の輪が体循環。
+function CirculationDiagram() {
+  const ART = '#dc2626'
+  const VEIN = '#2563eb'
+  const heads = {
+    left: (x, y) => `M${x},${y} L${x + 8},${y - 4.5} L${x + 8},${y + 4.5} Z`,
+    right: (x, y) => `M${x},${y} L${x - 8},${y - 4.5} L${x - 8},${y + 4.5} Z`,
+    up: (x, y) => `M${x},${y} L${x - 4.5},${y + 8} L${x + 4.5},${y + 8} Z`,
+  }
+  const vessel = (d, color, [x, y, dir]) => (
+    <g>
+      <path d={d} fill="none" stroke={color} strokeWidth="4" strokeLinejoin="round" />
+      <path d={heads[dir](x, y)} fill={color} />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 272" className="h-auto w-full" role="img" aria-label="血液の循環" data-subject-diagram="circulation">
+      <rect x="112" y="16" width="76" height="32" rx="10" fill="#fee2e2" stroke="#be123c" strokeWidth="1" />
+      <Label x={150} y={36} anchor="middle" size={10} weight="800">肺</Label>
+      <rect x="104" y="226" width="92" height="34" rx="10" fill="#fef3c7" stroke="#b45309" strokeWidth="1" />
+      <Label x={150} y={247} anchor="middle" size={10} weight="800">全身の細胞</Label>
+      <rect x="100" y="102" width="36" height="30" fill="#bfdbfe" stroke={LINE} strokeWidth="1" />
+      <rect x="164" y="102" width="36" height="30" fill="#fecaca" stroke={LINE} strokeWidth="1" />
+      <rect x="100" y="132" width="36" height="42" fill="#bfdbfe" stroke={LINE} strokeWidth="1" />
+      <rect x="164" y="132" width="36" height="42" fill="#fecaca" stroke={LINE} strokeWidth="1" />
+      <Label x={118} y={121} anchor="middle" size={8}>右心房</Label>
+      <Label x={182} y={121} anchor="middle" size={8}>左心房</Label>
+      <Label x={118} y={157} anchor="middle" size={8}>右心室</Label>
+      <Label x={182} y={157} anchor="middle" size={8}>左心室</Label>
+      {vessel('M136,152 L150,152 L150,58', VEIN, [150, 50, 'up'])}
+      {vessel('M188,32 L214,32 L214,117 L208,117', ART, [200, 117, 'left'])}
+      {vessel('M200,160 L228,160 L228,243 L204,243', ART, [196, 243, 'left'])}
+      {vessel('M104,243 L72,243 L72,117 L92,117', VEIN, [100, 117, 'right'])}
+      <Label x={145} y={86} anchor="end" size={9} weight="800" color={VEIN}>肺動脈</Label>
+      <Label x={218} y={80} size={9} weight="800" color={ART}>肺静脈</Label>
+      <Label x={232} y={204} size={9} weight="800" color={ART}>大動脈</Label>
+      <Label x={68} y={204} anchor="end" size={9} weight="800" color={VEIN}>大静脈</Label>
+      <Label x={182} y={80} anchor="middle" size={9} color={LINE}>肺循環</Label>
+      <Label x={150} y={204} anchor="middle" size={9} color={LINE}>体循環</Label>
+      <line x1="8" y1="262" x2="24" y2="262" stroke={ART} strokeWidth="4" />
+      <Label x={28} y={265.5} size={8.5}>動脈血</Label>
+      <line x1="232" y1="262" x2="248" y2="262" stroke={VEIN} strokeWidth="4" />
+      <Label x={252} y={265.5} size={8.5}>静脈血</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1586,4 +1714,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   photosynthesis: PhotosynthesisDiagram,
   stemSections: StemSectionsDiagram,
   leafSection: LeafSectionDiagram,
+  digestiveSystem: DigestiveSystemDiagram,
+  villus: VillusDiagram,
+  alveolus: AlveolusDiagram,
+  circulation: CirculationDiagram,
 })
