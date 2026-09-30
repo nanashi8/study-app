@@ -101,4 +101,9 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'circuitSymbols',
   'seriesParallel',
   'meterConnection',
+  'magneticField',
+  'currentField',
+  'electromagneticInduction',
+  'forceOnCurrent',
+  'dcAc',
 ])

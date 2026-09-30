@@ -2565,6 +2565,158 @@ function MeterConnectionDiagram() {
   )
 }
 
+// ── 棒磁石のまわりの磁力線 ────────────────────────────────────────────────────
+//   { name: 'magneticField' }
+// 磁力線はN極から出てS極に入る。間隔がせまい所（極の近く）ほど磁界が強い。方位磁針のN極は磁界の向きをさす。
+function MagneticFieldDiagram() {
+  const lines = [18, 34, 52, 74].map((h) => `M104,${96 - 4} C120,${96 - 4 - h * 1.3} 180,${96 - 4 - h * 1.3} 196,${96 - 4}`)
+  const lower = [18, 34, 52, 74].map((h) => `M104,${96 + 4} C120,${96 + 4 + h * 1.3} 180,${96 + 4 + h * 1.3} 196,${96 + 4}`)
+  const needle = (x, y, angle) => (
+    <g transform={`rotate(${angle} ${x} ${y})`}>
+      <path d={`M${x - 9},${y} L${x},${y - 3} L${x},${y + 3} Z`} fill="#94a3b8" />
+      <path d={`M${x + 9},${y} L${x},${y - 3} L${x},${y + 3} Z`} fill="#dc2626" />
+      <circle cx={x} cy={y} r="11" fill="none" stroke="#94a3b8" strokeWidth="0.8" />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="棒磁石のまわりの磁力線" data-subject-diagram="magneticField">
+      {[...lines, ...lower].map((d, i) => <path key={i} d={d} fill="none" stroke="#64748b" strokeWidth="1" />)}
+      <path d="M104,96 L60,96 M196,96 L240,96" stroke="#64748b" strokeWidth="1" />
+      <rect x="104" y="84" width="46" height="24" fill="#dc2626" />
+      <rect x="150" y="84" width="46" height="24" fill="#2563eb" />
+      <text x={127} y={101} fontSize="11" fontWeight="800" textAnchor="middle" fill="#ffffff">N</text>
+      <text x={173} y={101} fontSize="11" fontWeight="800" textAnchor="middle" fill="#ffffff">S</text>
+      <path d="M150,20.6 L143,17 L143,24 Z" fill="#64748b" />
+      <path d="M150,171.4 L143,168 L143,175 Z" fill="#64748b" />
+      <path d="M72,96 L80,92 L80,100 Z" fill="#64748b" />
+      <path d="M232,96 L224,92 L224,100 Z" transform="rotate(180 228 96)" fill="#64748b" />
+      {needle(150, 40, 0)}
+      {needle(46, 70, 200)}
+      {needle(254, 70, 160)}
+      <Label x={150} y={192} anchor="middle" size={8.5} color={LINE}>磁力線はN極から出てS極に入る。赤は方位磁針のN極</Label>
+    </svg>
+  )
+}
+
+// ── 電流がつくる磁界（導線とコイル） ──────────────────────────────────────────────
+//   { name: 'currentField', part?: 'wire' | 'coil' }（part がなければ両方を並べる）
+// 左：まっすぐな導線を上から下へ電流が流れるとき、真上から見ると磁界は時計回り（右ねじの向き）。
+// 右：コイルに電流を流すと、内側に同じ向きの磁界が重なって強い磁界ができる。
+function CurrentFieldDiagram({ part }) {
+  const wireShift = part === 'wire' ? 80 : 0
+  const coilShift = part === 'coil' ? -68 : 0
+  return (
+    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="電流がつくる磁界" data-subject-diagram="currentField">
+      {part !== 'coil' && <g transform={`translate(${wireShift} 0)`}>
+      <Label x={70} y={14} anchor="middle" size={9.5} weight="800">まっすぐな導線</Label>
+      {[16, 30, 44].map((r) => <ellipse key={r} cx="70" cy="100" rx={r * 1.3} ry={r * 0.5} fill="none" stroke="#2563eb" strokeWidth="1" />)}
+      <path d="M127,107 L123,98 L131,98 Z" fill="#2563eb" />
+      <line x1="70" y1="26" x2="70" y2="176" stroke="#b45309" strokeWidth="3" />
+      <Arrow from={[82, 40]} to={[82, 70]} color="#dc2626" />
+      <Label x={88} y={50} size={8.5} weight="800" color="#b91c1c">電流</Label>
+      <Label x={70} y={194} anchor="middle" size={8.5} color={LINE}>上から見ると磁界は時計回り</Label>
+      </g>}
+      {part !== 'wire' && <g transform={`translate(${coilShift} 0)`}>
+      <Label x={218} y={14} anchor="middle" size={9.5} weight="800">コイル</Label>
+      {[0, 1, 2, 3, 4].map((k) => <ellipse key={k} cx={178 + k * 20} cy="100" rx="8" ry="26" fill="none" stroke="#b45309" strokeWidth="2.4" />)}
+      <line x1="150" y1="100" x2="290" y2="100" stroke="#2563eb" strokeWidth="1.2" />
+      <path d="M290,100 L282,96 L282,104 Z" fill="#2563eb" />
+      <path d="M186,70 C170,40 266,40 250,70" fill="none" stroke="#2563eb" strokeWidth="1" />
+      <path d="M186,130 C170,160 266,160 250,130" fill="none" stroke="#2563eb" strokeWidth="1" />
+      <Label x={150} y={94} size={8.5} color="#1d4ed8">磁界</Label>
+      <Label x={218} y={194} anchor="middle" size={8.5} color={LINE}>内側に同じ向きの強い磁界</Label>
+      <Label x={218} y={178} anchor="middle" size={8} color={LINE}>鉄心を入れると電磁石になる</Label>
+      </g>}
+    </svg>
+  )
+}
+
+// ── 電磁誘導 ──────────────────────────────────────────────────────────────
+//   { name: 'electromagneticInduction' }
+// 棒磁石のN極をコイルに近づけると、コイルの中の磁界が変化して誘導電流が流れ、検流計の針がふれる。
+function ElectromagneticInductionDiagram() {
+  return (
+    <svg viewBox="0 0 300 184" className="h-auto w-full" role="img" aria-label="電磁誘導" data-subject-diagram="electromagneticInduction">
+      <rect x="16" y="68" width="40" height="22" fill="#2563eb" />
+      <rect x="56" y="68" width="40" height="22" fill="#dc2626" />
+      <text x={36} y={83} fontSize="10" fontWeight="800" textAnchor="middle" fill="#ffffff">S</text>
+      <text x={76} y={83} fontSize="10" fontWeight="800" textAnchor="middle" fill="#ffffff">N</text>
+      <Arrow from={[62, 56]} to={[104, 56]} color={INK} />
+      <Label x={83} y={48} anchor="middle" size={8.5} weight="800">近づける</Label>
+      {[0, 1, 2, 3, 4, 5].map((k) => <ellipse key={k} cx={128 + k * 14} cy="79" rx="7" ry="24" fill="none" stroke="#b45309" strokeWidth="2.2" />)}
+      <path d="M128,103 L128,160 L222,160 L222,140" fill="none" stroke={INK} strokeWidth="1.4" />
+      <path d="M198,103 L198,116 L272,116 L272,140 L258,140" fill="none" stroke={INK} strokeWidth="1.4" />
+      <circle cx="240" cy="136" r="18" fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+      <line x1="240" y1="140" x2="250" y2="124" stroke="#dc2626" strokeWidth="1.8" />
+      <Label x={262} y={166} size={8.5} weight="800">検流計</Label>
+      <Label x={162} y={40} anchor="middle" size={8.5} weight="800">コイル</Label>
+      <Label x={140} y={180} anchor="middle" size={8.5} color={LINE}>コイルの中の磁界が変化すると電流が流れる</Label>
+    </svg>
+  )
+}
+
+// ── 磁界の中の電流が受ける力 ───────────────────────────────────────────────────
+//   { name: 'forceOnCurrent' }
+// 上にN極、下にS極（磁界は下向き）。導線（断面）の電流が手前向き（●）なら右に、奥向き（×）なら左に力を受ける。
+function ForceOnCurrentDiagram() {
+  const panel = (cx, toward) => (
+    <g>
+      <rect x={cx - 50} y="20" width="100" height="20" fill="#dc2626" />
+      <rect x={cx - 50} y="136" width="100" height="20" fill="#2563eb" />
+      <text x={cx} y={34} fontSize="10" fontWeight="800" textAnchor="middle" fill="#ffffff">N</text>
+      <text x={cx} y={150} fontSize="10" fontWeight="800" textAnchor="middle" fill="#ffffff">S</text>
+      {[-30, 30].map((dx) => <Arrow key={dx} from={[cx + dx, 44]} to={[cx + dx, 132]} color="#94a3b8" />)}
+      <circle cx={cx} cy="88" r="11" fill="#fef3c7" stroke="#b45309" strokeWidth="1.6" />
+      {toward ? <circle cx={cx} cy="88" r="3" fill={INK} /> : <path d={`M${cx - 6},82 L${cx + 6},94 M${cx + 6},82 L${cx - 6},94`} stroke={INK} strokeWidth="1.8" />}
+      <Arrow from={[cx + (toward ? 12 : -12), 88]} to={[cx + (toward ? 44 : -44), 88]} color="#dc2626" width={2.6} />
+      <Label x={cx} y={172} anchor="middle" size={8.5}>{toward ? '電流：手前向き（●）' : '電流：奥向き（×）'}</Label>
+      <Label x={cx} y={186} anchor="middle" size={8.5} weight="800" color="#b91c1c">{toward ? '力：右向き' : '力：左向き'}</Label>
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="磁界の中の電流が受ける力" data-subject-diagram="forceOnCurrent">
+      {panel(78, true)}
+      {panel(222, false)}
+      <Label x={150} y={12} anchor="middle" size={8.5} color={LINE}>灰色の矢印は磁界の向き（N極→S極）</Label>
+    </svg>
+  )
+}
+
+// ── 直流と交流 ─────────────────────────────────────────────────────────────
+//   { name: 'dcAc' }
+// 上：直流は向きが一定。下：交流は向きと大きさが周期的に変わる（1回の変化にかかる時間が、50Hzなら50分の1秒）。
+function DcAcDiagram() {
+  const left = 60
+  const right = 288
+  const sine = Array.from({ length: 121 }, (_, i) => {
+    const x = left + ((right - left) * i) / 120
+    const y = 142 - 30 * Math.sin((i / 120) * 3 * 2 * Math.PI)
+    return `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`
+  }).join(' ')
+  const period = (right - left) / 3
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="直流と交流" data-subject-diagram="dcAc">
+      <line x1={left} y1="52" x2={right} y2="52" stroke="#cbd5e1" strokeWidth="1" />
+      <line x1={left} y1="20" x2={left} y2="84" stroke={DARK} strokeWidth="1" />
+      <line x1={left} y1="32" x2={right} y2="32" stroke="#dc2626" strokeWidth="2" />
+      <Label x={left - 8} y={36} anchor="end" size={10} weight="800">直流</Label>
+      <Label x={left - 8} y={56} anchor="end" size={8} color={LINE}>0</Label>
+      <Label x={right} y={24} anchor="end" size={8.5} color={LINE}>向きが一定</Label>
+
+      <line x1={left} y1="142" x2={right} y2="142" stroke="#cbd5e1" strokeWidth="1" />
+      <line x1={left} y1="104" x2={left} y2="180" stroke={DARK} strokeWidth="1" />
+      <path d={sine} fill="none" stroke="#2563eb" strokeWidth="2" />
+      <Label x={left - 8} y={134} anchor="end" size={10} weight="800">交流</Label>
+      <Label x={left - 8} y={146} anchor="end" size={8} color={LINE}>0</Label>
+      <line x1={left} y1="184" x2={left + period} y2="184" stroke="#15803d" strokeWidth="1.2" />
+      <line x1={left} y1="180" x2={left} y2="188" stroke="#15803d" strokeWidth="1.2" />
+      <line x1={left + period} y1="180" x2={left + period} y2="188" stroke="#15803d" strokeWidth="1.2" />
+      <Label x={left + period / 2} y={200} anchor="middle" size={8.5} color="#15803d">1回の変化</Label>
+      <Label x={right} y={200} anchor="end" size={8.5} color={LINE}>時間 →</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2631,4 +2783,9 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   circuitSymbols: CircuitSymbolsDiagram,
   seriesParallel: SeriesParallelDiagram,
   meterConnection: MeterConnectionDiagram,
+  magneticField: MagneticFieldDiagram,
+  currentField: CurrentFieldDiagram,
+  electromagneticInduction: ElectromagneticInductionDiagram,
+  forceOnCurrent: ForceOnCurrentDiagram,
+  dcAc: DcAcDiagram,
 })
