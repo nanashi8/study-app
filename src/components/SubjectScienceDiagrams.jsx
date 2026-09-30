@@ -3044,6 +3044,164 @@ function DanielCellDiagram({ view }) {
   )
 }
 
+// ── タマネギの根の成長 ─────────────────────────────────────────────────────
+//   { name: 'rootTip' }
+// 根の先端に近いA・中ほどB・もとに近いCの細胞を顕微鏡で見たようす。先端近くでは小さい細胞が分裂し、もとに近いほど細胞が大きい。
+function RootTipDiagram() {
+  const cellsBox = (y, w, h, rows, cols, dividing) => (
+    <g>
+      {Array.from({ length: rows * cols }, (_, i) => {
+        const r = Math.floor(i / cols)
+        const c = i % cols
+        const x = 112 + c * w
+        const yy = y + 4 + r * h
+        return (
+          <g key={i}>
+            <rect x={x} y={yy} width={w} height={h} fill="#fef9c3" stroke="#a16207" strokeWidth="0.7" />
+            {dividing.includes(i)
+              ? <g>{[-2, 0, 2].map((d) => <line key={d} x1={x + w / 2 + d} y1={yy + h / 2 - 3} x2={x + w / 2 + d} y2={yy + h / 2 + 3} stroke="#b91c1c" strokeWidth="1" />)}</g>
+              : <circle cx={x + w / 2} cy={yy + h / 2} r={Math.min(w, h) * 0.18} fill="#f87171" />}
+          </g>
+        )
+      })}
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="タマネギの根の成長" data-subject-diagram="rootTip">
+      <path d="M44,6 L44,176 Q44,200 58,200 Q72,200 72,176 L72,6" fill="#fef3c7" stroke="#b45309" strokeWidth="1.2" />
+      {[['C', 40], ['B', 108], ['A', 176]].map(([name, y]) => (
+        <g key={name}>
+          <line x1="44" y1={y} x2="72" y2={y} stroke="#b91c1c" strokeWidth="1.4" />
+          <Label x={38} y={y + 4} anchor="end" size={10} weight="800" color="#b91c1c">{name}</Label>
+          <line x1="74" y1={y} x2="108" y2={y} stroke={LINE} strokeWidth="0.7" strokeDasharray="3 2" />
+        </g>
+      ))}
+      {cellsBox(14, 12, 50, 1, 7, [])}
+      <Label x={206} y={32} size={8.5}>細長い大きな細胞</Label>
+      <Label x={206} y={46} size={8.5} color={LINE}>（大きくなった）</Label>
+      {cellsBox(88, 12, 18, 2, 7, [])}
+      <Label x={206} y={106} size={8.5}>やや大きい細胞</Label>
+      {cellsBox(152, 10, 10, 4, 8, [3, 12, 21])}
+      <Label x={206} y={170} size={8.5}>小さい細胞が多い</Label>
+      <Label x={206} y={184} size={8.5} color="#b91c1c">分裂中の細胞がある</Label>
+    </svg>
+  )
+}
+
+// ── 体細胞分裂の順序（植物の細胞） ───────────────────────────────────────────────
+//   { name: 'mitosisSteps' }
+function MitosisStepsDiagram() {
+  const chromosome = (x, y, color = '#b91c1c') => <rect x={x - 1.6} y={y - 5} width="3.2" height="10" rx="1.4" fill={color} />
+  const steps = [
+    ['① 核の中に、ひものような染色体が見えるようになる', (y) => <g><circle cx="44" cy={y + 18} r="13" fill="#fee2e2" stroke="#dc2626" strokeWidth="0.8" />{[[38, 14], [46, 12], [42, 22], [50, 22]].map(([x, dy]) => <path key={`${x}-${dy}`} d={`M${x},${y + dy} q2,3 0,6`} fill="none" stroke="#b91c1c" strokeWidth="1.6" />)}</g>],
+    ['② 染色体が、細胞の中央に並ぶ', (y) => <g>{[8, 14, 20, 26].map((dy) => <g key={dy}>{chromosome(42, y + dy + 1)}{chromosome(46, y + dy + 1)}</g>)}</g>],
+    ['③ 染色体が分かれて、細胞の両端に移動する', (y) => <g>{[10, 18, 26].map((dy) => <g key={dy}>{chromosome(22, y + dy)}{chromosome(66, y + dy)}</g>)}<path d={`M34,${y + 18} L28,${y + 18} M54,${y + 18} L60,${y + 18}`} stroke={LINE} strokeWidth="1" /></g>],
+    ['④ 2つの核ができ、中央に仕切りができる', (y) => <g><circle cx="28" cy={y + 18} r="9" fill="#fee2e2" stroke="#dc2626" strokeWidth="0.8" /><circle cx="60" cy={y + 18} r="9" fill="#fee2e2" stroke="#dc2626" strokeWidth="0.8" /><line x1="44" y1={y + 2} x2="44" y2={y + 34} stroke="#a16207" strokeWidth="1.6" /></g>],
+    ['⑤ 2個の細胞になる（染色体の数はもとと同じ）', null],
+  ]
+  return (
+    <svg viewBox="0 0 300 250" className="h-auto w-full" role="img" aria-label="体細胞分裂の順序" data-subject-diagram="mitosisSteps">
+      {steps.map(([text, draw], index) => {
+        const y = 8 + index * 48
+        return (
+          <g key={text}>
+            {draw ? (
+              <g>
+                <rect x="12" y={y} width="64" height="36" rx="6" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+                {draw(y)}
+              </g>
+            ) : (
+              <g>
+                <rect x="10" y={y} width="32" height="36" rx="5" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+                <rect x="46" y={y} width="32" height="36" rx="5" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+                <circle cx="26" cy={y + 18} r="8" fill="#fee2e2" stroke="#dc2626" strokeWidth="0.8" />
+                <circle cx="62" cy={y + 18} r="8" fill="#fee2e2" stroke="#dc2626" strokeWidth="0.8" />
+              </g>
+            )}
+            <Label x={88} y={y + 22} size={8.5}>{text}</Label>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+// ── 染色体の受けつがれ方 ───────────────────────────────────────────────────
+//   { name: 'chromosomeInheritance', mode: 'sexual' | 'asexual' }
+// sexual：両親の体細胞（染色体2本）→ 減数分裂で精子・卵（1本）→ 受精卵（2本。父と母から1本ずつ）。
+// asexual：体細胞分裂でふえた子は、親とまったく同じ染色体をもつ。
+function ChromosomeInheritanceDiagram({ mode = 'sexual' }) {
+  const bar = (x, y, color) => <rect x={x - 3} y={y - 11} width="6" height="22" rx="2.6" fill={color} />
+  const cell = (x, y, r, colors, fill = '#fef9c3') => (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={fill} stroke="#a16207" strokeWidth="1" />
+      {colors.map((color, i) => <g key={i}>{bar(x + (i - (colors.length - 1) / 2) * 10, y, color)}</g>)}
+    </g>
+  )
+  if (mode === 'asexual') {
+    return (
+      <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="無性生殖での染色体の受けつがれ方" data-subject-diagram="chromosomeInheritance">
+        {cell(150, 44, 24, ['#15803d', '#86efac'])}
+        <Label x={150} y={84} anchor="middle" size={8.5}>親の細胞</Label>
+        <Arrow from={[136, 92]} to={[92, 124]} color={LINE} />
+        <Arrow from={[164, 92]} to={[208, 124]} color={LINE} />
+        <Label x={150} y={118} anchor="middle" size={8.5} weight="800" color={LINE}>体細胞分裂</Label>
+        {cell(80, 150, 24, ['#15803d', '#86efac'])}
+        {cell(220, 150, 24, ['#15803d', '#86efac'])}
+        <Label x={150} y={194} anchor="middle" size={8.5} color="#15803d">子は、親とまったく同じ染色体（同じ形質）</Label>
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="有性生殖での染色体の受けつがれ方" data-subject-diagram="chromosomeInheritance">
+      {cell(70, 40, 24, ['#1d4ed8', '#93c5fd'])}
+      {cell(230, 40, 24, ['#dc2626', '#fca5a5'])}
+      <Label x={70} y={80} anchor="middle" size={8.5}>雄の体細胞</Label>
+      <Label x={230} y={80} anchor="middle" size={8.5}>雌の体細胞</Label>
+      <Arrow from={[70, 86]} to={[70, 108]} color={LINE} />
+      <Arrow from={[230, 86]} to={[230, 104]} color={LINE} />
+      <Label x={150} y={100} anchor="middle" size={8.5} weight="800" color={LINE}>減数分裂（数が半分に）</Label>
+      {cell(70, 126, 15, ['#1d4ed8'])}
+      {cell(230, 126, 19, ['#dc2626'])}
+      <Label x={96} y={130} size={8.5}>精子</Label>
+      <Label x={204} y={130} anchor="end" size={8.5}>卵</Label>
+      <Arrow from={[82, 142]} to={[126, 172]} color={LINE} />
+      <Arrow from={[216, 144]} to={[174, 172]} color={LINE} />
+      <Label x={150} y={158} anchor="middle" size={8.5} weight="800" color={LINE}>受精</Label>
+      {cell(150, 196, 24, ['#1d4ed8', '#dc2626'])}
+      <Label x={196} y={200} size={8.5}>受精卵</Label>
+      <Label x={150} y={232} anchor="middle" size={8.5} color={LINE}>子は、両方の親から半分ずつ染色体を受けつぐ</Label>
+    </svg>
+  )
+}
+
+// ── 被子植物の受精（花粉管） ──────────────────────────────────────────────────
+//   { name: 'pollenTube' }
+// 花粉が柱頭につくと、花粉管が胚珠に向かってのびる。花粉管の中を精細胞が移動し、胚珠の中の卵細胞と受精する。
+function PollenTubeDiagram() {
+  return (
+    <svg viewBox="0 0 300 226" className="h-auto w-full" role="img" aria-label="被子植物の受精" data-subject-diagram="pollenTube">
+      <ellipse cx="150" cy="30" rx="26" ry="8" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+      <path d="M142,36 L142,132 L158,132 L158,36" fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
+      <ellipse cx="150" cy="170" rx="52" ry="42" fill="#dcfce7" stroke="#15803d" strokeWidth="1.2" />
+      <rect x="143" y="126" width="14" height="12" fill="#fef9c3" />
+      <ellipse cx="150" cy="176" rx="17" ry="24" fill="#fef3c7" stroke="#a16207" strokeWidth="1" />
+      <circle cx="150" cy="188" r="5" fill="#b91c1c" />
+      <circle cx="160" cy="22" r="7" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <path d="M158,28 Q155,90 151,152" fill="none" stroke="#ca8a04" strokeWidth="1.8" />
+      <circle cx="153.4" cy="128" r="2.4" fill="#2563eb" />
+      <circle cx="152.8" cy="138" r="2.4" fill="#2563eb" />
+      <Callout from={[166, 20]} to={[206, 12]} text="花粉" />
+      <Callout from={[128, 30]} to={[96, 22]} text="柱頭" />
+      <Callout from={[156, 80]} to={[204, 66]} text="花粉管" />
+      <Callout from={[155, 134]} to={[208, 112]} text="精細胞" />
+      <Callout from={[166, 170]} to={[222, 176]} text="胚珠" />
+      <Callout from={[146, 190]} to={[92, 206]} text="卵細胞" />
+      <Callout from={[100, 162]} to={[72, 146]} text="子房" />
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3125,4 +3283,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   simpleCell: SimpleCellDiagram,
   metalDisplacement: MetalDisplacementDiagram,
   danielCell: DanielCellDiagram,
+  rootTip: RootTipDiagram,
+  mitosisSteps: MitosisStepsDiagram,
+  chromosomeInheritance: ChromosomeInheritanceDiagram,
+  pollenTube: PollenTubeDiagram,
 })

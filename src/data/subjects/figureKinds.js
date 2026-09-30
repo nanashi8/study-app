@@ -116,4 +116,8 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'simpleCell',
   'metalDisplacement',
   'danielCell',
+  'rootTip',
+  'mitosisSteps',
+  'chromosomeInheritance',
+  'pollenTube',
 ])
