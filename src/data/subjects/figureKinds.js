@@ -36,4 +36,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'separationOfPowers',
   'localGovernment',
   'economicCircuit',
+  'microscope',
+  'microscopeView',
 ])

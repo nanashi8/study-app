@@ -7,6 +7,7 @@ import { MAP_READING_DIAGRAMS } from './SubjectMapReadingDiagrams.jsx'
 import { GEOGRAPHY_DIAGRAMS } from './SubjectGeographyDiagrams.jsx'
 import { HISTORY_DIAGRAMS } from './SubjectHistoryDiagrams.jsx'
 import { CIVICS_DIAGRAMS } from './SubjectCivicsDiagrams.jsx'
+import { SCIENCE_DIAGRAMS } from './SubjectScienceDiagrams.jsx'
 
 const INK = '#1f2937'
 const MUTED = '#64748b'
@@ -322,6 +323,7 @@ export const SUBJECT_DIAGRAMS = Object.freeze({
   ...GEOGRAPHY_DIAGRAMS,
   ...HISTORY_DIAGRAMS,
   ...CIVICS_DIAGRAMS,
+  ...SCIENCE_DIAGRAMS,
 })
 
 export function DiagramFigure({ figure }) {
