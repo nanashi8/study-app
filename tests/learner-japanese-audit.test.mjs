@@ -62,11 +62,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // CustomCardsEntry.jsx・src/screens/CustomCardStudy.jsx・CustomCardQuiz.jsx）。
   // 2026-09-30、自作カードの編集（選んだカードの移動・統合・削除）で2ファイル増えた（src/lib/customCardsEdit.js・
   // src/components/CustomCardEdit.jsx）。
-  assert.equal(result.learnerFiles, 332)
-  assert.equal(result.learnerJapaneseEntries, 16271)
-  assert.equal(result.learnerUniqueJapaneseEntries, 11936)
-  assert.equal(result.sourceFiles, 803)
-  assert.equal(result.sourceJapaneseEntries, 222160)
+  // 2026-09-30、社会・理科の要点と演習の図で、図を描く部品が8ファイル（src/components/SubjectDiagrams.jsx・
+  // SubjectScienceDiagrams.jsx・SubjectGeographyDiagrams.jsx・SubjectHistoryDiagrams.jsx・SubjectCivicsDiagrams.jsx・
+  // SubjectMapReadingDiagrams.jsx・SubjectMapFigures.jsx・SubjectClimateFigure.jsx）、図のデータと計算が3ファイル
+  // （src/data/subjects/figureKinds.js・figureMath.js・projection.js）増えた。
+  assert.equal(result.learnerFiles, 340)
+  assert.equal(result.learnerJapaneseEntries, 17558)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13047)
+  assert.equal(result.sourceFiles, 814)
+  assert.equal(result.sourceJapaneseEntries, 232960)
   assert.equal(result.issues.length, 0)
 })
 
