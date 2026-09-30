@@ -120,4 +120,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'mitosisSteps',
   'chromosomeInheritance',
   'pollenTube',
+  'geneCross',
+  'punnettSquare',
 ])

@@ -3202,6 +3202,83 @@ function PollenTubeDiagram() {
   )
 }
 
+function PeaSeed({ x, y, wrinkled = false, r = 11 }) {
+  if (!wrinkled) return <circle cx={x} cy={y} r={r} fill="#fde68a" stroke="#a16207" strokeWidth="1.2" />
+  const points = Array.from({ length: 24 }, (_, i) => {
+    const a = (i / 24) * 2 * Math.PI
+    const rr = i % 2 ? r * 0.82 : r
+    return `${(x + rr * Math.cos(a)).toFixed(1)},${(y + rr * Math.sin(a)).toFixed(1)}`
+  })
+  return <path d={`M${points.join(' L')} Z`} fill="#fde68a" stroke="#a16207" strokeWidth="1.2" />
+}
+function GeneBall({ x, y, letter }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r="11" fill="#ffffff" stroke={letter === 'A' ? '#b45309' : '#15803d'} strokeWidth="1.4" />
+      <text x={x} y={y + 4} fontSize="11" fontWeight="800" textAnchor="middle" fill={letter === 'A' ? '#b45309' : '#15803d'}>{letter}</text>
+    </g>
+  )
+}
+
+// ── 純系どうしのかけ合わせ（分離の法則） ────────────────────────────────────────────
+//   { name: 'geneCross' }
+// 丸の純系（AA）としわの純系（aa）。減数分裂で対の遺伝子が分かれ、生殖細胞はAとaだけをもつ。受精した子はすべてAaで丸。
+function GeneCrossDiagram() {
+  return (
+    <svg viewBox="0 0 300 240" className="h-auto w-full" role="img" aria-label="純系どうしのかけ合わせ" data-subject-diagram="geneCross">
+      <PeaSeed x={70} y={34} />
+      <PeaSeed x={230} y={34} wrinkled />
+      <Label x={70} y={64} anchor="middle" size={9} weight="800">丸の純系（AA）</Label>
+      <Label x={230} y={64} anchor="middle" size={9} weight="800">しわの純系（aa）</Label>
+      <Label x={150} y={40} anchor="middle" size={14} weight="800" color={LINE}>×</Label>
+      <Arrow from={[70, 72]} to={[70, 100]} color={LINE} />
+      <Arrow from={[230, 72]} to={[230, 100]} color={LINE} />
+      <Label x={150} y={90} anchor="middle" size={8.5} color={LINE}>減数分裂（対の遺伝子が分かれる）</Label>
+      <GeneBall x={56} y={118} letter="A" />
+      <GeneBall x={84} y={118} letter="A" />
+      <GeneBall x={216} y={118} letter="a" />
+      <GeneBall x={244} y={118} letter="a" />
+      <Label x={70} y={146} anchor="middle" size={8.5} color={LINE}>生殖細胞はAだけ</Label>
+      <Label x={230} y={146} anchor="middle" size={8.5} color={LINE}>生殖細胞はaだけ</Label>
+      <Arrow from={[86, 152]} to={[134, 184]} color={LINE} />
+      <Arrow from={[214, 152]} to={[166, 184]} color={LINE} />
+      <Label x={150} y={170} anchor="middle" size={8.5} weight="800" color={LINE}>受精</Label>
+      <PeaSeed x={150} y={200} />
+      <Label x={172} y={204} size={9} weight="800">子：すべてAaで丸</Label>
+      <Label x={150} y={232} anchor="middle" size={8.5} color={LINE}>Aがあると、顕性形質の丸が現れる</Label>
+    </svg>
+  )
+}
+
+// ── 子どうしのかけ合わせ（孫の代） ──────────────────────────────────────────────
+//   { name: 'punnettSquare' }
+// 子（Aa）の生殖細胞はAとaが1：1。組み合わせると、孫は AA：Aa：aa＝1：2：1、丸：しわ＝3：1。
+function PunnettSquareDiagram() {
+  const cells = [
+    [0, 0, 'AA', false], [1, 0, 'Aa', false],
+    [0, 1, 'Aa', false], [1, 1, 'aa', true],
+  ]
+  return (
+    <svg viewBox="0 0 300 250" className="h-auto w-full" role="img" aria-label="子どうしのかけ合わせ" data-subject-diagram="punnettSquare">
+      <Label x={160} y={14} anchor="middle" size={8.5} color={LINE}>一方の子（Aa）の生殖細胞</Label>
+      <GeneBall x={125} y={34} letter="A" />
+      <GeneBall x={195} y={34} letter="a" />
+      <text x="42" y="120" fontSize="8.5" fontWeight="700" fill={LINE} textAnchor="middle" style={{ writingMode: 'vertical-rl' }}>もう一方の子（Aa）の生殖細胞</text>
+      <GeneBall x={72} y={85} letter="A" />
+      <GeneBall x={72} y={155} letter="a" />
+      {cells.map(([c, r, gene, wrinkled]) => (
+        <g key={`${c}-${r}`}>
+          <rect x={90 + c * 70} y={50 + r * 70} width="70" height="70" fill={wrinkled ? '#dcfce7' : '#fef9c3'} stroke={LINE} strokeWidth="1" />
+          <PeaSeed x={125 + c * 70} y={76 + r * 70} wrinkled={wrinkled} />
+          <Label x={125 + c * 70} y={108 + r * 70} anchor="middle" size={10} weight="800">{gene}</Label>
+        </g>
+      ))}
+      <Label x={160} y={214} anchor="middle" size={9.5} weight="800">AA：Aa：aa＝1：2：1</Label>
+      <Label x={160} y={234} anchor="middle" size={9.5} weight="800" color="#b45309">丸：しわ＝3：1</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3287,4 +3364,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   mitosisSteps: MitosisStepsDiagram,
   chromosomeInheritance: ChromosomeInheritanceDiagram,
   pollenTube: PollenTubeDiagram,
+  geneCross: GeneCrossDiagram,
+  punnettSquare: PunnettSquareDiagram,
 })
