@@ -101,6 +101,24 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'local',
+    title: '地方自治の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'soumu-local-finance',
+        name: '総務省「地方財政白書」令和7年版（令和5年度決算）',
+        url: 'https://www.soumu.go.jp/menu_seisaku/hakusyo/chihou/r07data/2025data/mokuji.html',
+        use: '公民「地方自治と私たち」の、地方公共団体の歳入の内訳のグラフ（2023年度）と、2023年度の市町村の数に使いました。',
+      }),
+      Object.freeze({
+        id: 'soumu-gappei',
+        name: '総務省「『平成の合併』による市町村数の変化」',
+        url: 'https://www.soumu.go.jp/gapei/pdf/090416_09.pdf',
+        use: '公民「地方自治と私たち」の、市町村の数の変化のグラフ（1999年3月末と2010年3月末）に使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'election',
     title: '選挙の数値',
     items: Object.freeze([

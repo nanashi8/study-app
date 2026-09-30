@@ -60,6 +60,27 @@ function SeparationOfPowersDiagram() {
   )
 }
 
+// ── 地方公共団体のしくみ（二元代表制） ─────────────────────────────────────
+//   { name: 'localGovernment' }
+// 首長と地方議会を並べ、住民がそれぞれを選挙で選ぶこと（①②）と、議会と首長のはたらきかけ（③④）を番号つきの矢印で示す。
+function LocalGovernmentDiagram() {
+  const arrows = [
+    { number: '1', from: [118, 150], to: [74, 58], t: 0.5, color: PEOPLE },
+    { number: '2', from: [182, 150], to: [226, 58], t: 0.5, color: PEOPLE },
+    { number: '3', from: [175, 26], to: [127, 26], t: 0.5, color: POWER },
+    { number: '4', from: [125, 42], to: [173, 42], t: 0.5, color: POWER },
+  ]
+  return (
+    <svg viewBox="0 0 300 192" className="h-auto w-full" role="img" aria-label="地方公共団体のしくみ" data-subject-diagram="localGovernment">
+      {arrows.map((arrow) => <NumberedArrow key={arrow.number} {...arrow} />)}
+      <Box x={66} y={34} w={116} h={42} title="首長" sub="知事・市（区）町村長" />
+      <Box x={234} y={34} w={116} h={42} title="地方議会" sub="条例・予算を議決" />
+      <Box x={150} y={168} w={116} h={36} title="住民" sub="有権者" dark={false} />
+    </svg>
+  )
+}
+
 export const CIVICS_DIAGRAMS = Object.freeze({
   separationOfPowers: SeparationOfPowersDiagram,
+  localGovernment: LocalGovernmentDiagram,
 })
