@@ -102,7 +102,7 @@ export const CREDIT_SECTIONS = Object.freeze([
         id: 'cao-long-term-sna',
         name: '内閣府「長期経済統計」の国民経済計算（年度統計）',
         url: 'https://www5.cao.go.jp/j-j/wp/wp-je12/h10_data01.html',
-        use: '歴史「冷戦と日本の発展」と「新たな時代の日本と世界」の、日本の経済成長率の移り変わりのグラフ（1956〜2010年度の実質国内総生産の前年度比）に使いました。',
+        use: '歴史「冷戦と日本の発展」「新たな時代の日本と世界」と公民「これからの経済と社会」の、日本の経済成長率の移り変わりのグラフ（1956〜2010年度の実質国内総生産の前年度比）に使いました。',
       }),
     ]),
   }),
@@ -152,6 +152,12 @@ export const CREDIT_SECTIONS = Object.freeze([
     id: 'environment',
     title: '環境の数値',
     items: Object.freeze([
+      Object.freeze({
+        id: 'env-ghg-2024',
+        name: '環境省「2024年度の我が国の温室効果ガス排出量及び吸収量について」',
+        url: 'https://www.env.go.jp/press/press_04043.html',
+        use: '公民「これからの経済と社会」の、日本の温室効果ガスの排出・吸収量のグラフ（2013〜2024年度）に使いました。',
+      }),
       Object.freeze({
         id: 'jma-co2',
         name: '気象庁「大気中二酸化炭素濃度の観測結果」の年平均値（綾里）',

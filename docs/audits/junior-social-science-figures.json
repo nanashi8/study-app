@@ -266,6 +266,26 @@
       "decision": "figure",
       "sha256": "73ea758604ef86c00d84582106b5e0f95208af1d0766563e70d1e63ceee1cdda"
     },
+    "civ-14#1": {
+      "decision": "figure",
+      "sha256": "69cd5147a981b486fe53d07d13847467cdfbbe29f901d006fa6e511ec5c55c10"
+    },
+    "civ-14#2": {
+      "decision": "figure",
+      "sha256": "7e0d42c28b4434d2b59b4b916485b5ec27377f6a0912312bd0af6f4d159b4f35"
+    },
+    "civ-14#3": {
+      "decision": "figure",
+      "sha256": "0dc106122aab1066efa296020f0466921a434b68b35ebab9edcc98275ecba785"
+    },
+    "civ-14#4": {
+      "decision": "figure",
+      "sha256": "f52b4a71f3159e79df2f0988acd41775be776879fbcf9422e0be44bb367ac0f1"
+    },
+    "civ-14#5": {
+      "decision": "figure",
+      "sha256": "7783f46581194733aca63b0cf809e96f5cf9aef248e17dc6fdd9e5ea3f0d8f18"
+    },
     "geo-01#1": {
       "decision": "figure",
       "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
@@ -1559,6 +1579,42 @@
     "civ-13-q09": {
       "decision": "none",
       "sha256": "0bbba916d9b39202989a78cf71b00f806b3daabda0155b97fe48f4cc53544aaf"
+    },
+    "civ-14-q01": {
+      "decision": "none",
+      "sha256": "6b9e49aadc4db74b64e8bd686c044db0af3cfbf4a1d46ed419e83bcb3e3c981b"
+    },
+    "civ-14-q02": {
+      "decision": "none",
+      "sha256": "b85d11faab9ae9e275af6d368c67a7ef7229c7d993bb08a90d1f77f8c858d78d"
+    },
+    "civ-14-q03": {
+      "decision": "none",
+      "sha256": "a1255eea5dd023d709355fc03d41ff42b909b05eaa3073616011223095e4d9e3"
+    },
+    "civ-14-q04": {
+      "decision": "none",
+      "sha256": "a0f7436a5cc1b806309afdf17559bfa7852516fc05401b7f41033f5605ea6fa2"
+    },
+    "civ-14-q05": {
+      "decision": "none",
+      "sha256": "8eb479f7943efd4e9992aeb09a130b4e6a0155c1c68a770eb266fbc26a810f14"
+    },
+    "civ-14-q06": {
+      "decision": "none",
+      "sha256": "567a445051e5552cf39a7215684d0ecf8e04c425b0264eedbb127066e516d657"
+    },
+    "civ-14-q07": {
+      "decision": "none",
+      "sha256": "f53d81f9cb52ddd650446014de301d83d972f7254f86861cd0ad7c28c341f9fe"
+    },
+    "civ-14-q08": {
+      "decision": "none",
+      "sha256": "f9773dfbb31a0401f349ea094b49bd50b2901147fc25968a6dd6c04d867b9265"
+    },
+    "civ-14-q09": {
+      "decision": "none",
+      "sha256": "2db435f8d756406e112878029c702f3ccfdff0facf2f1db7b27ed28ca8dbdfcb"
     },
     "geo-01-q01": {
       "decision": "none",
