@@ -80,7 +80,30 @@ function LocalGovernmentDiagram() {
   )
 }
 
+// ── 経済の循環（家計・企業・政府） ─────────────────────────────────────────
+//   { name: 'economicCircuit' }
+// 3つの経済主体を三角形に置き、たがいの間を行き来するもの（お金・労働力・財やサービス）を番号つきの矢印で示す。
+function EconomicCircuitDiagram() {
+  const arrows = [
+    { number: '1', from: [60, 178], to: [112, 52], t: 0.35, color: POWER },
+    { number: '2', from: [96, 52], to: [44, 178], t: 0.35, color: POWER },
+    { number: '3', from: [112, 193], to: [188, 193], t: 0.3, color: POWER },
+    { number: '4', from: [188, 207], to: [112, 207], t: 0.3, color: POWER },
+    { number: '5', from: [240, 178], to: [188, 52], t: 0.35, color: POWER },
+    { number: '6', from: [204, 52], to: [256, 178], t: 0.35, color: POWER },
+  ]
+  return (
+    <svg viewBox="0 0 300 226" className="h-auto w-full" role="img" aria-label="家計・企業・政府の結びつき" data-subject-diagram="economicCircuit">
+      {arrows.map((arrow) => <NumberedArrow key={arrow.number} {...arrow} />)}
+      <Box x={150} y={30} w={132} h={40} title="政府" sub="国・地方公共団体" />
+      <Box x={58} y={200} w={104} h={40} title="家計" sub="消費の中心" dark={false} />
+      <Box x={242} y={200} w={104} h={40} title="企業" sub="生産の中心" />
+    </svg>
+  )
+}
+
 export const CIVICS_DIAGRAMS = Object.freeze({
   separationOfPowers: SeparationOfPowersDiagram,
   localGovernment: LocalGovernmentDiagram,
+  economicCircuit: EconomicCircuitDiagram,
 })
