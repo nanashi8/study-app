@@ -2945,6 +2945,105 @@ function NeutralizationModelDiagram() {
   )
 }
 
+function MotorSymbol({ x, y }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r="10" fill="#ffffff" stroke={INK} strokeWidth="1.4" />
+      <text x={x} y={y + 4} fontSize="10" fontWeight="800" textAnchor="middle" fill={INK}>M</text>
+    </g>
+  )
+}
+
+// ── 電解質の水溶液と2種類の金属でつくる電池 ─────────────────────────────────────────
+//   { name: 'simpleCell' }
+function SimpleCellDiagram() {
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="電解質の水溶液と2種類の金属でつくる電池" data-subject-diagram="simpleCell">
+      <path d="M109,42 L109,22 L140,22 M160,22 L191,22 L191,42" fill="none" stroke={INK} strokeWidth="1.4" />
+      <MotorSymbol x={150} y={22} />
+      <Label x={166} y={12} size={8.5} color={LINE}>モーターが回る</Label>
+      <rect x="72" y="92" width="156" height="82" fill="#e0f2fe" />
+      <path d="M70,66 L70,172 Q70,178 76,178 L224,178 Q230,178 230,172 L230,66" fill="none" stroke={LINE} strokeWidth="1.3" />
+      <rect x="104" y="42" width="10" height="118" fill="#cbd5e1" stroke={LINE} strokeWidth="0.8" />
+      <rect x="186" y="42" width="10" height="118" fill="#fdba74" stroke="#c2410c" strokeWidth="0.8" />
+      <Label x={150} y={140} anchor="middle" size={8.5} color="#0369a1">電解質の水溶液</Label>
+      <Label x={150} y={153} anchor="middle" size={8.5} color="#0369a1">（うすい塩酸など）</Label>
+      <Label x={109} y={192} anchor="middle" size={8.5} weight="800">亜鉛板（－極）</Label>
+      <Label x={191} y={192} anchor="middle" size={8.5} weight="800">銅板（＋極）</Label>
+    </svg>
+  )
+}
+
+// ── 亜鉛と銅イオンの反応 ───────────────────────────────────────────────────
+//   { name: 'metalDisplacement' }
+// 硫酸銅水溶液に亜鉛板を入れると、亜鉛が亜鉛イオンになってとけ出し、銅イオンが電子を受けとって銅になって付着する。
+function MetalDisplacementDiagram() {
+  return (
+    <svg viewBox="0 0 300 224" className="h-auto w-full" role="img" aria-label="亜鉛と銅イオンの反応" data-subject-diagram="metalDisplacement">
+      <rect x="62" y="60" width="176" height="112" fill="#7dd3fc" opacity="0.6" />
+      <path d="M60,36 L60,170 Q60,176 66,176 L234,176 Q240,176 240,170 L240,36" fill="none" stroke={LINE} strokeWidth="1.3" />
+      <rect x="142" y="20" width="16" height="140" fill="#cbd5e1" stroke={LINE} strokeWidth="0.8" />
+      {[70, 88, 106, 124, 142].map((y) => <g key={y}><rect x="136" y={y} width="6" height="10" rx="2" fill="#b45309" /><rect x="158" y={y + 6} width="6" height="10" rx="2" fill="#b45309" /></g>)}
+      <Particle x={196} y={84} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={7} />
+      <Arrow from={[166, 96]} to={[184, 88]} color={LINE} width={1.4} />
+      <Particle x={96} y={136} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={7} />
+      <Arrow from={[134, 124]} to={[110, 132]} color={LINE} width={1.4} />
+      <Particle x={206} y={140} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={7} />
+      <Arrow from={[192, 136]} to={[168, 128]} color="#1d4ed8" width={1.4} />
+      <Particle x={92} y={88} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={7} />
+      <Arrow from={[106, 92]} to={[132, 98]} color="#1d4ed8" width={1.4} />
+      <Label x={150} y={14} anchor="middle" size={8.5} weight="800">亜鉛板</Label>
+      <Callout from={[138, 146]} to={[96, 164]} text="付着した銅（赤色）" />
+      <Label x={150} y={196} anchor="middle" size={8.5}>亜鉛：Zn → Zn²⁺＋電子2個（とけ出す）</Label>
+      <Label x={150} y={214} anchor="middle" size={8.5} color="#1d4ed8">銅イオン：Cu²⁺＋電子2個 → Cu（付着する）</Label>
+    </svg>
+  )
+}
+
+// ── ダニエル電池 ────────────────────────────────────────────────────────────
+//   { name: 'danielCell', view?: 'membrane' }
+// 亜鉛板を硫酸亜鉛水溶液に、銅板を硫酸銅水溶液に入れ、セロハンで仕切る。電子は亜鉛板（－極）から導線を通って銅板（＋極）へ移動する。
+// membrane：セロハンを通ってイオンが少しずつ移動するようす（亜鉛イオンは銅板側へ、硫酸イオンは亜鉛板側へ）。
+function DanielCellDiagram({ view }) {
+  const membrane = view === 'membrane'
+  return (
+    <svg viewBox="0 0 300 212" className="h-auto w-full" role="img" aria-label="ダニエル電池" data-subject-diagram="danielCell">
+      <path d="M86,50 L86,24 L140,24 M160,24 L214,24 L214,50" fill="none" stroke={INK} strokeWidth="1.4" />
+      <MotorSymbol x={150} y={24} />
+      <Arrow from={[98, 12]} to={[132, 12]} color="#2563eb" />
+      <Arrow from={[168, 12]} to={[202, 12]} color="#2563eb" />
+      <Label x={94} y={16} anchor="end" size={8.5} weight="800" color="#1d4ed8">電子</Label>
+      <rect x="40" y="72" width="110" height="104" fill="#f1f5f9" />
+      <rect x="150" y="72" width="110" height="104" fill="#7dd3fc" opacity="0.6" />
+      <rect x="40" y="72" width="220" height="104" rx="3" fill="none" stroke={LINE} strokeWidth="1.3" />
+      <line x1="150" y1="72" x2="150" y2="176" stroke="#94a3b8" strokeWidth="3" strokeDasharray="5 3" />
+      <rect x="80" y="50" width="12" height="116" fill="#cbd5e1" stroke={LINE} strokeWidth="0.8" />
+      <rect x="208" y="50" width="12" height="116" fill="#fdba74" stroke="#c2410c" strokeWidth="0.8" />
+      <Label x={78} y={44} anchor="end" size={9} weight="800" color="#1d4ed8">－極</Label>
+      <Label x={222} y={44} size={9} weight="800" color="#b91c1c">＋極</Label>
+      <Label x={150} y={64} anchor="middle" size={8.5} color={LINE}>セロハン</Label>
+      <Label x={95} y={170} anchor="middle" size={8} color={LINE}>硫酸亜鉛水溶液</Label>
+      <Label x={205} y={170} anchor="middle" size={8} color="#0369a1">硫酸銅水溶液</Label>
+      {membrane ? (
+        <g>
+          <Particle x={124} y={104} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={11} size={6.5} />
+          <Arrow from={[136, 104]} to={[170, 104]} color={LINE} width={1.6} />
+          <Particle x={178} y={140} text="SO₄²⁻" fill="#fef3c7" stroke="#b45309" r={13} size={6} />
+          <Arrow from={[164, 140]} to={[130, 140]} color="#b45309" width={1.6} />
+          <Label x={150} y={196} anchor="middle" size={8.5}>イオンがセロハンを少しずつ通りぬけ、電気のかたよりを防ぐ</Label>
+        </g>
+      ) : (
+        <g>
+          <Label x={95} y={196} anchor="middle" size={8}>Zn → Zn²⁺＋電子2個</Label>
+          <Label x={205} y={196} anchor="middle" size={8} color="#1d4ed8">Cu²⁺＋電子2個 → Cu</Label>
+          <Label x={95} y={209} anchor="middle" size={8} color={LINE}>（亜鉛がとけ出す）</Label>
+          <Label x={205} y={209} anchor="middle" size={8} color={LINE}>（銅が付着する）</Label>
+        </g>
+      )}
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3023,4 +3122,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   litmusMigration: LitmusMigrationDiagram,
   phScale: PhScaleDiagram,
   neutralizationModel: NeutralizationModelDiagram,
+  simpleCell: SimpleCellDiagram,
+  metalDisplacement: MetalDisplacementDiagram,
+  danielCell: DanielCellDiagram,
 })

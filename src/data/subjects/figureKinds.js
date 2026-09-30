@@ -113,4 +113,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'litmusMigration',
   'phScale',
   'neutralizationModel',
+  'simpleCell',
+  'metalDisplacement',
+  'danielCell',
 ])
