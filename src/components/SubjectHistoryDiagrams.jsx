@@ -100,7 +100,46 @@ function KeyholeTombDiagram() {
   )
 }
 
+// ── 主従の関係（御恩と奉公など）────────────────────────────────────────────
+//   { name: 'mutualBond', top: '将軍', bottom: '御家人', down: ['御恩', '…'], up: ['奉公', '…'] }
+// 上の者が下の者にあたえるもの（down）と、下の者が上の者につくすもの（up）を、向き合う矢印で示す。
+function wrapText(text, max) {
+  const lines = []
+  let line = ''
+  for (const char of [...text]) {
+    line += char
+    if (line.length >= max) {
+      lines.push(line)
+      line = ''
+    }
+  }
+  if (line) lines.push(line)
+  return lines
+}
+
+function MutualBondDiagram({ top = '将軍', bottom = '御家人', down = ['御恩', ''], up = ['奉公', ''] }) {
+  const downLines = wrapText(down[1], 11)
+  const upLines = wrapText(up[1], 11)
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label={`${top}と${bottom}の関係`} data-subject-diagram="mutualBond">
+      <rect x="95" y="6" width="110" height="30" rx="8" fill="#334155" />
+      <text x="150" y="26" textAnchor="middle" fontSize="12" fontWeight="800" fill="#ffffff">{top}</text>
+      <rect x="95" y="170" width="110" height="30" rx="8" fill="#e2e8f0" stroke="#64748b" />
+      <text x="150" y="190" textAnchor="middle" fontSize="12" fontWeight="800" fill={INK}>{bottom}</text>
+      <line x1="120" y1="40" x2="120" y2="160" stroke="#b91c1c" strokeWidth="3" />
+      <path d="M120,168 L113,156 L127,156 Z" fill="#b91c1c" />
+      <line x1="180" y1="166" x2="180" y2="46" stroke="#1d4ed8" strokeWidth="3" />
+      <path d="M180,38 L173,50 L187,50 Z" fill="#1d4ed8" />
+      <Label x={112} y={66} size={11} weight="800" color="#b91c1c" anchor="end">{down[0]}</Label>
+      {downLines.map((line, index) => <Label key={`d-${index}`} x={112} y={84 + index * 13} size={8.5} color="#7f1d1d" anchor="end">{line}</Label>)}
+      <Label x={188} y={66} size={11} weight="800" color="#1d4ed8">{up[0]}</Label>
+      {upLines.map((line, index) => <Label key={`u-${index}`} x={188} y={84 + index * 13} size={8.5} color="#1e3a8a">{line}</Label>)}
+    </svg>
+  )
+}
+
 export const HISTORY_DIAGRAMS = Object.freeze({
   centuryLine: CenturyLineDiagram,
   keyholeTomb: KeyholeTombDiagram,
+  mutualBond: MutualBondDiagram,
 })

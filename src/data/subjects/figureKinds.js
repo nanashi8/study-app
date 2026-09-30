@@ -14,6 +14,7 @@ export const SUBJECT_FIGURE_KINDS = Object.freeze([
   'decision',
   'chain',
   'timeline',
+  'tree',
   'set',
 ])
 
@@ -30,4 +31,5 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'pyramidTypes',
   'centuryLine',
   'keyholeTomb',
+  'mutualBond',
 ])

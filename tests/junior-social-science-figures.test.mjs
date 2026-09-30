@@ -67,6 +67,10 @@ function figureProblems(figure, where) {
   if (figure.type === 'decision' && (!(figure.steps?.length >= 2) || !figure.otherwise || figure.steps.some((step) => !step.ask || !step.yes))) problems.push(`${where}: 判断の手順が足りない`)
   if (figure.type === 'chain' && !(figure.items?.length >= 2)) problems.push(`${where}: 流れの項目が2つ未満`)
   if (figure.type === 'timeline' && (!figure.groups?.length || figure.groups.some((group) => !group.events?.length))) problems.push(`${where}: 年表が空`)
+  if (figure.type === 'tree') {
+    const nodeProblem = (node) => !node?.text?.trim() || (node.children !== undefined && (!Array.isArray(node.children) || !node.children.length || node.children.some(nodeProblem)))
+    if (nodeProblem(figure.root) || !figure.root?.children?.length) problems.push(`${where}: しくみの図の枝がおかしい`)
+  }
   return problems
 }
 

@@ -18,6 +18,7 @@ export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 //   decision … 判断の手順。{ steps: [{ ask, yes }], otherwise }（上から順に「はい」なら右の答え、「いいえ」なら次へ）
 //   chain    … 流れ・順序・循環。{ items: [文, …], loop? }
 //   timeline … 年表。{ groups: [{ era?, events: [[年, できごと], …] }] }
+//   tree     … しくみの図（組織・分類の枝分かれ）。{ root: { text, children?: [{ text, children? }, …] } }
 //   set      … 図を並べて比べる。{ items: [図, …], layout?: 'stack' | 'scroll' }
 // どの図も caption（図の題）と note（図の下の注）を持てる。要点の図は guide（図の読み方：何を表すか・どこを見るか・
 // 特徴・判断の仕方を順に書いた文の並び）を持ち、単元のページで図の下に出す（演習の図の読み取り方は、答えたあとの解説に出す）。
@@ -280,6 +281,34 @@ function TimelineFigure({ figure }) {
   )
 }
 
+function TreeNode({ node, depth }) {
+  const box = depth === 0
+    ? 'border-slate-700 bg-slate-700 text-white'
+    : node.children?.length
+      ? 'border-slate-400 bg-slate-100 text-ink'
+      : 'border-slate-300 bg-white text-ink'
+  return (
+    <li className={depth === 0 ? '' : "relative before:absolute before:-left-3 before:top-[13px] before:h-0.5 before:w-3 before:bg-slate-300 before:content-['']"}>
+      <div className={`inline-block max-w-full rounded-lg border px-2 py-1 text-[12px] font-bold leading-snug ${box}`}>
+        <SubjectText>{node.text}</SubjectText>
+      </div>
+      {node.children?.length > 0 && (
+        <ul className="ml-3 mt-1 space-y-1 border-l-2 border-slate-300 pl-3">
+          {node.children.map((child, index) => <TreeNode key={`${child.text}-${index}`} node={child} depth={depth + 1} />)}
+        </ul>
+      )}
+    </li>
+  )
+}
+
+function TreeFigure({ figure }) {
+  return (
+    <ul className="space-y-1" data-subject-figure-tree>
+      <TreeNode node={figure.root} depth={0} />
+    </ul>
+  )
+}
+
 function SetFigure({ figure }) {
   // 雨温図を並べるときは、目もりの下の端と上の端をそろえて比べられるようにする。
   const climateItems = figure.items.filter((item) => item.type === 'climate' && CLIMATE_STATIONS[item.station])
@@ -321,6 +350,7 @@ const FIGURES = Object.freeze({
   decision: DecisionFigure,
   chain: ChainFigure,
   timeline: TimelineFigure,
+  tree: TreeFigure,
   set: SetFigure,
 })
 
