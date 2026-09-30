@@ -93,6 +93,12 @@ export const CREDIT_SECTIONS = Object.freeze([
         use: '地理「ヨーロッパ州」の、EUの国々の1人あたりの国内総生産（2024年）のグラフ、「アフリカ州」の人口の移り変わりのグラフ、「日本の地域的特色」の子どもと高齢者の割合のグラフと、歴史「新たな時代の日本と世界」の日本の人口の移り変わりのグラフに使いました。',
       }),
       Object.freeze({
+        id: 'mof-finance',
+        name: '財務省「財政に関する資料」（令和8年度一般会計歳出・歳入の構成、普通国債残高の累増）',
+        url: 'https://www.mof.go.jp/tax_policy/summary/condition/a02.htm',
+        use: '公民「財政と国民の福祉」の、国の一般会計の歳出と歳入の内訳のグラフ（2026年度予算）と、普通国債残高の移り変わりのグラフに使いました。',
+      }),
+      Object.freeze({
         id: 'cao-long-term-sna',
         name: '内閣府「長期経済統計」の国民経済計算（年度統計）',
         url: 'https://www5.cao.go.jp/j-j/wp/wp-je12/h10_data01.html',

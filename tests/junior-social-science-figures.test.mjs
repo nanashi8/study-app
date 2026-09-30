@@ -56,6 +56,15 @@ function figureProblems(figure, where) {
   for (const point of [...(Array.isArray(figure.points) ? figure.points : []), ...(Array.isArray(figure.labels) ? figure.labels : [])]) {
     if (!lonOk(point.lon) || !latOk(point.lat)) problems.push(`${where}: 緯度・経度がおかしい（${point.text ?? point.label}）`)
   }
+  // 横棒グラフの名前は、名前の欄（labelWidth、既定92）に右寄せで入る。はみ出すと左が切れて読めない。
+  // 幅は、文字の大きさ11の目安（全角11・半角6.2）で見積もる。
+  if (figure.type === 'bars') {
+    const room = (figure.labelWidth ?? 92) - 6
+    for (const [label] of figure.items ?? []) {
+      const width = [...String(label)].reduce((sum, char) => sum + (char.charCodeAt(0) < 0x7f ? 6.2 : 11), 0)
+      if (width > room) problems.push(`${where}: 棒グラフの名前「${label}」が名前の欄に入りきらない`)
+    }
+  }
   for (const arrow of figure.arrows ?? []) {
     if (!arrow.path?.length || !arrow.path.every(([lon, lat]) => lonOk(lon) && latOk(lat))) problems.push(`${where}: 矢印の道すじがおかしい`)
   }
