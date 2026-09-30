@@ -1675,6 +1675,124 @@ function CirculationDiagram() {
   )
 }
 
+// ── 目と耳のつくり ─────────────────────────────────────────────────────────
+//   { name: 'senseOrgans' }
+// 上：目を横から見た断面（左が前）。光はレンズで屈折して網膜に像を結び、像は上下が逆になる。下：耳のつくり。
+function SenseOrgansDiagram() {
+  const spiral = Array.from({ length: 61 }, (_, i) => {
+    const t = (i / 60) * 5 * Math.PI
+    const r = 3 + (t / (5 * Math.PI)) * 15
+    return `${i ? 'L' : 'M'}${(160 + r * Math.cos(t)).toFixed(1)},${(216 + r * Math.sin(t)).toFixed(1)}`
+  }).join(' ')
+  return (
+    <svg viewBox="0 0 300 282" className="h-auto w-full" role="img" aria-label="目と耳のつくり" data-subject-diagram="senseOrgans">
+      <Label x={10} y={16} size={10} weight="800">目のつくり</Label>
+      <circle cx="150" cy="80" r="48" fill="#f8fafc" stroke={LINE} strokeWidth="1.2" />
+      <path d="M165,38 A44,44 0 0,1 165,122" fill="none" stroke="#f472b6" strokeWidth="4" />
+      <line x1="196" y1="80" x2="238" y2="86" stroke="#f59e0b" strokeWidth="6" strokeLinecap="round" />
+      <line x1="112" y1="54" x2="112" y2="67" stroke="#92400e" strokeWidth="5" />
+      <line x1="112" y1="93" x2="112" y2="106" stroke="#92400e" strokeWidth="5" />
+      <ellipse cx="121" cy="80" rx="7" ry="14" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+      <line x1="30" y1="104" x2="30" y2="58" stroke="#16a34a" strokeWidth="2.4" />
+      <path d="M30,52 L25.5,61 L34.5,61 Z" fill="#16a34a" />
+      <path d="M30,58 L121,73 L192,98" fill="none" stroke="#ca8a04" strokeWidth="1.2" />
+      <path d="M30,104 L121,87 L192,62" fill="none" stroke="#ca8a04" strokeWidth="1.2" />
+      <Callout from={[112, 56]} to={[88, 32]} text="こう彩" />
+      <Callout from={[110, 80]} to={[88, 128]} text="ひとみ" />
+      <Callout from={[124, 68]} to={[146, 20]} text="レンズ（水晶体）" />
+      <Callout from={[192, 52]} to={[226, 40]} text="網膜" />
+      <Callout from={[226, 84]} to={[242, 108]} text="視神経" />
+
+      <Label x={10} y={166} size={10} weight="800">耳のつくり</Label>
+      <line x1="20" y1="208" x2="90" y2="208" stroke={LINE} strokeWidth="1.2" />
+      <line x1="20" y1="224" x2="92" y2="224" stroke={LINE} strokeWidth="1.2" />
+      <line x1="90" y1="202" x2="96" y2="230" stroke="#b45309" strokeWidth="3" />
+      <path d="M98,216 L106,212 L116,210 L128,208" fill="none" stroke="#a8a29e" strokeWidth="4" strokeLinecap="round" />
+      <path d={spiral} fill="none" stroke="#7c3aed" strokeWidth="2.6" />
+      <line x1="178" y1="216" x2="232" y2="222" stroke="#f59e0b" strokeWidth="5" strokeLinecap="round" />
+      <Label x={24} y={200} size={8.5} color={LINE}>音 →</Label>
+      <Callout from={[92, 204]} to={[78, 184]} text="鼓膜" />
+      <Callout from={[114, 210]} to={[124, 184]} text="耳小骨" />
+      <Callout from={[168, 204]} to={[186, 184]} text="うずまき管" />
+      <Callout from={[222, 221]} to={[236, 248]} text="聴神経" />
+      <Callout from={[44, 224]} to={[54, 250]} text="外耳道" />
+    </svg>
+  )
+}
+
+// ── 刺激から反応までの信号の伝わり方 ───────────────────────────────────────────
+//   { name: 'reflexPath', mode: 'conscious' | 'reflex' }
+// conscious：皮膚→感覚神経→せきずい→脳（判断）→せきずい→運動神経→筋肉。
+// reflex：皮膚→感覚神経→せきずい→運動神経→筋肉。脳を通らずに、せきずいから直接命令が出る。
+function ReflexPathDiagram({ mode = 'conscious' }) {
+  const reflex = mode === 'reflex'
+  const SENSE = '#2563eb'
+  const MOTOR = '#dc2626'
+  const faint = '#cbd5e1'
+  const box = (x, y, w, text, fill) => (
+    <g>
+      <rect x={x} y={y} width={w} height="30" rx="8" fill={fill} stroke={LINE} strokeWidth="1" />
+      <Label x={x + w / 2} y={y + 19.5} anchor="middle" size={10} weight="800">{text}</Label>
+    </g>
+  )
+  const arrowHead = (x, y, dir, color) => {
+    const d = { up: `M${x},${y} L${x - 4.5},${y + 8} L${x + 4.5},${y + 8} Z`, down: `M${x},${y} L${x - 4.5},${y - 8} L${x + 4.5},${y - 8} Z`, right: `M${x},${y} L${x - 8},${y - 4.5} L${x - 8},${y + 4.5} Z` }[dir]
+    return <path d={d} fill={color} />
+  }
+  return (
+    <svg viewBox="0 0 300 230" className="h-auto w-full" role="img" aria-label={reflex ? '反射の信号の伝わり方' : '意識して起こす反応の信号の伝わり方'} data-subject-diagram="reflexPath">
+      {box(110, 12, 80, '脳', reflex ? '#f1f5f9' : '#ede9fe')}
+      {box(110, 92, 80, 'せきずい', '#fef3c7')}
+      {box(16, 170, 96, '皮膚（感覚器官）', '#e0f2fe')}
+      {box(188, 170, 96, '筋肉', '#fee2e2')}
+      <path d="M64,170 L64,107 L102,107" fill="none" stroke={SENSE} strokeWidth="3" />
+      {arrowHead(110, 107, 'right', SENSE)}
+      <Label x={60} y={144} anchor="end" size={9} weight="800" color={SENSE}>感覚神経</Label>
+      <line x1="140" y1="92" x2="140" y2="50" stroke={reflex ? faint : SENSE} strokeWidth="3" strokeDasharray={reflex ? '4 3' : undefined} />
+      {arrowHead(140, 42, 'up', reflex ? faint : SENSE)}
+      {!reflex && <line x1="160" y1="42" x2="160" y2="84" stroke={MOTOR} strokeWidth="3" />}
+      {!reflex && arrowHead(160, 92, 'down', MOTOR)}
+      <path d="M190,107 L236,107 L236,162" fill="none" stroke={MOTOR} strokeWidth="3" />
+      {arrowHead(236, 170, 'down', MOTOR)}
+      <Label x={240} y={144} size={9} weight="800" color={MOTOR}>運動神経</Label>
+      {reflex ? (
+        <g>
+          <Label x={196} y={62} size={8.5} color={LINE}>脳には、あとから伝わる</Label>
+          <Label x={150} y={140} anchor="middle" size={9} weight="800" color={MOTOR}>せきずいから直接命令が出る</Label>
+          <Label x={150} y={222} anchor="middle" size={8.5} color={LINE}>例：熱いものにふれて、思わず手を引っこめる</Label>
+        </g>
+      ) : (
+        <g>
+          <Label x={196} y={31} size={8.5} color={LINE}>判断して命令を出す</Label>
+          <Label x={150} y={222} anchor="middle" size={8.5} color={LINE}>例：ボールが見えたので、バットをふる</Label>
+        </g>
+      )}
+    </svg>
+  )
+}
+
+// ── 腕の骨と筋肉 ───────────────────────────────────────────────────────────
+//   { name: 'armMuscles' }
+// 腕を曲げたとき。内側の筋肉が縮み、外側の筋肉はゆるむ。筋肉の両端はけんで、関節をまたいだ2つの骨についている。
+function ArmMusclesDiagram() {
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="腕の骨と筋肉" data-subject-diagram="armMuscles">
+      <line x1="60" y1="40" x2="150" y2="130" stroke="#d6d3d1" strokeWidth="11" strokeLinecap="round" />
+      <line x1="150" y1="130" x2="244" y2="70" stroke="#d6d3d1" strokeWidth="10" strokeLinecap="round" />
+      <ellipse cx="114" cy="74" rx="40" ry="16" transform="rotate(45 114 74)" fill="#f87171" stroke="#b91c1c" strokeWidth="1" />
+      <ellipse cx="96" cy="96" rx="44" ry="7" transform="rotate(45 96 96)" fill="#fecaca" stroke="#b91c1c" strokeWidth="1" />
+      <line x1="140" y1="102" x2="168" y2="116" stroke="#94a3b8" strokeWidth="3" />
+      <line x1="126" y1="124" x2="150" y2="143" stroke="#94a3b8" strokeWidth="3" />
+      <circle cx="150" cy="130" r="9" fill="#fef3c7" stroke="#b45309" strokeWidth="1" />
+      <Callout from={[114, 70]} to={[140, 26]} text="内側の筋肉（縮む）" />
+      <Callout from={[92, 100]} to={[112, 180]} text="外側の筋肉（ゆるむ）" />
+      <Callout from={[156, 110]} to={[196, 122]} text="けん" />
+      <Callout from={[154, 138]} to={[176, 160]} text="関節" />
+      <Callout from={[214, 90]} to={[236, 108]} text="骨" />
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1718,4 +1836,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   villus: VillusDiagram,
   alveolus: AlveolusDiagram,
   circulation: CirculationDiagram,
+  senseOrgans: SenseOrgansDiagram,
+  reflexPath: ReflexPathDiagram,
+  armMuscles: ArmMusclesDiagram,
 })

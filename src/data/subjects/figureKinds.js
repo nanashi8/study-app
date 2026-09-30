@@ -78,4 +78,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'villus',
   'alveolus',
   'circulation',
+  'senseOrgans',
+  'reflexPath',
+  'armMuscles',
 ])
