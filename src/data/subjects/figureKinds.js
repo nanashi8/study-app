@@ -148,4 +148,9 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'sunspotShape',
   'solarSystemBodies',
   'milkyWay',
+  'foodWeb',
+  'ecoPyramid',
+  'populationBalance',
+  'decomposerPlate',
+  'carbonCycle',
 ])

@@ -4396,6 +4396,218 @@ function MilkyWayDiagram() {
   )
 }
 
+// ── 食物網 ───────────────────────────────────────────────────────────────────
+//   { name: 'foodWeb' }
+// 雑木林の食物網の例。矢印は「食べられる生物 → 食べる生物」。赤い矢印は、その中の食物連鎖の1つ
+// （木の葉 → ガの幼虫 → 小鳥 → タカ）。段は下から植物・草食動物・肉食動物。
+function FoodWebDiagram() {
+  const LEVEL = {
+    plant: ['#dcfce7', '#16a34a'],
+    herb: ['#fef9c3', '#ca8a04'],
+    carn: ['#fee2e2', '#dc2626'],
+  }
+  const nodes = {
+    grass: ['草', 110, 204, 'plant'],
+    tree: ['木（葉・実）', 222, 204, 'plant'],
+    rabbit: ['ウサギ', 72, 150, 'herb'],
+    mouse: ['ネズミ', 150, 150, 'herb'],
+    larva: ['ガの幼虫', 238, 150, 'herb'],
+    spider: ['クモ', 200, 96, 'carn'],
+    bird: ['小鳥', 264, 96, 'carn'],
+    fox: ['キツネ', 80, 42, 'carn'],
+    hawk: ['タカ', 170, 42, 'carn'],
+  }
+  const width = (name) => Math.max(40, name.length * 9.5 + 12)
+  const edges = [
+    ['grass', 'rabbit'], ['grass', 'mouse'], ['tree', 'mouse'], ['tree', 'larva', true],
+    ['larva', 'spider'], ['larva', 'bird', true], ['spider', 'bird'],
+    ['rabbit', 'fox'], ['mouse', 'fox'], ['mouse', 'hawk'], ['bird', 'hawk', true],
+  ]
+  const ends = (a, b) => {
+    const [, ax, ay] = nodes[a]
+    const [, bx, by] = nodes[b]
+    if (ay === by) return [[ax + width(nodes[a][0]) / 2, ay], [bx - width(nodes[b][0]) / 2, by]]
+    return [[ax, ay - 10], [bx, by + 10]]
+  }
+  return (
+    <svg viewBox="0 20 300 232" className="h-auto w-full" role="img" aria-label="食物網の例" data-subject-diagram="foodWeb">
+      <rect x="0" y="190" width="300" height="28" rx="6" fill="#f0fdf4" />
+      <rect x="0" y="136" width="300" height="28" rx="6" fill="#fefce8" />
+      <rect x="0" y="28" width="300" height="82" rx="6" fill="#fef2f2" />
+      <Label x={4} y={208} size={8.5} weight="800" color="#15803d">植物</Label>
+      <Label x={4} y={154} size={8.5} weight="800" color="#a16207">草食動物</Label>
+      <Label x={4} y={72} size={8.5} weight="800" color="#b91c1c">肉食動物</Label>
+      {edges.map(([a, b, chain]) => {
+        const [from, to] = ends(a, b)
+        return <Arrow key={`${a}-${b}`} from={from} to={to} color={chain ? '#dc2626' : '#64748b'} width={chain ? 2 : 1.1} />
+      })}
+      {Object.entries(nodes).map(([id, [name, x, y, level]]) => {
+        const w = width(name)
+        return (
+          <g key={id}>
+            <rect x={x - w / 2} y={y - 10} width={w} height="20" rx="6" fill={LEVEL[level][0]} stroke={LEVEL[level][1]} strokeWidth="1" />
+            <text x={x} y={y + 3.5} fontSize="9.5" fontWeight="800" textAnchor="middle" fill={INK}>{name}</text>
+          </g>
+        )
+      })}
+      <Label x={150} y={234} anchor="middle" size={8.5} color={LINE}>矢印：食べられる生物 → 食べる生物</Label>
+      <Label x={150} y={247} anchor="middle" size={8.5} color="#b91c1c">赤い矢印：食物連鎖の1つの例</Label>
+    </svg>
+  )
+}
+
+// ── 生物の数量のピラミッド ───────────────────────────────────────────────────
+//   { name: 'ecoPyramid' }
+// 下から植物（生産者）・草食動物・肉食動物（消費者）。上の段ほど数量が少ない。
+function EcoPyramidDiagram() {
+  const apex = [130, 16]
+  const baseY = 160
+  const half = 100
+  const edge = (y) => (half * (y - apex[1])) / (baseY - apex[1])
+  const band = (y1, y2) => `M${apex[0] - edge(y1)},${y1} L${apex[0] + edge(y1)},${y1} L${apex[0] + edge(y2)},${y2} L${apex[0] - edge(y2)},${y2} Z`
+  return (
+    <svg viewBox="0 0 300 184" className="h-auto w-full" role="img" aria-label="生物の数量のピラミッド" data-subject-diagram="ecoPyramid">
+      <path d={`M${apex[0]},${apex[1]} L${apex[0] + edge(64)},64 L${apex[0] - edge(64)},64 Z`} fill="#fecaca" stroke="#dc2626" strokeWidth="1" />
+      <path d={band(64, 112)} fill="#fef08a" stroke="#ca8a04" strokeWidth="1" />
+      <path d={band(112, baseY)} fill="#bbf7d0" stroke="#16a34a" strokeWidth="1" />
+      <Label x={apex[0]} y={54} anchor="middle" size={9} weight="800">肉食動物</Label>
+      <Label x={apex[0]} y={92} anchor="middle" size={9.5} weight="800">草食動物</Label>
+      <Label x={apex[0]} y={140} anchor="middle" size={10} weight="800">植物</Label>
+      <path d="M206,26 L212,26 L212,108 L206,108" fill="none" stroke={LINE} strokeWidth="1" />
+      <Label x={218} y={66} size={9.5} weight="800">消費者</Label>
+      <Label x={218} y={79} size={8.5} color={LINE}>（動物）</Label>
+      <path d="M236,116 L242,116 L242,158 L236,158" fill="none" stroke={LINE} strokeWidth="1" />
+      <Label x={248} y={136} size={9.5} weight="800">生産者</Label>
+      <Label x={248} y={149} size={8.5} color={LINE}>（植物）</Label>
+      <Arrow from={[16, 152]} to={[16, 34]} color={LINE} width={1.4} />
+      <Label x={16} y={24} anchor="middle" size={8.5} weight="800">少ない</Label>
+      <Label x={16} y={170} anchor="middle" size={8.5} weight="800">多い</Label>
+      <Label x={apex[0]} y={178} anchor="middle" size={8.5} color={LINE}>段の広さ：生物の数量</Label>
+    </svg>
+  )
+}
+
+// ── 生物の数量のつり合い ─────────────────────────────────────────────────────
+//   { name: 'populationBalance' }
+// 草食動物が一時的にふえたときの移り変わり（①→⑤→①）。各段の小さなピラミッドは、上から肉食動物・草食動物・植物。
+// 点線はつり合っているときの広さ。赤い▲はその段階でふえたもの、青い▼は減ったもの。
+function PopulationBalanceDiagram() {
+  const base = [26, 52, 78]
+  const colors = ['#f87171', '#facc15', '#4ade80']
+  const rows = [
+    ['①', [1, 1, 1], [0, 0, 0], ['つり合っている']],
+    ['②', [1, 1.35, 1], [0, 1, 0], ['何らかの原因で、', '草食動物がふえる']],
+    ['③', [1.35, 1.35, 0.65], [1, 0, -1], ['植物は食べられて減り、', '肉食動物はえさがふえてふえる']],
+    ['④', [1.35, 0.65, 0.65], [0, -1, 0], ['草食動物は、えさが減り、', '多く食べられて減る']],
+    ['⑤', [0.65, 0.65, 1.35], [-1, 0, 1], ['植物はふえ、肉食動物は', 'えさが減って減る → ①へ']],
+  ]
+  const cx = 82
+  return (
+    <svg viewBox="0 0 300 262" className="h-auto w-full" role="img" aria-label="生物の数量のつり合い" data-subject-diagram="populationBalance">
+      <Label x={cx} y={12} anchor="middle" size={8} color={LINE}>上から肉食・草食・植物</Label>
+      {rows.map(([mark, scale, change, lines], i) => {
+        const y0 = 20 + i * 48
+        return (
+          <g key={mark}>
+            <Label x={8} y={y0 + 20} size={11} weight="800">{mark}</Label>
+            {base.map((w, k) => {
+              const y = y0 + k * 11
+              const sw = w * scale[k]
+              return (
+                <g key={k}>
+                  <rect x={cx - sw / 2} y={y} width={sw} height="10" fill={colors[k]} opacity="0.9" />
+                  <rect x={cx - w / 2} y={y} width={w} height="10" fill="none" stroke={LINE} strokeWidth="0.7" strokeDasharray="2 1.5" />
+                  {change[k] > 0 ? <path d={`M${cx + 60},${y + 9} L${cx + 65},${y + 1} L${cx + 70},${y + 9} Z`} fill="#dc2626" /> : null}
+                  {change[k] < 0 ? <path d={`M${cx + 60},${y + 1} L${cx + 65},${y + 9} L${cx + 70},${y + 1} Z`} fill="#2563eb" /> : null}
+                </g>
+              )
+            })}
+            {lines.map((line, k) => (
+              <Label key={line} x={162} y={y0 + (lines.length === 1 ? 20 : 13 + k * 13)} size={9}>{line}</Label>
+            ))}
+            {i < rows.length - 1 ? <Arrow from={[cx, y0 + 35]} to={[cx, y0 + 46]} color={LINE} width={1.2} /> : null}
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+// ── 土の中の微生物のはたらき ─────────────────────────────────────────────────
+//   { name: 'decomposerPlate' }
+// デンプンを入れた寒天に、焼かない土（A）と焼いた土（B）をのせ、数日後にヨウ素液をかけたようす。
+// Aは土のまわりだけデンプンが分解されて色が変わらず、Bは全体が青紫色になる。
+function DecomposerPlateDiagram() {
+  const dish = (cx, halo) => (
+    <g>
+      <circle cx={cx} cy="72" r="46" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1.4" />
+      <circle cx={cx} cy="72" r="41" fill="#6d28d9" opacity="0.72" />
+      {halo ? <circle cx={cx} cy="72" r="24" fill="#fde68a" /> : null}
+      <path d={`M${cx - 9},${72} Q${cx - 8},${63} ${cx},${64} Q${cx + 9},${62} ${cx + 9},${71} Q${cx + 10},${80} ${cx + 1},${80} Q${cx - 9},${81} ${cx - 9},${72} Z`} fill="#78350f" />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 156" className="h-auto w-full" role="img" aria-label="土の中の微生物のはたらきを調べる実験" data-subject-diagram="decomposerPlate">
+      {dish(78, true)}
+      {dish(222, false)}
+      <Callout from={[78 + 17, 72 - 17]} to={[126, 16]} text="色が変わらない" />
+      <Label x={78} y={134} anchor="middle" size={9.5} weight="800">A 焼かない土</Label>
+      <Label x={222} y={134} anchor="middle" size={9.5} weight="800">B 焼いた土</Label>
+      <Label x={78} y={150} anchor="middle" size={8.5}>デンプンが分解された</Label>
+      <Label x={222} y={150} anchor="middle" size={8.5}>全体が青紫色（デンプンが残る）</Label>
+    </svg>
+  )
+}
+
+// ── 炭素の循環 ───────────────────────────────────────────────────────────────
+//   { name: 'carbonCycle' }
+// 青い矢印は二酸化炭素として、オレンジの矢印は有機物として炭素が移る向き。
+// 光合成で大気から植物へ。食べることで植物→草食動物→肉食動物。死がい・排出物は分解者へ。呼吸で大気へもどる。
+function CarbonCycleDiagram() {
+  const CO2 = '#2563eb'
+  const ORG = '#ea580c'
+  const box = (x, y, w, h, lines, fill, stroke) => (
+    <g>
+      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx="6" fill={fill} stroke={stroke} strokeWidth="1" />
+      {lines.map((line, k) => (
+        <text key={line} x={x} y={y + (lines.length === 1 ? 3.5 : k === 0 ? -2 : 11)} fontSize={k === 0 ? 9.5 : 8} fontWeight="800" textAnchor="middle" fill={k === 0 ? INK : LINE}>{line}</text>
+      ))}
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 240" className="h-auto w-full" role="img" aria-label="炭素の循環" data-subject-diagram="carbonCycle">
+      <Arrow from={[46, 38]} to={[46, 107]} color={CO2} width={1.6} />
+      <Arrow from={[70, 107]} to={[70, 39]} color={CO2} width={1.6} />
+      <Arrow from={[150, 107]} to={[150, 39]} color={CO2} width={1.6} />
+      <Arrow from={[244, 107]} to={[244, 39]} color={CO2} width={1.6} />
+      <path d="M245,200 L288,200 L288,25 L258,25" fill="none" stroke={CO2} strokeWidth="1.6" />
+      <Arrow from={[262, 25]} to={[251, 25]} color={CO2} width={1.6} />
+      <Arrow from={[86, 125]} to={[117, 125]} color={ORG} width={1.6} />
+      <Arrow from={[182, 125]} to={[209, 125]} color={ORG} width={1.6} />
+      <Arrow from={[58, 142]} to={[88, 187]} color={ORG} width={1.6} />
+      <Arrow from={[150, 142]} to={[150, 187]} color={ORG} width={1.6} />
+      <Arrow from={[244, 142]} to={[212, 187]} color={ORG} width={1.6} />
+      {box(150, 25, 200, 26, ['大気中の二酸化炭素'], '#dbeafe', '#2563eb')}
+      {box(58, 125, 56, 34, ['植物', '（生産者）'], '#dcfce7', '#16a34a')}
+      {box(150, 125, 64, 34, ['草食動物', '（消費者）'], '#fef9c3', '#ca8a04')}
+      {box(244, 125, 64, 34, ['肉食動物', '（消費者）'], '#fee2e2', '#dc2626')}
+      {box(150, 200, 190, 24, ['分解者（菌類・細菌類など）'], '#f5f5f4', '#78716c')}
+      <Label x={40} y={78} anchor="end" size={8.5} weight="800" color={CO2}>光合成</Label>
+      <Label x={76} y={78} size={8.5} weight="800" color={CO2}>呼吸</Label>
+      <Label x={156} y={78} size={8.5} weight="800" color={CO2}>呼吸</Label>
+      <Label x={238} y={78} anchor="end" size={8.5} weight="800" color={CO2}>呼吸</Label>
+      <Label x={284} y={96} anchor="end" size={8.5} weight="800" color={CO2}>呼吸</Label>
+      <Label x={102} y={112} anchor="middle" size={8} weight="800" color={ORG}>食べる</Label>
+      <Label x={196} y={112} anchor="middle" size={8} weight="800" color={ORG}>食べる</Label>
+      <Label x={188} y={168} anchor="middle" size={8} weight="800" color={ORG}>死がい・排出物</Label>
+      <line x1="24" y1="228" x2="40" y2="228" stroke={CO2} strokeWidth="2" />
+      <Label x={44} y={231.5} size={8.5}>二酸化炭素として移る</Label>
+      <line x1="160" y1="228" x2="176" y2="228" stroke={ORG} strokeWidth="2" />
+      <Label x={180} y={231.5} size={8.5}>有機物として移る</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -4509,4 +4721,9 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   sunspotShape: SunspotShapeDiagram,
   solarSystemBodies: SolarSystemBodiesDiagram,
   milkyWay: MilkyWayDiagram,
+  foodWeb: FoodWebDiagram,
+  ecoPyramid: EcoPyramidDiagram,
+  populationBalance: PopulationBalanceDiagram,
+  decomposerPlate: DecomposerPlateDiagram,
+  carbonCycle: CarbonCycleDiagram,
 })
