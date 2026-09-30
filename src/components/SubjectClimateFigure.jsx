@@ -1,5 +1,6 @@
 import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
 import { textWidth } from './SubjectMapFigures.jsx'
+import { SubjectText } from './SubjectText.jsx'
 
 // 雨温図（棒＝月の降水量、折れ線＝月の平均気温）。{ type: 'climate', station: 'tokyo' }（地点は data/subjects/climate.js）。
 //   hideName: true と label: 'A' … 問題で地点名をふせる
@@ -194,7 +195,7 @@ export function ClimateFigure({ figure }) {
       </svg>
       {/* 行が折り返すときは「・」の切れ目で折り返す（数と単位を分けない）。 */}
       <p className="mt-1 text-center text-[11px] font-bold text-ink/60" data-subject-climate-summary>
-        {name && <span className="mr-[1em] inline-block">{name}</span>}
+        {name && <span className="mr-[1em] inline-block"><SubjectText>{name}</SubjectText></span>}
         <span className="inline-block">{`年平均気温 ${signed(summary.average)}℃・`}</span>
         <span className="inline-block">{`年降水量 ${summary.total.toLocaleString('ja-JP')}mm`}</span>
       </p>
