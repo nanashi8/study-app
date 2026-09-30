@@ -4726,6 +4726,73 @@ function HazardMapDiagram() {
   )
 }
 
+// ── 火力発電のしくみ ─────────────────────────────────────────────────────────
+//   { name: 'thermalPower' }
+// ボイラーで燃料を燃やして水を高温・高圧の水蒸気にし、タービンを回して発電機で発電する。
+// タービンを出た水蒸気は復水器で冷やされて水にもどり、ボイラーへ送られる。
+function ThermalPowerDiagram() {
+  const flame = (x) => `M${x - 6},142 Q${x - 7},130 ${x},120 Q${x + 7},130 ${x + 6},142 Z`
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="火力発電のしくみ" data-subject-diagram="thermalPower">
+      <path d="M44,46 L44,26 L122,26 L122,58" fill="none" stroke="#f87171" strokeWidth="5" strokeLinejoin="round" />
+      <Label x={83} y={18} anchor="middle" size={8.5} weight="800" color="#b91c1c">高温・高圧の水蒸気</Label>
+      <rect x="14" y="46" width="60" height="98" rx="4" fill="#fff7ed" stroke="#c2410c" strokeWidth="1.2" />
+      <path d="M24,112 L64,104 L24,96 L64,88 L24,80 L64,72 L24,64 L44,56" fill="none" stroke="#3b82f6" strokeWidth="1.6" />
+      {[30, 44, 58].map((x) => <path key={x} d={flame(x)} fill="#f97316" />)}
+      <Label x={44} y={40} anchor="middle" size={9} weight="800">ボイラー</Label>
+      <Arrow from={[44, 180]} to={[44, 148]} color="#78350f" width={1.8} />
+      <Label x={52} y={176} size={8.5} weight="800">燃料</Label>
+      <path d="M116,62 L164,52 L164,104 L116,94 Z" fill="#e2e8f0" stroke={LINE} strokeWidth="1.2" />
+      {[124, 132, 140, 148, 156].map((x) => <line key={x} x1={x} y1={62 - (x - 116) * 0.2 + 2} x2={x} y2={94 + (x - 116) * 0.2 - 2} stroke="#94a3b8" strokeWidth="1.2" />)}
+      <Label x={140} y={46} anchor="middle" size={9} weight="800">タービン</Label>
+      <line x1="164" y1="78" x2="192" y2="78" stroke={LINE} strokeWidth="4" />
+      <rect x="192" y="58" width="46" height="40" rx="6" fill="#fef3c7" stroke="#ca8a04" strokeWidth="1.2" />
+      <path d="M200,86 C204,70 208,70 212,86 C216,70 220,70 224,86 C228,70 230,72 232,78" fill="none" stroke="#b45309" strokeWidth="1.2" />
+      <Label x={215} y={52} anchor="middle" size={9} weight="800">発電機</Label>
+      <line x1="238" y1="78" x2="262" y2="78" stroke="#ca8a04" strokeWidth="2" />
+      <path d="M272,62 L264,80 L272,80 L266,96 L282,74 L274,74 L280,62 Z" fill="#facc15" stroke="#a16207" strokeWidth="0.8" />
+      <Label x={273} y={112} anchor="middle" size={9} weight="800">電気</Label>
+      <line x1="140" y1="102" x2="140" y2="128" stroke="#93c5fd" strokeWidth="5" />
+      <rect x="112" y="128" width="56" height="32" rx="4" fill="#dbeafe" stroke="#2563eb" strokeWidth="1.2" />
+      <Label x={140} y={148} anchor="middle" size={8.5} weight="800">復水器</Label>
+      <Arrow from={[204, 136]} to={[170, 136]} color="#0ea5e9" width={1.4} />
+      <Arrow from={[170, 152]} to={[204, 152]} color="#0ea5e9" width={1.4} />
+      <Label x={208} y={148} size={8.5}>冷却水（海水など）</Label>
+      <path d="M112,152 L92,152 L92,120 L78,120" fill="none" stroke="#3b82f6" strokeWidth="2.2" />
+      <Arrow from={[84, 120]} to={[75, 120]} color="#3b82f6" width={2.2} />
+      <Label x={86} y={114} anchor="middle" size={8.5} weight="800" color="#1d4ed8">水</Label>
+      <Label x={150} y={192} anchor="middle" size={8.5} color={LINE}>原子力発電では、ボイラーのかわりに原子炉の熱を使う</Label>
+    </svg>
+  )
+}
+
+// ── カーボンニュートラル ─────────────────────────────────────────────────────
+//   { name: 'carbonNeutral' }
+// 横線より上が温室効果ガスの排出量、下が森林などによる吸収量。
+// 排出を減らし、吸収をふやして、排出量＝吸収量（差し引き0）にする。
+function CarbonNeutralDiagram() {
+  const zero = 96
+  const bar = (x, top, bottom, fill) => <rect x={x} y={top} width="28" height={bottom - top} rx="2" fill={fill} />
+  return (
+    <svg viewBox="0 0 300 184" className="h-auto w-full" role="img" aria-label="カーボンニュートラルの考え方" data-subject-diagram="carbonNeutral">
+      {bar(62, 24, zero, '#f87171')}
+      {bar(94, zero, zero + 20, '#4ade80')}
+      {bar(186, zero - 36, zero, '#f87171')}
+      {bar(218, zero, zero + 36, '#4ade80')}
+      <line x1="30" y1={zero} x2="290" y2={zero} stroke={INK} strokeWidth="1.4" />
+      <Label x={14} y={62} anchor="middle" size={9} weight="800" color="#b91c1c">排出</Label>
+      <Label x={14} y={126} anchor="middle" size={9} weight="800" color="#15803d">吸収</Label>
+      <Arrow from={[152, 40]} to={[152, 66]} color="#dc2626" width={1.8} />
+      <Label x={152} y={32} anchor="middle" size={8.5} weight="800" color="#b91c1c">排出を減らす</Label>
+      <Arrow from={[152, 112]} to={[152, 138]} color="#16a34a" width={1.8} />
+      <Label x={152} y={152} anchor="middle" size={8.5} weight="800" color="#15803d">吸収をふやす</Label>
+      <Label x={92} y={170} anchor="middle" size={9} weight="800">現在</Label>
+      <Label x={218} y={152} anchor="middle" size={8.5} color={LINE}>排出量＝吸収量</Label>
+      <Label x={218} y={170} anchor="middle" size={9} weight="800">全体として0</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -4847,4 +4914,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   tullgrenFunnel: TullgrenFunnelDiagram,
   satoyama: SatoyamaDiagram,
   hazardMap: HazardMapDiagram,
+  thermalPower: ThermalPowerDiagram,
+  carbonNeutral: CarbonNeutralDiagram,
 })
