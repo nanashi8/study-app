@@ -132,4 +132,10 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'pendulumEnergy',
   'movablePulley',
   'heatTransfer',
+  'transparentHemisphere',
+  'earthRotation',
+  'starTrails',
+  'orbitConstellations',
+  'seasonsOrbit',
+  'noonAltitude',
 ])

@@ -3645,6 +3645,234 @@ function HeatTransferDiagram() {
   )
 }
 
+function StarShape({ x, y, r = 5, fill = '#facc15' }) {
+  return <path d={starPath(x, y, r)} fill={fill} stroke="#ca8a04" strokeWidth="0.6" />
+}
+
+// ── 透明半球に記録した太陽の動き ─────────────────────────────────────────────────
+//   { name: 'transparentHemisphere' }
+// 南側から見たようす（手前が南、右が東、左が西）。太陽は東からのぼり、南の空で最も高くなり（南中）、西にしずむ。1時間ごとの点の間隔は等しい。
+function TransparentHemisphereDiagram() {
+  const cx = 150
+  const cy = 150
+  const R = 110
+  const ry = 34
+  const alt = (55 * Math.PI) / 180
+  const pt = (t) => {
+    const east = Math.cos(t)
+    const south = Math.sin(t) * Math.cos(alt)
+    const up = Math.sin(t) * Math.sin(alt)
+    return [cx + R * east, cy - R * up + ry * south]
+  }
+  const path = Array.from({ length: 61 }, (_, i) => pt((i / 60) * Math.PI))
+  const hours = Array.from({ length: 11 }, (_, i) => pt(((i + 0.5) / 11) * Math.PI))
+  const top = pt(Math.PI / 2)
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="透明半球に記録した太陽の動き" data-subject-diagram="transparentHemisphere">
+      <ellipse cx={cx} cy={cy} rx={R} ry={ry} fill="#f1f5f9" stroke={LINE} strokeWidth="1" />
+      <path d={`M${cx - R},${cy} A${R},${R} 0 0,1 ${cx + R},${cy}`} fill="#e0f2fe" fillOpacity="0.35" stroke={LINE} strokeWidth="1" />
+      <line x1={cx - R} y1={cy} x2={cx + R} y2={cy} stroke="#cbd5e1" strokeWidth="0.8" />
+      <line x1={cx} y1={cy - ry} x2={cx} y2={cy + ry} stroke="#cbd5e1" strokeWidth="0.8" />
+      <path d={`M${path.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' L')}`} fill="none" stroke="#dc2626" strokeWidth="1.8" />
+      {hours.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill="#ffffff" stroke="#dc2626" strokeWidth="1.2" />)}
+      <circle cx={cx} cy={cy} r="3" fill={INK} />
+      <Label x={cx + 6} y={cy - 4} size={8.5}>O（観測者）</Label>
+      <Label x={cx} y={cy + ry + 14} anchor="middle" size={10} weight="800">南</Label>
+      <Label x={cx} y={cy - ry - 4} anchor="middle" size={10} weight="800">北</Label>
+      <Label x={cx + R + 4} y={cy + 4} size={10} weight="800">東</Label>
+      <Label x={cx - R - 4} y={cy + 4} anchor="end" size={10} weight="800">西</Label>
+      <Label x={top[0]} y={top[1] - 10} anchor="middle" size={8.5} weight="800" color="#b91c1c">南中</Label>
+      <Label x={cx + R - 12} y={cy + 30} anchor="end" size={8} color={LINE}>日の出</Label>
+      <Label x={cx - R + 12} y={cy + 30} size={8} color={LINE}>日の入り</Label>
+    </svg>
+  )
+}
+
+// ── 地球の自転と時刻 ─────────────────────────────────────────────────────────
+//   { name: 'earthRotation' }
+// 北極の真上から見たようす。地球は反時計回りに自転する。太陽の光が左から当たるとき、左が正午、右が真夜中、上が明け方、下が夕方。
+function EarthRotationDiagram() {
+  const c = [180, 100]
+  const r = 60
+  return (
+    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="地球の自転と時刻" data-subject-diagram="earthRotation">
+      {[60, 100, 140].map((y) => <Arrow key={y} from={[10, y]} to={[60, y]} color="#ca8a04" width={1.8} />)}
+      <Label x={36} y={40} anchor="middle" size={8.5} color="#a16207">太陽の光</Label>
+      <circle cx={c[0]} cy={c[1]} r={r} fill="#dbeafe" stroke={LINE} strokeWidth="1.2" />
+      <path d={`M${c[0]},${c[1] - r} A${r},${r} 0 0,1 ${c[0]},${c[1] + r} Z`} fill="#334155" opacity="0.55" />
+      <path d={`M${c[0] + 22},${c[1]} A22,22 0 1,0 ${c[0]},${c[1] + 22}`} fill="none" stroke="#dc2626" strokeWidth="1.6" />
+      <path d={`M${c[0] + 6},${c[1] + 22} L${c[0] - 2},${c[1] + 17} L${c[0] - 2},${c[1] + 27} Z`} fill="#dc2626" />
+      <circle cx={c[0]} cy={c[1]} r="2.6" fill={INK} />
+      <Label x={c[0] - 4} y={c[1] - 5} anchor="end" size={8} color={INK}>北極</Label>
+      {[[c[0] - r, c[1], '正午', 'end', -6, 4], [c[0] + r, c[1], '真夜中', 'start', 6, 4], [c[0], c[1] - r, '明け方', 'middle', 0, -8], [c[0], c[1] + r, '夕方', 'middle', 0, 16]].map(([x, y, text, anchor, dx, dy]) => (
+        <g key={text}>
+          <circle cx={x} cy={y} r="3.2" fill="#f97316" />
+          <Label x={x + dx} y={y + dy} anchor={anchor} size={9} weight="800">{text}</Label>
+        </g>
+      ))}
+      <Label x={c[0]} y={196} anchor="middle" size={8.5} color={LINE}>赤い矢印：自転の向き（反時計回り）</Label>
+    </svg>
+  )
+}
+
+// ── 4つの方位の星の動き ──────────────────────────────────────────────────────
+//   { name: 'starTrails' }
+// 北の空：北極星付近を中心に反時計回り。東の空：右上へのぼる。南の空：東（左）から西（右）へ弧をえがく。西の空：右下へしずむ。
+function StarTrailsDiagram() {
+  const head = (x, y, angle) => {
+    const tip = (a) => `${(x + 7 * Math.cos(angle + a)).toFixed(1)},${(y + 7 * Math.sin(angle + a)).toFixed(1)}`
+    return <path d={`M${x},${y} L${tip(Math.PI * 0.85)} L${tip(-Math.PI * 0.85)} Z`} fill="#2563eb" />
+  }
+  const panel = (x0, y0, title, left, right, draw) => (
+    <g>
+      <rect x={x0} y={y0} width="144" height="100" rx="6" fill="#0f172a" />
+      <line x1={x0 + 4} y1={y0 + 88} x2={x0 + 140} y2={y0 + 88} stroke="#94a3b8" strokeWidth="1.2" />
+      <text x={x0 + 8} y={y0 + 14} fontSize="9" fontWeight="800" fill="#f8fafc">{title}</text>
+      <text x={x0 + 6} y={y0 + 98} fontSize="8" fontWeight="700" fill="#cbd5e1">{left}</text>
+      <text x={x0 + 138} y={y0 + 98} fontSize="8" fontWeight="700" fill="#cbd5e1" textAnchor="end">{right}</text>
+      {draw(x0, y0)}
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 212" className="h-auto w-full" role="img" aria-label="4つの方位の星の動き" data-subject-diagram="starTrails">
+      {panel(4, 4, '北の空', '西', '東', (x0, y0) => (
+        <g>
+          {[14, 24, 34].map((r) => {
+            const cxp = x0 + 72
+            const cyp = y0 + 50
+            const a1 = -0.2
+            const a2 = -0.2 - 1.4
+            return (
+              <g key={r}>
+                <path d={`M${(cxp + r * Math.cos(a1)).toFixed(1)},${(cyp + r * Math.sin(a1)).toFixed(1)} A${r},${r} 0 0,0 ${(cxp + r * Math.cos(a2)).toFixed(1)},${(cyp + r * Math.sin(a2)).toFixed(1)}`} fill="none" stroke="#93c5fd" strokeWidth="1.3" />
+                {head(cxp + r * Math.cos(a2), cyp + r * Math.sin(a2), a2 - Math.PI / 2)}
+              </g>
+            )
+          })}
+          <StarShape x={x0 + 72} y={y0 + 50} r={4} />
+          <text x={x0 + 80} y={y0 + 66} fontSize="7.5" fill="#fde68a">北極星</text>
+        </g>
+      ))}
+      {panel(152, 4, '東の空', '北', '南', (x0, y0) => (
+        <g>
+          {[16, 46, 76].map((dx) => (
+            <g key={dx}>
+              <line x1={x0 + dx} y1={y0 + 86} x2={x0 + dx + 40} y2={y0 + 30} stroke="#93c5fd" strokeWidth="1.3" />
+              {head(x0 + dx + 40, y0 + 30, Math.atan2(-56, 40))}
+            </g>
+          ))}
+        </g>
+      ))}
+      {panel(4, 108, '南の空', '東', '西', (x0, y0) => (
+        <g>
+          {[[30, 'M12,86 Q72,20 132,86'], [44, 'M34,86 Q72,44 110,86']].map(([k, d]) => {
+            const shifted = d.replace(/(-?\d+),(-?\d+)/g, (m, a, b) => `${Number(a) + x0},${Number(b) + y0}`)
+            return <path key={k} d={shifted} fill="none" stroke="#93c5fd" strokeWidth="1.3" />
+          })}
+          {head(x0 + 124, y0 + 76, Math.atan2(10, 8))}
+          {head(x0 + 104, y0 + 78, Math.atan2(8, 6))}
+        </g>
+      ))}
+      {panel(152, 108, '西の空', '南', '北', (x0, y0) => (
+        <g>
+          {[16, 46, 76].map((dx) => (
+            <g key={dx}>
+              <line x1={x0 + dx} y1={y0 + 30} x2={x0 + dx + 40} y2={y0 + 86} stroke="#93c5fd" strokeWidth="1.3" />
+              {head(x0 + dx + 40, y0 + 86, Math.atan2(56, 40))}
+            </g>
+          ))}
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+// ── 地球の公転と真夜中に見える星座 ──────────────────────────────────────────────
+//   { name: 'orbitConstellations' }
+// 北極の真上から見たようす。地球は反時計回りに公転する。真夜中に南の空に見えるのは、太陽と反対側にある星座。
+function OrbitConstellationsDiagram() {
+  const sun = [150, 140]
+  const earth = [[150, 210, '春分', 'しし座', 150, 268], [220, 140, '夏至', 'さそり座', 276, 140], [150, 70, '秋分', 'ペガスス座', 150, 14], [80, 140, '冬至', 'オリオン座', 24, 140]]
+  return (
+    <svg viewBox="0 0 300 282" className="h-auto w-full" role="img" aria-label="地球の公転と真夜中に見える星座" data-subject-diagram="orbitConstellations">
+      <circle cx={sun[0]} cy={sun[1]} r="70" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <circle cx={sun[0]} cy={sun[1]} r="15" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={sun[0]} y={sun[1] + 4} anchor="middle" size={8.5} weight="800">太陽</Label>
+      {earth.map(([x, y, season, star, sx, sy]) => (
+        <g key={season}>
+          <line x1={x} y1={y} x2={sx} y2={sy} stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="2 3" />
+          <circle cx={x} cy={y} r="8" fill="#60a5fa" stroke="#1d4ed8" strokeWidth="1" />
+          <rect x={sx - 30} y={sy - 9} width="60" height="17" rx="4" fill="#0f172a" />
+          <text x={sx} y={sy + 3} fontSize="8.5" fontWeight="800" textAnchor="middle" fill="#fde68a">{star}</text>
+        </g>
+      ))}
+      <Label x={150} y={228} anchor="middle" size={9} weight="800">春分</Label>
+      <Label x={226} y={130} size={9} weight="800">夏至</Label>
+      <Label x={150} y={58} anchor="middle" size={9} weight="800">秋分</Label>
+      <Label x={74} y={130} anchor="end" size={9} weight="800">冬至</Label>
+      <path d="M203.7,185.3 L200.9,193.7 L195.3,188.1 Z" fill="#dc2626" />
+      <Label x={206} y={200} size={8.5} color="#b91c1c">公転の向き</Label>
+    </svg>
+  )
+}
+
+// ── 地軸の傾きと季節 ────────────────────────────────────────────────────────
+//   { name: 'seasonsOrbit' }
+// 地軸は公転面に垂直な方向から23.4°傾いたまま公転する。夏至（右）では北半球が太陽の側に傾き、冬至（左）では反対側に傾く。
+function SeasonsOrbitDiagram() {
+  const sun = [150, 116]
+  const tilt = (23.4 * Math.PI) / 180
+  const axis = [-Math.sin(tilt), -Math.cos(tilt)]
+  const positions = [[262, 116, '夏至', 'start', 20, 4], [38, 116, '冬至', 'end', -20, 4], [150, 176, '春分', 'end', -18, 22], [150, 56, '秋分', 'start', 18, -12]]
+  return (
+    <svg viewBox="0 0 300 224" className="h-auto w-full" role="img" aria-label="地軸の傾きと季節" data-subject-diagram="seasonsOrbit">
+      <ellipse cx={sun[0]} cy={sun[1]} rx="112" ry="60" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <circle cx={sun[0]} cy={sun[1]} r="16" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      {positions.map(([x, y, name, anchor, dx, dy]) => (
+        <g key={name}>
+          <circle cx={x} cy={y} r="14" fill="#93c5fd" stroke="#1d4ed8" strokeWidth="1" />
+          <line x1={x - axis[0] * 22} y1={y - axis[1] * 22} x2={x + axis[0] * 22} y2={y + axis[1] * 22} stroke={INK} strokeWidth="1.4" />
+          <text x={x + axis[0] * 27} y={y + axis[1] * 27 + 3} fontSize="8" fontWeight="800" textAnchor="middle" fill={INK}>N</text>
+          <Label x={x + dx} y={y + dy} anchor={anchor} size={9} weight="800">{name}</Label>
+        </g>
+      ))}
+      <path d="M235.3,155.1 L227.3,163.5 L223.9,157.2 Z" fill="#dc2626" />
+      <Label x={150} y={214} anchor="middle" size={8.5} color={LINE}>地軸は、いつも同じ向きに23.4°傾いたまま</Label>
+    </svg>
+  )
+}
+
+// ── 季節による南中高度 ───────────────────────────────────────────────────────
+//   { name: 'noonAltitude' }
+// 北緯35°の地点で南を向いたとき。春分・秋分は55°、夏至は78.4°、冬至は31.6°。
+function NoonAltitudeDiagram() {
+  const O = [70, 170]
+  const len = 150
+  const rows = [[31.6, '冬至 31.6°', 34], [55, '春分・秋分 55°', 52], [78.4, '夏至 78.4°', 70]]
+  return (
+    <svg viewBox="0 0 300 204" className="h-auto w-full" role="img" aria-label="季節による南中高度" data-subject-diagram="noonAltitude">
+      <line x1="20" y1={O[1]} x2="284" y2={O[1]} stroke={DARK} strokeWidth="1.6" />
+      <Label x={284} y={O[1] + 16} anchor="end" size={9} weight="800">南</Label>
+      <Label x={20} y={O[1] + 16} size={9} weight="800">北</Label>
+      <circle cx={O[0]} cy={O[1]} r="3.4" fill={INK} />
+      <Label x={O[0]} y={O[1] + 16} anchor="middle" size={8.5}>観測者</Label>
+      {rows.map(([deg, text, r]) => {
+        const a = (deg * Math.PI) / 180
+        const end = [O[0] + len * Math.cos(a), O[1] - len * Math.sin(a)]
+        return (
+          <g key={deg}>
+            <line x1={O[0]} y1={O[1]} x2={end[0]} y2={end[1]} stroke="#ca8a04" strokeWidth="1.2" />
+            <circle cx={end[0]} cy={end[1]} r="7" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+            <path d={`M${O[0] + r},${O[1]} A${r},${r} 0 0,0 ${(O[0] + r * Math.cos(a)).toFixed(1)},${(O[1] - r * Math.sin(a)).toFixed(1)}`} fill="none" stroke="#dc2626" strokeWidth="1" />
+            <Label x={end[0] + 10} y={end[1] + 4} size={8.5} weight="800">{text}</Label>
+          </g>
+        )
+      })}
+      <Label x={150} y={200} anchor="middle" size={8.5} color={LINE}>北緯35°の地点。赤い弧が南中高度</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3742,4 +3970,10 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   pendulumEnergy: PendulumEnergyDiagram,
   movablePulley: MovablePulleyDiagram,
   heatTransfer: HeatTransferDiagram,
+  transparentHemisphere: TransparentHemisphereDiagram,
+  earthRotation: EarthRotationDiagram,
+  starTrails: StarTrailsDiagram,
+  orbitConstellations: OrbitConstellationsDiagram,
+  seasonsOrbit: SeasonsOrbitDiagram,
+  noonAltitude: NoonAltitudeDiagram,
 })
