@@ -71,6 +71,18 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'population',
+    title: '人口の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'stat-dashboard-census',
+        name: '総務省統計局「統計ダッシュボード」の国勢調査（2020年）の値',
+        url: 'https://dashboard.e-stat.go.jp/',
+        use: '地理「関東地方」の、東京都と周りの県の昼夜間人口比率のグラフに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'economy',
     title: '経済の数値',
     items: Object.freeze([

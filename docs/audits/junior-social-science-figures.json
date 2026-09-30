@@ -1,6 +1,6 @@
 {
   "readMe": "社会・理科の全要点と全演習を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断した記録。figure＝図と図の読み方（要点）・図の読み取り方（演習）を付けた、none＝付けない（要点は理由を noFigure に書く）。sha256 は判断したときの中身の指紋。確認は node scripts/checks/junior-social-science-figures.mjs、押し直しは --stamp <単元ID>。",
-  "reviewedOn": "2026-09-29",
+  "reviewedOn": "2026-09-30",
   "points": {
     "geo-01#1": {
       "decision": "figure",
@@ -309,6 +309,26 @@
     "geo-15#5": {
       "decision": "figure",
       "sha256": "a26ba084ba9ef6a7e244a27c3ccefc48b98be71cc485d2b1cf807518f0b155af"
+    },
+    "geo-16#1": {
+      "decision": "figure",
+      "sha256": "f06f7593762ad085ede67ef59b602ceb5be64e2f80e3e8385b0545107cfbb80e"
+    },
+    "geo-16#2": {
+      "decision": "figure",
+      "sha256": "bad4e06edb1714f4a589550f410b6fdb31dd6da590f86ade96298941bf6da3a8"
+    },
+    "geo-16#3": {
+      "decision": "figure",
+      "sha256": "10d7a5a3eba864076b74d01f7f8564a2eb16ab4e72395a787572ceddc46ad623"
+    },
+    "geo-16#4": {
+      "decision": "figure",
+      "sha256": "6dd0d54c747f9b2b063ed14dc0c77d696fdd9044f81de48307efec28615f30f8"
+    },
+    "geo-16#5": {
+      "decision": "figure",
+      "sha256": "e6d59cbb3b6f87ad235d4457d212977590ea6823522d6f26928244e204e49522"
     }
   },
   "questions": {
@@ -851,6 +871,42 @@
     "geo-15-q09": {
       "decision": "none",
       "sha256": "e796b56055b0456b1b89efc955e1bb403a02da6dc817136117d8d4b495220143"
+    },
+    "geo-16-q01": {
+      "decision": "none",
+      "sha256": "7c4a922521b65b6bb87364d29af8caf8c324c47acbcd26d83306ed026cbe8dc6"
+    },
+    "geo-16-q02": {
+      "decision": "none",
+      "sha256": "3393df4f43c8d9db8a21a08554021fa1a1bd5104ded794bebc41d30e3ed62dbc"
+    },
+    "geo-16-q03": {
+      "decision": "none",
+      "sha256": "772408cfab742df45bc8385c8a53175ce6093e1aa1a915b5aa9cacd1c4053d53"
+    },
+    "geo-16-q04": {
+      "decision": "none",
+      "sha256": "c57098c43205791d26a2f894c0a8ee11e096495b338b6c743742b714fb9e72aa"
+    },
+    "geo-16-q05": {
+      "decision": "none",
+      "sha256": "65b76ea9fef512247b3cf043ab65bc02fc5ab177e1b313d860ea6aa0314025d5"
+    },
+    "geo-16-q06": {
+      "decision": "none",
+      "sha256": "0f96a10fd40b4757f630dc42648bfbd2f24748b81b974a6f4cbfe6af3136bf5d"
+    },
+    "geo-16-q07": {
+      "decision": "none",
+      "sha256": "70400a5cadea85be726d336daea1fdb99dbc8c32c4d27f55a5c75c61af27def3"
+    },
+    "geo-16-q08": {
+      "decision": "none",
+      "sha256": "829b6aac1f95ae62c4b219c8079b73bd23c2247169c603ad827e8374c7ca5120"
+    },
+    "geo-16-q09": {
+      "decision": "none",
+      "sha256": "8873f38ae7560cb0c95be4b1bb6de9d0aa38c5b84a2e26b20368461dd8f182d3"
     }
   }
 }
