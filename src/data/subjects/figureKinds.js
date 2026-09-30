@@ -69,4 +69,5 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'thermalDecomposition',
   'waterElectrolysis',
   'moleculeModels',
+  'reactionModels',
 ])

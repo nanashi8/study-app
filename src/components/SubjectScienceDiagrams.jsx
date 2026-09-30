@@ -1276,6 +1276,10 @@ const ATOM_STYLE = {
   Cu: { fill: '#fdba74', text: INK },
   Na: { fill: '#c4b5fd', text: INK },
   Cl: { fill: '#86efac', text: INK },
+  Fe: { fill: '#a1a1aa', text: INK },
+  S: { fill: '#fde047', text: INK },
+  Mg: { fill: '#f5f5f4', text: INK },
+  Ag: { fill: '#e2e8f0', text: INK },
 }
 function Atom({ x, y, kind, r = 10 }) {
   const style = ATOM_STYLE[kind]
@@ -1324,6 +1328,66 @@ function MoleculeModelsDiagram() {
   )
 }
 
+// ── 化学変化の原子のモデル ─────────────────────────────────────────────────────
+//   { name: 'reactionModels', reactions: [{ label: '水素と酸素の反応', left: ['H2', 'H2', 'O2'], right: ['H2O', 'H2O'], equation: '2H₂＋O₂→2H₂O', count: '左右とも…' }] }
+// 化学変化の前（矢印の左）と後（右）を原子のモデルで並べ、化学反応式と原子の数を下に書く。
+// 分子などの名前は MOLECULE_SHAPES のもの（1個の原子は元素記号のまま）。
+const MOLECULE_SHAPES = {
+  H2: [[-8, 0, 'H'], [8, 0, 'H']],
+  O2: [[-8, 0, 'O'], [8, 0, 'O']],
+  H2O: [[0, -4, 'O'], [-14, 5, 'H'], [14, 5, 'H']],
+  CO2: [[-16, 0, 'O'], [0, 0, 'C'], [16, 0, 'O']],
+  FeS: [[-8, 0, 'Fe'], [8, 0, 'S']],
+  CuS: [[-8, 0, 'Cu'], [8, 0, 'S']],
+  CuO: [[-8, 0, 'Cu'], [8, 0, 'O']],
+  MgO: [[-8, 0, 'Mg'], [8, 0, 'O']],
+  Ag2O: [[0, -4, 'O'], [-15, 5, 'Ag'], [15, 5, 'Ag']],
+}
+const moleculeAtoms = (name) => MOLECULE_SHAPES[name] ?? [[0, 0, name]]
+function ReactionModelsDiagram({ reactions = [] }) {
+  const r = 9
+  const symbolW = 14
+  const rowH = 92
+  return (
+    <svg viewBox={`0 0 300 ${reactions.length * rowH}`} className="h-auto w-full" role="img" aria-label="化学変化の原子のモデル" data-subject-diagram="reactionModels">
+      {reactions.map((reaction, index) => {
+        const y0 = index * rowH
+        const cy = y0 + 42
+        const pieces = []
+        const push = (names) => names.forEach((name, k) => {
+          if (k) pieces.push({ symbol: '＋' })
+          const atoms = moleculeAtoms(name)
+          const xs = atoms.map(([dx]) => dx)
+          pieces.push({ atoms, width: Math.max(...xs) - Math.min(...xs) + 2 * r, min: Math.min(...xs) })
+        })
+        push(reaction.left)
+        pieces.push({ symbol: '→' })
+        push(reaction.right)
+        const gap = 3
+        const total = pieces.reduce((sum, piece) => sum + (piece.symbol ? symbolW : piece.width) + gap, -gap)
+        let x = 150 - total / 2
+        const drawn = pieces.map((piece, k) => {
+          const width = piece.symbol ? symbolW : piece.width
+          const left = x
+          x += width + gap
+          if (piece.symbol) return <text key={k} x={left + width / 2} y={cy + 4.5} fontSize="13" fontWeight="800" textAnchor="middle" fill={piece.symbol === '→' ? '#dc2626' : LINE}>{piece.symbol}</text>
+          const origin = left + r - piece.min
+          return <g key={k}>{piece.atoms.map(([dx, dy, kind], a) => <Atom key={a} x={origin + dx} y={cy + dy} kind={kind} r={r} />)}</g>
+        })
+        const fit = Math.min(1, 284 / total)
+        return (
+          <g key={reaction.label}>
+            <Label x={10} y={y0 + 14} size={9.5} weight="800">{reaction.label}</Label>
+            <g transform={`translate(150 ${cy}) scale(${fit.toFixed(3)}) translate(-150 ${-cy})`}>{drawn}</g>
+            <Label x={150} y={y0 + 70} anchor="middle" size={11} weight="800">{reaction.equation}</Label>
+            {reaction.count && <Label x={150} y={y0 + 84} anchor="middle" size={8.5} color={LINE}>{reaction.count}</Label>}
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1358,4 +1422,5 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   thermalDecomposition: ThermalDecompositionDiagram,
   waterElectrolysis: WaterElectrolysisDiagram,
   moleculeModels: MoleculeModelsDiagram,
+  reactionModels: ReactionModelsDiagram,
 })
