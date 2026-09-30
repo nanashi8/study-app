@@ -39,7 +39,8 @@
       "text": "読みがなと直した内容が単元のページ・暗記カード・語句テスト・演習・一覧に375pxの幅で出ることを確かめ、学習者向けの日本語の決まり・全教材監査・既存のテストをすべて通す",
       "population": "社会・理科の全画面と、npm test・npm run check の全件",
       "check": "node --test tests/junior-social-science-screens.test.mjs && npm test && npm run check",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "tests/junior-social-science-screens.test.mjs（Playwright・375px）が、全102単元のページ・暗記カード・語句テスト・演習3形・一覧・単語帳・学習の記録の読みがなと横のはみ出しを確かめ、足した確認で、カタカナで読む6語それぞれが単元のページの文と地図のラベルにカタカナの読みがなで出ることを確かめる。学習者向けの日本語の見直し台帳で新しい漢字語23件（出典の資料名4・金属工業・読みの辞書に足した語18）を読んで足し、監査の固定値（教材の日本語 233134）を直した。クリーンな clone（a0ef44a）で npm run audit:all-content が通った（テスト1,256件すべて合格・24カテゴリ・教材20,337件・問題経路7,280件、失敗0件）。1回目は画面のスクロールの検査1件が負荷で落ち、その検査だけ流し直して4件合格を見てから全体を流し直した"
     },
     {
       "id": "on-main-deployed",

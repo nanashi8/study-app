@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-30T08:42:59.693Z",
+  "auditedAt": "2026-09-30T11:21:50.488Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "548dacd7495769693c86b2a2cbf5dc085957e8f0f309168864852315aca52120"
+    "overallContentSha256": "2c092cb1699e095c2136d616de8ae275b2af4417f457ca59fa1caf4c8a2691f1"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "a6b4bb593e740e40d89e279dc317399182423e39b9bb7b4b7e5bba52ace671c8",
+    "sha256": "cab3fa80ffda881b669de490fabc3fea4e16ed17df050c85cbddf364fe943728",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -251,8 +251,11 @@
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
+      "tests/junior-social-science-figure-layout.test.mjs",
       "tests/junior-social-science-figures.test.mjs",
       "tests/junior-social-science-glossary.test.mjs",
+      "tests/junior-social-science-katakana-names.test.mjs",
+      "tests/junior-social-science-review.test.mjs",
       "tests/junior-social-science-screens.test.mjs",
       "tests/junior-social-science.test.mjs",
       "tests/kanbun-mark-rendering.test.mjs",
@@ -842,7 +845,7 @@
       "quizItemCount": 649,
       "learningIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
       "quizIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
-      "contentSha256": "862ee0ac54e801cfed35fc7638a14adfd5f15bd7589a0546463f36c08d1f457f",
+      "contentSha256": "c979f1f292cb7db816787109edf699cf5f646458e70170aa43d71716e02e1a09",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -865,7 +868,7 @@
       "quizItemCount": 522,
       "learningIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
       "quizIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
-      "contentSha256": "a75cd2adcc3ecd480229848728855494dc842a49d0002935a06c85e0e07c1622",
+      "contentSha256": "664936b63da24e16c4e7896d44872d3d4b1f0c365cd8228607b0853bc80ed848",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -911,7 +914,7 @@
       "quizItemCount": 396,
       "learningIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
       "quizIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
-      "contentSha256": "6fc2abcf186f54a7366a19e18320f0f91c194b5db978e865a5bc040e831a1750",
+      "contentSha256": "0613e1759bcde34bf29736092cda1c5100103a4367b0f2dfd4cf4d071b88b781",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1101,7 +1104,7 @@
       "choiceCount": 3104,
       "generalRationaleCount": 776,
       "choiceSpecificRationaleCount": 3104,
-      "questionSetSha256": "bc387a131cf198d3e9ab3b5f3959f6443099388ac6c39327c2ad7ea35296da67",
+      "questionSetSha256": "8d1ab31dad905316bb74dfd65cc7787ac045ea05db692a6495973d955fee6577",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -1113,7 +1116,7 @@
       "choiceCount": 4604,
       "generalRationaleCount": 1151,
       "choiceSpecificRationaleCount": 4604,
-      "questionSetSha256": "0763b3f8c5b973f53ed555180a2fe3e9fc6afc01fd408db45a819c34041cbcb0",
+      "questionSetSha256": "590f397490c3df6a66d8033c5df5198a128853edf7b3744ddcacd9c9142ca33f",
       "result": "pass",
       "failureCount": 0,
       "failures": []
