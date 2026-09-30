@@ -101,6 +101,18 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'election',
+    title: '選挙の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'soumu-turnout',
+        name: '総務省「国政選挙の年代別投票率の推移について」',
+        url: 'https://www.soumu.go.jp/senkyo/senkyo_s/news/sonota/nendaibetu/',
+        use: '公民「現代の民主政治」の、年代別の投票率のグラフ（2026年2月の第51回衆議院議員総選挙）に使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'environment',
     title: '環境の数値',
     items: Object.freeze([
