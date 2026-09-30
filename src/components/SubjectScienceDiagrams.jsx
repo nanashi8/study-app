@@ -1047,7 +1047,7 @@ function LayerDeformationDiagram({ kinds = ['normal', 'reverse'] }) {
             {kind === 'fold' ? (
               <g>
                 {[0, 1, 2, 3].map((k) => {
-                  const edge = (j) => Array.from({ length: 41 }, (_, i) => [left + (width * i) / 40, top + j * layer + 10 * Math.sin((i / 40) * 2 * Math.PI)])
+                  const edge = (j) => Array.from({ length: 41 }, (_, i) => [left + (width * i) / 40, top - 4 + j * layer + 8 * Math.sin((i / 40) * 2 * Math.PI)])
                   const upper = edge(k)
                   const lower = edge(k + 1).reverse()
                   return <path key={k} d={`M${[...upper, ...lower].map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' L')} Z`} fill={colors[k]} stroke="#78716c" strokeWidth="0.6" />
@@ -1068,6 +1068,139 @@ function LayerDeformationDiagram({ kinds = ['normal', 'reverse'] }) {
           </g>
         )
       })}
+    </svg>
+  )
+}
+
+// 土砂と岩石の模様（れき・砂・泥・火山灰・石灰岩）。同じ模様なので、1ページに2つ出ても id が重なってよい。
+const ROCK_KINDS = {
+  gravel: { name: 'れき', fill: '#fed7aa' },
+  sand: { name: '砂', fill: '#fef3c7' },
+  mud: { name: '泥', fill: '#e7e5e4' },
+  ash: { name: '火山灰', fill: '#fecaca' },
+  lime: { name: '石灰岩', fill: '#e0f2fe' },
+}
+function RockPatterns() {
+  return (
+    <defs>
+      <pattern id="rock-gravel" width="9" height="9" patternUnits="userSpaceOnUse">
+        <rect width="9" height="9" fill={ROCK_KINDS.gravel.fill} />
+        <circle cx="4.5" cy="4.5" r="2.6" fill="none" stroke="#9a3412" strokeWidth="0.8" />
+      </pattern>
+      <pattern id="rock-sand" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill={ROCK_KINDS.sand.fill} />
+        <circle cx="1.5" cy="1.5" r="0.8" fill="#a16207" />
+        <circle cx="4.5" cy="4.5" r="0.8" fill="#a16207" />
+      </pattern>
+      <pattern id="rock-mud" width="10" height="5" patternUnits="userSpaceOnUse">
+        <rect width="10" height="5" fill={ROCK_KINDS.mud.fill} />
+        <line x1="1" y1="2.5" x2="6" y2="2.5" stroke="#78716c" strokeWidth="0.8" />
+      </pattern>
+      <pattern id="rock-ash" width="8" height="7" patternUnits="userSpaceOnUse">
+        <rect width="8" height="7" fill={ROCK_KINDS.ash.fill} />
+        <path d="M2,2 L4,5 L6,2" fill="none" stroke="#b91c1c" strokeWidth="0.8" />
+      </pattern>
+      <pattern id="rock-lime" width="12" height="8" patternUnits="userSpaceOnUse">
+        <rect width="12" height="8" fill={ROCK_KINDS.lime.fill} />
+        <path d="M0,4 L12,4 M3,0 L3,4 M9,4 L9,8" stroke="#0369a1" strokeWidth="0.6" />
+      </pattern>
+    </defs>
+  )
+}
+
+// ── 河口から沖合への土砂の積もり方 ───────────────────────────────────────────
+//   { name: 'sedimentSorting' }
+// 川が運んだ土砂が海に出ると、粒の大きいれきは河口の近く、砂はその先、泥は沖合に積もる。
+function SedimentSortingDiagram() {
+  const floor = (x) => 62 + (x - 62) * (66 / 230)
+  const band = (x1, x2) => `M${x1},${floor(x1)} L${x2},${floor(x2)} L${x2},${floor(x2) + 10} L${x1},${floor(x1) + 10} Z`
+  const zones = [['gravel', 62, 125, '2mm以上'], ['sand', 125, 205, '約0.06〜2mm'], ['mud', 205, 292, '約0.06mm以下']]
+  return (
+    <svg viewBox="0 0 300 172" className="h-auto w-full" role="img" aria-label="河口から沖合への土砂の積もり方" data-subject-diagram="sedimentSorting">
+      <RockPatterns />
+      <path d="M8,46 L56,56 L62,62 L292,128 L292,172 L8,172 Z" fill="#d6d3d1" />
+      <path d="M58,60 L292,60 L292,128 L62,62 Z" fill="#dbeafe" />
+      <line x1="58" y1="60" x2="292" y2="60" stroke="#60a5fa" strokeWidth="1" />
+      <line x1="8" y1="45" x2="58" y2="57" stroke="#3b82f6" strokeWidth="4" strokeLinecap="round" />
+      {zones.map(([kind, x1, x2]) => <path key={kind} d={band(x1, x2)} fill={`url(#rock-${kind})`} stroke="#57534e" strokeWidth="0.7" />)}
+      {zones.map(([kind, x1, x2, size]) => {
+        const cx = (x1 + x2) / 2
+        return (
+          <g key={`label-${kind}`}>
+            <Label x={cx} y={floor(cx) + 28} anchor="middle" size={10} weight="800">{ROCK_KINDS[kind].name}</Label>
+            <Label x={cx} y={floor(cx) + 40} anchor="middle" size={8.5} color={LINE}>{size}</Label>
+          </g>
+        )
+      })}
+      <Label x={26} y={36} anchor="middle" size={9} weight="800" color="#1d4ed8">川</Label>
+      <Label x={62} y={24} anchor="middle" size={9} weight="800">河口</Label>
+      <line x1="62" y1="28" x2="62" y2="56" stroke={LINE} strokeWidth="0.8" />
+      <Label x={270} y={24} anchor="middle" size={9} weight="800">沖合</Label>
+      <line x1="86" y1="20" x2="240" y2="20" stroke={LINE} strokeWidth="1.2" />
+      <path d="M246,20 L238,16 L238,24 Z" fill={LINE} />
+      <Label x={163} y={40} anchor="middle" size={8.5} color={LINE}>粒が小さいものほど遠くまで運ばれる</Label>
+    </svg>
+  )
+}
+
+// ── 柱状図と地層の対比 ──────────────────────────────────────────────────────
+//   { name: 'columnSections', min: 50, max: 80, sites: [{ name: 'A', elevation: 80, layers: [['mud', 10], ['ash', 2], …] }] }
+// 地点ごとの柱状図を、地表の標高にそろえて並べる。layers は地表から下へ [種類, 厚さ(m)]。種類は gravel（れき）・sand（砂）・
+// mud（泥）・ash（火山灰）・lime（石灰岩）。火山灰の層（鍵層）の上面を、となりの地点どうし赤い点線で結ぶ。
+function ColumnSectionsDiagram({ sites = [], min = 50, max = 80 }) {
+  const top = 34
+  const bottom = 194
+  const y = (elevation) => top + ((max - elevation) * (bottom - top)) / (max - min)
+  const half = 17
+  const cx = (index) => 100 + index * 70
+  const used = [...new Set(sites.flatMap((site) => site.layers.map(([kind]) => kind)))]
+  const ashTop = (site) => {
+    let depth = 0
+    for (const [kind, thickness] of site.layers) {
+      if (kind === 'ash') return site.elevation - depth
+      depth += thickness
+    }
+    return null
+  }
+  const ticks = []
+  for (let value = max; value >= min; value -= 5) ticks.push(value)
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="柱状図と地層の対比" data-subject-diagram="columnSections">
+      <RockPatterns />
+      <line x1="44" y1={top} x2="44" y2={bottom} stroke={DARK} strokeWidth="1" />
+      {ticks.map((value) => (
+        <g key={value}>
+          <line x1="40" y1={y(value)} x2="44" y2={y(value)} stroke={DARK} strokeWidth="1" />
+          <Label x={37} y={y(value) + 3.5} anchor="end" size={8.5} color={LINE}>{value}</Label>
+          <line x1="44" y1={y(value)} x2="290" y2={y(value)} stroke="#e2e8f0" strokeWidth="0.6" />
+        </g>
+      ))}
+      <Label x={44} y={top - 18} anchor="middle" size={8.5} color={LINE}>標高(m)</Label>
+      {sites.map((site, index) => {
+        let depth = 0
+        return (
+          <g key={site.name}>
+            <Label x={cx(index)} y={y(site.elevation) - 7} anchor="middle" size={10} weight="800">{site.name}</Label>
+            {site.layers.map(([kind, thickness], k) => {
+              const rect = <rect key={k} x={cx(index) - half} y={y(site.elevation - depth)} width={half * 2} height={y(site.elevation - depth - thickness) - y(site.elevation - depth)} fill={`url(#rock-${kind})`} stroke="#57534e" strokeWidth="0.7" />
+              depth += thickness
+              return rect
+            })}
+          </g>
+        )
+      })}
+      {sites.slice(1).map((site, index) => {
+        const a = ashTop(sites[index])
+        const b = ashTop(site)
+        if (a === null || b === null) return null
+        return <line key={site.name} x1={cx(index) + half} y1={y(a)} x2={cx(index + 1) - half} y2={y(b)} stroke="#dc2626" strokeWidth="1.4" strokeDasharray="4 3" />
+      })}
+      {used.map((kind, index) => (
+        <g key={kind}>
+          <rect x={48 + index * 62} y="212" width="16" height="11" fill={`url(#rock-${kind})`} stroke="#57534e" strokeWidth="0.7" />
+          <Label x={68 + index * 62} y={221} size={9}>{ROCK_KINDS[kind].name}</Label>
+        </g>
+      ))}
     </svg>
   )
 }
@@ -1101,4 +1234,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   quakeRecord: QuakeRecordDiagram,
   plateSubduction: PlateSubductionDiagram,
   layerDeformation: LayerDeformationDiagram,
+  sedimentSorting: SedimentSortingDiagram,
+  columnSections: ColumnSectionsDiagram,
 })

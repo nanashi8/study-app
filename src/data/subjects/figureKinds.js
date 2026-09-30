@@ -64,4 +64,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'quakeRecord',
   'plateSubduction',
   'layerDeformation',
+  'sedimentSorting',
+  'columnSections',
 ])
