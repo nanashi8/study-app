@@ -8,7 +8,7 @@
   "sessions": [
     "e7279dd8-bdb0-4f37-9269-f28307f4d56b"
   ],
-  "status": "open",
+  "status": "done",
   "notes": [
     "前の依頼 requests/2026-09-30-custom-card-templates.json（自作カード）の続き。",
     "「その他」の欄は、用語（必須）・意味（必須）・解説（書かなくてもよい）にする。これまでの「用語と意味」（用語と意味だけ）と「用語・意味・解説」をまとめたもので、解説を空にすれば用語と意味だけを登録できる。すでに「用語・意味・解説」で書いた解説を消さないために、解説の欄を残す。",
@@ -139,7 +139,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通してから main へ push し、公開版のデプロイ成功と、公開版で5つのテンプレート・続けての登録・カードの編集（移動・統合）が動くことを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "commit 27a2396 をクリーンな clone で npm run audit:all-content に通して（全1,237件・教材20,337件・問題の経路7,280件、失敗0件）main へ push し、GitHub Pages のデプロイ（run 36667253300）が成功。scripts/checks/deployed-matches-head.mjs が「push 済みで、公開版へのデプロイが成功している」を返す。公開版（幅375、新しい index-CjytHU7M.js）で、登録の画面のテンプレートが英単語・古文単語・漢語・その他・一問一答の5つ、社会を選ぶとその他、その他のカードを2枚続けて登録（知らせ「社会：2枚」・カーソルは用語・「終わる」）→「終わる」で一覧へ、社会の分類で「編集」→2枚を選んで1枚に統合→統合した1枚を新しいカテゴリー「公開確認のカテゴリー」へ移す、を確かめた。確かめ用のカテゴリーとカードは消して0枚に戻した"
     }
   ]
 }
