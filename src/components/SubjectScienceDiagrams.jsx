@@ -4156,6 +4156,246 @@ function VenusPhasesDiagram() {
   )
 }
 
+/** 図の中で散らす点の位置を毎回同じにする、決まった並びの乱数（0以上1未満）。 */
+function steadyRandom(seed) {
+  let value = seed
+  return () => {
+    value = (value * 9301 + 49297) % 233280
+    return value / 233280
+  }
+}
+
+// ── 太陽のようす ─────────────────────────────────────────────────────────────
+//   { name: 'sunSurface' }
+// 表面（約6000℃）・黒点（約4000℃）・コロナ（100万℃以上）・プロミネンス（紅炎）。
+// 右下の点は、同じ縮尺の地球（直径は太陽の約109分の1）。
+function SunSurfaceDiagram() {
+  const c = [126, 104]
+  const R = 62
+  const limb = (deg) => [c[0] + R * Math.cos((deg * Math.PI) / 180), c[1] - R * Math.sin((deg * Math.PI) / 180)]
+  const arch = (from, to, rise) => {
+    const [p, q] = [limb(from), limb(to)]
+    const [pn, qn] = [from, to].map((deg) => [Math.cos((deg * Math.PI) / 180), -Math.sin((deg * Math.PI) / 180)])
+    const f = (v) => v.toFixed(1)
+    return `M${f(p[0])},${f(p[1])} C${f(p[0] + pn[0] * rise)},${f(p[1] + pn[1] * rise)} ${f(q[0] + qn[0] * rise)},${f(q[1] + qn[1] * rise)} ${f(q[0])},${f(q[1])}`
+  }
+  const earth = [264, 194]
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="太陽の表面のようす" data-subject-diagram="sunSurface">
+      <circle cx={c[0]} cy={c[1]} r="92" fill="#fef3c7" opacity="0.6" />
+      <circle cx={c[0]} cy={c[1]} r="78" fill="#fde68a" opacity="0.5" />
+      <ellipse cx={c[0]} cy={c[1]} rx="98" ry="15" fill="#fde68a" opacity="0.35" transform={`rotate(-28 ${c[0]} ${c[1]})`} />
+      <ellipse cx={c[0]} cy={c[1]} rx="96" ry="13" fill="#fde68a" opacity="0.35" transform={`rotate(36 ${c[0]} ${c[1]})`} />
+      <path d={arch(24, 48, 44)} fill="none" stroke="#fca5a5" strokeWidth="9" strokeLinecap="round" opacity="0.6" />
+      <path d={arch(24, 48, 44)} fill="none" stroke="#ef4444" strokeWidth="4.5" strokeLinecap="round" />
+      <circle cx={c[0]} cy={c[1]} r={R} fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+      {[[104, 88, 8, 7], [144, 118, 5.5, 5], [116, 136, 3.5, 3.2]].map(([x, y, rx, ry]) => (
+        <g key={`${x},${y}`}>
+          <ellipse cx={x} cy={y} rx={rx} ry={ry} fill="#b45309" />
+          <ellipse cx={x} cy={y} rx={rx * 0.55} ry={ry * 0.55} fill="#1f2937" />
+        </g>
+      ))}
+      <Callout from={[72, 46]} to={[20, 16]} anchor="start" text="コロナ（100万℃以上）" />
+      <Callout from={[c[0] + 72, c[1] - 52]} to={[210, 66]} text="プロミネンス" />
+      <Label x={213} y={82} size={10}>（紅炎）</Label>
+      <Callout from={[144, 118]} to={[204, 124]} text="黒点（約4000℃）" />
+      <Callout from={[150, 150]} to={[204, 158]} text="表面（約6000℃）" />
+      <circle cx={earth[0]} cy={earth[1]} r="0.6" fill="#1d4ed8" />
+      <circle cx={earth[0]} cy={earth[1]} r="5" fill="none" stroke="#1d4ed8" strokeWidth="0.8" strokeDasharray="2 1.5" />
+      <Label x={earth[0] - 9} y={earth[1] + 3.5} anchor="end" size={9}>同じ縮尺の地球</Label>
+    </svg>
+  )
+}
+
+// ── 黒点の位置と形の変化 ─────────────────────────────────────────────────────
+//   { name: 'sunspotMotion' }
+// 空で見た向き（東が左）。太陽の自転で、黒点は東（左）から西（右）へ移る。3日ごとに約40°。
+// 中央部では円形、周辺部では横に縮んだだ円形に見える。
+function SunspotMotionDiagram() {
+  const R = 30
+  const cy = 66
+  const lat = (14 * Math.PI) / 180
+  const days = [[38, -65, '1日目'], [112, -25, '4日目'], [186, 15, '7日目'], [260, 55, '10日目']]
+  return (
+    <svg viewBox="0 0 300 120" className="h-auto w-full" role="img" aria-label="黒点の位置と形の変化" data-subject-diagram="sunspotMotion">
+      <Label x={96} y={18} anchor="end" size={9.5} weight="800">東</Label>
+      <Arrow from={[102, 14]} to={[176, 14]} color="#b45309" width={1.6} />
+      <Label x={182} y={18} size={9.5} weight="800">西</Label>
+      <Label x={198} y={18} size={8.5} color={LINE}>黒点が動く向き</Label>
+      {days.map(([cx, L, text]) => {
+        const a = (L * Math.PI) / 180
+        const y = cy - R * Math.sin(lat)
+        const x = cx + R * Math.cos(lat) * Math.sin(a)
+        const squeeze = Math.cos(a)
+        return (
+          <g key={text}>
+            <circle cx={cx} cy={cy} r={R} fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+            <line x1={cx - R * Math.cos(lat)} y1={y} x2={cx + R * Math.cos(lat)} y2={y} stroke="#b45309" strokeWidth="0.7" strokeDasharray="2 2" opacity="0.7" />
+            <ellipse cx={x} cy={y} rx={5 * squeeze} ry={4.6} fill="#b45309" />
+            <ellipse cx={x} cy={y} rx={2.6 * squeeze} ry={2.4} fill="#1f2937" />
+            <Label x={cx} y={112} anchor="middle" size={9} weight="800">{text}</Label>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+// ── 周辺部の黒点がだ円形に見えるわけ ─────────────────────────────────────────
+//   { name: 'sunspotShape' }
+// 太陽を北極側から見た断面（下半分）。地球（下）からは平行な向きに見る。
+// 中央部の黒点は幅がそのまま、周辺部の黒点はななめなので幅がせまく見える（中心から55°で約0.57倍）。
+function SunspotShapeDiagram() {
+  const c = [150, 20]
+  const R = 70
+  const at = (deg) => [c[0] + R * Math.cos((deg * Math.PI) / 180), c[1] - R * Math.sin((deg * Math.PI) / 180)]
+  const spot = (from, to) => {
+    const [p, q] = [at(from), at(to)]
+    return { p, q, d: `M${p[0].toFixed(1)},${p[1].toFixed(1)} A${R},${R} 0 0,0 ${q[0].toFixed(1)},${q[1].toFixed(1)}` }
+  }
+  const center = spot(261, 279)
+  const edge = spot(316, 334)
+  const base = 106
+  return (
+    <svg viewBox="0 0 300 128" className="h-auto w-full" role="img" aria-label="周辺部の黒点がだ円形に見えるわけ" data-subject-diagram="sunspotShape">
+      <path d={`M${c[0] - R},${c[1]} A${R},${R} 0 0,0 ${c[0] + R},${c[1]} Z`} fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+      <Label x={c[0]} y={42} anchor="middle" size={9}>太陽を北極側から見た断面</Label>
+      {[center, edge].map(({ p, q, d }) => (
+        <g key={d}>
+          <path d={d} fill="none" stroke="#1f2937" strokeWidth="4" />
+          {[p, q].map(([x, y]) => <line key={x} x1={x} y1={y + 2} x2={x} y2={base} stroke={LINE} strokeWidth="0.7" strokeDasharray="2 2" />)}
+          <line x1={p[0]} y1={base} x2={q[0]} y2={base} stroke="#1f2937" strokeWidth="4" />
+        </g>
+      ))}
+      <line x1="64" y1={base} x2="252" y2={base} stroke={DARK} strokeWidth="1" />
+      <Label x={edge.q[0] + 8} y={edge.q[1] + 4} size={9} weight="800">黒点</Label>
+      <Label x={140} y={121} anchor="middle" size={9} weight="800">円形に見える</Label>
+      <Label x={216} y={121} anchor="middle" size={9} weight="800">だ円形に見える</Label>
+      <Arrow from={[34, 118]} to={[34, 74]} color={LINE} width={1.4} />
+      <Label x={42} y={96} size={8.5} color={LINE}>地球から見る向き</Label>
+    </svg>
+  )
+}
+
+// ── 太陽系の天体 ─────────────────────────────────────────────────────────────
+//   { name: 'solarSystemBodies' }
+// 左の太陽から、水・金・地・火（地球型惑星）、小惑星が多い所、木・土・天・海（木星型惑星）、
+// 海王星の外側の太陽系外縁天体（冥王星など）。細長い軌道のすい星は、尾を太陽と反対側にのばす。
+// 大きさや距離の割合は実際とちがう。
+function SolarSystemBodiesDiagram() {
+  const sun = [-26, 108]
+  const planets = [
+    ['水', 34, 1.8, '#a8a29e'], ['金', 45, 2.8, '#facc15'], ['地', 56, 3, '#3b82f6'], ['火', 68, 2.3, '#ef4444'],
+    ['木', 110, 9, '#d6a36b'], ['土', 144, 7.5, '#e5c07b'], ['天', 176, 5, '#67e8f9'], ['海', 204, 5, '#2563eb'],
+  ]
+  const polar = (rho, deg) => [sun[0] + rho * Math.cos((deg * Math.PI) / 180), sun[1] - rho * Math.sin((deg * Math.PI) / 180)]
+  const arc = (rho, span) => {
+    const [p, q] = [polar(rho, span), polar(rho, -span)]
+    return `M${p[0].toFixed(1)},${p[1].toFixed(1)} A${rho},${rho} 0 0,1 ${q[0].toFixed(1)},${q[1].toFixed(1)}`
+  }
+  const rand = steadyRandom(7)
+  const belt = Array.from({ length: 46 }, () => polar(104 + rand() * 20, (rand() - 0.5) * 26))
+  const outer = Array.from({ length: 30 }, () => polar(244 + rand() * 26, (rand() - 0.5) * 22))
+  const pluto = polar(248, 9)
+  const comet = { c: [152, 42], rx: 140, ry: 22, tilt: -8 }
+  const cometAt = (deg) => {
+    const t = (deg * Math.PI) / 180
+    const g = (comet.tilt * Math.PI) / 180
+    const [x, y] = [comet.rx * Math.cos(t), comet.ry * Math.sin(t)]
+    return [comet.c[0] + x * Math.cos(g) - y * Math.sin(g), comet.c[1] + x * Math.sin(g) + y * Math.cos(g)]
+  }
+  const head = cometAt(196)
+  const away = [head[0] - sun[0], head[1] - sun[1]]
+  const len = Math.hypot(away[0], away[1])
+  const u = [away[0] / len, away[1] / len]
+  const tail = [head[0] + u[0] * 34, head[1] + u[1] * 34]
+  const side = [-u[1] * 5, u[0] * 5]
+  return (
+    <svg viewBox="0 0 300 190" className="h-auto w-full" role="img" aria-label="太陽系の天体" data-subject-diagram="solarSystemBodies">
+      {planets.map(([name, x]) => <path key={name} d={arc(x - sun[0], 13)} fill="none" stroke="#cbd5e1" strokeWidth="0.8" />)}
+      <ellipse cx={comet.c[0]} cy={comet.c[1]} rx={comet.rx} ry={comet.ry} fill="none" stroke="#0ea5e9" strokeWidth="0.9" strokeDasharray="4 3" transform={`rotate(${comet.tilt} ${comet.c[0]} ${comet.c[1]})`} />
+      <circle cx={sun[0]} cy={sun[1]} r="50" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={10} y={112} anchor="middle" size={9} weight="800" color="#a16207">太陽</Label>
+      {belt.map(([x, y], i) => <circle key={`b${i}`} cx={x} cy={y} r="0.9" fill="#78716c" />)}
+      {outer.map(([x, y], i) => <circle key={`o${i}`} cx={x} cy={y} r="0.9" fill="#78716c" />)}
+      <circle cx={pluto[0]} cy={pluto[1]} r="1.8" fill="#a8a29e" />
+      <Label x={pluto[0] + 5} y={pluto[1] - 3} size={8.5}>冥王星</Label>
+      <path d={`M${head[0].toFixed(1)},${head[1].toFixed(1)} L${(tail[0] + side[0]).toFixed(1)},${(tail[1] + side[1]).toFixed(1)} L${(tail[0] - side[0]).toFixed(1)},${(tail[1] - side[1]).toFixed(1)} Z`} fill="#7dd3fc" opacity="0.8" />
+      <circle cx={head[0]} cy={head[1]} r="2.4" fill="#0284c7" />
+      <Label x={tail[0] + 6} y={tail[1] + 2} size={9} weight="800">すい星</Label>
+      {planets.map(([name, x, r, color]) => (
+        <g key={name}>
+          {name === '土' ? <ellipse cx={x} cy={sun[1]} rx={r + 6} ry={2.6} fill="none" stroke="#a16207" strokeWidth="1" /> : null}
+          <circle cx={x} cy={sun[1]} r={r} fill={color} stroke="#475569" strokeWidth="0.5" />
+          <Label x={x} y={sun[1] + (r > 6 ? r + 12 : 16)} anchor="middle" size={9} weight="800">{name}</Label>
+        </g>
+      ))}
+      <circle cx="110" cy={sun[1]} r="15" fill="none" stroke="#94a3b8" strokeWidth="0.7" strokeDasharray="2 2" />
+      <circle cx={110 + 15 * Math.SQRT1_2} cy={sun[1] - 15 * Math.SQRT1_2} r="1.6" fill="#475569" />
+      <Callout from={[110 + 15 * Math.SQRT1_2, sun[1] - 15 * Math.SQRT1_2]} to={[128, 80]} text="衛星" />
+      <path d="M30,142 L30,146 L72,146 L72,142" fill="none" stroke={LINE} strokeWidth="1" />
+      <Label x={51} y={158} anchor="middle" size={9} weight="800">地球型惑星</Label>
+      <path d="M98,142 L98,146 L212,146 L212,142" fill="none" stroke={LINE} strokeWidth="1" />
+      <Label x={155} y={158} anchor="middle" size={9} weight="800">木星型惑星</Label>
+      <line x1="86" y1="126" x2="86" y2="166" stroke={LINE} strokeWidth="0.8" />
+      <Label x={86} y={178} anchor="middle" size={9} weight="800">小惑星</Label>
+      <line x1="232" y1="132" x2="232" y2="166" stroke={LINE} strokeWidth="0.8" />
+      <Label x={232} y={178} anchor="middle" size={9} weight="800">太陽系外縁天体</Label>
+    </svg>
+  )
+}
+
+// ── 銀河系 ───────────────────────────────────────────────────────────────────
+//   { name: 'milkyWay' }
+// 左：上から見たうずまき状の円盤（直径約10万光年）。太陽系は中心から半分ほど離れた所。
+// 右：横から見たうすい円盤とふくらんだ中心部。円盤の向きに見ると星が重なり、天の川として見える。
+function MilkyWayDiagram() {
+  const top = [80, 92]
+  const R = 62
+  const rand = steadyRandom(11)
+  const b = Math.log(54 / 9) / (3 * Math.PI)
+  const arms = [0, Math.PI].map((offset) =>
+    Array.from({ length: 80 }, (_, i) => {
+      const t = i * 0.12
+      const r = 9 * Math.exp(b * t)
+      const a = t + offset
+      return [top[0] + r * Math.cos(a) + (rand() - 0.5) * 5, top[1] - r * Math.sin(a) * 0.92 + (rand() - 0.5) * 5]
+    }),
+  )
+  const sunTop = [top[0] + 33 * Math.cos((245 * Math.PI) / 180), top[1] - 33 * Math.sin((245 * Math.PI) / 180) * 0.92]
+  const side = [222, 92]
+  const sunSide = [side[0] - 36, side[1]]
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="銀河系のすがた" data-subject-diagram="milkyWay">
+      <Label x={top[0]} y={14} anchor="middle" size={9} weight="800">上から見たようす</Label>
+      <Label x={side[0]} y={14} anchor="middle" size={9} weight="800">横から見たようす</Label>
+      <ellipse cx={top[0]} cy={top[1]} rx={R} ry={R * 0.92} fill="#1e293b" />
+      {arms.map((points, k) => (
+        <g key={k}>
+          <polyline points={points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')} fill="none" stroke="#93c5fd" strokeWidth="7" opacity="0.18" strokeLinecap="round" />
+          {points.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.3 : 0.8} fill="#e0f2fe" />)}
+        </g>
+      ))}
+      <ellipse cx={top[0]} cy={top[1]} rx="12" ry="11" fill="#fde68a" opacity="0.9" />
+      <circle cx={sunTop[0]} cy={sunTop[1]} r="2.6" fill="#ef4444" stroke="#ffffff" strokeWidth="0.8" />
+      <Callout from={sunTop} to={[112, 166]} text="太陽系" />
+      <path d={`M${top[0] - R},172 L${top[0] - R},178 L${top[0] + R},178 L${top[0] + R},172`} fill="none" stroke={LINE} strokeWidth="1" />
+      <Label x={top[0]} y={194} anchor="middle" size={9} weight="800">約10万光年</Label>
+      <ellipse cx={side[0]} cy={side[1]} rx="70" ry="6" fill="#1e293b" />
+      <ellipse cx={side[0]} cy={side[1]} rx="18" ry="13" fill="#fde68a" opacity="0.95" />
+      <ellipse cx={side[0]} cy={side[1]} rx="62" ry="2.2" fill="#93c5fd" opacity="0.5" />
+      <circle cx={sunSide[0]} cy={sunSide[1]} r="2.6" fill="#ef4444" stroke="#ffffff" strokeWidth="0.8" />
+      <Arrow from={[sunSide[0] - 4, sunSide[1] + 16]} to={[sunSide[0] - 30, sunSide[1] + 16]} color="#ca8a04" width={1.4} />
+      <Arrow from={[sunSide[0] + 4, sunSide[1] + 16]} to={[sunSide[0] + 74, sunSide[1] + 16]} color="#ca8a04" width={1.4} />
+      <Label x={side[0]} y={side[1] + 34} anchor="middle" size={8.5}>円盤の向き：星が重なり</Label>
+      <Label x={side[0]} y={side[1] + 46} anchor="middle" size={8.5}>天の川として見える</Label>
+      <Arrow from={[sunSide[0], sunSide[1] - 8]} to={[sunSide[0], sunSide[1] - 40]} color={LINE} width={1.2} />
+      <Label x={sunSide[0] + 6} y={sunSide[1] - 32} size={8.5}>星が少ない向き</Label>
+      <Label x={sunSide[0] - 8} y={sunSide[1] - 6} anchor="end" size={9} weight="800">太陽系</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -4264,4 +4504,9 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   eclipse: EclipseDiagram,
   venusVisibility: VenusVisibilityDiagram,
   venusPhases: VenusPhasesDiagram,
+  sunSurface: SunSurfaceDiagram,
+  sunspotMotion: SunspotMotionDiagram,
+  sunspotShape: SunspotShapeDiagram,
+  solarSystemBodies: SolarSystemBodiesDiagram,
+  milkyWay: MilkyWayDiagram,
 })

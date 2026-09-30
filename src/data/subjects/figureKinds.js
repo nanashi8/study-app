@@ -143,4 +143,9 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'eclipse',
   'venusVisibility',
   'venusPhases',
+  'sunSurface',
+  'sunspotMotion',
+  'sunspotShape',
+  'solarSystemBodies',
+  'milkyWay',
 ])
