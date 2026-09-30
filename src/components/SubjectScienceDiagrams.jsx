@@ -218,10 +218,83 @@ function MonocotDicotDiagram() {
   )
 }
 
+// ── 昆虫のからだのつくり ───────────────────────────────────────────────────
+//   { name: 'insectBody' }
+// 上から見た昆虫。からだは頭部・胸部・腹部に分かれ、あし6本とはねは胸部につく。
+function InsectBodyDiagram() {
+  const body = '#fcd34d'
+  const edge = '#92400e'
+  const legs = [[74, -1], [86, 0], [98, 1]]
+  return (
+    <svg viewBox="0 0 300 232" className="h-auto w-full" role="img" aria-label="昆虫のからだのつくり" data-subject-diagram="insectBody">
+      {/* はね */}
+      <ellipse cx="118" cy="104" rx="14" ry="44" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1" opacity="0.9" transform="rotate(28 118 104)" />
+      <ellipse cx="182" cy="104" rx="14" ry="44" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1" opacity="0.9" transform="rotate(-28 182 104)" />
+      {/* あし（胸部から左右に3本ずつ） */}
+      {legs.map(([y, k]) => (
+        <g key={y}>
+          <path d={`M138,${y} L112,${y - 8 + k * 10} L96,${y + 10 + k * 16}`} fill="none" stroke={edge} strokeWidth="1.8" />
+          <path d={`M162,${y} L188,${y - 8 + k * 10} L204,${y + 10 + k * 16}`} fill="none" stroke={edge} strokeWidth="1.8" />
+        </g>
+      ))}
+      {/* 触角 */}
+      <path d="M144,28 Q132,10 118,6" fill="none" stroke={edge} strokeWidth="1.4" />
+      <path d="M156,28 Q168,10 182,6" fill="none" stroke={edge} strokeWidth="1.4" />
+      {/* 頭部・胸部・腹部 */}
+      <circle cx="150" cy="40" r="14" fill={body} stroke={edge} strokeWidth="1.3" />
+      <ellipse cx="150" cy="86" rx="16" ry="26" fill={body} stroke={edge} strokeWidth="1.3" />
+      <ellipse cx="150" cy="156" rx="19" ry="44" fill={body} stroke={edge} strokeWidth="1.3" />
+      {[128, 142, 156, 170, 184].map((y) => <line key={y} x1={150 - Math.sqrt(Math.max(0, 1 - ((y - 156) / 44) ** 2)) * 19} y1={y} x2={150 + Math.sqrt(Math.max(0, 1 - ((y - 156) / 44) ** 2)) * 19} y2={y} stroke={edge} strokeWidth="0.8" />)}
+      <Callout from={[163, 38]} to={[236, 30]} text="頭部" />
+      <Callout from={[165, 86]} to={[236, 60]} text="胸部" />
+      <Callout from={[168, 160]} to={[236, 176]} text="腹部" />
+      <Callout from={[118, 4]} to={[70, 12]} text="触角" />
+      <Callout from={[100, 120]} to={[70, 150]} text="はね" anchor="end" />
+      <Callout from={[96, 80]} to={[70, 90]} text="あし（6本）" anchor="end" />
+      <Label x={150} y={224} anchor="middle" size={9.5} color="#92400e">あしとはねは、どちらも胸部につく</Label>
+    </svg>
+  )
+}
+
+// ── 肉食動物と草食動物の目のつき方 ─────────────────────────────────────────────
+//   { name: 'eyeFields' }
+// 上から見た頭と、左右の目で見える範囲。肉食動物は両目で見える範囲が広く、草食動物は見わたせる範囲が広い。
+function EyeFieldsDiagram() {
+  const r = 62
+  const sector = (cx, cy, a1, a2) => {
+    const p = (a) => [cx + r * Math.cos((a * Math.PI) / 180), cy + r * Math.sin((a * Math.PI) / 180)]
+    const [x1, y1] = p(a1)
+    const [x2, y2] = p(a2)
+    return `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${a2 - a1 > 180 ? 1 : 0} 1 ${x2},${y2} Z`
+  }
+  const Panel = ({ cx, title, left, right, eyes, note }) => (
+    <g>
+      <Label x={cx} y={16} anchor="middle" size={10.5} weight="800">{title}</Label>
+      <path d={sector(cx, 104, ...left)} fill="#60a5fa" opacity="0.28" />
+      <path d={sector(cx, 104, ...right)} fill="#60a5fa" opacity="0.28" />
+      <ellipse cx={cx} cy="110" rx="17" ry="22" fill="#fde68a" stroke="#92400e" strokeWidth="1.2" />
+      {eyes.map(([dx, dy]) => <circle key={dx} cx={cx + dx} cy={104 + dy} r="3.2" fill={INK} />)}
+      <Label x={cx} y={184} anchor="middle" size={9.5}>{note}</Label>
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="肉食動物と草食動物の見える範囲" data-subject-diagram="eyeFields">
+      <Panel cx={75} title="肉食動物（ライオン）" left={[-180, -20]} right={[-160, 0]} eyes={[[-7, -14], [7, -14]]} note="両目で見える範囲が広い" />
+      <Panel cx={225} title="草食動物（シマウマ）" left={[110, 290]} right={[-110, 70]} eyes={[[-15, -4], [15, -4]]} note="見わたせる範囲が広い" />
+      <Label x={75} y={62} anchor="middle" size={8.5} color="#1d4ed8">両目で見える</Label>
+      <Label x={225} y={30} anchor="middle" size={8.5} color="#1d4ed8">▲前</Label>
+      <Label x={75} y={30} anchor="middle" size={8.5} color="#1d4ed8">▲前</Label>
+      <Label x={225} y={172} anchor="middle" size={8.5} color={DARK}>見えない</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
   flowerParts: FlowerPartsDiagram,
   pineScales: PineScalesDiagram,
   monocotDicot: MonocotDicotDiagram,
+  insectBody: InsectBodyDiagram,
+  eyeFields: EyeFieldsDiagram,
 })

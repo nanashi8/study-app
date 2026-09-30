@@ -41,4 +41,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'flowerParts',
   'pineScales',
   'monocotDicot',
+  'insectBody',
+  'eyeFields',
 ])
