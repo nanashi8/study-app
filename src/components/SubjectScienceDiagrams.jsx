@@ -102,7 +102,126 @@ function MicroscopeViewDiagram() {
   )
 }
 
+const LEAF = '#bbf7d0'
+const LEAF_LINE = '#15803d'
+const PETAL = '#fef08a'
+const PETAL_LINE = '#ca8a04'
+
+// ── 花のつくり ───────────────────────────────────────────────────────────
+//   { name: 'flowerParts' }
+// アブラナのような花を縦に切った形。外側から、がく・花弁・おしべ（やく）・めしべ（柱頭・子房・胚珠）を示す。
+function FlowerPartsDiagram() {
+  return (
+    <svg viewBox="0 0 300 236" className="h-auto w-full" role="img" aria-label="花のつくり" data-subject-diagram="flowerParts">
+      {/* 花弁（左右） */}
+      <path d="M140,186 C110,160 70,120 62,70 C92,82 124,120 146,176 Z" fill={PETAL} stroke={PETAL_LINE} strokeWidth="1.2" />
+      <path d="M160,186 C190,160 230,120 238,70 C208,82 176,120 154,176 Z" fill={PETAL} stroke={PETAL_LINE} strokeWidth="1.2" />
+      {/* がく（左右） */}
+      <path d="M142,192 C124,196 104,206 92,218 C114,214 132,206 146,198 Z" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.1" />
+      <path d="M158,192 C176,196 196,206 208,218 C186,214 168,206 154,198 Z" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.1" />
+      {/* 花柄 */}
+      <line x1="150" y1="196" x2="150" y2="234" stroke={LEAF_LINE} strokeWidth="3" />
+      {/* おしべ（左右） */}
+      <path d="M140,188 Q126,150 120,112" fill="none" stroke="#a16207" strokeWidth="1.6" />
+      <path d="M160,188 Q174,150 180,112" fill="none" stroke="#a16207" strokeWidth="1.6" />
+      <ellipse cx="119" cy="104" rx="5" ry="9" fill="#facc15" stroke="#a16207" strokeWidth="1" />
+      <ellipse cx="181" cy="104" rx="5" ry="9" fill="#facc15" stroke="#a16207" strokeWidth="1" />
+      {/* めしべ：柱頭・花柱・子房・胚珠 */}
+      <rect x="147" y="92" width="6" height="52" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1" />
+      <ellipse cx="150" cy="90" rx="8" ry="4.5" fill="#86efac" stroke={LEAF_LINE} strokeWidth="1" />
+      <ellipse cx="150" cy="166" rx="15" ry="24" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.3" />
+      {[148, 160, 172, 184].map((y) => <circle key={y} cx="150" cy={y - 2} r="3.2" fill="#fef3c7" stroke="#b45309" strokeWidth="0.9" />)}
+      {/* 花たく */}
+      <path d="M132,190 Q150,202 168,190" fill="none" stroke={LEAF_LINE} strokeWidth="2" />
+
+      <Callout from={[157, 89]} to={[214, 64]} text="柱頭" />
+      <Callout from={[153, 120]} to={[214, 96]} text="めしべ" />
+      <Callout from={[163, 160]} to={[240, 150]} text="子房" />
+      <Callout from={[153, 170]} to={[240, 176]} text="胚珠" />
+      <Callout from={[114, 100]} to={[70, 104]} text="やく" />
+      <Callout from={[128, 150]} to={[70, 142]} text="おしべ" />
+      <Callout from={[82, 88]} to={[48, 44]} text="花弁" />
+      <Callout from={[112, 208]} to={[70, 226]} text="がく" />
+    </svg>
+  )
+}
+
+// ── マツの花（雌花と雄花のりん片） ─────────────────────────────────────────────
+//   { name: 'pineScales' }
+// 雌花のりん片には胚珠がむき出しでつき、雄花のりん片には花粉のうがある。花粉は風で運ばれ、胚珠に直接つく。
+function PineScalesDiagram() {
+  const Scale = ({ x }) => <path d={`M${x - 42},132 Q${x - 44},62 ${x},40 Q${x + 44},62 ${x + 42},132 Q${x},144 ${x - 42},132 Z`} fill="#d6b58c" stroke="#7c5a2f" strokeWidth="1.3" />
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="マツの雌花と雄花のりん片" data-subject-diagram="pineScales">
+      <Label x={70} y={24} anchor="middle" size={10.5}>雌花のりん片</Label>
+      <Scale x={70} />
+      <ellipse cx="54" cy="112" rx="9" ry="13" fill="#fde68a" stroke="#b45309" strokeWidth="1.2" />
+      <ellipse cx="86" cy="112" rx="9" ry="13" fill="#fde68a" stroke="#b45309" strokeWidth="1.2" />
+      <Callout from={[54, 124]} to={[40, 160]} text="胚珠（むき出し）" anchor="start" />
+
+      <Label x={230} y={24} anchor="middle" size={10.5}>雄花のりん片</Label>
+      <Scale x={230} />
+      <ellipse cx="214" cy="116" rx="11" ry="15" fill="#fef08a" stroke="#ca8a04" strokeWidth="1.2" />
+      <ellipse cx="246" cy="116" rx="11" ry="15" fill="#fef08a" stroke="#ca8a04" strokeWidth="1.2" />
+      <Callout from={[246, 128]} to={[260, 160]} text="花粉のう" anchor="end" />
+      {[[178, 70], [170, 84], [160, 74]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="3" fill="#facc15" stroke="#a16207" strokeWidth="0.8" />)}
+      <line x1="150" y1="80" x2="104" y2="96" stroke="#b91c1c" strokeWidth="1.8" />
+      <path d="M100,98 L107,90 L110,99 Z" fill="#b91c1c" />
+      <Label x={150} y={186} anchor="middle" size={9.5} color="#b91c1c">花粉が風で運ばれ、胚珠に直接つく（子房はない）</Label>
+    </svg>
+  )
+}
+
+// ── 単子葉類と双子葉類 ─────────────────────────────────────────────────────
+//   { name: 'monocotDicot' }
+// 子葉の数・葉脈・根のようすを、左（単子葉類）と右（双子葉類）で比べる。
+function MonocotDicotDiagram() {
+  const col = [75, 225]
+  return (
+    <svg viewBox="0 0 300 300" className="h-auto w-full" role="img" aria-label="単子葉類と双子葉類のちがい" data-subject-diagram="monocotDicot">
+      <line x1="150" y1="8" x2="150" y2="296" stroke="#cbd5e1" strokeWidth="1" />
+      <Label x={col[0]} y={20} anchor="middle" size={11.5} weight="800">単子葉類</Label>
+      <Label x={col[1]} y={20} anchor="middle" size={11.5} weight="800">双子葉類</Label>
+      {/* 子葉 */}
+      <line x1={col[0]} y1="84" x2={col[0]} y2="62" stroke={LEAF_LINE} strokeWidth="2" />
+      <path d={`M${col[0]},64 C${col[0] - 6},50 ${col[0] - 4},36 ${col[0] + 2},30 C${col[0] + 6},42 ${col[0] + 4},54 ${col[0]},64 Z`} fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.2" />
+      <line x1={col[1]} y1="84" x2={col[1]} y2="56" stroke={LEAF_LINE} strokeWidth="2" />
+      <ellipse cx={col[1] - 15} cy="50" rx="15" ry="8" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.2" transform={`rotate(-18 ${col[1] - 15} 50)`} />
+      <ellipse cx={col[1] + 15} cy="50" rx="15" ry="8" fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.2" transform={`rotate(18 ${col[1] + 15} 50)`} />
+      <Label x={col[0]} y={100} anchor="middle" size={10}>子葉が1枚</Label>
+      <Label x={col[1]} y={100} anchor="middle" size={10}>子葉が2枚</Label>
+      {/* 葉脈 */}
+      <path d={`M${col[0]},178 C${col[0] - 16},156 ${col[0] - 14},128 ${col[0]},112 C${col[0] + 14},128 ${col[0] + 16},156 ${col[0]},178 Z`} fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.2" />
+      {[-8, -4, 0, 4, 8].map((dx) => <path key={dx} d={`M${col[0] + dx * 0.15},116 Q${col[0] + dx * 1.3},145 ${col[0] + dx * 0.15},174`} fill="none" stroke={LEAF_LINE} strokeWidth="0.9" />)}
+      <path d={`M${col[1]},178 C${col[1] - 30},160 ${col[1] - 28},128 ${col[1]},112 C${col[1] + 28},128 ${col[1] + 30},160 ${col[1]},178 Z`} fill={LEAF} stroke={LEAF_LINE} strokeWidth="1.2" />
+      <line x1={col[1]} y1="114" x2={col[1]} y2="176" stroke={LEAF_LINE} strokeWidth="1.3" />
+      {[[128, 9], [140, 14], [152, 15], [164, 10]].map(([y, w]) => (
+        <g key={y}>
+          <path d={`M${col[1]},${y + 5} L${col[1] - w},${y - 3} M${col[1] - w * 0.55},${y + 1} L${col[1] - w * 0.8},${y + 6}`} fill="none" stroke={LEAF_LINE} strokeWidth="0.9" />
+          <path d={`M${col[1]},${y + 5} L${col[1] + w},${y - 3} M${col[1] + w * 0.55},${y + 1} L${col[1] + w * 0.8},${y + 6}`} fill="none" stroke={LEAF_LINE} strokeWidth="0.9" />
+        </g>
+      ))}
+      <Label x={col[0]} y={196} anchor="middle" size={10}>平行脈</Label>
+      <Label x={col[1]} y={196} anchor="middle" size={10}>網状脈</Label>
+      {/* 根 */}
+      {[-24, -16, -8, 0, 8, 16, 24].map((dx) => <path key={dx} d={`M${col[0]},210 Q${col[0] + dx * 0.6},238 ${col[0] + dx},266`} fill="none" stroke="#92400e" strokeWidth="1.2" />)}
+      <line x1={col[1]} y1="208" x2={col[1]} y2="270" stroke="#92400e" strokeWidth="3.2" />
+      {[222, 236, 250].map((y) => (
+        <g key={y}>
+          <path d={`M${col[1]},${y} L${col[1] - 18},${y + 10}`} stroke="#92400e" strokeWidth="1.1" />
+          <path d={`M${col[1]},${y + 4} L${col[1] + 18},${y + 14}`} stroke="#92400e" strokeWidth="1.1" />
+        </g>
+      ))}
+      <Label x={col[0]} y={288} anchor="middle" size={10}>ひげ根</Label>
+      <Label x={col[1]} y={288} anchor="middle" size={10}>主根と側根</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
+  flowerParts: FlowerPartsDiagram,
+  pineScales: PineScalesDiagram,
+  monocotDicot: MonocotDicotDiagram,
 })
