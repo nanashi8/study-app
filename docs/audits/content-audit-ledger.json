@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-30T03:55:45.968Z",
+  "auditedAt": "2026-09-30T08:42:59.693Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "c694655e727124bdb191b3dc8ef74ce1795177e55667928776282b0611690393"
+    "overallContentSha256": "548dacd7495769693c86b2a2cbf5dc085957e8f0f309168864852315aca52120"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "567829bfd6f649af80b1b2a689e6702e765791b92cf05635a0f3ee09603be243",
+    "sha256": "a6b4bb593e740e40d89e279dc317399182423e39b9bb7b4b7e5bba52ace671c8",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -251,6 +251,8 @@
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
+      "tests/junior-social-science-figures.test.mjs",
+      "tests/junior-social-science-glossary.test.mjs",
       "tests/junior-social-science-screens.test.mjs",
       "tests/junior-social-science.test.mjs",
       "tests/kanbun-mark-rendering.test.mjs",
@@ -840,7 +842,7 @@
       "quizItemCount": 649,
       "learningIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
       "quizIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
-      "contentSha256": "d4e3ad80f662cf6719dc3c1552523128b14626cf4517691ef7da4ad1455b3374",
+      "contentSha256": "862ee0ac54e801cfed35fc7638a14adfd5f15bd7589a0546463f36c08d1f457f",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -863,7 +865,7 @@
       "quizItemCount": 522,
       "learningIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
       "quizIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
-      "contentSha256": "c17f4198d937505f76b422d231a1645efc02b399ae557da9074ff8d9ddd007a1",
+      "contentSha256": "a75cd2adcc3ecd480229848728855494dc842a49d0002935a06c85e0e07c1622",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -886,7 +888,7 @@
       "quizItemCount": 502,
       "learningIdOrderSha256": "e2860bce398af920ad9270dfa5a88c80d29a44c31fb29154471da6da8be395bc",
       "quizIdOrderSha256": "e2860bce398af920ad9270dfa5a88c80d29a44c31fb29154471da6da8be395bc",
-      "contentSha256": "e1089dd7aa1c8f78fc8162e79b3cfcbff9748fb6ed12d08f8814268fe2b955af",
+      "contentSha256": "80936ad087cf69a36879105c170d80b7ba5b8d3bbd49f7ab8b2bee86509f6e92",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -909,7 +911,7 @@
       "quizItemCount": 396,
       "learningIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
       "quizIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
-      "contentSha256": "9cfeb820986bfeb125c40b2cc30e6beedfec6482a5c25e46f5a3b8ed2c6ab9ab",
+      "contentSha256": "6fc2abcf186f54a7366a19e18320f0f91c194b5db978e865a5bc040e831a1750",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1099,7 +1101,7 @@
       "choiceCount": 3104,
       "generalRationaleCount": 776,
       "choiceSpecificRationaleCount": 3104,
-      "questionSetSha256": "1b0bdf370023f132acfbf09ed1b48f3d74b24da279ba023195670839ad54d97d",
+      "questionSetSha256": "bc387a131cf198d3e9ab3b5f3959f6443099388ac6c39327c2ad7ea35296da67",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -1111,7 +1113,7 @@
       "choiceCount": 4604,
       "generalRationaleCount": 1151,
       "choiceSpecificRationaleCount": 4604,
-      "questionSetSha256": "0f01cb43baad860d2bf6c4c80e58601ed29e042202f17027ff8e6d91d61e7b0c",
+      "questionSetSha256": "0763b3f8c5b973f53ed555180a2fe3e9fc6afc01fd408db45a819c34041cbcb0",
       "result": "pass",
       "failureCount": 0,
       "failures": []
