@@ -343,6 +343,65 @@ function CylinderReadingDiagram() {
   )
 }
 
+const WATER = '#bae6fd'
+const GLASS = '#f8fafc'
+
+// ── 気体の集め方 ─────────────────────────────────────────────────────────
+//   { name: 'gasCollection' }
+// 水上置換法・上方置換法・下方置換法の3つ。試験管の口の向きと、気体を入れる管の位置を比べる。
+function GasCollectionDiagram() {
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="気体の集め方" data-subject-diagram="gasCollection">
+      {/* 水上置換法 */}
+      <rect x="8" y="112" width="84" height="46" fill={WATER} stroke={LINE} strokeWidth="1.2" />
+      <path d="M42,40 L42,128 L58,128 L58,40 Q50,32 42,40 Z" fill={WATER} stroke={LINE} strokeWidth="1.2" />
+      <rect x="43" y="42" width="14" height="30" fill={GLASS} />
+      <path d="M2,92 L20,92 L20,146 L50,146 L50,130" fill="none" stroke={DARK} strokeWidth="2.4" />
+      {[122, 110, 96, 84].map((y) => <circle key={y} cx="50" cy={y} r="2.6" fill="#ffffff" stroke="#0284c7" strokeWidth="0.8" />)}
+      {/* 上方置換法 */}
+      <path d="M140,26 L140,112 L160,112 L160,26 Q150,16 140,26 Z" fill={GLASS} stroke={LINE} strokeWidth="1.2" />
+      <path d="M104,160 L150,160 L150,34" fill="none" stroke={DARK} strokeWidth="2.4" />
+      <path d="M150,30 L146,38 L154,38 Z" fill="#b91c1c" />
+      {/* 下方置換法 */}
+      <path d="M240,64 L240,146 Q250,156 260,146 L260,64 Z" fill={GLASS} stroke={LINE} strokeWidth="1.2" />
+      <path d="M206,30 L250,30 L250,140" fill="none" stroke={DARK} strokeWidth="2.4" />
+      <path d="M250,144 L246,136 L254,136 Z" fill="#b91c1c" />
+
+      <Label x={50} y={178} anchor="middle" size={10.5} weight="800">水上置換法</Label>
+      <Label x={50} y={194} anchor="middle" size={8.5} color={LINE}>水にとけにくい気体</Label>
+      <Label x={150} y={178} anchor="middle" size={10.5} weight="800">上方置換法</Label>
+      <Label x={150} y={194} anchor="middle" size={8.5} color={LINE}>とけやすく、空気より軽い</Label>
+      <Label x={250} y={178} anchor="middle" size={10.5} weight="800">下方置換法</Label>
+      <Label x={250} y={194} anchor="middle" size={8.5} color={LINE}>とけやすく、空気より重い</Label>
+    </svg>
+  )
+}
+
+// ── アンモニアの噴水の実験 ─────────────────────────────────────────────────
+//   { name: 'ammoniaFountain' }
+// アンモニアを満たしたフラスコにスポイトで水を少し入れると、アンモニアが水にとけてフラスコ内の気体が減り、
+// フェノールフタレイン液を加えた水が吸い上げられて、赤い噴水になる。
+function AmmoniaFountainDiagram() {
+  return (
+    <svg viewBox="0 0 300 232" className="h-auto w-full" role="img" aria-label="アンモニアの噴水の実験" data-subject-diagram="ammoniaFountain">
+      <circle cx="96" cy="62" r="46" fill={GLASS} stroke={LINE} strokeWidth="1.4" />
+      <rect x="88" y="104" width="16" height="16" fill="#94a3b8" stroke={LINE} strokeWidth="1" />
+      <line x1="92" y1="80" x2="92" y2="198" stroke={LINE} strokeWidth="2" />
+      <path d="M92,78 Q86,58 74,50 M92,78 Q98,56 110,50 M92,78 Q92,56 92,44" fill="none" stroke="#e11d48" strokeWidth="2" />
+      {[[74, 50], [110, 50], [92, 44], [82, 40], [102, 40]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.6" fill="#fb7185" />)}
+      <rect x="102" y="100" width="6" height="30" rx="2" fill="#e2e8f0" stroke={LINE} strokeWidth="1" />
+      <ellipse cx="105" cy="132" rx="6" ry="4" fill="#f59e0b" stroke={LINE} strokeWidth="1" />
+      <path d="M52,170 L52,222 L132,222 L132,170" fill="none" stroke={LINE} strokeWidth="1.4" />
+      <rect x="53" y="186" width="78" height="35" fill="#e0f2fe" />
+      <Callout from={[124, 36]} to={[160, 24]} text="アンモニアを満たす" />
+      <Callout from={[110, 50]} to={[160, 56]} text="赤い噴水" />
+      <Callout from={[108, 128]} to={[160, 124]} text="スポイトで水を入れる" />
+      <Callout from={[132, 200]} to={[160, 196]} text="フェノールフタレイン液" />
+      <Label x={163} y={212} size={10}>を加えた水</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -353,4 +412,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   eyeFields: EyeFieldsDiagram,
   gasBurner: GasBurnerDiagram,
   cylinderReading: CylinderReadingDiagram,
+  gasCollection: GasCollectionDiagram,
+  ammoniaFountain: AmmoniaFountainDiagram,
 })
