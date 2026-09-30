@@ -1965,6 +1965,34 @@
     "sc3-08#6": {
       "decision": "figure",
       "sha256": "8883c9a4fc8c2042c5fb69de814eec684276b9e015b6d26a9d0007e4bb915768"
+    },
+    "sc3-09#1": {
+      "decision": "figure",
+      "sha256": "31a4dd1f3abd4d78950d067c782e91c3e543c8671383c6ebb58c7d06bf2920e7"
+    },
+    "sc3-09#2": {
+      "decision": "figure",
+      "sha256": "21f1d6eeaf38f6c44a7f7a5d0587d65d473a64b18b45bb4a7f9b97e8cf4be9df"
+    },
+    "sc3-09#3": {
+      "decision": "figure",
+      "sha256": "8579c96a85992e557886ebce8793b8f6967b325eb3e1d5df716f79291515884b"
+    },
+    "sc3-09#4": {
+      "decision": "figure",
+      "sha256": "7f03a68cf40d28ea985f3cab879d2dcfb4836471bb661d94f4fb44a15d0194b8"
+    },
+    "sc3-09#5": {
+      "decision": "figure",
+      "sha256": "9cad00643ce2929c8197f1c47a059e6df17e8a43f2cefd7700adc690259541c1"
+    },
+    "sc3-09#6": {
+      "decision": "figure",
+      "sha256": "a55a8f6c6c15a130e106082f4d2b715e662ac88d2936d57a1c9f6ae50df1bc6f"
+    },
+    "sc3-09#7": {
+      "decision": "figure",
+      "sha256": "12e69632a3ca6dabd40bf7e41b0b48bb6162de47e7b5a3d9b95ea4564e2be227"
     }
   },
   "questions": {
@@ -5351,6 +5379,42 @@
     "sc3-08-q09": {
       "decision": "none",
       "sha256": "e2d82e1bc63fd9ad4a642f4ceb826e1eb45af481608e8981e7aeb717a9593872"
+    },
+    "sc3-09-q01": {
+      "decision": "none",
+      "sha256": "aa9c43f30905dd4c872b3ebbc0c307aa4c9b60fd8905bce6656694c9068a3f12"
+    },
+    "sc3-09-q02": {
+      "decision": "none",
+      "sha256": "a3566240f48b9816c79b165d2053736f4c1b122af8b0051c5dece08b47a6a750"
+    },
+    "sc3-09-q03": {
+      "decision": "none",
+      "sha256": "93226d2b9001886da2d85e3cd30d9dedf3f61208054d9774993a318890345483"
+    },
+    "sc3-09-q04": {
+      "decision": "none",
+      "sha256": "4cf78553e32efb0802636b65c44d929700587491e8200fd491c6c65e0615da40"
+    },
+    "sc3-09-q05": {
+      "decision": "none",
+      "sha256": "f71dc96c8d2f921983e3f86862d52dd8964ecd85168168f96a940c548f8ef2e0"
+    },
+    "sc3-09-q06": {
+      "decision": "none",
+      "sha256": "d8c720e97762935801b23ab0ed461443cdd1bcdbe6907c54ab08f7e6c47c844d"
+    },
+    "sc3-09-q07": {
+      "decision": "none",
+      "sha256": "780b03c7d49d32e91db1a3d6260311368041f14246c7e3f736c7d969f71499c4"
+    },
+    "sc3-09-q08": {
+      "decision": "none",
+      "sha256": "ab2acceb1ddec2ffdd843c909c4399db1952b7d45975e33254e91ef8e6dd1988"
+    },
+    "sc3-09-q09": {
+      "decision": "none",
+      "sha256": "763a33c005ea1454252b69fb6a7e85e1e4f213a89c3c1e6cc8f27e62c58a355e"
     }
   }
 }

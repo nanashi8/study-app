@@ -3533,6 +3533,118 @@ function SpringBuoyancyDiagram() {
   )
 }
 
+// ── ふりこのエネルギーの移り変わり ──────────────────────────────────────────────
+//   { name: 'pendulumEnergy' }
+// A・Cはいちばん高い点（位置エネルギーが最大）、Bはいちばん低い点（運動エネルギーが最大）。2つの和（力学的エネルギー）は一定。
+function PendulumEnergyDiagram() {
+  const pivot = [150, 14]
+  const len = 90
+  const bob = (deg) => [pivot[0] + len * Math.sin((deg * Math.PI) / 180), pivot[1] + len * Math.cos((deg * Math.PI) / 180)]
+  const points = [['A', -40, 1, 0], ['B', 0, 0, 1], ['C', 40, 1, 0]]
+  const POS = '#2563eb'
+  const KIN = '#dc2626'
+  return (
+    <svg viewBox="0 0 300 224" className="h-auto w-full" role="img" aria-label="ふりこのエネルギーの移り変わり" data-subject-diagram="pendulumEnergy">
+      <line x1="120" y1={pivot[1]} x2="180" y2={pivot[1]} stroke={DARK} strokeWidth="2" />
+      <path d={`M${bob(-40).map((v) => v.toFixed(1)).join(',')} A${len},${len} 0 0,0 ${bob(40).map((v) => v.toFixed(1)).join(',')}`} fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+      <line x1="40" y1="104" x2="260" y2="104" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="4 3" />
+      <Label x={262} y={108} size={8} color={LINE}>基準面</Label>
+      {points.map(([name, deg]) => {
+        const [x, y] = bob(deg)
+        return (
+          <g key={name}>
+            <line x1={pivot[0]} y1={pivot[1]} x2={x} y2={y} stroke={deg === 0 ? INK : '#94a3b8'} strokeWidth="1.2" />
+            <circle cx={x} cy={y} r="8" fill={deg === 0 ? '#fde68a' : '#fef3c7'} stroke="#a16207" strokeWidth="1" />
+            <Label x={deg < 0 ? x - 12 : x + 12} y={y + 4} anchor={deg < 0 ? 'end' : 'start'} size={9} weight="800">{name}</Label>
+          </g>
+        )
+      })}
+      <line x1="60" y1="190" x2="240" y2="190" stroke={DARK} strokeWidth="1" />
+      <line x1="60" y1="140" x2="240" y2="140" stroke="#7c3aed" strokeWidth="1" strokeDasharray="4 3" />
+      <Label x={240} y={134} anchor="end" size={8} color="#7c3aed">和はいつも同じ（力学的エネルギー）</Label>
+      {points.map(([name, deg, pos, kin]) => {
+        const [x] = bob(deg)
+        return (
+          <g key={`bar-${name}`}>
+            <rect x={x - 14} y={190 - pos * 50} width="12" height={pos * 50} fill={POS} />
+            <rect x={x + 2} y={190 - kin * 50} width="12" height={kin * 50} fill={KIN} />
+            <Label x={x} y={202} anchor="middle" size={9} weight="800">{name}</Label>
+          </g>
+        )
+      })}
+      <rect x="62" y="210" width="10" height="8" fill={POS} />
+      <Label x={76} y={217} size={8.5}>位置エネルギー</Label>
+      <rect x="170" y="210" width="10" height="8" fill={KIN} />
+      <Label x={184} y={217} size={8.5}>運動エネルギー</Label>
+    </svg>
+  )
+}
+
+// ── 動滑車と仕事の原理 ──────────────────────────────────────────────────────
+//   { name: 'movablePulley' }
+// 重さ20Nの物体を動滑車で1m上げる。ひもを引く力は半分の10Nになるが、引く距離は2倍の2m。仕事はどちらも20J。
+function MovablePulleyDiagram() {
+  return (
+    <svg viewBox="0 0 300 210" className="h-auto w-full" role="img" aria-label="動滑車と仕事の原理" data-subject-diagram="movablePulley">
+      <line x1="70" y1="14" x2="170" y2="14" stroke={DARK} strokeWidth="2.4" />
+      {[76, 88, 100, 112, 124, 136, 148, 160].map((x) => <line key={x} x1={x} y1="14" x2={x - 6} y2="6" stroke={DARK} strokeWidth="1" />)}
+      <line x1="120" y1="14" x2="120" y2="110" stroke="#a16207" strokeWidth="1.6" />
+      <line x1="160" y1="110" x2="160" y2="44" stroke="#a16207" strokeWidth="1.6" />
+      <circle cx="140" cy="110" r="20" fill="#e2e8f0" stroke={LINE} strokeWidth="1.4" />
+      <circle cx="140" cy="110" r="3" fill={LINE} />
+      <line x1="140" y1="130" x2="140" y2="150" stroke={LINE} strokeWidth="1.6" />
+      <rect x="118" y="150" width="44" height="32" rx="3" fill="#fde68a" stroke="#a16207" strokeWidth="1.2" />
+      <Label x={140} y={170} anchor="middle" size={10} weight="800">20N</Label>
+      <Arrow from={[160, 44]} to={[160, 24]} color="#dc2626" width={2.4} />
+      <Label x={168} y={34} size={9} weight="800" color="#b91c1c">ひもを引く力 10N</Label>
+      <Callout from={[122, 100]} to={[90, 84]} text="動滑車" />
+      <Label x={186} y={112} size={8.5}>物体を1m上げるには、</Label>
+      <Label x={186} y={126} size={8.5}>ひもを2m引く</Label>
+      <Label x={186} y={150} size={8.5} color="#1d4ed8">道具なし：20N×1m＝20J</Label>
+      <Label x={186} y={164} size={8.5} color="#1d4ed8">動滑車：10N×2m＝20J</Label>
+      <Label x={150} y={204} anchor="middle" size={8.5} color={LINE}>力は半分、距離は2倍で、仕事は変わらない（仕事の原理）</Label>
+    </svg>
+  )
+}
+
+// ── 熱の伝わり方 ───────────────────────────────────────────────────────────
+//   { name: 'heatTransfer' }
+// 伝導：物体の中を伝わる。対流：あたためられた液体や気体が動いて運ぶ。放射：光などとして空間をへだてて伝わる。
+function HeatTransferDiagram() {
+  const flame = (x, y) => <path d={`M${x},${y} Q${x - 7},${y - 12} ${x},${y - 24} Q${x + 7},${y - 12} ${x},${y} Z`} fill="#fb923c" stroke="#ea580c" strokeWidth="0.8" />
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="熱の伝わり方" data-subject-diagram="heatTransfer">
+      <Label x={50} y={20} anchor="middle" size={10} weight="800">伝導</Label>
+      {['#dc2626', '#f97316', '#facc15', '#cbd5e1'].map((color, i) => <rect key={color} x={12 + i * 19} y="66" width="19" height="9" fill={color} />)}
+      <rect x="12" y="66" width="76" height="9" fill="none" stroke={LINE} strokeWidth="0.8" />
+      {flame(20, 108)}
+      <Arrow from={[30, 54]} to={[82, 54]} color="#dc2626" />
+      <Label x={50} y={142} anchor="middle" size={8.5} color={LINE}>物体の中を</Label>
+      <Label x={50} y={156} anchor="middle" size={8.5} color={LINE}>熱が伝わる</Label>
+
+      <Label x={150} y={20} anchor="middle" size={10} weight="800">対流</Label>
+      <rect x="120" y="46" width="60" height="68" fill={WATER} opacity="0.8" />
+      <path d="M118,36 L118,116 L182,116 L182,36" fill="none" stroke={LINE} strokeWidth="1.2" />
+      <path d="M136,104 L136,62 Q150,52 164,62 L164,100" fill="none" stroke="#dc2626" strokeWidth="1.8" />
+      <path d="M136,58 L132,66 L140,66 Z" fill="#dc2626" />
+      <path d="M164,106 L160,98 L168,98 Z" fill="#2563eb" />
+      {flame(136, 140)}
+      <Label x={150} y={156} anchor="middle" size={8.5} color={LINE}>水が動いて運ぶ</Label>
+
+      <Label x={250} y={20} anchor="middle" size={10} weight="800">放射</Label>
+      <circle cx="214" cy="76" r="14" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => {
+        const r = (a * Math.PI) / 180
+        return <line key={a} x1={214 + 17 * Math.cos(r)} y1={76 + 17 * Math.sin(r)} x2={214 + 23 * Math.cos(r)} y2={76 + 23 * Math.sin(r)} stroke="#ca8a04" strokeWidth="1.2" />
+      })}
+      {[62, 76, 90].map((y) => <path key={y} d={`M240,${y} q5,-4 10,0 q5,4 10,0 q5,-4 10,0`} fill="none" stroke="#ea580c" strokeWidth="1.2" />)}
+      <rect x="276" y="60" width="16" height="32" rx="3" fill="#cbd5e1" stroke={LINE} strokeWidth="1" />
+      <Label x={250} y={142} anchor="middle" size={8.5} color={LINE}>空間をへだてて</Label>
+      <Label x={250} y={156} anchor="middle" size={8.5} color={LINE}>熱が伝わる</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3627,4 +3739,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   actionReaction: ActionReactionDiagram,
   waterPressure: WaterPressureDiagram,
   springBuoyancy: SpringBuoyancyDiagram,
+  pendulumEnergy: PendulumEnergyDiagram,
+  movablePulley: MovablePulleyDiagram,
+  heatTransfer: HeatTransferDiagram,
 })
