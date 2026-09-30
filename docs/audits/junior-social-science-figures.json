@@ -641,6 +641,26 @@
     "his-12#5": {
       "decision": "figure",
       "sha256": "272cf6b9c70dcdcf37c5d322b82489b3985cf8c1cdc7aaefdf5a4050816a12e7"
+    },
+    "his-13#1": {
+      "decision": "figure",
+      "sha256": "357ef5052942630a43cd9a027affa6a27feb8d9e7dc5b442786ca9e2e1bb309b"
+    },
+    "his-13#2": {
+      "decision": "figure",
+      "sha256": "8ec6a89087fa837d2e0c548da16626406d0802604278cf00c25aff49b7716773"
+    },
+    "his-13#3": {
+      "decision": "figure",
+      "sha256": "cf3711ac0ff417f53b8196e3eae84475842488f0b37bd245dc9277c723a1053c"
+    },
+    "his-13#4": {
+      "decision": "figure",
+      "sha256": "3ad1f68d50f86311bde83c2f1164a0b404199d7d53445684a2faaa00467ad406"
+    },
+    "his-13#5": {
+      "decision": "figure",
+      "sha256": "b666589025c9a78580e08c20b556901449dca8cbe7ee9c3d7dcaf1b98a4610cb"
     }
   },
   "questions": {
@@ -1759,6 +1779,42 @@
     "his-12-q09": {
       "decision": "none",
       "sha256": "e59c5f2417f8a00b627417147b1b24df23173186b02f49ad364dd4a6148c7c89"
+    },
+    "his-13-q01": {
+      "decision": "none",
+      "sha256": "897d98aa7ff2504d17bcd1316791f5a256967b132434c605c5612869469861a5"
+    },
+    "his-13-q02": {
+      "decision": "none",
+      "sha256": "cf68ba1e4e44e7c9a9424f49574d1aca531a9693fe2a2d2c105edfc9aa51207e"
+    },
+    "his-13-q03": {
+      "decision": "none",
+      "sha256": "7dc6971e710e500900331d53b5aa3cd342e510487bdaa9268ef7d37baec83ecb"
+    },
+    "his-13-q04": {
+      "decision": "none",
+      "sha256": "9693f1acf96c55e27d9e1699870ffd1f230af83b57e981d137382b5fe0861ff3"
+    },
+    "his-13-q05": {
+      "decision": "none",
+      "sha256": "d89ca564129206294ad936c81407616491fcbab727b43c93c4532822b32610b0"
+    },
+    "his-13-q06": {
+      "decision": "none",
+      "sha256": "adc0118e4156ca2c64c98d0a446847ce484887a170d0bf6a694aaf0245521549"
+    },
+    "his-13-q07": {
+      "decision": "none",
+      "sha256": "a6d63c71eb1ec66c12f5cb06ec852d6a41ecf8b9c059303fdb18fb592c04ed31"
+    },
+    "his-13-q08": {
+      "decision": "none",
+      "sha256": "00c33c346f76fb7129dfdc02bab8fb9ccfcaf16dd3f3e8d7d25ba9f8aca84f8b"
+    },
+    "his-13-q09": {
+      "decision": "none",
+      "sha256": "b104eed0023fce8a8263788a81b4787143a2c2716ebb123ce7da96f01cb45ef1"
     }
   }
 }
