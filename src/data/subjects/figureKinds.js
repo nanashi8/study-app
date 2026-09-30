@@ -57,4 +57,6 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'convexLensFocus',
   'lensImage',
   'waveforms',
+  'forceArrow',
+  'forceBalance',
 ])

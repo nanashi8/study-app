@@ -765,6 +765,66 @@ function WaveformsDiagram({ waves = [], annotate = false }) {
   )
 }
 
+function ForceArrow({ from, to, color = '#dc2626', width = 2.4 }) {
+  const [x1, y1] = from
+  const [x2, y2] = to
+  const angle = Math.atan2(y2 - y1, x2 - x1)
+  const tip = (a) => `${x2 + 9 * Math.cos(angle + a)},${y2 + 9 * Math.sin(angle + a)}`
+  return (
+    <g>
+      <line x1={x1} y1={y1} x2={x2 - 6 * Math.cos(angle)} y2={y2 - 6 * Math.sin(angle)} stroke={color} strokeWidth={width} />
+      <path d={`M${x2},${y2} L${tip(Math.PI * 0.84)} L${tip(-Math.PI * 0.84)} Z`} fill={color} />
+      <circle cx={x1} cy={y1} r="3.2" fill={color} />
+    </g>
+  )
+}
+
+// ── 力の矢印の表し方 ──────────────────────────────────────────────────────
+//   { name: 'forceArrow' }
+// 作用点（矢印の始まり）・力の向き（矢印の向き）・力の大きさ（矢印の長さ）。1目もりを1Nとして、ひもが箱を引く力5N。
+function ForceArrowDiagram() {
+  const unit = 18
+  return (
+    <svg viewBox="0 0 300 190" className="h-auto w-full" role="img" aria-label="力の矢印の表し方" data-subject-diagram="forceArrow">
+      {[0, 1, 2, 3, 4, 5].map((k) => <line key={k} x1={150 + k * unit} y1="58" x2={150 + k * unit} y2="138" stroke="#e2e8f0" strokeWidth="1" />)}
+      <rect x="40" y="70" width="110" height="60" fill="#fde68a" stroke="#92400e" strokeWidth="1.3" />
+      <line x1="20" y1="130" x2="290" y2="130" stroke={DARK} strokeWidth="2" />
+      <ForceArrow from={[150, 100]} to={[150 + 5 * unit, 100]} />
+      <Callout from={[150, 103]} to={[150, 160]} text="作用点（矢印の始まり）" anchor="start" />
+      <Label x={150 + 5 * unit + 6} y={96} size={10} weight="800" color="#dc2626">5N</Label>
+      <line x1="150" y1="84" x2={150 + 5 * unit} y2="84" stroke={INK} strokeWidth="0.9" />
+      <Label x={150 + 2.5 * unit} y={78} anchor="middle" size={8.5}>矢印の長さ＝力の大きさ</Label>
+      <Label x={150 + 2.5 * unit} y={50} anchor="middle" size={8.5} color={LINE}>1目もり＝1N</Label>
+      <Label x={95} y={104} anchor="middle" size={10}>箱</Label>
+      <Label x={150} y={180} size={8.5} color={LINE}>矢印の向き＝力の向き（右向き）</Label>
+    </svg>
+  )
+}
+
+// ── 2力のつり合い ────────────────────────────────────────────────────────
+//   { name: 'forceBalance' }
+// 左：机の上の本（重力と垂直抗力）。右：動かない綱（左右に引く力）。どちらも同じ直線上・同じ大きさ・反対向き。
+function ForceBalanceDiagram() {
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="2力のつり合い" data-subject-diagram="forceBalance">
+      <Label x={70} y={16} anchor="middle" size={10} weight="800">机の上の本</Label>
+      <rect x="10" y="118" width="120" height="10" fill="#d6b58c" stroke="#7c5a2f" strokeWidth="1" />
+      <rect x="40" y="96" width="60" height="22" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1.2" />
+      <ForceArrow from={[70, 107]} to={[70, 160]} />
+      <ForceArrow from={[70, 118]} to={[70, 58]} color="#2563eb" />
+      <Label x={78} y={160} size={9} color="#dc2626">重力</Label>
+      <Label x={78} y={62} size={9} color="#2563eb">垂直抗力</Label>
+      <Label x={220} y={16} anchor="middle" size={10} weight="800">動かない綱</Label>
+      <line x1="170" y1="100" x2="270" y2="100" stroke="#92400e" strokeWidth="4" />
+      <ForceArrow from={[200, 100]} to={[160, 100]} />
+      <ForceArrow from={[240, 100]} to={[280, 100]} color="#2563eb" />
+      <Label x={178} y={90} anchor="middle" size={8.5}>左に引く力</Label>
+      <Label x={262} y={90} anchor="middle" size={8.5}>右に引く力</Label>
+      <Label x={150} y={184} anchor="middle" size={9} color={LINE}>同じ直線上で、大きさが等しく、向きが反対</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -787,4 +847,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   convexLensFocus: ConvexLensFocusDiagram,
   lensImage: LensImageDiagram,
   waveforms: WaveformsDiagram,
+  forceArrow: ForceArrowDiagram,
+  forceBalance: ForceBalanceDiagram,
 })
