@@ -10,16 +10,18 @@ import {
 } from '../src/data/vocab.js'
 import {
   CUSTOM_WORD_LIMITS,
-  buildCustomWordsFile,
   customStudyWords,
-  customWordsFileText,
   isCustomWordId,
   mergeCustomWords,
   normalizeCustomWords,
-  parseCustomWordsFile,
   removeCustomWord,
   upsertCustomWord,
 } from '../src/lib/customWords.js'
+import {
+  buildCustomLibraryFile,
+  customLibraryFileText,
+  parseCustomLibraryFile,
+} from '../src/lib/customLibrary.js'
 import {
   NOTEBOOK_TOTAL_ITEMS,
   notebookItemsForDomain,
@@ -81,18 +83,19 @@ test('自作単語は語と意味がそろったものだけを、上限つき�
 })
 
 test('JSONファイルは同じ形だけを読み戻し、足すか入れ替えるかを選べる', () => {
+  // 自作カード（英単語・ほかのカード・カテゴリー）を1つのファイルで出し入れする（lib/customLibrary.js）。
   const { words } = upsertCustomWord([], sample)
-  const file = buildCustomWordsFile(words)
-  assert.equal(file.kind, 'custom-words')
+  const file = buildCustomLibraryFile({ words })
+  assert.equal(file.kind, 'custom-cards')
   assert.equal(file.words.length, 1)
 
-  const parsed = parseCustomWordsFile(customWordsFileText(words))
+  const parsed = parseCustomLibraryFile(customLibraryFileText({ words }))
   assert.equal(parsed.status, 'ok')
-  assert.deepEqual(parsed.words, words)
+  assert.deepEqual(parsed.library.words, words)
 
-  assert.equal(parseCustomWordsFile('{壊れた').status, 'broken')
-  assert.equal(parseCustomWordsFile('{"kind":"progress"}').status, 'other')
-  assert.equal(parseCustomWordsFile('{"words":[]}').status, 'empty')
+  assert.equal(parseCustomLibraryFile('{壊れた').status, 'broken')
+  assert.equal(parseCustomLibraryFile('{"kind":"progress"}').status, 'other')
+  assert.equal(parseCustomLibraryFile('{"words":[]}').status, 'empty')
 
   const other = upsertCustomWord([], { ...sample, word: 'ephemeral', meanings: 'つかの間の' })
   const merged = mergeCustomWords(words, [...other.words, { ...words[0], meanings: '書き換え' }])
@@ -142,9 +145,10 @@ test('自作単語は辞書へ混ぜず、ID の引き当てだけを共有し�
 
 test('自作単語は端末保存・進捗コード・リセット分類の契約に載る', () => {
   assert.ok(PERSISTED_PROGRESS_FIELDS.includes('customWords'))
+  // リセットの「自作カード」は、英単語のカード・ほかのカード・作ったカテゴリーをまとめて消す。
   assert.deepEqual(
     PROGRESS_RESET_GROUPS.find((group) => group.id === 'customWords')?.fields,
-    ['customWords'],
+    ['customWords', 'customCards', 'customCategories'],
   )
 
   const original = useStore.getState()
@@ -184,33 +188,35 @@ test('自作単語は端末保存・進捗コード・リセット分類の契�
   }
 })
 
-test('自作単語の画面は登録・編集・削除とファイルの出し入れを一つの入口にまとめる', () => {
+test('自作カードの画面は登録・書き換え・削除とファイルの出し入れを一つの入口にまとめる', () => {
   const screen = read('../src/screens/CustomWords.jsx')
+  const form = read('../src/components/CustomCardForm.jsx')
+  const items = read('../src/components/CustomCardItems.jsx')
   const app = read('../src/App.jsx')
   const menu = read('../src/lib/appMenu.js')
   const home = read('../src/lib/appHome.js')
 
   assert.match(app, /customWords: CustomWordsScreen/)
-  assert.match(menu, /screenItem\('customWords', '自作単語'/)
-  assert.match(home, /'customWords'/)
-  assert.match(screen, /data-custom-word-form/)
+  assert.match(menu, /screenItem\('customWords', '自作カード'/)
+  assert.match(home, /CUSTOM_CARD_SCREENS = Object\.freeze\(\['customWords'/)
+  assert.match(form, /data-custom-card-form/)
   assert.match(screen, /data-custom-word-save/)
-  assert.match(screen, /data-custom-word-delete/)
+  assert.match(items, /data-custom-word-delete/)
   assert.match(screen, /data-custom-words-file-input/)
   assert.match(screen, /data-custom-words-import-choice/)
-  assert.match(screen, /saveCustomWord/)
+  assert.match(screen, /saveCustomEntry/)
   assert.match(screen, /deleteCustomWord/)
-  assert.match(screen, /importCustomWords/)
-  // 登録した語は、選んだ単語帳（最初は単語帳ボタンの登録先）に入り、暗記・テストへつながる。
-  assert.match(screen, /data-custom-word-book-select/)
-  assert.match(screen, /setNotebookSetItem\(bookId, 'vocab', result\.id, true\)/)
-  assert.match(screen, /const bookId = form\.addToBookId \?\? activeBookId \?\? ''/)
+  assert.match(screen, /deleteCustomCard/)
+  assert.match(screen, /importCustomLibrary/)
+  // 登録したカードは、選んだ単語帳（最初は単語帳ボタンの登録先）に入り、暗記・テストへつながる。
+  assert.match(form, /data-custom-word-book-select/)
+  assert.match(screen, /setNotebookSetItem\(bookId, result\.kind === 'word' \? 'vocab' : 'customCards', result\.id, true\)/)
+  assert.match(screen, /const bookId = addToBookId \?\? activeBookId \?\? ''/)
   assert.match(screen, /activeBookId: activeNotebookSetId\(state\.learningNotebook\)/)
-  assert.doesNotMatch(screen, /toggleMyList|myList|単語帳「マイ単語」|<WordListSheet/)
-  // 一覧の語ごとの「単語帳」は、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
-  assert.match(screen, /const wordBook = useWordBookSlot\(\[`vocab:\$\{word\.id\}`\], \{ label: word\.word \}\)/)
-  assert.match(screen, /onClick=\{wordBook\.press\}/)
-  assert.match(screen, /navigate\(screen, \{/)
+  assert.doesNotMatch(screen + items, /toggleMyList|myList|単語帳「マイ単語」|<WordListSheet/)
+  // 一覧のカードごとの「単語帳」は、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
+  assert.match(items, /const wordBook = useWordBookSlot\(\[`\$\{domain\}:\$\{entry\.id\}`\], \{ label: title \}\)/)
+  assert.match(items, /onClick=\{wordBook\.press\}/)
   // 枚数は「1回のカード数」に任せ、画面側で頭打ちにしない。
   assert.match(screen, /source: \{ type: 'mylist', ids \}/)
   assert.doesNotMatch(screen, /SESSION_LIMIT/)

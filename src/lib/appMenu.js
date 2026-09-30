@@ -50,7 +50,7 @@ export const CONTENT_SETTING_GROUPS = Object.freeze([
 const SETTING_ORDER = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
 
 // 教材から開く暗記・テスト・読み上げの画面が、それぞれ読んでいる設定。
-// 出題バランス（画面下部の「出題」）は、暗記・テストの全28画面で使う（STUDY_MIX）。
+// 出題バランス（画面下部の「出題」）は、暗記・テストの全30画面で使う（STUDY_MIX）。
 const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
 const STUDY_MIX = ['vocabMix']
 // 英単語・熟語・構文の暗記カードは、読み上げる範囲に合わせて意味と例文の意味を日本語の声で読む。
@@ -99,7 +99,7 @@ const englishItem = (screen, label, description) =>
 // 画面IDは保存済み履歴・戻る履歴との互換性のため変更しない。
 export const APP_MENU_SECTIONS = Object.freeze([
   section('apps', 'スタディアプリ', [
-    screenItem('portal', 'スタディアプリ ホーム', '英語・数学・古典・漢文・社会・理科・名作から選ぶ'),
+    screenItem('portal', 'スタディアプリ ホーム', '英語・数学・古典・漢文・社会・理科・名作・自作カードから選ぶ'),
     contentItem('home', '英語アプリ', '英検5級〜1級の主要学習', settingsOf(...Object.values(ENGLISH_CONTENT_SETTINGS))),
     // 数学の歴史のテストは、問題数・正解したら自動で次へ・出題バランスを使う。
     contentItem('mathMap', '数学アプリ', '単元マップと理解度', settingsOf(QUESTION_TEST, STUDY_MIX)),
@@ -127,8 +127,11 @@ export const APP_MENU_SECTIONS = Object.freeze([
     englishItem('diagnostic', '学習診断', '28問で得意・弱点と現在地を確認'),
     englishItem('dictation', 'ディクテーション', '聞き取りとつづりを結びつける'),
     screenItem('vocabCamera', '教科書から単語追加', '写真の文字を辞書と比べて保存'),
-    screenItem('customWords', '自作単語', '辞書に無い語を登録し、ファイルで持ち出す'),
     screenItem('wordRequests', '辞書リクエスト一覧', '辞書への追加希望を確認'),
+  ]),
+  // 自分でカードを作るセクション。テンプレートで登録し、教科・カテゴリーで学ぶ。一覧は Excel・テキストエディタでも編集できる。
+  section('cards', 'カード自作', [
+    screenItem('customWords', '自作カード', 'テンプレートで作り、教科・カテゴリーで学ぶ。Excelでも編集'),
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', 'コンテンツのメモ・単語帳・履歴'),

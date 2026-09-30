@@ -25,6 +25,7 @@ import {
   WordBookTile,
 } from '../components/ContentTop.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { CustomCardsMenuButton } from '../components/CustomCardsEntry.jsx'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { readChoice, readOpen, readOpenId } from '../lib/screenParams.js'
@@ -417,6 +418,8 @@ export function KotenListScreen() {
           onClick={() => navigate('literatureLibrary', { kind: 'classical' })}
           data-koten-menu-entry="literature"
         />
+        {/* 教科「古典」を選んで登録した自作カード。 */}
+        <CustomCardsMenuButton subject="koten" />
       </ContentMenuSection>
 
       {/* 学年・目標別コースは、単語・文法・常識をまたいで学ぶので、ホームに置く。 */}

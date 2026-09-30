@@ -1,4 +1,5 @@
 import { useStore } from '../store/useStore.js'
+import { CustomCardsMenuButton } from '../components/CustomCardsEntry.jsx'
 import {
   ContentMenu,
   ContentMenuButton,
@@ -56,6 +57,8 @@ export function KanbunHomeScreen() {
           onClick={() => navigate('literatureLibrary', { kind: 'kanbun' })}
           data-kanbun-entry="literature"
         />
+        {/* 教科「漢文」を選んで登録した自作カード。 */}
+        <CustomCardsMenuButton subject="kanbun" />
       </ContentMenuSection>
 
       <div className="rounded-2xl border border-rose-100 bg-white p-4 shadow-sm">

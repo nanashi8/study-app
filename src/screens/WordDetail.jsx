@@ -10,7 +10,7 @@ import {
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
+import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
@@ -19,6 +19,7 @@ import { MeaningText } from '../components/MeaningText.jsx'
 import {
   AntonymSection,
   ConfusableSection,
+  CustomPhraseSection,
   IdiomEquivalentSection,
   LoanwordHint,
   RelatedWordList,
@@ -230,6 +231,18 @@ export function WordDetailScreen() {
           {(relatedPhrases.all.length > 0 || relatedPhrases.viaForms.length > 0) && (
             <Card className="p-4">
               <WordPhraseSection word={word} groups={relatedPhrases} />
+            </Card>
+          )}
+
+          {/* 自作単語（英単語のカード）に自分で書いた熟語・構文と語の成り立ち。 */}
+          {word.custom && word.customPhrases?.length > 0 && (
+            <Card className="p-4">
+              <CustomPhraseSection word={word} />
+            </Card>
+          )}
+          {word.custom && word.customEtymology && (
+            <Card className="p-4">
+              <CustomEtymology word={word} />
             </Card>
           )}
 

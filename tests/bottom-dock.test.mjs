@@ -359,7 +359,7 @@ test('スペルを隠しているあいだの再生パネルは、つづり・�
 })
 
 // ─── 出題（出題バランス） ──────────────────────────────────────────────────────────
-// 暗記・テストの全28画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
+// 暗記・テストの全30画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
 function studyScreens() {
   const app = read('src/App.jsx')
   const componentFile = new Map(
@@ -414,9 +414,9 @@ function withInitialState(patch, run) {
 }
 const renderDock = (patch) => withInitialState(patch, () => renderToStaticMarkup(React.createElement(modules.console.GlobalSpeechConsole)))
 
-test('出題を全28画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
+test('出題を全30画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
   const screens = studyScreens()
-  assert.equal(screens.length, 28)
+  assert.equal(screens.length, 30)
   assert.deepEqual([...modules.mix.STUDY_MIX_SCREENS].sort(), screens.map(({ screen }) => screen).sort())
   for (const { file, screen } of screens) {
     const source = read(`src/screens/${file}`)
@@ -485,7 +485,7 @@ function stockedRecords(items, { idOf = (item) => item.id } = {}) {
   return { srs, kindOf }
 }
 
-test('今の出題順の上で：出題バランスの6段が、全28画面の出題口で今の出題順に効く', () => {
+test('今の出題順の上で：出題バランスの6段が、全30画面の出題口で今の出題順に効く', () => {
   const realNow = Date.now
   Date.now = () => NOW
   try {
@@ -667,12 +667,15 @@ test('今の出題順の上で：出題バランスの6段が、全28画面の�
       'DictationPlay.jsx': /freshShare: currentStudyMixShare\(\) \}/,
       'VocabStudy.jsx': /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\),/,
       'VocabQuiz.jsx': /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\),/,
-      // 社会・理科は1ファイルで教科ごとの2画面（25ファイルで28画面）。
+      // 社会・理科は1ファイルで教科ごとの2画面（27ファイルで30画面）。
       'SubjectStudy.jsx': /pickSubjectTerms\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/,
       'SubjectQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
       'SubjectPractice.jsx': /freshShare: currentStudyMixShare\(\),/,
+      // 自作カード（英単語以外のテンプレート）の暗記とテスト。
+      'CustomCardStudy.jsx': /pickCustomCards\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/,
+      'CustomCardQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
     }
-    assert.equal(Object.keys(wiring).length, 25)
+    assert.equal(Object.keys(wiring).length, 27)
     for (const [file, pattern] of Object.entries(wiring)) assert.match(read(`src/screens/${file}`), pattern, file)
     // 下部の説明も今の出題順で書く。
     assert.match(read('src/lib/vocabMix.js'), /adaptive \? 'たまり具合で自動' : '苦手→復習→未修の順'/)
@@ -685,7 +688,7 @@ test('今の出題順の上で：出題バランスの6段が、全28画面の�
   }
 })
 
-test('先の問題を組み直す：バーを動かすと、全28画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
+test('先の問題を組み直す：バーを動かすと、全30画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
   for (const { file } of studyScreens()) {
     const source = read(`src/screens/${file}`)
     assert.match(source, /useStudyMixRebuild\(\{\n\s*index(?:: \w+)?,\n\s*answeredIndexes(?::|,)/, file)
@@ -707,7 +710,7 @@ test('先の問題を組み直す：バーを動かすと、全28画面で表示
   assert.deepEqual(growDeck(current, 2, next, 5).map((item) => item.id), ['a', 'b', 'x', 'y', 'z'])
 })
 
-test('出題バランスを教材の設定に並べる：28画面を開く教材の設定にどれも出題バランスがある', () => {
+test('出題バランスを教材の設定に並べる：30画面を開く教材の設定にどれも出題バランスがある', () => {
   const settingsOf = (screen) => APP_MENU_CONTENT_ITEMS.find((item) => item.screen === screen)?.settings ?? []
   const screens = studyScreens().map(({ screen }) => screen)
   const owners = new Set()
@@ -744,10 +747,10 @@ function notebookWithBooks(titles) {
   return { notebook, ids }
 }
 
-// 単語帳ボタンを持つ全36ファイル（カード・一覧・まとめて入れるボタン）。
+// 単語帳ボタンを持つ全38ファイル（カード・一覧・まとめて入れるボタン）。自作カードの一覧のカードは CustomCardItems.jsx。
 const WORD_BOOK_FILES = [
-  'components/ExtendedReader.jsx', 'components/GrammarReferenceParts.jsx', 'components/ReadingSentenceDetail.jsx',
-  'components/SceneBundles.jsx', 'screens/CustomWords.jsx', 'screens/DictationPlay.jsx', 'screens/EtymologyQuiz.jsx',
+  'components/CustomCardItems.jsx', 'components/ExtendedReader.jsx', 'components/GrammarReferenceParts.jsx', 'components/ReadingSentenceDetail.jsx',
+  'components/SceneBundles.jsx', 'screens/CustomCardQuiz.jsx', 'screens/CustomCardStudy.jsx', 'screens/DictationPlay.jsx', 'screens/EtymologyQuiz.jsx',
   'screens/EtymologyStudy.jsx', 'screens/GrammarQuiz.jsx', 'screens/KanbunCatalog.jsx', 'screens/KanbunKundokuQuiz.jsx',
   'screens/KanbunQuiz.jsx', 'screens/KanbunStudy.jsx', 'screens/KotenCulture.jsx', 'screens/KotenCultureQuiz.jsx',
   'screens/KotenCultureStudy.jsx', 'screens/KotenGrammar.jsx', 'screens/KotenGrammarQuiz.jsx', 'screens/KotenGrammarStudy.jsx',
@@ -817,8 +820,8 @@ test('下部の単語帳：登録先を切り替え、単語帳の設定を開�
     modules.dock.closeWordBookSettings()
   }
 
-  // 単語帳ボタンのある全36ファイルが、押すと登録先へ入れる部品（useWordBookSlot か、それを使う WordBookToggle・WordBookButton）を使う。
-  assert.equal(WORD_BOOK_FILES.length, 36)
+  // 単語帳ボタンのある全38ファイルが、押すと登録先へ入れる部品（useWordBookSlot か、それを使う WordBookToggle・WordBookButton）を使う。
+  assert.equal(WORD_BOOK_FILES.length, 38)
   for (const file of WORD_BOOK_FILES) {
     const source = read(`src/${file}`)
     assert.match(source, /useWordBookSlot\(|<WordBookToggle\b|<WordBookButton\b/, file)

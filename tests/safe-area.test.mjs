@@ -356,7 +356,7 @@ test('画面下の操作バーはviewportへ固定せず、本文の外の足元
   }
 })
 
-test('下端に接する操作欄34実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
+test('下端に接する操作欄36実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
   const footerImplementations = sourceFiles.flatMap(({ path, source }) => (
     source.split('\n')
       .filter((line) => line.includes('shrink-0') && line.includes('border-t'))
@@ -372,8 +372,9 @@ test('下端に接する操作欄34実装・追従欄2件・読み上げ欄を�
     0,
   )
 
-  assert.equal(footerImplementations.length, 34)
-  assert.equal(cardFooterUses, 8)
+  // 自作カードの登録欄の「やめる・登録する」とテストの「次の問題へ」で2つ、暗記カードの下の操作で1つ増えた（2026-09-30）。
+  assert.equal(footerImplementations.length, 36)
+  assert.equal(cardFooterUses, 9)
   assert.equal(stickyBottomControls.length, 2)
   // 追従欄は本文のスクロール領域の中に張り付く。ホームバーぶんは外枠の末尾が空けるので、欄の側で足さない。
   for (const { path, line } of stickyBottomControls) {

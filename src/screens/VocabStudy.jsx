@@ -18,7 +18,7 @@ import { cardSpeechItems } from '../lib/cardSpeech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { EtymologyBlock } from '../components/WordBits.jsx'
+import { CustomEtymology, EtymologyBlock } from '../components/WordBits.jsx'
 import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
@@ -27,6 +27,8 @@ import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import {
   AntonymSection,
   ConfusableSection,
+  CustomDerivativeSection,
+  CustomPhraseSection,
   IdiomEquivalentSection,
   LoanwordHint,
   SynonymSection,
@@ -528,6 +530,13 @@ export function VocabStudyScreen() {
                 </div>
               )}
 
+              {/* 自作単語（英単語のカード）に自分で書いた語の成り立ち。 */}
+              {word.custom && word.customEtymology && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-brand-100">
+                  <CustomEtymology word={word} />
+                </div>
+              )}
+
               {/* 使い方・使い分け（辞書ページと同じ中身）。 */}
               {word.usage && (
                 <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-word-usage>
@@ -539,6 +548,13 @@ export function VocabStudyScreen() {
                 </div>
               )}
               <UsageGuideCards guides={word.usageGuides} />
+
+              {/* 自作単語に自分で書いた派生語・ほかの品詞の形。 */}
+              {word.custom && relations.derivatives.length > 0 && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-emerald-100">
+                  <CustomDerivativeSection items={relations.derivatives} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                </div>
+              )}
 
               {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
               {(relations.forms.length > 0 || relations.sameForms.length > 0) && (
@@ -561,6 +577,13 @@ export function VocabStudyScreen() {
               {relations.confusables.length > 0 && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-rose-100">
                   <ConfusableSection word={word} items={relations.confusables} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                </div>
+              )}
+
+              {/* 自作単語に自分で書いた熟語・構文。 */}
+              {word.custom && word.customPhrases?.length > 0 && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-sky-100">
+                  <CustomPhraseSection word={word} />
                 </div>
               )}
 

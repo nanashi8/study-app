@@ -430,13 +430,13 @@ for (const pack of ETYMOLOGY_PACKS) {
   }
 }
 
-const expectedMenuSections = ['apps', 'english', 'support', 'records', 'settings', 'about']
+const expectedMenuSections = ['apps', 'english', 'support', 'cards', 'records', 'settings', 'about']
 const actualMenuSections = APP_MENU_SECTIONS.map((section) => section.id)
 if (actualMenuSections.join(',') !== expectedMenuSections.join(',')) {
   errors.push(`メニューの見出しが不一致: ${actualMenuSections.join(',')}`)
 }
 const menuSectionCounts = APP_MENU_SECTIONS.map((section) => section.items.length)
-if (menuSectionCounts.join(',') !== '8,8,7,4,2,1') {
+if (menuSectionCounts.join(',') !== '8,8,6,1,4,2,1') {
   errors.push(`メニューの項目数が不一致: ${menuSectionCounts.join(',')}`)
 }
 const appHomeEntry = APP_MENU_ITEMS.find((item) => item.kind === 'screen' && item.screen === 'portal')
@@ -483,7 +483,7 @@ if (resetGroupIds.join(',') !== ALL_PROGRESS_RESET_GROUP_IDS.join(',')) {
 if (PROGRESS_RESET_GROUPS.length !== 7) {
   errors.push(`履歴リセットが7分類ではない: ${PROGRESS_RESET_GROUPS.length}`)
 }
-if (RESETTABLE_PROGRESS_FIELDS.length !== 46 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
+if (RESETTABLE_PROGRESS_FIELDS.length !== 49 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
   errors.push(`履歴リセットの対象数が不一致: 対象${RESETTABLE_PROGRESS_FIELDS.length}・保持${RESET_PRESERVED_PROGRESS_FIELDS.length}`)
 }
 if (new Set(coveredProgressFields).size !== coveredProgressFields.length) {

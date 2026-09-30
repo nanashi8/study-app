@@ -13,6 +13,7 @@ test('主要コンテンツは指定順を保ち、英語アプリから英和�
     'math-quest',
     'social-quest',
     'science-quest',
+    'custom-cards',
   ])
   assert.deepEqual(CONTENTS.map((item) => item.title), [
     '英語アプリ',
@@ -22,7 +23,10 @@ test('主要コンテンツは指定順を保ち、英語アプリから英和�
     '数学アプリ',
     '社会アプリ',
     '理科アプリ',
+    '自作カード',
   ])
+  // 自作カードは、どの教科のカードも並べる入口（教科・カテゴリーの一覧）を開く。
+  assert.equal(CONTENTS.find((item) => item.id === 'custom-cards').screen, 'customWords')
   assert.equal(CONTENTS.some((item) => item.id === 'eigo-dict'), false)
 
   const homeSource = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')

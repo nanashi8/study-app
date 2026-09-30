@@ -39,7 +39,7 @@ import {
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
 import { foldLegacyMyWords, foldLegacySavedLists } from './learningNotebook.js'
-import { normalizeCustomWords } from './customWords.js'
+import { normalizeCustomLibrary } from './customLibrary.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
 import { normalizeGrammarReferenceLog } from './grammarReferenceLog.js'
@@ -52,6 +52,12 @@ const node = (uid) => ref(db, `students/${uid}`)
 // クラウドから復元する永続項目を一括で組み立てる。
 // ネットワークなしの回帰テストでも、全項目が戻る契約を検査できるようにする。
 export function progressStateFromCloud(data = {}, current = useStore.getState()) {
+  // 古いクラウド保存に自作カードの項目が無い場合、端末で作ったカード・カテゴリーを消さない。
+  const customLibrary = normalizeCustomLibrary({
+    words: data.customWords ?? current.customWords,
+    cards: data.customCards ?? current.customCards,
+    categories: data.customCategories ?? current.customCategories,
+  })
   const battleStars = normalizeBattleStars(data.battleStars)
   const stats = normalizeLegacyStats({ ...current.stats, ...(data.stats ?? {}) })
   const battleStudentId = normalizeBattleStudentId(data.battleStudentId)
@@ -76,8 +82,11 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     // 古いクラウド保存にこの項目が無い場合、端末で残した社会・理科の暗記の記録を消さない。
     socialTermSrs: data.socialTermSrs ?? current.socialTermSrs ?? {},
     scienceTermSrs: data.scienceTermSrs ?? current.scienceTermSrs ?? {},
-    // 古いクラウド保存にこの項目が無い場合、端末で作った自作単語を消さない。
-    customWords: normalizeCustomWords(data.customWords ?? current.customWords),
+    // 古いクラウド保存にこの項目が無い場合、端末で残した自作カードの記録を消さない。
+    customCardSrs: data.customCardSrs ?? current.customCardSrs ?? {},
+    customWords: customLibrary.words,
+    customCards: customLibrary.cards,
+    customCategories: customLibrary.categories,
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
     // 古いクラウド保存にこの項目が無い場合、端末側で作ったノートを消さない。

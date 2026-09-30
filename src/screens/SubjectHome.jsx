@@ -26,6 +26,7 @@ import {
   WordBookTile,
 } from '../components/ContentTop.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { CustomCardsTile } from '../components/CustomCardsEntry.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { CatalogTools } from '../components/CatalogTools.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
@@ -200,7 +201,7 @@ function SubjectHomeScreen({ subject }) {
           />
         </TodayCard>
 
-        {/* 選び方のほかの入口：重要語句の一覧と単語帳。 */}
+        {/* 選び方のほかの入口：重要語句の一覧・単語帳・自作カード。 */}
         <ChooserTiles data-subject-choosers={subject}>
           <ChooserTile
             onClick={() => openCatalog('all')}
@@ -213,6 +214,8 @@ function SubjectHomeScreen({ subject }) {
             全{allTerms.length}語句
           </ChooserTile>
           <WordBookTile domain={meta.notebookTerms} returnTo={{ screen: meta.screens.home, params: { book: bookId } }} />
+          {/* 教科を選んで登録した自作カード。 */}
+          <CustomCardsTile subject={subject} />
         </ChooserTiles>
 
         <BookSwitch subject={subject} value={bookId} onChange={setBookId} />

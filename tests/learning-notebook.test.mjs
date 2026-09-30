@@ -46,7 +46,7 @@ import {
   updateLearningContentPlan,
 } from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは英語・古典・漢文・社会・理科の18教材・全19,564項目を安定IDで解決する', () => {
+test('マイ学習ノートは英語・古典・漢文・社会・理科の18教材・全19,564項目と自作カードを安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -66,6 +66,7 @@ test('マイ学習ノートは英語・古典・漢文・社会・理科の18教
     'socialPractice',
     'scienceTerms',
     'sciencePractice',
+    'customCards',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
     vocab: 8929,
@@ -86,10 +87,13 @@ test('マイ学習ノートは英語・古典・漢文・社会・理科の18教
     socialPractice: 522,
     scienceTerms: 502,
     sciencePractice: 396,
+    // 自作カードは利用者が作るので、固定の件数には入れない（引き当ては登録したカードから）。
+    customCards: 0,
   })
   assert.equal(NOTEBOOK_TOTAL_ITEMS, 19564)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
+    if (domain === 'customCards') continue
     assert.ok(count > 0, domain)
     const results = searchNotebookItems(domain, '')
     assert.equal(results.length, count, domain)
@@ -257,6 +261,7 @@ test('以前のマイ単語と古典・漢文の登録リストはノートの�
     socialPractice: 0,
     scienceTerms: 0,
     sciencePractice: 0,
+    customCards: 0,
   })
   // 同じ登録を何度読み込んでも、冊も項目も増えない。登録が1つもなければ冊を作らない。
   const again = foldLegacySavedLists(learningNotebook, { kotenWordList: ['k001'], kanbunVocabList: ['kv001'] }, { timestamp: 50 })

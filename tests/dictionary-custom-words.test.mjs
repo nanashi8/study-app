@@ -22,14 +22,14 @@ test('辞書で引いた語は、辞書の見出しにも自作単語にも無�
   assert.equal(customWordDraftFromQuery('a'.repeat(65)), null)
 })
 
-test('英和辞書から見つからない語を自作単語の登録へ渡し、登録してもやめても辞書へ戻る', () => {
+test('英和辞書から見つからない語を自作カード（英単語）の登録へ渡し、登録してもやめても辞書へ戻る', () => {
   const search = read('../src/screens/VocabSearch.jsx')
   const custom = read('../src/screens/CustomWords.jsx')
 
   // 辞書：見出しに無い英語なら登録の入口を出し、登録欄へ語を渡す。戻り先には引いていた語を載せる。
   assert.match(search, /customWordDraftFromQuery\(q, \{ headwords: pool\.map\(headwordOf\), customWords \}\)/)
   assert.match(search, /data-dictionary-register-custom/)
-  assert.match(search, /navigate\('customWords', \{\s*draft: \{ word: draft\.word \},\s*returnTo: \{ screen: 'vocabSearch', params: \{ q: draft\.word \} \},/)
+  assert.match(search, /navigate\('customWords', \{\s*\/\/[^\n]*\n\s*subject: 'english',\s*draft: \{ word: draft\.word \},\s*returnTo: \{ screen: 'vocabSearch', params: \{ q: draft\.word \} \},/)
   // 見つからないときの案内の中にも入口を置く。
   assert.match(search, /<NoResults[\s\S]*?registerEntry[\s\S]*?<\/NoResults>/)
   // 登録した自作単語は辞書に混ぜず、検索結果の先頭に「自作」として並べる。
@@ -39,8 +39,11 @@ test('英和辞書から見つからない語を自作単語の登録へ渡し�
   assert.match(search, /useState\(\(\) => \(typeof params\.q === 'string' \? params\.q : ''\)\)/)
   assert.match(search, /replaceParams\(\{ \.\.\.params, q, type, shown \}\)/)
 
-  // 自作単語の画面：辞書から渡された語で登録欄を開き、登録・やめるのどちらでも辞書へ戻る。
+  // 自作カードの画面：辞書から渡された語で、英単語のテンプレートの登録欄を開き、登録・やめるのどちらでも辞書へ戻る
+  //（辞書から開くときは returnTo に辞書を載せるので、back() が辞書へ帰す）。
   assert.match(custom, /params\.draft\?\.word/)
-  assert.match(custom, /fromDictionary: true/)
-  assert.equal((custom.match(/fromDictionary\) back\(\)/g) ?? []).length, 2)
+  assert.match(custom, /const template = draftWord \? ENGLISH_TEMPLATE_ID/)
+  assert.match(custom, /const fromDictionary = Boolean\(draftWord\)/)
+  assert.match(custom, /\/\/ 辞書から来た登録は、終わったら辞書へ戻す（引いていた語と、登録した語が出る）。\n\s*back\(\)/)
+  assert.match(custom, /onClick=\{\(\) => back\(\)\} data-custom-word-cancel/)
 })

@@ -1,15 +1,15 @@
-// 自作単語（ユーザーが自分で登録した英単語）。
+// 自作カードのうち、テンプレート「英単語」のカード（これまでの自作単語）。
 //
 // 辞書本体（data/vocab.js の ALL_WORDS）には決して混ぜない。級ごとの語数・
 // 語源カード・全教材監査台帳は手動監査に合わせた固定値なので、
 // そこへ利用者の語を足すと「英検5級 全606語」のような約束が崩れる。
 // 自作語は別の保存領域に持ち、ID の引き当て（getWord）にだけ載せて
-// 単語帳・暗記・テスト・復習日の仕組みを共有する。
-//
-// JSONファイルはこの形で書き出し、同じ形だけを読み戻す。
-//   { app, kind, version, exportedAt, words: [ { id, word, meanings, ... } ] }
+// 単語帳・暗記・テスト・復習日・辞書ページの仕組みを共有する。
+// 英単語以外のテンプレートのカードと、カードの分類（教科・カテゴリー）は lib/customCards.js。
+// JSONファイルの書き出し・読み込みは lib/customLibrary.js（英単語・カード・カテゴリーをまとめて持つ）。
 import { LEVELS } from '../data/levels.js'
 import { VOCAB_FIELDS, VOCAB_POS } from '../data/vocab.js'
+import { DEFAULT_CATEGORY_ID, isCategoryKey } from './customCards.js'
 
 export const CUSTOM_WORD_PREFIX = 'u-'
 
@@ -21,14 +21,50 @@ export const CUSTOM_WORD_LIMITS = Object.freeze({
   phonetic: 48,
   example: 200,
   note: 300,
+  // 関連する語（派生語・類義語・反意語・つづりが似た語）は1欄8語まで、熟語・構文は8つまで、ほかの意味は4つまで。
+  relatedWords: 8,
+  relatedWord: 64,
+  relatedMeaning: 60,
+  otherSenses: 4,
+  phrases: 8,
+  phrase: 80,
+  phraseMeaning: 80,
+  etymology: 400,
 })
 
-export const CUSTOM_WORDS_FILE = Object.freeze({
-  app: 'study-app',
-  kind: 'custom-words',
-  version: 1,
-  name: 'study-app-custom-words.json',
-})
+// 英単語のテンプレートの欄。英単語の辞書ページ・暗記カードが使う情報のうち、学習者が書けるもの（16欄）。
+// section は登録の画面のまとまり。list は、行を足して書く欄（pair＝語と意味、sense＝品詞と意味、phrase＝熟語・構文と意味）。
+// 学習の記録・辞書の前後・同じつづりの別の語・語根カード・使い分けガイド・カタカナ語・読み分けは、
+// 辞書の並びや人が1語ずつ決めた台帳から出る欄なので、書く欄にしない（書きたいことは「使い方・メモ」に書ける）。
+const englishField = (key, label, section, extra = {}) => Object.freeze({ key, label, section, required: false, ...extra })
+export const ENGLISH_WORD_FIELDS = Object.freeze([
+  englishField('word', '単語', 'basic', { required: true }),
+  englishField('meanings', '意味', 'basic', { required: true }),
+  englishField('pos', '品詞', 'basic'),
+  englishField('level', '級', 'basic'),
+  englishField('field', '分野', 'basic'),
+  englishField('phonetic', '発音記号', 'basic'),
+  englishField('exampleEn', '例文', 'example'),
+  englishField('exampleJa', '例文の訳', 'example'),
+  englishField('note', '使い方・メモ', 'note'),
+  englishField('otherSenses', 'ほかの意味', 'related', { list: 'sense' }),
+  englishField('derivatives', '派生語・ほかの品詞の形', 'related', { list: 'pair' }),
+  englishField('synonyms', '類義語', 'related', { list: 'pair' }),
+  englishField('antonyms', '反意語', 'related', { list: 'pair' }),
+  englishField('confusables', 'つづりが似ていて間違えやすい語', 'related', { list: 'pair' }),
+  englishField('phrases', '熟語・構文', 'related', { list: 'phrase' }),
+  englishField('etymology', '語の成り立ち', 'note'),
+])
+
+export const ENGLISH_WORD_SECTIONS = Object.freeze([
+  Object.freeze({ id: 'basic', label: '単語と意味' }),
+  Object.freeze({ id: 'example', label: '例文' }),
+  Object.freeze({ id: 'related', label: '関連する語・ほかの意味' }),
+  Object.freeze({ id: 'note', label: '使い方・語の成り立ち' }),
+])
+
+// 語と意味の組で書く欄（派生語・類義語・反意語・つづりが似た語）。
+export const ENGLISH_PAIR_KEYS = Object.freeze(['derivatives', 'synonyms', 'antonyms', 'confusables'])
 
 const LEVEL_IDS = LEVELS.map((level) => level.id)
 const POS_IDS = VOCAB_POS.map((pos) => pos.id)
@@ -46,6 +82,7 @@ export const DEFAULT_CUSTOM_WORD = Object.freeze({
   phonetic: '',
   example: null,
   note: '',
+  category: DEFAULT_CATEGORY_ID,
 })
 
 export const isCustomWordId = (id) => (
@@ -88,6 +125,55 @@ export function createCustomWordId({
   return `${CUSTOM_WORD_PREFIX}${time}${tail}`
 }
 
+/** 語と意味の組の欄（派生語・類義語・反意語・つづりが似た語）。語が空の行は落とし、同じ語は1つにする。 */
+export function normalizeWordPairs(value, { exclude = '' } = {}) {
+  const seen = new Set([String(exclude).toLowerCase()])
+  const pairs = []
+  for (const raw of Array.isArray(value) ? value : []) {
+    if (!isRecord(raw)) continue
+    const w = text(raw.w ?? raw.word, CUSTOM_WORD_LIMITS.relatedWord)
+    const key = w.toLowerCase()
+    if (!w || seen.has(key)) continue
+    seen.add(key)
+    pairs.push({ w, m: text(raw.m ?? raw.meaning, CUSTOM_WORD_LIMITS.relatedMeaning) })
+    if (pairs.length >= CUSTOM_WORD_LIMITS.relatedWords) break
+  }
+  return pairs
+}
+
+/** ほかの意味（品詞と意味）。意味が空の行は落とす。 */
+export function normalizeOtherSenses(value, { fallbackPos = POS_IDS[0] } = {}) {
+  const seen = new Set()
+  const senses = []
+  for (const raw of Array.isArray(value) ? value : []) {
+    if (!isRecord(raw)) continue
+    const meaning = text(raw.meaning, CUSTOM_WORD_LIMITS.meaning)
+    const pos = POS_IDS.includes(raw.pos) ? raw.pos : fallbackPos
+    const key = `${pos}|${meaning}`
+    if (!meaning || seen.has(key)) continue
+    seen.add(key)
+    senses.push({ pos, meaning })
+    if (senses.length >= CUSTOM_WORD_LIMITS.otherSenses) break
+  }
+  return senses
+}
+
+/** 熟語・構文（句と意味）。句が空の行は落とす。 */
+export function normalizeWordPhrases(value) {
+  const seen = new Set()
+  const phrases = []
+  for (const raw of Array.isArray(value) ? value : []) {
+    if (!isRecord(raw)) continue
+    const phrase = text(raw.phrase, CUSTOM_WORD_LIMITS.phrase)
+    const key = phrase.toLowerCase()
+    if (!phrase || seen.has(key)) continue
+    seen.add(key)
+    phrases.push({ phrase, meaning: text(raw.meaning, CUSTOM_WORD_LIMITS.phraseMeaning) })
+    if (phrases.length >= CUSTOM_WORD_LIMITS.phrases) break
+  }
+  return phrases
+}
+
 /** 保存形。語と意味が無いものは登録として成り立たないので落とす。 */
 export function normalizeCustomWord(value, { now = Date.now() } = {}) {
   if (!isRecord(value)) return null
@@ -98,16 +184,26 @@ export function normalizeCustomWord(value, { now = Date.now() } = {}) {
   const exampleJa = text(value.example?.ja, CUSTOM_WORD_LIMITS.example)
   const id = isCustomWordId(value.id) ? value.id : createCustomWordId({ now })
   const createdAt = timestamp(value.createdAt, now)
+  const pos = POS_IDS.includes(value.pos) ? value.pos : DEFAULT_CUSTOM_WORD.pos
   return {
     id,
     word,
     meanings,
-    pos: POS_IDS.includes(value.pos) ? value.pos : DEFAULT_CUSTOM_WORD.pos,
+    pos,
     level: LEVEL_IDS.includes(value.level) ? value.level : DEFAULT_CUSTOM_WORD.level,
     field: VOCAB_FIELDS.includes(value.field) ? value.field : DEFAULT_CUSTOM_WORD.field,
     phonetic: text(value.phonetic, CUSTOM_WORD_LIMITS.phonetic),
     example: exampleEn || exampleJa ? { en: exampleEn, ja: exampleJa } : null,
     note: text(value.note, CUSTOM_WORD_LIMITS.note),
+    // 以前の自作単語（分類を持たない保存）は、教科「英語」のカードとして読む。
+    category: isCategoryKey(value.category) ? value.category : DEFAULT_CATEGORY_ID,
+    otherSenses: normalizeOtherSenses(value.otherSenses, { fallbackPos: pos }),
+    derivatives: normalizeWordPairs(value.derivatives, { exclude: word }),
+    synonyms: normalizeWordPairs(value.synonyms, { exclude: word }),
+    antonyms: normalizeWordPairs(value.antonyms, { exclude: word }),
+    confusables: normalizeWordPairs(value.confusables, { exclude: word }),
+    phrases: normalizeWordPhrases(value.phrases),
+    etymology: text(value.etymology, CUSTOM_WORD_LIMITS.etymology),
     createdAt,
     updatedAt: timestamp(value.updatedAt, createdAt),
   }
@@ -205,60 +301,26 @@ export function customWordToStudyWord(entry) {
     etymology: null,
     roots: [],
     referenceRoots: [],
-    synonyms: [],
-    antonyms: [],
-    derivatives: [],
+    // 類義語・反意語・派生語は辞書の語と同じ欄（{ w, m }）に入れ、辞書ページ・暗記カードの同じ欄に出す。
+    synonyms: word.synonyms,
+    antonyms: word.antonyms,
+    derivatives: word.derivatives,
     family: [],
     usage: word.note,
     usageGuides: [],
-    otherSenses: [],
+    // ほかの意味は、カードの級で習う意味として出す。
+    otherSenses: word.otherSenses.map((sense) => ({ ...sense, level: word.level })),
+    // 辞書の台帳から出す欄の代わりに、自分で書いた中身を持つ（つづりが似た語・熟語と構文・語の成り立ち）。
+    customConfusables: word.confusables,
+    customPhrases: word.phrases,
+    customEtymology: word.etymology,
+    category: word.category,
     custom: true,
   }
 }
 
 export function customStudyWords(list) {
   return normalizeCustomWords(list).map(customWordToStudyWord).filter(Boolean)
-}
-
-// ── JSONファイル ────────────────────────────────────────────────
-export function buildCustomWordsFile(list, { now = Date.now() } = {}) {
-  return {
-    app: CUSTOM_WORDS_FILE.app,
-    kind: CUSTOM_WORDS_FILE.kind,
-    version: CUSTOM_WORDS_FILE.version,
-    exportedAt: new Date(now).toISOString(),
-    words: normalizeCustomWords(list, { now }),
-  }
-}
-
-export function customWordsFileText(list, options) {
-  return `${JSON.stringify(buildCustomWordsFile(list, options), null, 2)}\n`
-}
-
-export function customWordsFileName(now = Date.now()) {
-  const date = new Date(now)
-  const pad = (value) => String(value).padStart(2, '0')
-  return `study-app-custom-words-${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}.json`
-}
-
-/**
- * 読み込み。status は ok / broken（JSONとして読めない）
- * / other（別の種類のファイル） / empty（登録できる語が無い）。
- */
-export function parseCustomWordsFile(rawText, { now = Date.now() } = {}) {
-  let parsed = null
-  try {
-    parsed = JSON.parse(String(rawText ?? ''))
-  } catch {
-    return { status: 'broken', words: [] }
-  }
-  const source = Array.isArray(parsed) ? { words: parsed } : parsed
-  if (!isRecord(source)) return { status: 'broken', words: [] }
-  const looksLikeOurs = Array.isArray(source.words)
-    && (!source.kind || source.kind === CUSTOM_WORDS_FILE.kind)
-  if (!looksLikeOurs) return { status: 'other', words: [] }
-  const words = normalizeCustomWords(source.words, { now })
-  return words.length ? { status: 'ok', words } : { status: 'empty', words: [] }
 }
 
 /**

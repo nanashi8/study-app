@@ -244,7 +244,7 @@ test('単語帳の一覧の歯車から、どの冊も名前の変更・並び�
   assert.match(decks, /data-vocab-word-book-missing/)
 })
 
-test('長文・辞書・名作・写真の読み取り・英作文・自作単語からは、登録先の単語帳に入れる', () => {
+test('長文・辞書・名作・写真の読み取り・英作文・自作カードからは、登録先の単語帳に入れる', () => {
   const savers = {
     'src/screens/VocabSearch.jsx': /data-dictionary-word-book/,
     'src/components/ReadingSentenceDetail.jsx': /data-reading-word-book/,
@@ -255,7 +255,8 @@ test('長文・辞書・名作・写真の読み取り・英作文・自作単�
     'src/screens/ReadingSummary.jsx': /data-reading-summary-word-book/,
     'src/screens/VocabCamera.jsx': /data-ocr-word-book/,
     'src/screens/WritingPlay.jsx': /data-writing-word-book/,
-    'src/screens/CustomWords.jsx': /data-custom-word-book-select/,
+    // 自作カードの一覧のカードごとの「単語帳」（登録するときに入れる単語帳は、登録欄の data-custom-word-book-select で選ぶ）。
+    'src/components/CustomCardItems.jsx': /data-custom-word-book\b/,
   }
   // 名作の文を押したシートは、英語なら長文と同じ一文の構文解説の部品で描く（押した単語の単語帳ボタンもその部品）。
   assert.match(read('../src/components/LiteratureSentenceSheet.jsx'), /<ReadingSentenceDetail/)

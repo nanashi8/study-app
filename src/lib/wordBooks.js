@@ -3,6 +3,7 @@
 // 1冊には英単語だけでなく、熟語・文法・古典・漢文など、どの教材の項目も入る。学ぶときは教材ごとに分ける。
 // 冊の並びや項目の数え方が画面ごとにずれないよう、ここだけで組み立てる。
 import { getWord } from '../data/vocab.js'
+import { getCustomCard } from './customCards.js'
 
 export const wordBookRef = (wordId) => `vocab:${wordId}`
 
@@ -17,18 +18,24 @@ export function wordBookItemIds(set, domain = 'vocab') {
 /** 単語帳に入っている英単語のID。熟語・文法などほかの教材の項目は数えない。 */
 export const wordBookVocabIds = (set) => wordBookItemIds(set, 'vocab')
 
+// 利用者が消せる項目（自作単語・自作カード）は、引き当てられるものだけを数える。
+const EXISTS_BY_DOMAIN = Object.freeze({
+  vocab: (id) => Boolean(getWord(id)),
+  customCards: (id) => Boolean(getCustomCard(id)),
+})
+
 /**
  * 単語帳を、マイ学習ノートと同じ並び（利用者が並べ替えた順）で返す。ids はその教材の項目。
  * 英単語は出題・一覧に出せる語だけ（辞書から外れた語のIDが残っていても数えない。自作単語は引き当てられれば含める）。
+ * 自作カードも、消したカードの ID が残っていても数えない。
  */
 export function wordBooksFromState({ learningNotebook } = {}, domain = 'vocab') {
   const sets = Array.isArray(learningNotebook?.sets) ? learningNotebook.sets : []
+  const exists = EXISTS_BY_DOMAIN[domain]
   return sets.map((set) => ({
     id: set.id,
     title: set.title,
-    ids: domain === 'vocab'
-      ? wordBookVocabIds(set).filter((id) => Boolean(getWord(id)))
-      : wordBookItemIds(set, domain),
+    ids: exists ? wordBookItemIds(set, domain).filter(exists) : wordBookItemIds(set, domain),
     set,
   }))
 }

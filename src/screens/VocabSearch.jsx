@@ -47,7 +47,7 @@ const REQUEST_MESSAGE = {
   offline: { tone: 'text-rose-500', text: 'いまは送信できませんでした。通信状態が戻るともう一度試せます。' },
 }
 
-// 自作単語として登録する入口は、この案内の見出しのすぐ下に children で差し込む。
+// 自作カード（英単語）として登録する入口は、この案内の見出しのすぐ下に children で差し込む。
 function NoResults({ query, onSeeList, children }) {
   const [phase, setPhase] = useState('waiting')
 
@@ -92,7 +92,7 @@ function NoResults({ query, onSeeList, children }) {
   )
 }
 
-// 辞書の見出しに無い語を、そのまま自作単語の登録欄へ渡す入口。
+// 辞書の見出しに無い語を、そのまま自作カード（英単語のテンプレート）の登録欄へ渡す入口。
 function RegisterCustomWord({ word, onRegister, className = '' }) {
   return (
     <button
@@ -105,9 +105,9 @@ function RegisterCustomWord({ word, onRegister, className = '' }) {
         <Plus size={18} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block break-words text-sm font-extrabold text-ink">「{word}」を自作単語に登録</span>
+        <span className="block break-words text-sm font-extrabold text-ink">{`「${word}」を自作カードに登録`}</span>
         <span className="block text-[11px] font-bold leading-relaxed text-ink/50">
-          意味を入れると、単語帳に入れて暗記・テストできます
+          {'英単語のカードとして意味を入れると、単語帳に入れて暗記・テストできます'}
         </span>
       </span>
     </button>
@@ -131,7 +131,7 @@ function KindBadge({ type }) {
   )
 }
 
-// 自作単語は辞書の語と見分けられるよう、種類の位置に「自作」と出す。
+// 自作カードの英単語は辞書の語と見分けられるよう、種類の位置に「自作」と出す。
 function CustomBadge() {
   return (
     <span className="shrink-0 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[10px] font-extrabold text-white">
@@ -283,7 +283,7 @@ export function VocabSearchScreen() {
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
   const customWords = useStore((s) => s.customWords)
-  // 語の詳細・学習・自作単語の登録から戻ったときは、引いていた語と種類の絞り込みから続ける。
+  // 語の詳細・学習・自作カードの登録から戻ったときは、引いていた語と種類の絞り込みから続ける。
   const [q, setQ] = useState(() => (typeof params.q === 'string' ? params.q : ''))
   const [type, setType] = useState(() => (TABS.some((tab) => tab.id === params.type) ? params.type : 'all'))
   // 表示件数は、引いた語と種類の組ごとに持つ。戻ってきたときは離れたときの件数から続ける。
@@ -297,7 +297,7 @@ export function VocabSearchScreen() {
   // 単語・熟語・構文を1本にまとめ、一致の強い順に検索する。
   const matched = useMemo(() => searchDictionary(query), [query])
   const pool = query ? matched : []
-  // 自作単語は辞書に混ぜず、つづりか意味が合う語を検索結果の先頭へ別に並べる。
+  // 自作カードの英単語は辞書に混ぜず、つづりか意味が合う語を検索結果の先頭へ別に並べる。
   const customMatches = useMemo(() => (
     query
       ? customWords
@@ -317,7 +317,7 @@ export function VocabSearchScreen() {
     () => (type === 'all' ? pool : pool.filter((entry) => entry.type === type)),
     [pool, type],
   )
-  // 辞書の見出しにも自作単語にも無い英語なら、自作単語として登録できる。
+  // 辞書の見出しにも自作カードの英単語にも無い英語なら、英単語のカードとして登録できる。
   const draft = useMemo(
     () => customWordDraftFromQuery(q, { headwords: pool.map(headwordOf), customWords }),
     [customWords, pool, q],
@@ -356,6 +356,8 @@ export function VocabSearchScreen() {
   // 登録を終えたら（やめても）この画面へ戻り、同じ語を引いた状態から続けられるようにする。
   const registerCustomWord = () =>
     navigate('customWords', {
+      // 英語アプリの中の自作カード（上部のバーは英語アプリ）。
+      subject: 'english',
       draft: { word: draft.word },
       returnTo: { screen: 'vocabSearch', params: { q: draft.word } },
     })

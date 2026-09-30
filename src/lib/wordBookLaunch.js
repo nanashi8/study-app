@@ -82,6 +82,9 @@ export function wordBookLaunchTarget(domain, mode, ids, { title, returnTo } = {}
       return { screen: 'socialPractice', params: { ids, title, ...back } }
     case 'sciencePractice':
       return { screen: 'sciencePractice', params: { ids, title, ...back } }
+    // 自作カード（英単語以外のテンプレート）。英単語のテンプレートのカードは英単語（vocab）として学ぶ。
+    case 'customCards':
+      return { screen: study ? 'customCardStudy' : 'customCardQuiz', params: { ids, title, ...back } }
     default:
       return null
   }

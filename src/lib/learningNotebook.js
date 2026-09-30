@@ -29,6 +29,8 @@ export const NOTEBOOK_DOMAINS = Object.freeze([
   { id: 'socialPractice', label: '社会の演習', unit: '問', emoji: '📝', color: '#0e7490', canStudy: false },
   { id: 'scienceTerms', label: '理科の重要語句', unit: '語句', emoji: '🔬', color: '#15803d', canStudy: true },
   { id: 'sciencePractice', label: '理科の演習', unit: '問', emoji: '🧪', color: '#0369a1', canStudy: false },
+  // 利用者がテンプレートで登録したカード（英単語のテンプレートは英単語 vocab に入る）。
+  { id: 'customCards', label: '自作カード', unit: '枚', emoji: '✍️', color: '#0891b2', canStudy: true },
 ].map((domain) => Object.freeze(domain)))
 
 export const NOTEBOOK_DOMAIN_IDS = Object.freeze(NOTEBOOK_DOMAINS.map((domain) => domain.id))
@@ -474,6 +476,31 @@ export function forgetNotebookItem(notebook, domain, itemId, timestamp = Date.no
         ? { ...set, refs: set.refs.filter((item) => item !== ref), updatedAt: timestamp }
         : set
     )),
+  }
+}
+
+/**
+ * 項目の参照を別の参照へ付け替える（自作カードのテンプレートを英単語とほかの間で変えたとき、ID が変わるため）。
+ * メモ・タグ・保存と、入っている単語帳（並びの位置）をそのまま移す。移し先がすでに入っている冊では元の参照だけを外す。
+ */
+export function replaceNotebookItemRef(notebook, fromRef, toRef, timestamp = Date.now()) {
+  const current = normalizeLearningNotebook(notebook)
+  if (!parseNotebookRef(fromRef) || !parseNotebookRef(toRef) || fromRef === toRef) return current
+  const entries = { ...current.entries }
+  if (entries[fromRef]) {
+    entries[toRef] = { ...entries[fromRef], updatedAt: timestamp }
+    delete entries[fromRef]
+  }
+  return {
+    ...current,
+    entries,
+    sets: current.sets.map((set) => {
+      if (!set.refs.includes(fromRef)) return set
+      const refs = set.refs.includes(toRef)
+        ? set.refs.filter((ref) => ref !== fromRef)
+        : set.refs.map((ref) => (ref === fromRef ? toRef : ref))
+      return { ...set, refs, updatedAt: timestamp }
+    }),
   }
 }
 

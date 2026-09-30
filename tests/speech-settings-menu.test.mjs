@@ -136,7 +136,9 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   const expectedScreens = [
     'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
     'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
-    'diagnostic', 'dictation', 'vocabCamera', 'customWords', 'wordRequests',
+    'diagnostic', 'dictation', 'vocabCamera', 'wordRequests',
+    // 自作カードは、区切り「カード自作」に置く（2026-09-30 利用者「カード自作のセクションを作るか？」）。
+    'customWords',
     'myList', 'myLearning', 'myGrammar', 'progress',
     // 出典のページは、メニューのいちばん下の区切り「このアプリについて」に置く（2026-09-29 利用者の指示）。
     'credits',
@@ -145,13 +147,14 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     ['apps', 'スタディアプリ'],
     ['english', '英語の学習'],
     ['support', '学習サポート'],
+    ['cards', 'カード自作'],
     ['records', '保存・記録'],
     ['settings', '設定'],
     ['about', 'このアプリについて'],
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [8, 8, 7, 4, 2, 1],
+    [8, 8, 6, 1, 4, 2, 1],
   )
   assert.equal(APP_MENU_ITEMS.length, 30)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
@@ -516,8 +519,10 @@ test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
   // 2026-09-29、名作の文を押したときの一文の解説（components/LiteratureSentenceSheet.jsx）で1つ増えた。
+  // 2026-09-30、自作カードの一覧のカード（英単語の発音ボタン）は画面から部品（components/CustomCardItems.jsx）へ移った。
   assert.equal(speechUi.length, 32)
-  assert.equal(screenCount, 21)
+  assert.equal(screenCount, 20)
+  assert.ok(speechUi.some(({ path }) => path === 'components/CustomCardItems.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureSentenceSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/GrammarReferenceParts.jsx'))

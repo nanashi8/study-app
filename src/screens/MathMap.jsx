@@ -1,4 +1,5 @@
 import { useStore } from '../store/useStore.js'
+import { CustomCardsCard } from '../components/CustomCardsEntry.jsx'
 import {
   MATH_PROBLEMS, MATH_UNITS, strandsWithUnits, unitCount, unitDoneCount, prereqOf, unitById,
   weakPrereqs, reviewSuggestions,
@@ -129,6 +130,11 @@ export function MathMapScreen() {
           </span>
           <ArrowRight size={20} className="shrink-0 text-violet-700" />
         </button>
+      </div>
+
+      {/* 教科「数学」を選んで登録した自作カード（公式・用語・一問一答など）。 */}
+      <div className="px-4 pt-3">
+        <CustomCardsCard subject="math" />
       </div>
 
       <div className="px-4 pt-4">

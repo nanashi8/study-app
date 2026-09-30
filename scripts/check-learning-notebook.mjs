@@ -13,6 +13,7 @@ import { KANBUN_GRAMMAR } from '../src/data/kanbun-grammar.js'
 import { KANBUN_CULTURE } from '../src/data/kanbun-culture.js'
 import { KANBUN_KUNDOKU_EXERCISES } from '../src/data/kanbun-kundoku.js'
 import { SUBJECTS, subjectQuestions, subjectTerms } from '../src/data/subjects/index.js'
+import { customCardList, registerCustomCards } from '../src/lib/customCards.js'
 import {
   LEGACY_SAVED_LIST_FIELDS,
   NOTEBOOK_DOMAIN_IDS,
@@ -40,6 +41,11 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const errors = []
 const fail = (message) => errors.push(message)
 
+// 自作カードは利用者が作る教材なので、固定の件数（公開件数・全件数）には入れない。
+// 見本のカードを1枚引き当てに入れて、メモ・単語帳・進捗コードの往復だけを確かめる。
+const USER_DOMAINS = new Set(['customCards'])
+registerCustomCards([{ id: 'c-notebook-audit', template: 'term', category: 'subject:english', front: '監査の用語', back: '監査の意味' }], [])
+
 const sources = {
   vocab: ALL_WORDS,
   phrases: PHRASES,
@@ -59,11 +65,12 @@ const sources = {
   socialPractice: subjectQuestions('social'),
   scienceTerms: subjectTerms('science'),
   sciencePractice: subjectQuestions('science'),
+  customCards: customCardList(),
 }
 const domainCount = NOTEBOOK_DOMAIN_IDS.length
 
-// 2026-09-30、中学の社会・理科（重要語句・演習）で4つ増えた。
-if (domainCount !== 18) fail(`教材の種類が18ではありません: ${domainCount}`)
+// 2026-09-30、中学の社会・理科（重要語句・演習）で4つ、自作カードで1つ増えた。
+if (domainCount !== 19) fail(`教材の種類が19ではありません: ${domainCount}`)
 for (const domain of NOTEBOOK_DOMAIN_IDS) {
   if (!sources[domain]) fail(`${domain}: 監査する正本データがありません`)
 }
@@ -74,8 +81,9 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
   if (catalog.length !== source.length) {
     fail(`${domain}: 正本${source.length}件に対し統合カタログ${catalog.length}件`)
   }
-  if (NOTEBOOK_CATALOG_COUNTS[domain] !== source.length) {
-    fail(`${domain}: 公開件数${NOTEBOOK_CATALOG_COUNTS[domain]}が正本${source.length}と不一致`)
+  const publicCount = USER_DOMAINS.has(domain) ? 0 : source.length
+  if (NOTEBOOK_CATALOG_COUNTS[domain] !== publicCount) {
+    fail(`${domain}: 公開件数${NOTEBOOK_CATALOG_COUNTS[domain]}が正本${publicCount}と不一致`)
   }
 
   const ids = new Set()
@@ -88,7 +96,7 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
     ids.add(raw.id)
     const ref = notebookRef(domain, raw.id)
     const item = resolveNotebookItem(ref)
-    if (!item || item.raw !== raw || item.id !== raw.id) {
+    if (!item || (!USER_DOMAINS.has(domain) && item.raw !== raw) || item.id !== raw.id) {
       fail(`${domain}:${raw.id}: 正本と統合参照が一対一ではありません`)
     }
     if (!item?.title || !item?.searchText) {
@@ -97,7 +105,9 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
   })
 }
 
-const expectedTotal = Object.values(sources).reduce((sum, items) => sum + items.length, 0)
+const expectedTotal = Object.entries(sources)
+  .filter(([domain]) => !USER_DOMAINS.has(domain))
+  .reduce((sum, [, items]) => sum + items.length, 0)
 if (NOTEBOOK_TOTAL_ITEMS !== expectedTotal) {
   fail(`全件数が不一致: 統合${NOTEBOOK_TOTAL_ITEMS} / 正本${expectedTotal}`)
 }
@@ -154,6 +164,7 @@ for (const route of [
   'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenCultureStudy', 'kotenCultureQuiz',
   'kotenInterpretationPrep', 'kanbunStudy', 'kanbunQuiz', 'kanbunKundokuQuiz',
   'socialStudy', 'socialQuiz', 'socialPractice', 'scienceStudy', 'scienceQuiz', 'sciencePractice',
+  'customCardStudy', 'customCardQuiz',
 ]) {
   if (!launch.includes(`'${route}'`)) fail(`単語帳の行き先に学習経路 ${route} がありません`)
 }
@@ -229,6 +240,7 @@ const wordBookScreens = {
   kotenCulture: ['KotenCultureStudy.jsx'],
   kotenInterpretation: ['KotenInterpretationQuiz.jsx'],
   kanbunKundoku: ['KanbunKundokuQuiz.jsx'],
+  customCards: ['CustomCardStudy.jsx'],
 }
 for (const [domain, files] of Object.entries(wordBookScreens)) {
   for (const file of files) {

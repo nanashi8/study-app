@@ -183,6 +183,42 @@ export function AntonymSection({ items, onWord, showPhonetic }) {
   )
 }
 
+/** 派生語（自作単語に自分で書いた派生語・ほかの品詞の形）。辞書ページの派生語欄と同じ並べ方。 */
+export function CustomDerivativeSection({ items, onWord, showPhonetic }) {
+  if (!items?.length) return null
+  return (
+    <div data-custom-word-derivatives>
+      <SectionTitle className={TONES.der.title}>派生語・ほかの品詞の形</SectionTitle>
+      <RelatedWordList items={items} tone="der" onWord={onWord} showPhonetic={showPhonetic} />
+    </div>
+  )
+}
+
+/**
+ * 自作単語（英単語のカード）に自分で書いた熟語・構文。熟語ごとに発音ボタンと意味を並べる。
+ * 辞書に同じつづりの語があると辞書の熟語・構文も出るので、見出しで分ける。
+ */
+export function CustomPhraseSection({ word }) {
+  const phrases = word?.customPhrases ?? []
+  if (!phrases.length) return null
+  return (
+    <div data-custom-word-phrases>
+      <PhraseListHeading label="カードに書いた熟語・構文" count={phrases.length} />
+      <ul className="mt-2 space-y-1.5" data-speech-group>
+        {phrases.map((phrase) => (
+          <li key={phrase.phrase} className="flex items-start gap-2">
+            <RowSpeakButton text={phraseSpeechText({ phrase: phrase.phrase })} title="熟語" />
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
+              {phrase.meaning && <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 /** 1語と同じ意味で言いかえられる熟語。熟語ごとに発音ボタンと、1語との使い分けをつける。 */
 export function IdiomEquivalentSection({ phrases }) {
   if (!phrases.length) return null

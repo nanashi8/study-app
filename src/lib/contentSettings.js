@@ -63,6 +63,9 @@ export const SCOPE_SCREENS = Object.freeze({
   scienceHome: ['scienceHome', 'scienceUnit', 'scienceStudy', 'scienceQuiz', 'sciencePractice'],
 })
 
+// 自作カードの暗記・テストが使う、教科のアプリの設定（英語は英単語の値）。
+const CUSTOM_CARD_SCOPES = Object.freeze(['vocabLevels', 'kotenList', 'kanbunHome', 'mathMap', 'socialHome', 'scienceHome'])
+
 // いくつかの教材から開く暗記・テスト・結果・辞書の画面。開いた教材（scopes のどれか）の値を使い、
 // 単語帳や記録など教材の画面を通らずに開いたときは primary の教材の値を使う。
 // 結果画面は、その前の暗記・テストと同じ教材の値を使う。
@@ -75,6 +78,10 @@ export const SHARED_SCREENS = Object.freeze({
   kanbunStudy: { primary: 'kanbunHome', scopes: ['kanbunHome', 'literatureLibrary'] },
   wordDetail: { primary: 'vocabSearch', scopes: [...ENGLISH_CONTENT_SCREENS, 'literatureLibrary'] },
   sessionResult: { primary: null, scopes: null },
+  // 自作カードの暗記・テストは、開いた教科のアプリの値を使う（教科のアプリから開くと params.subject に教科が入る）。
+  // メニューから開いたときは全体の値を使う。
+  customCardStudy: { primary: null, scopes: CUSTOM_CARD_SCOPES },
+  customCardQuiz: { primary: null, scopes: CUSTOM_CARD_SCOPES },
 })
 
 // どの教材の画面も通らずに開いた画面（アプリのホーム・単語帳・自作単語など）が使う教材。
@@ -83,6 +90,7 @@ const APP_FALLBACK_SCOPES = Object.freeze({
   koten: 'kotenList',
   kanbun: 'kanbunHome',
   literature: 'literatureLibrary',
+  math: 'mathMap',
   social: 'socialHome',
   science: 'scienceHome',
 })
@@ -95,7 +103,7 @@ const OWNER_BY_SCREEN = new Map(
  * いまの画面が使う教材。共通の画面は、履歴をさかのぼって開いた教材を探す。
  * 途中で教材でも共通でもない画面（単語帳など）に当たったら、そこで探すのをやめる。
  */
-export function settingsScopeFor({ screen, stack = [] } = {}) {
+export function settingsScopeFor({ screen, stack = [], params = null } = {}) {
   const chain = [screen, ...[...(Array.isArray(stack) ? stack : [])].reverse().map((entry) => entry?.screen)]
   let primary = null
   let allowed = null
@@ -109,7 +117,8 @@ export function settingsScopeFor({ screen, stack = [] } = {}) {
       allowed = allowed ? allowed.filter((scope) => shared.scopes.includes(scope)) : shared.scopes
     }
   }
-  return primary ?? APP_FALLBACK_SCOPES[appHomeForScreen(screen).id] ?? null
+  // 自作カードの暗記・テストは、開いた教科のアプリの設定を使う（params.subject）。
+  return primary ?? APP_FALLBACK_SCOPES[appHomeForScreen(screen, params).id] ?? null
 }
 
 // 「自動」の声は null。クラウド（Realtime Database）は null を保存しないので、教材ごとの値では空文字で持つ。

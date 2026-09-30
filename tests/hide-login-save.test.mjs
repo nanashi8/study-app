@@ -47,8 +47,8 @@ const EXPECTED_ROWS = [
   ['support', 'diagnostic', '学習診断'],
   ['support', 'dictation', 'ディクテーション'],
   ['support', 'vocabCamera', '教科書から単語追加'],
-  ['support', 'customWords', '自作単語'],
   ['support', 'wordRequests', '辞書リクエスト一覧'],
+  ['cards', 'customWords', '自作カード'],
   ['records', 'myList', 'マイ学習ノート'],
   ['records', 'myLearning', '暗記・テストの記録'],
   ['records', 'myGrammar', 'マイ文法'],
@@ -165,6 +165,7 @@ test('メニューの台帳に「ログイン・保存」の行がなく、ほ�
     ['apps', 'スタディアプリ'],
     ['english', '英語の学習'],
     ['support', '学習サポート'],
+    ['cards', 'カード自作'],
     ['records', '保存・記録'],
     ['settings', '設定'],
     ['about', 'このアプリについて'],
@@ -225,7 +226,7 @@ test('アカウントの表示とログイン画面は、どこからも開け�
   assert.ok(!existsSync(join(ROOT, 'src/screens/Login.jsx')))
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routes = [...screenMap.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1])
-  assert.equal(routes.length, 87)
+  assert.equal(routes.length, 89)
   assert.ok(!routes.includes('login'))
   assert.doesNotMatch(app, /LoginScreen|screens\/Login/)
 
@@ -272,7 +273,7 @@ test('画面の文言で、ログインに触れたり、クラウド保存へ�
 
   // 直した3つの画面の案内。
   const customWords = read('src/screens/CustomWords.jsx')
-  assert.ok(customWords.includes("{'自作単語はこの端末に保存されます。'}"))
+  assert.ok(customWords.includes("{'自作カードはこの端末に保存されます。'}"))
   const camera = read('src/screens/VocabCamera.jsx')
   assert.ok(camera.includes("{'選んだ語だけを辞書登録リクエストへ送ります。'}"))
   const requests = read('src/screens/WordRequests.jsx')

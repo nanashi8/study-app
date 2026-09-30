@@ -6,7 +6,7 @@
 // 類義語・反対語・同じ意味の熟語の行には、人が1組ずつ書いた解説（word-relation-notes.js）を添える。
 // - つづりが似ていて間違えやすい語（spelling-confusables.js）
 // - 日本語に定着したカタカナ語（loanword-hints.js）
-// 自作単語は辞書の台帳に載らないので、類義語欄だけを見る。
+// 自作単語（英単語のカード）は辞書の台帳に載らないので、自分で書いた類義語・反意語・派生語・つづりが似た語だけを見る。
 import { getWord } from '../data/vocab.js'
 import { getPhrase } from '../data/phrases.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../data/word-idiom-equivalents.js'
@@ -265,8 +265,25 @@ export function idiomEquivalentsFor(word) {
     })
 }
 
+// 自作単語に自分で書いた「つづりが似ていて間違えやすい語」。辞書にある語はその語の辞書ページへ行ける。
+function customConfusablesFor(word) {
+  return (word.customConfusables ?? []).map((pair) => {
+    const entry = getWord(pair.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))
+    const other = entry && entry.word.toLowerCase() === pair.w.toLowerCase()
+      ? { ...entry, meaning: pair.m || entry.meaning }
+      : { id: null, word: pair.w, meaning: pair.m, phonetic: '', level: null }
+    return {
+      word: other,
+      segments: spellingDifference(word.word, other.word),
+      sameSound: false,
+      origin: null,
+    }
+  })
+}
+
 export function confusablesFor(word) {
-  if (!word?.id || word.custom) return []
+  if (word?.custom) return customConfusablesFor(word)
+  if (!word?.id) return []
   const others = [
     ...(CONFUSABLES_BY_WORD.get(word.id) ?? []).map((id) => getWord(id)).filter(Boolean),
     ...(CONFUSABLE_EXTRAS_BY_WORD.get(word.id) ?? []),

@@ -58,7 +58,7 @@ export const APP_HOMES = [
       'home', 'vocabLevels', 'vocabGroups', 'vocabDecks', 'vocabStudy', 'vocabQuiz',
       'sessionResult', 'wordDetail', 'rootDetail', 'etymologyPack', 'roots',
       'etymologyStudy', 'etymologyQuiz', 'myList',
-      'vocabCamera', 'customWords', 'readingList', 'readingRules',
+      'vocabCamera', 'readingList', 'readingRules',
       'readingPrep', 'sceneBundles', 'reader', 'readingSummary', 'phrases', 'phraseStudy', 'phraseQuiz',
       'listening', 'listeningQuiz', 'dictation', 'dictationPlay', 'vocabSearch',
       'wordRequests', 'grammar', 'grammarQuiz', 'grammarReference', 'grammarStrandReference', 'writing', 'writingPlay', 'writingExam',
@@ -69,17 +69,25 @@ export const APP_HOMES = [
 
 export const PORTAL_HOME = Object.freeze({ id: 'portal', screen: 'portal', label: 'スタディアプリ' })
 
+// 自作カードの画面（一覧・登録・暗記・テスト）は、どの教科のアプリからも開く。
+// 教科のアプリから開いたとき（params.subject）はそのアプリに属し、メニューから開いたときは入口のスタディアプリに属する。
+export const CUSTOM_CARD_SCREENS = Object.freeze(['customWords', 'customCardStudy', 'customCardQuiz'])
+
 const HOME_BY_SCREEN = new Map()
 for (const home of APP_HOMES) {
   for (const screen of home.screens) HOME_BY_SCREEN.set(screen, home)
 }
+const HOME_BY_ID = new Map(APP_HOMES.map((home) => [home.id, home]))
 
 /**
  * その画面が属するアプリのホーム。どのアプリにも属さない共通画面
  * （設定・記録・マイ学習）は、入口のスタディアプリを返す。
+ * 自作カードの画面は、開いたときの教科（params.subject）のアプリ。
  */
-export function appHomeForScreen(screen) {
-  const home = HOME_BY_SCREEN.get(screen)
+export function appHomeForScreen(screen, params = null) {
+  const home = CUSTOM_CARD_SCREENS.includes(screen)
+    ? HOME_BY_ID.get(params?.subject)
+    : HOME_BY_SCREEN.get(screen)
   if (!home) return PORTAL_HOME
   return { id: home.id, screen: home.screen, label: home.label }
 }
@@ -93,8 +101,8 @@ export function isAppHomeScreen(screen) {
  * 履歴が無いときの戻り先。
  * アプリの中にいるならそのアプリのホームへ、ホームにいるなら入口へ戻す。
  */
-export function fallbackDestination(screen) {
+export function fallbackDestination(screen, params = null) {
   if (screen === 'portal') return null
-  const home = appHomeForScreen(screen)
+  const home = appHomeForScreen(screen, params)
   return home.screen === screen ? PORTAL_HOME.screen : home.screen
 }

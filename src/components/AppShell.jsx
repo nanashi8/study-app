@@ -10,6 +10,8 @@ import { GlobalSpeechConsole } from './SpeechConsole.jsx'
 // 戻る操作とメニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
 export function AppShell({ children, showGlobalMenu = true }) {
   const screen = useStore((state) => state.screen)
+  // 自作カードの画面は、開いた教科のアプリを上部に示す（lib/appHome.js）。
+  const screenParams = useStore((state) => state.params)
   const stack = useStore((state) => state.stack)
   const stackLength = stack.length
   const globalBack = useStore((state) => state.globalBack)
@@ -44,7 +46,7 @@ export function AppShell({ children, showGlobalMenu = true }) {
 
   // 中央は「いまいるアプリのホームへ」。アプリのホームにいるときは入口へ戻す。
   // どの画面からでも一度で自分のアプリへ帰れるようにするための共通導線。
-  const home = appHomeForScreen(screen)
+  const home = appHomeForScreen(screen, screenParams)
   const atHome = isAppHomeScreen(screen)
   const homeLabel = atHome ? 'スタディアプリ' : home.label
   const goHomeFromBar = () => {

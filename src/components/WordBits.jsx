@@ -62,6 +62,17 @@ function SenseList({ senses, baseRank }) {
   )
 }
 
+/** 自作単語に自分で書いた語の成り立ち。辞書の語の「語の成り立ち」と同じ見出しで出す。 */
+export function CustomEtymology({ word, className = '', heading = true }) {
+  if (!word?.custom || !word.customEtymology) return null
+  return (
+    <div className={className} data-custom-word-etymology>
+      {heading && <p className="mb-1 text-sm font-extrabold text-brand-700">語の成り立ち</p>}
+      <p className="text-sm font-bold leading-relaxed text-ink/75">{word.customEtymology}</p>
+    </div>
+  )
+}
+
 export function OtherSenses({ senses = [], level, className = '' }) {
   if (!senses.length) return null
   const baseRank = LEVELS.findIndex((item) => item.id === level)

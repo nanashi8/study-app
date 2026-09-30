@@ -79,6 +79,16 @@ export const CONTENTS = [
     screen: 'scienceHome',
     status: 'available',
   },
+  {
+    // 自分で作るカード。テンプレートで登録し、教科・カテゴリーごとに暗記・テストする（教科を選んだカードは、その教科のアプリにも出る）。
+    id: 'custom-cards',
+    title: '自作カード',
+    subtitle: 'テンプレートでカードを作り、教科・カテゴリーごとに暗記・テストする',
+    emoji: '✍️',
+    color: '#0891b2',
+    screen: 'customWords',
+    status: 'available',
+  },
 ]
 
 export const CONTENTS_BY_ID = Object.fromEntries(CONTENTS.map((c) => [c.id, c]))

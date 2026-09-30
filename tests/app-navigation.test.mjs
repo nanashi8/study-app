@@ -5,6 +5,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import {
   APP_HOMES,
+  CUSTOM_CARD_SCREENS,
   PORTAL_HOME,
   appHomeForScreen,
   fallbackDestination,
@@ -26,7 +27,21 @@ const ROUTED_SCREENS = (() => {
 
 // どのアプリにも属さない共通画面。入口（スタディアプリ）へ戻す。
 // どのアプリにも属さない画面（メニューのいちばん下の出典のページもここ）。
-const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning', 'credits'])
+// 自作カードの画面は、開いた教科のアプリ（params.subject）に属し、メニューから開いたときは入口に属する。
+const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning', 'credits', ...CUSTOM_CARD_SCREENS])
+
+test('自作カードの画面は、教科のアプリから開くとそのアプリ、メニューから開くと入口のスタディアプリに属する', () => {
+  assert.deepEqual([...CUSTOM_CARD_SCREENS], ['customWords', 'customCardStudy', 'customCardQuiz'])
+  const apps = { english: 'home', koten: 'kotenList', kanbun: 'kanbunHome', math: 'mathMap', social: 'socialHome', science: 'scienceHome' }
+  for (const screen of CUSTOM_CARD_SCREENS) {
+    assert.equal(appHomeForScreen(screen).screen, PORTAL_HOME.screen, `${screen}：メニューから`)
+    assert.equal(fallbackDestination(screen), PORTAL_HOME.screen)
+    for (const [subject, home] of Object.entries(apps)) {
+      assert.equal(appHomeForScreen(screen, { subject }).screen, home, `${screen}：${subject}から`)
+      assert.equal(fallbackDestination(screen, { subject }), home)
+    }
+  }
+})
 
 test('ルーティングされた全画面に、帰る先が決まっている', () => {
   assert.ok(ROUTED_SCREENS.length >= 60, `画面が${ROUTED_SCREENS.length}件しか読めていない`)

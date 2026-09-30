@@ -31,6 +31,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { getKanbunKundokuExercise } from '../data/kanbun-kundoku.js'
 import { unitById } from '../data/math.js'
 import { bookMeta, getSubjectQuestion, getSubjectTerm, getSubjectUnit } from '../data/subjects/index.js'
+import { categoryTitle, getCustomCard, registeredCustomCategories, templateFor } from './customCards.js'
 import { analyzeLearning, learningSkillForItem } from './learningAnalytics.js'
 import {
   LONG_TERM_SRS_BOX,
@@ -80,6 +81,8 @@ export const LEARNING_REPORT_DOMAINS = Object.freeze({
   socialPractice: { label: '社会の演習', subject: 'social', skill: 'social_practice', memory: false, test: true, color: '#0e7490' },
   scienceTerms: { label: '理科の重要語句', subject: 'science', skill: 'science_terms', memory: true, test: true, color: '#15803d' },
   sciencePractice: { label: '理科の演習', subject: 'science', skill: 'science_practice', memory: false, test: true, color: '#0369a1' },
+  // 自作カード（英単語以外のテンプレート）。暗記を終えた画面の記録に使う。学習の分析の成績表には入れない（利用者が作るカードのため）。
+  customCards: { label: '自作カード', subject: 'custom', skill: 'custom_cards', memory: true, test: true, color: '#0891b2' },
 })
 
 const domainForSkill = Object.fromEntries(
@@ -229,6 +232,14 @@ function descriptor(domain, item, fallbackId) {
     subtitle: item?.desc ?? '',
     field: item?.strand ?? '数学全般',
     level: item?.grade ?? '',
+  }
+  if (domain === 'customCards') return {
+    catalogResolved: Boolean(item),
+    id,
+    title: item?.front ?? fallbackId,
+    subtitle: item?.back ?? '',
+    field: item ? categoryTitle(registeredCustomCategories(), item.category) : '自作カード',
+    level: item ? templateFor(item.template).label : '',
   }
   return { id, catalogResolved: false, title: fallbackId, subtitle: '', field: 'その他', level: '' }
 }
@@ -594,6 +605,7 @@ const COMPLETION_CONTENTS = Object.freeze({
   'kanbun-culture': Object.freeze({ domain: 'kanbunCulture', get: getKanbunCulture }),
   'social-terms': Object.freeze({ domain: 'socialTerms', get: getSubjectTerm }),
   'science-terms': Object.freeze({ domain: 'scienceTerms', get: getSubjectTerm }),
+  'custom-cards': Object.freeze({ domain: 'customCards', get: getCustomCard }),
 })
 
 export const STUDY_COMPLETION_CONTENT_IDS = Object.freeze(Object.keys(COMPLETION_CONTENTS))
@@ -841,6 +853,14 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
     return {
       screen: `${subject}Practice`,
       params: { ids: questionIds, title: title || '学習記録から選んだ演習', size: questionIds.length },
+    }
+  }
+  if (domain === 'customCards') {
+    const cardIds = uniqueIds.filter((id) => getCustomCard(id))
+    if (!cardIds.length) return { screen: 'customWords', params: {} }
+    return {
+      screen: mode === 'memory' ? 'customCardStudy' : 'customCardQuiz',
+      params: { ids: cardIds, title: title || '学習記録から選んだ自作カード', size: cardIds.length },
     }
   }
   if (domain === 'math') return {

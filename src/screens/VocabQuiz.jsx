@@ -19,7 +19,7 @@ import { quizMeaning } from '../data/compact.js'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
-import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
+import { CustomEtymology, EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
@@ -463,6 +463,12 @@ export function VocabQuizScreen() {
                   <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
                 )}
                 <EtymologyBlock word={word} lookalikeCollapsed />
+              </div>
+            )}
+            {/* 自作単語（英単語のカード）は、自分で書いた語の成り立ちを同じ所に出す。 */}
+            {word.custom && word.customEtymology && (
+              <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
+                <CustomEtymology word={word} />
               </div>
             )}
             <button onClick={saveBeforeDetail} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">

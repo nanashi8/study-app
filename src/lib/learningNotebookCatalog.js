@@ -29,6 +29,14 @@ import {
 } from './learningNotebook.js'
 import { grammarRuleExplanationFor } from './grammarQuestionExplanations.js'
 import { bookMeta, getSubjectUnit, subjectQuestions, subjectTerms } from '../data/subjects/index.js'
+import {
+  cardSearchText,
+  categoryTitle,
+  customCardList,
+  getCustomCard,
+  registeredCustomCategories,
+  templateFor,
+} from './customCards.js'
 
 // 教材の名前・単位は、教材データを読まずに使えるよう learningNotebook.js に置いている。ここからも同じものを出す。
 export { NOTEBOOK_DOMAINS, NOTEBOOK_DOMAIN_BY_ID }
@@ -219,6 +227,8 @@ const CATALOG = Object.freeze({
   socialPractice: adapt('socialPractice', subjectQuestions('social'), subjectQuestionEntry),
   scienceTerms: adapt('scienceTerms', subjectTerms('science'), subjectTermEntry),
   sciencePractice: adapt('sciencePractice', subjectQuestions('science'), subjectQuestionEntry),
+  // 自作カードは利用者が作るので、固定の一覧には持たない（下の customCardItems で後から足す）。
+  customCards: [],
 })
 
 const CATALOG_MAPS = Object.freeze(
@@ -247,20 +257,44 @@ const customVocabItem = (itemId) => {
   return word ? adapt('vocab', [word], vocabEntry)[0] : null
 }
 
+// 自作カード（英単語以外のテンプレート）。分類（教科・カテゴリー）の名前とテンプレートの名前を添える。
+const customCardEntry = (card) => ({
+  title: card.front,
+  subtitle: card.back,
+  detail: card.note || card.example || '',
+  category: categoryTitle(registeredCustomCategories(), card.category),
+  level: templateFor(card.template).label,
+  search: [cardSearchText(card)],
+})
+
+const customCardItems = () => adapt('customCards', customCardList(), customCardEntry)
+
+const customCardItem = (itemId) => {
+  const card = getCustomCard(itemId)
+  return card ? adapt('customCards', [card], customCardEntry)[0] : null
+}
+
+// 固定の一覧にない項目（自作単語・自作カード）を引く。
+const customItem = (domain, itemId) => {
+  if (domain === 'vocab') return customVocabItem(itemId)
+  if (domain === 'customCards') return customCardItem(itemId)
+  return null
+}
+
 export function notebookItemsForDomain(domain) {
   const items = CATALOG[domain] ?? []
-  return domain === 'vocab' ? [...customVocabItems(), ...items] : items
+  if (domain === 'vocab') return [...customVocabItems(), ...items]
+  if (domain === 'customCards') return customCardItems()
+  return items
 }
 
 export function resolveNotebookItem(domainOrRef, itemId) {
   if (itemId !== undefined) {
-    return CATALOG_MAPS[domainOrRef]?.get(itemId)
-      ?? (domainOrRef === 'vocab' ? customVocabItem(itemId) : null)
+    return CATALOG_MAPS[domainOrRef]?.get(itemId) ?? customItem(domainOrRef, itemId)
   }
   const parsed = parseNotebookRef(domainOrRef)
   if (!parsed) return null
-  return CATALOG_MAPS[parsed.domain]?.get(parsed.itemId)
-    ?? (parsed.domain === 'vocab' ? customVocabItem(parsed.itemId) : null)
+  return CATALOG_MAPS[parsed.domain]?.get(parsed.itemId) ?? customItem(parsed.domain, parsed.itemId)
 }
 
 export function searchNotebookItems(domain, query = '') {
@@ -314,6 +348,7 @@ const SRS_FIELD_BY_DOMAIN = Object.freeze({
   kanbunKundoku: 'kanbunKundokuSrs',
   socialTerms: 'socialTermSrs',
   scienceTerms: 'scienceTermSrs',
+  customCards: 'customCardSrs',
 })
 
 const srsForDomain = (state, domain) => state?.[SRS_FIELD_BY_DOMAIN[domain]] ?? {}

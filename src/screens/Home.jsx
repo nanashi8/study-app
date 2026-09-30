@@ -1,4 +1,5 @@
 import { useStore } from '../store/useStore.js'
+import { CustomCardsMenuButton } from '../components/CustomCardsEntry.jsx'
 import {
   ArrowRight,
   Book,
@@ -66,6 +67,8 @@ function LearningMenu({ navigate }) {
             {PRIMARY_LEARNING_MODES.map((mode) => (
               <LearningModeButton key={mode.id} mode={mode} onOpen={open} />
             ))}
+            {/* 教科「英語」を選んで登録した自作カード（英単語・用語と意味など）。 */}
+            <CustomCardsMenuButton subject="english" />
           </div>
         </section>
         <p className="rounded-2xl bg-white px-4 py-3 text-sm font-bold leading-relaxed text-ink/50 shadow-sm">

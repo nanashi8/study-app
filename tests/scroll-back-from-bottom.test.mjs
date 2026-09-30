@@ -237,6 +237,9 @@ class Phone {
         kotenGrammarQuiz: { ids: ids(kotenGrammar.KOTEN_GRAMMAR, 10) },
         kotenCultureStudy: { ids: ids(kotenCulture.KOTEN_CULTURE, 10) },
         kotenCultureQuiz: { ids: ids(kotenCulture.KOTEN_CULTURE, 10) },
+        // 自作カードは、seedFor が入れる決まった ID の見本のカード。
+        customCardStudy: { ids: [1, 2, 3, 4, 5].map((index) => `c-scroll${index}`), title: '見本' },
+        customCardQuiz: { ids: [1, 2, 3, 4, 5].map((index) => `c-scroll${index}`), title: '見本' },
         // 社会・理科は、それぞれ最初の単元（地理「世界の姿」・理科1年の最初の単元）を開く。
         ...Object.fromEntries(['social', 'science'].flatMap((subject) => {
           const meta = subjects.SUBJECTS[subject]
@@ -323,12 +326,34 @@ class Phone {
     })
   }
 
-  // まっさらな記録では中身が空になる画面に、中身を入れる（自作の単語・保存した文法）。
+  // まっさらな記録では中身が空になる画面に、中身を入れる（自作カード・保存した文法）。
   seedFor(screen) {
     return this.evaluate(async (name) => {
       const state = window.__scrollTest.store.getState()
       if (name === 'customWords' && state.customWords.length < 20) {
         for (let index = 0; index < 20; index += 1) state.saveCustomWord({ word: `sample${index}`, meaning: `見本の語${index}` })
+        // 自作カードの画面は分類（教科・カテゴリー）ごとに並ぶので、カテゴリーも作って一覧を縦に送れる長さにする。
+        for (let index = 0; index < 5; index += 1) {
+          const category = state.saveCustomCategory({ title: `見本のカテゴリー${index}` })
+          state.saveCustomCard({ template: 'term', category: category.id, front: `見本の用語${index}`, back: `見本の意味${index}` })
+        }
+      }
+      // 自作カードの暗記・テストは、決まった ID の見本のカード（screenParams の customCardStudy・customCardQuiz）。
+      if ((name === 'customCardStudy' || name === 'customCardQuiz') && !state.customCards.some((card) => card.id === 'c-scroll1')) {
+        const long = '見本の文。'.repeat(40)
+        state.importCustomLibrary({
+          cards: [1, 2, 3, 4, 5].map((index) => ({
+            id: `c-scroll${index}`,
+            template: 'koten',
+            category: 'subject:koten',
+            front: `見本の古語${index}`,
+            reading: 'みほん',
+            back: `見本の意味${index}。${long}`,
+            example: long,
+            exampleTranslation: long,
+            note: long,
+          })),
+        }, 'merge')
       }
       if ((name === 'myGrammar' || name === 'writingGrammarReview') && state.myGrammarList.length < 20) {
         const { WRITING_GRAMMAR } = await import('/src/data/writing.js')
@@ -552,8 +577,8 @@ test('直す前の作りでは、欄の下端から先の指でページがず�
   for (const [where, state] of Object.entries(fixed)) assertPageStill(state, `直した作り・${where}`)
 })
 
-test('全87画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
-  assert.equal(SCREEN_NAMES.length, 87)
+test('全89画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
+  assert.equal(SCREEN_NAMES.length, 89)
   const checked = new Set()
   await eachScreen(async (phone, screen) => {
     const opened = await phone.openScreen(screen, paramsByScreen[screen])
@@ -595,10 +620,10 @@ test('全87画面で、見えている範囲のどの状態でもページその
   }
   await phone.closeMenu()
   await phone.applyFrameState('normal')
-  assert.equal(checked.size, 87 * FRAME_STATES.length + FRAME_STATES.length)
+  assert.equal(checked.size, 89 * FRAME_STATES.length + FRAME_STATES.length)
 })
 
-test('全87画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
+test('全89画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
   const counts = new Map()
   const revealedScreens = []
   const smallScreens = []
@@ -657,7 +682,7 @@ test('全87画面の縦に動く欄で、一番下から上へ戻れる', async 
   t.diagnostic(`縦に動く欄のある画面 ${SCREEN_NAMES.length - without.length}/${SCREEN_NAMES.length}（欄 ${[...counts.values()].reduce((sum, count) => sum + count, 0)}、状態2つとメニューで ${total} 回）`)
   t.diagnostic(`中身を開いてからも確かめた画面 ${revealedScreens.length}：${revealedScreens.join('・')}`)
   t.diagnostic(`小さい画面（${SMALL_VIEWPORT.width}×${SMALL_VIEWPORT.height}）で確かめた画面 ${smallScreens.length}：${smallScreens.join('・')}`)
-  assert.equal(counts.size, 87)
+  assert.equal(counts.size, 89)
   // 標準の大きさで縦に動く欄がない画面は、決めた画面だけ（ほかの画面で欄がなくなったら理由を確かめる）。
   assert.deepEqual([...new Set(smallScreens)].sort(), [...SMALL_ONLY_SCREENS].sort(), '標準の大きさで縦に動く欄がない画面')
   // どの画面にも、一番下まで送る縦の欄がある（中身が空の画面には中身を入れてから開く）。
@@ -666,14 +691,14 @@ test('全87画面の縦に動く欄で、一番下から上へ戻れる', async 
 
 test('外枠の決まりを保つ：キーボードの間は外枠を縮めない・シートは見えている範囲に収める・上下の余白の位置', async () => {
   const [phone] = phones
-  // 打つ欄のある画面：英作文の文法別トラック（WritingExam のチャレンジ）・英和辞書の検索・自作の単語。
+  // 打つ欄のある画面：英作文の文法別トラック（WritingExam のチャレンジ）・英和辞書の検索・自作カード。
   for (const [screen, selector] of [
     ['writingExam', 'textarea'],
     ['vocabSearch', 'input'],
     ['customWords', 'input'],
   ]) {
     await phone.openScreen(screen, paramsByScreen[screen])
-    // 自作の単語は「単語を登録する」を押すと打つ欄が出る。
+    // 自作カードは「カードを作る」を押すと打つ欄が出る。
     if (screen === 'customWords') await phone.page.click('[data-custom-word-add]')
     assert.ok(await phone.evaluate((css) => Boolean(document.querySelector(`.study-app-content ${css}`)), selector), `${screen}: 打つ欄がない`)
     const result = await phone.evaluate(([css, stateId]) => {

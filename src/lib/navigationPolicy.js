@@ -36,6 +36,8 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'scienceStudy',
   'scienceQuiz',
   'sciencePractice',
+  'customCardStudy',
+  'customCardQuiz',
 ]))
 
 const SESSION_REENTRY_SCREENS = new Set([

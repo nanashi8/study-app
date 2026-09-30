@@ -28,8 +28,8 @@ export function ContentMenuSection({ title, children, ...props }) {
   )
 }
 
-/** コンテンツ1つの入口。英語アプリのホームと同じ形（色のついたアイコン・名前・矢印）。 */
-export function ContentMenuButton({ icon: Icon, color, label, ...props }) {
+/** コンテンツ1つの入口。英語アプリのホームと同じ形（色のついたアイコン・名前・矢印）。detail は右に添える数など。 */
+export function ContentMenuButton({ icon: Icon, color, label, detail = null, ...props }) {
   return (
     <button
       type="button"
@@ -43,6 +43,7 @@ export function ContentMenuButton({ icon: Icon, color, label, ...props }) {
         <Icon size={19} />
       </span>
       <span className="min-w-0 flex-1 font-display text-sm font-extrabold text-ink">{label}</span>
+      {detail && <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">{detail}</span>}
       <ArrowRight size={16} className="shrink-0 text-ink/25" />
     </button>
   )
