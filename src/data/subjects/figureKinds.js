@@ -125,4 +125,8 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'homologousLimbs',
   'tickerTape',
   'slopeForces',
+  'forceComposition',
+  'actionReaction',
+  'waterPressure',
+  'springBuoyancy',
 ])

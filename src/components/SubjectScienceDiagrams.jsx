@@ -3379,8 +3379,10 @@ function SlopeForcesDiagram({ angle = 30 }) {
   const par = [C[0] + u[0] * g * Math.sin(t), C[1] + u[1] * g * Math.sin(t)]
   const per = [C[0] + nIn[0] * g * Math.cos(t), C[1] + nIn[1] * g * Math.cos(t)]
   const f = (v) => v.toFixed(1)
+  const viewTop = Math.max(0, Math.floor(Math.min(top, C[1] - 30) - 12))
+  const perRight = per[0] + 6 + 70 <= 298
   return (
-    <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="斜面上の物体にはたらく重力の分解" data-subject-diagram="slopeForces">
+    <svg viewBox={`0 ${viewTop} 300 ${200 - viewTop}`} className="h-auto w-full" role="img" aria-label="斜面上の物体にはたらく重力の分解" data-subject-diagram="slopeForces">
       <path d={`M${f(left)},180 L280,180 L280,${f(top)} Z`} fill="#e7e5e4" stroke="#78716c" strokeWidth="1.2" />
       <g transform={`translate(${f(C[0])} ${f(C[1])}) rotate(${-angle})`}>
         <rect x="-18" y="-10" width="36" height="16" rx="3" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
@@ -3394,8 +3396,139 @@ function SlopeForcesDiagram({ angle = 30 }) {
       <Arrow from={C} to={per} color="#15803d" width={2.2} />
       <Label x={G[0] + 6} y={G[1] + 10} size={9} weight="800" color="#b91c1c">重力</Label>
       <Label x={par[0] - 6} y={par[1] - 4} anchor="end" size={8.5} weight="800" color="#1d4ed8">斜面に平行な分力</Label>
-      <Label x={per[0] + 6} y={per[1] + 2} size={8.5} weight="800" color="#15803d">斜面に垂直な分力</Label>
+      <Label x={perRight ? per[0] + 6 : per[0]} y={perRight ? per[1] + 2 : per[1] + 16} anchor={perRight ? 'start' : 'middle'} size={8.5} weight="800" color="#15803d">斜面に垂直な分力</Label>
       <Label x={left + 34} y={174} size={8.5} color={LINE}>{`傾き${angle}°`}</Label>
+    </svg>
+  )
+}
+
+// ── 力の合成 ──────────────────────────────────────────────────────────────
+//   { name: 'forceComposition' }
+// a：同じ向きの2力の合力は和。b：反対向きの2力の合力は差で、大きいほうの向き。c：角度をもつ2力の合力は、平行四辺形の対角線。
+function ForceCompositionDiagram() {
+  const RED = '#dc2626'
+  const BLUE = '#2563eb'
+  const SUM = '#7c3aed'
+  const scale = 20
+  return (
+    <svg viewBox="0 0 300 226" className="h-auto w-full" role="img" aria-label="力の合成" data-subject-diagram="forceComposition">
+      <Label x={8} y={16} size={9} weight="800">a 同じ向きの2力</Label>
+      <circle cx="60" cy="36" r="3" fill={INK} />
+      <Arrow from={[60, 32]} to={[60 + 3 * scale, 32]} color={RED} width={2.2} />
+      <Arrow from={[60, 42]} to={[60 + 2 * scale, 42]} color={BLUE} width={2.2} />
+      <Arrow from={[60, 58]} to={[60 + 5 * scale, 58]} color={SUM} width={3} />
+      <Label x={126} y={30} size={8.5} weight="800" color={RED}>3N</Label>
+      <Label x={106} y={46} size={8.5} weight="800" color={BLUE}>2N</Label>
+      <Label x={166} y={62} size={8.5} weight="800" color={SUM}>合力 3＋2＝5N</Label>
+
+      <Label x={8} y={90} size={9} weight="800">b 反対向きの2力</Label>
+      <circle cx="80" cy="110" r="3" fill={INK} />
+      <Arrow from={[80, 106]} to={[80 + 5 * scale, 106]} color={RED} width={2.2} />
+      <Arrow from={[80, 116]} to={[80 - 2 * scale, 116]} color={BLUE} width={2.2} />
+      <Arrow from={[80, 132]} to={[80 + 3 * scale, 132]} color={SUM} width={3} />
+      <Label x={186} y={110} size={8.5} weight="800" color={RED}>5N</Label>
+      <Label x={20} y={120} anchor="end" size={8.5} weight="800" color={BLUE}>2N</Label>
+      <Label x={146} y={136} size={8.5} weight="800" color={SUM}>合力 5－2＝3N</Label>
+
+      <Label x={8} y={160} size={9} weight="800">c 角度をもつ2力</Label>
+      <line x1="160" y1="212" x2="200" y2="170" stroke={LINE} strokeWidth="1" strokeDasharray="3 3" />
+      <line x1="100" y1="170" x2="200" y2="170" stroke={LINE} strokeWidth="1" strokeDasharray="3 3" />
+      <circle cx="60" cy="212" r="3" fill={INK} />
+      <Arrow from={[60, 212]} to={[160, 212]} color={RED} width={2.2} />
+      <Arrow from={[60, 212]} to={[100, 170]} color={BLUE} width={2.2} />
+      <Arrow from={[60, 212]} to={[200, 170]} color={SUM} width={3} />
+      <Label x={206} y={170} size={8.5} weight="800" color={SUM}>合力</Label>
+      <Label x={206} y={184} size={8} color={LINE}>（平行四辺形の対角線）</Label>
+    </svg>
+  )
+}
+
+// ── 作用・反作用 ────────────────────────────────────────────────────────────
+//   { name: 'actionReaction' }
+// スケートボードに乗ったAがBをおすと、同時にBもAを、同じ大きさで逆向きにおし返す。2人とも動く。
+function ActionReactionDiagram() {
+  const person = (x, color, name) => (
+    <g>
+      <rect x={x} y="54" width="70" height="60" rx="10" fill={color} stroke={LINE} strokeWidth="1" />
+      <text x={x + 35} y={90} fontSize="14" fontWeight="800" textAnchor="middle" fill={INK}>{name}</text>
+      <line x1={x + 6} y1="120" x2={x + 64} y2="120" stroke={DARK} strokeWidth="4" strokeLinecap="round" />
+      <circle cx={x + 16} cy="127" r="4" fill={DARK} />
+      <circle cx={x + 54} cy="127" r="4" fill={DARK} />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 180" className="h-auto w-full" role="img" aria-label="作用・反作用" data-subject-diagram="actionReaction">
+      {person(70, '#dbeafe', 'A')}
+      {person(140, '#fee2e2', 'B')}
+      <Arrow from={[140, 74]} to={[196, 74]} color="#dc2626" width={2.6} />
+      <Arrow from={[140, 96]} to={[84, 96]} color="#2563eb" width={2.6} />
+      <line x1="140" y1="54" x2="140" y2="114" stroke={INK} strokeWidth="1" />
+      <Label x={196} y={150} anchor="middle" size={8.5} weight="800" color="#b91c1c">作用：AがBをおす力</Label>
+      <Label x={100} y={150} anchor="middle" size={8.5} weight="800" color="#1d4ed8">反作用：BがAをおす力</Label>
+      <Label x={150} y={172} anchor="middle" size={8.5} color={LINE}>2つの物体の間で、同じ大きさ・逆向きに同時にはたらく</Label>
+      <Label x={150} y={30} anchor="middle" size={8.5} color={LINE}>AがBをおすと、AもBも動く</Label>
+    </svg>
+  )
+}
+
+// ── 水圧 ─────────────────────────────────────────────────────────────────
+//   { name: 'waterPressure' }
+// 左：深い穴ほど水が勢いよく出る。右：水中の物体には、あらゆる面に垂直に水圧がはたらき、深い下面ほど大きい。
+function WaterPressureDiagram() {
+  return (
+    <svg viewBox="0 0 300 206" className="h-auto w-full" role="img" aria-label="水圧" data-subject-diagram="waterPressure">
+      <rect x="22" y="44" width="96" height="136" fill={WATER} opacity="0.8" />
+      <path d="M20,30 L20,180 L120,180 L120,30" fill="none" stroke={LINE} strokeWidth="1.4" />
+      {[[70, 'M120,70 Q134,70 146,180'], [110, 'M120,110 Q146,110 164,180'], [150, 'M120,150 Q158,150 184,180']].map(([y, d]) => (
+        <g key={y}>
+          <circle cx="120" cy={y} r="2.4" fill="#ffffff" stroke={LINE} strokeWidth="0.8" />
+          <path d={d} fill="none" stroke="#0284c7" strokeWidth="2.2" />
+        </g>
+      ))}
+      <line x1="8" y1="180" x2="192" y2="180" stroke={DARK} strokeWidth="1.2" />
+      <Label x={70} y={200} anchor="middle" size={8.5} color={LINE}>深い穴ほど勢いよく出る</Label>
+
+      <rect x="202" y="44" width="90" height="136" fill={WATER} opacity="0.8" />
+      <path d="M200,30 L200,180 L294,180 L294,30" fill="none" stroke={LINE} strokeWidth="1.4" />
+      <rect x="231" y="96" width="32" height="32" fill="#fde68a" stroke="#a16207" strokeWidth="1" />
+      {[237, 247, 257].map((x) => <Arrow key={`t${x}`} from={[x, 82]} to={[x, 94]} color="#dc2626" width={1.6} />)}
+      {[237, 247, 257].map((x) => <Arrow key={`b${x}`} from={[x, 152]} to={[x, 130]} color="#dc2626" width={2.2} />)}
+      {[[104, 13], [120, 17]].map(([y, len]) => (
+        <g key={y}>
+          <Arrow from={[229 - len, y]} to={[229, y]} color="#dc2626" width={1.6} />
+          <Arrow from={[265 + len, y]} to={[265, y]} color="#dc2626" width={1.6} />
+        </g>
+      ))}
+      <Label x={247} y={200} anchor="middle" size={8.5} color={LINE}>下面の水圧＞上面の水圧</Label>
+    </svg>
+  )
+}
+
+// ── 浮力の大きさの求め方 ─────────────────────────────────────────────────────
+//   { name: 'springBuoyancy' }
+// 空気中で1.5Nを示した物体を水中に全部しずめると、ばねばかりは1.0Nを示す。浮力は 1.5－1.0＝0.5N。
+function SpringBuoyancyDiagram() {
+  const scale = (x, reading) => (
+    <g>
+      <rect x={x - 10} y="8" width="20" height="46" rx="3" fill="#f1f5f9" stroke={LINE} strokeWidth="1" />
+      {[16, 24, 32, 40, 48].map((y) => <line key={y} x1={x - 6} y1={y} x2={x - 1} y2={y} stroke={LINE} strokeWidth="0.8" />)}
+      <line x1={x} y1="54" x2={x} y2="84" stroke={DARK} strokeWidth="1.4" />
+      <Label x={x + 16} y={34} size={10} weight="800" color="#b91c1c">{reading}</Label>
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="浮力の大きさの求め方" data-subject-diagram="springBuoyancy">
+      {scale(80, '1.5N')}
+      <rect x="64" y="84" width="32" height="32" fill="#fde68a" stroke="#a16207" strokeWidth="1" />
+      <Label x={80} y={140} anchor="middle" size={9} weight="800">空気中</Label>
+      {scale(220, '1.0N')}
+      <rect x="180" y="100" width="80" height="80" fill={WATER} opacity="0.8" />
+      <path d="M178,92 L178,182 L262,182 L262,92" fill="none" stroke={LINE} strokeWidth="1.3" />
+      <rect x="204" y="124" width="32" height="32" fill="#fde68a" stroke="#a16207" strokeWidth="1" />
+      <Arrow from={[220, 168]} to={[220, 146]} color="#2563eb" width={2.4} />
+      <Label x={244} y={174} size={8.5} weight="800" color="#1d4ed8">浮力</Label>
+      <Label x={220} y={200} anchor="middle" size={9} weight="800">水中</Label>
+      <Label x={150} y={210} anchor="middle" size={9} weight="800" color="#1d4ed8">浮力＝1.5－1.0＝0.5N</Label>
     </svg>
   )
 }
@@ -3490,4 +3623,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   homologousLimbs: HomologousLimbsDiagram,
   tickerTape: TickerTapeDiagram,
   slopeForces: SlopeForcesDiagram,
+  forceComposition: ForceCompositionDiagram,
+  actionReaction: ActionReactionDiagram,
+  waterPressure: WaterPressureDiagram,
+  springBuoyancy: SpringBuoyancyDiagram,
 })
