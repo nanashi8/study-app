@@ -17,13 +17,13 @@ function Label({ x, y, children, anchor = 'start', size = 10, color = INK, weigh
 }
 
 /** 引き出し線つきの名前。from（部分の点）から to（文字の端）へ線を引き、文字を置く。 */
-function Callout({ from, to, text, anchor = to[0] < from[0] ? 'end' : 'start' }) {
+function Callout({ from, to, text, anchor = to[0] < from[0] ? 'end' : 'start', color = INK }) {
   const [x, y] = to
   return (
     <g>
       <line x1={from[0]} y1={from[1]} x2={x} y2={y} stroke={LINE} strokeWidth="0.8" />
       <circle cx={from[0]} cy={from[1]} r="1.6" fill={LINE} />
-      <Label x={anchor === 'end' ? x - 3 : x + 3} y={y + 3.5} anchor={anchor}>{text}</Label>
+      <Label x={anchor === 'end' ? x - 3 : x + 3} y={y + 3.5} anchor={anchor} color={color}>{text}</Label>
     </g>
   )
 }
@@ -1402,6 +1402,38 @@ function ReactionModelsDiagram({ reactions = [] }) {
   )
 }
 
+// ── 植物の細胞と動物の細胞 ────────────────────────────────────────────────────
+//   { name: 'cellStructure' }
+// 上が植物の細胞、下が動物の細胞。緑の字（細胞壁・液胞・葉緑体）は植物の細胞だけに見られるつくり。
+function CellStructureDiagram() {
+  const plantOnly = '#15803d'
+  const chloroplasts = [[34, 100], [54, 108], [84, 108], [114, 106], [134, 104], [138, 40], [110, 34], [80, 34], [50, 36]]
+  return (
+    <svg viewBox="0 0 300 250" className="h-auto w-full" role="img" aria-label="植物の細胞と動物の細胞" data-subject-diagram="cellStructure">
+      <Label x={20} y={16} size={10} weight="800">植物の細胞</Label>
+      <rect x="20" y="24" width="130" height="94" rx="6" fill="#dcfce7" stroke="#15803d" strokeWidth="2.4" />
+      <rect x="26" y="30" width="118" height="82" rx="4" fill="#f0fdf4" stroke="#16a34a" strokeWidth="1" />
+      <ellipse cx="72" cy="72" rx="40" ry="24" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1" />
+      {chloroplasts.map(([x, y]) => <ellipse key={`${x}-${y}`} cx={x} cy={y} rx="6" ry="3.5" fill="#22c55e" stroke="#15803d" strokeWidth="0.6" />)}
+      <circle cx="124" cy="62" r="11" fill="#fca5a5" stroke="#b91c1c" strokeWidth="1" />
+      <Callout from={[150, 28]} to={[174, 26]} text="細胞壁" color={plantOnly} />
+      <Callout from={[135, 62]} to={[174, 46]} text="核" />
+      <Callout from={[144, 76]} to={[174, 66]} text="細胞膜" />
+      <Callout from={[136, 88]} to={[174, 86]} text="細胞質" />
+      <Callout from={[92, 80]} to={[174, 104]} text="液胞" color={plantOnly} />
+      <Callout from={[134, 104]} to={[174, 122]} text="葉緑体" color={plantOnly} />
+
+      <Label x={20} y={140} size={10} weight="800">動物の細胞</Label>
+      <ellipse cx="84" cy="190" rx="62" ry="40" fill="#fef3c7" stroke="#b45309" strokeWidth="1.2" />
+      <circle cx="104" cy="184" r="12" fill="#fca5a5" stroke="#b91c1c" strokeWidth="1" />
+      <Callout from={[116, 182]} to={[174, 168]} text="核" />
+      <Callout from={[146, 192]} to={[174, 190]} text="細胞膜" />
+      <Callout from={[60, 206]} to={[174, 212]} text="細胞質" />
+      <Label x={290} y={244} anchor="end" size={8.5} color={plantOnly}>緑の字は、植物の細胞だけに見られるつくり</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1437,4 +1469,5 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   waterElectrolysis: WaterElectrolysisDiagram,
   moleculeModels: MoleculeModelsDiagram,
   reactionModels: ReactionModelsDiagram,
+  cellStructure: CellStructureDiagram,
 })
