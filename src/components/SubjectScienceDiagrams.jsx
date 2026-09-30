@@ -2222,6 +2222,69 @@ function MidLatitudeCycloneDiagram() {
   )
 }
 
+// ── 海風と陸風 ─────────────────────────────────────────────────────────────
+//   { name: 'seaLandBreeze' }
+// 上：晴れた日の昼。陸があたたまって上昇気流が生じ、海から陸へ海風がふく。下：夜。陸が冷えて、陸から海へ陸風がふく。
+function SeaLandBreezeDiagram() {
+  const panel = (y0, day) => {
+    const surface = day ? [[240, y0 + 86], [84, y0 + 86]] : [[84, y0 + 86], [240, y0 + 86]]
+    const up = day ? [[70, y0 + 82], [70, y0 + 46]] : [[252, y0 + 82], [252, y0 + 46]]
+    const top = day ? [[84, y0 + 40], [238, y0 + 40]] : [[238, y0 + 40], [84, y0 + 40]]
+    const down = day ? [[252, y0 + 46], [252, y0 + 80]] : [[70, y0 + 46], [70, y0 + 80]]
+    return (
+      <g>
+        <Label x={10} y={y0 + 14} size={10} weight="800">{day ? '晴れた日の昼（海風）' : '夜（陸風）'}</Label>
+        {day ? <circle cx="120" cy={y0 + 18} r="9" fill="#fde047" stroke="#ca8a04" strokeWidth="1" /> : <path d={`M120,${y0 + 9} A9,9 0 1,0 120,${y0 + 27} A6.5,9 0 1,1 120,${y0 + 9} Z`} fill="#fef08a" stroke="#ca8a04" strokeWidth="1" />}
+        <rect x="10" y={y0 + 94} width="150" height="20" fill="#d9f99d" stroke="#4d7c0f" strokeWidth="1" />
+        <rect x="160" y={y0 + 98} width="130" height="16" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+        <Arrow from={surface[0]} to={surface[1]} color="#dc2626" width={2.6} />
+        <Arrow from={up[0]} to={up[1]} color="#94a3b8" />
+        <Arrow from={top[0]} to={top[1]} color="#94a3b8" />
+        <Arrow from={down[0]} to={down[1]} color="#94a3b8" />
+        <Label x={162} y={y0 + 80} anchor="middle" size={9.5} weight="800" color="#b91c1c">{day ? '海風' : '陸風'}</Label>
+        <Label x={85} y={y0 + 108} anchor="middle" size={8.5}>{day ? '陸（あたたまる・気圧が低い）' : '陸（冷える・気圧が高い）'}</Label>
+        <Label x={225} y={y0 + 110} anchor="middle" size={8.5}>{day ? '海（気圧が高い）' : '海（気圧が低い）'}</Label>
+      </g>
+    )
+  }
+  return (
+    <svg viewBox="0 0 300 244" className="h-auto w-full" role="img" aria-label="海風と陸風" data-subject-diagram="seaLandBreeze">
+      {panel(0, true)}
+      {panel(124, false)}
+    </svg>
+  )
+}
+
+// ── 冬の季節風と日本海側の雪 ─────────────────────────────────────────────────
+//   { name: 'winterMonsoon' }
+// 大陸からの冷たく乾いた北西の季節風が、日本海の上で水蒸気をふくみ、山地にぶつかって雲をつくり、日本海側に雪を降らせる。
+// 山をこえて太平洋側にふき下りる風は乾燥していて、太平洋側は晴れる。
+function WinterMonsoonDiagram() {
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="冬の季節風と日本海側の雪" data-subject-diagram="winterMonsoon">
+      <rect x="0" y="150" width="60" height="30" fill="#e7e5e4" stroke="#78716c" strokeWidth="1" />
+      <rect x="60" y="154" width="92" height="26" fill="#bfdbfe" />
+      <path d="M150,180 L150,150 Q176,146 192,112 L212,82 L232,116 Q256,146 300,150 L300,180 Z" fill="#d9f99d" stroke="#4d7c0f" strokeWidth="1" />
+      <Arrow from={[4, 132]} to={[58, 132]} color="#2563eb" width={2.4} />
+      <Arrow from={[64, 132]} to={[140, 132]} color="#2563eb" width={2.4} />
+      {[84, 104, 124].map((x) => <path key={x} d={`M${x},152 q-3,-5 0,-10 q3,-5 0,-10`} fill="none" stroke="#0284c7" strokeWidth="1.2" />)}
+      <Cloud cx={160} cy={98} w={56} h={24} />
+      <Cloud cx={198} cy={70} w={44} h={20} />
+      {[[164, 118], [176, 126], [170, 138], [186, 110], [182, 132], [158, 132]].map(([x, y]) => <Label key={`${x}-${y}`} x={x} y={y} anchor="middle" size={9} color="#1d4ed8">＊</Label>)}
+      <Arrow from={[222, 92]} to={[268, 136]} color="#f97316" width={2.2} />
+      <circle cx="274" cy="60" r="10" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={30} y={122} anchor="middle" size={8.5} color="#1d4ed8">冷たく乾いた</Label>
+      <Label x={100} y={122} anchor="middle" size={8.5} color="#1d4ed8">北西の季節風</Label>
+      <Label x={96} y={116 - 22} anchor="middle" size={8.5} color="#0369a1">水蒸気をふくむ</Label>
+      <Label x={252} y={112} size={8.5} color="#c2410c">乾いた風</Label>
+      <Label x={30} y={170} anchor="middle" size={8.5}>大陸</Label>
+      <Label x={106} y={172} anchor="middle" size={8.5} color="#1d4ed8">日本海</Label>
+      <Label x={176} y={172} anchor="middle" size={8.5}>日本海側（雪）</Label>
+      <Label x={266} y={172} anchor="middle" size={8.5}>太平洋側（晴れ）</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2279,4 +2342,6 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   frontSymbols: FrontSymbolsDiagram,
   frontSections: FrontSectionsDiagram,
   midLatitudeCyclone: MidLatitudeCycloneDiagram,
+  seaLandBreeze: SeaLandBreezeDiagram,
+  winterMonsoon: WinterMonsoonDiagram,
 })
