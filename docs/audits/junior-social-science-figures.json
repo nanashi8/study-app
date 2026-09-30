@@ -776,7 +776,7 @@
     },
     "his-02#1": {
       "decision": "figure",
-      "sha256": "9fb4454a8b26a194e1bb50eb304abae477b0f5b4f16ca2b63e3e31d920551822"
+      "sha256": "14e35093d75c5f8eb612280d9ef2ad039daafa003b7f00b857a7c8a83bc0ee93"
     },
     "his-02#2": {
       "decision": "figure",
@@ -784,7 +784,7 @@
     },
     "his-02#3": {
       "decision": "figure",
-      "sha256": "a57193ce76572fbb04a0486eb3fc9019178adcd72731e652b824c7e73ca8fced"
+      "sha256": "0c7229b60de5974431babd6ccf4d7fa410d27b6ff2cc60094733e6e789a23cdc"
     },
     "his-02#4": {
       "decision": "figure",
@@ -792,7 +792,7 @@
     },
     "his-02#5": {
       "decision": "figure",
-      "sha256": "55e37d5be160c3c0b77820f9eb4afd9e5e17a62a058a9f426e5da9cac146be36"
+      "sha256": "c101f5bc8d7efe557d7cc48d2dd0412736b72addfd6d97e32d08fc76fe65e64f"
     },
     "his-03#1": {
       "decision": "figure",
@@ -1012,7 +1012,7 @@
     },
     "his-13#2": {
       "decision": "figure",
-      "sha256": "8ec6a89087fa837d2e0c548da16626406d0802604278cf00c25aff49b7716773"
+      "sha256": "bb7d16576fb332bb5ae25b5537fb50a32ece84ffbf4fb9b6515f5f8a1120ff66"
     },
     "his-13#3": {
       "decision": "figure",
@@ -1060,7 +1060,7 @@
     },
     "his-15#3": {
       "decision": "figure",
-      "sha256": "50470861b77b7f634df77852b426c6b0f67ebd864d1dd8edb37026d01e40bc21"
+      "sha256": "3446aace711c8615186c4952c850366fc06e6e36b10bd0a55c57218c0c2f1581"
     },
     "his-15#4": {
       "decision": "figure",
@@ -1192,7 +1192,7 @@
     },
     "sc1-01#1": {
       "decision": "figure",
-      "sha256": "8d19205de21c12a83874ff5dbc3a1054ee97cc2a650f7d47ef7423f01d8030d7"
+      "sha256": "33d6b2d14010a60ea55802beb0e6ba7adec45d59303f414e1fe3d2606e8d07a8"
     },
     "sc1-01#2": {
       "decision": "figure",
@@ -1232,7 +1232,7 @@
     },
     "sc1-03#1": {
       "decision": "figure",
-      "sha256": "014b243486af7e34dcda67b59925ea09d9c94af9a4af632ec6ba12db964886d9"
+      "sha256": "e3421141f851dc4de8be142160fbb5c8ce81314cd4ef36baaeeb78b85833b623"
     },
     "sc1-03#2": {
       "decision": "figure",
@@ -1264,7 +1264,7 @@
     },
     "sc1-04#3": {
       "decision": "figure",
-      "sha256": "3b3647bfc2b190e0e917c91c603c29f90216692d2ac22f4c2f7ae7ca2ef87038"
+      "sha256": "9a878347e26cfd110654cdee6d449c382f2359a38c470271584b6c819589373f"
     },
     "sc1-04#4": {
       "decision": "figure",
