@@ -65,12 +65,13 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-09-30、社会・理科の要点と演習の図で、図を描く部品が8ファイル（src/components/SubjectDiagrams.jsx・
   // SubjectScienceDiagrams.jsx・SubjectGeographyDiagrams.jsx・SubjectHistoryDiagrams.jsx・SubjectCivicsDiagrams.jsx・
   // SubjectMapReadingDiagrams.jsx・SubjectMapFigures.jsx・SubjectClimateFigure.jsx）、図のデータと計算が3ファイル
-  // （src/data/subjects/figureKinds.js・figureMath.js・projection.js）増えた。
+  // （src/data/subjects/figureKinds.js・figureMath.js・projection.js）増えた。語句の解説の書き直しで、読みの辞書
+  // （src/data/subjects/readings.js）に印旛沼・滝沢馬琴・原敬の3語（語と読みで6表記）を足した。
   assert.equal(result.learnerFiles, 340)
   assert.equal(result.learnerJapaneseEntries, 17558)
   assert.equal(result.learnerUniqueJapaneseEntries, 13047)
   assert.equal(result.sourceFiles, 814)
-  assert.equal(result.sourceJapaneseEntries, 232960)
+  assert.equal(result.sourceJapaneseEntries, 232966)
   assert.equal(result.issues.length, 0)
 })
 

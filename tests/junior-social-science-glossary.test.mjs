@@ -30,13 +30,31 @@ test('全1,151語句（社会649・理科502）に、用語集の程度の解説
   assert.deepEqual(problems, [])
 })
 
+// 文の区切りや記号を除いた文字で比べる。
+const plain = (text) => text.replace(/[。、・，,（）()「」『』\s]/g, '')
+/** a のうち、b にひと続きで出てくる最も長い部分。 */
+const longestCommon = (a, b) => {
+  let best = ''
+  for (let i = 0; i < a.length; i += 1) {
+    for (let j = i + best.length + 1; j <= a.length; j += 1) {
+      if (b.includes(a.slice(i, j))) best = a.slice(i, j)
+      else break
+    }
+  }
+  return best
+}
+
 test('解説は意味をくり返さず、背景や関連することを足している', () => {
+  // 2026-09-30、意味をほとんどそのまま1文目で言い直してから中身に入る解説が134語あり、書き直した
+  // （カードでは意味のすぐ下に解説が出るので、同じ文が2回続いて見える）。意味の文字の半分以上が、
+  // 解説にひと続き（10字以上）で出てきたら言い直しとして止める。
   const problems = []
   for (const term of ALL_SUBJECT_TERMS) {
     if (!term.note) continue
-    const firstMeaning = term.meaning.split('。')[0]
-    if (term.note.includes(term.meaning) || (firstMeaning.length >= 10 && term.note.startsWith(firstMeaning))) {
-      problems.push(`${term.id}（${term.term}）: 解説が意味の文をくり返している`)
+    const meaning = plain(term.meaning)
+    const common = longestCommon(meaning, plain(term.note))
+    if (common.length >= 10 && common.length / meaning.length >= 0.5) {
+      problems.push(`${term.id}（${term.term}）: 解説が意味を言い直している（「${common}」）`)
     }
   }
   assert.deepEqual(problems, [])
