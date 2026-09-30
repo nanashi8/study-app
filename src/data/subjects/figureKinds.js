@@ -66,4 +66,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'layerDeformation',
   'sedimentSorting',
   'columnSections',
+  'thermalDecomposition',
+  'waterElectrolysis',
+  'moleculeModels',
 ])

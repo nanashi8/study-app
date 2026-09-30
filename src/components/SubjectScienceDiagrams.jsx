@@ -1205,6 +1205,125 @@ function ColumnSectionsDiagram({ sites = [], min = 50, max = 80 }) {
   )
 }
 
+// ── 炭酸水素ナトリウムの熱分解 ───────────────────────────────────────────────
+//   { name: 'thermalDecomposition' }
+// 試験管の口を少し下げて加熱し、出てきた気体をガラス管で石灰水に通す。口には液体（水）がつき、白い固体（炭酸ナトリウム）が残る。
+function ThermalDecompositionDiagram() {
+  const tube = 'M52,72 L172,86 L170,102 L50,88 Q40,80 52,72 Z'
+  return (
+    <svg viewBox="0 0 300 222" className="h-auto w-full" role="img" aria-label="炭酸水素ナトリウムの熱分解" data-subject-diagram="thermalDecomposition">
+      <path d={tube} fill={GLASS} stroke={LINE} strokeWidth="1.2" />
+      <path d="M50,84 Q46,80 52,76 L108,83 L106,95 L50,88 Z" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.8" />
+      {[[150, 92], [158, 94], [163, 91], [155, 97]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" fill="#0284c7" />)}
+      <rect x="168" y="84" width="12" height="20" rx="2" fill="#a8a29e" stroke={LINE} strokeWidth="1" transform="rotate(7 174 94)" />
+      <path d="M180,93 L240,93 L240,172" fill="none" stroke={DARK} strokeWidth="2.4" />
+      <path d="M230,112 L230,196 Q240,206 250,196 L250,112" fill={GLASS} stroke={LINE} strokeWidth="1.2" />
+      <path d="M231,150 L231,196 Q240,205 249,196 L249,150 Z" fill="#e2e8f0" />
+      {[164, 178, 188].map((y) => <circle key={y} cx="240" cy={y} r="2.4" fill="#ffffff" stroke="#64748b" strokeWidth="0.8" />)}
+      <rect x="80" y="150" width="18" height="50" rx="2" fill={DARK} />
+      <rect x="72" y="198" width="34" height="8" rx="2" fill={DARK} />
+      <path d="M89,150 Q76,124 89,98 Q102,124 89,150 Z" fill="#93c5fd" stroke="#2563eb" strokeWidth="1" />
+      <Callout from={[80, 86]} to={[98, 36]} text="炭酸水素ナトリウム" />
+      <Callout from={[160, 93]} to={[196, 56]} text="液体（水）" />
+      <Callout from={[222, 93]} to={[250, 76]} text="ガラス管" />
+      <line x1="168" y1="102" x2="164" y2="164" stroke={LINE} strokeWidth="0.8" />
+      <circle cx="168" cy="102" r="1.6" fill={LINE} />
+      <Label x={164} y={176} anchor="middle">試験管の口を少し下げる</Label>
+      <Callout from={[232, 184]} to={[196, 214]} text="石灰水" />
+    </svg>
+  )
+}
+
+// ── 水の電気分解 ───────────────────────────────────────────────────────────
+//   { name: 'waterElectrolysis' }
+// 電気分解装置。電源の−極につないだ陰極に水素、＋極につないだ陽極に酸素が、体積2：1で集まる。
+function WaterElectrolysisDiagram() {
+  return (
+    <svg viewBox="0 0 300 232" className="h-auto w-full" role="img" aria-label="水の電気分解" data-subject-diagram="waterElectrolysis">
+      <path d="M96,40 Q106,28 116,40 L116,170 L196,170 L196,40 Q206,28 216,40 L216,186 L96,186 Z" fill={WATER} stroke={LINE} strokeWidth="1.2" />
+      <path d="M146,170 L146,64 L136,50 L176,50 L166,64 L166,170" fill={WATER} stroke={LINE} strokeWidth="1.2" />
+      <path d="M97,41 Q106,31 115,41 L115,112 L97,112 Z" fill={GLASS} />
+      <path d="M197,41 Q206,31 215,41 L215,76 L197,76 Z" fill={GLASS} />
+      <rect x="102" y="150" width="8" height="18" fill="#475569" />
+      <rect x="202" y="150" width="8" height="18" fill="#475569" />
+      {[[106, 132], [104, 122], [108, 140]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.8" fill="#ffffff" stroke="#0284c7" strokeWidth="0.6" />)}
+      {[[206, 128], [208, 140]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.8" fill="#ffffff" stroke="#0284c7" strokeWidth="0.6" />)}
+      <path d="M106,186 L106,194 L70,194 L70,202" fill="none" stroke={INK} strokeWidth="1.4" />
+      <path d="M206,186 L206,196 L130,196 L130,202" fill="none" stroke="#dc2626" strokeWidth="1.4" />
+      <rect x="56" y="202" width="88" height="24" rx="3" fill="#e2e8f0" stroke={LINE} strokeWidth="1" />
+      <Label x={64} y={218} anchor="middle" size={11} weight="800">−</Label>
+      <Label x={136} y={218} anchor="middle" size={11} weight="800" color="#dc2626">＋</Label>
+      <Label x={100} y={218} anchor="middle" size={8.5} color={LINE}>電源装置</Label>
+      <Label x={106} y={22} anchor="middle" size={9.5} weight="800">陰極（−）</Label>
+      <Label x={206} y={22} anchor="middle" size={9.5} weight="800" color="#dc2626">陽極（＋）</Label>
+      <Callout from={[96, 76]} to={[74, 76]} text="水素" />
+      <Label x={71} y={92} anchor="end" size={8.5} color={LINE}>体積2</Label>
+      <Callout from={[216, 58]} to={[236, 58]} text="酸素" />
+      <Label x={239} y={74} size={8.5} color={LINE}>体積1</Label>
+      <Callout from={[176, 186]} to={[204, 206]} text="水酸化ナトリウム" />
+      <Label x={207} y={222} size={10}>をとかした水</Label>
+    </svg>
+  )
+}
+
+// ── 原子のモデルと化学式 ─────────────────────────────────────────────────────
+//   { name: 'moleculeModels' }
+// 円を原子として、水素・酸素・水・二酸化炭素の分子と、分子をつくらない銅・塩化ナトリウムを並べ、化学式と対応させる。
+const ATOM_STYLE = {
+  H: { fill: '#ffffff', text: INK },
+  O: { fill: '#fca5a5', text: INK },
+  C: { fill: '#475569', text: '#ffffff' },
+  Cu: { fill: '#fdba74', text: INK },
+  Na: { fill: '#c4b5fd', text: INK },
+  Cl: { fill: '#86efac', text: INK },
+}
+function Atom({ x, y, kind, r = 10 }) {
+  const style = ATOM_STYLE[kind]
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={style.fill} stroke={LINE} strokeWidth="1" />
+      <text x={x} y={y + 3.2} fontSize={kind.length > 1 ? 7.5 : 9} fontWeight="800" textAnchor="middle" fill={style.text}>{kind}</text>
+    </g>
+  )
+}
+function MoleculeModelsDiagram() {
+  const grid = (kinds, y) => [0, 1].flatMap((row) => [0, 1, 2, 3, 4].map((col) => <Atom key={`${row}-${col}`} x={112 + col * 18} y={y - 9 + row * 18} kind={kinds[(row + col) % kinds.length]} r={8.5} />))
+  const rows = [
+    ['水素', 38, [[141, 'H'], [159, 'H']], 'H₂'],
+    ['酸素', 74, [[141, 'O'], [159, 'O']], 'O₂'],
+    ['水', 110, null, 'H₂O'],
+    ['二酸化炭素', 146, [[131, 'O'], [150, 'C'], [169, 'O']], 'CO₂'],
+  ]
+  return (
+    <svg viewBox="0 0 300 262" className="h-auto w-full" role="img" aria-label="原子のモデルと化学式" data-subject-diagram="moleculeModels">
+      <Label x={10} y={14} size={8.5} color={LINE}>物質</Label>
+      <Label x={150} y={14} anchor="middle" size={8.5} color={LINE}>原子のモデル</Label>
+      <Label x={290} y={14} anchor="end" size={8.5} color={LINE}>化学式</Label>
+      {rows.map(([name, y, atoms, formula]) => (
+        <g key={name}>
+          <Label x={10} y={y + 4} size={10} weight="800">{name}</Label>
+          {atoms ? atoms.map(([x, kind]) => <Atom key={x} x={x} y={y} kind={kind} />) : (
+            <g>
+              <Atom x={133} y={y + 8} kind="H" />
+              <Atom x={167} y={y + 8} kind="H" />
+              <Atom x={150} y={y - 2} kind="O" />
+            </g>
+          )}
+          <Label x={290} y={y + 5} anchor="end" size={13} weight="800">{formula}</Label>
+        </g>
+      ))}
+      <Label x={10} y={186} size={10} weight="800">銅</Label>
+      <Label x={10} y={199} size={8} color={LINE}>分子をつくらない</Label>
+      {grid(['Cu'], 190)}
+      <Label x={290} y={195} anchor="end" size={13} weight="800">Cu</Label>
+      <Label x={10} y={234} size={10} weight="800">塩化ナトリウム</Label>
+      <Label x={10} y={247} size={8} color={LINE}>分子をつくらない</Label>
+      {grid(['Na', 'Cl'], 238)}
+      <Label x={290} y={243} anchor="end" size={13} weight="800">NaCl</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -1236,4 +1355,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   layerDeformation: LayerDeformationDiagram,
   sedimentSorting: SedimentSortingDiagram,
   columnSections: ColumnSectionsDiagram,
+  thermalDecomposition: ThermalDecompositionDiagram,
+  waterElectrolysis: WaterElectrolysisDiagram,
+  moleculeModels: MoleculeModelsDiagram,
 })
