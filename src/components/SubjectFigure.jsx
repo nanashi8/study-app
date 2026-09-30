@@ -7,7 +7,8 @@ import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
 export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 
 // 社会・理科の図。要点と演習の問題が、データ（figure）で図を指定する。種類は次のとおり。
-//   table    … 表。{ columns, rows, note?, layout?: 'cards' | 'grid' }（列が4つ以上で長い文があれば、行ごとのカードで見せる）
+//   table    … 表。{ columns, rows, note?, layout?: 'cards' | 'grid' }（列が4つ以上で長い文があれば、行ごとのカードで見せる。
+//               列が2つのカードは欄が1つなので、欄の見出しを出さない）
 //   bars     … 横棒グラフ。{ unit, items: [[名前, 値], …], note?, digits?（小数の桁をそろえる） }
 //   lines    … 折れ線グラフ。{ x: { label, ticks? }, y: { label, min?, max?, step? }, series: [{ name, points: [[x, y], …] }],
 //               marks?: [{ x? | y?, text?, at?（横の線の文字を置く x） }] }
@@ -65,6 +66,8 @@ const tableAsCards = (figure) =>
 function TableFigure({ figure }) {
   const highlight = new Set(figure.highlight ?? [])
   if (tableAsCards(figure)) {
+    // 欄が1つだけのカードに、同じ見出しを何枚も並べない。
+    const soleField = figure.columns.length === 2
     return (
       <div className="space-y-2" data-subject-figure-table="cards">
         {figure.rows.map((row, rowIndex) => (
@@ -73,7 +76,7 @@ function TableFigure({ figure }) {
             <dl className="mt-1 space-y-1.5">
               {row.slice(1).map((cell, cellIndex) => (
                 <div key={cellIndex}>
-                  <dt className="text-[11px] font-extrabold text-ink/50"><SubjectText>{figure.columns[cellIndex + 1]}</SubjectText></dt>
+                  {!soleField && <dt className="text-[11px] font-extrabold text-ink/50"><SubjectText>{figure.columns[cellIndex + 1]}</SubjectText></dt>}
                   <dd className="text-xs font-bold leading-relaxed text-ink"><SubjectText>{cell}</SubjectText></dd>
                 </div>
               ))}
