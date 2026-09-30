@@ -138,8 +138,55 @@ function MutualBondDiagram({ top = '将軍', bottom = '御家人', down = ['御�
   )
 }
 
+// ── 三角貿易 ─────────────────────────────────────────────────────────
+//   { name: 'tradeTriangle', nodes: ['イギリス', '清', 'インド'], flows: ['綿織物', 'アヘン', '茶'], note? }
+// 3つの国を三角形に置き、1つ目→3つ目、3つ目→2つ目、2つ目→1つ目の順に、運ばれた品物を矢印で示す。
+function TradeTriangleDiagram({ nodes = ['イギリス', '清', 'インド'], flows = ['綿織物', 'アヘン', '茶'], note }) {
+  const at = [[62, 40], [238, 40], [150, 176]]
+  const box = (x, y, text) => (
+    <g key={text}>
+      <rect x={x - 42} y={y - 15} width="84" height="30" rx="8" fill="#334155" />
+      <text x={x} y={y + 5} textAnchor="middle" fontSize="12" fontWeight="800" fill="#ffffff">{text}</text>
+    </g>
+  )
+  // 矢印：[始まりの国, 終わりの国, 品物, 文字の位置]
+  const arrows = [
+    [0, 2, flows[0], [72, 118]],
+    [2, 1, flows[1], [228, 118]],
+    [1, 0, flows[2], [150, 26]],
+  ]
+  // 矢印は、国の四角（はば84・高さ30）のふちの少し外で止める。
+  const shorten = ([x1, y1], [x2, y2]) => {
+    const length = Math.hypot(x2 - x1, y2 - y1)
+    const cos = Math.abs(x2 - x1) / length
+    const sin = Math.abs(y2 - y1) / length
+    const by = Math.min(cos > 0.001 ? 42 / cos : Infinity, sin > 0.001 ? 15 / sin : Infinity) + 6
+    return [x1 + ((x2 - x1) * by) / length, y1 + ((y2 - y1) * by) / length]
+  }
+  return (
+    <svg viewBox="0 0 300 226" className="h-auto w-full" role="img" aria-label="三角貿易" data-subject-diagram="tradeTriangle">
+      {arrows.map(([from, to, text, [tx, ty]]) => {
+        const start = shorten(at[from], at[to])
+        const end = shorten(at[to], at[from])
+        const angle = Math.atan2(end[1] - start[1], end[0] - start[0])
+        const head = (a) => `${end[0] + 8 * Math.cos(angle + a)},${end[1] + 8 * Math.sin(angle + a)}`
+        return (
+          <g key={text}>
+            <line x1={start[0]} y1={start[1]} x2={end[0]} y2={end[1]} stroke="#b91c1c" strokeWidth="2.4" />
+            <path d={`M${end[0]},${end[1]} L${head(Math.PI * 0.85)} L${head(-Math.PI * 0.85)} Z`} fill="#b91c1c" />
+            <Label x={tx} y={ty} size={11} weight="800" color="#991b1b" anchor="middle">{text}</Label>
+          </g>
+        )
+      })}
+      {nodes.map((text, index) => box(at[index][0], at[index][1], text))}
+      {note && <Label x={150} y={218} size={8.5} anchor="middle" color={MUTED}>{note}</Label>}
+    </svg>
+  )
+}
+
 export const HISTORY_DIAGRAMS = Object.freeze({
   centuryLine: CenturyLineDiagram,
   keyholeTomb: KeyholeTombDiagram,
   mutualBond: MutualBondDiagram,
+  tradeTriangle: TradeTriangleDiagram,
 })
