@@ -85,4 +85,11 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'airPressureAll',
   'pressureSystems',
   'weatherSymbols',
+  'cloudRise',
+  'risingAir',
+  'cloudFlask',
+  'waterCycle',
+  'frontSymbols',
+  'frontSections',
+  'midLatitudeCyclone',
 ])

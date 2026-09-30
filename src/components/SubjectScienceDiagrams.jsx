@@ -1968,6 +1968,260 @@ function WeatherSymbolsDiagram() {
   )
 }
 
+const cloudPath = (cx, cy, w, h) => `M${cx - w / 2},${cy + h / 2} Q${cx - w / 2 - 6},${cy} ${cx - w / 4},${cy - h / 4} Q${cx - w / 6},${cy - h / 2 - 4} ${cx},${cy - h / 3} Q${cx + w / 6},${cy - h / 2 - 6} ${cx + w / 4},${cy - h / 4} Q${cx + w / 2 + 6},${cy} ${cx + w / 2},${cy + h / 2} Z`
+function Cloud({ cx, cy, w = 50, h = 22, fill = '#e2e8f0' }) {
+  return <path d={cloudPath(cx, cy, w, h)} fill={fill} stroke="#64748b" strokeWidth="1" />
+}
+
+// ── 上昇する空気と雲のでき方 ───────────────────────────────────────────────────
+//   { name: 'cloudRise' }
+// 地表で24℃・露点18℃の空気が上昇すると、100mで約1℃ずつ温度が下がり、600mで露点に達して雲ができ始める。
+function CloudRiseDiagram() {
+  const y = (h) => 210 - h * 0.15
+  const parcels = [[0, 9, '24℃'], [300, 11, '21℃'], [600, 13, '18℃'], [900, 15, '15℃']]
+  return (
+    <svg viewBox="0 0 300 224" className="h-auto w-full" role="img" aria-label="上昇する空気と雲のでき方" data-subject-diagram="cloudRise">
+      <Cloud cx={216} cy={86} w={80} h={60} />
+      <line x1="40" y1="30" x2="40" y2="210" stroke={DARK} strokeWidth="1" />
+      {[0, 300, 600, 900, 1200].map((h) => (
+        <g key={h}>
+          <line x1="36" y1={y(h)} x2="40" y2={y(h)} stroke={DARK} strokeWidth="1" />
+          <Label x={33} y={y(h) + 3.5} anchor="end" size={8.5} color={LINE}>{h}</Label>
+        </g>
+      ))}
+      <Label x={40} y={20} anchor="middle" size={8.5} color={LINE}>高さ(m)</Label>
+      <line x1="40" y1="210" x2="292" y2="210" stroke={DARK} strokeWidth="2" />
+      <line x1="40" y1={y(600)} x2="292" y2={y(600)} stroke="#2563eb" strokeWidth="1.2" strokeDasharray="4 3" />
+      <Label x={46} y={y(600) - 6} size={8.5} weight="800" color="#1d4ed8">雲ができ始める高さ（露点18℃）</Label>
+      {parcels.map(([h, r, t]) => (
+        <g key={h}>
+          <circle cx="206" cy={y(h)} r={r} fill={h >= 600 ? '#f1f5f9' : '#ffffff'} stroke="#dc2626" strokeWidth="1.2" />
+          <Label x={230} y={y(h) + 4} size={9} weight="800" color="#b91c1c">{t}</Label>
+        </g>
+      ))}
+      <Arrow from={[270, 202]} to={[270, 42]} color={LINE} />
+      <Label x={264} y={150} anchor="end" size={8.5} color={LINE}>上昇</Label>
+    </svg>
+  )
+}
+
+// ── 空気が上昇する3つの場合 ───────────────────────────────────────────────────
+//   { name: 'risingAir' }
+// 左：地表があたためられる。中：風が山の斜面をのぼる。右：暖気が寒気の上にのぼる（前線）。
+function RisingAirDiagram() {
+  return (
+    <svg viewBox="0 0 300 156" className="h-auto w-full" role="img" aria-label="空気が上昇する場合" data-subject-diagram="risingAir">
+      <line x1="4" y1="110" x2="96" y2="110" stroke={DARK} strokeWidth="2" />
+      <circle cx="18" cy="20" r="8" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      {[34, 50, 66].map((x) => <path key={x} d={`M${x},106 q3,-4 0,-8 q-3,-4 0,-8`} fill="none" stroke="#f97316" strokeWidth="1.2" />)}
+      <Arrow from={[50, 88]} to={[50, 48]} color="#dc2626" />
+      <Cloud cx={50} cy={32} w={46} h={18} />
+      <Label x={50} y={130} anchor="middle" size={8.5}>地表が</Label>
+      <Label x={50} y={144} anchor="middle" size={8.5}>あたためられる</Label>
+
+      <path d="M112,110 L160,42 L196,110 Z" fill="#d9f99d" stroke="#4d7c0f" strokeWidth="1" />
+      <Arrow from={[104, 104]} to={[146, 58]} color="#dc2626" />
+      <Cloud cx={142} cy={32} w={44} h={18} />
+      <Label x={150} y={130} anchor="middle" size={8.5}>風が山の斜面を</Label>
+      <Label x={150} y={144} anchor="middle" size={8.5}>のぼる</Label>
+
+      <line x1="204" y1="110" x2="296" y2="110" stroke={DARK} strokeWidth="2" />
+      <path d="M210,110 L292,110 L292,64 Z" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+      <Label x={272} y={102} anchor="middle" size={8.5} weight="800" color="#1d4ed8">寒気</Label>
+      <Arrow from={[214, 100]} to={[270, 64]} color="#dc2626" />
+      <Label x={222} y={80} anchor="middle" size={8.5} weight="800" color="#b91c1c">暖気</Label>
+      <Cloud cx={262} cy={36} w={46} h={18} />
+      <Label x={250} y={130} anchor="middle" size={8.5}>暖気が寒気の</Label>
+      <Label x={250} y={144} anchor="middle" size={8.5}>上にのぼる</Label>
+    </svg>
+  )
+}
+
+// ── 雲をつくる実験 ─────────────────────────────────────────────────────────
+//   { name: 'cloudFlask' }
+// 少量の水と線香のけむりを入れたフラスコに注射器をつなぎ、ピストンを引くと、中が白くくもる。
+function CloudFlaskDiagram() {
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="雲をつくる実験" data-subject-diagram="cloudFlask">
+      <defs>
+        <clipPath id="cloud-flask"><circle cx="80" cy="124" r="42" /></clipPath>
+      </defs>
+      <path d="M72,48 L72,84 A42,42 0 1,0 88,84 L88,48" fill={GLASS} stroke={LINE} strokeWidth="1.3" />
+      <g clipPath="url(#cloud-flask)">
+        <rect x="30" y="80" width="100" height="90" fill="#e2e8f0" opacity="0.75" />
+        <rect x="30" y="152" width="100" height="20" fill={WATER} />
+      </g>
+      <rect x="68" y="40" width="24" height="10" rx="2" fill="#a8a29e" stroke={LINE} strokeWidth="1" />
+      <path d="M80,40 L80,24 L150,24 L150,72 L168,72" fill="none" stroke={DARK} strokeWidth="2.4" />
+      <rect x="168" y="60" width="80" height="24" rx="2" fill={GLASS} stroke={LINE} strokeWidth="1.2" />
+      <rect x="226" y="61" width="5" height="22" fill="#64748b" />
+      <line x1="231" y1="72" x2="276" y2="72" stroke="#64748b" strokeWidth="3" />
+      <rect x="276" y="58" width="6" height="28" rx="1.5" fill="#64748b" />
+      <Arrow from={[244, 104]} to={[288, 104]} color="#dc2626" />
+      <Label x={266} y={122} anchor="middle" size={9} weight="800" color="#b91c1c">ピストンを引く</Label>
+      <Label x={208} y={52} anchor="middle" size={9} weight="800">注射器</Label>
+      <Label x={80} y={122} anchor="middle" size={9} weight="800" color={LINE}>白くくもる</Label>
+      <Callout from={[96, 104]} to={[140, 150]} text="線香のけむり（芯になる）" />
+      <Callout from={[86, 160]} to={[140, 180]} text="少量の水" />
+    </svg>
+  )
+}
+
+// ── 水の循環 ──────────────────────────────────────────────────────────────
+//   { name: 'waterCycle' }
+// 太陽のエネルギーで海や陸から水が蒸発し、雲になって雨や雪を降らせ、川や地下水となって海にもどる。
+function WaterCycleDiagram() {
+  return (
+    <svg viewBox="0 0 300 204" className="h-auto w-full" role="img" aria-label="水の循環" data-subject-diagram="waterCycle">
+      <circle cx="274" cy="22" r="12" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <path d="M0,190 L0,124 L40,72 L84,118 L130,150 L172,162 L172,196 L0,196 Z" fill="#dcfce7" stroke="#15803d" strokeWidth="1" />
+      <rect x="172" y="162" width="128" height="34" fill="#bfdbfe" />
+      <path d="M58,104 Q84,128 104,134 Q136,146 172,166" fill="none" stroke="#3b82f6" strokeWidth="3" />
+      <path d="M36,172 L164,184" fill="none" stroke="#60a5fa" strokeWidth="1.6" strokeDasharray="5 3" />
+      <path d="M164,184 L156,180 L157,188 Z" fill="#60a5fa" />
+      <Cloud cx={62} cy={36} w={60} h={24} />
+      <Cloud cx={196} cy={44} w={56} h={22} />
+      {[46, 58, 70, 82].map((x) => <line key={x} x1={x} y1="54" x2={x - 5} y2="70" stroke="#3b82f6" strokeWidth="1.4" />)}
+      <Arrow from={[218, 156]} to={[218, 66]} color="#0284c7" />
+      <Arrow from={[246, 156]} to={[246, 74]} color="#0284c7" />
+      <Arrow from={[168, 40]} to={[100, 36]} color={LINE} />
+      <Label x={252} y={120} size={9} weight="800" color="#0369a1">蒸発</Label>
+      <Label x={134} y={30} anchor="middle" size={8.5} color={LINE}>風で運ばれる</Label>
+      <Label x={96} y={70} size={9} weight="800" color="#1d4ed8">雨・雪</Label>
+      <Label x={118} y={132} size={9} weight="800" color="#1d4ed8">川</Label>
+      <Label x={96} y={170} anchor="middle" size={8.5} color="#1d4ed8">地下水</Label>
+      <Label x={236} y={186} anchor="middle" size={9} weight="800" color="#1d4ed8">海</Label>
+    </svg>
+  )
+}
+
+// ── 前線の記号 ─────────────────────────────────────────────────────────────
+//   { name: 'frontSymbols' }
+// 寒冷前線（三角）・温暖前線（半円）・停滞前線（三角と半円が反対側）・閉塞前線（三角と半円が同じ側）。記号のある側へ進む。
+function FrontSymbolsDiagram() {
+  const COLD = '#2563eb'
+  const WARM = '#dc2626'
+  const OCC = '#7c3aed'
+  const x0 = 116
+  const x1 = 290
+  const tri = (x, y, color, up = true) => <path d={up ? `M${x - 7},${y} L${x},${y - 11} L${x + 7},${y} Z` : `M${x - 7},${y} L${x},${y + 11} L${x + 7},${y} Z`} fill={color} />
+  const semi = (x, y, color, up = true) => <path d={up ? `M${x - 7},${y} A7,7 0 0,1 ${x + 7},${y} Z` : `M${x - 7},${y} A7,7 0 0,0 ${x + 7},${y} Z`} fill={color} />
+  const xs = [140, 180, 220, 260]
+  const rows = [
+    ['寒冷前線', 30, (y) => <g><line x1={x0} y1={y} x2={x1} y2={y} stroke={COLD} strokeWidth="2.4" />{xs.map((x) => <g key={x}>{tri(x, y, COLD)}</g>)}</g>],
+    ['温暖前線', 76, (y) => <g><line x1={x0} y1={y} x2={x1} y2={y} stroke={WARM} strokeWidth="2.4" />{xs.map((x) => <g key={x}>{semi(x, y, WARM)}</g>)}</g>],
+    ['停滞前線', 122, (y) => (
+      <g>
+        {[0, 1, 2, 3].map((k) => <line key={k} x1={x0 + (k * (x1 - x0)) / 4} y1={y} x2={x0 + ((k + 1) * (x1 - x0)) / 4} y2={y} stroke={k % 2 ? COLD : WARM} strokeWidth="2.4" />)}
+        {xs.map((x, k) => <g key={x}>{k % 2 ? tri(x, y, COLD, false) : semi(x, y, WARM)}</g>)}
+      </g>
+    )],
+    ['閉塞前線', 168, (y) => <g><line x1={x0} y1={y} x2={x1} y2={y} stroke={OCC} strokeWidth="2.4" />{xs.map((x, k) => <g key={x}>{k % 2 ? semi(x, y, OCC) : tri(x, y, OCC)}</g>)}</g>],
+  ]
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="前線の記号" data-subject-diagram="frontSymbols">
+      {rows.map(([name, y, draw]) => (
+        <g key={name}>
+          <Label x={10} y={y + 4} size={10} weight="800">{name}</Label>
+          {draw(y)}
+        </g>
+      ))}
+      <Label x={290} y={192} anchor="end" size={8.5} color={LINE}>三角や半円のある側へ進む（停滞前線はほとんど動かない）</Label>
+    </svg>
+  )
+}
+
+// ── 寒冷前線と温暖前線の断面 ──────────────────────────────────────────────────
+//   { name: 'frontSections' }
+// 上：寒冷前線。寒気が暖気の下にもぐりこみ、暖気を急におし上げるので積乱雲ができる。
+// 下：温暖前線。暖気が寒気の上をゆるやかにはい上がるので、乱層雲などの層状の雲が広がる。どちらも右へ進む。
+function FrontSectionsDiagram() {
+  return (
+    <svg viewBox="0 0 300 262" className="h-auto w-full" role="img" aria-label="寒冷前線と温暖前線の断面" data-subject-diagram="frontSections">
+      <Label x={10} y={14} size={10} weight="800">寒冷前線</Label>
+      <line x1="8" y1="112" x2="292" y2="112" stroke={DARK} strokeWidth="2" />
+      <path d="M8,112 L8,34 Q70,38 118,112 Z" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+      <Label x={40} y={96} anchor="middle" size={9.5} weight="800" color="#1d4ed8">寒気</Label>
+      <Label x={220} y={96} anchor="middle" size={9.5} weight="800" color="#b91c1c">暖気</Label>
+      <path d="M100,72 Q98,40 112,34 Q106,12 128,14 Q144,6 150,22 Q166,24 160,44 Q166,62 150,72 Z" fill="#e2e8f0" stroke="#64748b" strokeWidth="1" />
+      {[106, 116, 126].map((x) => <line key={x} x1={x} y1="76" x2={x - 5} y2="104" stroke="#2563eb" strokeWidth="1.8" />)}
+      <Arrow from={[158, 106]} to={[142, 58]} color="#dc2626" />
+      <Label x={168} y={50} size={8.5} color={LINE}>積乱雲（強い雨）</Label>
+      <Arrow from={[222, 30]} to={[284, 30]} color={LINE} />
+      <Label x={218} y={34} anchor="end" size={8.5} color={LINE}>進む向き</Label>
+
+      <Label x={10} y={146} size={10} weight="800">温暖前線</Label>
+      <line x1="8" y1="244" x2="292" y2="244" stroke={DARK} strokeWidth="2" />
+      <path d="M292,244 L292,184 Q190,196 60,244 Z" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="1" />
+      <Label x={256} y={232} anchor="middle" size={9.5} weight="800" color="#1d4ed8">寒気</Label>
+      <Label x={40} y={206} anchor="middle" size={9.5} weight="800" color="#b91c1c">暖気</Label>
+      <path d="M104,176 Q116,160 150,162 Q196,154 240,158 Q286,156 288,170 Q270,180 200,178 Q140,182 104,176 Z" fill="#e2e8f0" stroke="#64748b" strokeWidth="1" />
+      {[130, 160, 190, 220, 250].map((x) => <line key={x} x1={x} y1="182" x2={x - 3} y2="196" stroke="#60a5fa" strokeWidth="1.2" />)}
+      <Arrow from={[74, 236]} to={[150, 206]} color="#dc2626" />
+      <Label x={196} y={150} anchor="middle" size={8.5} color={LINE}>乱層雲など（おだやかな雨が長く続く）</Label>
+      <Arrow from={[222, 136]} to={[284, 136]} color={LINE} />
+      <Label x={218} y={140} anchor="end" size={8.5} color={LINE}>進む向き</Label>
+    </svg>
+  )
+}
+
+// ── 温帯低気圧 ─────────────────────────────────────────────────────────────
+//   { name: 'midLatitudeCyclone' }
+// 上から見たようす（上が北）。中心から南東へ温暖前線、南西へ寒冷前線がのびる。前線の間は暖気、まわりは寒気。
+// 青くぬった所が雨の降りやすい所。低気圧は西から東へ進む。
+function MidLatitudeCycloneDiagram() {
+  const COLD = '#2563eb'
+  const WARM = '#dc2626'
+  const along = (p0, c, p1, t) => [
+    (1 - t) * (1 - t) * p0[0] + 2 * (1 - t) * t * c[0] + t * t * p1[0],
+    (1 - t) * (1 - t) * p0[1] + 2 * (1 - t) * t * c[1] + t * t * p1[1],
+  ]
+  const tangent = (p0, c, p1, t) => {
+    const dx = 2 * (1 - t) * (c[0] - p0[0]) + 2 * t * (p1[0] - c[0])
+    const dy = 2 * (1 - t) * (c[1] - p0[1]) + 2 * t * (p1[1] - c[1])
+    const d = Math.hypot(dx, dy)
+    return [dx / d, dy / d]
+  }
+  const center = [120, 64]
+  const warm = [center, [184, 70], [240, 122]]
+  const cold = [center, [104, 124], [54, 178]]
+  const marks = (curve, kind, color, sideSign) => [0.25, 0.45, 0.65, 0.85].map((t) => {
+    const [x, y] = along(...curve, t)
+    const [tx, ty] = tangent(...curve, t)
+    const nx = -ty * sideSign
+    const ny = tx * sideSign
+    if (kind === 'tri') {
+      return <path key={t} d={`M${(x - 6 * tx).toFixed(1)},${(y - 6 * ty).toFixed(1)} L${(x + 10 * nx).toFixed(1)},${(y + 10 * ny).toFixed(1)} L${(x + 6 * tx).toFixed(1)},${(y + 6 * ty).toFixed(1)} Z`} fill={color} />
+    }
+    const pts = Array.from({ length: 9 }, (_, i) => {
+      const a = (i / 8) * Math.PI
+      return `${(x + 6.5 * Math.cos(a) * -tx + 6.5 * Math.sin(a) * nx).toFixed(1)},${(y + 6.5 * Math.cos(a) * -ty + 6.5 * Math.sin(a) * ny).toFixed(1)}`
+    })
+    return <path key={t} d={`M${pts.join(' L')} Z`} fill={color} />
+  })
+  return (
+    <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="温帯低気圧" data-subject-diagram="midLatitudeCyclone">
+      <path d="M145,68 L170,76 L194,88 L217,103 L240,122 L260,103 L236,83 L211,66 L184,52 L158,43 Z" fill="#bfdbfe" opacity="0.8" />
+      <path d="M112,88 L102,111 L88,134 L73,156 L54,178 L44,172 L63,150 L78,128 L92,105 L102,82 Z" fill="#bfdbfe" opacity="0.8" />
+      <ellipse cx="120" cy="64" rx="26" ry="18" fill="none" stroke="#94a3b8" strokeWidth="1" />
+      <ellipse cx="120" cy="64" rx="52" ry="36" fill="none" stroke="#94a3b8" strokeWidth="1" />
+      <path d={`M${warm[0]} Q${warm[1]} ${warm[2]}`} fill="none" stroke={WARM} strokeWidth="2.4" />
+      {marks(warm, 'semi', WARM, -1)}
+      <path d={`M${cold[0]} Q${cold[1]} ${cold[2]}`} fill="none" stroke={COLD} strokeWidth="2.4" />
+      {marks(cold, 'tri', COLD, -1)}
+      <Label x={120} y={68} anchor="middle" size={12} weight="800" color="#b91c1c">低</Label>
+      <Label x={160} y={140} anchor="middle" size={10} weight="800" color="#b91c1c">暖気</Label>
+      <Label x={36} y={70} anchor="middle" size={10} weight="800" color="#1d4ed8">寒気</Label>
+      <Label x={252} y={60} anchor="middle" size={10} weight="800" color="#1d4ed8">寒気</Label>
+      <Callout from={[236, 118]} to={[250, 146]} text="温暖前線" />
+      <Callout from={[58, 174]} to={[48, 200]} text="寒冷前線" />
+      <Arrow from={[192, 200]} to={[262, 200]} color={LINE} />
+      <Label x={188} y={204} anchor="end" size={8.5} color={LINE}>西から東へ進む</Label>
+      <Label x={290} y={16} anchor="end" size={8.5} color={LINE}>上が北</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2018,4 +2272,11 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   airPressureAll: AirPressureAllDiagram,
   pressureSystems: PressureSystemsDiagram,
   weatherSymbols: WeatherSymbolsDiagram,
+  cloudRise: CloudRiseDiagram,
+  risingAir: RisingAirDiagram,
+  cloudFlask: CloudFlaskDiagram,
+  waterCycle: WaterCycleDiagram,
+  frontSymbols: FrontSymbolsDiagram,
+  frontSections: FrontSectionsDiagram,
+  midLatitudeCyclone: MidLatitudeCycloneDiagram,
 })
