@@ -137,6 +137,18 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'tourism',
+    title: '国際交流の数値',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'jnto-visitors',
+        name: '日本政府観光局（JNTO）「ビジット・ジャパン事業開始以降の訪日客数の推移（2003年〜2025年）」',
+        url: 'https://www.jnto.go.jp/statistics/data/visitors-statistics/',
+        use: '公民「これからの地球社会と日本」の、日本を訪れた外国人旅行者の数の移り変わりのグラフに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'election',
     title: '選挙の数値',
     items: Object.freeze([

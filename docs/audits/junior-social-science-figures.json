@@ -326,6 +326,26 @@
       "decision": "figure",
       "sha256": "495d3e1032875efb371318affc197f8da75e9bceb9aa767bc68c82c4602b5bcf"
     },
+    "civ-17#1": {
+      "decision": "figure",
+      "sha256": "3ff043c2d46b35ebef9d2c644610ad87c12e5995ca705d2df092952554b682f6"
+    },
+    "civ-17#2": {
+      "decision": "figure",
+      "sha256": "adf2c417f9173859411a3230af6ff7795c2d7fb4b8563e498726c28b3300c0f7"
+    },
+    "civ-17#3": {
+      "decision": "figure",
+      "sha256": "af4a1acc5f22c1a234f344f411fe1c2ee2e268f8cb081cb966730a6506eeded3"
+    },
+    "civ-17#4": {
+      "decision": "figure",
+      "sha256": "8cf899ceca1c3212b1af607afde7b4a399334fb37058ea4b8c16b9b16d35676a"
+    },
+    "civ-17#5": {
+      "decision": "figure",
+      "sha256": "18c07dc0ba2e8dbfc6144c1ca84f0d090d0f51c3b8d2aae457b9501f3075d4d8"
+    },
     "geo-01#1": {
       "decision": "figure",
       "sha256": "46b94fcdb1582f85da7fb464a04f40e7dbc2c630004ff15ac9c160c76e06eb6e"
@@ -1727,6 +1747,42 @@
     "civ-16-q09": {
       "decision": "none",
       "sha256": "655cec5598db455013f28824702052b2299fabba498c97600f2bbb6e771393c6"
+    },
+    "civ-17-q01": {
+      "decision": "none",
+      "sha256": "3f7db4217d62949631e0b9ebc8176bbf75151ce40b4e65594d2c1a8a8a37c6df"
+    },
+    "civ-17-q02": {
+      "decision": "none",
+      "sha256": "24a744854cf2920ff6f4aa54a4f390bcf8d59505ffbf6b69908559489b512202"
+    },
+    "civ-17-q03": {
+      "decision": "none",
+      "sha256": "509ad72d387a18bd86557477f9312586eeca6ec15f524b43f911d2a65577b0d4"
+    },
+    "civ-17-q04": {
+      "decision": "none",
+      "sha256": "9f1f99aca7c835ab7be8a8ac0eabfc09b3d28b183150d51576e3f61a5f7d44f2"
+    },
+    "civ-17-q05": {
+      "decision": "none",
+      "sha256": "1c9b69078e7435eb5073c6204f12e5f9b18e0d94a7967fe3d2e505d6f2794645"
+    },
+    "civ-17-q06": {
+      "decision": "none",
+      "sha256": "4f5ac9793a744e1ce5d28004647e5e692d9f3ed4d05ef18d8633539cf797871d"
+    },
+    "civ-17-q07": {
+      "decision": "none",
+      "sha256": "af7bd9605f52d309946d98cd5ad2af894c9108dc82aea6ac3a824b7920c01153"
+    },
+    "civ-17-q08": {
+      "decision": "none",
+      "sha256": "3e5acc565406f7ae03d3108b7dccc8ebc82e580e802575071b5242fd7ecbc21e"
+    },
+    "civ-17-q09": {
+      "decision": "none",
+      "sha256": "5d34d6b74c20d17df622b0ea2527e4b949b693eb56a2b0208f0bdae2b3a5202c"
     },
     "geo-01-q01": {
       "decision": "none",
