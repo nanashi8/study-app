@@ -540,6 +540,188 @@ function DistillationDiagram() {
   )
 }
 
+const RAY = '#dc2626'
+
+function Ray({ points, dashed = false, color = RAY, head = true }) {
+  const d = points.map(([x, y], index) => `${index ? 'L' : 'M'}${x},${y}`).join(' ')
+  const [x1, y1] = points[points.length - 2]
+  const [x2, y2] = points[points.length - 1]
+  const angle = Math.atan2(y2 - y1, x2 - x1)
+  const mx = (x1 + x2) / 2
+  const my = (y1 + y2) / 2
+  const tip = (a, r) => `${mx + r * Math.cos(angle + a)},${my + r * Math.sin(angle + a)}`
+  return (
+    <g>
+      <path d={d} fill="none" stroke={color} strokeWidth="1.6" strokeDasharray={dashed ? '4 3' : undefined} />
+      {head && !dashed && <path d={`M${tip(0, 5)} L${tip(Math.PI * 0.8, 5)} L${tip(-Math.PI * 0.8, 5)} Z`} fill={color} />}
+    </g>
+  )
+}
+
+// ── 光の反射の法則と乱反射 ─────────────────────────────────────────────────
+//   { name: 'reflectionLaw' }
+function ReflectionLawDiagram() {
+  return (
+    <svg viewBox="0 0 300 182" className="h-auto w-full" role="img" aria-label="光の反射の法則と乱反射" data-subject-diagram="reflectionLaw">
+      <Label x={86} y={16} anchor="middle" size={10.5} weight="800">反射の法則</Label>
+      <rect x="20" y="138" width="132" height="8" fill="#cbd5e1" />
+      <line x1="20" y1="138" x2="152" y2="138" stroke={LINE} strokeWidth="1.6" />
+      <line x1="86" y1="38" x2="86" y2="138" stroke={DARK} strokeWidth="1" strokeDasharray="4 3" />
+      <Ray points={[[30, 58], [86, 138]]} />
+      <Ray points={[[86, 138], [142, 58]]} />
+      <path d="M80,112 A26,26 0 0,1 86,112" fill="none" />
+      <path d="M71,116 Q76,110 86,109" fill="none" stroke="#1d4ed8" strokeWidth="1.3" />
+      <path d="M86,109 Q96,110 101,116" fill="none" stroke="#1d4ed8" strokeWidth="1.3" />
+      <Label x={62} y={100} anchor="middle" size={9} color="#1d4ed8">入射角</Label>
+      <Label x={110} y={100} anchor="middle" size={9} color="#1d4ed8">反射角</Label>
+      <Label x={86} y={34} anchor="middle" size={8.5} color={DARK}>鏡の面に垂直な線</Label>
+      <Label x={86} y={166} anchor="middle" size={9.5}>入射角＝反射角</Label>
+      <Label x={236} y={16} anchor="middle" size={10.5} weight="800">乱反射</Label>
+      <path d="M176,138 L188,128 L198,140 L210,126 L222,140 L234,128 L246,140 L258,127 L270,140 L284,130 L296,138 L296,146 L176,146 Z" fill="#cbd5e1" stroke={LINE} strokeWidth="1.2" />
+      {[[190, 40, 193, 132], [212, 40, 215, 132], [234, 40, 237, 132], [256, 40, 259, 132]].map(([x1, y1, x2, y2], index) => (
+        <g key={index}>
+          <Ray points={[[x1, y1], [x2, y2]]} />
+          <Ray points={[[x2, y2], [x2 + [-36, -14, 14, 34][index], y2 - [58, 74, 72, 58][index]]]} />
+        </g>
+      ))}
+      <Label x={236} y={166} anchor="middle" size={9.5}>いろいろな方向に反射する</Label>
+    </svg>
+  )
+}
+
+// ── 鏡にうつる像 ──────────────────────────────────────────────────────────
+//   { name: 'mirrorImage' }
+// 鏡で反射した光を逆にたどると、鏡をはさんで物体と対称の位置に像があるように見える。
+function MirrorImageDiagram() {
+  const eye = [52, 58]
+  const top = [110, 92]
+  const image = [190, 92]
+  const my = eye[1] + ((image[1] - eye[1]) * (150 - eye[0])) / (image[0] - eye[0])
+  return (
+    <svg viewBox="0 0 300 172" className="h-auto w-full" role="img" aria-label="鏡にうつる像" data-subject-diagram="mirrorImage">
+      <rect x="150" y="26" width="7" height="122" fill="#cbd5e1" />
+      <line x1="150" y1="26" x2="150" y2="148" stroke={LINE} strokeWidth="1.8" />
+      <line x1="110" y1="140" x2="110" y2="92" stroke="#2563eb" strokeWidth="3" />
+      <path d="M110,86 L104,96 L116,96 Z" fill="#2563eb" />
+      <line x1="190" y1="140" x2="190" y2="92" stroke="#93c5fd" strokeWidth="3" strokeDasharray="5 3" />
+      <path d="M190,86 L184,96 L196,96 Z" fill="#93c5fd" />
+      <line x1="110" y1="160" x2="190" y2="160" stroke={DARK} strokeWidth="0.8" />
+      <Label x={130} y={170} anchor="middle" size={8.5} color={DARK}>同じ距離</Label>
+      <Label x={170} y={170} anchor="middle" size={8.5} color={DARK}>同じ距離</Label>
+      <Ray points={[top, [150, my]]} />
+      <Ray points={[[150, my], eye]} />
+      <Ray points={[[150, my], image]} dashed />
+      <ellipse cx={eye[0] - 6} cy={eye[1]} rx="9" ry="5.5" fill="#ffffff" stroke={INK} strokeWidth="1.2" />
+      <circle cx={eye[0] - 4} cy={eye[1]} r="2.5" fill={INK} />
+      <Label x={eye[0] - 6} y={eye[1] - 12} anchor="middle" size={9.5}>目</Label>
+      <Label x={110} y={154} anchor="middle" size={9.5}>物体</Label>
+      <Label x={190} y={154} anchor="middle" size={9.5} color="#2563eb">像</Label>
+      <Label x={157} y={20} anchor="middle" size={9.5}>鏡</Label>
+      <Label x={206} y={46} size={8.5} color={LINE}>光を逆にたどった</Label>
+      <Label x={206} y={58} size={8.5} color={LINE}>位置に見える</Label>
+    </svg>
+  )
+}
+
+// ── 光の屈折と全反射 ───────────────────────────────────────────────────────
+//   { name: 'refraction' }
+// 空気→水では屈折角が入射角より小さく、水→空気では大きい。水→空気で入射角が大きいと、すべて反射する。
+function RefractionDiagram() {
+  const Panel = ({ cx, title }) => (
+    <g>
+      <rect x={cx - 48} y="86" width="96" height="70" fill={WATER} />
+      <line x1={cx - 48} y1="86" x2={cx + 48} y2="86" stroke={LINE} strokeWidth="1.3" />
+      <line x1={cx} y1="30" x2={cx} y2="150" stroke={DARK} strokeWidth="0.9" strokeDasharray="4 3" />
+      <Label x={cx} y={16} anchor="middle" size={10} weight="800">{title}</Label>
+      <Label x={cx - 44} y={80} size={8} color={DARK}>空気</Label>
+      <Label x={cx - 44} y={100} size={8} color="#0369a1">水</Label>
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 186" className="h-auto w-full" role="img" aria-label="光の屈折と全反射" data-subject-diagram="refraction">
+      <Panel cx={50} title="空気→水" />
+      <Ray points={[[16, 32], [50, 86]]} />
+      <Ray points={[[50, 86], [74, 150]]} />
+      <Label x={50} y={172} anchor="middle" size={8.5}>屈折角は小さくなる</Label>
+      <Panel cx={150} title="水→空気" />
+      <Ray points={[[126, 150], [150, 86]]} />
+      <Ray points={[[150, 86], [184, 32]]} />
+      <Label x={150} y={172} anchor="middle" size={8.5}>屈折角は大きくなる</Label>
+      <Panel cx={250} title="全反射" />
+      <Ray points={[[206, 116], [250, 86]]} />
+      <Ray points={[[250, 86], [294, 116]]} />
+      <Label x={250} y={172} anchor="middle" size={8.5}>すべて反射する</Label>
+    </svg>
+  )
+}
+
+// ── 凸レンズと焦点 ────────────────────────────────────────────────────────
+//   { name: 'convexLensFocus' }
+// 光軸に平行な光は屈折して焦点に集まり、レンズの中心を通る光は直進する。
+function ConvexLensFocusDiagram() {
+  const f = 56
+  return (
+    <svg viewBox="0 0 300 178" className="h-auto w-full" role="img" aria-label="凸レンズと焦点" data-subject-diagram="convexLensFocus">
+      <line x1="10" y1="90" x2="290" y2="90" stroke={DARK} strokeWidth="1" />
+      <ellipse cx="150" cy="90" rx="10" ry="62" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1.3" />
+      {[60, 75, 105, 120].map((y) => <Ray key={y} points={[[16, y], [150, y], [150 + f, 90], [270, 90 + ((90 - y) * (270 - 150 - f)) / f]]} />)}
+      <circle cx={150 + f} cy="90" r="3.5" fill="#1d4ed8" />
+      <circle cx={150 - f} cy="90" r="3.5" fill="#1d4ed8" />
+      <Label x={150 + f} y={82} anchor="middle" size={9.5} color="#1d4ed8">焦点</Label>
+      <Label x={150 - f} y={82} anchor="middle" size={9.5} color="#1d4ed8">焦点</Label>
+      <line x1="150" y1="160" x2={150 + f} y2="160" stroke={INK} strokeWidth="1" />
+      <line x1="150" y1="155" x2="150" y2="165" stroke={INK} strokeWidth="1" />
+      <line x1={150 + f} y1="155" x2={150 + f} y2="165" stroke={INK} strokeWidth="1" />
+      <Label x={150 + f / 2} y={174} anchor="middle" size={9}>焦点距離</Label>
+      <Label x={40} y={52} anchor="middle" size={8.5} color={RAY}>光軸に平行な光</Label>
+      <Label x={290} y={82} anchor="end" size={8.5} color={DARK}>光軸</Label>
+    </svg>
+  )
+}
+
+// ── 凸レンズによる像のでき方 ─────────────────────────────────────────────────
+//   { name: 'lensImage', object: 3 }（物体の位置を、焦点距離の何倍かで表す。1より小さいと虚像）
+function LensImageDiagram({ object = 3 }) {
+  const f = 40
+  const axis = 88
+  const lens = 150
+  const h = 28
+  const xo = lens - object * f
+  const top = [xo, axis - h]
+  const real = object > 1
+  // レンズの式 1/a + 1/b = 1/f で像の位置 b と倍率を求める（b が負なら、物体と同じ側の虚像）。
+  const b = (object * f) / (object - 1)
+  const xi = lens + b
+  const hi = -(h * b) / (object * f)
+  const imageTop = [xi, axis - hi]
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label="凸レンズによる像のでき方" data-subject-diagram="lensImage">
+      <line x1="4" y1={axis} x2="296" y2={axis} stroke={DARK} strokeWidth="1" />
+      <ellipse cx={lens} cy={axis} rx="9" ry="66" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1.3" />
+      {[-2, -1, 1, 2].map((k) => (
+        <g key={k}>
+          <circle cx={lens + k * f} cy={axis} r="2.8" fill="#1d4ed8" />
+          <Label x={lens + k * f} y={axis + 16} anchor="middle" size={8} color="#1d4ed8">{Math.abs(k) === 1 ? '焦点' : '2倍'}</Label>
+        </g>
+      ))}
+      <line x1={xo} y1={axis} x2={xo} y2={axis - h + 5} stroke="#2563eb" strokeWidth="3" />
+      <path d={`M${xo},${axis - h} L${xo - 5},${axis - h + 8} L${xo + 5},${axis - h + 8} Z`} fill="#2563eb" />
+      <Label x={xo} y={axis + 28} anchor="middle" size={9}>物体</Label>
+      <Ray points={[top, [lens, axis - h], real ? imageTop : [lens + 2.8 * f, axis - h + (h / f) * 2.8 * f]]} />
+      {real ? <Ray points={[top, imageTop]} /> : <Ray points={[top, [lens + 70, axis + (70 * h) / (lens - xo)]]} />}
+      {!real && (
+        <g>
+          <Ray points={[[lens, axis - h], imageTop]} dashed />
+          <Ray points={[top, imageTop]} dashed />
+        </g>
+      )}
+      <line x1={xi} y1={axis} x2={xi} y2={axis - hi + (hi > 0 ? 5 : -5)} stroke={real ? '#7c3aed' : '#a78bfa'} strokeWidth="3" strokeDasharray={real ? undefined : '5 3'} />
+      <path d={hi > 0 ? `M${xi},${axis - hi} L${xi - 5},${axis - hi + 8} L${xi + 5},${axis - hi + 8} Z` : `M${xi},${axis - hi} L${xi - 5},${axis - hi - 8} L${xi + 5},${axis - hi - 8} Z`} fill={real ? '#7c3aed' : '#a78bfa'} />
+      <Label x={xi} y={hi > 0 ? axis + 28 : axis - hi + 14} anchor="middle" size={9} color="#7c3aed">{real ? '実像' : '虚像'}</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -556,4 +738,9 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   filtration: FiltrationDiagram,
   statesParticles: StatesParticlesDiagram,
   distillation: DistillationDiagram,
+  reflectionLaw: ReflectionLawDiagram,
+  mirrorImage: MirrorImageDiagram,
+  refraction: RefractionDiagram,
+  convexLensFocus: ConvexLensFocusDiagram,
+  lensImage: LensImageDiagram,
 })

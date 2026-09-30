@@ -51,4 +51,9 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'filtration',
   'statesParticles',
   'distillation',
+  'reflectionLaw',
+  'mirrorImage',
+  'refraction',
+  'convexLensFocus',
+  'lensImage',
 ])
