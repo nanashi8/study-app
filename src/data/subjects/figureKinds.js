@@ -110,4 +110,7 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'atomStructure',
   'ionFormation',
   'ionBeaker',
+  'litmusMigration',
+  'phScale',
+  'neutralizationModel',
 ])

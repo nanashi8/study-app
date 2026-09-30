@@ -2853,6 +2853,98 @@ function IonBeakerDiagram() {
   )
 }
 
+// ── 酸性・アルカリ性のもとを調べる実験 ─────────────────────────────────────────────
+//   { name: 'litmusMigration', mode: 'acid' | 'alkali' }
+// 硝酸カリウム水溶液でしめらせたろ紙にリトマス紙を置き、中央に水溶液をしみこませた糸を置いて電圧を加える。
+// acid：青色リトマス紙の赤くなった部分が陰極側へ広がる（H⁺）。alkali：赤色リトマス紙の青くなった部分が陽極側へ広がる（OH⁻）。
+function LitmusMigrationDiagram({ mode = 'acid' }) {
+  const acid = mode === 'acid'
+  return (
+    <svg viewBox="0 0 300 176" className="h-auto w-full" role="img" aria-label={acid ? '酸性のもとを調べる実験' : 'アルカリ性のもとを調べる実験'} data-subject-diagram="litmusMigration">
+      <path d="M26,58 L26,14 L141,14 M159,14 L274,14 L274,58" fill="none" stroke={INK} strokeWidth="1.4" />
+      <line x1="146" y1="4" x2="146" y2="24" stroke={INK} strokeWidth="3.4" />
+      <line x1="154" y1="0" x2="154" y2="28" stroke={INK} strokeWidth="1.6" />
+      <Label x={138} y={10} anchor="end" size={8} color="#1d4ed8">－</Label>
+      <Label x={162} y={10} size={8} color="#b91c1c">＋</Label>
+      <rect x="20" y="56" width="260" height="66" rx="3" fill="#fef9c3" stroke="#ca8a04" strokeWidth="1" />
+      <rect x="20" y="62" width="12" height="54" fill="#475569" />
+      <rect x="268" y="62" width="12" height="54" fill="#475569" />
+      <rect x="44" y="80" width="212" height="18" fill={acid ? '#93c5fd' : '#fca5a5'} stroke={LINE} strokeWidth="0.8" />
+      <rect x={acid ? 86 : 150} y="80" width="64" height="18" fill={acid ? '#ef4444' : '#2563eb'} opacity="0.9" />
+      <line x1="150" y1="60" x2="150" y2="118" stroke="#92400e" strokeWidth="3" />
+      {(acid ? [106, 128] : [172, 194]).map((x) => <Particle key={x} x={x} y={89} text={acid ? 'H⁺' : 'OH⁻'} fill="#ffffff" stroke={acid ? '#b91c1c' : '#1d4ed8'} r={7} size={6} />)}
+      <Arrow from={acid ? [140, 134] : [160, 134]} to={acid ? [90, 134] : [210, 134]} color={acid ? '#dc2626' : '#2563eb'} width={2} />
+      <Label x={150} y={152} anchor="middle" size={8.5} weight="800" color={acid ? '#b91c1c' : '#1d4ed8'}>{acid ? '赤色に変わった部分が陰極側へ広がる' : '青色に変わった部分が陽極側へ広がる'}</Label>
+      <Label x={150} y={46} anchor="middle" size={8.5}>{acid ? '塩酸をしみこませた糸' : '水酸化ナトリウム水溶液をしみこませた糸'}</Label>
+      <Label x={26} y={134} anchor="middle" size={8.5} weight="800" color="#1d4ed8">陰極</Label>
+      <Label x={274} y={134} anchor="middle" size={8.5} weight="800" color="#b91c1c">陽極</Label>
+      <Label x={150} y={170} anchor="middle" size={8} color={LINE}>{acid ? '青色リトマス紙' : '赤色リトマス紙'}を、硝酸カリウム水溶液でしめらせたろ紙にのせる</Label>
+    </svg>
+  )
+}
+
+// ── pHの目もり ─────────────────────────────────────────────────────────────
+//   { name: 'phScale' }
+// pH7が中性。7より小さいほど酸性が強く、7より大きいほどアルカリ性が強い。身近な水溶液のおよそのpHを示す。
+function PhScaleDiagram() {
+  const colors = ['#dc2626', '#ea580c', '#f97316', '#fb923c', '#facc15', '#fde047', '#bef264', '#4ade80', '#2dd4bf', '#22d3ee', '#38bdf8', '#60a5fa', '#3b82f6', '#6366f1']
+  const x = (ph) => 20 + (260 * ph) / 14
+  const marks = [[2, 'レモン汁', 22], [7, '食塩水', 22], [9.5, 'せっけん水', 22], [1.5, '胃液', 42], [3, '食酢', 42], [12, '石灰水', 42]]
+  return (
+    <svg viewBox="0 0 300 132" className="h-auto w-full" role="img" aria-label="pHの目もり" data-subject-diagram="phScale">
+      {colors.map((color, i) => <rect key={i} x={x(i)} y="60" width={260 / 14 + 0.5} height="18" fill={color} />)}
+      <rect x="20" y="60" width="260" height="18" fill="none" stroke={LINE} strokeWidth="1" />
+      {marks.map(([ph, name, y]) => (
+        <g key={name}>
+          <line x1={x(ph)} y1={y + 3} x2={x(ph)} y2="60" stroke={LINE} strokeWidth="0.8" />
+          <Label x={x(ph)} y={y} anchor="middle" size={8.5}>{name}</Label>
+        </g>
+      ))}
+      {[0, 2, 4, 6, 7, 8, 10, 12, 14].map((ph) => <Label key={ph} x={x(ph)} y={92} anchor="middle" size={8.5} weight={ph === 7 ? '800' : '700'} color={LINE}>{ph}</Label>)}
+      <Label x={20} y={114} size={8.5} weight="800" color="#b91c1c">← 酸性が強い</Label>
+      <Label x={150} y={114} anchor="middle" size={8.5} weight="800" color="#15803d">中性</Label>
+      <Label x={280} y={114} anchor="end" size={8.5} weight="800" color="#1d4ed8">アルカリ性が強い →</Label>
+      <Label x={150} y={128} anchor="middle" size={8} color={LINE}>身近なもののpHは、およその値</Label>
+    </svg>
+  )
+}
+
+// ── 中和のイオンのモデル ─────────────────────────────────────────────────────
+//   { name: 'neutralizationModel' }
+// 塩酸（H⁺・Cl⁻）と水酸化ナトリウム水溶液（Na⁺・OH⁻）を混ぜると、H⁺とOH⁻が結びついて水になり、Na⁺とCl⁻が残る（塩化ナトリウム）。
+function NeutralizationModelDiagram() {
+  const box = (x, w) => <rect x={x} y="36" width={w} height="86" rx="8" fill="#f0f9ff" stroke={LINE} strokeWidth="1" />
+  const H = (x, y) => <Particle key={`h${x}-${y}`} x={x} y={y} text="H⁺" fill="#fee2e2" stroke="#dc2626" r={10} size={7} />
+  const Cl = (x, y) => <Particle key={`c${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#dcfce7" stroke="#15803d" r={10} size={7} />
+  const Na = (x, y) => <Particle key={`n${x}-${y}`} x={x} y={y} text="Na⁺" fill="#ffedd5" stroke="#ea580c" r={10} size={7} />
+  const OH = (x, y) => <Particle key={`o${x}-${y}`} x={x} y={y} text="OH⁻" fill="#dbeafe" stroke="#2563eb" r={11} size={6.5} />
+  const water = (x, y) => (
+    <g key={`w${x}-${y}`}>
+      <Atom x={x} y={y - 3} kind="O" r={7} />
+      <Atom x={x - 9} y={y + 4} kind="H" r={6} />
+      <Atom x={x + 9} y={y + 4} kind="H" r={6} />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 300 168" className="h-auto w-full" role="img" aria-label="中和のイオンのモデル" data-subject-diagram="neutralizationModel">
+      {box(6, 80)}
+      {[H(28, 60), Cl(64, 60), Cl(28, 98), H(64, 98)]}
+      <Label x={96} y={84} anchor="middle" size={13} weight="800" color={LINE}>＋</Label>
+      {box(106, 80)}
+      {[Na(128, 60), OH(164, 60), OH(128, 98), Na(164, 98)]}
+      <Label x={199} y={84} anchor="middle" size={13} weight="800" color="#dc2626">→</Label>
+      {box(212, 82)}
+      {[Na(232, 56), Cl(272, 56), Cl(232, 86), Na(272, 86)]}
+      {[water(236, 112), water(270, 112)]}
+      <Label x={46} y={138} anchor="middle" size={8.5} weight="800">塩酸</Label>
+      <Label x={146} y={138} anchor="middle" size={8.5} weight="800">水酸化ナトリウム水溶液</Label>
+      <Label x={253} y={138} anchor="middle" size={8.5} weight="800">中性（塩と水）</Label>
+      <Label x={150} y={20} anchor="middle" size={9} weight="800" color="#b91c1c">H⁺＋OH⁻→H₂O（水ができる）</Label>
+      <Label x={150} y={160} anchor="middle" size={8.5} color={LINE}>残ったNa⁺とCl⁻が、塩の塩化ナトリウム</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2928,4 +3020,7 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   atomStructure: AtomStructureDiagram,
   ionFormation: IonFormationDiagram,
   ionBeaker: IonBeakerDiagram,
+  litmusMigration: LitmusMigrationDiagram,
+  phScale: PhScaleDiagram,
+  neutralizationModel: NeutralizationModelDiagram,
 })
