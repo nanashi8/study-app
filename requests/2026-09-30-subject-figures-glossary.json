@@ -8,7 +8,7 @@
   "sessions": [
     "6e6f58b9-978c-4168-a59a-8209991f2b32"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "中学生向けの用語集は実在する（旺文社『中学社会 用語・資料集 五訂版』約3,500語・『中学理科 用語・資料集 五訂版』約2,600語。1語ごとに意味の解説に背景・関連事項を添え、図版・写真も使う）。これを語句の解説の程度の目安にする（文は写さない）。",
   "criteria": [
     {
@@ -16,63 +16,72 @@
       "text": "重要語句の全語句に、中学生向けの用語集と同じ程度の解説を付ける。意味（語句テストの問題文になる定義）は短く保ち、解説に背景・特徴・関連する語句・まちがえやすい語との見分け方を書く。中学の範囲をこえる内容は書かない。1語ずつ読み直して、指紋つきで台帳に記録する",
       "population": "全102単元の重要語句1,151語句（社会649・理科502）",
       "check": "node --test tests/junior-social-science-glossary.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。全1,151語句に解説、言い直し0語（134語を書き直し、テストで止める）。台帳の指紋1,151件一致。"
     },
     {
       "id": "points-figure-review",
       "text": "全要点を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断して台帳に記録する。図表を付けない要点には理由を書く",
       "population": "全102単元の要点538件（地理97・歴史109・公民91・理科1年66・2年82・3年93）",
       "check": "node --test tests/junior-social-science-figures.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。要点538件すべてを判断して記録（図表538・なし0）。"
     },
     {
       "id": "points-figures-guides",
       "text": "図表で説明すると判断した全要点に図表を付け、図の下に「図の読み方」（何を表す図か・どこを見るか・特徴・判断の仕方）を書く。いまある図も同じ質にそろえる。図の数値・位置は確かめられる資料と計算で確かめ、実際の統計を使う図は出典のページに載せる",
       "population": "台帳で図表で説明するとした全要点（いまある図つきの要点19件を含む）",
       "check": "node --test tests/junior-social-science-figures.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。要点538件すべてに図表と2手順以上の図の読み方（計1,660手順・図解142種）。実データの図は出典のページに載る（テストで確かめる）。"
     },
     {
       "id": "latitude-longitude",
       "text": "緯度・経度を図で詳しく説明する。地球の中心から測る角度としての緯度・経度、緯線・経線をかいた地図での位置の読み方（北緯・南緯・東経・西経）、地球の反対側の地点、経度と時差の計算（15度で1時間・日付変更線）を図と手順で示し、演習にも図で考える問題を置いて解説に読み取りの手順を書く",
       "population": "地理「世界の姿」「日本の姿」の緯度・経度・地図・時差の要点と、それを使う演習",
       "check": "node --test tests/junior-social-science-figures.test.mjs tests/junior-social-science-answers.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。世界の姿・日本の姿の緯度経度・地図・時差の要点に図と読み方、図で考える演習5問（geo-01-q04・q07、geo-02-q04・q06・q08）に読み取りの手順。"
     },
     {
       "id": "climate-charts",
       "text": "世界の気候（熱帯雨林・サバナ・砂漠・ステップ・温暖湿潤・西岸海洋性・地中海性・冷帯（亜寒帯）・ツンドラ・氷雪・高山）と日本の6つの気候（北海道・日本海側・太平洋側・中央高地・瀬戸内・南西諸島）の雨温図に、特徴と判断の仕方（最も寒い月と暖かい月の気温・年降水量・雨の多い季節・南半球の見分け方）を付け、気候帯を見分ける手順の図を置く。雨温図の数値は気象庁の平年値で確かめる",
       "population": "世界の気候11区分と日本の気候6区分の雨温図17と、雨温図を使う演習の全問",
       "check": "node --test tests/junior-social-science-figures.test.mjs tests/junior-social-science.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。雨温図51枚（気象庁の平年値の42地点）に読み方、雨温図を使う演習11問に読み取りの手順。"
     },
     {
       "id": "figure-questions",
       "text": "全演習を読み、地図・グラフ・雨温図・地形図・回路・実験の図など、図を見て考えるほうがよい問題に図を付ける。図を使う全問の解説に、図のどこを見てどう判断するかの手順を書き、1問ずつ読み直して答えの台帳を押し直す",
       "population": "全演習918問（いま図を使う40問と、この依頼で図を付けた問題）",
       "check": "node --test tests/junior-social-science-figures.test.mjs tests/junior-social-science-answers.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。918問を見直し、図を使う47問（読み取り方41・数を入れる問題の解き方6）。答えの台帳を押し直し済み。"
     },
     {
       "id": "screens-and-audits",
       "text": "新しい図と「図の読み方」、用語集の程度の解説が、単元のページ・暗記カード・語句テスト・演習・一覧に 375px の幅ではみ出さずに出ることを確かめ、学習者向けの日本語の決まり（常用漢字外の読み、画面に載せない説明）・全教材監査・既存のテストをすべて通す",
       "population": "図のある全要点・全演習と全語句の表示、npm test・npm run check の全件",
       "check": "node --test tests/junior-social-science-screens.test.mjs && npm test && npm run check",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "クリーンな clone（78e637f）で npm run audit:all-content が通った（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）。375px の画面テストで全102単元の図・図の読み方・図解・語句の解説と、図を使う全47問の図と読み取り方を確かめた。日本語の監査2つも通過。"
     },
     {
       "id": "on-main-deployed",
       "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で緯度経度・雨温図の図と語句の解説が出ることを確かめる",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 78e637f origin/main && test \"$(gh run view 36691523009 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "verifiedBy": "commit 78e637f をクリーンな clone で npm run audit:all-content に通して（テスト1,249件・失敗0、check:content・ビルド・audit:dist・監査台帳）main へ push し（3a7fe52..78e637f）、GitHub Pages のデプロイ run 36691523009 が成功。deployed-matches-head.mjs が「push 済みで、公開版へのデプロイが成功している」を返した。公開版（幅375）で、世界の姿のページに要点5件すべての図と図の読み方・緯度と経度の図解（latitude・longitude・globe）・重要語句10語の解説、人々の生活と環境のページに雨温図11枚・図の読み方6件・重要語句10語の解説が出て、横のはみ出しがないことを確かめた。"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない（この端末の study-app の複製すべてと共有の作業ツリー）",
       "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
-      "check": "node scripts/checks/leftover-changes.mjs --clones",
-      "status": "todo"
+      "check": "node scripts/checks/leftover-changes.mjs --clones && node --test tests/leftover-changes.test.mjs",
+      "status": "done",
+      "verifiedBy": "作業用の複製（wip/junior-social-science/study-app）を origin/main（78e637f）にそろえ、共有の作業ツリーの未追跡の依頼台帳をこの clone へ移してから main へ早送りした。leftover-changes.mjs --clones が、ほかの複製3つ（final-check・作業用の複製・共有の作業ツリー）すべてで「main の履歴にないコミット0件、main に入っていない変更0件」を返した。"
     }
   ]
 }
