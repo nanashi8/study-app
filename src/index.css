@@ -5287,6 +5287,12 @@ button { -webkit-tap-highlight-color: transparent; }
      画面の下に使われない余白が残ってしまう。 */
   --app-bottom-clearance: var(--app-safe-bottom);
 }
+/* ソフトウェアキーボードが出ていて文字を打っている間（src/lib/safeArea.js が data-app-keyboard="open" を付ける）は、
+   ホームバーがキーボードに隠れる。下のふちの余白を残すと、画面の下端の欄・シートの下端とキーボードの
+   間に空白ができて、打つ欄の見える所が減る。 */
+:root[data-app-keyboard='open'] {
+  --app-bottom-clearance: 0px;
+}
 /* ホーム画面アイコンから開いた表示（standalone）は時刻・電波の下まで描かれる。
    safeArea.js が実測して確定値を書き込むが、それが動くまでの一瞬や、
    万一動かなかったときに「戻る」「メニュー」が時刻へ潜らないよう最低限を確保する。 */

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -9,8 +9,9 @@ import {
   CustomEntryCard,
   categoryCaption,
 } from '../components/CustomCardItems.jsx'
+import { CustomEditBar, MergeEntriesSheet, MoveEntriesSheet } from '../components/CustomCardEdit.jsx'
 import { activeNotebookSetId } from '../lib/learningNotebook.js'
-import { Button, Card, EmptyState, IconButton } from '../components/ui.jsx'
+import { Button, Card, EmptyState, IconButton, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Download, Gear, Plus, Search, Upload } from '../components/Icons.jsx'
 import {
   CUSTOM_CARD_LIMITS,
@@ -21,12 +22,15 @@ import {
   ENGLISH_TEMPLATE_ID,
   cardSearchText,
   customCategoryChoices,
+  categoryTitle,
+  currentTemplateId,
   customCategoryGroups,
   defaultTemplateFor,
   findCustomCategory,
   subjectCategoryId,
 } from '../lib/customCards.js'
 import { CUSTOM_WORD_LIMITS } from '../lib/customWords.js'
+import { entryKey, parseEntryKey, splitEntryKeys } from '../lib/customCardsEdit.js'
 import {
   carryEntryValues,
   emptyEntryValues,
@@ -52,8 +56,10 @@ import {
 // 分類（既存の教科、または自分で作ったカテゴリー）ごとに暗記・テストする。
 // 見え方は params で決める（戻るで前の見え方へ帰れるように、見え方を変えるときは navigate で積む）。
 //   subject  … 教科のアプリから開いたときの教科。その教科と、その教科に表示するカテゴリーだけを出す。
-//   category … 分類1つのカードの一覧。
+//   category … 分類1つのカードの一覧。「編集」でカードを選び、書き換える・別の分類へ移す・1枚に統合する・削除ができる。
+//   mergedFrom … カテゴリーの統合でこの分類へまとめたとき（{ title, count }）。一覧の上に知らせを出す。
 //   form     … 登録欄（{ kind, id } なら書き換え、{ template, category } なら新しく作る）。
+//              新しく作るときは、登録しても登録欄のまま、同じ分類・テンプレートで次のカードを続けて入れられる。
 //   draft    … 英和辞書から渡された語（英単語のテンプレートで登録欄を開く）。
 //   view     … 'file' ならファイルの書き出し・読み込み。
 
@@ -82,6 +88,7 @@ function CategoryListView({ subject }) {
   const library = useCustomLibrary()
   const navigate = useStore((state) => state.navigate)
   const [sheet, setSheet] = useState(null)
+  const [notice, setNotice] = useState('')
   const groups = customCategoryGroups(library, { subject })
   const base = subject ? { subject } : {}
 
@@ -114,6 +121,12 @@ function CategoryListView({ subject }) {
             <Plus size={16} /> カテゴリーを作る
           </Button>
         </div>
+
+        {notice && (
+          <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-extrabold leading-relaxed text-emerald-800" role="status" data-custom-edit-notice>
+            {notice}
+          </p>
+        )}
 
         {groups.length === 0 ? (
           <EmptyState icon="✍️" title="まだ自作カードはありません">
@@ -166,6 +179,9 @@ function CategoryListView({ subject }) {
           isFirst={library.categories[0]?.id === sheet.category?.id}
           isLast={library.categories.at(-1)?.id === sheet.category?.id}
           onClose={() => setSheet(null)}
+          onMerged={(result) => setNotice(
+            `「${sheet.category.title}」のカード${result.movedCount}枚を「${categoryTitle(useStore.getState().customCategories, result.category)}」へまとめました。`,
+          )}
         />
       )}
     </div>
@@ -203,15 +219,33 @@ function useStartStudy(subject, returnParams) {
 
 // ── 分類1つのカード ─────────────────────────────────────
 
-function CategoryView({ subject, categoryId }) {
+function CategoryView({ subject, categoryId, mergedFrom }) {
   const library = useCustomLibrary()
   const srs = useStore((state) => state.srs)
   const cardSrs = useStore((state) => state.customCardSrs)
   const navigate = useStore((state) => state.navigate)
+  const replaceParams = useStore((state) => state.replaceParams)
   const deleteCustomWord = useStore((state) => state.deleteCustomWord)
   const deleteCustomCard = useStore((state) => state.deleteCustomCard)
+  const deleteCustomEntries = useStore((state) => state.deleteCustomEntries)
+  const moveCustomEntries = useStore((state) => state.moveCustomEntries)
   const [sheet, setSheet] = useState(false)
   const [query, setQuery] = useState('')
+  // 編集：選んだカードの鍵（entryKey）を選んだ順に持つ。操作は、しぼり込みで見えているカードにだけ行う。
+  const [editing, setEditing] = useState(false)
+  const [selectedKeys, setSelectedKeys] = useState([])
+  const [editSheet, setEditSheet] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [notice, setNotice] = useState(() => (
+    mergedFrom?.title ? `「${mergedFrom.title}」のカード${mergedFrom.count ?? 0}枚を、ここへまとめました。` : ''
+  ))
+  // まとめた知らせは1度だけ出す（ほかの画面から戻ったときにまた出さないよう、見え方から外す）。
+  useEffect(() => {
+    if (!mergedFrom) return
+    const params = { ...useStore.getState().params }
+    delete params.mergedFrom
+    replaceParams(params)
+  }, [mergedFrom, replaceParams])
   const base = subject ? { subject } : {}
   const startStudy = useStartStudy(subject, { ...base, category: categoryId })
   const category = findCustomCategory(library.categories, categoryId)
@@ -242,6 +276,49 @@ function CategoryView({ subject, categoryId }) {
   const total = group.words.length + group.cards.length
   const categoryIndex = library.categories.findIndex((item) => item.id === category.id)
 
+  const visibleKeys = entries.map(({ kind, entry }) => entryKey(kind, entry.id))
+  const selectedVisible = selectedKeys.filter((key) => visibleKeys.includes(key))
+  const selectedItems = selectedVisible
+    .map((key) => {
+      const parsed = parseEntryKey(key)
+      const entry = parsed?.kind === 'word'
+        ? group.words.find((word) => word.id === parsed.id)
+        : group.cards.find((card) => card.id === parsed?.id)
+      return entry ? { kind: parsed.kind, entry } : null
+    })
+    .filter(Boolean)
+  const allSelected = visibleKeys.length > 0 && visibleKeys.every((key) => selectedVisible.includes(key))
+  const finishEditing = () => {
+    setEditing(false)
+    setSelectedKeys([])
+    setEditSheet(null)
+    setConfirmDelete(false)
+  }
+  const toggleSelect = (kind, entry) => {
+    const key = entryKey(kind, entry.id)
+    setConfirmDelete(false)
+    setSelectedKeys((keys) => (keys.includes(key) ? keys.filter((item) => item !== key) : [...keys, key]))
+  }
+  const moveSelected = (target) => {
+    const result = moveCustomEntries({ ...splitEntryKeys(selectedVisible), category: target })
+    if (result.status !== 'moved') return
+    setNotice(`${result.movedCount}枚を「${categoryTitle(useStore.getState().customCategories, target)}」へ移しました。`)
+    finishEditing()
+  }
+  const deleteSelected = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true)
+      return
+    }
+    const result = deleteCustomEntries(splitEntryKeys(selectedVisible))
+    setNotice(`${result.deletedCount}枚を消しました。`)
+    finishEditing()
+  }
+  const editSelected = () => {
+    const [item] = selectedItems
+    if (item) navigate('customWords', { ...base, form: { kind: item.kind, id: item.entry.id } })
+  }
+
   return (
     <div className="flex h-full flex-col">
       <ScreenHeader
@@ -260,18 +337,52 @@ function CategoryView({ subject, categoryId }) {
           onCreate={() => navigate('customWords', { ...base, form: { category: category.id } })}
         />
 
+        {notice && (
+          <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-extrabold leading-relaxed text-emerald-800" role="status" data-custom-edit-notice>
+            {notice}
+          </p>
+        )}
+
         {total > 0 && (
-          <label className="flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 shadow-sm">
-            <Search size={18} className="text-ink/35" />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="用語・意味・解説で探す"
-              aria-label={`${category.title}のカードを探す`}
-              className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:text-ink/30"
-              data-custom-category-search
-            />
-          </label>
+          <div className="flex items-stretch gap-2">
+            <label className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 shadow-sm">
+              <Search size={18} className="shrink-0 text-ink/35" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="用語・意味・解説で探す"
+                aria-label={`${category.title}のカードを探す`}
+                className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:text-ink/30"
+                data-custom-category-search
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                if (editing) {
+                  finishEditing()
+                  return
+                }
+                setNotice('')
+                setEditing(true)
+              }}
+              aria-pressed={editing}
+              className={cx(
+                'min-h-11 shrink-0 rounded-2xl px-4 text-sm font-extrabold shadow-sm',
+                editing ? 'bg-brand-600 text-white' : 'bg-white text-brand-700',
+              )}
+              data-custom-edit-toggle
+            >
+              {editing ? '終わる' : '編集'}
+            </button>
+          </div>
+        )}
+
+        {editing && (
+          <p className="px-1 text-[11px] font-bold leading-relaxed text-ink/50" data-custom-edit-hint>
+            {'カードを押して選び、下の欄で書き換える・別の分類へ移す・1枚に統合する・削除ができます。'}
+            {'統合できるのは、同じテンプレートのカードどうしです。'}
+          </p>
         )}
 
         {total > 0 && entries.length === 0 && (
@@ -284,6 +395,9 @@ function CategoryView({ subject, categoryId }) {
                 kind={kind}
                 entry={entry}
                 srsEntry={kind === 'word' ? srs[entry.id] : cardSrs[entry.id]}
+                mode={editing ? 'select' : 'list'}
+                selected={selectedVisible.includes(entryKey(kind, entry.id))}
+                onToggleSelect={toggleSelect}
                 onEdit={(editKind, target) => navigate('customWords', { ...base, form: { kind: editKind, id: target.id } })}
                 onDelete={(deleteKind, id) => (deleteKind === 'word' ? deleteCustomWord(id) : deleteCustomCard(id))}
                 onOpenWord={(id) => navigate('wordDetail', { id })}
@@ -293,6 +407,44 @@ function CategoryView({ subject, categoryId }) {
         </ul>
       </div>
 
+      {editing && (
+        <CustomEditBar
+          count={selectedVisible.length}
+          visibleCount={visibleKeys.length}
+          allSelected={allSelected}
+          onToggleAll={() => {
+            setConfirmDelete(false)
+            setSelectedKeys(allSelected ? [] : visibleKeys)
+          }}
+          onEdit={editSelected}
+          onMove={() => setEditSheet('move')}
+          onMerge={() => setEditSheet('merge')}
+          onDelete={deleteSelected}
+          confirmDelete={confirmDelete}
+        />
+      )}
+
+      {editSheet === 'move' && (
+        <MoveEntriesSheet
+          open
+          count={selectedVisible.length}
+          currentCategory={category.id}
+          onClose={() => setEditSheet(null)}
+          onMove={moveSelected}
+        />
+      )}
+      {editSheet === 'merge' && (
+        <MergeEntriesSheet
+          open
+          selected={selectedItems}
+          onClose={() => setEditSheet(null)}
+          onMerged={({ title, count }) => {
+            setNotice(`${count}枚を「${title}」の1枚に統合しました。`)
+            finishEditing()
+          }}
+        />
+      )}
+
       {sheet && category.kind === 'custom' && (
         <CustomCategorySheet
           open
@@ -301,6 +453,11 @@ function CategoryView({ subject, categoryId }) {
           isFirst={categoryIndex === 0}
           isLast={categoryIndex === library.categories.length - 1}
           onClose={() => setSheet(false)}
+          onMerged={(result) => replaceParams({
+            ...base,
+            category: result.category,
+            mergedFrom: { title: category.title, count: result.movedCount },
+          })}
         />
       )}
     </div>
@@ -316,7 +473,7 @@ function initialForm({ form, draftWord, subject, library }) {
   }
   if (form?.id && form.kind === 'card') {
     const card = library.cards.find((item) => item.id === form.id)
-    if (card) return { template: card.template, values: entryValuesFromCard(card), category: card.category, previous: { kind: 'card', id: card.id } }
+    if (card) return { template: currentTemplateId(card.template), values: entryValuesFromCard(card), category: card.category, previous: { kind: 'card', id: card.id } }
   }
   const requested = customCategoryChoices(library.categories).some((choice) => choice.id === form?.category) ? form.category : null
   const category = requested ?? (draftWord ? DEFAULT_CATEGORY_ID : subject ? subjectCategoryId(subject) : DEFAULT_CATEGORY_ID)
@@ -348,6 +505,9 @@ function EntryFormView({ subject, form, draftWord }) {
   const [newCategoryTitle, setNewCategoryTitle] = useState('')
   const [addToBookId, setAddToBookId] = useState(null)
   const [error, setError] = useState('')
+  // この登録欄で続けて登録したカード（最後の1枚の名前と分類）。登録したら欄を空にして次を入れる。
+  const [saved, setSaved] = useState(null)
+  const fieldsRef = useRef(null)
   const editing = Boolean(initial.previous)
   const fromDictionary = Boolean(draftWord)
   const bookId = addToBookId ?? activeBookId ?? ''
@@ -398,9 +558,29 @@ function EntryFormView({ subject, form, draftWord }) {
     }
     if (!editing && bookId) setNotebookSetItem(bookId, result.kind === 'word' ? 'vocab' : 'customCards', result.id, true)
     setError('')
-    // 辞書から来た登録は、終わったら辞書へ戻す（引いていた語と、登録した語が出る）。
-    back()
+    // 書き換え（1枚を直す）と、辞書から来た登録（引いていた語と、登録した語が出る）は、終わったら元の画面へ戻す。
+    if (editing || fromDictionary) {
+      back()
+      return
+    }
+    // 新しく作るときは登録欄のまま。分類・テンプレート・入れる単語帳（英単語は級・分野も）はそのままに、欄を空にして
+    // 最初の欄にカーソルを置く（キーボードは出たまま、次のカードを打ち始められる）。
+    setSaved({ title: values.front.trim(), category: categoryId, count: (saved?.count ?? 0) + 1 })
+    setValues({ ...emptyEntryValues(), level: values.level, field: values.field })
+    setNewCategoryTitle('')
+    const first = fieldsRef.current?.querySelector('input[data-custom-card-input], textarea[data-custom-card-input]')
+    first?.focus({ preventScroll: true })
+    fieldsRef.current?.scrollIntoView({ block: 'start' })
   }
+
+  // 登録した分類の今のカードの枚数（英単語のカードとほかのカード）。
+  const savedTotal = saved
+    ? library.words.filter((word) => word.category === saved.category).length
+      + library.cards.filter((card) => card.category === saved.category).length
+    : 0
+  const savedNotice = saved
+    ? `「${saved.title}」を登録しました（${categoryTitle(library.categories, saved.category)}：${savedTotal}枚）。続けて次のカードを入れられます。`
+    : ''
 
   return (
     <div className="flex h-full flex-col">
@@ -429,14 +609,18 @@ function EntryFormView({ subject, form, draftWord }) {
           onBookChange={setAddToBookId}
           editing={editing}
           error={error}
+          notice={savedNotice}
+          fieldsRef={fieldsRef}
         />
       </div>
-      <div className="shrink-0 border-t border-slate-200 bg-white/95 p-3 backdrop-blur" data-custom-card-form-actions>
+      {/* キーボードが出ている間も、この欄はキーボードのすぐ上に置く（lib/safeArea.js の data-keyboard-actions）。 */}
+      <div className="shrink-0 border-t border-slate-200 bg-white/95 p-3 backdrop-blur" data-custom-card-form-actions data-keyboard-actions>
         <div className="grid grid-cols-2 gap-2">
           <Button variant="secondary" onClick={() => back()} data-custom-word-cancel>
-            <Close size={15} /> やめる
+            {saved ? <><Check size={15} /> 終わる</> : <><Close size={15} /> やめる</>}
           </Button>
-          <Button onClick={submit} data-custom-word-save>
+          {/* 押しても打っている欄からカーソルを外さない（キーボードを閉じずに次のカードへ）。 */}
+          <Button onMouseDown={(event) => event.preventDefault()} onClick={submit} data-custom-word-save>
             <Check size={15} /> {editing ? '書き換える' : '登録する'}
           </Button>
         </div>
@@ -725,7 +909,7 @@ export function CustomWordsScreen() {
   }
   if (params.view === 'file') return <FileView subject={subject} />
   if (typeof params.category === 'string') {
-    return <CategoryView key={params.category} subject={subject} categoryId={params.category} />
+    return <CategoryView key={params.category} subject={subject} categoryId={params.category} mergedFrom={params.mergedFrom ?? null} />
   }
   return <CategoryListView subject={subject} />
 }

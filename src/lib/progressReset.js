@@ -70,7 +70,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'customWords',
     '自作カード',
-    '自分で登録したカード（英単語・用語と意味・一問一答など）と作ったカテゴリー（単語帳からも外れます）',
+    '自分で登録したカード（英単語・古文単語・漢語・その他・一問一答）と作ったカテゴリー（単語帳からも外れます）',
     ['customWords', 'customCards', 'customCategories'],
   ),
   resetGroup(

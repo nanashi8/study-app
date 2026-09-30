@@ -67,7 +67,7 @@ function LearningMenu({ navigate }) {
             {PRIMARY_LEARNING_MODES.map((mode) => (
               <LearningModeButton key={mode.id} mode={mode} onOpen={open} />
             ))}
-            {/* 教科「英語」を選んで登録した自作カード（英単語・用語と意味など）。 */}
+            {/* 教科「英語」を選んで登録した自作カード（英単語・その他など）。 */}
             <CustomCardsMenuButton subject="english" />
           </div>
         </section>

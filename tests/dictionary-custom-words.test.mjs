@@ -44,6 +44,7 @@ test('英和辞書から見つからない語を自作カード（英単語）�
   assert.match(custom, /params\.draft\?\.word/)
   assert.match(custom, /const template = draftWord \? ENGLISH_TEMPLATE_ID/)
   assert.match(custom, /const fromDictionary = Boolean\(draftWord\)/)
-  assert.match(custom, /\/\/ 辞書から来た登録は、終わったら辞書へ戻す（引いていた語と、登録した語が出る）。\n\s*back\(\)/)
+  // 辞書から来た登録は、登録したら辞書へ戻す（新しく作るときの「続けて入れる」にはしない）。
+  assert.match(custom, /\/\/ 書き換え（1枚を直す）と、辞書から来た登録（引いていた語と、登録した語が出る）は、終わったら元の画面へ戻す。\n\s*if \(editing \|\| fromDictionary\) \{\n\s*back\(\)\n\s*return\n\s*\}/)
   assert.match(custom, /onClick=\{\(\) => back\(\)\} data-custom-word-cancel/)
 })

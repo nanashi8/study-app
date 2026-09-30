@@ -3,13 +3,15 @@
 // 1行が1枚のカード。1行目は列の名前（見出し）で、列の順は自由（見出しの名前で読む）。見出しのない表は「表・裏・解説」の3列として読む。
 // 書き出しは Excel で文字化けしない UTF-8（BOM つき）の CSV。読み込みは UTF-8（BOM あり・なし）と Shift_JIS、カンマ区切りとタブ区切り。
 // 分類の列は教科の名前（英語・古典・漢文・数学・社会・理科）か自分のカテゴリーの名前。ないカテゴリーの名前は、読み込むときに作る。
-// テンプレートの列は名前（用語と意味・用語・意味・解説・一問一答・英単語・古典単語・漢語）。空なら分類の最初のテンプレート。
+// テンプレートの列は名前（英単語・古文単語・漢語・その他・一問一答）。空なら分類の最初のテンプレート。
+// 以前の名前（用語と意味・用語・意味・解説はその他、古典単語は古文単語）も読む。
 // ID の列は書き出したカードの ID。消さずに読み込むと同じカードを書き換える（暗記・テストの記録が残る）。新しい行は空のまま。
 import {
   CUSTOM_CARD_LIMITS,
   CUSTOM_CARD_TEMPLATES,
   CUSTOM_SUBJECTS,
   ENGLISH_TEMPLATE_ID,
+  LEGACY_TEMPLATE_IDS,
   SUBJECT_CATEGORIES,
   createCustomCategoryId,
   customCategoryChoices,
@@ -70,7 +72,18 @@ const LIST_SEPARATOR = '；'
 const POS_BY_TEXT = new Map(CUSTOM_WORD_POS.flatMap((pos) => [[pos.id, pos.id], [pos.label, pos.id]]))
 const POS_LABEL = new Map(CUSTOM_WORD_POS.map((pos) => [pos.id, pos.label]))
 const LEVEL_LABEL = new Map(CUSTOM_WORD_LEVELS.map((level) => [level.id, level.label]))
-const TEMPLATE_BY_TEXT = new Map(CUSTOM_CARD_TEMPLATES.flatMap((template) => [[template.id, template.id], [template.label, template.id]]))
+const templateKey = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/gu, '')
+// テンプレートの名前（と id）から今のテンプレート。以前の名前も今のテンプレートへ読む。
+const LEGACY_TEMPLATE_NAMES = Object.freeze([
+  ['用語と意味', 'other'],
+  ['用語・意味・解説', 'other'],
+  ['古典単語', 'koten'],
+  ...Object.entries(LEGACY_TEMPLATE_IDS),
+])
+const TEMPLATE_BY_TEXT = new Map([
+  ...CUSTOM_CARD_TEMPLATES.flatMap((template) => [[templateKey(template.id), template.id], [templateKey(template.label), template.id]]),
+  ...LEGACY_TEMPLATE_NAMES.map(([name, id]) => [templateKey(name), id]),
+])
 
 const cleanHeader = (value) => String(value ?? '').normalize('NFKC').replace(/^﻿/u, '').replace(/\s+/gu, '').trim()
 const headerBase = (value) => cleanHeader(value).replace(/[（(].*$/u, '')
@@ -257,11 +270,11 @@ export function customCardsCsvText({ words = [], cards = [], categories = [] } =
   return tableText(entries.map((entry) => entry.row))
 }
 
-/** 一から作るための見本（6つのテンプレートを1行ずつ）。 */
+/** 一から作るための見本（5つのテンプレートを1行以上ずつ。その他は解説のある行とない行）。 */
 export function customCardsCsvSample() {
   return tableText([
-    { category: '社会', template: '用語と意味', front: '三角州', back: '川の河口に、土砂が積もってできた低く平らな土地' },
-    { category: '社会', template: '用語・意味・解説', front: '扇状地', back: '川が山地から平地へ出る所に、土砂が積もってできた扇の形の土地', note: '水はけがよく、果樹園に使われる' },
+    { category: '社会', template: 'その他', front: '三角州', back: '川の河口に、土砂が積もってできた低く平らな土地' },
+    { category: '社会', template: 'その他', front: '扇状地', back: '川が山地から平地へ出る所に、土砂が積もってできた扇の形の土地', note: '水はけがよく、果樹園に使われる' },
     { category: '2学期中間英語', template: '一問一答', front: 'I have lived here ( ) 2010. の（ ）に入る語は？', back: 'since', note: '起点を表すときは since、期間を表すときは for' },
     {
       category: '2学期中間英語',
@@ -283,7 +296,7 @@ export function customCardsCsvSample() {
       phrases: 'be popular with ～（～に人気がある）',
       etymology: 'ラテン語の populus（人々）から。「人々の」→「人気のある」',
     },
-    { category: '古典', template: '古典単語', front: 'をかし', reading: 'おかし', pos: '形容詞・シク活用', back: '趣がある・かわいらしい', example: '春はあけぼの。やうやう白くなりゆく山ぎは、少しあかりて', exampleTranslation: '春は明け方がよい。', note: '明るく知的な美しさ' },
+    { category: '古典', template: '古文単語', front: 'をかし', reading: 'おかし', pos: '形容詞・シク活用', back: '趣がある・かわいらしい', example: '春はあけぼの。やうやう白くなりゆく山ぎは、少しあかりて', exampleTranslation: '春は明け方がよい。', note: '明るく知的な美しさ' },
     { category: '漢文', template: '漢語', front: '未だ〜ず', reading: 'いまだ〜ず', back: 'まだ〜ない', example: '未だ学を好む者を聞かざるなり', exampleTranslation: 'まだ学問を好む者を聞いたことがない', note: '再読文字' },
   ])
 }
@@ -364,7 +377,7 @@ export function parseCustomCardsTable(text, { categories = [], subject = null, n
     // テンプレート：名前か ID。空なら分類の最初のテンプレート。
     let template = defaultTemplateFor([...existing, ...created], category)
     if (values.template) {
-      const found = TEMPLATE_BY_TEXT.get(values.template.normalize('NFKC').replace(/\s+/gu, ''))
+      const found = TEMPLATE_BY_TEXT.get(templateKey(values.template))
       if (!found) {
         errors.push({ line, message: `テンプレート「${values.template}」はありません（${CUSTOM_CARD_TEMPLATES.map((item) => item.label).join('・')}のどれか）` })
         return

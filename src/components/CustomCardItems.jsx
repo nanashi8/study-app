@@ -7,13 +7,15 @@ import { LearningStatusBars } from './LearningStatusBars.jsx'
 import { Sheet } from './Sheet.jsx'
 import { useWordBookSlot, wordBookSlotLabel } from './WordBookSlot.jsx'
 import { Button, Card, Chip, cx } from './ui.jsx'
-import { ArrowRight, Book, Bookmark, BookmarkFilled, Cards, ChevronDown, ChevronUp, Gear } from './Icons.jsx'
+import { ArrowRight, Book, Bookmark, BookmarkFilled, Cards, Check, ChevronDown, ChevronUp, Gear } from './Icons.jsx'
 import {
   CUSTOM_CARD_LIMITS,
   CUSTOM_CARD_TEMPLATES,
   CUSTOM_SUBJECTS,
   CUSTOM_SUBJECT_BY_ID,
+  SUBJECT_CATEGORIES,
   cardFieldRows,
+  normalizeCustomCategories,
   quizzableCustomCardIds,
   templateFor,
 } from '../lib/customCards.js'
@@ -52,60 +54,111 @@ function FieldRow({ label, value, className = '' }) {
   )
 }
 
+/** カード1枚の中身（テンプレートの名前・見出し・答えの欄・ほかの欄）。一覧・編集で選ぶとき・統合の見本で同じ形。 */
+function EntryContent({ kind, entry, speak = true }) {
+  const english = kind === 'word'
+  const title = english ? entry.word : entry.front
+  const template = templateFor(english ? 'english' : entry.template)
+  const level = english ? getLevel(entry.level) : null
+  const rows = english ? englishListRows(entry) : cardFieldRows(entry).filter((row) => row.key !== 'front' && row.key !== 'back')
+  const backLabel = english ? '意味' : template.fields.find((item) => item.key === 'back')?.label
+  return (
+    <div className="flex items-start gap-2">
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-700" data-custom-entry-template={template.id}>
+            {template.label}
+          </span>
+          {english && <Chip color={level.color}>英検{level.label}</Chip>}
+          {english && (
+            <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-extrabold text-ink/60">{entry.pos}</span>
+          )}
+          {english && (
+            <span className="truncate rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-ink/45">{entry.field}</span>
+          )}
+        </div>
+        <p className="mt-1 whitespace-pre-line break-words font-display text-xl font-extrabold text-ink">{title}</p>
+        {english && entry.phonetic && <p className="text-xs font-bold text-ink/40">{entry.phonetic}</p>}
+        <p className="mt-0.5 whitespace-pre-line break-words text-sm font-extrabold text-ink/70">
+          <span className="mr-1 text-[10px] text-ink/40">{backLabel}</span>
+          {english ? entry.meanings.join('・') : entry.back}
+        </p>
+        {english && entry.example?.en && (
+          <p className="mt-1 break-words text-xs font-bold text-ink/55">{entry.example.en}</p>
+        )}
+        {english && entry.example?.ja && (
+          <p className="break-words text-xs font-bold text-ink/40">{entry.example.ja}</p>
+        )}
+        {(rows.length > 0 || (english && (entry.note || entry.etymology))) && (
+          <div className="mt-2 space-y-1" data-custom-entry-fields>
+            {rows.map((row) => <FieldRow key={row.key} label={row.label} value={row.value} />)}
+            {english && entry.note && <FieldRow label="使い方・メモ" value={entry.note} />}
+            {english && entry.etymology && <FieldRow label="語の成り立ち" value={entry.etymology} />}
+          </div>
+        )}
+      </div>
+      {english && speak && <SpeakButton text={entry.word} size="sm" />}
+    </div>
+  )
+}
+
 /**
  * 一覧のカード1枚。英単語のカード（kind: 'word'）と、ほかのテンプレートのカード（kind: 'card'）を同じ形で出す。
- * 下の段は 単語帳（画面下部の「単語帳」で選んだ登録先に入れる・外す）・書き換える・削除。
+ * mode は list（下の段に 単語帳・書き換える・削除）・select（編集で選ぶ。押すと選ぶ・外す）・preview（統合の見本。操作なし）。
  */
-export function CustomEntryCard({ kind, entry, srsEntry, onEdit, onDelete, onOpenWord }) {
+export function CustomEntryCard({ kind, entry, srsEntry, onEdit, onDelete, onOpenWord, mode = 'list', selected = false, onToggleSelect }) {
   const english = kind === 'word'
   const domain = english ? 'vocab' : 'customCards'
   const title = english ? entry.word : entry.front
   const wordBook = useWordBookSlot([`${domain}:${entry.id}`], { label: title })
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const template = templateFor(english ? 'english' : entry.template)
-  const level = english ? getLevel(entry.level) : null
-  const rows = english ? englishListRows(entry) : cardFieldRows(entry).filter((row) => row.key !== 'front' && row.key !== 'back')
-  const backLabel = english ? '意味' : template.fields.find((item) => item.key === 'back')?.label
+  const data = {
+    'data-custom-entry-id': entry.id,
+    'data-custom-entry-kind': kind,
+    'data-custom-word-id': english ? entry.id : undefined,
+  }
+
+  if (mode === 'select') {
+    return (
+      <Card className={cx('overflow-hidden', selected && 'border-brand-500 ring-2 ring-brand-500/30')} {...data}>
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={selected}
+          aria-label={`${title}を選ぶ`}
+          onClick={() => onToggleSelect?.(kind, entry)}
+          className={cx('flex w-full items-start gap-3 p-3.5 text-left', selected ? 'bg-brand-50/60' : 'active:bg-slate-50')}
+          data-custom-entry-select={entry.id}
+        >
+          <span
+            className={cx(
+              'mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2',
+              selected ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-300 bg-white',
+            )}
+            aria-hidden="true"
+          >
+            {selected && <Check size={14} />}
+          </span>
+          <div className="min-w-0 flex-1">
+            <EntryContent kind={kind} entry={entry} speak={false} />
+          </div>
+        </button>
+      </Card>
+    )
+  }
+
+  if (mode === 'preview') {
+    return (
+      <Card className="p-3.5" {...data} data-custom-entry-preview>
+        <EntryContent kind={kind} entry={entry} speak={false} />
+      </Card>
+    )
+  }
 
   return (
-    <Card className="p-3.5" data-custom-entry-id={entry.id} data-custom-entry-kind={kind} data-custom-word-id={english ? entry.id : undefined}>
-      <div className="flex items-start gap-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-700" data-custom-entry-template={template.id}>
-              {template.label}
-            </span>
-            {english && <Chip color={level.color}>英検{level.label}</Chip>}
-            {english && (
-              <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-extrabold text-ink/60">{entry.pos}</span>
-            )}
-            {english && (
-              <span className="truncate rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-ink/45">{entry.field}</span>
-            )}
-          </div>
-          <p className="mt-1 whitespace-pre-line break-words font-display text-xl font-extrabold text-ink">{title}</p>
-          {english && entry.phonetic && <p className="text-xs font-bold text-ink/40">{entry.phonetic}</p>}
-          <p className="mt-0.5 whitespace-pre-line break-words text-sm font-extrabold text-ink/70">
-            <span className="mr-1 text-[10px] text-ink/40">{backLabel}</span>
-            {english ? entry.meanings.join('・') : entry.back}
-          </p>
-          {english && entry.example?.en && (
-            <p className="mt-1 break-words text-xs font-bold text-ink/55">{entry.example.en}</p>
-          )}
-          {english && entry.example?.ja && (
-            <p className="break-words text-xs font-bold text-ink/40">{entry.example.ja}</p>
-          )}
-          {(rows.length > 0 || (english && (entry.note || entry.etymology))) && (
-            <div className="mt-2 space-y-1" data-custom-entry-fields>
-              {rows.map((row) => <FieldRow key={row.key} label={row.label} value={row.value} />)}
-              {english && entry.note && <FieldRow label="使い方・メモ" value={entry.note} />}
-              {english && entry.etymology && <FieldRow label="語の成り立ち" value={entry.etymology} />}
-            </div>
-          )}
-          <StudyReviewHistory entry={srsEntry} className="mt-2 items-start" />
-        </div>
-        {english && <SpeakButton text={entry.word} size="sm" />}
-      </div>
+    <Card className="p-3.5" {...data}>
+      <EntryContent kind={kind} entry={entry} />
+      <StudyReviewHistory entry={srsEntry} className="mt-2 items-start" />
 
       <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t border-slate-200 pt-2.5">
         {/* 押すと、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。 */}
@@ -293,15 +346,37 @@ const inputClass = 'mt-1 h-11 w-full rounded-lg border border-slate-300 bg-white
  * カテゴリーを作る・設定を変えるシート。category が null なら新しく作る。
  * 表示する教科を選ぶと、その教科のアプリにもこのカテゴリーが出る。消すと中のカードも消える（枚数を示して確かめる）。
  */
-export function CustomCategorySheet({ open, category, cardCount = 0, defaultSubject = null, onClose, onSaved, isFirst, isLast }) {
+export function CustomCategorySheet({ open, category, cardCount = 0, defaultSubject = null, onClose, onSaved, onMerged, isFirst, isLast }) {
   const saveCustomCategory = useStore((state) => state.saveCustomCategory)
   const moveCustomCategory = useStore((state) => state.moveCustomCategory)
   const deleteCustomCategory = useStore((state) => state.deleteCustomCategory)
+  const mergeCustomCategory = useStore((state) => state.mergeCustomCategory)
+  const categories = useStore((state) => state.customCategories)
   const [title, setTitle] = useState(category?.title ?? '')
   const [subject, setSubject] = useState(category ? category.subject ?? '' : defaultSubject ?? '')
   const [template, setTemplate] = useState(category?.template ?? '')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [mergeTarget, setMergeTarget] = useState('')
+  const [confirmMerge, setConfirmMerge] = useState(false)
   const [error, setError] = useState('')
+  // まとめる先：教科と、このカテゴリーのほかの作ったカテゴリー。
+  const otherCategories = normalizeCustomCategories(categories).filter((item) => item.id !== category?.id)
+  const mergeTargetTitle = [...SUBJECT_CATEGORIES, ...otherCategories].find((item) => item.id === mergeTarget)?.title ?? ''
+
+  const merge = () => {
+    if (!mergeTarget) return
+    if (!confirmMerge) {
+      setConfirmMerge(true)
+      return
+    }
+    const result = mergeCustomCategory(category.id, mergeTarget)
+    if (result.status !== 'merged') {
+      setError('まとめる先の分類が見つかりませんでした。')
+      return
+    }
+    onClose()
+    onMerged?.(result)
+  }
 
   const save = () => {
     const result = saveCustomCategory({
@@ -364,6 +439,49 @@ export function CustomCategorySheet({ open, category, cardCount = 0, defaultSubj
               </Button>
               <Button size="sm" variant="secondary" disabled={isLast} onClick={() => moveCustomCategory(category.id, 'down')} data-custom-category-move="down">
                 <ChevronDown size={16} /> 下へ
+              </Button>
+            </div>
+            {/* ほかの分類にまとめる：中のカードをすべて移して、このカテゴリーを消す（記録・単語帳はそのまま）。 */}
+            <div className="space-y-2 rounded-xl bg-slate-50 p-3" data-custom-category-merge>
+              <label className="block">
+                <span className="text-[11px] font-extrabold text-ink/60">ほかの分類にまとめる</span>
+                <select
+                  value={mergeTarget}
+                  onChange={(event) => {
+                    setMergeTarget(event.target.value)
+                    setConfirmMerge(false)
+                  }}
+                  className={selectClass}
+                  data-custom-category-merge-target
+                >
+                  <option value="">まとめる先を選ぶ</option>
+                  <optgroup label="教科">
+                    {SUBJECT_CATEGORIES.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
+                  </optgroup>
+                  {otherCategories.length > 0 && (
+                    <optgroup label="自分のカテゴリー">
+                      {otherCategories.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
+                    </optgroup>
+                  )}
+                </select>
+                <span className="mt-0.5 block text-[11px] font-bold leading-relaxed text-ink/45">
+                  {'中のカードをすべて移して、このカテゴリーを消します。カードの暗記・テストの記録と単語帳はそのまま残ります。'}
+                </span>
+              </label>
+              {confirmMerge && (
+                <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-rose-700" data-custom-category-merge-confirm>
+                  {`中のカード${cardCount}枚を「${mergeTargetTitle}」へ移して、このカテゴリーを消します。`}
+                </p>
+              )}
+              <Button
+                full
+                size="sm"
+                variant={confirmMerge ? 'danger' : 'secondary'}
+                disabled={!mergeTarget}
+                onClick={merge}
+                data-custom-category-merge-run
+              >
+                {confirmMerge ? '本当にまとめる' : 'まとめる'}
               </Button>
             </div>
             <Button

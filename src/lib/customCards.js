@@ -1,6 +1,7 @@
 // 自作カード（利用者がテンプレートを選んで登録するカード）と、カードの分類（教科・独自のカテゴリー）。
 //
-// テンプレートは、登録の欄の組み合わせ。「用語と意味」は用語と意味の2欄だけ、「英単語」は英単語が使う情報を全部書く。
+// テンプレートは、登録の欄の組み合わせ。英単語・古文単語・漢語・その他・一問一答の5つ。「英単語」は英単語が使う情報を全部書き、
+// 「その他」は用語と意味（解説は書かなくてもよい）を書く。
 // 英単語のカードは、これまでの自作単語（lib/customWords.js）として辞書と同じ ID の引き当てに乗せ、
 // 英単語の暗記・テスト・辞書ページで学ぶ。英単語以外のテンプレートのカードはここに持ち、自作カードの暗記・テストで学ぶ。
 //
@@ -37,8 +38,8 @@ export const CUSTOM_SUBJECTS = Object.freeze([
   { id: 'koten', label: '古典', appScreen: 'kotenList', appLabel: '古典アプリ', emoji: '📜', color: '#d97706', template: 'koten' },
   { id: 'kanbun', label: '漢文', appScreen: 'kanbunHome', appLabel: '漢文アプリ', emoji: '📕', color: '#be123c', template: 'kanbun' },
   { id: 'math', label: '数学', appScreen: 'mathMap', appLabel: '数学アプリ', emoji: '📐', color: '#7c3aed', template: 'qa' },
-  { id: 'social', label: '社会', appScreen: 'socialHome', appLabel: '社会アプリ', emoji: '🗾', color: '#0f766e', template: 'termNote' },
-  { id: 'science', label: '理科', appScreen: 'scienceHome', appLabel: '理科アプリ', emoji: '🔬', color: '#15803d', template: 'termNote' },
+  { id: 'social', label: '社会', appScreen: 'socialHome', appLabel: '社会アプリ', emoji: '🗾', color: '#0f766e', template: 'other' },
+  { id: 'science', label: '理科', appScreen: 'scienceHome', appLabel: '理科アプリ', emoji: '🔬', color: '#15803d', template: 'other' },
 ].map((subject) => Object.freeze(subject)))
 
 export const CUSTOM_SUBJECT_IDS = Object.freeze(CUSTOM_SUBJECTS.map((subject) => subject.id))
@@ -59,43 +60,9 @@ const field = (key, label, { required = false, multiline = false, placeholder = 
 // テストの問い方。prompt の欄を読んで、answer の欄を選ぶ。kind が同じテンプレートどうしで誤答を作る。
 const quiz = (prompt, answer, ask, kind) => Object.freeze({ prompt, answer, ask, kind })
 
-// テンプレート。並びは登録の画面で選ぶ順。english は英単語の欄（lib/customWords.js の ENGLISH_WORD_FIELDS）を使う。
+// テンプレート。並びは登録の画面で選ぶ順（英単語・古文単語・漢語・その他・一問一答）。
+// english は英単語の欄（lib/customWords.js の ENGLISH_WORD_FIELDS）を使う。
 export const CUSTOM_CARD_TEMPLATES = Object.freeze([
-  {
-    id: 'term',
-    label: '用語と意味',
-    description: '用語と意味の2つだけを書く',
-    emoji: '📝',
-    fields: [
-      field('front', '用語', { required: true, placeholder: '例：光合成' }),
-      field('back', '意味', { required: true, multiline: true, placeholder: '例：植物が光を使って、でんぷんなどの養分をつくるはたらき' }),
-    ],
-    quiz: quiz('back', 'front', 'この意味の用語は？', 'term'),
-  },
-  {
-    id: 'termNote',
-    label: '用語・意味・解説',
-    description: '用語と意味に、解説や覚え方を添える',
-    emoji: '🗒️',
-    fields: [
-      field('front', '用語', { required: true, placeholder: '例：扇状地' }),
-      field('back', '意味', { required: true, multiline: true, placeholder: '例：川が山地から平地へ出る所に、土砂が積もってできた扇の形の土地' }),
-      field('note', '解説', { multiline: true, placeholder: '覚え方や、まちがえやすい語との見分け方' }),
-    ],
-    quiz: quiz('back', 'front', 'この意味の用語は？', 'term'),
-  },
-  {
-    id: 'qa',
-    label: '一問一答',
-    description: '問題と答え、解説を書く',
-    emoji: '❓',
-    fields: [
-      field('front', '問題', { required: true, multiline: true, placeholder: '例：鎌倉幕府を開いた人物は？' }),
-      field('back', '答え', { required: true, placeholder: '例：源頼朝' }),
-      field('note', '解説', { multiline: true, placeholder: '答えの理由や、いっしょに覚えること' }),
-    ],
-    quiz: quiz('front', 'back', 'この問題の答えは？', 'answer'),
-  },
   {
     id: 'english',
     label: '英単語',
@@ -106,7 +73,7 @@ export const CUSTOM_CARD_TEMPLATES = Object.freeze([
   },
   {
     id: 'koten',
-    label: '古典単語',
+    label: '古文単語',
     description: '古語の読み・漢字・品詞・意味・例文と訳を書く',
     emoji: '📜',
     fields: [
@@ -136,19 +103,56 @@ export const CUSTOM_CARD_TEMPLATES = Object.freeze([
     ],
     quiz: quiz('front', 'back', 'この漢語の意味は？', 'meaning'),
   },
+  {
+    id: 'other',
+    label: 'その他',
+    description: '用語と意味を書く。解説は書かなくてもよい',
+    emoji: '📝',
+    fields: [
+      field('front', '用語', { required: true, placeholder: '例：光合成' }),
+      field('back', '意味', { required: true, multiline: true, placeholder: '例：植物が光を使って、でんぷんなどの養分をつくるはたらき' }),
+      field('note', '解説', { multiline: true, placeholder: '覚え方や、まちがえやすい語との見分け方' }),
+    ],
+    quiz: quiz('back', 'front', 'この意味の用語は？', 'term'),
+  },
+  {
+    id: 'qa',
+    label: '一問一答',
+    description: '問題と答え、解説を書く',
+    emoji: '❓',
+    fields: [
+      field('front', '問題', { required: true, multiline: true, placeholder: '例：鎌倉幕府を開いた人物は？' }),
+      field('back', '答え', { required: true, placeholder: '例：源頼朝' }),
+      field('note', '解説', { multiline: true, placeholder: '答えの理由や、いっしょに覚えること' }),
+    ],
+    quiz: quiz('front', 'back', 'この問題の答えは？', 'answer'),
+  },
 ].map((template) => Object.freeze({ ...template, fields: Object.freeze(template.fields) })))
 
 export const CUSTOM_CARD_TEMPLATE_IDS = Object.freeze(CUSTOM_CARD_TEMPLATES.map((template) => template.id))
 export const CUSTOM_CARD_TEMPLATE_BY_ID = Object.freeze(
   Object.fromEntries(CUSTOM_CARD_TEMPLATES.map((template) => [template.id, template])),
 )
-// 英単語は自作単語として持つので、ここのカードのテンプレートは英単語以外の5つ。
+// 英単語は自作単語として持つので、ここのカードのテンプレートは英単語以外の4つ。
 export const ENGLISH_TEMPLATE_ID = 'english'
 export const CARD_TEMPLATE_IDS = Object.freeze(CUSTOM_CARD_TEMPLATE_IDS.filter((id) => id !== ENGLISH_TEMPLATE_ID))
 // カードが持つ欄（英単語以外）。テンプレートを変えても、同じ key の欄は中身を引き継ぐ。
 export const CARD_FIELD_KEYS = Object.freeze(['front', 'back', 'reading', 'kanji', 'pos', 'example', 'exampleTranslation', 'note'])
 
-export const templateFor = (templateId) => CUSTOM_CARD_TEMPLATE_BY_ID[templateId] ?? CUSTOM_CARD_TEMPLATE_BY_ID.term
+// 以前のテンプレート。「用語と意味」（term）と「用語・意味・解説」（termNote）は「その他」にまとめた。
+// 保存・ファイルから読むときに今のテンプレートへ移す（どちらも用語・意味・解説の欄のまま入る）。
+export const LEGACY_TEMPLATE_IDS = Object.freeze({ term: 'other', termNote: 'other' })
+// どのテンプレートにも当たらないカードは「その他」として読む。
+export const FALLBACK_TEMPLATE_ID = 'other'
+
+/** 今のテンプレートの id（以前の id は移し先へ）。 */
+export const currentTemplateId = (templateId) => (
+  Object.hasOwn(LEGACY_TEMPLATE_IDS, templateId) ? LEGACY_TEMPLATE_IDS[templateId] : templateId
+)
+
+export const templateFor = (templateId) => (
+  CUSTOM_CARD_TEMPLATE_BY_ID[currentTemplateId(templateId)] ?? CUSTOM_CARD_TEMPLATE_BY_ID[FALLBACK_TEMPLATE_ID]
+)
 
 /** その欄の名前（テンプレートごと）。テンプレートにない欄は null。 */
 export function templateFieldLabel(templateId, key) {
@@ -179,7 +183,7 @@ const multiLine = (value, limit) => (
 
 const MULTILINE_KEYS = new Set(['back', 'example', 'exampleTranslation', 'note'])
 /** カードの欄1つを保存の形にそろえる。問題（一問一答の front）も複数行で書ける。 */
-export function cleanCardField(key, value, templateId = 'term') {
+export function cleanCardField(key, value, templateId = FALLBACK_TEMPLATE_ID) {
   const limit = CUSTOM_CARD_LIMITS[key] ?? 200
   const multiline = MULTILINE_KEYS.has(key)
     || templateFor(templateId).fields.some((item) => item.key === key && item.multiline)
@@ -237,7 +241,7 @@ export function normalizeCustomCategory(value, { now = Date.now() } = {}) {
     // 表示する教科（その教科のアプリにも出す）。なければ null。
     subject: CUSTOM_SUBJECT_IDS.includes(value.subject) ? value.subject : null,
     // このカテゴリーで登録を始めるときに最初に選ぶテンプレート。
-    template: CUSTOM_CARD_TEMPLATE_IDS.includes(value.template) ? value.template : null,
+    template: CUSTOM_CARD_TEMPLATE_IDS.includes(currentTemplateId(value.template)) ? currentTemplateId(value.template) : null,
     createdAt,
     updatedAt: timestamp(value.updatedAt, createdAt),
   }
@@ -361,12 +365,12 @@ export function customEntryCountForSubject(library, subject) {
     .reduce((sum, group) => sum + group.words.length + group.cards.length, 0)
 }
 
-/** 新しく登録するときの最初のテンプレート。分類の既定 → 教科の既定 → 用語と意味。 */
+/** 新しく登録するときの最初のテンプレート。分類の既定 → 教科の既定 → その他。 */
 export function defaultTemplateFor(categories, categoryId) {
   const category = findCustomCategory(categories, categoryId)
   if (category?.template) return category.template
   const subject = categorySubject(categories, categoryId)
-  return CUSTOM_SUBJECT_BY_ID[subject]?.template ?? 'term'
+  return CUSTOM_SUBJECT_BY_ID[subject]?.template ?? FALLBACK_TEMPLATE_ID
 }
 
 // ── カード（英単語以外のテンプレート） ─────────────────────────────
@@ -378,7 +382,7 @@ export const isCustomCardId = (id) => (
 /** 保存形。テンプレートの必須の欄（表と裏）が空のものは登録として成り立たないので落とす。 */
 export function normalizeCustomCard(value, { now = Date.now() } = {}) {
   if (!isRecord(value)) return null
-  const template = CARD_TEMPLATE_IDS.includes(value.template) ? value.template : 'term'
+  const template = CARD_TEMPLATE_IDS.includes(currentTemplateId(value.template)) ? currentTemplateId(value.template) : FALLBACK_TEMPLATE_ID
   const allowed = new Set(templateFor(template).fields.map((item) => item.key))
   const fields = Object.fromEntries(CARD_FIELD_KEYS.map((key) => [
     key,

@@ -1,7 +1,8 @@
 // 自作カードの画面を 375px の幅で実際に操作する（依頼台帳 requests/2026-09-30-custom-card-templates.json の screen-verified・related-screens）。
 //   入口     … メニューの行「自作カード」から開く（上部のバーは入口のスタディアプリ）。
-//   登録     … 6つのテンプレートを選んで、それぞれの欄に打ち込んで登録する。英単語は16欄すべてを打ち込む。
-//               分類で「新しいカテゴリーを作る」を選び、「2学期中間英語」を作りながら登録する。
+//   登録     … 5つのテンプレート（英単語・古文単語・漢語・その他・一問一答）を選んで、それぞれの欄に打ち込んで登録する。
+//               英単語は16欄すべてを打ち込む。分類で「新しいカテゴリーを作る」を選び、「2学期中間英語」を作りながら登録し、
+//               登録の画面のまま同じカテゴリーへ続けて登録する（requests/2026-09-30-custom-card-form-followup.json の continue-same-category）。
 //   カテゴリー… シートで作る・名前・表示する教科（そのアプリのホームにも出る）・並べ替え・削除（中のカードの枚数を示す）。
 //   学ぶ     … カテゴリーから暗記（めくる→覚えた→終わりの画面）とテスト（3択＋わからない→答え合わせ）。
 //   英和辞書 … 見出しに無い英語から「自作カードに登録」→英単語のテンプレートで登録→辞書へ戻り、検索結果に「自作」で出る。
@@ -27,8 +28,9 @@ after(async () => {
 
 // テンプレートごとに打ち込む中身（欄の key → 文）。
 const TYPED = {
-  term: { front: '過去分詞', back: '動詞の変化形の1つ。受け身や完了形で使う形' },
-  termNote: { front: '扇状地', back: '川が山地から平地へ出る所に、土砂が積もってできた扇の形の土地', note: '水はけがよく、果樹園に使われる' },
+  // その他は、用語と意味だけのカードと、解説もあるカード。
+  otherPlain: { front: '過去分詞', back: '動詞の変化形の1つ。受け身や完了形で使う形' },
+  other: { front: '扇状地', back: '川が山地から平地へ出る所に、土砂が積もってできた扇の形の土地', note: '水はけがよく、果樹園に使われる' },
   qa: { front: '鎌倉幕府を開いた人物は？', back: '源頼朝', note: '1192年ごろに征夷大将軍になった' },
   koten: { front: 'いとほし', reading: 'いとおし', kanji: '愛ほし', pos: '形容詞・シク活用', back: 'かわいそうだ・気の毒だ', example: 'いとほしと思ふ', exampleTranslation: '気の毒だと思う', note: '今の「いとおしい」とちがう意味に注意' },
   kanbun: { front: '未だ〜ず', reading: 'いまだ〜ず', back: 'まだ〜ない', example: '未だ学を好む者を聞かざるなり', exampleTranslation: 'まだ学問を好む者を聞いたことがない', note: '再読文字' },
@@ -92,45 +94,53 @@ test('メニューの行「自作カード」から開き、上部のバーは�
   await ui.checkWidth('自作カードの入口')
 })
 
-test('6つのテンプレートを選んで打ち込んで登録し、「2学期中間英語」を登録欄から作る', async () => {
-  // 1枚目：用語と意味。分類で新しいカテゴリーを作る。
+// 登録したあと、登録の画面のまま次のカードを入れられる（知らせにそのカードの名前が出る）。
+async function savedAndContinue(title) {
+  await save()
+  await ui.page.waitForFunction((name) => document.querySelector('[data-custom-card-saved-notice]')?.innerText.includes(`「${name}」を登録しました`), title)
+}
+
+test('5つのテンプレートを選んで打ち込み、「2学期中間英語」を登録欄から作って、同じカテゴリーへ続けて登録する', async () => {
   await ui.open('customWords', {})
   await startForm()
-  await chooseTemplate('term')
+  const templates = await ui.page.locator('[data-custom-card-template]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-custom-card-template')))
+  assert.deepEqual(templates, ['english', 'koten', 'kanbun', 'other', 'qa'], 'テンプレートは5つ')
+
+  // 1枚目：その他（用語と意味だけ）。分類で新しいカテゴリーを作る。
+  await chooseTemplate('other')
   const fields = await ui.page.locator('[data-custom-card-input]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-custom-card-input')))
-  assert.deepEqual(fields, ['front', 'back'], '用語と意味は2欄だけ')
+  assert.deepEqual(fields, ['front', 'back', 'note'], 'その他は用語・意味・解説（解説は書かなくてもよい）')
   await ui.page.selectOption('[data-custom-card-category]', '__new-category__')
   await ui.page.fill('[data-custom-card-new-category]', '2学期中間英語')
-  await fill('front', TYPED.term.front)
-  await fill('back', TYPED.term.back)
-  await ui.checkWidth('登録欄（用語と意味）')
-  await save()
-  await ui.waitScreen('customWords')
-  await ui.page.waitForSelector('[data-custom-category]')
+  await fill('front', TYPED.otherPlain.front)
+  await fill('back', TYPED.otherPlain.back)
+  await ui.checkWidth('登録欄（その他）')
+  await savedAndContinue(TYPED.otherPlain.front)
   const { customCategories } = await ui.state(['customCategories'])
   assert.deepEqual(customCategories.map((category) => category.title), ['2学期中間英語'])
   const categoryId = customCategories[0].id
+  // 登録の画面のまま：分類は作ったカテゴリー、欄は空、カーソルは最初の欄、「やめる」は「終わる」。
+  assert.equal(await ui.page.inputValue('[data-custom-card-category]'), categoryId)
+  assert.equal(await ui.page.inputValue('[data-custom-card-input="front"]'), '')
+  assert.equal(await ui.page.evaluate(() => document.activeElement?.getAttribute('data-custom-card-input')), 'front')
+  assert.ok((await ui.page.innerText('[data-custom-card-saved-notice]')).includes('（2学期中間英語：1枚）'))
+  assert.equal((await ui.page.innerText('[data-custom-word-cancel]')).trim(), '終わる')
 
-  // 残りの4つ（英単語以外）を、同じカテゴリーへ。
-  for (const template of ['termNote', 'qa', 'koten', 'kanbun']) {
-    await ui.open('customWords', {})
-    await startForm()
+  // 残りの4つ（英単語以外）を、続けて同じカテゴリーへ。
+  for (const template of ['other', 'qa', 'koten', 'kanbun']) {
     await chooseTemplate(template)
-    await ui.page.selectOption('[data-custom-card-category]', categoryId)
+    assert.equal(await ui.page.inputValue('[data-custom-card-category]'), categoryId, `${template}：同じカテゴリーのまま`)
     const expected = CUSTOM_CARD_TEMPLATES.find((item) => item.id === template).fields.map((item) => item.key)
     const shown = await ui.page.locator('[data-custom-card-input]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-custom-card-input')))
     assert.deepEqual(shown, expected, `${template} の欄`)
     for (const [key, value] of Object.entries(TYPED[template])) await fill(key, value)
     await ui.checkWidth(`登録欄（${template}）`)
-    await save()
-    await ui.waitScreen('customWords')
+    await savedAndContinue(TYPED[template].front)
   }
 
-  // 英単語：16欄すべてを打ち込む。
-  await ui.open('customWords', {})
-  await startForm()
+  // 英単語：16欄すべてを打ち込む（同じカテゴリーのまま続けて）。
   await chooseTemplate('english')
-  await ui.page.selectOption('[data-custom-card-category]', categoryId)
+  assert.equal(await ui.page.inputValue('[data-custom-card-category]'), categoryId)
   await fill('word', ENGLISH.front)
   await fill('meanings', ENGLISH.back)
   await ui.page.selectOption('[data-custom-card-input="posId"]', ENGLISH.posId)
@@ -149,12 +159,20 @@ test('6つのテンプレートを選んで打ち込んで登録し、「2学期
     await row.locator('input').last().fill(second)
   }
   await ui.checkWidth('登録欄（英単語）')
-  await save()
-  await ui.waitScreen('customWords')
+  await savedAndContinue(ENGLISH.front)
+  // 英単語の級・分野は、次のカードへ引き継ぐ。
+  assert.equal(await ui.page.inputValue('[data-custom-card-input="level"]'), ENGLISH.level)
+  assert.equal(await ui.page.inputValue('[data-custom-card-input="field"]'), ENGLISH.field)
+  assert.ok((await ui.page.innerText('[data-custom-card-saved-notice]')).includes('（2学期中間英語：6枚）'))
+
+  // 「終わる」で元の画面（自作カードの一覧）へ戻る。
+  await ui.page.click('[data-custom-word-cancel]')
+  await ui.page.waitForSelector(`[data-custom-category="${categoryId}"]`)
+  assert.ok((await ui.page.locator(`[data-custom-category="${categoryId}"]`).innerText()).includes('6枚'))
 
   const { customWords, customCards } = await ui.state(['customWords', 'customCards'])
   assert.equal(customCards.length, 5)
-  assert.deepEqual(customCards.map((card) => card.template).sort(), ['kanbun', 'koten', 'qa', 'term', 'termNote'])
+  assert.deepEqual(customCards.map((card) => card.template).sort(), ['kanbun', 'koten', 'other', 'other', 'qa'])
   assert.ok(customCards.every((card) => card.category === categoryId))
   assert.equal(customWords.length, 1)
   const word = customWords[0]
@@ -170,7 +188,7 @@ test('6つのテンプレートを選んで打ち込んで登録し、「2学期
   assert.deepEqual(word.phrases, [{ phrase: ENGLISH.lists.phrases[0], meaning: ENGLISH.lists.phrases[1] }])
 })
 
-test('カテゴリーのカードの一覧：6つのテンプレートのカードが欄の名前つきで並び、書き換え・削除・単語帳・辞書ページへ行ける', async () => {
+test('カテゴリーのカードの一覧：5つのテンプレートのカードが欄の名前つきで並び、書き換え・削除・単語帳・辞書ページへ行ける', async () => {
   const { customCategories } = await ui.state(['customCategories'])
   const categoryId = customCategories[0].id
   await ui.open('customWords', {})
@@ -178,7 +196,7 @@ test('カテゴリーのカードの一覧：6つのテンプレートのカー�
   await ui.page.waitForSelector('[data-custom-entry-list]')
   const text = await ui.mainText()
   for (const values of Object.values(TYPED)) for (const value of Object.values(values)) assert.ok(text.includes(value), `一覧：${value}`)
-  for (const label of ['用語と意味', '用語・意味・解説', '一問一答', '古典単語', '漢語', '英単語', '読み（現代仮名遣い）', '品詞・活用', '用例（書き下し文）', '解説']) {
+  for (const label of ['その他', '一問一答', '古文単語', '漢語', '英単語', '読み（現代仮名遣い）', '品詞・活用', '用例（書き下し文）', '解説']) {
     assert.ok(text.includes(label), `一覧の欄の名前：${label}`)
   }
   // 画面下部に「単語帳」（登録先）が出る。
@@ -186,11 +204,11 @@ test('カテゴリーのカードの一覧：6つのテンプレートのカー�
   assert.ok((await ui.page.locator('[data-study-dock]').innerText()).includes('単語帳'), '画面下部の単語帳')
   await ui.checkWidth('カテゴリーのカードの一覧')
 
-  // 書き換え：用語と意味のカードを開き、意味を変えて戻る。
-  const card = ui.page.locator('[data-custom-entry-kind="card"]', { hasText: TYPED.term.front })
+  // 書き換え：その他のカードを開き、意味を変えて戻る（書き換えは元の画面へ戻る）。
+  const card = ui.page.locator('[data-custom-entry-kind="card"]', { hasText: TYPED.otherPlain.front })
   await card.locator('[data-custom-entry-edit]').click()
   await ui.page.waitForSelector('[data-custom-card-form]')
-  assert.equal(await ui.page.inputValue('[data-custom-card-input="front"]'), TYPED.term.front)
+  assert.equal(await ui.page.inputValue('[data-custom-card-input="front"]'), TYPED.otherPlain.front)
   await fill('back', '書き換えた意味')
   await save()
   await ui.page.waitForSelector('[data-custom-entry-list]')
@@ -329,7 +347,7 @@ test('カードの一覧をファイルで編集：CSV の書き出し・見本�
   await ui.page.waitForSelector('[data-custom-cards-table]')
   await ui.checkWidth('ファイルで編集')
 
-  // 見本の CSV を保存すると、6つのテンプレートの見本が入ったファイルになる。
+  // 見本の CSV を保存すると、5つのテンプレートの見本が入ったファイルになる。
   const [sample] = await Promise.all([ui.page.waitForEvent('download'), ui.page.click('[data-custom-cards-csv-sample]')])
   assert.equal(sample.suggestedFilename(), 'study-app-custom-cards-sample.csv')
   assert.equal(await readFile(await sample.path(), 'utf8'), customCardsCsvSample())
@@ -367,7 +385,7 @@ test('カードの一覧をファイルで編集：CSV の書き出し・見本�
 
   // 読めない行は、行の番号と理由を出す。
   await ui.page.click('[data-custom-cards-paste-open]')
-  await ui.page.fill('[data-custom-cards-paste-input]', '分類,テンプレート,表,裏\n社会,用語と意味,表だけ,\n社会,用語と意味,表,裏')
+  await ui.page.fill('[data-custom-cards-paste-input]', '分類,テンプレート,表,裏\n社会,その他,表だけ,\n社会,その他,表,裏')
   await ui.page.click('[data-custom-cards-paste-read]')
   await ui.page.waitForSelector('[data-custom-cards-import-errors]')
   assert.ok((await ui.page.locator('[data-custom-cards-import-errors]').innerText()).includes('2行目'))

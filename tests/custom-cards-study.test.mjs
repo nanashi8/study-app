@@ -1,6 +1,7 @@
 // 自作カードの暗記・テスト（依頼台帳 requests/2026-09-30-custom-card-templates.json の study-test）。
 // どのテンプレートのカードも暗記とテストができ、記録（覚えた・まだ、正解・不正解、復習日）が残る。
-// 英単語のカードは辞書の語と同じ英単語の暗記・テスト（記録 srs）、ほかの5つのテンプレートは自作カードの暗記・テスト（記録 customCardSrs）。
+// 英単語のカードは辞書の語と同じ英単語の暗記・テスト（記録 srs）、ほかの4つのテンプレート（古文単語・漢語・その他・一問一答）は
+// 自作カードの暗記・テスト（記録 customCardSrs）。
 // 始める場所：自作カードの画面の分類（教科・カテゴリー）、教科のアプリのホーム（→その教科の自作カード）、単語帳。
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -40,10 +41,10 @@ const card = (template, index, category = 'cat-test') => ({
   reading: '', kanji: '', pos: '', example: '', exampleTranslation: '', note: `${template}の解説${index}`,
 })
 
-// 5つのテンプレート×3枚。テストの誤答は、同じ分類・同じテンプレートのカードの答えから作る。
+// 4つのテンプレート×3枚。テストの誤答は、同じ分類・同じテンプレートのカードの答えから作る。
 const CARDS = CARD_TEMPLATE_IDS.flatMap((template) => [1, 2, 3].map((index) => card(template, index)))
 
-test('英単語以外の5つのテンプレートは、それぞれの問い方でテストを作る（3択＋わからない、誤答はほかの自作カードの答え）', () => {
+test('英単語以外の4つのテンプレートは、それぞれの問い方でテストを作る（3択＋わからない、誤答はほかの自作カードの答え）', () => {
   registerCustomCards(CARDS, [{ id: 'cat-test', title: 'テスト用' }])
   try {
     for (const template of CARD_TEMPLATE_IDS) {
@@ -61,15 +62,16 @@ test('英単語以外の5つのテンプレートは、それぞれの問い方�
       // 選択肢の説明は、その選択肢のカードの問いの欄。
       for (const choice of question.choices) assert.ok(question.notes[choice], `${template}：選択肢「${choice}」の説明`)
     }
-    // 用語のテンプレートは意味→用語、一問一答は問題→答え、古典単語・漢語は語→意味。
+    // 古文単語・漢語は語→意味、その他は意味→用語、一問一答は問題→答え。
+    assert.deepEqual(CARD_TEMPLATE_IDS, ['koten', 'kanbun', 'other', 'qa'])
     assert.deepEqual(
       CARD_TEMPLATE_IDS.map((template) => [templateFor(template).quiz.prompt, templateFor(template).quiz.answer]),
-      [['back', 'front'], ['back', 'front'], ['front', 'back'], ['front', 'back'], ['front', 'back']],
+      [['front', 'back'], ['front', 'back'], ['back', 'front'], ['front', 'back']],
     )
     // 答えのちがうカードが1枚しかないと、テストは作れない。
-    registerCustomCards([card('term', 1)], [])
-    assert.equal(customCardQuestion(getCustomCard('c-term1')), null)
-    assert.deepEqual(quizzableCustomCardIds(['c-term1']), [])
+    registerCustomCards([card('other', 1)], [])
+    assert.equal(customCardQuestion(getCustomCard('c-other1')), null)
+    assert.deepEqual(quizzableCustomCardIds(['c-other1']), [])
   } finally {
     registerCustomCards([], [])
   }
@@ -87,29 +89,29 @@ test('暗記とテストの束は、全教材共通の出題順で組み、記�
 
     // 暗記の「覚えた」「まだ」、テストの「正解」「不正解」が記録に残り、復習日が決まる。
     const store = useStore.getState()
-    store.reviewCustomCard('c-term1', 'remembered')
-    store.reviewCustomCard('c-term2', 'forgot')
+    store.reviewCustomCard('c-other1', 'remembered')
+    store.reviewCustomCard('c-other2', 'forgot')
     store.reviewCustomCard('c-qa1', 'correct')
     store.reviewCustomCard('c-qa2', 'wrong')
     store.recordContentQuizResult(CUSTOM_CARD_QUIZ_DOMAIN, 'c-qa1', 1, 1)
     const srs = useStore.getState().customCardSrs
-    assert.equal(srs['c-term1'].memory.lastJudgment, 'remembered')
-    assert.equal(srs['c-term2'].memory.lastJudgment, 'forgot')
+    assert.equal(srs['c-other1'].memory.lastJudgment, 'remembered')
+    assert.equal(srs['c-other2'].memory.lastJudgment, 'forgot')
     assert.equal(srs['c-qa1'].test.lastResult, 'correct')
     assert.equal(srs['c-qa2'].test.lastResult, 'wrong')
-    for (const id of ['c-term1', 'c-term2', 'c-qa1', 'c-qa2']) assert.ok(Number.isFinite(srs[id].due), `${id} の復習日`)
+    for (const id of ['c-other1', 'c-other2', 'c-qa1', 'c-qa2']) assert.ok(Number.isFinite(srs[id].due), `${id} の復習日`)
     assert.equal(useStore.getState().contentQuizResults[contentQuizKey(CUSTOM_CARD_QUIZ_DOMAIN, 'c-qa1')].lastResult, 'correct')
 
     // 暗記を終えた画面（全教材共通）の記録も組める。
-    const report = buildStudyCompletionReport({ contentId: 'custom-cards', srs, ids: ['c-term1', 'c-term2'], reviewIds: ['c-term2'], correct: 1, wrong: 1 })
+    const report = buildStudyCompletionReport({ contentId: 'custom-cards', srs, ids: ['c-other1', 'c-other2'], reviewIds: ['c-other2'], correct: 1, wrong: 1 })
     assert.equal(report.contentId, 'custom-cards')
-    assert.deepEqual(report.session.ids, ['c-term1', 'c-term2'])
+    assert.deepEqual(report.session.ids, ['c-other1', 'c-other2'])
     assert.equal(report.session.forgot, 1)
     assert.ok(report.today.uniqueItems >= 2)
 
     // 出題順：まだ・不正解のカードは、今日の候補（まだ学習していないカード）のあと。
-    const again = pickCustomCards(['c-term1', 'c-term2', 'c-term3'], { srs, size: 0 })
-    assert.equal(again[0].id, 'c-term3')
+    const again = pickCustomCards(['c-other1', 'c-other2', 'c-other3'], { srs, size: 0 })
+    assert.equal(again[0].id, 'c-other3')
   } finally {
     useStore.setState(original, true)
   }
@@ -143,13 +145,13 @@ test('始める場所：分類（自作カードの画面）・教科のアプ�
   })
   assert.equal(wordBookLaunchTarget('customCards', 'quiz', ['c-1'], { title: '単語帳' }).screen, 'customCardQuiz')
   // 単語帳の数は、消したカードの ID を数えない。
-  registerCustomCards([card('term', 1)], [])
+  registerCustomCards([card('other', 1)], [])
   try {
-    const books = wordBooksFromState({ learningNotebook: { sets: [{ id: 's', title: '冊', refs: ['customCards:c-term1', 'customCards:c-gone'] }] } }, 'customCards')
-    assert.deepEqual(books[0].ids, ['c-term1'])
+    const books = wordBooksFromState({ learningNotebook: { sets: [{ id: 's', title: '冊', refs: ['customCards:c-other1', 'customCards:c-gone'] }] } }, 'customCards')
+    assert.deepEqual(books[0].ids, ['c-other1'])
     // 学習の記録からも開ける。
-    assert.equal(learningLaunchFor('customCards', ['c-term1'], 'memory').screen, 'customCardStudy')
-    assert.equal(learningLaunchFor('customCards', ['c-term1'], 'test').screen, 'customCardQuiz')
+    assert.equal(learningLaunchFor('customCards', ['c-other1'], 'memory').screen, 'customCardStudy')
+    assert.equal(learningLaunchFor('customCards', ['c-other1'], 'test').screen, 'customCardQuiz')
   } finally {
     registerCustomCards([], [])
   }

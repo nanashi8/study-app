@@ -22,7 +22,7 @@ const valuesFor = (subject, template) => (template === 'english'
   ? entryValues({ front: `${subject}word`, back: `${subject}の英単語の意味` })
   : entryValues({ front: `${subject}の${template}の表`, back: `${subject}の${template}の裏`, note: '解説' }))
 
-test('6教科×6テンプレート：どのテンプレートのカードも、選んだ教科に入り、その教科のアプリの数に入る', () => {
+test('6教科×5テンプレート：どのテンプレートのカードも、選んだ教科に入り、その教科のアプリの数に入る', () => {
   const words = []
   const cards = []
   for (const subject of CUSTOM_SUBJECTS) {
@@ -33,32 +33,32 @@ test('6教科×6テンプレート：どのテンプレートのカードも、�
     }
   }
   const categories = [{ id: 'cat-linked', title: '期末の範囲', subject: 'science' }]
-  cards.push(normalizeCustomCard({ template: 'term', category: 'cat-linked', front: '表', back: '裏' }))
+  cards.push(normalizeCustomCard({ template: 'other', category: 'cat-linked', front: '表', back: '裏' }))
   const library = { words, cards, categories }
   for (const subject of CUSTOM_SUBJECTS) {
     const groups = customCategoryGroups(library, { subject: subject.id })
     assert.equal(groups[0].category.id, subjectCategoryId(subject.id), `${subject.label}：教科の分類が先頭`)
     assert.equal(groups[0].words.length, 1, `${subject.label}：英単語のカード`)
-    assert.deepEqual(groups[0].cards.map((card) => card.template), ['term', 'termNote', 'qa', 'koten', 'kanbun'], `${subject.label}：ほかの5つ`)
+    assert.deepEqual(groups[0].cards.map((card) => card.template), ['koten', 'kanbun', 'other', 'qa'], `${subject.label}：ほかの4つ`)
     // 「表示する教科」に選んだカテゴリーも、その教科のアプリに出る。
     const linked = subject.id === 'science' ? 1 : 0
     assert.equal(groups.length, 1 + linked, `${subject.label}：出る分類`)
-    assert.equal(customEntryCountForSubject(library, subject.id), 6 + linked, `${subject.label}：アプリに出す数`)
+    assert.equal(customEntryCountForSubject(library, subject.id), 5 + linked, `${subject.label}：アプリに出す数`)
   }
 })
 
 let ui
 before(async () => {
   ui = await startCustomCardBrowser({ cacheDir: 'node_modules/.vite-custom-subjects-test' })
-  // 6教科×6テンプレートのカードと、理科に表示するカテゴリーのカード。
+  // 6教科×5テンプレートのカードと、理科に表示するカテゴリーのカード。
   for (const subject of CUSTOM_SUBJECTS) {
     for (const template of CUSTOM_CARD_TEMPLATES) {
       const result = await ui.act('saveCustomEntry', { template: template.id, category: subjectCategoryId(subject.id), values: valuesFor(subject.id, template.id) })
       assert.equal(result.status, 'saved', `${subject.id}/${template.id}`)
     }
   }
-  const linked = await ui.act('saveCustomCategory', { title: '期末の範囲', subject: 'science', template: 'termNote' })
-  await ui.act('saveCustomEntry', { template: 'termNote', category: linked.id, values: entryValues({ front: '光合成', back: '植物が光を使って養分をつくるはたらき' }) })
+  const linked = await ui.act('saveCustomCategory', { title: '期末の範囲', subject: 'science', template: 'other' })
+  await ui.act('saveCustomEntry', { template: 'other', category: linked.id, values: entryValues({ front: '光合成', back: '植物が光を使って養分をつくるはたらき' }) })
 })
 
 after(async () => {
@@ -67,7 +67,7 @@ after(async () => {
 
 test('6教科のアプリのホームに「自作カード」と枚数が出て、押すとその教科の自作カードが開き、上部のバーがその教科のアプリを示す', async () => {
   for (const subject of CUSTOM_SUBJECTS) {
-    const expected = subject.id === 'science' ? 7 : 6
+    const expected = subject.id === 'science' ? 6 : 5
     await ui.open(subject.appScreen, {})
     const entry = ui.page.locator(`[data-custom-cards-entry="${subject.id}"]`)
     await entry.waitFor()
@@ -85,11 +85,11 @@ test('6教科のアプリのホームに「自作カード」と枚数が出て�
     if (subject.id === 'science') assert.ok(text.includes('期末の範囲'), '理科に表示するカテゴリー')
     await ui.checkWidth(`${subject.label}の自作カード`)
 
-    // カードを見る：6つのテンプレートのカードが並ぶ。
+    // カードを見る：5つのテンプレートのカードが並ぶ。
     await ui.page.click(`[data-custom-category-open="${subjectCategoryId(subject.id)}"]`)
     await ui.page.waitForSelector('[data-custom-entry-list]')
     const templates = await ui.page.locator('[data-custom-entry-template]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-custom-entry-template')))
-    assert.deepEqual([...templates].sort(), CUSTOM_CARD_TEMPLATES.map((template) => template.id).sort(), `${subject.label}：6つのテンプレートのカード`)
+    assert.deepEqual([...templates].sort(), CUSTOM_CARD_TEMPLATES.map((template) => template.id).sort(), `${subject.label}：5つのテンプレートのカード`)
     const list = await ui.mainText()
     for (const template of CUSTOM_CARD_TEMPLATES) assert.ok(list.includes(valuesFor(subject.id, template.id).front), `${subject.label}：${template.label}のカード`)
     await ui.checkWidth(`${subject.label}のカードの一覧`)

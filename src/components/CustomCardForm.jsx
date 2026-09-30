@@ -17,7 +17,8 @@ import {
 } from '../lib/customWords.js'
 
 // 自作カードの登録欄。テンプレートを選ぶと、そのテンプレートの欄だけを出す。
-// 「用語と意味」は用語と意味の2欄だけ、「英単語」は英単語の辞書ページ・暗記カードが使う情報の16欄。
+// テンプレートは英単語・古文単語・漢語・その他・一問一答の5つ。「英単語」は英単語の辞書ページ・暗記カードが使う情報の16欄、
+// 「その他」は用語・意味と、書かなくてもよい解説。
 // 分類は教科（その教科のアプリにも出る）か、自分で作ったカテゴリー。ここから新しいカテゴリーも作れる。
 
 // 分類の選択肢で「新しいカテゴリーを作る」を表す値。
@@ -46,7 +47,7 @@ export function TemplateChooser({ value, onChange }) {
   const selected = templateFor(value)
   return (
     <div>
-      <div className="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="テンプレート" data-custom-card-templates>
+      <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="テンプレート" data-custom-card-templates>
         {CUSTOM_CARD_TEMPLATES.map((template) => {
           const on = template.id === value
           return (
@@ -59,12 +60,12 @@ export function TemplateChooser({ value, onChange }) {
               onClick={() => onChange(template.id)}
               data-custom-card-template={template.id}
               className={cx(
-                'flex min-h-12 items-center gap-1.5 rounded-xl border-2 px-2 py-1.5 text-left text-sm font-extrabold transition-colors',
+                'flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center text-sm font-extrabold transition-colors',
                 on ? 'border-brand-500 bg-brand-50 text-brand-800' : 'border-slate-200 bg-white text-ink active:bg-slate-50',
               )}
             >
-              <span aria-hidden="true">{template.emoji}</span>
-              <span className="min-w-0 flex-1 leading-snug">{template.label}</span>
+              <span className="text-lg leading-none" aria-hidden="true">{template.emoji}</span>
+              <span className="whitespace-nowrap leading-snug">{template.label}</span>
             </button>
           )
         })}
@@ -316,6 +317,8 @@ export function CustomCardForm({
   onBookChange,
   editing = false,
   error = '',
+  notice = '',
+  fieldsRef = null,
 }) {
   return (
     <div className="space-y-3" data-custom-card-form>
@@ -340,12 +343,24 @@ export function CustomCardForm({
         )}
       </Card>
 
-      <Card className="p-4">
-        <h2 className="mb-2 text-sm font-extrabold text-ink">{templateFor(template).label}</h2>
-        {template === ENGLISH_TEMPLATE_ID
-          ? <EnglishFields values={values} onChange={onValuesChange} />
-          : <CardFields template={template} values={values} onChange={onValuesChange} />}
-      </Card>
+      {/* 続けて登録するときは、ここまで送って最初の欄から打ち始める（登録したことの知らせも、ここに出す）。 */}
+      <div ref={fieldsRef} className="scroll-mt-3">
+        <Card className="p-4">
+          {notice && (
+            <p
+              className="mb-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-emerald-800"
+              role="status"
+              data-custom-card-saved-notice
+            >
+              {notice}
+            </p>
+          )}
+          <h2 className="mb-2 text-sm font-extrabold text-ink">{templateFor(template).label}</h2>
+          {template === ENGLISH_TEMPLATE_ID
+            ? <EnglishFields values={values} onChange={onValuesChange} />
+            : <CardFields template={template} values={values} onChange={onValuesChange} />}
+        </Card>
+      </div>
 
       {/* 登録と同時に入れる単語帳。どの単語帳も同じように選べる。 */}
       {!editing && (

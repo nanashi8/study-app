@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-29T23:57:41.876Z",
+  "auditedAt": "2026-09-30T03:55:45.968Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "6fb8a324aa354d76c50862eb0cde5e6495e9388e0aee655b722ad5421fc437e5",
+    "sha256": "567829bfd6f649af80b1b2a689e6702e765791b92cf05635a0f3ee09603be243",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -201,9 +201,14 @@
       "tests/content-settings.test.mjs",
       "tests/content-top-layout.test.mjs",
       "tests/curriculum-1900-coverage.test.mjs",
+      "tests/custom-cards-continue.test.mjs",
       "tests/custom-cards-csv.test.mjs",
       "tests/custom-cards-data.test.mjs",
+      "tests/custom-cards-edit-screens.test.mjs",
+      "tests/custom-cards-edit.test.mjs",
       "tests/custom-cards-english.test.mjs",
+      "tests/custom-cards-hydrate.test.mjs",
+      "tests/custom-cards-keyboard.test.mjs",
       "tests/custom-cards-screens.test.mjs",
       "tests/custom-cards-section.test.mjs",
       "tests/custom-cards-study.test.mjs",

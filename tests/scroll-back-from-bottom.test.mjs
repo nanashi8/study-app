@@ -689,13 +689,15 @@ test('全89画面の縦に動く欄で、一番下から上へ戻れる', async 
   assert.deepEqual(without, [], '縦に動く欄がない画面')
 })
 
-test('外枠の決まりを保つ：キーボードの間は外枠を縮めない・シートは見えている範囲に収める・上下の余白の位置', async () => {
+test('外枠の決まりを保つ：キーボードの間は外枠を縮めない（キーボードのすぐ上に置く欄のある画面は下端だけ合わせる）・シートは見えている範囲に収める・上下の余白の位置', async () => {
   const [phone] = phones
-  // 打つ欄のある画面：英作文の文法別トラック（WritingExam のチャレンジ）・英和辞書の検索・自作カード。
-  for (const [screen, selector] of [
-    ['writingExam', 'textarea'],
-    ['vocabSearch', 'input'],
-    ['customWords', 'input'],
+  // 打つ欄のある画面：英作文の文法別トラック（WritingExam のチャレンジ）・英和辞書の検索・自作カードの登録。
+  // 自作カードの登録は「やめる・登録する」をキーボードのすぐ上に置く（data-keyboard-actions）。外枠の上端は動かさず、
+  // 下端だけを見えている範囲の下端（キーボードの上端）に合わせる（requests/2026-09-30-custom-card-form-followup.json の keyboard-no-gap）。
+  for (const [screen, selector, keyboardActions] of [
+    ['writingExam', 'textarea', false],
+    ['vocabSearch', 'input', false],
+    ['customWords', 'input', true],
   ]) {
     await phone.openScreen(screen, paramsByScreen[screen])
     // 自作カードは「カードを作る」を押すと打つ欄が出る。
@@ -708,12 +710,21 @@ test('外枠の決まりを保つ：キーボードの間は外枠を縮めな�
       const main = document.querySelector('.study-app-content').getBoundingClientRect()
       const typingFrame = window.__scrollTest.applyFrameState(stateId, 0)
       const mainTyping = document.querySelector('.study-app-content').getBoundingClientRect()
+      const root = getComputedStyle(document.documentElement)
+      const visibleBottom = parseFloat(root.getPropertyValue('--app-visual-viewport-top')) + parseFloat(root.getPropertyValue('--app-visual-viewport-height'))
+      const actions = document.querySelector('[data-keyboard-actions]')?.getBoundingClientRect() ?? null
       field.blur()
-      return { normalFrame, typingFrame, mainBottom: main.bottom, mainBottomTyping: mainTyping.bottom, innerHeight: window.innerHeight }
+      return { normalFrame, typingFrame, mainBottom: main.bottom, mainBottomTyping: mainTyping.bottom, innerHeight: window.innerHeight, visibleBottom, actionsBottom: actions?.bottom ?? null }
     }, [selector, 'keyboard'])
-    assert.equal(result.typingFrame, `${result.innerHeight}px`, `${screen}: キーボードの間に外枠が縮んだ`)
-    assert.equal(result.typingFrame, result.normalFrame, `${screen}: キーボードの間に外枠の高さが変わった`)
-    assert.equal(result.mainBottomTyping, result.mainBottom, `${screen}: キーボードの間に本文の欄が縮んだ`)
+    if (keyboardActions) {
+      assert.equal(result.typingFrame, `${result.visibleBottom}px`, `${screen}: 外枠の下端がキーボードの上端にない`)
+      assert.equal(result.actionsBottom, result.visibleBottom, `${screen}: 足元の欄とキーボードの間に空白がある`)
+      assert.equal(result.normalFrame, `${result.innerHeight}px`, `${screen}: キーボードのないときの外枠`)
+    } else {
+      assert.equal(result.typingFrame, `${result.innerHeight}px`, `${screen}: キーボードの間に外枠が縮んだ`)
+      assert.equal(result.typingFrame, result.normalFrame, `${screen}: キーボードの間に外枠の高さが変わった`)
+      assert.equal(result.mainBottomTyping, result.mainBottom, `${screen}: キーボードの間に本文の欄が縮んだ`)
+    }
     assertPageStill(await phone.pageState(), `${screen}・キーボード`)
     await phone.applyFrameState('normal')
   }

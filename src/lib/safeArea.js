@@ -11,6 +11,13 @@ export const SAFE_AREA_BOTTOM_VAR = '--app-safe-bottom'
 export const VISUAL_VIEWPORT_HEIGHT_VAR = '--app-visual-viewport-height'
 export const VISUAL_VIEWPORT_TOP_VAR = '--app-visual-viewport-top'
 export const APP_FRAME_HEIGHT_VAR = '--app-frame-height'
+// ソフトウェアキーボードが出ていて、文字を打つ欄にフォーカスがある間だけ 'open'。
+// CSS はこの間、端末の下のふち（ホームバー）の余白を 0 にする（ホームバーはキーボードに隠れるので、
+// 残すと画面の下端の欄・シートの下端とキーボードの間に空白ができる）。
+export const APP_KEYBOARD_ATTR = 'data-app-keyboard'
+// キーボードのすぐ上に置く操作欄（自作カードの登録の画面の「やめる・登録する」）。これがある画面では、
+// キーボードが出ている間、外枠の下端を見えている範囲の下端（キーボードの上端）に合わせる。
+export const KEYBOARD_ACTIONS_SELECTOR = '[data-keyboard-actions]'
 
 // 時刻表示（ステータスバー）の高さ。ノッチ・Dynamic Island のある機種は高い。
 const NOTCHED_STATUS_BAR = 59
@@ -72,25 +79,68 @@ export function isTextEntryElement(element) {
 // これより大きく見えている範囲が縮んだら、キーボードが出ているとみなす。
 const KEYBOARD_MIN_HEIGHT = 150
 
+// 見えている範囲がキーボードの分だけ縮んでいるか（拡大表示＝ピンチで縮んだのではない）。
+function keyboardShrunk({ viewportHeight = 0, layoutHeight = 0, scale = 1 } = {}) {
+  if (!(viewportHeight > 0) || !(layoutHeight > viewportHeight)) return false
+  const zoomed = Math.abs((Number(scale) || 1) - 1) > 0.01
+  return !zoomed && layoutHeight - viewportHeight >= KEYBOARD_MIN_HEIGHT
+}
+
+/** 文字を打つ欄にフォーカスがあり、ソフトウェアキーボードが出ているか。 */
+export function isSoftwareKeyboardOpen({ viewportHeight = 0, layoutHeight = 0, typing = false, scale = 1 } = {}) {
+  return Boolean(typing) && keyboardShrunk({ viewportHeight, layoutHeight, scale })
+}
+
 // アプリ外枠の高さ。ふだんは見えている範囲（visualViewport）に合わせる。
 // ただしソフトウェアキーボードは見えている範囲だけを縮め、ページの高さ（innerHeight）は
 // 変えない。ブラウザは打つ欄が隠れないようページをずらすが、そこで外枠まで縮めると
 // 本文のスクロール領域が縮み、打っている欄が見えている範囲の外へ押し出される。
 // キーボードが出ている間は外枠をページの高さのまま保ち、欄を見せるのはブラウザに任せる。
+// ただしキーボードのすぐ上に置く操作欄がある画面（keyboardActions）は、外枠の下端だけを見えている範囲の
+// 下端（キーボードの上端）に合わせる。上端は動かさないので、ブラウザがずらした分は上が見えている範囲の外へ出る。
+// 縮めて打っている欄が操作欄の下に入ったときは、syncSafeArea が欄を本文の見えている所へ送る。
 export function resolveAppFrameHeight({
   viewportHeight = 0,
+  viewportTop = 0,
   layoutHeight = 0,
   typing = false,
   scale = 1,
+  keyboardActions = false,
 } = {}) {
   if (!(viewportHeight > 0)) return layoutHeight
   if (!(layoutHeight > viewportHeight)) return viewportHeight
-  if (typing) return layoutHeight
+  const keyboard = keyboardShrunk({ viewportHeight, layoutHeight, scale })
+  if (typing) {
+    if (keyboardActions && keyboard) {
+      return Math.min(layoutHeight, Math.max(0, Number(viewportTop) || 0) + viewportHeight)
+    }
+    return layoutHeight
+  }
   // 欄を離れたあとも、キーボードが閉じきるまでは途中の高さが届く。
   // 拡大表示（ピンチ）ではないのに大きく縮んでいるときは、まだキーボードとみなす。
-  const zoomed = Math.abs((Number(scale) || 1) - 1) > 0.01
-  if (!zoomed && layoutHeight - viewportHeight >= KEYBOARD_MIN_HEIGHT) return layoutHeight
+  if (keyboard) return layoutHeight
   return viewportHeight
+}
+
+// いちばん内側の縦に動く欄（打っている欄を見せるときに送る欄）。
+function scrollParentOf(element, doc) {
+  const styleOf = doc.defaultView?.getComputedStyle
+  if (typeof styleOf !== 'function') return null
+  for (let node = element?.parentElement; node; node = node.parentElement) {
+    const overflowY = styleOf.call(doc.defaultView, node)?.overflowY
+    if (overflowY === 'auto' || overflowY === 'scroll') return node
+  }
+  return null
+}
+
+// 外枠を縮めたあと、打っている欄が縦に動く欄の見えている所から外れていたら（操作欄の下に入ったなど）、見える所へ送る。
+function keepFocusedFieldVisible(doc) {
+  const field = doc.activeElement
+  if (!isTextEntryElement(field) || typeof field.scrollIntoView !== 'function') return
+  const box = scrollParentOf(field, doc)?.getBoundingClientRect?.()
+  const rect = field.getBoundingClientRect?.()
+  if (!box || !rect) return
+  if (rect.top < box.top || rect.bottom > box.bottom) field.scrollIntoView({ block: 'nearest' })
 }
 
 function measureEnvInsets(doc) {
@@ -148,16 +198,28 @@ export function syncSafeArea(view = globalThis) {
     root.style.setProperty(VISUAL_VIEWPORT_HEIGHT_VAR, `${Math.round(viewportHeight)}px`)
   }
   root.style.setProperty(VISUAL_VIEWPORT_TOP_VAR, `${Math.max(0, Math.round(viewportTop))}px`)
+  const layoutHeight = Number(view.innerHeight) || 0
+  const typing = isTextEntryElement(doc.activeElement)
+  const scale = view.visualViewport?.scale
+  const keyboardOpen = isSoftwareKeyboardOpen({ viewportHeight, layoutHeight, typing, scale })
+  if (keyboardOpen) root.setAttribute?.(APP_KEYBOARD_ATTR, 'open')
+  else root.removeAttribute?.(APP_KEYBOARD_ATTR)
+  const keyboardActions = keyboardOpen && Boolean(doc.querySelector?.(KEYBOARD_ACTIONS_SELECTOR))
   const frameHeight = resolveAppFrameHeight({
     viewportHeight,
-    layoutHeight: Number(view.innerHeight) || 0,
-    typing: isTextEntryElement(doc.activeElement),
-    scale: view.visualViewport?.scale,
+    viewportTop,
+    layoutHeight,
+    typing,
+    scale,
+    keyboardActions,
   })
   if (frameHeight > 0) {
-    root.style.setProperty(APP_FRAME_HEIGHT_VAR, `${Math.round(frameHeight)}px`)
+    const next = `${Math.round(frameHeight)}px`
+    const changed = root.style.getPropertyValue?.(APP_FRAME_HEIGHT_VAR) !== next
+    root.style.setProperty(APP_FRAME_HEIGHT_VAR, next)
+    if (changed && keyboardActions) keepFocusedFieldVisible(doc)
   }
-  return { measured, top, viewportHeight, viewportTop, frameHeight }
+  return { measured, top, viewportHeight, viewportTop, frameHeight, keyboardOpen, keyboardActions }
 }
 
 export function startSafeAreaSync(view = globalThis) {

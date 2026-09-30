@@ -3,6 +3,8 @@
 //   単語を登録機能を、単語帳のようにカスタマイズできるようにしなさい。例えば、用語と意味だけを登録できるテンプレートを表示したり、
 //   英単語で使われている情報を登録するテンプレートを表示させたり。教科を既存で実装されている強化で登録して、その内容に追加表示できるようにしたり、
 //   独自のカテゴリーで、例えば2学期中間英語というカテゴリーで作成できるように考えて実装しなさい。
+// 2026-09-30 利用者（続き。requests/2026-09-30-custom-card-form-followup.json の templates-five）:
+//   テンプレートは英単語、古文単語、漢語、その他、一問一答にしなさい。
 // 画面の操作（375px）は tests/custom-cards-screens.test.mjs、英単語の欄は tests/custom-cards-english.test.mjs。
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -14,6 +16,7 @@ import {
   CUSTOM_CARD_LIMITS,
   CUSTOM_CARD_TEMPLATES,
   CUSTOM_SUBJECTS,
+  LEGACY_TEMPLATE_IDS,
   cardFieldRows,
   categorySubject,
   customCategoryChoices,
@@ -21,6 +24,7 @@ import {
   defaultTemplateFor,
   getCustomCard,
   normalizeCustomCard,
+  normalizeCustomCategory,
   reconcileCustomCategories,
   subjectCategoryId,
   templateFor,
@@ -40,15 +44,14 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 
 // テンプレート（登録の画面で選ぶ順）と、それぞれの欄の名前。
 export const EXPECTED_TEMPLATE_FIELDS = Object.freeze({
-  term: ['用語', '意味'],
-  termNote: ['用語', '意味', '解説'],
-  qa: ['問題', '答え', '解説'],
   english: [
     '単語', '意味', '品詞', '級', '分野', '発音記号', '例文', '例文の訳', '使い方・メモ',
     'ほかの意味', '派生語・ほかの品詞の形', '類義語', '反意語', 'つづりが似ていて間違えやすい語', '熟語・構文', '語の成り立ち',
   ],
   koten: ['古語', '読み（現代仮名遣い）', '漢字', '品詞・活用', '意味', '例文', '例文の訳', '解説'],
   kanbun: ['漢語・句法', '読み', '意味', '用例（書き下し文）', '用例の訳', '解説'],
+  other: ['用語', '意味', '解説'],
+  qa: ['問題', '答え', '解説'],
 })
 
 const fieldLabels = (templateId) => (templateId === 'english'
@@ -107,13 +110,20 @@ function freshStore() {
   return useStore.getState()
 }
 
-test('テンプレートは6つ（用語と意味・用語・意味・解説・一問一答・英単語・古典単語・漢語）で、「用語と意味」は用語と意味の2欄だけ', () => {
+test('テンプレートは5つ（英単語・古文単語・漢語・その他・一問一答）で、「その他」は用語・意味と、書かなくてもよい解説', () => {
   assert.deepEqual(CUSTOM_CARD_TEMPLATES.map((template) => template.id), Object.keys(EXPECTED_TEMPLATE_FIELDS))
-  assert.deepEqual(CUSTOM_CARD_TEMPLATES.map((template) => template.label), ['用語と意味', '用語・意味・解説', '一問一答', '英単語', '古典単語', '漢語'])
+  assert.deepEqual(CUSTOM_CARD_TEMPLATES.map((template) => template.label), ['英単語', '古文単語', '漢語', 'その他', '一問一答'])
   for (const [templateId, labels] of Object.entries(EXPECTED_TEMPLATE_FIELDS)) {
     assert.deepEqual(fieldLabels(templateId), labels, `${templateId} の欄`)
   }
-  assert.deepEqual(templateFor('term').fields.map((item) => item.key), ['front', 'back'])
+  // 「その他」は用語と意味だけで登録できる（解説は書かなくてもよい）。
+  assert.deepEqual(templateFor('other').fields.map((item) => [item.key, item.required]), [['front', true], ['back', true], ['note', false]])
+  const onlyTwo = normalizeCustomCard({ template: 'other', front: '光合成', back: '植物が光を使って養分をつくるはたらき' })
+  assert.deepEqual([onlyTwo.template, onlyTwo.front, onlyTwo.note], ['other', '光合成', ''])
+  // 以前のテンプレート（用語と意味・用語・意味・解説）は「その他」として読む。
+  assert.deepEqual(LEGACY_TEMPLATE_IDS, { term: 'other', termNote: 'other' })
+  assert.equal(templateFor('term').id, 'other')
+  assert.equal(templateFor('termNote').id, 'other')
   // どのテンプレートにも説明があり、必須の欄は表と裏（英単語は単語と意味）。
   for (const template of CUSTOM_CARD_TEMPLATES) {
     assert.ok(template.description, `${template.id} の説明`)
@@ -133,7 +143,7 @@ test('どのテンプレートでも、必須の欄が空なら登録せず、�
     const result = store.saveCustomEntry({ template: template.id, category: subjectCategoryId('english'), values: emptyEntryValues() })
     assert.equal(result.status, 'invalid', template.id)
   }
-  assert.deepEqual(missingEntryFields('term', emptyEntryValues()), ['用語', '意味'])
+  assert.deepEqual(missingEntryFields('other', emptyEntryValues()), ['用語', '意味'])
   assert.deepEqual(missingEntryFields('qa', emptyEntryValues()), ['問題', '答え'])
   assert.deepEqual(missingEntryFields('english', emptyEntryValues()), ['単語', '意味'])
 })
@@ -250,7 +260,7 @@ test('分類は教科6つ（英語・古典・漢文・数学・社会・理科�
   // 教科を選んだときの最初のテンプレート。
   assert.deepEqual(
     CUSTOM_SUBJECTS.map((subject) => defaultTemplateFor([], subjectCategoryId(subject.id))),
-    ['english', 'koten', 'kanbun', 'qa', 'termNote', 'termNote'],
+    ['english', 'koten', 'kanbun', 'qa', 'other', 'other'],
   )
 })
 
@@ -284,7 +294,7 @@ test('独自のカテゴリー：作る・名前・既定のテンプレート�
     useStore.getState().moveCustomCategory(second.id, 'down')
     assert.deepEqual(useStore.getState().customCategories.map((category) => category.id), [created.id, second.id])
 
-    // カテゴリーへ、6つのテンプレートのカードを入れる。
+    // カテゴリーへ、5つのテンプレートのカードを入れる。
     for (const template of CUSTOM_CARD_TEMPLATES) {
       const result = useStore.getState().saveCustomEntry({ template: template.id, category: created.id, values: sampleValues(template.id, template.id) })
       assert.equal(result.status, 'saved', template.id)
@@ -293,7 +303,7 @@ test('独自のカテゴリー：作る・名前・既定のテンプレート�
     const groups = customCategoryGroups({ words: state.customWords, cards: state.customCards, categories: state.customCategories })
     const group = groups.find((item) => item.category.id === created.id)
     assert.equal(group.words.length, 1)
-    assert.equal(group.cards.length, 5)
+    assert.equal(group.cards.length, 4)
     // 表示する教科（英語）のアプリにも出る。
     const english = customCategoryGroups({ words: state.customWords, cards: state.customCards, categories: state.customCategories }, { subject: 'english' })
     assert.deepEqual(english.map((item) => item.category.id), [subjectCategoryId('english'), created.id])
@@ -332,7 +342,17 @@ test('分類のないカード・ないカテゴリーを指すカードは、�
   assert.deepEqual(reconciled.categories.map((category) => [category.id, category.title]), [['cat-gone', '名前のないカテゴリー']])
   assert.equal(reconciled.cards[0].category, 'cat-gone')
   assert.equal(normalizeCustomCard({ front: '表', back: '裏' }).category, subjectCategoryId('english'))
-  assert.equal(normalizeCustomCard({ front: '表', back: '裏', template: 'english' }).template, 'term', '英単語はカードではなく自作単語で持つ')
+  assert.equal(normalizeCustomCard({ front: '表', back: '裏', template: 'english' }).template, 'other', '英単語はカードではなく自作単語で持つ')
+})
+
+test('以前のテンプレートで保存したカード・カテゴリーは「その他」になり、中身を残す', () => {
+  const term = normalizeCustomCard({ id: 'c-old1', template: 'term', front: '三角州', back: '河口の平らな土地', category: 'subject:social' })
+  const termNote = normalizeCustomCard({ id: 'c-old2', template: 'termNote', front: '扇状地', back: '扇の形の土地', note: '果樹園に使われる', category: 'subject:social' })
+  assert.deepEqual([term.id, term.template, term.front, term.back, term.note], ['c-old1', 'other', '三角州', '河口の平らな土地', ''])
+  assert.deepEqual([termNote.id, termNote.template, termNote.front, termNote.back, termNote.note], ['c-old2', 'other', '扇状地', '扇の形の土地', '果樹園に使われる'])
+  assert.equal(normalizeCustomCategory({ id: 'cat-old', title: '期末社会', template: 'term' }).template, 'other')
+  assert.equal(normalizeCustomCategory({ id: 'cat-old', title: '期末社会', template: 'termNote' }).template, 'other')
+  assert.equal(normalizeCustomCategory({ id: 'cat-old', title: '期末社会', template: 'koten' }).template, 'koten')
 })
 
 test('登録の画面：テンプレートの選択・分類の選択（新しいカテゴリーを作る）・欄・入れる単語帳を持つ', () => {

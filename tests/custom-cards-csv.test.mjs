@@ -2,7 +2,9 @@
 // 2026-09-30 利用者:「カードの一覧は自作できてエクセルかテキストエディタで編集できるといいね。」
 // 1行が1枚の CSV（Excel で文字化けしない UTF-8・BOM つき）で書き出し、見本を保存でき、
 // Excel・テキストエディタで作った・直したファイル（CSV・タブ区切り、UTF-8 の BOM あり・なし、Shift_JIS）と貼り付けた表を読み込む。
-// 6つのテンプレートの全欄（英単語は16欄）を列で書け、書き出して読み戻すと同じカードになる。
+// 5つのテンプレートの全欄（英単語は16欄）を列で書け、書き出して読み戻すと同じカードになる。
+// テンプレートの列は、今の名前（英単語・古文単語・漢語・その他・一問一答）と、以前の名前（用語と意味・用語・意味・解説・古典単語）を読む
+// （requests/2026-09-30-custom-card-form-followup.json の templates-five・saved-cards-kept）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -26,7 +28,7 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 
 const CATEGORY = { id: 'cat-midterm', title: '2学期中間英語', subject: 'english', template: 'english', createdAt: 1, updatedAt: 1 }
 
-// 6つのテンプレートのカードに、全部の欄を書く（カンマ・""・改行・- で始まる欄も入れる）。
+// 5つのテンプレートのカードに、全部の欄を書く（カンマ・""・改行・- で始まる欄も入れる）。
 const WORD = normalizeCustomWord({
   id: 'u-csvword',
   word: 'glimmer',
@@ -71,12 +73,12 @@ const wordFields = (word) => ({
 })
 const cardFields = (card) => ({ id: card.id, template: card.template, category: card.category, ...Object.fromEntries(CARD_FIELD_KEYS.map((key) => [key, card[key]])) })
 
-test('列は、分類・テンプレートと、6つのテンプレートの全欄（英単語は16欄）・ID', () => {
+test('列は、分類・テンプレートと、5つのテンプレートの全欄（英単語は16欄）・ID', () => {
   assert.deepEqual(CUSTOM_CARD_TABLE_COLUMNS.map((column) => column.name), [
     '分類', 'テンプレート', '表', '裏', '読み', '漢字', '品詞', '例文', '例文の訳', '解説・メモ',
     '級', '分野', '発音記号', 'ほかの意味', '派生語', '類義語', '反意語', 'つづりが似た語', '熟語・構文', '語の成り立ち', 'ID',
   ])
-  // 英単語以外の5つのテンプレートの欄は、どれも列にある。
+  // 英単語以外の4つのテンプレートの欄は、どれも列にある。
   const keys = new Set(CUSTOM_CARD_TABLE_COLUMNS.map((column) => column.key))
   for (const template of CUSTOM_CARD_TEMPLATES) for (const item of template.fields) assert.ok(keys.has(item.key), `${template.id}.${item.key}`)
   // 英単語の16欄も列で書ける（単語＝表、意味＝裏、例文・例文の訳・使い方とメモ＝例文・例文の訳・解説・メモ）。
@@ -103,13 +105,19 @@ test('書き出し：Excel で文字化けしない UTF-8（BOM つき）の CSV
   )
 })
 
-test('見本の CSV は6つのテンプレートを1行ずつ持ち、そのまま読み込める', () => {
-  const sample = parseCustomCardsTable(customCardsCsvSample(), { categories: [] })
+test('見本の CSV は5つのテンプレートを1行以上ずつ持ち（その他は解説のある行とない行）、そのまま読み込める', () => {
+  const text = customCardsCsvSample()
+  const sample = parseCustomCardsTable(text, { categories: [] })
   assert.equal(sample.status, 'ok')
   assert.deepEqual(sample.errors, [])
   assert.deepEqual(sample.warnings, [])
   const templates = [...sample.library.words.map(() => 'english'), ...sample.library.cards.map((card) => card.template)]
-  assert.deepEqual(templates.sort(), CUSTOM_CARD_TEMPLATES.map((template) => template.id).sort())
+  assert.deepEqual([...new Set(templates)].sort(), CUSTOM_CARD_TEMPLATES.map((template) => template.id).sort())
+  const others = sample.library.cards.filter((card) => card.template === 'other')
+  assert.deepEqual(others.map((card) => Boolean(card.note)), [false, true])
+  // 見本には今のテンプレートの名前だけを書く。
+  for (const old of ['用語と意味', '用語・意味・解説', '古典単語']) assert.ok(!text.includes(`,${old},`), `見本に以前の名前「${old}」がない`)
+  for (const template of CUSTOM_CARD_TEMPLATES) assert.ok(text.includes(`,${template.label},`), `見本に「${template.label}」の行がある`)
   assert.deepEqual(sample.newCategories, ['2学期中間英語'])
   assert.equal(customCardsCsvFileName(Date.now(), true), 'study-app-custom-cards-sample.csv')
 })
@@ -126,7 +134,7 @@ test('読み込む形：UTF-8（BOM あり・なし）と Shift_JIS、カンマ�
     const parsed = parseCustomCardsTable(text)
     assert.equal(parsed.status, 'ok')
     assert.deepEqual(parsed.library.cards.map((card) => [card.template, card.category, card.front, card.back, card.note]), [
-      ['termNote', 'subject:social', '三角州', '川の河口にできる低く平らな土地', '水田に使われる'],
+      ['other', 'subject:social', '三角州', '川の河口にできる低く平らな土地', '水田に使われる'],
     ])
   }
   assert.equal(tableDelimiter('a\tb\nc,d'), '\t')
@@ -148,14 +156,42 @@ test('貼り付けた表（Excel からコピーしたタブ区切り・見出�
     ['respiration', ['呼吸'], '生き物のはたらき', 'subject:english'],
   ])
   const socialList = parseCustomCardsTable('扇状地,扇の形の土地', { subject: 'social' })
-  assert.deepEqual(socialList.library.cards.map((card) => [card.template, card.category]), [['termNote', 'subject:social']])
+  assert.deepEqual(socialList.library.cards.map((card) => [card.template, card.category]), [['other', 'subject:social']])
+})
+
+test('テンプレートの列は、今の名前と以前の名前（用語と意味・用語・意味・解説はその他、古典単語は古文単語）を読む', () => {
+  const text = [
+    '分類,テンプレート,表,裏,読み,解説',
+    '社会,その他,三角州,低く平らな土地,,',
+    '社会,用語と意味,扇状地,扇の形の土地,,',
+    '社会,用語・意味・解説,台地,高く平らな土地,,水が得にくい',
+    '古典,古文単語,をかし,趣がある,おかし,',
+    '古典,古典単語,あはれなり,しみじみと心を打たれる,あわれなり,',
+    '漢文,漢語,未だ〜ず,まだ〜ない,いまだ〜ず,',
+    '数学,一問一答,三角形の内角の和は？,180度,,',
+  ].join('\n')
+  const parsed = parseCustomCardsTable(text)
+  assert.deepEqual(parsed.errors, [])
+  assert.deepEqual(parsed.library.cards.map((card) => [card.template, card.front, card.note]), [
+    ['other', '三角州', ''],
+    ['other', '扇状地', ''],
+    ['other', '台地', '水が得にくい'],
+    ['koten', 'をかし', ''],
+    ['koten', 'あはれなり', ''],
+    ['kanbun', '未だ〜ず', ''],
+    ['qa', '三角形の内角の和は？', ''],
+  ])
+  // 書き出しは今の名前で書く。
+  const exported = customCardsCsvText({ cards: parsed.library.cards, words: [], categories: [] })
+  assert.ok(!exported.includes(',用語と意味,') && !exported.includes(',古典単語,'))
+  assert.ok(exported.includes(',その他,') && exported.includes(',古文単語,'))
 })
 
 test('読めない行は、行の番号と理由を知らせる（ほかの行は読む）。一部の欄を読まない行は注意として知らせる', () => {
   const text = [
     '分類,テンプレート,表,裏,解説,級,品詞,知らない列',
-    '社会,用語と意味,三角州,低く平らな土地,この欄はテンプレートにない,,,',
-    ',用語と意味,表だけ,,,,,',
+    '社会,その他,三角州,低く平らな土地,解説は読む,,名詞,',
+    ',その他,表だけ,,,,,',
     ',なぞのテンプレート,表,裏,,,,',
     ',英単語,glimmer,かすかな光,,10級,謎詞,',
   ].join('\n')
@@ -166,7 +202,8 @@ test('読めない行は、行の番号と理由を知らせる（ほかの行�
   assert.match(parsed.errors[1].message, /テンプレート「なぞのテンプレート」はありません/)
   const warnings = parsed.warnings.map((warning) => `${warning.line}:${warning.message}`)
   assert.ok(warnings.some((warning) => warning.startsWith('1:「知らない列」の列は読みません')), warnings.join(' / '))
-  assert.ok(warnings.some((warning) => warning.startsWith('2:「解説・メモ」はテンプレート「用語と意味」にない欄')), warnings.join(' / '))
+  assert.ok(warnings.some((warning) => warning.startsWith('2:「品詞」はテンプレート「その他」にない欄')), warnings.join(' / '))
+  assert.equal(parsed.library.cards.find((card) => card.front === '三角州')?.note, '解説は読む')
   assert.ok(warnings.some((warning) => warning.startsWith('5:品詞「謎詞」')), warnings.join(' / '))
   assert.ok(warnings.some((warning) => warning.startsWith('5:級「10級」')), warnings.join(' / '))
   assert.equal(parsed.library.cards.length + parsed.library.words.length, 2)
@@ -186,7 +223,7 @@ test('足す・書き換える：ID の同じカードを書き換え（暗記�
     const exported = customCardsCsvText({ words: [WORD], cards: CARDS, categories: [CATEGORY] })
     // Excel で1枚の裏を直し、新しい行を1つ足したファイル。
     const edited = exported
-      .replace('用語と意味の裏\n2行目', '直した裏')
+      .replace('古文単語の裏\n2行目', '直した裏')
       + '期末理科,一問一答,植物が光を使って養分をつくるはたらきは？,光合成,,,,,,,,,,,,,,,,,\r\n'
     const parsed = parseCustomCardsTable(edited, { categories: useStore.getState().customCategories })
     assert.deepEqual(parsed.newCategories, ['期末理科'])

@@ -15,7 +15,9 @@ import {
   upsertCustomWord,
 } from '../lib/customWords.js'
 import {
+  CUSTOM_CARD_QUIZ_DOMAIN,
   ENGLISH_TEMPLATE_ID,
+  findCustomCategory,
   moveCustomCategory as moveCustomCategoryState,
   registerCustomCards,
   removeCustomCard,
@@ -25,6 +27,17 @@ import {
 } from '../lib/customCards.js'
 import { mergeCustomLibrary, normalizeCustomLibrary } from '../lib/customLibrary.js'
 import { customCardInput, customWordInput } from '../lib/customEntryForm.js'
+import {
+  dropQuizResults,
+  dropReviewRecords,
+  mergeBlocker,
+  mergeCardsPreview,
+  mergeHistoryIds,
+  mergeQuizResults,
+  mergeReviewRecords,
+  mergeWordsPreview,
+  moveEntriesToCategory,
+} from '../lib/customCardsEdit.js'
 import { registerCustomWords } from '../data/vocab.js'
 import { getGrammarStrand, grammarStrandLevels } from '../data/grammar-strands.js'
 import {
@@ -96,6 +109,7 @@ import {
   foldLegacySavedLists,
   LEGACY_SAVED_LIST_FIELDS,
   forgetNotebookItem,
+  mergeNotebookItemRefs,
   notebookRef,
   replaceNotebookItemRef,
   moveNotebookSet as moveNotebookSetState,
@@ -283,7 +297,7 @@ export const createInitialLearningState = () => ({
   scienceTermSrs: {}, // 理科の重要語句の termId -> { box, ... }
   customCardSrs: {}, // 自作カード（英単語以外のテンプレート）の cardId -> { box, ... }
   customWords: [], // 自作カードのうち英単語のテンプレートのもの（これまでの自作単語）
-  customCards: [], // 自作カードのうち英単語以外のテンプレート（用語と意味・一問一答など）のもの
+  customCards: [], // 自作カードのうち英単語以外のテンプレート（古文単語・漢語・その他・一問一答）のもの
   customCategories: [], // 自作カードの分類のうち、自分で作ったカテゴリー（例「2学期中間英語」）
   vocabHistory: [], // 最近検索・参照・単語帳へ入れた英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
@@ -516,6 +530,31 @@ function awardWriting(stats, timestamp = Date.now()) {
 // 記録（SRS）のように「ID → 記録」の形で持つ保存かどうか。
 const isPlainRecord = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 
+// 自作カード：英単語・カード・カテゴリーをまとめてそろえる（以前の自作単語は教科「英語」の英単語のカードに、
+// 以前のテンプレート「用語と意味」「用語・意味・解説」のカードは「その他」になる）。
+function settledCustomLibrary(state) {
+  const customLibrary = normalizeCustomLibrary({
+    words: state.customWords,
+    cards: state.customCards,
+    categories: state.customCategories,
+  })
+  return {
+    customWords: customLibrary.words,
+    customCards: customLibrary.cards,
+    customCategories: customLibrary.categories,
+    customCardSrs: isPlainRecord(state.customCardSrs) ? state.customCardSrs : {},
+  }
+}
+
+/**
+ * 端末の保存を読み戻して今の状態へ重ねる（zustand の persist の merge）。
+ * migrate は保存の版が古いときにしか通らないので、自作カードは版が同じでも読み戻すたびにそろえる。
+ */
+export function mergePersistedState(persistedState, currentState) {
+  const merged = { ...currentState, ...(isPlainRecord(persistedState) ? persistedState : {}) }
+  return { ...merged, ...settledCustomLibrary(merged) }
+}
+
 export function migratePersistedState(persistedState) {
   const state = { ...(persistedState ?? {}) }
   // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
@@ -531,16 +570,7 @@ export function migratePersistedState(persistedState) {
   )
   delete state.myList
   for (const field of LEGACY_SAVED_LIST_FIELDS) delete state[field]
-  // 自作カード：英単語・カード・カテゴリーをまとめてそろえる（以前の自作単語は教科「英語」の英単語のカードになる）。
-  const customLibrary = normalizeCustomLibrary({
-    words: state.customWords,
-    cards: state.customCards,
-    categories: state.customCategories,
-  })
-  state.customWords = customLibrary.words
-  state.customCards = customLibrary.cards
-  state.customCategories = customLibrary.categories
-  state.customCardSrs = isPlainRecord(state.customCardSrs) ? state.customCardSrs : {}
+  Object.assign(state, settledCustomLibrary(state))
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
   state.mathExamLog = normalizeMathExamLog(state.mathExamLog)
@@ -966,13 +996,8 @@ export const useStore = create(
         return result
       },
 
-      deleteCustomWord: (id) =>
-        set((st) => ({
-          customWords: removeCustomWord(st.customWords, id),
-          // 消した語は、単語帳・辞書履歴からも一緒に外す。
-          vocabHistory: st.vocabHistory.filter((wordId) => wordId !== id),
-          learningNotebook: forgetNotebookItem(st.learningNotebook, 'vocab', id),
-        })),
+      // 消した語は、単語帳・メモ・辞書履歴・暗記とテストの記録からも一緒に外す（まとめて消すのと同じ片付け）。
+      deleteCustomWord: (id) => get().deleteCustomEntries({ wordIds: [id] }),
 
       saveCustomCard: (input) => {
         let result = { id: null, status: 'invalid' }
@@ -984,11 +1009,99 @@ export const useStore = create(
         return result
       },
 
-      deleteCustomCard: (id) =>
-        set((st) => ({
-          customCards: removeCustomCard(st.customCards, id),
-          learningNotebook: forgetNotebookItem(st.learningNotebook, 'customCards', id),
-        })),
+      deleteCustomCard: (id) => get().deleteCustomEntries({ cardIds: [id] }),
+
+      /**
+       * 選んだカードをまとめて消す（自作カードの編集）。単語帳・メモ・辞書の履歴・暗記とテストの記録からも外す。
+       * 戻り値 { deletedCount }。
+       */
+      deleteCustomEntries: ({ wordIds = [], cardIds = [] } = {}) => {
+        let result = { deletedCount: 0 }
+        set((st) => {
+          const words = new Set(wordIds.filter((id) => st.customWords.some((word) => word.id === id)))
+          const cards = new Set(cardIds.filter((id) => st.customCards.some((card) => card.id === id)))
+          if (!words.size && !cards.size) return {}
+          let learningNotebook = st.learningNotebook
+          for (const id of words) learningNotebook = forgetNotebookItem(learningNotebook, 'vocab', id)
+          for (const id of cards) learningNotebook = forgetNotebookItem(learningNotebook, 'customCards', id)
+          result = { deletedCount: words.size + cards.size }
+          return {
+            customWords: st.customWords.filter((word) => !words.has(word.id)),
+            customCards: st.customCards.filter((card) => !cards.has(card.id)),
+            vocabHistory: st.vocabHistory.filter((id) => !words.has(id)),
+            srs: dropReviewRecords(st.srs, [...words]),
+            customCardSrs: dropReviewRecords(st.customCardSrs, [...cards]),
+            contentQuizResults: dropQuizResults(st.contentQuizResults, CUSTOM_CARD_QUIZ_DOMAIN, [...cards]),
+            learningNotebook,
+          }
+        })
+        return result
+      },
+
+      /**
+       * 選んだカードを別の分類へ移す（自作カードの編集）。category は教科の分類か、ある作ったカテゴリー。
+       * ID は変えないので、記録・単語帳・メモはそのまま残る。戻り値 { status: 'moved' | 'invalid', movedCount }。
+       */
+      moveCustomEntries: ({ wordIds = [], cardIds = [], category } = {}) => {
+        let result = { status: 'invalid', movedCount: 0 }
+        set((st) => {
+          if (!findCustomCategory(st.customCategories, category)) return {}
+          const moved = moveEntriesToCategory(
+            { words: st.customWords, cards: st.customCards },
+            { wordIds, cardIds, category },
+          )
+          result = { status: 'moved', movedCount: moved.movedCount }
+          return moved.movedCount ? { customWords: moved.words, customCards: moved.cards } : {}
+        })
+        return result
+      },
+
+      /**
+       * 同じテンプレートのカード（kind: 'word' は英単語どうし、'card' はほかのテンプレート）を、残すカード（targetId）へ統合する。
+       * 中身は lib/customCardsEdit.js の決まりでまとめ（消さない）、暗記とテストの記録・テストの結果・単語帳・メモ・
+       * 辞書の履歴を残すカードへ寄せて、ほかのカードを消す。戻り値 { status: 'merged' | 'invalid', id, mergedCount }。
+       */
+      mergeCustomEntries: ({ kind, targetId, sourceIds = [] } = {}) => {
+        let result = { status: 'invalid', id: null, mergedCount: 0 }
+        set((st) => {
+          const english = kind === 'word'
+          const list = english ? st.customWords : st.customCards
+          const ids = [targetId, ...sourceIds.filter((id) => id !== targetId)]
+          const picked = [...new Set(ids)].map((id) => list.find((item) => item.id === id)).filter(Boolean)
+          if (picked.length < 2 || picked[0].id !== targetId) return {}
+          if (mergeBlocker(picked.map((entry) => ({ kind: english ? 'word' : 'card', entry })))) return {}
+          const preview = english ? mergeWordsPreview(picked, targetId) : mergeCardsPreview(picked, targetId)
+          const merged = english ? preview?.word : preview?.card
+          if (!merged) return {}
+          const sources = picked.slice(1).map((item) => item.id)
+          const sourceSet = new Set(sources)
+          const nextList = list
+            .filter((item) => !sourceSet.has(item.id))
+            .map((item) => (item.id === targetId ? merged : item))
+          const domain = english ? 'vocab' : 'customCards'
+          const learningNotebook = mergeNotebookItemRefs(
+            st.learningNotebook,
+            sources.map((id) => notebookRef(domain, id)),
+            notebookRef(domain, targetId),
+          )
+          result = { status: 'merged', id: targetId, mergedCount: sources.length }
+          if (english) {
+            return {
+              customWords: nextList,
+              srs: mergeReviewRecords(st.srs, targetId, sources),
+              vocabHistory: mergeHistoryIds(st.vocabHistory, targetId, sources),
+              learningNotebook,
+            }
+          }
+          return {
+            customCards: nextList,
+            customCardSrs: mergeReviewRecords(st.customCardSrs, targetId, sources),
+            contentQuizResults: mergeQuizResults(st.contentQuizResults, CUSTOM_CARD_QUIZ_DOMAIN, targetId, sources),
+            learningNotebook,
+          }
+        })
+        return result
+      },
 
       /**
        * 登録欄から保存する単一入口。template が英単語なら自作単語、ほかはカードとして保存する。
@@ -1039,22 +1152,43 @@ export const useStore = create(
       moveCustomCategory: (id, direction) =>
         set((st) => ({ customCategories: moveCustomCategoryState(st.customCategories, id, direction) })),
 
-      // カテゴリーを消すと、中のカード（英単語・ほかのテンプレート）も消える。単語帳・メモ・辞書履歴からも外す。
-      deleteCustomCategory: (id) =>
+      // カテゴリーを消すと、中のカード（英単語・ほかのテンプレート）も消える。単語帳・メモ・辞書履歴・記録からも外す。
+      deleteCustomCategory: (id) => {
+        const st = get()
+        get().deleteCustomEntries({
+          wordIds: st.customWords.filter((word) => word.category === id).map((word) => word.id),
+          cardIds: st.customCards.filter((card) => card.category === id).map((card) => card.id),
+        })
+        set((current) => ({ customCategories: removeCustomCategory(current.customCategories, id) }))
+      },
+
+      /**
+       * 作ったカテゴリーを、ほかの分類（教科か、ほかの作ったカテゴリー）へまとめる。中のカードをすべて移し先へ移して、
+       * 元のカテゴリーを消す。カードの記録・単語帳はそのまま。戻り値 { status: 'merged' | 'invalid', movedCount, category }。
+       */
+      mergeCustomCategory: (id, targetCategory) => {
+        let result = { status: 'invalid', movedCount: 0, category: null }
         set((st) => {
-          const wordIds = new Set(st.customWords.filter((word) => word.category === id).map((word) => word.id))
-          const cardIds = new Set(st.customCards.filter((card) => card.category === id).map((card) => card.id))
-          let learningNotebook = st.learningNotebook
-          for (const wordId of wordIds) learningNotebook = forgetNotebookItem(learningNotebook, 'vocab', wordId)
-          for (const cardId of cardIds) learningNotebook = forgetNotebookItem(learningNotebook, 'customCards', cardId)
+          if (!id || id === targetCategory) return {}
+          if (!st.customCategories.some((category) => category.id === id)) return {}
+          if (!findCustomCategory(st.customCategories, targetCategory)) return {}
+          const moved = moveEntriesToCategory(
+            { words: st.customWords, cards: st.customCards },
+            {
+              wordIds: st.customWords.filter((word) => word.category === id).map((word) => word.id),
+              cardIds: st.customCards.filter((card) => card.category === id).map((card) => card.id),
+              category: targetCategory,
+            },
+          )
+          result = { status: 'merged', movedCount: moved.movedCount, category: targetCategory }
           return {
+            customWords: moved.words,
+            customCards: moved.cards,
             customCategories: removeCustomCategory(st.customCategories, id),
-            customWords: st.customWords.filter((word) => !wordIds.has(word.id)),
-            customCards: st.customCards.filter((card) => !cardIds.has(card.id)),
-            vocabHistory: st.vocabHistory.filter((wordId) => !wordIds.has(wordId)),
-            learningNotebook,
           }
-        }),
+        })
+        return result
+      },
 
       // 自作カード（英単語以外）の暗記カードとテスト。記録は customCardSrs、テストの問題ごとの結果は contentQuizResults。
       reviewCustomCard: (cardId, result) => {
@@ -1724,6 +1858,7 @@ export const useStore = create(
       name: 'eigo-quest',
       version: 11,
       migrate: migratePersistedState,
+      merge: mergePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,
     },

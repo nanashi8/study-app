@@ -504,6 +504,55 @@ export function replaceNotebookItemRef(notebook, fromRef, toRef, timestamp = Dat
   }
 }
 
+/**
+ * いくつかの項目を1つの項目へまとめる（自作カードの統合）。メモは重ねずにつなぎ、タグは合わせ、保存はどれかが保存なら保存。
+ * 入っていた単語帳には、まとめた先の項目を1つだけ残す（まとめた先がまだ入っていない冊は、最初の元の位置に入れる）。
+ */
+export function mergeNotebookItemRefs(notebook, fromRefs, toRef, timestamp = Date.now()) {
+  const current = normalizeLearningNotebook(notebook)
+  const sources = [...new Set(Array.isArray(fromRefs) ? fromRefs : [])]
+    .filter((ref) => parseNotebookRef(ref) && ref !== toRef)
+  if (!parseNotebookRef(toRef) || !sources.length) return current
+  const entries = { ...current.entries }
+  const parts = [entries[toRef], ...sources.map((ref) => entries[ref])].filter(Boolean)
+  if (parts.length) {
+    const notes = []
+    for (const part of parts) {
+      const note = cleanText(part.note, NOTEBOOK_LIMITS.noteLength)
+      if (note && !notes.includes(note)) notes.push(note)
+    }
+    const createdAts = parts.map((part) => part.createdAt).filter((value) => Number.isFinite(value))
+    const merged = normalizeEntry({
+      saved: parts.some((part) => part.saved === true),
+      note: notes.join('\n\n'),
+      tags: parts.flatMap((part) => part.tags ?? []),
+      createdAt: createdAts.length ? Math.min(...createdAts) : timestamp,
+      updatedAt: timestamp,
+    })
+    for (const ref of sources) delete entries[ref]
+    if (merged) entries[toRef] = merged
+    else delete entries[toRef]
+  }
+  const sourceSet = new Set(sources)
+  return {
+    ...current,
+    entries,
+    sets: current.sets.map((set) => {
+      if (!set.refs.some((ref) => sourceSet.has(ref))) return set
+      const hasTarget = set.refs.includes(toRef)
+      const refs = []
+      for (const ref of set.refs) {
+        if (!sourceSet.has(ref)) {
+          refs.push(ref)
+          continue
+        }
+        if (!hasTarget && !refs.includes(toRef)) refs.push(toRef)
+      }
+      return { ...set, refs, updatedAt: timestamp }
+    }),
+  }
+}
+
 const uniqueId = (prefix, timestamp, randomPart) =>
   `${prefix}-${Math.floor(timestamp).toString(36)}-${String(randomPart).replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'local'}`
 

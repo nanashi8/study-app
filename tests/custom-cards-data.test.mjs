@@ -2,6 +2,8 @@
 // カード（英単語・ほかのテンプレート）・作ったカテゴリー・暗記とテストの記録を、
 // 端末保存・進捗コード（QR）・クラウド同期・JSONファイルの書き出しと読み込み・リセットで正しく扱う。
 // 以前の自作単語（テンプレートも分類も持たない保存）は、教科「英語」の英単語のカードとしてそのまま残り、以前のJSONファイルも読める。
+// 以前のテンプレート（用語と意味・用語・意味・解説）のカード・カテゴリーは、どの経路から読んでも「その他」になり、中身・記録を残す
+// （requests/2026-09-30-custom-card-form-followup.json の saved-cards-kept。端末の読み戻しそのものは tests/custom-cards-hydrate.test.mjs）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -135,6 +137,42 @@ test('JSONファイル：英単語・カード・カテゴリーを1つのファ
   } finally {
     useStore.setState(original, true)
   }
+})
+
+test('以前のテンプレートのカード・カテゴリーは、端末・進捗コード・クラウド・JSON ファイルのどこから読んでも「その他」になる', () => {
+  const legacyCards = [
+    { id: 'c-old1', template: 'term', category: 'subject:social', front: '三角州', back: '河口の平らな土地' },
+    { id: 'c-old2', template: 'termNote', category: 'cat-old', front: '扇状地', back: '扇の形の土地', note: '果樹園に使われる' },
+  ]
+  const legacyCategory = { id: 'cat-old', title: '期末社会', subject: 'social', template: 'term' }
+  const legacySrs = { 'c-old2': { box: 4, correct: 3, wrong: 1, due: 30000, last: 29990 } }
+  const expected = {
+    cards: [
+      ['c-old1', 'other', 'subject:social', '三角州', '河口の平らな土地', ''],
+      ['c-old2', 'other', 'cat-old', '扇状地', '扇の形の土地', '果樹園に使われる'],
+    ],
+    categories: [['cat-old', '期末社会', 'social', 'other']],
+    srs: legacySrs,
+  }
+  const view = (state) => {
+    const { cards, categories, srs } = summary(state)
+    return { cards, categories, srs }
+  }
+  const stored = { customWords: [], customCards: legacyCards, customCategories: [legacyCategory], customCardSrs: legacySrs }
+  // 端末（保存の版が古いときの移し替え）
+  assert.deepEqual(view(migratePersistedState(stored)), expected, '端末')
+  // 進捗コード（QR）：以前の形のまま書かれたコード
+  assert.deepEqual(view(progressStateFromPayload(stored)), expected, '進捗コード')
+  // クラウド同期
+  assert.deepEqual(view(progressStateFromCloud(stored, libraryState())), expected, 'クラウド')
+  // JSON ファイル
+  const parsed = parseCustomLibraryFile(JSON.stringify({ kind: 'custom-cards', version: 2, words: [], cards: legacyCards, categories: [legacyCategory] }))
+  assert.equal(parsed.status, 'ok')
+  assert.deepEqual(
+    view({ customWords: [], customCards: parsed.library.cards, customCategories: parsed.library.categories, customCardSrs: legacySrs }),
+    expected,
+    'JSON ファイル',
+  )
 })
 
 test('リセット：「自作カード」でカードとカテゴリー、「復習の記録と予定」で自作カードの記録を消す', () => {
