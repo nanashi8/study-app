@@ -56,4 +56,5 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'refraction',
   'convexLensFocus',
   'lensImage',
+  'waveforms',
 ])

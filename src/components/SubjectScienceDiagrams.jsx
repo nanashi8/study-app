@@ -722,6 +722,49 @@ function LensImageDiagram({ object = 3 }) {
   )
 }
 
+// ── 音の波形 ─────────────────────────────────────────────────────────────
+//   { name: 'waveforms', waves: [{ label: '大きい音', amplitude: 1, cycles: 3 }, …], annotate?: true }
+// オシロスコープで見た音の波形を、上から順に並べる。横軸は時間、縦軸は振動の振れ幅。
+// amplitude は振れ幅（1が最大）、cycles は同じ時間に見られる波の数。annotate で1段目に振幅と1回の振動を書く。
+function WaveformsDiagram({ waves = [], annotate = false }) {
+  const left = 76
+  const right = 290
+  const rowH = 70
+  const height = waves.length * rowH + 26
+  const pathOf = (amplitude, cycles, mid) => {
+    const points = []
+    for (let i = 0; i <= 200; i += 1) {
+      const x = left + ((right - left) * i) / 200
+      points.push(`${i ? 'L' : 'M'}${x.toFixed(1)},${(mid - Math.sin((i / 200) * cycles * 2 * Math.PI) * amplitude * 24).toFixed(1)}`)
+    }
+    return points.join(' ')
+  }
+  return (
+    <svg viewBox={`0 0 300 ${height}`} className="h-auto w-full" role="img" aria-label="音の波形" data-subject-diagram="waveforms">
+      {waves.map((wave, index) => {
+        const mid = 36 + index * rowH
+        return (
+          <g key={wave.label}>
+            <line x1={left} y1={mid} x2={right} y2={mid} stroke="#cbd5e1" strokeWidth="1" />
+            <line x1={left} y1={mid - 30} x2={left} y2={mid + 30} stroke={DARK} strokeWidth="1" />
+            <path d={pathOf(wave.amplitude, wave.cycles, mid)} fill="none" stroke="#2563eb" strokeWidth="1.8" />
+            <Label x={left - 8} y={mid + 4} anchor="end" size={10} weight="800">{wave.label}</Label>
+            {annotate && index === 0 && (
+              <g>
+                <line x1={left + (right - left) / (4 * wave.cycles)} y1={mid} x2={left + (right - left) / (4 * wave.cycles)} y2={mid - wave.amplitude * 24} stroke="#dc2626" strokeWidth="1.4" />
+                <Label x={left + (right - left) / (4 * wave.cycles) + 4} y={mid - wave.amplitude * 12} size={8.5} color="#dc2626">振幅</Label>
+                <line x1={left} y1={mid + 30} x2={left + (right - left) / wave.cycles} y2={mid + 30} stroke="#15803d" strokeWidth="1.4" />
+                <Label x={left + (right - left) / (2 * wave.cycles)} y={mid + 42} anchor="middle" size={8.5} color="#15803d">1回の振動</Label>
+              </g>
+            )}
+          </g>
+        )
+      })}
+      <Label x={right} y={height - 6} anchor="end" size={8.5} color={DARK}>時間 →</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -743,4 +786,5 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   refraction: RefractionDiagram,
   convexLensFocus: ConvexLensFocusDiagram,
   lensImage: LensImageDiagram,
+  waveforms: WaveformsDiagram,
 })
