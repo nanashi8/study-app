@@ -291,7 +291,7 @@ function SubjectStudyScreen({ subject }) {
                 <p className="mt-1 text-base font-extrabold leading-relaxed text-ink"><SubjectText>{term.meaning}</SubjectText></p>
               </div>
               {term.note && (
-                <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="rounded-2xl bg-slate-50 p-4" data-subject-card-note>
                   <p className="text-[10px] font-extrabold tracking-wide text-slate-500">解説</p>
                   <p className="mt-1 text-sm font-bold leading-relaxed text-ink/70"><SubjectText>{term.note}</SubjectText></p>
                 </div>

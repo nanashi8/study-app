@@ -93,8 +93,8 @@ function KeyholeTombDiagram() {
       <Label x={150} y={160} size={11} weight="800" anchor="middle">前方部（四角い）</Label>
       <Label x={246} y={40} size={9} weight="800" color="#1d4ed8">堀</Label>
       <line x1={244} y1={43} x2={214} y2={60} stroke="#1d4ed8" strokeWidth="1" />
-      <Label x={8} y={128} size={9} weight="800" color="#c2410c">埴輪</Label>
-      <line x1={36} y1={125} x2={96} y2={130} stroke="#c2410c" strokeWidth="1" />
+      <Label x={8} y={128} size={9} weight="800" color="#c2410c">埴輪（はにわ）</Label>
+      <line x1={70} y1={125} x2={96} y2={130} stroke="#c2410c" strokeWidth="1" />
       <Label x={150} y={222} size={8} anchor="middle" color={MUTED}>※ 上から見た形（大きさは実際の比ではない）</Label>
     </svg>
   )

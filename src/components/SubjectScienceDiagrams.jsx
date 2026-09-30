@@ -1571,7 +1571,7 @@ function DigestiveSystemDiagram() {
       <Callout from={[188, 112]} to={[226, 104]} text="胃" />
       <Callout from={[190, 160]} to={[226, 152]} text="すい臓" />
       <Callout from={[178, 212]} to={[226, 206]} text="小腸" />
-      <Callout from={[148, 262]} to={[226, 270]} text="肛門" />
+      <Callout from={[148, 262]} to={[206, 272]} text="肛門（こうもん）" />
     </svg>
   )
 }
@@ -4825,7 +4825,7 @@ function GreenhouseEffectDiagram() {
   return (
     <svg viewBox="0 0 300 214" className="h-auto w-full" role="img" aria-label="温室効果のしくみ" data-subject-diagram="greenhouseEffect">
       {panel(4, '温室効果ガスが少ないとき', 8, [64, 84], [106], '#bbf7d0', '熱の多くが宇宙へ出ていく')}
-      {panel(152, '温室効果ガスが多いとき', 26, [62], [82, 108], '#fecaca', 'もどる熱がふえ、気温が上がる')}
+      {panel(152, '温室効果ガスが多いとき', 26, [62], [82, 108], '#fecaca', '地表へ向かう熱がふえ、気温が上がる')}
       <line x1="30" y1="204" x2="46" y2="204" stroke="#eab308" strokeWidth="2.2" />
       <Label x={50} y={207.5} size={8.5}>太陽の光</Label>
       <line x1="130" y1="204" x2="146" y2="204" stroke={HEAT} strokeWidth="2.2" />

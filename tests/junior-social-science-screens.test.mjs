@@ -1,12 +1,15 @@
-// 中学の社会・理科の画面の確認（依頼台帳 requests/2026-09-29-junior-social-science.json の screens-work・learn-every-unit・credits-page）。
+// 中学の社会・理科の画面の確認（依頼台帳 requests/2026-09-29-junior-social-science.json の screens-work・learn-every-unit・credits-page、
+// requests/2026-09-30-subject-figures-glossary.json の screens-and-audits）。
 // 375px の幅の Chromium で動かし、次を確かめる。
 //   入口   … ポータルのタイルとメニューの教材の行から社会・理科へ入れる。全102単元に「暗記」「演習」「要点を読む」の入口があり、
 //            押すとその単元の暗記カード・演習・単元のページが開く。
 //   単元   … 全102単元のページに、めあて・要点（図つき）・重要語句・基礎／標準／入試の演習の一覧がそろう。
-//   学ぶ   … 暗記カードはめくると意味が出て、「覚えた」「まだ」が記録され、最後に全教材共通の終わりの報告が出る。
+//            要点の図はどれも描かれ（図の組の中の図解も名前どおりに出る）、図の下に「図の読み方」が出る。重要語句には解説が出る。
+//   学ぶ   … 暗記カードはめくると意味と解説が出て、「覚えた」「まだ」が記録され、最後に全教材共通の終わりの報告が出る。
 //            語句テストは3択＋わからないで答え、3択すべての説明が出て、結果が記録される。
 //   演習   … 選ぶ・数を入れる・並べるの3つの形で答え合わせができ、正解・解説・説明が出て、結果の画面と記録まで進む。
-//            まちがえた問題は、入口の「解き直し」に入る。
+//            まちがえた問題は、入口の「解き直し」に入る。図を使う全問は、問題に図が出て、答え合わせのあとに図の読み取り方
+//            （数を入れる問題は解き方）がすべて出る。
 //   出典   … メニューのいちばん下の区切りから出典のページが開き、出典をすべて並べる。学習の画面には出典の文字を出さない。
 //   読み   … 社会・理科の語句と問題は、一覧・単語帳・学習の記録の画面でも、常用漢字にない字をふくむ語に読みがなが出る。
 //   幅     … 開いたどの画面も、375px の幅で横にはみ出さない（表などの横に送る欄の中は除く）。
@@ -47,6 +50,9 @@ const freePort = () => new Promise((resolve, reject) => {
     server.close(() => resolve(port))
   })
 })
+
+// 図と、図の組の中の図。
+const withItems = (figure) => (figure ? [figure, ...(figure.items ?? []).flatMap(withItems)] : [])
 
 const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
 
@@ -216,7 +222,16 @@ test('全102単元のページに、めあて・要点（図）・重要語句�
       return root && {
         goal: root.querySelector('[data-subject-unit-goal]')?.innerText ?? '',
         points: root.querySelectorAll('[data-subject-point]').length,
-        figures: root.querySelectorAll('[data-subject-unit-points] [data-subject-figure]').length,
+        // 図の組の中の図は数えない（要点ごとに1つ）。
+        figures: [...root.querySelectorAll('[data-subject-unit-points] [data-subject-figure]')]
+          .filter((element) => !element.parentElement.closest('[data-subject-figure]')).length,
+        emptyFigures: [...root.querySelectorAll('[data-subject-unit-points] [data-subject-figure]')]
+          .filter((element) => element.getBoundingClientRect().height < 24).length,
+        guides: [...root.querySelectorAll('[data-subject-unit-points] [data-subject-figure-guide]')]
+          .map((element) => element.querySelectorAll('li').length),
+        diagrams: [...new Set([...root.querySelectorAll('[data-subject-unit-points] [data-subject-diagram]')]
+          .map((element) => element.getAttribute('data-subject-diagram')))],
+        notes: root.querySelectorAll('[data-subject-term-note]').length,
         terms: [...root.querySelectorAll('[data-subject-term]')].map((element) => element.getAttribute('data-subject-term')),
         levels: [...root.querySelectorAll('[data-subject-level-section]')].map((section) => [
           section.getAttribute('data-subject-level-section'),
@@ -228,6 +243,11 @@ test('全102単元のページに、めあて・要点（図）・重要語句�
     assert.ok(shape.goal.includes('めあて'), `${unit.id}: めあてがない`)
     assert.equal(shape.points, unit.points.length, `${unit.id}: 要点の数`)
     assert.equal(shape.figures, unit.points.filter((point) => point.figure).length, `${unit.id}: 要点の図の数`)
+    assert.equal(shape.emptyFigures, 0, `${unit.id}: 描かれていない図がある`)
+    assert.deepEqual(shape.guides, unit.points.filter((point) => point.figure?.guide?.length).map((point) => point.figure.guide.length), `${unit.id}: 図の読み方`)
+    const diagrams = [...new Set(unit.points.flatMap((point) => withItems(point.figure)).filter((figure) => figure.type === 'diagram').map((figure) => figure.name))]
+    assert.deepEqual(diagrams.filter((name) => !shape.diagrams.includes(name)), [], `${unit.id}: 出ない図解`)
+    assert.equal(shape.notes, unit.terms.filter((term) => term.note).length, `${unit.id}: 重要語句の解説`)
     assert.deepEqual(shape.terms, unit.terms.map((term) => term.id), `${unit.id}: 重要語句`)
     assert.deepEqual(shape.levels, [['basic', 3], ['standard', 3], ['exam', 3]], `${unit.id}: 基礎・標準・入試の演習`)
     await checkWidth(`${unit.id}のページ`)
@@ -247,6 +267,12 @@ test('暗記カード：めくると意味が出て、「覚えた」「まだ�
     const answer = await page.innerText('[data-subject-card-answer]')
     const term = ALL_SUBJECT_TERMS.find((item) => item.id === id)
     assert.ok(answer.replace(/\s/g, '').includes(term.meaning.replace(/\s/g, '').slice(0, 8)), `${id}: めくると意味が出る`)
+    const note = await page.evaluate(() => {
+      const copy = document.querySelector('[data-subject-card-note]')?.cloneNode(true)
+      copy?.querySelectorAll('rt, rp').forEach((node) => node.remove())
+      return copy?.textContent ?? ''
+    })
+    assert.ok(note.replace(/\s/g, '').includes(term.note.replace(/\s/g, '').slice(0, 8)), `${id}: めくると解説が出る`)
     await checkWidth(`暗記カード ${id}`)
     await checkNoCredits(`暗記カード ${id}`)
     await page.getByRole('button', { name: position % 2 ? 'まだ🤔' : '覚えた👍' }).click()
@@ -361,6 +387,56 @@ test('演習：選ぶ・数を入れる・並べるの3つの形で答え合わ�
   await open(meta.screens.home, { book: 'science2' })
   const retry = await page.getAttribute('[data-subject-retry]', 'aria-label')
   assert.match(retry, /解き直し。2問/)
+})
+
+test('図を使う全問：問題に図が出て、答え合わせのあとに図の読み取り方（数を入れる問題は解き方）がすべて出る', async () => {
+  const questions = ALL_SUBJECT_QUESTIONS.filter((question) => question.figure)
+  assert.ok(questions.length >= 47, '図を使う問題の数')
+  // 演習は1回に10問までなので、教科ごとに10問ずつ開く。
+  const decks = Object.keys(SUBJECTS).flatMap((subject) => {
+    const all = questions.filter((question) => question.subject === subject)
+    return Array.from({ length: Math.ceil(all.length / 10) }, (_, index) => [subject, all.slice(index * 10, index * 10 + 10)])
+  })
+  assert.equal(decks.reduce((sum, [, list]) => sum + list.length, 0), questions.length)
+  for (const [subject, list] of decks) {
+    // 同じ演習の画面を続けて開くと前の結果が残るので、いったんポータルへ戻る。
+    await open('portal')
+    await open(SUBJECTS[subject].screens.practice, { ids: list.map((question) => question.id), preserveOrder: true, title: '図を読む演習' })
+    for (const [index, question] of list.entries()) {
+      const at = `[data-subject-practice-question="${question.id}"]`
+      await page.waitForSelector(at)
+      const height = await page.evaluate((selector) => document.querySelector(`${selector} [data-subject-figure]`)?.getBoundingClientRect().height ?? 0, at)
+      assert.ok(height >= 24, `${question.id}: 問題に図が出る`)
+      if (question.kind === 'choice') {
+        const choice = await page.locator('[data-subject-choice]').evaluateAll((elements, answer) => elements.find((element) => {
+          const copy = element.querySelector('.min-w-0')?.cloneNode(true)
+          copy?.querySelectorAll('rt, rp').forEach((node) => node.remove())
+          return (copy?.textContent ?? '').trim() === answer
+        })?.getAttribute('data-subject-choice'), question.answer)
+        assert.ok(choice !== undefined, `${question.id}: 正解の選択肢が見つからない`)
+        await page.click(`[data-subject-choice="${choice}"]`)
+      } else if (question.kind === 'number') {
+        for (const key of String(question.answer)) await page.click(`[data-subject-number-key="${key}"]`)
+        await page.click('[data-subject-practice-check]')
+      } else {
+        for (const item of question.items) await page.click(`[data-subject-order-item="${item}"]`)
+        await page.click('[data-subject-practice-check]')
+      }
+      await page.waitForSelector('[data-subject-practice-review]')
+      assert.match(await page.innerText('[data-subject-practice-result-label]'), /正解/, `${question.id}: 正解で答え合わせができる`)
+      if (question.read?.length) {
+        assert.equal(await page.locator('[data-subject-practice-read] li').count(), question.read.length, `${question.id}: 図の読み取り方`)
+      } else {
+        assert.equal(question.kind, 'number', `${question.id}: 図の読み取り方がない`)
+        assert.equal(await page.locator('[data-subject-practice-steps] li').count(), question.steps.length, `${question.id}: 解き方`)
+      }
+      await checkWidth(`演習 ${question.id}`)
+      await checkNoCredits(`演習 ${question.id}`)
+      await page.getByRole('button', { name: index + 1 >= list.length ? /結果を見る/ : /次の問題へ/ }).last().click()
+      await settle()
+    }
+    await page.waitForSelector('[data-subject-practice-result]')
+  }
 })
 
 test('出典のページは、メニューのいちばん下の区切りから開き、出典をすべて並べる', async () => {
