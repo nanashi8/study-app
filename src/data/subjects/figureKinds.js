@@ -106,4 +106,8 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'electromagneticInduction',
   'forceOnCurrent',
   'dcAc',
+  'chlorideElectrolysis',
+  'atomStructure',
+  'ionFormation',
+  'ionBeaker',
 ])

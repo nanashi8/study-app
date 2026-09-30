@@ -2717,6 +2717,142 @@ function DcAcDiagram() {
   )
 }
 
+function Particle({ x, y, text, fill, stroke = LINE, r = 8, size = 7.5, color = INK }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth="1" />
+      <text x={x} y={y + size * 0.36} fontSize={size} fontWeight="800" textAnchor="middle" fill={color}>{text}</text>
+    </g>
+  )
+}
+
+// ── 塩化銅水溶液の電気分解 ───────────────────────────────────────────────────
+//   { name: 'chlorideElectrolysis', view?: 'ions' }
+// 既定：結果。陰極（電源の－極側）に赤色の銅が付着し、陽極（＋極側）から塩素が発生する。
+// ions：イオンの動き。銅イオンは陰極へ、塩化物イオンは陽極へ引かれる。
+function ChlorideElectrolysisDiagram({ view }) {
+  const ions = view === 'ions'
+  return (
+    <svg viewBox="0 0 300 232" className="h-auto w-full" role="img" aria-label={ions ? '塩化銅水溶液の電気分解とイオン' : '塩化銅水溶液の電気分解'} data-subject-diagram="chlorideElectrolysis">
+      <path d="M100,34 L100,14 L141,14 M159,14 L200,14 L200,34" fill="none" stroke={INK} strokeWidth="1.4" />
+      <line x1="146" y1="4" x2="146" y2="24" stroke={INK} strokeWidth="3.4" />
+      <line x1="154" y1="0" x2="154" y2="28" stroke={INK} strokeWidth="1.6" />
+      <Label x={138} y={10} anchor="end" size={8} color="#1d4ed8">－</Label>
+      <Label x={162} y={10} size={8} color="#b91c1c">＋</Label>
+      <rect x="62" y="80" width="176" height="114" fill="#99f6e4" opacity="0.55" />
+      <path d="M60,56 L60,190 Q60,196 66,196 L234,196 Q240,196 240,190 L240,56" fill="none" stroke={LINE} strokeWidth="1.4" />
+      <rect x="95" y="34" width="10" height="136" fill="#475569" />
+      <rect x="195" y="34" width="10" height="136" fill="#475569" />
+      {ions ? (
+        <g>
+          {[[136, 104], [146, 146], [130, 178]].map(([x, y]) => (
+            <g key={`c${x}`}>
+              <Particle x={x} y={y} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={11} size={7} />
+              <Arrow from={[x - 13, y]} to={[108, y]} color="#1d4ed8" width={1.4} />
+            </g>
+          ))}
+          {[[166, 92], [182, 112], [164, 132], [184, 152], [166, 172], [185, 182]].map(([x, y]) => (
+            <Particle key={`l${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={9} size={7} />
+          ))}
+          <Arrow from={[176, 92]} to={[193, 92]} color="#15803d" width={1.4} />
+          <Arrow from={[174, 132]} to={[193, 132]} color="#15803d" width={1.4} />
+          <Label x={80} y={214} anchor="middle" size={8.5} color="#1d4ed8">Cu²⁺が電子を2個受けとり、銅になる</Label>
+          <Label x={220} y={228} anchor="middle" size={8.5} color="#15803d">Cl⁻が電子をわたし、塩素になる</Label>
+        </g>
+      ) : (
+        <g>
+          <rect x="93" y="104" width="14" height="66" rx="2" fill="#b45309" opacity="0.85" />
+          {[[212, 150], [214, 128], [210, 108], [216, 90]].map(([x, y]) => <circle key={y} cx={x} cy={y} r="3" fill="#ffffff" stroke="#16a34a" strokeWidth="0.9" />)}
+          <Callout from={[93, 140]} to={[44, 212]} text="銅が付着（赤色）" anchor="start" />
+          <Callout from={[216, 92]} to={[246, 40]} text="塩素が発生" />
+        </g>
+      )}
+      <Label x={100} y={52} anchor="end" size={8.5} weight="800" color="#1d4ed8">陰極</Label>
+      <Label x={206} y={52} size={8.5} weight="800" color="#b91c1c">陽極</Label>
+    </svg>
+  )
+}
+
+// ── 原子のなり立ち（ヘリウム原子のモデル） ─────────────────────────────────────────
+//   { name: 'atomStructure' }
+// 中心の原子核は、＋の電気をもつ陽子2個と、電気をもたない中性子2個。まわりに－の電気をもつ電子が2個。
+function AtomStructureDiagram() {
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="原子のなり立ち" data-subject-diagram="atomStructure">
+      <Label x={110} y={16} anchor="middle" size={9.5} weight="800">ヘリウム原子のモデル</Label>
+      <circle cx="110" cy="100" r="54" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <Particle x={104} y={94} text="＋" fill="#fecaca" stroke="#dc2626" r={7} size={9} color="#b91c1c" />
+      <Particle x={116} y={94} text="" fill="#e2e8f0" stroke="#64748b" r={7} />
+      <Particle x={104} y={106} text="" fill="#e2e8f0" stroke="#64748b" r={7} />
+      <Particle x={116} y={106} text="＋" fill="#fecaca" stroke="#dc2626" r={7} size={9} color="#b91c1c" />
+      <Particle x={56} y={100} text="－" fill="#dbeafe" stroke="#2563eb" r={6} size={9} color="#1d4ed8" />
+      <Particle x={164} y={100} text="－" fill="#dbeafe" stroke="#2563eb" r={6} size={9} color="#1d4ed8" />
+      <Callout from={[120, 88]} to={[186, 40]} text="原子核" />
+      <Callout from={[121, 108]} to={[186, 78]} text="陽子（＋の電気）" />
+      <Callout from={[104, 112]} to={[186, 136]} text="中性子（電気なし）" />
+      <Callout from={[168, 104]} to={[186, 108]} text="電子（－の電気）" />
+      <Label x={150} y={188} anchor="middle" size={8.5} color={LINE}>陽子の数＝電子の数なので、原子全体は電気を帯びていない</Label>
+    </svg>
+  )
+}
+
+// ── イオンのでき方 ─────────────────────────────────────────────────────────
+//   { name: 'ionFormation' }
+// 原子が電子を失うと陽イオン、電子を受けとると陰イオンになる。
+function IonFormationDiagram() {
+  const rows = [
+    ['Na', 'ナトリウム原子', '電子を1個失う', 'Na⁺', 'ナトリウムイオン', true],
+    ['Cu', '銅原子', '電子を2個失う', 'Cu²⁺', '銅イオン', true],
+    ['Cl', '塩素原子', '電子を1個受けとる', 'Cl⁻', '塩化物イオン', false],
+  ]
+  return (
+    <svg viewBox="0 0 300 210" className="h-auto w-full" role="img" aria-label="イオンのでき方" data-subject-diagram="ionFormation">
+      {rows.map(([atom, atomName, change, ion, ionName, positive], index) => {
+        const y = 36 + index * 64
+        return (
+          <g key={atom}>
+            <Particle x={50} y={y} text={atom} fill="#f1f5f9" r={16} size={11} />
+            <Label x={50} y={y + 30} anchor="middle" size={8}>{atomName}</Label>
+            <Arrow from={[74, y]} to={[216, y]} color={positive ? '#dc2626' : '#2563eb'} width={1.8} />
+            <Label x={145} y={y - 8} anchor="middle" size={8.5} weight="800" color={positive ? '#b91c1c' : '#1d4ed8'}>{change}</Label>
+            <Particle x={246} y={y} text={ion} fill={positive ? '#fee2e2' : '#dbeafe'} stroke={positive ? '#dc2626' : '#2563eb'} r={18} size={10} />
+            <Label x={246} y={y + 32} anchor="middle" size={8}>{ionName}</Label>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+// ── 電解質と非電解質の水溶液 ────────────────────────────────────────────────
+//   { name: 'ionBeaker' }
+// 左：塩化ナトリウム水溶液。Na⁺とCl⁻に電離して散らばる（電流が流れる）。右：砂糖水。砂糖は分子のまま散らばる（電流は流れない）。
+function IonBeakerDiagram() {
+  const beaker = (x) => (
+    <g>
+      <rect x={x + 2} y="44" width="116" height="104" fill="#e0f2fe" opacity="0.8" />
+      <path d={`M${x},30 L${x},146 Q${x},152 ${x + 6},152 L${x + 114},152 Q${x + 120},152 ${x + 120},146 L${x + 120},30`} fill="none" stroke={LINE} strokeWidth="1.3" />
+    </g>
+  )
+  const hexagon = (cx, cy) => `M${Array.from({ length: 6 }, (_, i) => `${(cx + 9 * Math.cos((i * Math.PI) / 3)).toFixed(1)},${(cy + 9 * Math.sin((i * Math.PI) / 3)).toFixed(1)}`).join(' L')} Z`
+  return (
+    <svg viewBox="0 0 300 196" className="h-auto w-full" role="img" aria-label="電解質と非電解質の水溶液" data-subject-diagram="ionBeaker">
+      {beaker(14)}
+      {[[34, 70, '+'], [66, 64, '-'], [98, 76, '+'], [48, 100, '-'], [80, 108, '+'], [112, 102, '-'], [36, 132, '+'], [70, 136, '-'], [104, 132, '+'], [118, 70, '-']].map(([x, y, sign]) => (
+        sign === '+'
+          ? <Particle key={`${x}-${y}`} x={x} y={y} text="Na⁺" fill="#fee2e2" stroke="#dc2626" r={8.5} size={6} />
+          : <Particle key={`${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={8.5} size={6} />
+      ))}
+      <Label x={74} y={170} anchor="middle" size={8.5} weight="800">塩化ナトリウム水溶液</Label>
+      <Label x={74} y={186} anchor="middle" size={8.5} color="#b91c1c">イオンがある → 電流が流れる</Label>
+      {beaker(166)}
+      {[[192, 72], [236, 66], [210, 104], [256, 110], [196, 134], [240, 136]].map(([x, y]) => <path key={`${x}-${y}`} d={hexagon(x, y)} fill="#fef3c7" stroke="#b45309" strokeWidth="1" />)}
+      <Label x={226} y={170} anchor="middle" size={8.5} weight="800">砂糖水</Label>
+      <Label x={226} y={186} anchor="middle" size={8.5} color={LINE}>分子のまま → 電流は流れない</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -2788,4 +2924,8 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   electromagneticInduction: ElectromagneticInductionDiagram,
   forceOnCurrent: ForceOnCurrentDiagram,
   dcAc: DcAcDiagram,
+  chlorideElectrolysis: ChlorideElectrolysisDiagram,
+  atomStructure: AtomStructureDiagram,
+  ionFormation: IonFormationDiagram,
+  ionBeaker: IonBeakerDiagram,
 })
