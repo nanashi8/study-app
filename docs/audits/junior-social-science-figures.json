@@ -2017,6 +2017,26 @@
     "sc3-10#6": {
       "decision": "figure",
       "sha256": "44ae8c0bd4746ab21cd99206d316717e72a471ed53e72f6efb389cb7830bdb62"
+    },
+    "sc3-11#1": {
+      "decision": "figure",
+      "sha256": "f5fc2a4b6651e8ba67de5098e3efaf9a78517f4c185d6743253f3d56932f0131"
+    },
+    "sc3-11#2": {
+      "decision": "figure",
+      "sha256": "6d78638439a940308ec0c36745633c503eb6bd85ec1476d328d1c32562bcb285"
+    },
+    "sc3-11#3": {
+      "decision": "figure",
+      "sha256": "2b4978a7932d12c3ee296ec597d87880cd25297ae3f138034cd20ff306780f6c"
+    },
+    "sc3-11#4": {
+      "decision": "figure",
+      "sha256": "301e0bef0f348afcf23b3655825c9f4b7e6073f92c1dc799b0352d0c7f774c71"
+    },
+    "sc3-11#5": {
+      "decision": "figure",
+      "sha256": "82eec9fc97f7fbeebc2e5edee9e0afe94c4cd4aa009e6ff489f3e54927ca2984"
     }
   },
   "questions": {
@@ -5475,6 +5495,42 @@
     "sc3-10-q09": {
       "decision": "none",
       "sha256": "419e45b5f71b6ab886a805eb0cb39d1555eade93af42276af6d6353ad793314c"
+    },
+    "sc3-11-q01": {
+      "decision": "none",
+      "sha256": "7eafbbe92ab006052a62d6c7cdb31b41068ccfdf337fb5dac4d8d8a546f8b014"
+    },
+    "sc3-11-q02": {
+      "decision": "none",
+      "sha256": "ecb0983fe3dda0875f949ce5b385fcb67feae7ee41987ed447165e53985254f8"
+    },
+    "sc3-11-q03": {
+      "decision": "none",
+      "sha256": "cb5421490dd473a56e15a4f948668c28a9cb0254d275bfd6e42324de2592ce5b"
+    },
+    "sc3-11-q04": {
+      "decision": "none",
+      "sha256": "50608acccf8df0f61923c10c4777c0806cae079bd77dc8c9ee5715d984bcd6bd"
+    },
+    "sc3-11-q05": {
+      "decision": "none",
+      "sha256": "4040749b2216cd69d97f298be782496c5e3a29b9fad1e5bb31c1e91d262d8451"
+    },
+    "sc3-11-q06": {
+      "decision": "none",
+      "sha256": "044a580d1fe6848c41f4981c6b83697d5a21d6a7074ebb00d64999f32c6855a6"
+    },
+    "sc3-11-q07": {
+      "decision": "none",
+      "sha256": "e3de7ce6b5fee657e0f3025002446fd0ca2fd7311b580935f9bde99f3247e884"
+    },
+    "sc3-11-q08": {
+      "decision": "none",
+      "sha256": "2dde43c2f20e8048e94bee5cb3bd6b18402dda40c9470f444ea1a69910a26824"
+    },
+    "sc3-11-q09": {
+      "decision": "none",
+      "sha256": "524666ab0752508223ebb361f31a017c91d6db389062394c3d0c067c008fbc6c"
     }
   }
 }

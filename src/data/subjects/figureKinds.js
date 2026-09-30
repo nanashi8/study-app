@@ -138,4 +138,9 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'orbitConstellations',
   'seasonsOrbit',
   'noonAltitude',
+  'moonPhases',
+  'moonEveningSky',
+  'eclipse',
+  'venusVisibility',
+  'venusPhases',
 ])

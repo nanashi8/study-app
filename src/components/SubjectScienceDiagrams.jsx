@@ -3873,6 +3873,289 @@ function NoonAltitudeDiagram() {
   )
 }
 
+/** 線の途中に置く矢じり。at の点で dir の向きへ向ける。 */
+function ArrowHead({ at, dir, color = '#dc2626', size = 5 }) {
+  const len = Math.hypot(dir[0], dir[1]) || 1
+  const [ux, uy] = [dir[0] / len, dir[1] / len]
+  const tip = [at[0] + ux * size, at[1] + uy * size]
+  const base = [at[0] - ux * size, at[1] - uy * size]
+  const w = size * 0.7
+  const p = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`
+  return <path d={`M${p(tip[0], tip[1])} L${p(base[0] - uy * w, base[1] + ux * w)} L${p(base[0] + uy * w, base[1] - ux * w)} Z`} fill={color} />
+}
+
+/**
+ * 満ち欠けした月・金星の形。side の側が光り、alpha は位相角（0＝全体が光る、90＝半分、180＝光る部分がない）。
+ * rotate で、光る側（side）を回して向ける。
+ */
+function PhaseDisk({ cx, cy, r, side = 'right', alpha, rotate = 0, lit = '#fde68a', dark = '#64748b', stroke = '#a16207' }) {
+  const a = Math.max(0, Math.min(180, alpha))
+  const rx = Math.abs(Math.cos((a * Math.PI) / 180)) * r
+  const gibbous = a < 90
+  const limbSweep = side === 'right' ? 1 : 0
+  const termSweep = side === 'right' ? (gibbous ? 1 : 0) : gibbous ? 0 : 1
+  const d = `M${cx},${cy - r} A${r},${r} 0 0,${limbSweep} ${cx},${cy + r} A${rx.toFixed(2)},${r} 0 0,${termSweep} ${cx},${cy - r} Z`
+  return (
+    <g transform={rotate ? `rotate(${rotate.toFixed(1)} ${cx} ${cy})` : undefined}>
+      <circle cx={cx} cy={cy} r={r} fill={dark} />
+      {a < 179.5 ? <path d={d} fill={lit} /> : null}
+      {stroke === 'none' ? null : <circle cx={cx} cy={cy} r={r} fill="none" stroke={stroke} strokeWidth="0.8" />}
+    </g>
+  )
+}
+
+// ── 月の満ち欠け ─────────────────────────────────────────────────────────────
+//   { name: 'moonPhases' }
+// 北極の真上から見たようす。太陽の光は左から（地球の自転の図と同じ向き）。月は反時計回りに公転し、
+// 新月（左）→上弦の月（下）→満月（右）→下弦の月（上）。外側の輪は、北半球で地球から見た月の形。
+function MoonPhasesDiagram() {
+  const c = [164, 146]
+  const orbit = 54
+  const ring = 96
+  const at = (radius, deg) => [c[0] + radius * Math.cos((deg * Math.PI) / 180), c[1] - radius * Math.sin((deg * Math.PI) / 180)]
+  const names = { 0: ['新月', 22], 45: ['三日月', 24], 90: ['上弦の月', 24], 180: ['満月', 22], 270: ['下弦の月', -16] }
+  const arrowAt = at(orbit, 202)
+  const arrowDir = [-Math.sin((202 * Math.PI) / 180), -Math.cos((202 * Math.PI) / 180)]
+  return (
+    <svg viewBox="0 0 300 304" className="h-auto w-full" role="img" aria-label="月の満ち欠け" data-subject-diagram="moonPhases">
+      {[100, 146, 192].map((y) => <Arrow key={y} from={[6, y]} to={[42, y]} color="#ca8a04" width={1.6} />)}
+      <Label x={24} y={88} anchor="middle" size={8.5} color="#a16207">太陽の光</Label>
+      <circle cx={c[0]} cy={c[1]} r={orbit} fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <ArrowHead at={arrowAt} dir={arrowDir} />
+      <circle cx={c[0]} cy={c[1]} r="16" fill="#dbeafe" stroke={LINE} strokeWidth="1" />
+      <path d={`M${c[0]},${c[1] - 16} A16,16 0 0,1 ${c[0]},${c[1] + 16} Z`} fill="#334155" opacity="0.55" />
+      <Label x={c[0]} y={c[1] + 30} anchor="middle" size={8.5}>地球</Label>
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((e) => {
+        const [mx, my] = at(orbit, 180 + e)
+        const [vx, vy] = at(ring, 180 + e)
+        const waxing = e <= 180
+        const name = names[e]
+        return (
+          <g key={e}>
+            <PhaseDisk cx={mx} cy={my} r={7} alpha={90} rotate={180} />
+            <PhaseDisk cx={vx} cy={vy} r={10} side={waxing ? 'right' : 'left'} alpha={waxing ? 180 - e : e - 180} />
+            {name ? <Label x={vx} y={vy + name[1]} anchor="middle" size={9} weight="800">{name[0]}</Label> : null}
+          </g>
+        )
+      })}
+      <Label x={150} y={286} anchor="middle" size={8.5} color={LINE}>外側の月：地球から見た形</Label>
+      <Label x={150} y={299} anchor="middle" size={8.5} color={LINE}>赤い矢印：月の公転の向き（反時計回り）</Label>
+    </svg>
+  )
+}
+
+// ── 夕方に見える月 ───────────────────────────────────────────────────────────
+//   { name: 'moonEveningSky' }
+// 夕方（午後6時ごろ）に南を向いて見た空。東は左、西は右。太陽は西の地平線にしずむところ。
+// 月は太陽から東へ離れた角度だけ、西の地平線から東へ寄った位置に見える（三日月36°・上弦の月90°・126°・満月180°）。
+// 光っている側は、空の道すじ（弧）に沿って、しずんだ太陽の方を向く（三日月は右下、上弦の月は右、その先は右上）。
+function MoonEveningSkyDiagram() {
+  const c = [150, 176]
+  const rx = 124
+  const ry = 112
+  const on = (deg, sx = rx, sy = ry) => [c[0] + sx * Math.cos((deg * Math.PI) / 180), c[1] - sy * Math.sin((deg * Math.PI) / 180)]
+  const sun = on(0)
+  const moons = [[36, '三日月', 'middle', 0, -16], [90, '上弦の月', 'middle', 0, -16], [126, '', 'middle', 0, 0], [180, '満月', 'middle', 2, -18]]
+  const shift = Array.from({ length: 21 }, (_, i) => on(48 + i * 5, 92, 80))
+  const shiftEnd = shift[shift.length - 1]
+  const shiftDir = [shiftEnd[0] - shift[shift.length - 2][0], shiftEnd[1] - shift[shift.length - 2][1]]
+  return (
+    <svg viewBox="0 0 300 212" className="h-auto w-full" role="img" aria-label="夕方に見える月の位置" data-subject-diagram="moonEveningSky">
+      <rect x="0" y="0" width="300" height="196" rx="8" fill="#1e293b" />
+      <path d={`M${on(180)[0]},${c[1]} A${rx},${ry} 0 0,1 ${sun[0]},${c[1]}`} fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <polyline points={shift.slice(0, -1).map((p) => p.map((v) => v.toFixed(1)).join(',')).join(' ')} fill="none" stroke="#fbbf24" strokeWidth="1.4" />
+      <ArrowHead at={shiftEnd} dir={shiftDir} color="#fbbf24" size={5} />
+      <text x={150} y={126} fontSize="8.5" fontWeight="800" textAnchor="middle" fill="#fde68a">日がたつと、東へ移る</text>
+      <circle cx={sun[0]} cy={sun[1]} r="10" fill="#fb923c" />
+      <text x={296} y={158} fontSize="8.5" fontWeight="800" textAnchor="end" fill="#fed7aa">しずむ太陽</text>
+      {moons.map(([deg, name, anchor, dx, dy]) => {
+        const [x, y] = on(deg)
+        const a = (deg * Math.PI) / 180
+        const toSun = (Math.atan2(ry * Math.cos(a), rx * Math.sin(a)) * 180) / Math.PI
+        return (
+          <g key={deg}>
+            <PhaseDisk cx={x} cy={y} r={10} alpha={180 - deg} rotate={toSun} dark="#334155" stroke="none" />
+            {name ? <text x={x + dx} y={y + dy} fontSize="9" fontWeight="800" textAnchor={anchor} fill="#f8fafc">{name}</text> : null}
+          </g>
+        )
+      })}
+      <rect x="0" y="176" width="300" height="36" fill="#3f6212" />
+      <line x1="0" y1="176" x2="300" y2="176" stroke="#a3e635" strokeWidth="1.2" />
+      <text x={14} y={196} fontSize="9.5" fontWeight="800" textAnchor="middle" fill="#f8fafc">東</text>
+      <text x={150} y={196} fontSize="9.5" fontWeight="800" textAnchor="middle" fill="#f8fafc">南</text>
+      <text x={286} y={196} fontSize="9.5" fontWeight="800" textAnchor="middle" fill="#f8fafc">西</text>
+    </svg>
+  )
+}
+
+// ── 日食・月食と、太陽と月の見かけの大きさ ───────────────────────────────────
+//   { name: 'eclipse', kind: 'solar' | 'lunar' | 'size' }
+// solar：太陽・月（新月）・地球の順。月の影が地球の昼の側に落ちる。
+// lunar：太陽・地球・月（満月）の順。月が地球の影に入る。
+// size：近くの小さな月と遠くの大きな太陽が、見る人から同じ角度の中に収まる。
+function EclipseDiagram({ kind = 'solar' }) {
+  const sunDisk = (
+    <g>
+      <circle cx="-14" cy="56" r="42" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={12} y={60} anchor="middle" size={9} weight="800" color="#a16207">太陽</Label>
+    </g>
+  )
+  if (kind === 'lunar') {
+    return (
+      <svg viewBox="0 0 300 112" className="h-auto w-full" role="img" aria-label="月食のときの太陽・地球・月" data-subject-diagram="eclipse">
+        {sunDisk}
+        <path d="M130,34 L298,46 L298,66 L130,78 Z" fill="#1e293b" opacity="0.45" />
+        <circle cx="130" cy="56" r="22" fill="#dbeafe" stroke={LINE} strokeWidth="1" />
+        <path d="M130,34 A22,22 0 0,1 130,78 Z" fill="#334155" opacity="0.55" />
+        <Label x={130} y={96} anchor="middle" size={9} weight="800">地球</Label>
+        <circle cx="236" cy="56" r="8" fill="#9a3412" stroke="#7c2d12" strokeWidth="0.8" />
+        <Label x={236} y={84} anchor="middle" size={9} weight="800">月（満月）</Label>
+        <Label x={222} y={33} anchor="middle" size={8.5} color={LINE}>地球の影</Label>
+      </svg>
+    )
+  }
+  if (kind === 'size') {
+    const slope = 26 / 264
+    return (
+      <svg viewBox="0 0 300 112" className="h-auto w-full" role="img" aria-label="太陽と月が同じ大きさに見えるわけ" data-subject-diagram="eclipse">
+        <path d="M8,56 Q19,45 30,56 Q19,67 8,56 Z" fill="#ffffff" stroke={INK} strokeWidth="1" />
+        <circle cx="19" cy="56" r="3.2" fill={INK} />
+        <Label x={19} y={80} anchor="middle" size={8.5}>見る人</Label>
+        <line x1="30" y1="56" x2="294" y2="30" stroke={DARK} strokeWidth="0.9" strokeDasharray="4 3" />
+        <line x1="30" y1="56" x2="294" y2="82" stroke={DARK} strokeWidth="0.9" strokeDasharray="4 3" />
+        <circle cx="76" cy="56" r={(46 * slope).toFixed(2)} fill="#cbd5e1" stroke={LINE} strokeWidth="0.8" />
+        <Label x={76} y={44} anchor="middle" size={9} weight="800">月</Label>
+        <circle cx="250" cy="56" r={(220 * slope).toFixed(2)} fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+        <Label x={250} y={60} anchor="middle" size={9} weight="800" color="#a16207">太陽</Label>
+        <Label x={150} y={106} anchor="middle" size={8.5} color={LINE}>近くの小さな月と、遠くの大きな太陽が、同じ大きさに見える</Label>
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 300 112" className="h-auto w-full" role="img" aria-label="日食のときの太陽・月・地球" data-subject-diagram="eclipse">
+      {sunDisk}
+      <circle cx="250" cy="56" r="24" fill="#dbeafe" stroke={LINE} strokeWidth="1" />
+      <path d="M250,32 A24,24 0 0,1 250,80 Z" fill="#334155" opacity="0.55" />
+      <path d="M140,49 L234.1,38 A24,24 0 0,0 234.1,74 L140,63 Z" fill="#94a3b8" opacity="0.4" />
+      <path d="M140,49 L226.1,54 A24,24 0 0,0 226.1,58 L140,63 Z" fill="#1e293b" opacity="0.6" />
+      <PhaseDisk cx={140} cy={56} r={7} alpha={90} rotate={180} />
+      <Label x={140} y={40} anchor="middle" size={9} weight="800">月（新月）</Label>
+      <Label x={196} y={34} anchor="middle" size={8.5} color={LINE}>月の影</Label>
+      <Label x={278} y={60} size={9} weight="800">地球</Label>
+      <Callout from={[226.5, 56]} to={[206, 92]} text="日食が見える所" />
+    </svg>
+  )
+}
+
+// ── 金星が見える時間帯と方位 ─────────────────────────────────────────────────
+//   { name: 'venusVisibility' }
+// 北極の真上から見たようす。太陽は上、地球は下（昼の側が上）。地球は反時計回りに自転するので、
+// 左の地点が夕方、右の地点が明け方、下の地点が真夜中。金星の公転軌道の半径は、太陽と地球の距離の約0.72倍。
+// 地球から見て太陽から最も離れる位置（最大離角）に、よいの明星（左）と明けの明星（右）を置く。
+function VenusVisibilityDiagram() {
+  const sun = [150, 82]
+  const rv = 64
+  const earth = [150, 172]
+  const re = 16
+  const k = Math.PI / 2 - Math.asin(rv / (earth[1] - sun[1]))
+  const east = [sun[0] - rv * Math.sin(k), sun[1] + rv * Math.cos(k)]
+  const west = [sun[0] + rv * Math.sin(k), sun[1] + rv * Math.cos(k)]
+  const dusk = [earth[0] - re, earth[1]]
+  const dawn = [earth[0] + re, earth[1]]
+  const night = [earth[0], earth[1] + re]
+  const face = (p) => (Math.atan2(sun[1] - p[1], sun[0] - p[0]) * 180) / Math.PI
+  return (
+    <svg viewBox="0 0 300 246" className="h-auto w-full" role="img" aria-label="金星が見える時間帯と方位" data-subject-diagram="venusVisibility">
+      <circle cx={sun[0]} cy={sun[1]} r={rv} fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <Callout from={[sun[0] - rv * Math.SQRT1_2, sun[1] - rv * Math.SQRT1_2]} to={[78, 20]} text="金星の公転軌道" />
+      <circle cx={sun[0]} cy={sun[1]} r="11" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={sun[0]} y={sun[1] + 3.5} anchor="middle" size={8.5} weight="800" color="#a16207">太陽</Label>
+      <line x1={dusk[0]} y1={dusk[1]} x2={east[0]} y2={east[1]} stroke="#ca8a04" strokeWidth="1.1" strokeDasharray="3 2" />
+      <line x1={dawn[0]} y1={dawn[1]} x2={west[0]} y2={west[1]} stroke="#ca8a04" strokeWidth="1.1" strokeDasharray="3 2" />
+      <PhaseDisk cx={east[0]} cy={east[1]} r={5.5} alpha={90} rotate={face(east)} />
+      <PhaseDisk cx={west[0]} cy={west[1]} r={5.5} alpha={90} rotate={face(west)} />
+      <Label x={east[0] - 9} y={east[1] - 2} anchor="end" size={9} weight="800">よいの明星</Label>
+      <Label x={east[0] - 9} y={east[1] + 10} anchor="end" size={8}>（夕方、西の空）</Label>
+      <Label x={west[0] + 9} y={west[1] - 2} size={9} weight="800">明けの明星</Label>
+      <Label x={west[0] + 9} y={west[1] + 10} size={8}>（明け方、東の空）</Label>
+      <circle cx={earth[0]} cy={earth[1]} r={re} fill="#dbeafe" stroke={LINE} strokeWidth="1" />
+      <path d={`M${earth[0] + re},${earth[1]} A${re},${re} 0 0,1 ${earth[0] - re},${earth[1]} Z`} fill="#334155" opacity="0.55" />
+      <Label x={earth[0]} y={earth[1] - 4} anchor="middle" size={8.5} weight="800">地球</Label>
+      {[dusk, dawn, night].map(([x, y]) => <circle key={`${x},${y}`} cx={x} cy={y} r="3" fill="#f97316" />)}
+      <Label x={dusk[0] - 6} y={dusk[1] + 12} anchor="end" size={9} weight="800">夕方</Label>
+      <Label x={dawn[0] + 6} y={dawn[1] + 12} size={9} weight="800">明け方</Label>
+      <Arrow from={[night[0], night[1] + 4]} to={[night[0], night[1] + 30]} color={LINE} width={1.4} />
+      <Label x={night[0] + 8} y={night[1] + 16} size={9} weight="800">真夜中</Label>
+      <Label x={150} y={236} anchor="middle" size={8.5} color={LINE}>真夜中に見える空の方向（金星はこない）</Label>
+    </svg>
+  )
+}
+
+// ── 金星の満ち欠けと見かけの大きさ ───────────────────────────────────────────
+//   { name: 'venusPhases' }
+// 上：北極の真上から見た太陽・金星・地球（太陽は上、地球は下）。金星の公転軌道の半径は約0.72。
+// 下：A〜Fの位置の金星を地球から肉眼で見た形。大きさは地球との距離に反比例させて計算する。
+// よいの明星（A→B→C）は右側が光り、明けの明星（D→E→F）は左側が光る。B・Eは最大離角で半分が光る。
+function VenusPhasesDiagram() {
+  const sun = [150, 60]
+  const rv = 50
+  const earth = [150, 130]
+  const s = rv / (earth[1] - sun[1])
+  const rad = (d) => (d * Math.PI) / 180
+  const place = (deg) => [sun[0] + rv * Math.cos(rad(deg)), sun[1] - rv * Math.sin(rad(deg))]
+  const seen = (deg) => {
+    const v = [s * Math.cos(rad(deg)), s * Math.sin(rad(deg))]
+    const toEarth = [-v[0], -1 - v[1]]
+    const d = Math.hypot(toEarth[0], toEarth[1])
+    const cos = (-v[0] * toEarth[0] - v[1] * toEarth[1]) / (s * d)
+    return { d, alpha: (Math.acos(Math.max(-1, Math.min(1, cos))) * 180) / Math.PI }
+  }
+  const maxDeg = 180 + (Math.asin(s) * 180) / Math.PI
+  const items = [
+    ['A', 165, 'right', 30, [-9, 0]],
+    ['B', maxDeg, 'right', 66, [-8, 9]],
+    ['C', 255, 'right', 112, [-10, 12]],
+    ['D', 285, 'left', 188, [10, 12]],
+    ['E', 540 - maxDeg, 'left', 234, [8, 9]],
+    ['F', 15, 'left', 270, [9, 0]],
+  ]
+  const nearest = seen(255).d
+  const face = (p) => (Math.atan2(sun[1] - p[1], sun[0] - p[0]) * 180) / Math.PI
+  const arrowAt = (deg) => [place(deg), [-Math.sin(rad(deg)), -Math.cos(rad(deg))]]
+  const [a1, d1] = arrowAt(195)
+  const [a2, d2] = arrowAt(345)
+  return (
+    <svg viewBox="0 0 300 262" className="h-auto w-full" role="img" aria-label="金星の位置と見え方" data-subject-diagram="venusPhases">
+      <circle cx={sun[0]} cy={sun[1]} r={rv} fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
+      <ArrowHead at={a1} dir={d1} size={4.5} />
+      <ArrowHead at={a2} dir={d2} size={4.5} />
+      <line x1={earth[0]} y1={earth[1]} x2={place(maxDeg)[0]} y2={place(maxDeg)[1]} stroke="#ca8a04" strokeWidth="0.9" strokeDasharray="3 2" />
+      <line x1={earth[0]} y1={earth[1]} x2={place(540 - maxDeg)[0]} y2={place(540 - maxDeg)[1]} stroke="#ca8a04" strokeWidth="0.9" strokeDasharray="3 2" />
+      <circle cx={sun[0]} cy={sun[1]} r="10" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
+      <Label x={sun[0]} y={sun[1] + 3} anchor="middle" size={7.5} weight="800" color="#a16207">太陽</Label>
+      <circle cx={earth[0]} cy={earth[1]} r="8" fill="#dbeafe" stroke={LINE} strokeWidth="1" />
+      <path d={`M${earth[0] + 8},${earth[1]} A8,8 0 0,1 ${earth[0] - 8},${earth[1]} Z`} fill="#334155" opacity="0.55" />
+      <Label x={earth[0]} y={earth[1] + 20} anchor="middle" size={8.5} weight="800">地球</Label>
+      {items.map(([name, deg, side, x, off]) => {
+        const p = place(deg)
+        const { d, alpha } = seen(deg)
+        return (
+          <g key={name}>
+            <PhaseDisk cx={p[0]} cy={p[1]} r={4.5} alpha={90} rotate={face(p)} />
+            <Label x={p[0] + off[0]} y={p[1] + off[1] + 3.5} anchor="middle" size={9} weight="800">{name}</Label>
+            <PhaseDisk cx={x} cy={200} r={16 * (nearest / d)} side={side} alpha={alpha} />
+            <Label x={x} y={234} anchor="middle" size={9} weight="800">{name}</Label>
+          </g>
+        )
+      })}
+      <line x1="150" y1="158" x2="150" y2="238" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
+      <Label x={75} y={168} anchor="middle" size={8.5} weight="800">よいの明星（夕方・西の空）</Label>
+      <Label x={225} y={168} anchor="middle" size={8.5} weight="800">明けの明星（明け方・東の空）</Label>
+      <Label x={150} y={256} anchor="middle" size={8.5} color={LINE}>地球に近いほど大きく見え、大きく欠ける</Label>
+    </svg>
+  )
+}
+
 export const SCIENCE_DIAGRAMS = Object.freeze({
   microscope: MicroscopeDiagram,
   microscopeView: MicroscopeViewDiagram,
@@ -3976,4 +4259,9 @@ export const SCIENCE_DIAGRAMS = Object.freeze({
   orbitConstellations: OrbitConstellationsDiagram,
   seasonsOrbit: SeasonsOrbitDiagram,
   noonAltitude: NoonAltitudeDiagram,
+  moonPhases: MoonPhasesDiagram,
+  moonEveningSky: MoonEveningSkyDiagram,
+  eclipse: EclipseDiagram,
+  venusVisibility: VenusVisibilityDiagram,
+  venusPhases: VenusPhasesDiagram,
 })
