@@ -28,4 +28,5 @@ export const SUBJECT_DIAGRAM_NAMES = Object.freeze([
   'mapSymbols',
   'riverLandforms',
   'pyramidTypes',
+  'centuryLine',
 ])

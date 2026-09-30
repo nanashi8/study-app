@@ -389,6 +389,46 @@
     "geo-19#5": {
       "decision": "figure",
       "sha256": "9887e07a96284b4447404600eacdaa98cae71b0e106bcc5c6e7e07e4bfd206cd"
+    },
+    "his-01#1": {
+      "decision": "figure",
+      "sha256": "409ccc0ac1c41047c821b24e85aab3340e1b650c8bb275a060dcfe599f80267a"
+    },
+    "his-01#2": {
+      "decision": "figure",
+      "sha256": "f63bc0bd13bbd6b232e1c23e0e23d3e46acf8c38e8270a53e778795b1e6cbb4a"
+    },
+    "his-01#3": {
+      "decision": "figure",
+      "sha256": "3db46ecb8a8663378468074bcde82e80b64b1a8dc03025423bc4cfa4bc49898d"
+    },
+    "his-01#4": {
+      "decision": "figure",
+      "sha256": "6f1d66375ebcb8da247ce58184492fb9ab1a6016fbf1de131c4da49331baa4a8"
+    },
+    "his-01#5": {
+      "decision": "figure",
+      "sha256": "ea9686772a46219c7d63a12f7cbb638fe36f90d04ad9e96209dd44782f1bb426"
+    },
+    "his-02#1": {
+      "decision": "figure",
+      "sha256": "9fb4454a8b26a194e1bb50eb304abae477b0f5b4f16ca2b63e3e31d920551822"
+    },
+    "his-02#2": {
+      "decision": "figure",
+      "sha256": "d65832e17d6ec3395007e77600ddd78a5f575da60011dfcdc286c1193dacac2f"
+    },
+    "his-02#3": {
+      "decision": "figure",
+      "sha256": "a57193ce76572fbb04a0486eb3fc9019178adcd72731e652b824c7e73ca8fced"
+    },
+    "his-02#4": {
+      "decision": "figure",
+      "sha256": "0f3159408ac8b93df012eb260b647e5614c6deb06410a64dec3228e118f02f2d"
+    },
+    "his-02#5": {
+      "decision": "figure",
+      "sha256": "55e37d5be160c3c0b77820f9eb4afd9e5e17a62a058a9f426e5da9cac146be36"
     }
   },
   "questions": {
@@ -1075,6 +1115,78 @@
     "geo-19-q09": {
       "decision": "none",
       "sha256": "6092d4d9d90703233843d9e58b12445aca64cb6e0d0b06d68f8d85fa54273ac3"
+    },
+    "his-01-q01": {
+      "decision": "none",
+      "sha256": "f6eadadc95918009b5a2fefd59b9e9981c74578300e561dfddf962a83efc9e19"
+    },
+    "his-01-q02": {
+      "decision": "none",
+      "sha256": "322b23a163c7dcc1c42c978e118b3a831805db72a518bafafc366dfcae963d99"
+    },
+    "his-01-q03": {
+      "decision": "none",
+      "sha256": "3e1d6e8b84734753e168ed406cf05403bf0a708078b729607d600d91d0dd6509"
+    },
+    "his-01-q04": {
+      "decision": "none",
+      "sha256": "b64af2533c80786f8e2f59930cafd7471562cead9c46bf2621858aab3f23d4b3"
+    },
+    "his-01-q05": {
+      "decision": "none",
+      "sha256": "b9f4dff92f7827a5ae2db07e175fb4082411004612e0597e438a981c0dd8d02b"
+    },
+    "his-01-q06": {
+      "decision": "none",
+      "sha256": "f7121bf5eb3953f19acb1c5548497984e51d0419ca30ac8eb8d9376400547bcc"
+    },
+    "his-01-q07": {
+      "decision": "none",
+      "sha256": "7873e95bc70bc2a4c4856f7bc7442f6f50502dc6d7560b7721dbfeafe97738d3"
+    },
+    "his-01-q08": {
+      "decision": "none",
+      "sha256": "738db4e097408ede0d5edc32f98c2ff093002f650152fde0b7f7a48444c4ee35"
+    },
+    "his-01-q09": {
+      "decision": "none",
+      "sha256": "24eccdfc33ae4bec798f5275831f8ff4390908f943636931c7065e885f2cd853"
+    },
+    "his-02-q01": {
+      "decision": "none",
+      "sha256": "17c6956beb7a3c303d7ccd80b8d48ec034178af550a1fc09751971d3106d7e28"
+    },
+    "his-02-q02": {
+      "decision": "none",
+      "sha256": "b1c3859d0f4fb7f54bb3e10fdd25a2282c8cfd927cd4361ce593d6bb0c8f0fac"
+    },
+    "his-02-q03": {
+      "decision": "none",
+      "sha256": "e53bcb5e056c8bb6f73af1ecd18dcc608711f73db277124ec2a6a35e3a572f82"
+    },
+    "his-02-q04": {
+      "decision": "none",
+      "sha256": "a9ecaa8c4c5629861e4089be1d0f7da1d106a559bea035ce88fc0cdf1f1c30a5"
+    },
+    "his-02-q05": {
+      "decision": "none",
+      "sha256": "ee7d8a3da7a01ffab4dd38e5bc6bcb9f34e475b8c0f707047b463dae2041a977"
+    },
+    "his-02-q06": {
+      "decision": "none",
+      "sha256": "cc413089a3b7059d0cc228128e3c94d91483bebf559b2ccbcfe987d3ae844ee0"
+    },
+    "his-02-q07": {
+      "decision": "none",
+      "sha256": "3ba927a488e8d66a419ea9be0a980be35e01aafb161e48ce41ee234444de2b64"
+    },
+    "his-02-q08": {
+      "decision": "none",
+      "sha256": "0ba7eed0234e9f59944a0619ffa3c0d63454ef0f56a21554f2c100b857d15a3c"
+    },
+    "his-02-q09": {
+      "decision": "none",
+      "sha256": "ac58541542ffcfdb98419b6841adf28db6766eb02a6d9c7576581c0062a7eb5a"
     }
   }
 }
