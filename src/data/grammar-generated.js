@@ -2863,7 +2863,8 @@ const TWO_FAMILIES = [
     build: ([academic, [adverb, context]]) => ({
       q: `${capitalize(academic.subject)} does not ___ ${academic.base} ${academic.object} ${context}.`,
       choices: [adverb, 'never', 'nothing', 'neither'], answer: adverb,
-      ja: `${adverb === 'always' ? `${academic.jaSubject}がいつも${academic.jaAction}とは限りません` : adverb === 'necessarily' ? `${academic.jaSubject}が必ずしも${academic.jaAction}とは限りません` : `${academic.jaSubject}はこの段階では全面的に${academic.jaAction}わけではありません`}。`,
+      // 文末の in practice・under pressure・at this stage も訳す（和訳だけ落とすと、英文の一部が訳にないまま残る）。
+      ja: `${adverb === 'always' ? `実際には、${academic.jaSubject}がいつも${academic.jaAction}とは限りません` : adverb === 'necessarily' ? `圧力を受けても、${academic.jaSubject}が必ずしも${academic.jaAction}とは限りません` : `${academic.jaSubject}はこの段階では全面的に${academic.jaAction}わけではありません`}。`,
       notes: {
         [adverb]: adverb === 'always'
           ? 'not always で「いつも〜とは限らない」と、一部だけを打ち消す。'
@@ -3284,7 +3285,7 @@ const PRE1_FAMILIES = [
     build: ([a, b, context]) => ({
       q: `The proposal is not so much ${a} ___ ${b} ${context}.`,
       choices: ['as', 'than', 'but', 'like'], answer: 'as',
-      ja: `その提案は${a === 'expensive' ? '高価' : a === 'complex' ? '複雑' : a === 'risky' ? '危険' : '遅い'}というより、むしろ${b === 'impractical' ? '非実用的' : b === 'unclear' ? '不明確' : b === 'unnecessary' ? '不要' : '時代遅れ'}です。`,
+      ja: `その提案は、${context === 'in practice' ? '実際には' : '現状では'}${a === 'expensive' ? '高価' : a === 'complex' ? '複雑' : a === 'risky' ? '危険' : '遅い'}というより、むしろ${b === 'impractical' ? '非実用的' : b === 'unclear' ? '不明確' : b === 'unnecessary' ? '不要' : '時代遅れ'}です。`,
       notes: {
         as: 'not so much A as B で「A というよりむしろ B」。not so much と組むのは as。',
         than: 'not so much の後ろで than は使わない。not so much A as B の形にする。',
@@ -3413,7 +3414,7 @@ const ONE_FAMILIES = [
     build: ([a, b, academic]) => ({
       q: `Neither ${a} nor ${b} ___ willing to ${academic.base} ${detachedObject(academic)}.`,
       choices: ['were', 'was', 'has', 'be'], answer: 'were',
-      ja: `${a === 'the chair' ? '議長' : a === 'the director' ? '責任者' : '主任研究者'}も${b === 'the members' ? '委員たち' : b === 'the assistants' ? '助手たち' : '審査員たち'}も${academic.jaAction}意思がありませんでした。`,
+      ja: `${a === 'the chair' ? '議長' : a === 'the director' ? '責任者' : '主任研究者'}も${b === 'the members' ? '委員たち' : b === 'the assistants' ? '助手たち' : '審査員たち'}も${jaDetached(academic, academic.jaAction)}意思がありませんでした。`,
       notes: {
         were: `neither A nor B が主語のときは、動詞に近い B（${b}）に合わせる。${b} は複数で、過去の文なので were。`,
         was: `was は単数の主語に使う。動詞に近い ${b} は複数。`,

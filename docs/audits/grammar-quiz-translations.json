@@ -1,0 +1,372 @@
+{
+  "request": "requests/2026-10-02-grammar-quiz-translations.json",
+  "readOn": "2026-10-02",
+  "how": "文法の問題4,430問のうち、参考書の台帳（docs/audits/grammar-reference-translations.json）が読む1,523問を除く2,907問の英文と和訳を、1件ずつ読んだ。食いちがいは直して fixes に書いた（自動で作る部品の和訳の抜けで、部品を直して32問）。groups は級・単元ごとの読んだ記録の指紋で、その単元の問題の英文か和訳を変える・足す・消すと変わる。変えたら、その単元の問題を読み直してから node scripts/checks/grammar-quiz-translations.mjs --stamp で書き直す。exceptions は、和訳の手がかり（translationClues）で拾っても食いちがいではないものと理由。",
+  "counts": {
+    "items": 2907,
+    "auto": 2422,
+    "exam": 421,
+    "other": 64,
+    "groups": 124
+  },
+  "fixes": [
+    {
+      "id": "gr_auto_2_partial_negation_001",
+      "en": "The committee does not always revise the proposal in practice.",
+      "before": "委員会がいつも提案を修正するとは限りません。",
+      "after": "実際には、委員会がいつも提案を修正するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_002",
+      "en": "The committee does not necessarily revise the proposal under pressure.",
+      "before": "委員会が必ずしも提案を修正するとは限りません。",
+      "after": "圧力を受けても、委員会が必ずしも提案を修正するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_004",
+      "en": "The research team does not always verify the results in practice.",
+      "before": "研究チームがいつも結果を検証するとは限りません。",
+      "after": "実際には、研究チームがいつも結果を検証するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_005",
+      "en": "The research team does not necessarily verify the results under pressure.",
+      "before": "研究チームが必ずしも結果を検証するとは限りません。",
+      "after": "圧力を受けても、研究チームが必ずしも結果を検証するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_007",
+      "en": "The board does not always approve the budget in practice.",
+      "before": "理事会がいつも予算を承認するとは限りません。",
+      "after": "実際には、理事会がいつも予算を承認するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_008",
+      "en": "The board does not necessarily approve the budget under pressure.",
+      "before": "理事会が必ずしも予算を承認するとは限りません。",
+      "after": "圧力を受けても、理事会が必ずしも予算を承認するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_010",
+      "en": "The agency does not always publish the report in practice.",
+      "before": "その機関がいつも報告書を公表するとは限りません。",
+      "after": "実際には、その機関がいつも報告書を公表するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_011",
+      "en": "The agency does not necessarily publish the report under pressure.",
+      "before": "その機関が必ずしも報告書を公表するとは限りません。",
+      "after": "圧力を受けても、その機関が必ずしも報告書を公表するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_013",
+      "en": "The university does not always introduce the new policy in practice.",
+      "before": "その大学がいつも新しい方針を導入するとは限りません。",
+      "after": "実際には、その大学がいつも新しい方針を導入するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_014",
+      "en": "The university does not necessarily introduce the new policy under pressure.",
+      "before": "その大学が必ずしも新しい方針を導入するとは限りません。",
+      "after": "圧力を受けても、その大学が必ずしも新しい方針を導入するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_016",
+      "en": "The company does not always reduce its emissions in practice.",
+      "before": "その会社がいつも排出量を削減するとは限りません。",
+      "after": "実際には、その会社がいつも排出量を削減するとは限りません。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_2_partial_negation_017",
+      "en": "The company does not necessarily reduce its emissions under pressure.",
+      "before": "その会社が必ずしも排出量を削減するとは限りません。",
+      "after": "圧力を受けても、その会社が必ずしも排出量を削減するとは限りません。",
+      "why": "文末の under pressure（圧力を受けても）が和訳になかった（自動で作る部品 2_partial_negation の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_001",
+      "en": "The proposal is not so much expensive as impractical in practice.",
+      "before": "その提案は高価というより、むしろ非実用的です。",
+      "after": "その提案は、実際には高価というより、むしろ非実用的です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_002",
+      "en": "The proposal is not so much expensive as impractical under current conditions.",
+      "before": "その提案は高価というより、むしろ非実用的です。",
+      "after": "その提案は、現状では高価というより、むしろ非実用的です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_003",
+      "en": "The proposal is not so much expensive as unclear in practice.",
+      "before": "その提案は高価というより、むしろ不明確です。",
+      "after": "その提案は、実際には高価というより、むしろ不明確です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_004",
+      "en": "The proposal is not so much expensive as unclear under current conditions.",
+      "before": "その提案は高価というより、むしろ不明確です。",
+      "after": "その提案は、現状では高価というより、むしろ不明確です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_005",
+      "en": "The proposal is not so much expensive as unnecessary in practice.",
+      "before": "その提案は高価というより、むしろ不要です。",
+      "after": "その提案は、実際には高価というより、むしろ不要です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_006",
+      "en": "The proposal is not so much expensive as unnecessary under current conditions.",
+      "before": "その提案は高価というより、むしろ不要です。",
+      "after": "その提案は、現状では高価というより、むしろ不要です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_007",
+      "en": "The proposal is not so much expensive as outdated in practice.",
+      "before": "その提案は高価というより、むしろ時代遅れです。",
+      "after": "その提案は、実際には高価というより、むしろ時代遅れです。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_008",
+      "en": "The proposal is not so much expensive as outdated under current conditions.",
+      "before": "その提案は高価というより、むしろ時代遅れです。",
+      "after": "その提案は、現状では高価というより、むしろ時代遅れです。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_009",
+      "en": "The proposal is not so much complex as impractical in practice.",
+      "before": "その提案は複雑というより、むしろ非実用的です。",
+      "after": "その提案は、実際には複雑というより、むしろ非実用的です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_010",
+      "en": "The proposal is not so much complex as impractical under current conditions.",
+      "before": "その提案は複雑というより、むしろ非実用的です。",
+      "after": "その提案は、現状では複雑というより、むしろ非実用的です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_011",
+      "en": "The proposal is not so much complex as unclear in practice.",
+      "before": "その提案は複雑というより、むしろ不明確です。",
+      "after": "その提案は、実際には複雑というより、むしろ不明確です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_012",
+      "en": "The proposal is not so much complex as unclear under current conditions.",
+      "before": "その提案は複雑というより、むしろ不明確です。",
+      "after": "その提案は、現状では複雑というより、むしろ不明確です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_013",
+      "en": "The proposal is not so much complex as unnecessary in practice.",
+      "before": "その提案は複雑というより、むしろ不要です。",
+      "after": "その提案は、実際には複雑というより、むしろ不要です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_014",
+      "en": "The proposal is not so much complex as unnecessary under current conditions.",
+      "before": "その提案は複雑というより、むしろ不要です。",
+      "after": "その提案は、現状では複雑というより、むしろ不要です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_015",
+      "en": "The proposal is not so much complex as outdated in practice.",
+      "before": "その提案は複雑というより、むしろ時代遅れです。",
+      "after": "その提案は、実際には複雑というより、むしろ時代遅れです。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_016",
+      "en": "The proposal is not so much complex as outdated under current conditions.",
+      "before": "その提案は複雑というより、むしろ時代遅れです。",
+      "after": "その提案は、現状では複雑というより、むしろ時代遅れです。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_017",
+      "en": "The proposal is not so much risky as impractical in practice.",
+      "before": "その提案は危険というより、むしろ非実用的です。",
+      "after": "その提案は、実際には危険というより、むしろ非実用的です。",
+      "why": "文末の in practice（実際には）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_pre1_comparison_018",
+      "en": "The proposal is not so much risky as impractical under current conditions.",
+      "before": "その提案は危険というより、むしろ非実用的です。",
+      "after": "その提案は、現状では危険というより、むしろ非実用的です。",
+      "why": "文末の under current conditions（現状では）が和訳になかった（自動で作る部品 pre1_comparison の和訳の抜け。同じ作りの問題をまとめて直した）"
+    },
+    {
+      "id": "gr_auto_1_agreement_neither_006",
+      "en": "Neither the chair nor the members were willing to reduce the company’s emissions.",
+      "before": "議長も委員たちも排出量を削減する意思がありませんでした。",
+      "after": "議長も委員たちもその会社の排出量を削減する意思がありませんでした。",
+      "why": "目的語の the company’s（その会社の）が和訳になかった（主語が会社ではない文で、目的語に持ち主を付けた形の和訳に持ち主を付けていなかった。自動で作る部品 1_agreement_neither で直した）"
+    },
+    {
+      "id": "gr_auto_1_agreement_neither_018",
+      "en": "Neither the chair nor the assistants were willing to reduce the company’s emissions.",
+      "before": "議長も助手たちも排出量を削減する意思がありませんでした。",
+      "after": "議長も助手たちもその会社の排出量を削減する意思がありませんでした。",
+      "why": "目的語の the company’s（その会社の）が和訳になかった（主語が会社ではない文で、目的語に持ち主を付けた形の和訳に持ち主を付けていなかった。自動で作る部品 1_agreement_neither で直した）"
+    }
+  ],
+  "exceptions": {
+    "f221be4bfcc47de9": "明白の「白」を色の white と取りちがえた手がかり。obvious を「明白な」と訳していて、食いちがいではない",
+    "12ae4978d86e550a": "next term を「来学期」と訳した。和訳の「来」が next にあたる",
+    "5920b36b2d7f7b82": "Japanese calligraphy を「書道」と訳した。書道は日本の書なので Japanese は訳に入っている",
+    "fb35f48f511b170f": "both を「2人とも」と訳した。和訳の2は both（トムと兄の2人）にあたる",
+    "baba1b5a4038ad3d": "that show を「その番組」と訳した。手がかりは this・the・a・TV の付いた show だけを見るので拾った",
+    "9651821517a0d3f7": "the two countries を「両国」と訳した。和訳の「両」が two にあたる"
+  },
+  "groups": {
+    "1/主語と動詞の一致": "d0ace2e71f56bd6e",
+    "1/仮定法・語法": "a05d92e74f831dbe",
+    "1/倒置・強調": "30b04acec3902c29",
+    "1/助動詞・推量": "b160abc8b9bb2d76",
+    "1/強調・倒置": "09c8da435ad9c518",
+    "1/時制・相": "26f09e4f22999eed",
+    "1/省略・代用": "aa9dba8c0848caea",
+    "1/祈願文": "0c6bbb6b8df5599a",
+    "1/関係詞応用": "1a0d3e76ff6e9e77",
+    "1/限定詞・数量": "6f168d87ea667cc5",
+    "1/高度比較": "40e8edc31ddfcfc3",
+    "1/高度語法": "0259e2c40fccdcaa",
+    "2/be to構文": "e69300836dba461b",
+    "2/仮定法": "df2778de0cdabc43",
+    "2/仮定法過去完了": "62058db6abde0bb0",
+    "2/使役": "b945c8b5a64e0c94",
+    "2/倒置": "0c643d29c6b8813f",
+    "2/分詞構文": "a55a177a598c6b27",
+    "2/助動詞・義務": "1873c393af7fdf5c",
+    "2/助動詞+have done": "90cc482d0d05b5f5",
+    "2/動名詞の慣用": "f5aceac614cb3f8d",
+    "2/名詞節": "979d0e1f619716d5",
+    "2/完了不定詞": "89bd0c3ce37b6545",
+    "2/完了形応用": "26ac1e56db9f9a9d",
+    "2/強調": "852d2862f5eb0fbb",
+    "2/強調構文": "725960d85215c350",
+    "2/形式目的語": "b2edd07596a76475",
+    "2/接続副詞": "6034c7dab54ec64a",
+    "2/接続詞": "a33b15f35bfa2ff6",
+    "2/比較応用": "01f745568de3939e",
+    "2/無生物主語": "3767b560c22e9c5b",
+    "2/話法": "437c1f24fd1432a0",
+    "2/過去完了進行形": "6136eeb2c75aec2c",
+    "2/部分否定": "32e01ba33bd097c4",
+    "2/関係代名詞 what": "695ce98faac50642",
+    "2/関係代名詞 whose": "2fb30d7020609c9c",
+    "2/関係代名詞応用": "ebb9a73a8966a47a",
+    "3/so...that": "42d9da710eb221b3",
+    "3/不定詞応用": "48574454c73b1243",
+    "3/付加疑問": "75b0e13bfc8a9d40",
+    "3/仮定法(基礎)": "28887e109aa17c23",
+    "3/分詞": "d4321b87e8f1175e",
+    "3/前置詞": "a6f16e577e084ea7",
+    "3/動詞と不定詞・動名詞": "dff1934e6865a4b8",
+    "3/原形不定詞": "d5c42a915371b9d6",
+    "3/受動態": "67231bd9813aeffd",
+    "3/接続詞": "fb4421c8bef246d0",
+    "3/文型(SVOO/SVOC)": "ca80e64ec27f09a6",
+    "3/比較応用": "6cae047ad6decb76",
+    "3/現在完了": "2a32bc7dbb5d8134",
+    "3/現在完了進行形": "d1031c131e5ced92",
+    "3/間接疑問": "9cf72514a05b56ea",
+    "3/関係代名詞": "729b4dfef24b227a",
+    "4/There is/are": "0045dd9c660c00dc",
+    "4/used to": "b467bcd0b5c76d75",
+    "4/不定詞": "622c57229b427aef",
+    "4/付加疑問": "027b99f1ac12c131",
+    "4/代名詞": "5f809dbb355f17e1",
+    "4/助動詞": "b6345540b3e08c75",
+    "4/動名詞": "20041ab4050f3de7",
+    "4/感嘆文": "1fbc75f2d88074c3",
+    "4/接続詞": "98511625900a7547",
+    "4/未来表現": "5335a4ce4b0f3d72",
+    "4/比較": "6da3cf2f5dbb1fbd",
+    "4/疑問詞+不定詞": "6d9fbe0de4c46199",
+    "4/過去形": "d9c21f80efe137c3",
+    "4/過去進行形": "c6a48f910494aa62",
+    "5/be動詞": "dada7e5375640a95",
+    "5/一般動詞・3単現": "7cdb83f1452dfa64",
+    "5/代名詞": "c0d4f1e5039ed5d4",
+    "5/冠詞": "f723034b134942c6",
+    "5/前置詞": "45d0313f4bb4cd7b",
+    "5/助動詞 can": "246b40f3f4d9f947",
+    "5/名詞の複数形": "fe7b451860a9ef02",
+    "5/否定文・疑問文": "86ba725a8cd2b5bc",
+    "5/命令文": "80ec74fd24efbc3a",
+    "5/指示語": "909ba74885ae9859",
+    "5/現在進行形": "18452d1e07ccadfe",
+    "5/疑問詞": "e756bcb7b870d645",
+    "pre1/be to構文": "195cc3458a6e444d",
+    "pre1/whatever等": "866ad95f2e42034f",
+    "pre1/クジラ構文": "3d73fe996676d6c0",
+    "pre1/一致": "00583f4a2b2c9c64",
+    "pre1/付帯状況": "fe97647185260d71",
+    "pre1/仮定法応用": "868f8b9ba903631a",
+    "pre1/倒置": "5fb24512d8981c6a",
+    "pre1/分詞構文応用": "e6fa93abef031009",
+    "pre1/助動詞": "c1e7720acccf61b3",
+    "pre1/同格": "87babfdcee8e91d5",
+    "pre1/名詞節": "9eeaa6e65861965f",
+    "pre1/強調": "a964c837c96f6710",
+    "pre1/比較構文": "29fe8df6603c3f65",
+    "pre1/独立分詞構文": "446663ca0ffd64c5",
+    "pre1/省略": "151b14cac312b755",
+    "pre1/複合関係詞": "beb25d1ca57399bc",
+    "pre1/話法": "c98331ce61431f88",
+    "pre1/譲歩": "10cea556c9437dd0",
+    "pre1/連鎖関係詞": "5b47b95752fdad6e",
+    "pre2/had better": "31c57ac20af3abe8",
+    "pre2/it...to/for": "c83655e08677fc86",
+    "pre2/so/such...that": "09cc7a75b997510f",
+    "pre2/too/enough": "45d7faeeec723cdf",
+    "pre2/used to / be used to": "0c148412b0f2d599",
+    "pre2/代名詞": "0adb90886eefb3dc",
+    "pre2/仮定法(基礎)": "405dfb1f2672dc42",
+    "pre2/使役・知覚": "c6a55c4359c25619",
+    "pre2/再帰代名詞": "f89d1cadcf0a0ebf",
+    "pre2/分詞": "43365181a34554de",
+    "pre2/分詞構文": "d4ad7ca2c7028981",
+    "pre2/前置詞": "3b09def966354e3f",
+    "pre2/前置詞+関係代名詞": "25b271b8428381b9",
+    "pre2/動名詞の慣用": "756609cf5885c579",
+    "pre2/接続詞": "3d51e3dd0f3b84cc",
+    "pre2/数量表現": "48e1238757393273",
+    "pre2/比較応用": "9531093540ac37d0",
+    "pre2/現在完了進行形": "59b66be7b285e025",
+    "pre2/目的の表現": "f85aad49862386fd",
+    "pre2/相関接続詞": "d00469a6c402cd1d",
+    "pre2/過去の習慣": "3e453df561382727",
+    "pre2/過去完了": "af79791ca4a2248e",
+    "pre2/間接疑問": "74f3f2d3e8be0568",
+    "pre2/関係代名詞 what": "a1ecd3a648e9eae0",
+    "pre2/関係代名詞(継続)": "ae4d5e7ff9fb45a8",
+    "pre2/関係副詞": "2269cb85bb4735ca"
+  }
+}

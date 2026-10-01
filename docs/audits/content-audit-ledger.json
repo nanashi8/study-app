@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-01T15:46:02.706Z",
+  "auditedAt": "2026-10-01T16:44:10.219Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "5897d60ef9f4d4be3cd163c14d7f8c325230b1c1523ce6d798956608aa98a944"
+    "overallContentSha256": "2b509136c73b02afb7951a795138c06357b10ffb04abcccd92c37580b49452e1"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "fcdab7ef6be370c2269727a075e140b2f90387bdeaa2a6b12a8034ab716f1221",
+    "sha256": "336cd85426145d69140638782d381650c724eeda2f984022a419834f0ff9f591",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -219,6 +219,8 @@
       "tests/diagnostic.test.mjs",
       "tests/dictation-cards.test.mjs",
       "tests/dictionary-custom-words.test.mjs",
+      "tests/dictionary-other-senses-screen.test.mjs",
+      "tests/dictionary-other-senses.test.mjs",
       "tests/dragon-vein.test.mjs",
       "tests/effect-cleanup-refs.test.mjs",
       "tests/english-content-quality.test.mjs",
@@ -226,6 +228,7 @@
       "tests/english-question-formats.test.mjs",
       "tests/etymology-companions.test.mjs",
       "tests/etymology-compression.test.mjs",
+      "tests/etymology-heading-once.test.mjs",
       "tests/etymology-progress.test.mjs",
       "tests/etymology-source-completion.test.mjs",
       "tests/exam-dictionary.test.mjs",
@@ -239,6 +242,7 @@
       "tests/grammar-entry-divisions.test.mjs",
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
+      "tests/grammar-quiz-translations.test.mjs",
       "tests/grammar-reference-translations.test.mjs",
       "tests/grammar-reference.test.mjs",
       "tests/grammar-strand.test.mjs",
@@ -405,7 +409,7 @@
       "quizItemCount": 2104,
       "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
       "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
-      "contentSha256": "b9e9c0715c2f9c125a0f54e1be09e0bc1ecb4761e67a3d7e60de740acc750544",
+      "contentSha256": "97bab1fd216173d6f5b1ab0c56f733110b36df68fe5fd4dcfce840c83f242e0b",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -431,7 +435,7 @@
       "quizItemCount": 4430,
       "learningIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
       "quizIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
-      "contentSha256": "73f4493c1c6a07e3fc04a3a8f63ddc55e7cbd894cef64faec49c6b394d4b3ebe",
+      "contentSha256": "0ccf95442df86f4c5328c42e05e0b0b1e936157cfe7d1c4d139ef4cf75d67934",
       "auditGateIds": [
         "inventory",
         "coreData",
