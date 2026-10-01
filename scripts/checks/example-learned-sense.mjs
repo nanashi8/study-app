@@ -70,6 +70,12 @@ export function exampleSenseItems() {
       if (!sense.example) continue
       items.push({ key: `sense:${word.id}:${sense.meaning}`, head: word.word, level: sense.level, pos: sense.pos, meaning: sense.meaning, glosses: splitMeanings(sense.meaning), example: sense.example })
     }
+    // 疑問詞・関係詞の語の、代表義の訳語の働き（word-grammar-roles.js の main）の例文。
+    // main でない働きは、ほかの意味（上の sense:）として入っている。
+    for (const item of word.grammarRoles ?? []) {
+      if (!item.main || !item.example) continue
+      items.push({ key: `role:${word.id}:${item.role}:${item.meaning}`, head: word.word, level: item.level, pos: item.pos, meaning: item.meaning, glosses: splitMeanings(item.meaning), example: item.example })
+    }
   }
   for (const phrase of PHRASES) {
     const glosses = phrase.meanings?.length ? phrase.meanings : splitMeanings(phrase.meaning)

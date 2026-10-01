@@ -340,21 +340,34 @@ export const READER_GLOSS = {
  * 長文中の単語キー（小文字の表層形）から語義を解決する。
  * @param {string} key 小文字の表層形（text.js の normalizeToken 済み）
  * @param {object} [sentenceGloss] その文の gloss（{ key: {ja, id} }）
+ * @param {{grammarRoles?: boolean}} [options] grammarRoles: false で、疑問詞・関係詞の働きの意味を並べない（語順訳の解析器用）
  * @returns {{ja: string, id: (string|null)}|null}
  */
 // 本文をタップしたときは、その場の文脈がどの意味かを決める。単語カードのように
 // 代表義だけへ絞ると「a different kind of loss」の kind が「親切な」になってしまうため、
 // word-senses.js が持つほかの意味も並べて返す。本文のつづりだけでは同じつづりの別の語
 // （bark の「樹皮」など）とも区別できないので、その語の意味も続けて並べる。
-const fullMeaning = (word) => (
+// 疑問詞・関係詞の語（word-grammar-roles.js）は、どの働きの意味かが分かるよう
+// 「（疑問詞）誰が・誰／（関係代名詞）〜する(人)」のように働きを添えて並べる。
+// 語順訳の解析器（reading-grammar.js）は grammarRoles: false で引く。働きの意味（〜する(人) など）を
+// 語の対応づけに使うと、手で確かめた語順訳の区切りが動く（2026-10-01 に4文）ので、解析器には今までどおり
+// 代表義とほかの意味だけを渡す。
+const entryMeaning = (entry, { grammarRoles = true } = {}) => {
+  const roles = grammarRoles ? entry.grammarRoles ?? [] : []
+  const senses = (entry.otherSenses ?? []).filter((sense) => !sense.role).map((sense) => sense.meaning)
+  if (!roles.length) return [entry.meaning, ...senses].join('・')
+  return [
+    ...roles.map((item) => `（${item.role}）${item.meaning}`),
+    ...(senses.length ? [senses.join('・')] : []),
+  ].join('／')
+}
+const fullMeaning = (word, options) => (
   word?.meaning
-    ? [word, ...homographsFor(word)]
-      .flatMap((entry) => [entry.meaning, ...(entry.otherSenses ?? []).map((sense) => sense.meaning)])
-      .join('・')
+    ? [word, ...homographsFor(word)].map((entry) => entryMeaning(entry, options)).join('・')
     : null
 )
 
-export function resolvePassageWord(key, sentenceGloss) {
+export function resolvePassageWord(key, sentenceGloss, options = {}) {
   if (!key) return null
   const inline = sentenceGloss?.[key]
   // インラインに ja があればそれを優先（id も使う）
@@ -367,10 +380,10 @@ export function resolvePassageWord(key, sentenceGloss) {
   const fb = READER_GLOSS[key]
   const ja =
     inline?.ja ??
-    fullMeaning(direct) ??
+    fullMeaning(direct, options) ??
     irregular?.ja ??
     (aliasWord ? alias.ja : null) ??
-    fullMeaning(word) ??
+    fullMeaning(word, options) ??
     fb ??
     null
   const id = inline?.proper ? null : (inline?.id ?? word?.id ?? null)

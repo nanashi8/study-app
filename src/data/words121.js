@@ -80,7 +80,7 @@ const RAW = [
   ['here', '副', '5', 'ここに・ここで', 'Please come here and help me.', 'ここに来て手伝って。', '古英語 her(ここに)。', { field: '一般' }],
   ['there', '副', '5', 'そこに・あそこに', 'Put the box over there.', 'その箱はあそこに置いて。', '古英語 thær(そこに)。', { field: '一般' }],
   ['when', '副', '5', 'いつ・〜のとき', 'When is it?', 'それはいつ。', '古英語 hwænne(いつ)。', { field: '一般' }],
-  ['where', '副', '5', 'どこに・〜の場所', 'Where are you?', 'どこにいるの。', '古英語 hwær(どこ)。', { field: '一般' }],
+  ['where', '副', '5', 'どこに・どこで', 'Where are you?', 'どこにいるの。', '古英語 hwær(どこ)。', { field: '一般' }],
   ['why', '副', '5', 'なぜ', 'Why not?', 'なぜだめなの。', '古英語 hwi(なぜ)。', { field: '一般' }],
   ['how', '副', '5', 'どのように・どれくらい', 'How do you go to school?', 'あなたはどのようにして学校へ行きますか。', '古英語 hu(どのように)。', { field: '一般' }],
   ['very', '副', '5', 'とても・非常に', 'This soup is very hot.', 'このスープはとても熱い。', '古フランス verai(本当の)。', { field: '一般' }],

@@ -53,6 +53,15 @@ const split = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-10-01 の点検: 疑問詞・関係詞の語に文の中での働き（word-grammar-roles.js）を載せたとき、目的格の形と
+// 関係代名詞の働きのつながりを書き足したもの（requests/2026-10-01-wh-word-grammar-roles.json。由来は Online Etymology Dictionary で確かめた）。
+const whrole = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-10-01',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   // ── 語根では表せない「語そのものの歴史」。人名・神名・造語の年など。（39語）──
   academy: note('プラトンが学園を開いたアテネの地アカデメイア（Akadēmeia）から。', 'fd436e167c099bff070ac3dca18558b2e8a2b45d967f5e162ba53ff8eb4d6fea'),
@@ -258,7 +267,7 @@ const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   walker: renote('walk（歩く）＋ -er（〜する人）から。walk は古英語 wealcan「転がる・動き回る」から。', '4c0fdc2d78449add144117dcd2a56c497b48dfc5be4461910a6af020dcf19e0c'),
   weekday: renote('week（週）＋ day（日）から。week は古英語 wicu から。day は古英語 dæg「日・昼」から。', 'f1936149264b7b01eb6fc0be07b885db4b1c081602004faa5607f1c9210e6323'),
   wheelchair: renote('wheel（車輪）＋ chair（いす）から。wheel は古英語 hwēol「車輪」から。chair はギリシャ語 kathedra「座」から。', 'a8722394be44b57c51c416170d9e8b9d949dbe8b87690ae7a3e5b133eb82e43a'),
-  whom: note('古英語 hwām。who の与格（〜に）の形が残ったもの。', '34ee65ed297966f075444133c0e231c7023d76b954b1993d76b886319f78b0cb'),
+  whom: whrole('古英語 hwām（hwā「だれ」の「〜に」を表す形）から。who の「〜を・〜に」の形として残った→「だれを・だれに」。前置詞や動詞の目的語になる関係代名詞「〜が…する(人)」にも使う。目的語のところで who を使う言い方も1300年ごろから見られ、今のふだんの英語では who を使うことが多い。', '235b7b1ded46f050'),
   worksheet: renote('work（作業）＋ sheet（紙）から。work は古英語 weorc「仕事」から。sheet は古英語 scēte「布・広い布」から。', '8b23c14de201e7d769f1f791e70ec67544e1963a392b6310e9cca7195fda8934'),
   yet: note('古英語 gīet「まだ・なお」から。', '2b0029548c79945100d647b07952fdcee0f0596fa280c452c440227a625090ec'),
 

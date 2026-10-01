@@ -20,6 +20,7 @@ import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { CustomEtymology, EtymologyBlock } from '../components/WordBits.jsx'
 import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.jsx'
+import { GrammarRoles } from '../components/GrammarRoles.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
@@ -480,6 +481,9 @@ export function VocabStudyScreen() {
                   <MeaningText>{word.meanings.join('・')}</MeaningText>
                 </div>
               </div>
+
+              {/* 疑問詞・関係詞の語は、働き（疑問詞・関係代名詞など）ごとの意味と解説。参考書の単元へ移れる。 */}
+              <GrammarRoles word={word} onGrammarRef={(unitId) => saveBeforeReference('grammarReference', { unitId })} />
 
               {/* 使い方で発音が変わる語の読み分け */}
               <PronunciationNote word={word} />

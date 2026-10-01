@@ -1,0 +1,63 @@
+{
+  "id": "2026-10-01-wh-word-grammar-roles",
+  "title": "who・whose・whom・which など疑問詞・関係詞の語に、文の中での働き（疑問詞・関係代名詞など）ごとの意味と解説を載せる",
+  "asked": [
+    "who, whose, whom, whichの単語の意味に関係代名詞や疑問視の意味や解説を載せないのか？"
+  ],
+  "sessions": [
+    "14d551bc-0038-446a-b661-dead4caaca84"
+  ],
+  "status": "open",
+  "notes": "問いの形だが、載っていないことの指摘として「載せる」依頼と読む。2026-10-01 に調べた今の状態：who「誰が・誰」・whose「誰の」・which「どれ・どちら」は疑問詞の意味だけで関係代名詞の意味がない。whom は長文の追加語（reading-expansion-word-definitions.js）で「だれを・だれに」だけ。4語とも働きの解説（どこに置き、後ろに何が続き、どう訳すか）がない。文法の参考書の語義表（grammar-reference/words.js）だけが who・which・whose・whom に（関係代名詞）の意味を持っていて、辞書・暗記カードと食いちがっている。母集団は依頼の「関係代名詞や疑問詞」の文から、英語の疑問詞・関係詞の語（疑問詞 who whom whose which what when where why how、関係代名詞 who whom whose which that what、関係副詞 when where why how、複合関係詞 whoever whomever whatever whichever whenever wherever however）の17語とする。辞書の見出し語はこのうち11語（who whom whose which what that when where why how however）。見出し語にない6語（whoever whomever whatever whichever whenever wherever）は、この依頼が「単語の意味に載せる」ことなので見出し語を足さない（足すと語源・発音・級・例文・固定値がすべて動く別の作業になる）。文法の参考書の準1級「複合関係詞」「whatever等」の単元には載っている。報告で伝えて、足すかを利用者に聞く。外すもの：whether・if（間接疑問の「〜かどうか」を作る接続詞で、疑問詞ではない）、as・but・than の擬似関係代名詞（代表義は接続詞・前置詞で、参考書にも単元がない発展事項）。テストの答えは今までどおり代表義の先頭（出題には使わない決まり）。",
+  "criteria": [
+    {
+      "id": "core-four",
+      "text": "who・whom・whose・which の意味の欄に、疑問詞としての意味と関係代名詞としての意味を、働き（疑問詞・関係代名詞など）・品詞・習う級・解説（文のどこに置き、後ろに何が続き、どう訳すか）・形・例文・文法の参考書の単元へのリンクつきで載せる。代表義の訳語にも、どの働きの意味かを示して解説を付ける",
+      "population": "4語と、その疑問詞・関係代名詞としての働きすべて（who：疑問詞・関係代名詞・継続用法、whom：疑問詞・関係代名詞（目的格・前置詞＋whom・数量＋of whom）、whose：疑問詞（誰の・誰のもの）・関係代名詞、which：疑問詞（どれ・どちら／どの・どちらの）・関係代名詞（前置詞＋which をふくむ）・継続用法）",
+      "check": "node --test tests/word-grammar-roles.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "same-type-words",
+      "text": "疑問詞・関係詞として働くほかの見出し語すべてにも、疑問詞・関係詞の働き（関係代名詞の what・that、関係副詞の when・where・why・how、複合関係詞の however）の意味と解説を同じ形で載せる。代表義の訳語は、ほかの働き（指示語・接続詞・感嘆文・接続副詞）のものも働きを示して解説する",
+      "population": "疑問詞・関係詞の17語のうち辞書の見出し語である11語の残り7語（what・that・when・where・why・how・however）と、その代表義の訳語すべて。見出し語にない6語は notes の理由で外し、報告で示す",
+      "check": "node --test tests/word-grammar-roles.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "screens",
+      "text": "載せた働き・意味・解説が、暗記カードの裏と辞書ページに375pxの幅ではみ出さずに出る。参考書へのリンクを押すとその単元のページが開き、戻ると元の画面に戻る。長文・名作・参考書の本文で語をタップしたときの意味にも関係詞などの意味が働きつきで出る。辞書の検索で「関係代名詞」「関係副詞」などから引ける。テストの答え（代表義の先頭）は変わらない",
+      "population": "11語すべての暗記カードの裏・辞書ページ、長文42本・参考書・名作の本文のタップの意味、辞書の検索、単語テストの答え",
+      "check": "node --test tests/word-grammar-roles.test.mjs tests/word-grammar-roles-screens.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "etymology-links",
+      "text": "働きを載せて意味が増えた語の「語の成り立ち」に、たずねる意味などから関係詞・接続詞・感嘆文の働きへのつながりを、Online Etymology Dictionary で確かめた由来だけで書き足し、指紋を押し直す。where は意味欄の「どこに・〜の場所」（「〜の場所」はどの働きにも当たらない訳語だった）を「どこに・どこで」に直し、本文も合わせる",
+      "population": "働きを載せた11語の語の成り立ちの本文すべて（however は本文がすでに「どんなにしても」→「しかしながら」とつないでいるので据え置き、ほかの10語を書き直す）",
+      "check": "npm run audit:etymology-quality && node --test tests/word-grammar-roles.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "content-rules",
+      "text": "足した意味・解説・例文が、例文の決まり（大文字で始まる一文・学ぶ意味で使う）、学習者の日本語の見直し台帳、意味の読み、似た場面の重複の検査、全教材の監査をすべて通る。長文の語順訳（全42本・1,518文）と、そのほかの既存の中身は変わらない",
+      "population": "この依頼で足した意味・解説・形・例文すべてと、npm test・npm run check の全件",
+      "check": "npm test && npm run check",
+      "status": "todo"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の暗記カード・辞書ページに働きと解説が出ることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない",
+      "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones && node --test tests/leftover-changes.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

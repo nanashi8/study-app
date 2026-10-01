@@ -60,6 +60,12 @@ export function learnerJapaneseTexts() {
       push(sense.note, 'note', word.id)
       push(sense.example?.ja, 'example', word.id)
     }
+    // 疑問詞・関係詞の語の働き（word-grammar-roles.js）。意味と、main でない働きの例文は上のほかの意味に入っている。
+    for (const item of word.grammarRoles ?? []) {
+      push(item.explain, 'note', word.id)
+      push(item.form, 'note', word.id)
+      if (item.main) push(item.example?.ja, 'example', word.id)
+    }
     for (const key of ['synonyms', 'antonyms', 'derivatives']) {
       for (const item of word[key] ?? []) push(item.m, 'meaning', `${word.id}>${item.w}`)
     }

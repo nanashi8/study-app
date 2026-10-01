@@ -56,6 +56,8 @@ export function vocabSearchText(word) {
     ...(word.antonyms ?? []).flatMap((item) => [item.w, item.m]),
     ...(word.family ?? []).flatMap((item) => [item.w, item.m]),
     usageGuideText(word.usageGuides),
+    // 疑問詞・関係詞の語は、働きの名前（関係代名詞など）・意味・形・解説からも引ける。
+    ...(word.grammarRoles ?? []).flatMap((item) => [item.role, item.meaning, item.form, item.explain, item.example?.en, item.example?.ja]),
   ].filter(Boolean).join(' ')))
 }
 

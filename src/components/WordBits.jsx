@@ -74,12 +74,14 @@ export function CustomEtymology({ word, className = '', heading = true }) {
 }
 
 export function OtherSenses({ senses = [], level, className = '' }) {
-  if (!senses.length) return null
+  // 疑問詞・関係詞の働きの意味（role あり）は、解説といっしょに「文の中での働き」の欄（GrammarRoles）に出す。
+  const plain = senses.filter((sense) => !sense.role)
+  if (!plain.length) return null
   const baseRank = LEVELS.findIndex((item) => item.id === level)
   return (
     <div className={cx('rounded-2xl bg-white p-4 ring-1 ring-amber-100', className)}>
       <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
-      <SenseList senses={senses} baseRank={baseRank} />
+      <SenseList senses={plain} baseRank={baseRank} />
     </div>
   )
 }

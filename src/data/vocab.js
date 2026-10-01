@@ -161,6 +161,7 @@ import {
 } from './etymology-history.js'
 import { quizMeaning, quizMeaningKey, splitMeanings } from './compact.js'
 import { WORD_SENSES } from './word-senses.js'
+import { WORD_GRAMMAR_ROLES } from './word-grammar-roles.js'
 import { applyRelationEdits } from './word-relation-edits.js'
 import { HOMOGRAPH_WORDS } from './homograph-words.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
@@ -195,6 +196,9 @@ const normalize = (w) => {
     ''
   // 級(level)補正：基本語の過大級づけを英検の実級へ補正（levels-override.js）。
   const level = LEVEL_OVERRIDE[w.word?.toLowerCase()] || w.level
+  // 疑問詞・関係詞の語の、文の中での働き（word-grammar-roles.js）。代表義に入らない働きの意味は、
+  // ほかの意味にも合流させる（長文のタップ・例文の確認・日本語の見直しに乗る。画面では働きの欄に出す）。
+  const grammarRoles = WORD_GRAMMAR_ROLES[w.id] ?? []
   // 補助情報（類義語/反対語/派生語/使い方）は各語のタプル8番目に内包済み。
   return {
     ...w,
@@ -214,7 +218,8 @@ const normalize = (w) => {
     usage: w.usage ?? '',
     usageGuides: w.usageGuides ?? USAGE_GUIDES_BY_WORD[w.id] ?? [],
     // 代表義以外の意味。表示専用で、出題は代表義だけを見る。
-    otherSenses: WORD_SENSES[w.id] ?? [],
+    otherSenses: [...(WORD_SENSES[w.id] ?? []), ...grammarRoles.filter((item) => !item.main)],
+    grammarRoles,
   }
 }
 

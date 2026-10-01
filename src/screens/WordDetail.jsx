@@ -11,6 +11,7 @@ import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
+import { GrammarRoles } from '../components/GrammarRoles.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
@@ -158,6 +159,9 @@ export function WordDetailScreen() {
             <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
             <StudyReviewHistory entry={entry} className="mt-3 justify-start" />
           </Card>
+
+          {/* 疑問詞・関係詞の語は、働き（疑問詞・関係代名詞など）ごとの意味と解説。参考書の単元へ移れる。 */}
+          <GrammarRoles word={word} onGrammarRef={(unitId) => navigate('grammarReference', { unitId })} />
 
           {/* 例文 */}
           {word.example && (

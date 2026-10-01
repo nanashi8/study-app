@@ -387,10 +387,13 @@ function splitJapanese(ja) {
     .filter(Boolean)
 }
 
+// 語の対応づけには、疑問詞・関係詞の働きの意味（〜する(人) など）を使わない（passage-gloss.js の grammarRoles）。
+const ALIGNMENT_GLOSS = Object.freeze({ grammarRoles: false })
+
 function shortGloss(word, sentenceGloss) {
   const key = normalizeToken(word)
   const inline = sentenceGloss?.[key]?.ja
-  const resolved = resolvePassageWord(key, sentenceGloss)
+  const resolved = resolvePassageWord(key, sentenceGloss, ALIGNMENT_GLOSS)
   const raw = inline ?? resolved?.ja
   if (!raw) return null
   return raw
@@ -402,7 +405,7 @@ function shortGloss(word, sentenceGloss) {
 
 function glossTerms(word, sentenceGloss) {
   const key = normalizeToken(word)
-  const raw = sentenceGloss?.[key]?.ja ?? resolvePassageWord(key, sentenceGloss)?.ja
+  const raw = sentenceGloss?.[key]?.ja ?? resolvePassageWord(key, sentenceGloss, ALIGNMENT_GLOSS)?.ja
   if (!raw) return []
   return raw
     .replace(/[（(][^）)]*[）)]/g, '')

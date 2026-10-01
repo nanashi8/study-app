@@ -95,6 +95,13 @@ import {
   grammarReferenceFor,
 } from '../src/data/grammar-reference/index.js'
 import { GRAMMAR_REFERENCE_WORDS } from '../src/data/grammar-reference/words.js'
+import {
+  GRAMMAR_ROLE_STYLES,
+  GRAMMAR_ROLE_UNITS,
+  WH_WORDS,
+  WH_WORDS_NOT_HEADWORDS,
+  WORD_GRAMMAR_ROLES,
+} from '../src/data/word-grammar-roles.js'
 import { GRAMMAR_REFERENCE_TERMS } from '../src/data/grammar-reference/terms.js'
 import { GRAMMAR_STRANDS } from '../src/data/grammar-strands.js'
 import { resolveReferenceWord, splitEnglish } from '../src/lib/grammarReferenceText.js'
@@ -163,7 +170,7 @@ import {
   WRITING_EXERCISES,
   WRITING_GRAMMAR,
 } from '../src/data/writing.js'
-import { hasBalancedParentheses } from '../src/data/compact.js'
+import { hasBalancedParentheses, splitMeanings } from '../src/data/compact.js'
 import { HOMOGRAPH_SEPARATE_SENSES } from '../src/data/homographs.js'
 import { HOMOGRAPH_WORDS } from '../src/data/homograph-words.js'
 import { phrasesForWord } from '../src/lib/wordPhrases.js'
@@ -543,6 +550,73 @@ for (const w of ALL_WORDS) {
   }
   for (const rootId of referenceRoots) {
     if (!ROOT_IDS.has(rootId)) errors.push(`${at}: 補助語根の参照先が不明 (${rootId})`)
+  }
+}
+
+// ── 疑問詞・関係詞の語の「文の中での働き」（word-grammar-roles.js） ──
+// 働きの名前・品詞・級・意味・解説・参考書の単元がそろい、main の働きの訳語を合わせると代表義の訳語が
+// ちょうど1回ずつそろうこと。main でない働きは例文を持ち、その例文に見出し語があること。
+{
+  const referenceUnits = new Map(GRAMMAR_REFERENCE_UNITS.map((unit) => [unit.id, unit]))
+  for (const [id, unit] of Object.entries(GRAMMAR_ROLE_UNITS)) {
+    const reference = referenceUnits.get(id)
+    if (!reference) errors.push(`文の中での働き: 参考書の単元 ${id} が無い`)
+    else if (reference.level !== unit.level || reference.topic !== unit.topic) {
+      errors.push(`文の中での働き: 参考書の単元 ${id} の級・単元名が参考書と食い違う（${unit.level} ${unit.topic} ≠ ${reference.level} ${reference.topic}）`)
+    }
+  }
+  const usedUnits = new Set()
+  for (const [wordId, roles] of Object.entries(WORD_GRAMMAR_ROLES)) {
+    const word = getWord(wordId)
+    const at = `文の中での働き ${wordId}`
+    if (!word) {
+      errors.push(`${at}: 辞書の見出し語に無い`)
+      continue
+    }
+    if (!WH_WORDS.includes(wordId)) errors.push(`${at}: 疑問詞・関係詞の語（WH_WORDS）に無い`)
+    if (!roles.length) errors.push(`${at}: 働きが無い`)
+    const mainGlosses = []
+    const keys = new Set()
+    for (const [index, item] of roles.entries()) {
+      const where = `${at}[${index}]`
+      if (!Object.hasOwn(GRAMMAR_ROLE_STYLES, item.role)) errors.push(`${where}: 働きの名前が不明 (${item.role})`)
+      if (!POS.has(item.pos)) errors.push(`${where}: pos が不正 (${item.pos})`)
+      if (!LEVELS.has(item.level)) errors.push(`${where}: level が不正 (${item.level})`)
+      if (!item.meaning?.trim() || !hasBalancedParentheses(item.meaning)) errors.push(`${where}: 意味が無いか括弧が不整合 (${item.meaning})`)
+      if (!item.explain?.trim() || !/。$/u.test(item.explain)) errors.push(`${where}: 解説が無いか「。」で終わらない`)
+      if (item.form !== undefined && !item.form.trim()) errors.push(`${where}: 形が空`)
+      const key = `${item.role}|${item.pos}|${item.meaning}`
+      if (keys.has(key)) errors.push(`${where}: 同じ働き・品詞・意味が2回ある (${key})`)
+      keys.add(key)
+      for (const unitId of item.grammar ?? []) {
+        usedUnits.add(unitId)
+        if (!GRAMMAR_ROLE_UNITS[unitId]) errors.push(`${where}: 参考書の単元 ${unitId} が GRAMMAR_ROLE_UNITS に無い`)
+      }
+      if (item.example) {
+        auditWordExampleSentence(`${where} の例文`, item.example)
+        if (!exampleShowsHeadword(word.word, item.example.en)) errors.push(`${where}: 例文に ${word.word} が無い (${item.example.en})`)
+      } else if (!item.main) {
+        errors.push(`${where}: 代表義に入らない働きに例文が無い`)
+      }
+      if (item.main) mainGlosses.push(...splitMeanings(item.meaning))
+      else if ((word.meanings ?? []).includes(item.meaning)) errors.push(`${where}: 代表義の訳語なのに main でない (${item.meaning})`)
+    }
+    // main の働きの訳語を合わせると、代表義の訳語がちょうど1回ずつそろう。
+    const sortedMain = [...mainGlosses].sort().join('・')
+    const sortedMeanings = [...(word.meanings ?? [])].sort().join('・')
+    if (sortedMain !== sortedMeanings) {
+      errors.push(`${at}: main の働きの訳語（${mainGlosses.join('・')}）が代表義（${word.meaning}）とそろわない`)
+    }
+  }
+  for (const unitId of Object.keys(GRAMMAR_ROLE_UNITS)) {
+    if (!usedUnits.has(unitId)) errors.push(`文の中での働き: 参考書の単元 ${unitId} はどの働きにも使われていない`)
+  }
+  // 疑問詞・関係詞の語は、見出し語にあればすべて働きを書き、見出し語に無い語は理由を書く。
+  for (const wordId of WH_WORDS) {
+    const headword = getWord(wordId)
+    if (headword && !WORD_GRAMMAR_ROLES[wordId]) errors.push(`文の中での働き: 見出し語 ${wordId} に働きが無い`)
+    if (!headword && !WH_WORDS_NOT_HEADWORDS[wordId]) errors.push(`文の中での働き: 見出し語に無い ${wordId} の理由が無い`)
+    if (headword && WH_WORDS_NOT_HEADWORDS[wordId]) errors.push(`文の中での働き: ${wordId} は見出し語にあるのに、無い理由が書いてある`)
   }
 }
 

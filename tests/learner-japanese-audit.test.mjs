@@ -69,11 +69,14 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （src/data/subjects/readings.js）に印旛沼・滝沢馬琴・原敬の3語（語と読みで6表記）を足した。
   // 同じ日、全102単元を読み直して、読み方が特別な地名・人名・用語の77語を読みの辞書に足し（語と読みで154表記）、
   // カタカナで読む6語の読みをカタカナにし、出典の1件（国勢調査）と直した文で、教材の日本語が 232966 から 233134 になった。
-  assert.equal(result.learnerFiles, 340)
-  assert.equal(result.learnerJapaneseEntries, 17558)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13047)
-  assert.equal(result.sourceFiles, 814)
-  assert.equal(result.sourceJapaneseEntries, 233134)
+  // 2026-10-01、疑問詞・関係詞の語の「文の中での働き」で、働きのデータ（src/data/word-grammar-roles.js）と
+  // 働きの欄の部品（src/components/GrammarRoles.jsx）の2ファイルが増え、画面の文言が7表記（重複なし5）、
+  // 教材の日本語が 233134 から 233340 になった（requests/2026-10-01-wh-word-grammar-roles.json）。
+  assert.equal(result.learnerFiles, 341)
+  assert.equal(result.learnerJapaneseEntries, 17565)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13052)
+  assert.equal(result.sourceFiles, 816)
+  assert.equal(result.sourceJapaneseEntries, 233340)
   assert.equal(result.issues.length, 0)
 })
 

@@ -67,6 +67,16 @@ const lookform = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-10-01 の点検: 疑問詞・関係詞の語に文の中での働き（word-grammar-roles.js）を載せたとき、たずねる意味と
+// 関係詞・接続詞・感嘆文の働きのつながりを書き足し、where は意味欄（どこに・どこで）に合わせて直したもの
+// （requests/2026-10-01-wh-word-grammar-roles.json。由来は Online Etymology Dictionary で確かめた）。
+const whrole = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-10-01',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'a': clear('古英語 ān「1つの」が弱く発音されて n が落ちた形→「1つの・ある（不定冠詞）」。', '1d0443e4e1da47ac'),
   'a.m.': clear('ラテン語 ante meridiem「正午の前」の頭文字を取った時刻表現→「午前・午前の時刻」。', 'c63d182d0eba657a'),
@@ -3743,7 +3753,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'hotel': clear('ラテン語 hospitale「客をもてなす所」→「ホテル」。hospital と同じ語源。', '933704d9a38dbdfd'),
   'household': recheck('house「家」＋ hold「保つ」→「世帯・家庭」。house は古英語 hūs から。hold は古英語 healdan「保つ」から。', '2930a1f68438c9fc'),
   'hover': clear('中英語 hoveren「空中にとどまる」から。「空中で停止する」、近くをうろうろする→「うろつく」。', 'fef69547ae8aa197'),
-  'how': clear('古英語 hū「どのように」から。「どのように・どれくらい」。', '0fc62622248a4182'),
+  'how': whrole('古英語 hū「どのように」から。「どのように・どれくらい」。why とほとんど同じ語が、形と使い方で分かれたもの。様子や程度をたずねる語なので、「なんて〜だろう」と程度に驚く感嘆文や、「〜するやり方」を表す関係副詞にも使う。', 'aabe11d6393affed'),
   'however': recheck('how＋ ever「どんなにしても」→「しかしながら」。how は古英語 hū「どのように」から。ever は古英語 aefre「いつでも」から。', 'f975028fbb0d0a9b'),
   'hubris': clear('ギリシャ語 hybris「傲慢・思い上がり」から。ギリシャ悲劇で神の怒りを招く思い上がり→「思い上がり・傲慢」。', 'e0545ef34f1b6255'),
   'hue': clear('古英語 hīw「姿・色」から。「色調・色合い」。', '9ce58227a6389c87'),
@@ -7473,7 +7483,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'Thailand': recheck('Thai「タイ人」（民族の自称）＋ land「土地」の英語形→「タイ」。land は古英語 land「土地・国」から。', 'b3e8795dca337c5d'),
   'thankful': recheck('thank「感謝する」＋ -ful「〜に満ちた」→「感謝している・ありがたく思う」。thank は古英語 þancian「感謝する」から。', 'e5ff456e2bcd6143'),
   'thankfulness': recheck('thankful「感謝している」＋ -ness「〜であること」→「感謝・ありがたく思うこと」。thankful は thank「感謝する」＋ -ful「〜に満ちた」で、thank は古英語 þancian「感謝する」から。', 'b0ff231986f6712e'),
-  'that': clear('古英語 þæt「あれ・その」から。「あれ・その」、前のことを受けて「〜ということ」をつなぐ語にもなった。', 'c498f75815103151'),
+  'that': whrole('古英語 þæt「あれ・その」から。「あれ・その」、前のことを受けて「〜ということ」をつなぐ語にもなった。前の名詞を受けて後ろから説明をつなぐ関係代名詞の使い方も、古英語のころからある。', '70f1627db7ea755f'),
   'thatch': clear('古英語 þæc「屋根・覆い」から。屋根をふく材料→「（屋根の）わら・かやぶき」。', 'd51c37a98015bdf0'),
   'the': clear('古英語 se/the「その」→「その（定冠詞）」。', 'e83e30a960bf3673'),
   'the U.K.': clear('United Kingdom「連合王国」の頭文字を取った略称で、定冠詞 the を伴う→「イギリス・英国」。', '03869151d19cfd84'),
@@ -8166,26 +8176,26 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'west': clear('古英語 west「西」から（「日が沈む夕方」を表す語と関係するとされる）。「西・西の」。', '05d2402ca1df82f5'),
   'wet': clear('古英語 wǣt→「濡れた・雨の」。water と同じ語源。', 'a9998b51b0f4c826'),
   'whale': clear('古英語 hwael にさかのぼるゲルマン系の基本語→「クジラ」。', 'bf38fbb648fba608'),
-  'what': clear('古英語 hwæt「何」から。「何・何の」。who・which などの wh- で始まる語と同じ語源。', 'ff590ea0b40618f3'),
+  'what': whrole('古英語 hwæt「何」から。「何・何の」。who・which などの wh- で始まる語と同じ語源。「なんて〜だろう」と驚きや呼びかけを表す使い方も古英語のころからあり、古英語の詩『ベーオウルフ』も Hwæt で始まる。「何」を表す語なので、what で始まるまとまりで「〜するもの・〜すること」も表す（関係代名詞）。', '50e562550adce8e7'),
   'wheat': clear('古英語 hwǣte「小麦」から（white「白い」と同じ語源で、白い粉になることからとされる）。「小麦」。', '8f1fd9ac8f46f93b'),
   'wheel': clear('古英語 hwēol「車輪」から。「車輪」、回して向きを変える輪→「ハンドル」。', '5121522f7a353c62'),
-  'when': clear('古英語 hwænne「いつ」から。「いつ・〜のとき」。', '699bb82f11b3a8f6'),
-  'where': clear('古英語 hwǣr「どこに」から。「どこに・〜の場所」。', 'cfded4e3d2f1776b'),
+  'when': whrole('古英語 hwænne「いつ」から。「いつ」とたずねる語で、古英語の終わりごろには「〜のとき」と2つの文をつなぐ接続詞にも使われていた。時を表す名詞を後ろから説明する関係副詞「〜する(時)」にも使う。', '2edc604d94b3b268'),
+  'where': whrole('古英語 hwǣr「どこに」から。「どこに・どこで」とたずねる語で、場所を表す名詞を後ろから説明する関係副詞「〜する(場所)」にも使う。', 'daa31c87eaac20be'),
   'whereas': recheck('where「〜の所」＋ as「として」→「〜である一方」。where は古英語 hwǣr「どこに」から。as は古英語 alswā「まったくそのように」（all＋ so にあたる）が短くなった形から。', '1e1916f4955cdc8c'),
-  'which': clear('古英語 hwilc「どの形の」（hwā「だれ・何」＋ līc「形」）から。どんな形の→「どれ・どちら」。', 'e8165086c3819b8f'),
+  'which': whrole('古英語 hwilc「どの形の」（hwā「だれ・何」＋ līc「形」）から。どんな形の→「どれ・どちら」。中英語では、今なら who を使う人についても関係代名詞として使われた。今は物・事を受けて後ろから説明をつなぐ関係代名詞「〜する(物・事)」に使う。', 'cc894c8195b3210d'),
   'whimsical': recheck('whim「気まぐれ」＋ -ical「〜の・〜的な」→「気まぐれな・風変わりな」。whim は whim-wham「つまらないもの」を短くした語（由来ははっきりしない）。', '7444843bcbde37df'),
   'whip': clear('中世低地ドイツ語 wippen「揺れ動く・振る」から。振り下ろす→「むち打つ・むち」、さっと振り混ぜる→「泡立てる」。', 'b22c83c6b951e586'),
   'whisk': clear('古ノルド語 visk「わらの束」から。束でさっと払う→「さっと動かす」、束ねた道具→「泡立て器・泡立てる」。', '518e1fbc21ed1e03'),
   'whisker': recheck('whisk「さっと払う」＋ -er「〜するもの」→顔のまわりで払うように動く毛→「（動物の）ひげ・ほおひげ」。whisk は古ノルド語 visk「わらの束」から。', 'cb3936ee2a95af38'),
   'whisper': clear('古英語 hwisprian「ささやく」から（ひそひそ声をまねた語）。「ささやく」。', '132bc51fdc79a612'),
   'whistle': clear('古英語 hwistlian「口笛を吹く」から（音をまねた語）。「口笛を吹く・笛」。', '157a93d807b3f6fb'),
-  'who': clear('古英語 hwā「だれ」から。「誰が・誰」。', '6aa3cde56292187d'),
+  'who': whrole('古英語 hwā「だれ」から。「誰が・誰」とたずねる語で、前に出た人を受けて、その人を後ろから説明する文をつなぐ関係代名詞「〜する(人)」にも使う。', 'd0a2c1fcec1dedc0'),
   'whole': clear('古英語 hal「健全な」→「全体の・全部の・全体」。heal と同じ語源。', '931e2de3dfcecfd8'),
   'wholesale': recheck('whole「全体」＋ sale「販売」→「卸売り」。whole は古英語 hal「健全な」から。sale は後期古英語 sala「売ること」（古ノルド語 sala から入った語）から。', '7f8a63feb967c0c7'),
   'wholesome': clear('古英語 hal「健康な」→「健康によい・健全な」。whole と同じ語源。', '6bf9a2b386aac7ad'),
   'wholly': recheck('whole「全体の」＋ -ly「〜に・〜く（様子を表す）」→「すっかり・完全に」。whole は古英語 hal「健全な」から。', 'a4e265a77d096c7b'),
-  'whose': recheck('who の所有格→「誰の」。who は古英語 hwā「だれ」から。', 'e80b2be554d9557f'),
-  'why': clear('古英語 hwī「なぜ」（hwæt「何」の形の一つ）から。何によって→「なぜ」。', 'd163c880efabfd97'),
+  'whose': whrole('who の所有格→「誰の」。who は古英語 hwā「だれ」から（whose は古英語 hwæs）。前に出た人・物を受けて「その〜が」と持ち主の関係をつなぐ関係代名詞にも使う。', '8e539bedcec7867d'),
+  'why': whrole('古英語 hwī「なぜ」（hwæt「何」の形の一つ）から。何によって→「なぜ」。中英語では「そのために」と前の語を受ける使い方もあり、今も the reason（理由）を後ろから説明する関係副詞「〜する(理由)」に使う。', '5cefdd069781e7c5'),
   'wickedness': recheck('wicked「邪悪な」＋ -ness「〜であること」→「邪悪・不正」。wicked は中英語 wikke「悪い」（古英語 wicca「魔法使い」と関係するとされる）から。', '6db7237359e1d777'),
   'wide': clear('古英語 wīd「広い」→「広い・幅の広い」。', 'f55395fa87fbd0a4'),
   'widen': recheck('wide「広い」＋ -en「〜にする・〜になる」→「広げる・広がる」。wide は古英語 wīd「広い」から。', '476bc73a4d6213f5'),

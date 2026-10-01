@@ -34,7 +34,8 @@ test('和訳に意味の訳語がない例文は、全件を読んで書き直�
   assert.deepEqual(gap.stale, [], '候補でなくなった台帳の行')
   assert.deepEqual(gap.wrong, [], '和訳や意味と合わない台帳の行')
   const kinds = new Set(exampleSenseItems().map((item) => item.key.split(':')[0]))
-  assert.deepEqual([...kinds].sort(), ['phrase', 'sense', 'word'])
+  // role は疑問詞・関係詞の語の、代表義の訳語の働きの例文（2026-10-01、requests/2026-10-01-wh-word-grammar-roles.json）。
+  assert.deepEqual([...kinds].sort(), ['phrase', 'role', 'sense', 'word'])
 })
 
 test('訳語が和訳に出ているかは、活用・漢字のかたまり・かなの動詞の活用まで見て、別の意味の訳は通さない', () => {
