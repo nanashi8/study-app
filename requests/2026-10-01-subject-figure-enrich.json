@@ -9,7 +9,7 @@
   "sessions": [
     "6e6f58b9-978c-4168-a59a-8209991f2b32"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "text-figures-visual",
@@ -71,15 +71,17 @@
       "id": "on-main-deployed",
       "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で新しい図が出ることを確かめる",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor ebb9bcd origin/main && test \"$(gh run view 36879302487 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "verifiedBy": "commit a118876（変更）と ebb9bcd（全教材監査台帳）を、クリーンな clone で npm run audit:all-content に通して（テスト1,278件すべて合格・24カテゴリ・教材20,337件・問題経路7,280件、失敗0件）main へ push し、GitHub Pages のデプロイ（run 36879302487）が成功。push の前に main が2回進んだ（疑問詞・関係詞の依頼の 15e23e4・39aa067・3486917）ので、そのたびに載せ直し、1回目は学習者の日本語の台帳と監査の固定値を合わせて全教材監査を流し直した。scripts/checks/deployed-matches-head.mjs が「push 済みで、公開版へのデプロイが成功している」を返す。公開版（幅375、index-DFbkByts.js）で、歴史 his-05 の図3 平城京に読みがな（へいじょうきゅう・すざくおおじ・らじょうもん・げきょう・とうしょうだいじ・ひがしのいち・にしのいち）が出ること、図を押すと画面いっぱい（375×812）に大きくなり横に動かせ（図の幅601px）、「閉じる」で消えてスクロールの位置が同じ（3746）こと、理科 sc1-01 に新しい図（双眼実体顕微鏡の各部の名前）と「大きく見る」が出て、横にはみ出さないこと（scrollWidth 375）を確かめた"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない",
       "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
-      "check": "node scripts/checks/leftover-changes.mjs --clones",
-      "status": "todo"
+      "check": "node scripts/checks/leftover-changes.mjs --clones && node --test tests/leftover-changes.test.mjs",
+      "status": "done",
+      "verifiedBy": "scripts/checks/leftover-changes.mjs --clones が、この端末の study-app の複製7つ（作業用の clone・クリーンな clone・前回までの確認用の clone など）と共有の作業ツリーのすべてで「main の履歴にないコミット 0件、main に入っていない変更 0件」を返す。作業用の clone の途中のコミット12件は、中身がすべて main（a118876）に入っていることを確かめてから main にそろえた。共有の作業ツリーは、main に入った版より古い台帳の写しを外して ebb9bcd へ早送りし、変更は残っていない"
     }
   ]
 }
