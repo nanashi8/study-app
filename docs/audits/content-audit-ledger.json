@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-30T11:21:50.488Z",
+  "auditedAt": "2026-10-01T13:45:42.890Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "2c092cb1699e095c2136d616de8ae275b2af4417f457ca59fa1caf4c8a2691f1"
+    "overallContentSha256": "a3590c1fef4963635814612a77d767f5d453f243bd0094583a2c93ffad766894"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "cab3fa80ffda881b669de490fabc3fea4e16ed17df050c85cbddf364fe943728",
+    "sha256": "e7f5dbba9ddae1b0c610cce6d0d201a17c4eb17c32173bb50b1cd97b8e63c7b2",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -353,6 +353,8 @@
       "tests/word-books.test.mjs",
       "tests/word-forms-review.test.mjs",
       "tests/word-forms.test.mjs",
+      "tests/word-grammar-roles-screens.test.mjs",
+      "tests/word-grammar-roles.test.mjs",
       "tests/word-phrase-links.test.mjs",
       "tests/word-phrases.test.mjs",
       "tests/word-relations-remaining.test.mjs",
@@ -375,7 +377,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "3af68961e46b6fbe44da3165020c140ee6adabaf224f7dfec8ea848dce3586e3",
+      "contentSha256": "bcfa3adbc4c5efb3cd934e72d26b65d6370ca39e0439af52a652e984a03d0776",
       "auditGateIds": [
         "inventory",
         "coreData",
