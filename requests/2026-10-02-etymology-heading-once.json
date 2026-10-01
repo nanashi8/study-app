@@ -7,7 +7,7 @@
   "sessions": [
     "14d551bc-0038-446a-b661-dead4caaca84"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "前の依頼（requests/2026-10-01-wh-word-grammar-roles.json）で公開版の who の辞書ページを確かめたとき、「語の成り立ち」の見出しが2回続けて出ていたので、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。提案に書いた内容：辞書ページ（src/screens/WordDetail.jsx）の欄の見出しと、その中の EtymologyBlock（src/components/WordBits.jsx）が本文の箱に付ける見出しが重なる（2026-09-06 の 91bf8ee0 から）。単語テストの答え合わせ（src/screens/VocabQuiz.jsx）は重ねないようにしてある。暗記カードの裏（src/screens/VocabStudy.jsx）など、語の成り立ちを出すほかの画面も確かめ、どの画面でも見出しが1回だけになるように直す。2026-10-02 に調べると、語の成り立ちを出す画面は辞書ページ・暗記カードの裏・単語テストの答え合わせの3つ（辞書の語は EtymologyBlock、自作単語は CustomEtymology）。辞書の8,929語すべてに成り立ちの本文があり（語根カードもある語4,026・本文だけの語4,903・語根カードだけの語0）、辞書ページでは全語で見出しが2回出ていた。暗記カードの裏は、欄の見出し「語源」と本文の箱の見出し「語の成り立ち」が重なっていた。見出しが何回出るかは、語の種類（語根カードがあるか・本文があるか・自作単語か）だけで決まる作りなので、3画面×語の種類ごとに画面で確かめ、部品と画面の作り（本文の箱に見出しを付けず、欄の見出しを1つだけ置く）をテストで守ることで全語を確かめる。 クリーンな clone の全監査で、tests/learner-japanese-audit.test.mjs の学習者画面の日本語の数（18,348→18,347）とソース全体の数（235,560→235,559）が、本文の箱の見出しを外したことで動いたので、理由を書いて直した。",
   "criteria": [
     {
@@ -36,24 +36,21 @@
       "text": "既存のテストと、npm test・npm run check をすべて通す",
       "population": "npm test・npm run check の全件",
       "check": "node --test tests/etymology-heading-once.test.mjs && npm test && npm run check",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（scratchpad/study-app-clean）で、3つの依頼（辞書の検索・語の成り立ちの見出し・文法の問題の和訳）の変更をまとめて載せた npm run audit:all-content（npm test・check:content・vite build・audit:dist）が通った。push・デプロイを確かめたあと、閉じるコミットで done にする"
+      "status": "done"
     },
     {
       "id": "on-main-deployed",
-      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の辞書ページで見出しが1回だけ出ることを確かめる",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の辞書ページで見出しが1回だけ出ることを確かめる（2026-10-02 に f48c39a2 を push し（fd35fc9d まで）、デプロイ 36894576284 の成功を確かめた。公開版の辞書ページで、語根カードもある語 export・本文だけの語 apple・who の「語の成り立ち」の見出しがどれも1回だけ出ることを確かめた）",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "waiting",
-      "waitingFor": "content-rules のあとに commit・push し、デプロイと公開版を確かめる"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor f48c39a2 origin/main && test \"$(gh run view 36894576284 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない",
       "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
       "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
-      "status": "waiting",
-      "waitingFor": "on-main-deployed のあと、共有の作業ツリーを origin/main に早送りしてから確かめる"
+      "status": "done"
     }
   ]
 }

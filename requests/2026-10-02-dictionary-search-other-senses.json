@@ -7,7 +7,7 @@
   "sessions": [
     "14d551bc-0038-446a-b661-dead4caaca84"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "前の依頼（requests/2026-10-01-wh-word-grammar-roles.json）の作業で検索の作りを読んだときに気づき、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。提案に書いた内容：辞書の検索（src/lib/vocabSearch.js の vocabSearchText・vocabMatchRank、src/lib/dictionary.js の searchDictionary）は、見出し語・代表義・分野・使い方・例文・類義語・反対語・語族・使い分けを見るが、src/data/word-senses.js の「ほかの意味」（vocab.js が otherSenses として合流）を見ていない（「権利」で検索しても right が出ない）。ほかの意味を検索の対象に入れ、順位を決めて理由をコードに書き、ほかの意味の全件で引けることと、同じつづりの別の語（homograph-words.js）と取り違えないことをテストで確かめる。2026-10-02 に調べると、辞書の検索の自作カードの英単語（ほかの意味の欄がある）と、単語帳の画面のノートの検索（見出し・意味・本文から検索）も、ほかの意味を見ていなかったので、同じ依頼の条件に入れた。各教材の「一覧を確認」の検索は、画面の行に出ている見出し・意味だけでしぼり込む作りなので変えない（行に出ていない意味で当たると、なぜ残ったか分からなくなるため）。 クリーンな clone の全監査で、既存のテストの決まった値2つがこの変更で動いたので、理由を書いて直した：tests/vocab-history.test.mjs の検索結果の行（WordRow）の引数の形（sense を足した）、tests/learner-japanese-audit.test.mjs の学習者画面の日本語の数（18,346→18,348）とソース全体の数（235,558→235,560）。",
   "criteria": [
     {
@@ -57,24 +57,21 @@
       "text": "既存の検索のテスト（tests/exam-dictionary.test.mjs・tests/homograph-words.test.mjs・tests/phrase-dictionary-search.test.mjs・tests/word-grammar-roles.test.mjs など）と、npm test・npm run check をすべて通す",
       "population": "npm test・npm run check の全件",
       "check": "node --test tests/dictionary-other-senses.test.mjs tests/exam-dictionary.test.mjs tests/homograph-words.test.mjs tests/phrase-dictionary-search.test.mjs tests/word-grammar-roles.test.mjs && npm test && npm run check",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（scratchpad/study-app-clean）で、3つの依頼（辞書の検索・語の成り立ちの見出し・文法の問題の和訳）の変更をまとめて載せた npm run audit:all-content（npm test・check:content・vite build・audit:dist）が通った。push・デプロイを確かめたあと、閉じるコミットで done にする"
+      "status": "done"
     },
     {
       "id": "on-main-deployed",
-      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の辞書の検索で「権利」から right が、当たったほかの意味つきで出ることを確かめる",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の辞書の検索で「権利」から right が、当たったほかの意味つきで出ることを確かめる（2026-10-02 に 72df1120 を push し（fd35fc9d まで）、デプロイ 36894576284 の成功を確かめた。公開版の英和辞書で「権利」を引くと、right の行に「ほかの意味 名 権利」が出ることを確かめた）",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "waiting",
-      "waitingFor": "content-rules のあとに commit・push し、デプロイと公開版を確かめる"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 72df1120 origin/main && test \"$(gh run view 36894576284 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない",
       "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
       "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
-      "status": "waiting",
-      "waitingFor": "on-main-deployed のあと、共有の作業ツリーを origin/main に早送りしてから確かめる"
+      "status": "done"
     }
   ]
 }

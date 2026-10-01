@@ -7,7 +7,7 @@
   "sessions": [
     "14d551bc-0038-446a-b661-dead4caaca84"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "前の依頼（requests/2026-10-01-grammar-reference-translations.json）で、文法の参考書と、参考書に結び付く文法の問題1,523問（語法385・単元別の並び替え／選択525・参考書と同じ英文を使うそのほか613）は1件ずつ読んだが、残りの問題は数・人名・時などの手がかりで拾った141件しか読んでいなかった（食いちがいは0件）ので、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。前の依頼で見つかった食いちがいの多くは、同じ単元の問題のあいだで和訳が入れかわったもの。Ms./Mr.＋名字を「〜先生」と訳すのは、この教材の決まった訳し方として食いちがいに数えない。 2026-10-02 に2,907問を1件ずつ読んだ。食いちがいは自動で作る問題の部品の和訳の抜けの3型（2_partial_negation の文末の in practice・under pressure 12問、pre1_comparison の文末の in practice・under current conditions 18問、1_agreement_neither の目的語の the company’s 2問）で、部品（src/data/grammar-generated.js）を直して32問を直した。試験の型の問題421問・そのほか64問に食いちがいはなかった。手がかりで拾った候補6問はすべて食いちがいではなく、理由を台帳（docs/audits/grammar-quiz-translations.json）に書いた。 直した和訳のうち3文は構文の意味の欄（訳語）にも出るので、docs/audits/learner-japanese-review.json の訳語を読み直して書き直した（訳語19,817→19,818件）。",
   "criteria": [
     {
@@ -36,24 +36,21 @@
       "text": "直した和訳が、学習者の日本語の見直し台帳・全教材の監査・既存のテストをすべて通る",
       "population": "この依頼で直した和訳すべてと、npm test・npm run check の全件",
       "check": "node --test tests/grammar-quiz-translations.test.mjs && npm test && npm run check",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（scratchpad/study-app-clean）で、3つの依頼（辞書の検索・語の成り立ちの見出し・文法の問題の和訳）の変更をまとめて載せた npm run audit:all-content（npm test・check:content・vite build・audit:dist）が通った。push・デプロイを確かめたあと、閉じるコミットで done にする"
+      "status": "done"
     },
     {
       "id": "on-main-deployed",
-      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の文法のテストに直した和訳が入っていることを確かめる",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の文法のテストに直した和訳が入っていることを確かめる（2026-10-02 に fd35fc9d を push し、デプロイ 36894576284 の成功を確かめた。公開版の JS で、文法の問題を作る部品の和訳が直した形（部分否定の「実際には、」「圧力を受けても、」、not so much A as B の「実際には」「現状では」、neither A nor B の目的語の持ち主）で入り、直す前の形が4つとも残っていないことを確かめた）",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "waiting",
-      "waitingFor": "content-rules のあとに commit・push し、デプロイと公開版を確かめる"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor fd35fc9d origin/main && test \"$(gh run view 36894576284 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない",
       "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
       "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
-      "status": "waiting",
-      "waitingFor": "on-main-deployed のあと、共有の作業ツリーを origin/main に早送りしてから確かめる"
+      "status": "done"
     }
   ]
 }
