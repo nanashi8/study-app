@@ -1,0 +1,35 @@
+{
+  "id": "2026-10-02-deploy-session-changes",
+  "title": "このセッションの変更をデプロイまで完了させる（疑問詞・関係詞の働き、文法の参考書の和訳、辞書のほかの意味、語の成り立ちの見出し、文法の問題の和訳）",
+  "asked": [
+    "このセッションによる変更をデプロイまで完了させなさい。"
+  ],
+  "sessions": [
+    "14d551bc-0038-446a-b661-dead4caaca84"
+  ],
+  "status": "open",
+  "notes": "このセッション（14d551bc）の依頼は5つ（requests/2026-10-01-wh-word-grammar-roles.json・2026-10-01-grammar-reference-translations.json・2026-10-02-dictionary-search-other-senses.json・2026-10-02-etymology-heading-once.json・2026-10-02-grammar-quiz-translations.json）で、どれも閉じてある。2026-10-02 07:14 に調べると、共有の作業ツリーは origin/main の 82423a12 と同じで未コミット 0・stash 0・worktree はこの1つだけ。このセッションのコミットは9件（15e23e46・39aa067d・34869171・7de958da・addb094f・72df1120・f48c39a2・fd35fc9d・82423a12）で、push した先頭のコミットごとのデプロイ6回（39aa067d の run 36871184177・34869171 の 36873819850・7de958da の 36890018650・addb094f の 36890960687・fd35fc9d の 36894576284・82423a12 の 36897781332）はどれも success。記憶（~/.claude/projects/.../memory）の更新はリポジトリの外なので、デプロイするものではない。scratchpad の確かめ用の道具（prod-verify.mjs など）は一時の道具で、教材ではない。",
+  "criteria": [
+    {
+      "id": "session-commits-deployed",
+      "text": "このセッションのコミット9件が main に入り、push した先頭のコミットごとのデプロイ6回がどれも成功している。公開版で5つの依頼の変更が出ていることを確かめる（2026-10-02 07:20 に確かめた。公開版の JS に文法の参考書の直し81件がすべて入り直す前のものは0件、when の働きの欄から参考書の関係副詞の単元へ進むと直した和訳が出る、英和辞書で「権利」を引くと right の行に「ほかの意味 名 権利」が出る、export・apple・who の辞書ページで「語の成り立ち」の見出しが1回だけ出る、文法の問題を作る部品の和訳が直した形で入り直す前の形は0件）",
+      "population": "このセッションのコミット9件（15e23e46・39aa067d・34869171・7de958da・addb094f・72df1120・f48c39a2・fd35fc9d・82423a12）と、そのデプロイ6回、公開版 https://nanashi8.github.io/study-app/",
+      "check": "git fetch -q origin main && for c in 15e23e46 39aa067d 34869171 7de958da addb094f 72df1120 f48c39a2 fd35fc9d 82423a12; do git merge-base --is-ancestor $c origin/main || exit 1; done && for r in 36871184177 36873819850 36890018650 36890960687 36894576284 36897781332; do test \"$(gh run view $r --json conclusion -q .conclusion)\" = success || exit 1; done && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない。共有の作業ツリーは未コミット 0・stash 0・未 push 0、このセッションの scratchpad の複製は main の履歴にないコミット 0・main に入っていない変更 0",
+      "population": "共有の作業ツリー（~/projects/study-app）と、このセッションの作業場所（scratchpad の study-app の複製すべて）",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs && git fetch -q origin main && test -z \"$(git status --porcelain)\" && test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test -z \"$(git log origin/main..HEAD --oneline)\"",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "この依頼の台帳のコミットを push し、そのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
