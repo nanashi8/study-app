@@ -80,11 +80,14 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-02、辞書の検索で、ほかの意味で当たった語の行に当たった意味の見出し（「ほかの意味」「文の中での働き」）を
   // 出したので、学習者画面の日本語が 18346 から 18348 に、ソース全体が 235558 から 235560 になった（重複なしは変わらない。
   // requests/2026-10-02-dictionary-search-other-senses.json）。
+  // 2026-10-02、「語の成り立ち」の見出しが2回続けて出ないよう、部品（EtymologyBlock）の本文の箱の見出しを外したので、
+  // 学習者画面の日本語が 18348 から 18347 に、ソース全体が 235560 から 235559 になった（重複なしは変わらない。
+  // requests/2026-10-02-etymology-heading-once.json）。
   assert.equal(result.learnerFiles, 348)
-  assert.equal(result.learnerJapaneseEntries, 18348)
+  assert.equal(result.learnerJapaneseEntries, 18347)
   assert.equal(result.learnerUniqueJapaneseEntries, 13709)
   assert.equal(result.sourceFiles, 823)
-  assert.equal(result.sourceJapaneseEntries, 235560)
+  assert.equal(result.sourceJapaneseEntries, 235559)
   assert.equal(result.issues.length, 0)
 })
 

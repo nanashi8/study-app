@@ -458,10 +458,8 @@ export function VocabQuizScreen() {
             />
             {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                {/* 語の歴史がある語は、その欄に「語の成り立ち」の見出しが付くので、ここでは重ねない。 */}
-                {!etymologyStoryForWord(word) && (
-                  <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
-                )}
+                {/* 見出しはこの欄に1回だけ置く（EtymologyBlock の本文の箱には見出しを付けない）。 */}
+                <p className="mb-2 text-sm font-extrabold text-brand-700" data-etymology-heading>語の成り立ち</p>
                 <EtymologyBlock word={word} lookalikeCollapsed />
               </div>
             )}

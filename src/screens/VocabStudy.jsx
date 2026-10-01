@@ -522,9 +522,10 @@ export function VocabStudyScreen() {
               {/* 手動監査を通った語源だけを表示する。語根カードが無い語も成り立ちは出す。 */}
               {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-brand-100">
+                  {/* 見出しは辞書ページ・テストの答え合わせと同じ「語の成り立ち」を1回だけ置く。 */}
                   <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                     <Lightbulb size={16} />
-                    <span className="text-xs font-extrabold">語源</span>
+                    <span className="text-xs font-extrabold" data-etymology-heading>語の成り立ち</span>
                   </div>
                   <EtymologyBlock
                     word={word}

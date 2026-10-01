@@ -67,7 +67,7 @@ export function CustomEtymology({ word, className = '', heading = true }) {
   if (!word?.custom || !word.customEtymology) return null
   return (
     <div className={className} data-custom-word-etymology>
-      {heading && <p className="mb-1 text-sm font-extrabold text-brand-700">語の成り立ち</p>}
+      {heading && <p className="mb-1 text-sm font-extrabold text-brand-700" data-etymology-heading>語の成り立ち</p>}
       <p className="text-sm font-bold leading-relaxed text-ink/75">{word.customEtymology}</p>
     </div>
   )
@@ -207,6 +207,8 @@ export function ReferenceRootSummary({ word, onRoot }) {
  * 自動綴り判定は、公開可否の根拠にも画面表示にも使わない。
  * 最後に「つづりが似た語は同じ語源？」（src/data/lookalike-origins.js）を出す。onWord があれば語を押して開ける。
  * lookalikeCollapsed は、テストの答えのように説明が多い所で、その欄を見出しだけにしておくとき。
+ * 「語の成り立ち」の見出しは、これを置く欄（辞書ページ・暗記カードの裏・テストの答え合わせ）が1つだけ付ける。
+ * 本文の箱にも見出しを付けると、欄の見出しと2回続けて出てしまう（同じ見出しを繰り返さない）。
  */
 export function EtymologyBlock({ word, onRoot, onPack, onWord, lookalikeCollapsed = false }) {
   const cards = etymologyCardsForWord(word)
@@ -218,8 +220,7 @@ export function EtymologyBlock({ word, onRoot, onPack, onWord, lookalikeCollapse
     <div className="space-y-2.5" data-reviewed-etymology-cards>
       {story && (
         <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-reviewed-word-story>
-          <p className="text-xs font-extrabold text-amber-700">語の成り立ち</p>
-          <p className="mt-1 text-sm font-bold leading-relaxed text-ink"><MeaningText>{story.note}</MeaningText></p>
+          <p className="text-sm font-bold leading-relaxed text-ink"><MeaningText>{story.note}</MeaningText></p>
         </div>
       )}
       {cards.length > 0 && (
