@@ -121,7 +121,8 @@ const vocabEntry = (item) => ({
   detail: item.example?.en ?? '',
   category: compact([item.pos, item.field]).join('・'),
   level: examLevel(item.level),
-  search: [item.meanings, item.example?.ja, item.phonetic],
+  // ほかの意味（right の「権利」など。自作カードはほかの意味の欄）からも引ける。
+  search: [item.meanings, item.example?.ja, item.phonetic, (item.otherSenses ?? []).map((sense) => sense.meaning)],
 })
 
 // 漢語・漢文法・漢文常識は同じ形（見出し・答え・解説・分野・段階）なので、分野の表だけ差し替える。

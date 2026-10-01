@@ -91,8 +91,9 @@ test('英和辞書の検索結果・参照履歴の各単語から、登録先�
   )
 
   // 検索結果・自作単語・履歴に同じ「単語帳」ボタン（WordRow）を置き、押すと画面下部の「単語帳」で選んだ登録先に入れる。
+  // sense は、ほかの意味で当たった語の行に、当たったほかの意味を出すためのもの（requests/2026-10-02-dictionary-search-other-senses.json）。
   assert.equal((source.match(/<WordRow\b/g) ?? []).length, 3)
-  assert.match(source, /function WordRow\(\{ word, custom = false, onOpen \}\)/)
+  assert.match(source, /function WordRow\(\{ word, custom = false, sense = null, onOpen \}\)/)
   assert.match(source, /const wordBook = useWordBookSlot\(\[`vocab:\$\{word\.id\}`\], \{ label: word\.word \}\)/)
   assert.match(source, /const wordBook = useWordBookSlot\(\[`phrases:\$\{phrase\.id\}`\], \{ label: phrase\.phrase \}\)/)
   assert.match(source, /data-dictionary-word-book/)

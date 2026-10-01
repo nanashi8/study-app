@@ -58,11 +58,21 @@ export function vocabSearchText(word) {
     usageGuideText(word.usageGuides),
     // 疑問詞・関係詞の語は、働きの名前（関係代名詞など）・意味・形・解説からも引ける。
     ...(word.grammarRoles ?? []).flatMap((item) => [item.role, item.meaning, item.form, item.explain, item.example?.en, item.example?.ja]),
+    // ほかの意味の例文も、代表義の例文と同じく例文などの一致で引ける。
+    ...(word.otherSenses ?? []).flatMap((sense) => [sense.example?.en, sense.example?.ja]),
   ].filter(Boolean).join(' ')))
 }
 
-// 小さいほど上位。見出し語一致を守りつつ、語法・例文・使い分けも検索対象にする。
-export function vocabMatchRank(word, rawQuery) {
+// ほかの意味（right の「権利」など）で当たった語の順位。ほかの意味はその語の意味そのものなので、
+// 例文・使い方などにたまたま出てくる一致（4）より上に置く。ただ代表義はカードで最初に学ぶ意味で、
+// 検索結果の行にも代表義が出るので、代表義で当たった語（3）の次にする。
+export const OTHER_SENSE_RANK = 3.5
+
+/**
+ * 見出し語・代表義・ほかの意味だけで見た一致の強さ（小さいほど上位、当たらなければ -1）。
+ * 例文などは見ないので、自作カードの英単語の検索にもそのまま使える。
+ */
+export function vocabMeaningMatchRank(word, rawQuery) {
   const query = normalize(rawQuery)
   if (!query) return -1
 
@@ -73,8 +83,27 @@ export function vocabMatchRank(word, rawQuery) {
 
   const meanings = normalize([word.meaning, ...(word.meanings ?? [])].join(' '))
   if (meanings.includes(query)) return 3
-  if (vocabSearchText(word).includes(query)) return 4
+  if ((word.otherSenses ?? []).some((sense) => normalize(sense.meaning).includes(query))) return OTHER_SENSE_RANK
   return -1
+}
+
+// 小さいほど上位。見出し語一致を守りつつ、語法・例文・使い分けも検索対象にする。
+export function vocabMatchRank(word, rawQuery) {
+  const rank = vocabMeaningMatchRank(word, rawQuery)
+  if (rank >= 0) return rank
+  const query = normalize(rawQuery)
+  if (query && vocabSearchText(word).includes(query)) return 4
+  return -1
+}
+
+/**
+ * ほかの意味で当たったときの、その意味（最初に当たったもの）。見出し語か代表義で当たるときは null。
+ * 検索結果の行は代表義しか見せないので、なぜ出たかが分かるよう、当たったほかの意味を添える。
+ */
+export function matchedOtherSense(word, rawQuery) {
+  if (vocabMeaningMatchRank(word, rawQuery) !== OTHER_SENSE_RANK) return null
+  const query = normalize(rawQuery)
+  return (word.otherSenses ?? []).find((sense) => normalize(sense.meaning).includes(query)) ?? null
 }
 
 // ── 熟語・構文（PHRASES）の検索 ─────────────────────────────

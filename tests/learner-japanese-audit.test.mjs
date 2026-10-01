@@ -77,11 +77,14 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // SubjectEarthDiagrams.jsx）と、図を押して大きく見る部品が1ファイル（src/components/SubjectFigureZoom.jsx）増えた。
   // 足した図・図の読み方・出典と、読みがなの辞書の5語（高句麗・百済・長宗我部・象潟・泉北）で、学習者画面の日本語が
   // 17565 から 18346 に、ソース全体が 233340 から 235558 になった（requests/2026-10-01-subject-figure-enrich.json）。
+  // 2026-10-02、辞書の検索で、ほかの意味で当たった語の行に当たった意味の見出し（「ほかの意味」「文の中での働き」）を
+  // 出したので、学習者画面の日本語が 18346 から 18348 に、ソース全体が 235558 から 235560 になった（重複なしは変わらない。
+  // requests/2026-10-02-dictionary-search-other-senses.json）。
   assert.equal(result.learnerFiles, 348)
-  assert.equal(result.learnerJapaneseEntries, 18346)
+  assert.equal(result.learnerJapaneseEntries, 18348)
   assert.equal(result.learnerUniqueJapaneseEntries, 13709)
   assert.equal(result.sourceFiles, 823)
-  assert.equal(result.sourceJapaneseEntries, 235558)
+  assert.equal(result.sourceJapaneseEntries, 235560)
   assert.equal(result.issues.length, 0)
 })
 

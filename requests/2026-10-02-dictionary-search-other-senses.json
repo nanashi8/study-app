@@ -1,0 +1,80 @@
+{
+  "id": "2026-10-02-dictionary-search-other-senses",
+  "title": "辞書の検索で「ほかの意味」からも引けるようにする",
+  "asked": [
+    "このタスクをここで実行してください：「辞書の検索で'ほかの意味'からも引けるようにする」"
+  ],
+  "sessions": [
+    "14d551bc-0038-446a-b661-dead4caaca84"
+  ],
+  "status": "open",
+  "notes": "前の依頼（requests/2026-10-01-wh-word-grammar-roles.json）の作業で検索の作りを読んだときに気づき、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。提案に書いた内容：辞書の検索（src/lib/vocabSearch.js の vocabSearchText・vocabMatchRank、src/lib/dictionary.js の searchDictionary）は、見出し語・代表義・分野・使い方・例文・類義語・反対語・語族・使い分けを見るが、src/data/word-senses.js の「ほかの意味」（vocab.js が otherSenses として合流）を見ていない（「権利」で検索しても right が出ない）。ほかの意味を検索の対象に入れ、順位を決めて理由をコードに書き、ほかの意味の全件で引けることと、同じつづりの別の語（homograph-words.js）と取り違えないことをテストで確かめる。2026-10-02 に調べると、辞書の検索の自作カードの英単語（ほかの意味の欄がある）と、単語帳の画面のノートの検索（見出し・意味・本文から検索）も、ほかの意味を見ていなかったので、同じ依頼の条件に入れた。各教材の「一覧を確認」の検索は、画面の行に出ている見出し・意味だけでしぼり込む作りなので変えない（行に出ていない意味で当たると、なぜ残ったか分からなくなるため）。 クリーンな clone の全監査で、既存のテストの決まった値2つがこの変更で動いたので、理由を書いて直した：tests/vocab-history.test.mjs の検索結果の行（WordRow）の引数の形（sense を足した）、tests/learner-japanese-audit.test.mjs の学習者画面の日本語の数（18,346→18,348）とソース全体の数（235,558→235,560）。",
+  "criteria": [
+    {
+      "id": "search-other-senses-all",
+      "text": "辞書の検索で、ほかの意味の訳語からその語が引ける。ほかの意味の全件で、意味の全体と「・」で区切った1つずつのどれで検索しても、その語が検索結果に出る",
+      "population": "辞書の語のほかの意味すべて（2026-10-02 に数えて130件：word-senses.js の101語113件と、疑問詞・関係詞の働きの17件）と、その訳語を「・」で区切った1つずつすべて",
+      "check": "node --test tests/dictionary-other-senses.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "rank-decided",
+      "text": "ほかの意味で当たった語の順位を、代表義で当たった語（3）の次、例文・使い方などで当たった語（4）より上に置き、理由をコードの説明に書く。ほかの意味の例文は、代表義の例文と同じく例文などの順位で引ける",
+      "population": "ほかの意味130件の訳語と例文すべて",
+      "check": "node --test tests/dictionary-other-senses.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "homographs-not-confused",
+      "text": "同じつづりの別の語（homograph-words.js の見出し語）が、元の語のほかの意味と取り違えて検索結果の上位に出ない（その語自身の意味で当たるときだけ上位に出る）",
+      "population": "homograph-words.js の見出し語すべてと、同じつづりの語のほかの意味すべて",
+      "check": "node --test tests/dictionary-other-senses.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "custom-cards",
+      "text": "辞書の検索に混ぜて出す自作カードの英単語も、ほかの意味の欄の訳語から引ける",
+      "population": "自作カードの英単語のほかの意味の欄（テンプレートの欄すべて）",
+      "check": "node --test tests/dictionary-other-senses.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "result-row-shows-sense",
+      "text": "ほかの意味で当たった語は、検索結果の行に、当たったほかの意味（品詞と意味）を出し、代表義しか書いていない行がなぜ出たかが分かる。375px の幅で横にはみ出さない",
+      "population": "辞書の検索画面の単語の行・自作カードの行",
+      "check": "node --test tests/dictionary-other-senses.test.mjs tests/dictionary-other-senses-screen.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "notebook-search",
+      "text": "単語帳の画面のノートの検索（見出し・意味・本文から検索）でも、英単語（辞書の語と自作カード）のほかの意味から引ける",
+      "population": "ノートの英単語のほかの意味すべて（辞書の語の130件と、自作カードのほかの意味の欄）",
+      "check": "node --test tests/dictionary-other-senses.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "content-rules",
+      "text": "既存の検索のテスト（tests/exam-dictionary.test.mjs・tests/homograph-words.test.mjs・tests/phrase-dictionary-search.test.mjs・tests/word-grammar-roles.test.mjs など）と、npm test・npm run check をすべて通す",
+      "population": "npm test・npm run check の全件",
+      "check": "node --test tests/dictionary-other-senses.test.mjs tests/exam-dictionary.test.mjs tests/homograph-words.test.mjs tests/phrase-dictionary-search.test.mjs tests/word-grammar-roles.test.mjs && npm test && npm run check",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone（scratchpad/study-app-clean）で、3つの依頼（辞書の検索・語の成り立ちの見出し・文法の問題の和訳）の変更をまとめて載せた npm run audit:all-content（npm test・check:content・vite build・audit:dist）が通った。push・デプロイを確かめたあと、閉じるコミットで done にする"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の辞書の検索で「権利」から right が、当たったほかの意味つきで出ることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "waiting",
+      "waitingFor": "content-rules のあとに commit・push し、デプロイと公開版を確かめる"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない",
+      "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
+      "status": "waiting",
+      "waitingFor": "on-main-deployed のあと、共有の作業ツリーを origin/main に早送りしてから確かめる"
+    }
+  ]
+}

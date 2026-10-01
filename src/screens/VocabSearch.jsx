@@ -7,7 +7,7 @@ import {
   WORD_REQUEST_DEVICE_DAILY_LIMIT,
   WORD_REQUEST_TOTAL_LIMIT,
 } from '../lib/wordRequests.js'
-import { normalizeVocabQuery } from '../lib/vocabSearch.js'
+import { matchedOtherSense, normalizeVocabQuery, vocabMeaningMatchRank } from '../lib/vocabSearch.js'
 import {
   DICTIONARY_COUNTS,
   DICTIONARY_TYPE_META,
@@ -141,12 +141,18 @@ function CustomBadge() {
 }
 
 // 右端の「単語帳」は、画面下部の「単語帳」で選んだ登録先に入れる（入っていれば塗り、もう一度押すと外す）。
-function WordRow({ word, custom = false, onOpen }) {
+// ほかの意味で当たった語は、行に代表義しか出ないとなぜ出たか分からないので、当たった意味を下に添える
+// （辞書ページと同じく、疑問詞・関係詞の働きの意味は「文の中での働き」として出す）。
+function WordRow({ word, custom = false, sense = null, onOpen }) {
   const level = getLevel(word.level)
   const wordBook = useWordBookSlot([`vocab:${word.id}`], { label: word.word })
   const inBook = wordBook.inBook
   return (
-    <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm" data-dictionary-custom-word={custom ? word.id : undefined}>
+    <div
+      className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm"
+      data-dictionary-word={custom ? undefined : word.id}
+      data-dictionary-custom-word={custom ? word.id : undefined}
+    >
       <SpeakButton text={word.word} size="sm" />
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-2 text-left">
         {custom ? <CustomBadge /> : <KindBadge type="word" />}
@@ -159,6 +165,15 @@ function WordRow({ word, custom = false, onOpen }) {
             <PosBadge pos={word.pos} className="h-5 min-w-5 px-1 text-[10px]" />
             <span className="truncate text-xs font-bold text-ink/55"><MeaningText>{word.meaning}</MeaningText></span>
           </div>
+          {sense && (
+            <div className="mt-0.5 flex min-w-0 items-center gap-1.5" data-dictionary-other-sense>
+              <span className="shrink-0 text-[10px] font-extrabold text-amber-700">{sense.role ? '文の中での働き' : 'ほかの意味'}</span>
+              <PosBadge pos={sense.pos} className="h-5 min-w-5 px-1 text-[10px]" />
+              <span className="truncate text-xs font-bold text-ink/70">
+                <MeaningText>{sense.role ? `（${sense.role}）${sense.meaning}` : sense.meaning}</MeaningText>
+              </span>
+            </div>
+          )}
         </div>
         <span className="text-brand-300"><ArrowRight size={16} /></span>
       </button>
@@ -297,14 +312,13 @@ export function VocabSearchScreen() {
   // 単語・熟語・構文を1本にまとめ、一致の強い順に検索する。
   const matched = useMemo(() => searchDictionary(query), [query])
   const pool = query ? matched : []
-  // 自作カードの英単語は辞書に混ぜず、つづりか意味が合う語を検索結果の先頭へ別に並べる。
+  // 自作カードの英単語は辞書に混ぜず、つづりか意味（ほかの意味の欄もふくむ）が合う語を検索結果の先頭へ別に並べる。
   const customMatches = useMemo(() => (
     query
       ? customWords
         .map(customWordToStudyWord)
         .filter(Boolean)
-        .filter((word) => [word.word, ...word.meanings]
-          .some((text) => normalizeVocabQuery(text).includes(query)))
+        .filter((word) => vocabMeaningMatchRank(word, query) >= 0)
       : []
   ), [customWords, query])
   const shownCustom = type === 'all' || type === 'word' ? customMatches : []
@@ -367,6 +381,7 @@ export function VocabSearchScreen() {
       <WordRow
         key={entry.id}
         word={entry.word}
+        sense={matchedOtherSense(entry.word, query)}
         onOpen={() => openWord(entry.word)}
       />
     ) : (
@@ -514,6 +529,7 @@ export function VocabSearchScreen() {
                         key={word.id}
                         word={word}
                         custom
+                        sense={matchedOtherSense(word, query)}
                         onOpen={() => openWord(word)}
                       />
                     ))}
