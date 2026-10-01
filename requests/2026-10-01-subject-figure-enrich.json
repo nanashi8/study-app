@@ -16,49 +16,56 @@
       "text": "図が文字だけ（表・流れ図・年表だけ）の要点を1件ずつ読み、要点の中身が目で見てわかる図（地図・グラフ・帯グラフ・時代の帯・しくみの図・装置や生物のつくりの図など）を足すか置きかえる。文字の図のままにする要点は、文字のほうが理解を助ける理由を台帳に書き、報告で件数と理由を示す",
       "population": "要点538件のうち、図が表・流れ図・年表だけの216件（2026-10-01 に数えた。地理22・歴史67・公民56・理科1年23・2年20・3年28。一覧は docs/audits/junior-social-science-figure-enrich.json）",
       "check": "node --test tests/junior-social-science-figure-enrich.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-10-01 に図が表・流れ図・年表だけだった要点216件（地理22・歴史67・公民56・理科71）を1件ずつ読み、194件（地理19・歴史61・公民43・理科71）に目で見てわかる図（地図・グラフ・帯グラフ・時代の帯・しくみの図・装置や生物のつくりの図）を足すか置きかえた。22件（地理3・歴史6・公民13）は、文字の図のほうが理解を助ける理由を docs/audits/junior-social-science-figure-enrich.json の reason に書いた。理科の図は新しい部品（SubjectScienceParts.jsx）と生物・化学・物理・地学の4ファイルの図解53種、関係図・帯グラフ・時代の帯は SubjectFigureKinds.jsx。tests/junior-social-science-figure-enrich.test.mjs が216件の判断と中身の指紋の一致を確かめる"
     },
     {
       "id": "all-figures-understanding",
       "text": "要点の図と演習の図をすべて375pxの幅で見て、図が要点・問題の中身を示しているか、見る所（色・記号・凡例・単位・目もり・名前）が読み取れるか、比べる表が見比べられる形かを確かめ、足りない図を直す。1件ずつ見た記録を指紋つきで台帳に残す",
       "population": "要点の図538件（図の組の中の図もふくむ）と演習の図47件",
       "check": "node --test tests/junior-social-science-figure-enrich.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "要点の図538件（図の組の中の図もふくむ。目で見る図516・文字の図22）と、図を使う演習47問の図をすべて375pxの幅で撮って見て、判断と中身の指紋を docs/audits/junior-social-science-figure-enrich.json に記録した。読みにくかった演習の図5問を直した（geo-12-q06 は地図の範囲をしぼり記号をA〜Dに、civ-09-q08 は表を帯グラフに、sc3-03-q08 は表を○・×・－の記号に、sc1-03-q07・sc3-06-q08 は表の短い欄が1字ずつ折れないように）。tests/junior-social-science-figure-enrich.test.mjs が全件の記録と中身の一致を確かめる"
     },
     {
       "id": "guides-follow-figures",
       "text": "図を変えた要点の「図の読み方」を、新しい図の見る所（図1・図2、色・記号・矢印・目もり）に合わせて書き直し、図の判断の記録を押し直す。演習の図を変えたら読み取り方も合わせる",
       "population": "図を変えた要点と演習の問題すべて",
       "check": "node --test tests/junior-social-science-figures.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-review.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "図を変えた要点の「図の読み方」を、新しい図の見る所（図1・図2、色・記号・矢印・目もり）に合わせて書き直し、全538要点・918問の図表の判断の記録（docs/audits/junior-social-science-figures.json）と全102単元の読み直しの記録（junior-social-science-review.json）を押し直した。描き直した演習3問（geo-12-q06・civ-09-q08・sc3-03-q08）は読み取り方も直し、答えの確認の記録（junior-social-science-answers.json）を押し直した。tests/junior-social-science-figures.test.mjs・junior-social-science-answers.test.mjs・junior-social-science-review.test.mjs が記録と中身の一致を確かめる"
     },
     {
       "id": "data-sourced",
       "text": "新しく足したグラフ・地図の数値や位置は、公的な統計や資料で確かめる。実際の数値を使う図には出典の id を付けて出典のページに載せ、数値と資料の照らし合わせを台帳に記録する",
       "population": "この依頼で足した、数値を使う図（グラフ・帯グラフ・数値の地図）すべて",
       "check": "node --test tests/junior-social-science-figure-enrich.test.mjs tests/junior-social-science.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "この依頼で足した数値を使う図26件（要点25・演習1）を記録した。実際の統計・資料の値を使う19件は、18の資料（国勢調査・資源エネルギー庁・農林水産省・総務省・財務省と国土交通省・内閣府・文部省・国税庁・出入国在留管理庁・世界銀行・オーストラリア統計局・ピュー研究所・メンデルの論文・全国地球温暖化防止活動推進センターなど）の値と照らし合わせ、図に出典の id を付けて出典のページ（src/data/credits.js）に載せた（mendel-1866・soumu-tsushin-2025・jccca-household-co2-2024 を新しく足した）。例の数値の7件は、統計ではないことと数値のもとを記録した。tests/junior-social-science-figure-enrich.test.mjs が照らし合わせの記録と中身の一致を、tests/junior-social-science.test.mjs が図の出典 id が出典のページにあることを確かめる"
     },
     {
       "id": "layout-375",
       "text": "足した図をふくむ全部の図で、375pxの幅で文字が重ならず、図の外へはみ出さない。図の中の文字は375pxの幅で8px以上（地図のラベルの上の小さな読みがなをのぞく）にする（2026-10-01 に測ると、6,544字のうち8px未満が553字・86図あった）",
       "population": "要点の図と演習の図のすべての svg の文字（2026-10-01 に要点の図で6,544字）",
       "check": "node --test tests/junior-social-science-figure-layout.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "要点の図581枚（svg）と演習の図で、375pxの幅で文字の重なり・図の外へのはみ出し・8px未満の文字が0件（依頼のときは6,544字のうち553字・86図が8px未満だった。図の文字を座標で8.5以上にし、等圧線の下にかくれたラベル1件を上に描いた）。tests/junior-social-science-figure-layout.test.mjs（判定は tests/subject-figure-inspect.mjs）が全図を描いて確かめる。同じテストで、描いた図の文字32,058か所について、読みがなの辞書の語に読みがなが付き、常用漢字表にない字をふくむ語に読みがあることも確かめる（図のラベルを地図と同じ Halo で描くようにして18か所に読みがなを付け、かっこの中を読みと取り違えて読みがなが消えていた6か所を直した）"
     },
     {
       "id": "figure-zoom",
       "text": "スマホでは画面を指で拡大できないので、図を押すと（「大きく見る」でも）図を画面いっぱいに大きくして見られ、縦横に動かして細かい文字や読みがなまで読める。大きくした図では、文字が16px以上・読みがなが8px以上になる。閉じると元の画面の同じ位置に戻る",
       "population": "svg で描く図すべて（要点の図・演習の図。図の組の中の図も1枚ずつ）",
       "check": "node --test tests/junior-social-science-figure-zoom.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "svg で描く図すべて（要点の図581枚と、図を使う演習のうち svg の図がある35問の35枚。図の組の中の図も1枚ずつ）に、図そのものを押す・「大きく見る」を押すの2つの開き方をつけた（src/components/SubjectFigureZoom.jsx）。tests/junior-social-science-figure-zoom.test.mjs が375pxの画面で1枚ずつ両方の開き方で開き、画面いっぱいに出ること・文字16px以上・読みがな8px以上・図が画面より広く縦横に動かせること・閉じると消えて元の画面のスクロールの位置が1px以内で同じことを確かめる"
     },
     {
       "id": "screens-and-audits",
       "text": "新しい図が単元のページと演習に375pxの幅で出て横にはみ出さないことを確かめ、学習者向けの日本語の決まり・全教材監査・既存のテストをすべて通す",
       "population": "社会・理科の全画面と、npm test・npm run check の全件",
       "check": "node --test tests/junior-social-science-screens.test.mjs && npm test && npm run check",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "tests/junior-social-science-screens.test.mjs（11件）が、全102単元のページ・暗記カード・語句テスト・演習・図を使う全問・一覧・出典のページと、開いた画面が375pxで横にはみ出さないことを確かめる。学習者向けの日本語の見直し台帳で新しい漢字語136件を読んで足し（読み方が特別な高句麗・百済・長宗我部・象潟・泉北の5語を読みの辞書に足した）、もう出てこない2件を外し、常用外の例外3件（仮名の成り立ちの図の於・阿・伊）に理由を書き、監査の固定値（同じ日に main へ入った疑問詞・関係詞の依頼の分と合わせて、学習者画面348ファイル・18,346表記、ソース全体823ファイル・235,558表記）を直した。カタカナで読む名前の台帳も作り直した。クリーンな clone で、同じ日に main へ入った疑問詞・関係詞の依頼（39aa067）の上に載せ直した 1ce50d7 で npm run audit:all-content が通った（テスト1,278件すべて合格・24カテゴリ・教材20,337件・問題経路7,280件、失敗0件）"
     },
     {
       "id": "on-main-deployed",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-01T13:45:42.890Z",
+  "auditedAt": "2026-10-01T14:03:59.548Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "a3590c1fef4963635814612a77d767f5d453f243bd0094583a2c93ffad766894"
+    "overallContentSha256": "5c41b36e0d2b7ad176298e7e793274502459ecd19dbc46b66569e407342a9ebf"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "e7f5dbba9ddae1b0c610cce6d0d201a17c4eb17c32173bb50b1cd97b8e63c7b2",
+    "sha256": "96793fd9694d005540113b383adaddbaf87d495cb3265d370dc8430fc62d6f6e",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -251,7 +251,9 @@
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
+      "tests/junior-social-science-figure-enrich.test.mjs",
       "tests/junior-social-science-figure-layout.test.mjs",
+      "tests/junior-social-science-figure-zoom.test.mjs",
       "tests/junior-social-science-figures.test.mjs",
       "tests/junior-social-science-glossary.test.mjs",
       "tests/junior-social-science-katakana-names.test.mjs",
@@ -870,7 +872,7 @@
       "quizItemCount": 522,
       "learningIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
       "quizIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
-      "contentSha256": "664936b63da24e16c4e7896d44872d3d4b1f0c365cd8228607b0853bc80ed848",
+      "contentSha256": "71b0a63d89a36a6734ee9da662a6993beca67bf865de7e9c5fdf9049dc23c375",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -916,7 +918,7 @@
       "quizItemCount": 396,
       "learningIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
       "quizIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
-      "contentSha256": "0613e1759bcde34bf29736092cda1c5100103a4367b0f2dfd4cf4d071b88b781",
+      "contentSha256": "59ab242964b1cd16340584a9379039b0d13c809f1846f7af5ec6f5f80b2c42b9",
       "auditGateIds": [
         "inventory",
         "coreData",
