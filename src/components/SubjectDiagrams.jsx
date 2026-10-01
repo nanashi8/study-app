@@ -8,6 +8,10 @@ import { GEOGRAPHY_DIAGRAMS } from './SubjectGeographyDiagrams.jsx'
 import { HISTORY_DIAGRAMS } from './SubjectHistoryDiagrams.jsx'
 import { CIVICS_DIAGRAMS } from './SubjectCivicsDiagrams.jsx'
 import { SCIENCE_DIAGRAMS } from './SubjectScienceDiagrams.jsx'
+import { BIOLOGY_DIAGRAMS } from './SubjectBiologyDiagrams.jsx'
+import { CHEMISTRY_DIAGRAMS } from './SubjectChemistryDiagrams.jsx'
+import { PHYSICS_DIAGRAMS } from './SubjectPhysicsDiagrams.jsx'
+import { EARTH_DIAGRAMS } from './SubjectEarthDiagrams.jsx'
 
 const INK = '#1f2937'
 const MUTED = '#64748b'
@@ -295,12 +299,12 @@ function TerritoryDiagram() {
         </g>
       ))}
       <Label x={(coast + 110) / 2} y={sea + 24} size={9.5} weight="800" anchor="middle" color={BLUE}>領海</Label>
-      <Label x={(110 + 150) / 2} y={sea + 14} size={8} weight="800" anchor="middle" color="#334155">接続</Label>
-      <Label x={(110 + 150) / 2} y={sea + 24} size={8} weight="800" anchor="middle" color="#334155">水域</Label>
+      <Label x={(110 + 150) / 2} y={sea + 14} size={8.5} weight="800" anchor="middle" color="#334155">接続</Label>
+      <Label x={(110 + 150) / 2} y={sea + 24} size={8.5} weight="800" anchor="middle" color="#334155">水域</Label>
       <Label x={(150 + 262) / 2} y={sea + 20} size={9.5} weight="800" anchor="middle" color={GREEN}>排他的経済水域</Label>
-      <Label x={(150 + 262) / 2} y={sea + 34} size={8} anchor="middle" color={GREEN}>（魚や海底の資源は沿岸国のもの）</Label>
+      <Label x={(150 + 262) / 2} y={sea + 34} size={8.5} anchor="middle" color={GREEN}>（魚や海底の資源は沿岸国のもの）</Label>
       <Label x={281} y={sea + 24} size={9.5} weight="800" anchor="middle" color="#334155">公海</Label>
-      <Label x={coast} y={sea - 12} size={8} anchor="middle" color={INK}>海岸線</Label>
+      <Label x={coast} y={sea - 12} size={8.5} anchor="middle" color={INK}>海岸線</Label>
       {marks.slice(1).map((mark, index) => (
         <g key={`d-${mark.label}`}>
           <line x1={coast} x2={mark.x} y1={sea + 82 + index * 15} y2={sea + 82 + index * 15} stroke={MUTED} strokeWidth="0.9" />
@@ -308,7 +312,7 @@ function TerritoryDiagram() {
           <Label x={mark.x + 3} y={sea + 85 + index * 15} size={8.5} color={INK} anchor={mark.x > 200 ? 'end' : 'start'}>{mark.label}</Label>
         </g>
       ))}
-      <Label x={296} y={20} size={8} color={MUTED} anchor="end">※ 距離は実際の比ではない</Label>
+      <Label x={296} y={20} size={8.5} color={MUTED} anchor="end">※ 距離は実際の比ではない</Label>
     </svg>
   )
 }
@@ -324,6 +328,10 @@ export const SUBJECT_DIAGRAMS = Object.freeze({
   ...HISTORY_DIAGRAMS,
   ...CIVICS_DIAGRAMS,
   ...SCIENCE_DIAGRAMS,
+  ...BIOLOGY_DIAGRAMS,
+  ...CHEMISTRY_DIAGRAMS,
+  ...PHYSICS_DIAGRAMS,
+  ...EARTH_DIAGRAMS,
 })
 
 export function DiagramFigure({ figure }) {

@@ -8,11 +8,11 @@ const ENTRIES = Object.freeze(
     .map(([text, reading]) => ({ text, reading }))
     .sort((a, b) => b.text.length - a.text.length),
 )
-const INLINE_READING = /^[(（][ぁ-ゖー・]/u
 // 「シャンハイ（上海）」のように読みが先に書いてあるか、「上海（シャンハイ）」のように後に書いてあるか。
+// かっこの中が辞書の読みで始まるときだけ、読みとみなす。「九十九里浜（いわし）」「年貢（その年の収穫で変わる）」の
+// ように、かっこの中のひらがなが産物や説明のときは、読みがなを付ける（2026-10-01 に教材の全文で確かめた）。
 const writtenAround = (text, start, entry) => {
   const end = start + entry.text.length
-  if (INLINE_READING.test(text.slice(end, end + 2))) return true
   if (text.startsWith(`（${entry.reading}`, end) || text.startsWith(`(${entry.reading}`, end)) return true
   const before = text.slice(Math.max(0, start - entry.reading.length - 1), start)
   return before === `${entry.reading}（` || before === `${entry.reading}(`

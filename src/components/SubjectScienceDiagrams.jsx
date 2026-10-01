@@ -1,19 +1,15 @@
 // 理科の図解（顕微鏡・花のつくりなど）。SubjectDiagrams.jsx から名前で呼び出す。
 // どの図も幅300の座標で描き、画面では約300pxに出る。部分の名前は、引き出し線の先に書く。
+import { Halo } from './SubjectMapFigures.jsx'
 
 const INK = '#1f2937'
 const LINE = '#475569'
 const METAL = '#cbd5e1'
 const DARK = '#64748b'
 
+// 白いふちどりの文字。地図と同じ Halo で描くので、読みがなの辞書の語には上に小さく読みがなが付く。
 function Label({ x, y, children, anchor = 'start', size = 10, color = INK, weight = '700' }) {
-  const common = { x, y, fontSize: size, fontWeight: weight, textAnchor: anchor }
-  return (
-    <g>
-      <text {...common} fill="none" stroke="#ffffff" strokeWidth="3" strokeLinejoin="round">{children}</text>
-      <text {...common} fill={color}>{children}</text>
-    </g>
-  )
+  return <Halo x={x} y={y} u={1} size={size} weight={weight} color={color} anchor={anchor}>{children}</Halo>
 }
 
 /** 引き出し線つきの名前。from（部分の点）から to（文字の端）へ線を引き、文字を置く。 */
@@ -335,7 +331,7 @@ function CylinderReadingDiagram() {
       <line x1="40" y1="30" x2="140" y2={y(45.5)} stroke="#b91c1c" strokeWidth="1" strokeDasharray="3 3" />
       <circle cx="36" cy="28" r="5" fill="#ffffff" stroke="#b91c1c" strokeWidth="1.2" />
       <Label x={52} y={24} size={8.5} color="#b91c1c">上から見るのはまちがい</Label>
-      <Callout from={[148, y(45.5)]} to={[214, 62]} text="へこんだ下の面" />
+      <Callout from={[148, y(45.5)]} to={[214, y(45.5)]} text="へこんだ下の面" />
       <Label x={214} y={124} size={9.5} weight="800">読み：45.5mL</Label>
       <Label x={214} y={138} size={8.5} color={LINE}>（1mLの10分の1</Label>
       <Label x={214} y={150} size={8.5} color={LINE}>まで読む）</Label>
@@ -633,8 +629,8 @@ function RefractionDiagram() {
       <line x1={cx - 48} y1="86" x2={cx + 48} y2="86" stroke={LINE} strokeWidth="1.3" />
       <line x1={cx} y1="30" x2={cx} y2="150" stroke={DARK} strokeWidth="0.9" strokeDasharray="4 3" />
       <Label x={cx} y={16} anchor="middle" size={10} weight="800">{title}</Label>
-      <Label x={cx - 44} y={80} size={8} color={DARK}>空気</Label>
-      <Label x={cx - 44} y={100} size={8} color="#0369a1">水</Label>
+      <Label x={cx - 44} y={80} size={8.5} color={DARK}>空気</Label>
+      <Label x={cx - 44} y={100} size={8.5} color="#0369a1">水</Label>
     </g>
   )
   return (
@@ -701,7 +697,7 @@ function LensImageDiagram({ object = 3 }) {
       {[-2, -1, 1, 2].map((k) => (
         <g key={k}>
           <circle cx={lens + k * f} cy={axis} r="2.8" fill="#1d4ed8" />
-          <Label x={lens + k * f} y={axis + 16} anchor="middle" size={8} color="#1d4ed8">{Math.abs(k) === 1 ? '焦点' : '2倍'}</Label>
+          <Label x={lens + k * f} y={axis + 16} anchor="middle" size={8.5} color="#1d4ed8">{Math.abs(k) === 1 ? '焦点' : '2倍'}</Label>
         </g>
       ))}
       <line x1={xo} y1={axis} x2={xo} y2={axis - h + 5} stroke="#2563eb" strokeWidth="3" />
@@ -1300,7 +1296,7 @@ function Atom({ x, y, kind, r = 10 }) {
   return (
     <g>
       <circle cx={x} cy={y} r={r} fill={style.fill} stroke={LINE} strokeWidth="1" />
-      <text x={x} y={y + 3.2} fontSize={kind.length > 1 ? 7.5 : 9} fontWeight="800" textAnchor="middle" fill={style.text}>{kind}</text>
+      <text x={x} y={y + 3.2} fontSize={kind.length > 1 ? 8.5 : 9.5} fontWeight="800" textAnchor="middle" fill={style.text}>{kind}</text>
     </g>
   )
 }
@@ -1331,11 +1327,11 @@ function MoleculeModelsDiagram() {
         </g>
       ))}
       <Label x={10} y={186} size={10} weight="800">銅</Label>
-      <Label x={10} y={199} size={8} color={LINE}>分子をつくらない</Label>
+      <Label x={10} y={199} size={8.5} color={LINE}>分子をつくらない</Label>
       {grid(['Cu'], 190)}
       <Label x={290} y={195} anchor="end" size={13} weight="800">Cu</Label>
       <Label x={10} y={234} size={10} weight="800">塩化ナトリウム</Label>
-      <Label x={10} y={247} size={8} color={LINE}>分子をつくらない</Label>
+      <Label x={10} y={247} size={8.5} color={LINE}>分子をつくらない</Label>
       {grid(['Na', 'Cl'], 238)}
       <Label x={290} y={243} anchor="end" size={13} weight="800">NaCl</Label>
     </svg>
@@ -1359,26 +1355,28 @@ const MOLECULE_SHAPES = {
 }
 const moleculeAtoms = (name) => MOLECULE_SHAPES[name] ?? [[0, 0, name]]
 function ReactionModelsDiagram({ reactions = [] }) {
-  const r = 9
-  const symbolW = 14
   const rowH = 92
   return (
     <svg viewBox={`0 0 300 ${reactions.length * rowH}`} className="h-auto w-full" role="img" aria-label="化学変化の原子のモデル" data-subject-diagram="reactionModels">
       {reactions.map((reaction, index) => {
         const y0 = index * rowH
         const cy = y0 + 42
-        const pieces = []
-        const push = (names) => names.forEach((name, k) => {
-          if (k) pieces.push({ symbol: '＋' })
-          const atoms = moleculeAtoms(name)
-          const xs = atoms.map(([dx]) => dx)
-          pieces.push({ atoms, width: Math.max(...xs) - Math.min(...xs) + 2 * r, min: Math.min(...xs) })
-        })
-        push(reaction.left)
-        pieces.push({ symbol: '→' })
-        push(reaction.right)
-        const gap = 3
-        const total = pieces.reduce((sum, piece) => sum + (piece.symbol ? symbolW : piece.width) + gap, -gap)
+        // 原子が多くて幅に入らないときは、図を縮めずに、原子と記号の間をつめる（文字が小さくならないように）。
+        const measure = (r, symbolW, gap) => {
+          const pieces = []
+          const push = (names) => names.forEach((name, k) => {
+            if (k) pieces.push({ symbol: '＋' })
+            const atoms = moleculeAtoms(name)
+            const xs = atoms.map(([dx]) => dx)
+            pieces.push({ atoms, width: Math.max(...xs) - Math.min(...xs) + 2 * r, min: Math.min(...xs) })
+          })
+          push(reaction.left)
+          pieces.push({ symbol: '→' })
+          push(reaction.right)
+          return { pieces, r, symbolW, gap, total: pieces.reduce((sum, piece) => sum + (piece.symbol ? symbolW : piece.width) + gap, -gap) }
+        }
+        const wide = measure(9, 14, 3)
+        const { pieces, r, symbolW, gap, total } = wide.total <= 284 ? wide : measure(8.5, 10, 1.5)
         let x = 150 - total / 2
         const drawn = pieces.map((piece, k) => {
           const width = piece.symbol ? symbolW : piece.width
@@ -1394,7 +1392,7 @@ function ReactionModelsDiagram({ reactions = [] }) {
             <Label x={10} y={y0 + 14} size={9.5} weight="800">{reaction.label}</Label>
             <g transform={`translate(150 ${cy}) scale(${fit.toFixed(3)}) translate(-150 ${-cy})`}>{drawn}</g>
             <Label x={150} y={y0 + 70} anchor="middle" size={11} weight="800">{reaction.equation}</Label>
-            {reaction.count && <Label x={150} y={y0 + 84} anchor="middle" size={8.5} color={LINE}>{reaction.count}</Label>}
+            {reaction.count && <Label x={150} y={y0 + 87} anchor="middle" size={8.5} color={LINE}>{reaction.count}</Label>}
           </g>
         )
       })}
@@ -1653,10 +1651,10 @@ function CirculationDiagram() {
       <rect x="164" y="102" width="36" height="30" fill="#fecaca" stroke={LINE} strokeWidth="1" />
       <rect x="100" y="132" width="36" height="42" fill="#bfdbfe" stroke={LINE} strokeWidth="1" />
       <rect x="164" y="132" width="36" height="42" fill="#fecaca" stroke={LINE} strokeWidth="1" />
-      <Label x={118} y={121} anchor="middle" size={8}>右心房</Label>
-      <Label x={182} y={121} anchor="middle" size={8}>左心房</Label>
-      <Label x={118} y={157} anchor="middle" size={8}>右心室</Label>
-      <Label x={182} y={157} anchor="middle" size={8}>左心室</Label>
+      <Label x={118} y={121} anchor="middle" size={8.5}>右心房</Label>
+      <Label x={182} y={121} anchor="middle" size={8.5}>左心房</Label>
+      <Label x={118} y={157} anchor="middle" size={8.5}>右心室</Label>
+      <Label x={182} y={157} anchor="middle" size={8.5}>左心室</Label>
       {vessel('M136,152 L150,152 L150,58', VEIN, [150, 50, 'up'])}
       {vessel('M188,32 L214,32 L214,117 L208,117', ART, [200, 117, 'left'])}
       {vessel('M200,160 L228,160 L228,243 L204,243', ART, [196, 243, 'left'])}
@@ -1885,22 +1883,15 @@ function PressureSystemsDiagram({ view = 'top' }) {
   const low = [[18, '1000'], [32, '1004'], [46, '1008'], [60, '1012']]
   return (
     <svg viewBox="0 0 300 200" className="h-auto w-full" role="img" aria-label="高気圧と低気圧のまわりの風" data-subject-diagram="pressureSystems">
-      {high.map(([r, text]) => (
-        <g key={text}>
-          <circle cx="76" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />
-          <Label x={76} y={92 - r + 4} anchor="middle" size={7.5} color={LINE}>{text}</Label>
-        </g>
-      ))}
+      {/* 等圧線 → 風の矢印 → 気圧の数字の順にかき、矢印が数字にかからないようにする。 */}
+      {high.map(([r]) => <circle key={`h${r}`} cx="76" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />)}
+      {low.map(([r]) => <circle key={`l${r}`} cx="224" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />)}
+      {[0, 1, 2, 3].map((k) => <g key={`hf${k}`}>{flow(spiral(76, 92, 14, 58, (k * Math.PI) / 2 + 0.3, 0.9), '#2563eb')}</g>)}
+      {[0, 1, 2, 3].map((k) => <g key={`lf${k}`}>{flow(spiral(224, 92, 62, 14, (k * Math.PI) / 2 + 0.3, -0.9), '#dc2626')}</g>)}
+      {high.map(([r, text]) => <Label key={text} x={76} y={92 - r + 4} anchor="middle" size={8.5} color={LINE}>{text}</Label>)}
+      {low.map(([r, text]) => <Label key={text} x={224} y={92 - r + 4} anchor="middle" size={8.5} color={LINE}>{text}</Label>)}
       <Label x={76} y={96} anchor="middle" size={12} weight="800" color="#1d4ed8">高</Label>
-      {[0, 1, 2, 3].map((k) => <g key={k}>{flow(spiral(76, 92, 14, 58, (k * Math.PI) / 2 + 0.3, 0.9), '#2563eb')}</g>)}
-      {low.map(([r, text]) => (
-        <g key={text}>
-          <circle cx="224" cy="92" r={r} fill="none" stroke={LINE} strokeWidth="1" />
-          <Label x={224} y={92 - r + 4} anchor="middle" size={7.5} color={LINE}>{text}</Label>
-        </g>
-      ))}
       <Label x={224} y={96} anchor="middle" size={12} weight="800" color="#b91c1c">低</Label>
-      {[0, 1, 2, 3].map((k) => <g key={k}>{flow(spiral(224, 92, 62, 14, (k * Math.PI) / 2 + 0.3, -0.9), '#dc2626')}</g>)}
       <Label x={76} y={172} anchor="middle" size={10} weight="800">高気圧</Label>
       <Label x={76} y={188} anchor="middle" size={8.5} color={LINE}>時計回りにふき出す</Label>
       <Label x={224} y={172} anchor="middle" size={10} weight="800">低気圧</Label>
@@ -2317,7 +2308,7 @@ function StaticChargeDiagram() {
       {body(16, 108, 'ストロー', '－の電気を帯びる', 3, 4)}
       {body(166, 108, 'ティッシュペーパー', '＋の電気を帯びる', 3, 2)}
       <Arrow from={[164, 123]} to={[137, 123]} color="#2563eb" />
-      <Label x={150} y={104} anchor="middle" size={8} color="#1d4ed8">電子が移る</Label>
+      <Label x={150} y={104} anchor="middle" size={8.5} color="#1d4ed8">電子が移る</Label>
 
       <line x1="8" y1="184" x2="292" y2="184" stroke="#e2e8f0" strokeWidth="1" />
       <Charge x={48} y={212} sign="-" r={10} />
@@ -2474,7 +2465,10 @@ function CircuitSymbolsDiagram() {
         return (
           <g key={name}>
             {draw(x, y)}
-            <Label x={x} y={y + 36} anchor="middle" size={8}>{name}</Label>
+            {/* 長い名前（7字以上）は最初の「が」のあとで2行に分け、となりの名前とくっつかないようにする。 */}
+            {[...name].length >= 7 && name.includes('が')
+              ? name.replace(/^(.*?が)/, '$1\n').split('\n').map((part, line) => <Label key={part} x={x} y={y + 34 + line * 11} anchor="middle" size={8.5}>{part}</Label>)
+              : <Label x={x} y={y + 36} anchor="middle" size={8.5}>{name}</Label>}
           </g>
         )
       })}
@@ -2498,8 +2492,8 @@ function SeriesParallelDiagram({ show }) {
       <BulbSymbol x={50} y={40} />
       <BulbSymbol x={100} y={40} />
       <CellSymbol x={75} y={140} />
-      <Label x={62} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
-      <Label x={88} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+      <Label x={62} y={160} anchor="middle" size={8.5} color="#b91c1c">＋</Label>
+      <Label x={88} y={160} anchor="middle" size={8.5} color="#1d4ed8">－</Label>
 
       <Label x={225} y={14} anchor="middle" size={10} weight="800">並列回路</Label>
       <rect x="170" y="40" width="110" height="100" {...wire} />
@@ -2509,8 +2503,8 @@ function SeriesParallelDiagram({ show }) {
       <BulbSymbol x={225} y={40} />
       <BulbSymbol x={225} y={90} />
       <CellSymbol x={225} y={140} />
-      <Label x={212} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
-      <Label x={238} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+      <Label x={212} y={160} anchor="middle" size={8.5} color="#b91c1c">＋</Label>
+      <Label x={238} y={160} anchor="middle" size={8.5} color="#1d4ed8">－</Label>
 
       {current && (
         <g>
@@ -2556,8 +2550,8 @@ function MeterConnectionDiagram() {
       <rect x="228" y="96" width="24" height="28" fill="#ffffff" />
       <MeterSymbol x={240} y={110} letter="A" />
       <CellSymbol x={140} y={140} />
-      <Label x={126} y={160} anchor="middle" size={8} color="#b91c1c">＋</Label>
-      <Label x={154} y={160} anchor="middle" size={8} color="#1d4ed8">－</Label>
+      <Label x={126} y={160} anchor="middle" size={8.5} color="#b91c1c">＋</Label>
+      <Label x={154} y={160} anchor="middle" size={8.5} color="#1d4ed8">－</Label>
       <Label x={176} y={36} size={9} weight="800" color="#1d4ed8">電圧計（並列につなぐ）</Label>
       <Label x={224} y={116} anchor="end" size={9} weight="800" color="#b91c1c">電流計（直列につなぐ）</Label>
       <Label x={140} y={102} anchor="middle" size={8.5} color={LINE}>抵抗器</Label>
@@ -2625,7 +2619,7 @@ function CurrentFieldDiagram({ part }) {
       <path d="M186,130 C170,160 266,160 250,130" fill="none" stroke="#2563eb" strokeWidth="1" />
       <Label x={150} y={94} size={8.5} color="#1d4ed8">磁界</Label>
       <Label x={218} y={194} anchor="middle" size={8.5} color={LINE}>内側に同じ向きの強い磁界</Label>
-      <Label x={218} y={178} anchor="middle" size={8} color={LINE}>鉄心を入れると電磁石になる</Label>
+      <Label x={218} y={178} anchor="middle" size={8.5} color={LINE}>鉄心を入れると電磁石になる</Label>
       </g>}
     </svg>
   )
@@ -2700,14 +2694,14 @@ function DcAcDiagram() {
       <line x1={left} y1="20" x2={left} y2="84" stroke={DARK} strokeWidth="1" />
       <line x1={left} y1="32" x2={right} y2="32" stroke="#dc2626" strokeWidth="2" />
       <Label x={left - 8} y={36} anchor="end" size={10} weight="800">直流</Label>
-      <Label x={left - 8} y={56} anchor="end" size={8} color={LINE}>0</Label>
+      <Label x={left - 8} y={56} anchor="end" size={8.5} color={LINE}>0</Label>
       <Label x={right} y={24} anchor="end" size={8.5} color={LINE}>向きが一定</Label>
 
       <line x1={left} y1="142" x2={right} y2="142" stroke="#cbd5e1" strokeWidth="1" />
       <line x1={left} y1="104" x2={left} y2="180" stroke={DARK} strokeWidth="1" />
       <path d={sine} fill="none" stroke="#2563eb" strokeWidth="2" />
       <Label x={left - 8} y={134} anchor="end" size={10} weight="800">交流</Label>
-      <Label x={left - 8} y={146} anchor="end" size={8} color={LINE}>0</Label>
+      <Label x={left - 8} y={146} anchor="end" size={8.5} color={LINE}>0</Label>
       <line x1={left} y1="184" x2={left + period} y2="184" stroke="#15803d" strokeWidth="1.2" />
       <line x1={left} y1="180" x2={left} y2="188" stroke="#15803d" strokeWidth="1.2" />
       <line x1={left + period} y1="180" x2={left + period} y2="188" stroke="#15803d" strokeWidth="1.2" />
@@ -2717,7 +2711,7 @@ function DcAcDiagram() {
   )
 }
 
-function Particle({ x, y, text, fill, stroke = LINE, r = 8, size = 7.5, color = INK }) {
+function Particle({ x, y, text, fill, stroke = LINE, r = 8, size = 8.5, color = INK }) {
   return (
     <g>
       <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth="1" />
@@ -2737,8 +2731,8 @@ function ChlorideElectrolysisDiagram({ view }) {
       <path d="M100,34 L100,14 L141,14 M159,14 L200,14 L200,34" fill="none" stroke={INK} strokeWidth="1.4" />
       <line x1="146" y1="4" x2="146" y2="24" stroke={INK} strokeWidth="3.4" />
       <line x1="154" y1="0" x2="154" y2="28" stroke={INK} strokeWidth="1.6" />
-      <Label x={138} y={10} anchor="end" size={8} color="#1d4ed8">－</Label>
-      <Label x={162} y={10} size={8} color="#b91c1c">＋</Label>
+      <Label x={138} y={10} anchor="end" size={8.5} color="#1d4ed8">－</Label>
+      <Label x={162} y={10} size={8.5} color="#b91c1c">＋</Label>
       <rect x="62" y="80" width="176" height="114" fill="#99f6e4" opacity="0.55" />
       <path d="M60,56 L60,190 Q60,196 66,196 L234,196 Q240,196 240,190 L240,56" fill="none" stroke={LINE} strokeWidth="1.4" />
       <rect x="95" y="34" width="10" height="136" fill="#475569" />
@@ -2747,12 +2741,12 @@ function ChlorideElectrolysisDiagram({ view }) {
         <g>
           {[[136, 104], [146, 146], [130, 178]].map(([x, y]) => (
             <g key={`c${x}`}>
-              <Particle x={x} y={y} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={11} size={7} />
+              <Particle x={x} y={y} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={11} size={8.5} />
               <Arrow from={[x - 13, y]} to={[108, y]} color="#1d4ed8" width={1.4} />
             </g>
           ))}
           {[[166, 92], [182, 112], [164, 132], [184, 152], [166, 172], [185, 182]].map(([x, y]) => (
-            <Particle key={`l${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={9} size={7} />
+            <Particle key={`l${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={9} size={8.5} />
           ))}
           <Arrow from={[176, 92]} to={[193, 92]} color="#15803d" width={1.4} />
           <Arrow from={[174, 132]} to={[193, 132]} color="#15803d" width={1.4} />
@@ -2812,11 +2806,11 @@ function IonFormationDiagram() {
         return (
           <g key={atom}>
             <Particle x={50} y={y} text={atom} fill="#f1f5f9" r={16} size={11} />
-            <Label x={50} y={y + 30} anchor="middle" size={8}>{atomName}</Label>
+            <Label x={50} y={y + 30} anchor="middle" size={8.5}>{atomName}</Label>
             <Arrow from={[74, y]} to={[216, y]} color={positive ? '#dc2626' : '#2563eb'} width={1.8} />
             <Label x={145} y={y - 8} anchor="middle" size={8.5} weight="800" color={positive ? '#b91c1c' : '#1d4ed8'}>{change}</Label>
             <Particle x={246} y={y} text={ion} fill={positive ? '#fee2e2' : '#dbeafe'} stroke={positive ? '#dc2626' : '#2563eb'} r={18} size={10} />
-            <Label x={246} y={y + 32} anchor="middle" size={8}>{ionName}</Label>
+            <Label x={246} y={y + 32} anchor="middle" size={8.5}>{ionName}</Label>
           </g>
         )
       })}
@@ -2840,8 +2834,8 @@ function IonBeakerDiagram() {
       {beaker(14)}
       {[[34, 70, '+'], [66, 64, '-'], [98, 76, '+'], [48, 100, '-'], [80, 108, '+'], [112, 102, '-'], [36, 132, '+'], [70, 136, '-'], [104, 132, '+'], [118, 70, '-']].map(([x, y, sign]) => (
         sign === '+'
-          ? <Particle key={`${x}-${y}`} x={x} y={y} text="Na⁺" fill="#fee2e2" stroke="#dc2626" r={8.5} size={6} />
-          : <Particle key={`${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={8.5} size={6} />
+          ? <Particle key={`${x}-${y}`} x={x} y={y} text="Na⁺" fill="#fee2e2" stroke="#dc2626" r={8.5} size={8.5} />
+          : <Particle key={`${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#bbf7d0" stroke="#15803d" r={8.5} size={8.5} />
       ))}
       <Label x={74} y={170} anchor="middle" size={8.5} weight="800">塩化ナトリウム水溶液</Label>
       <Label x={74} y={186} anchor="middle" size={8.5} color="#b91c1c">イオンがある → 電流が流れる</Label>
@@ -2864,21 +2858,21 @@ function LitmusMigrationDiagram({ mode = 'acid' }) {
       <path d="M26,58 L26,14 L141,14 M159,14 L274,14 L274,58" fill="none" stroke={INK} strokeWidth="1.4" />
       <line x1="146" y1="4" x2="146" y2="24" stroke={INK} strokeWidth="3.4" />
       <line x1="154" y1="0" x2="154" y2="28" stroke={INK} strokeWidth="1.6" />
-      <Label x={138} y={10} anchor="end" size={8} color="#1d4ed8">－</Label>
-      <Label x={162} y={10} size={8} color="#b91c1c">＋</Label>
+      <Label x={138} y={10} anchor="end" size={8.5} color="#1d4ed8">－</Label>
+      <Label x={162} y={10} size={8.5} color="#b91c1c">＋</Label>
       <rect x="20" y="56" width="260" height="66" rx="3" fill="#fef9c3" stroke="#ca8a04" strokeWidth="1" />
       <rect x="20" y="62" width="12" height="54" fill="#475569" />
       <rect x="268" y="62" width="12" height="54" fill="#475569" />
       <rect x="44" y="80" width="212" height="18" fill={acid ? '#93c5fd' : '#fca5a5'} stroke={LINE} strokeWidth="0.8" />
       <rect x={acid ? 86 : 150} y="80" width="64" height="18" fill={acid ? '#ef4444' : '#2563eb'} opacity="0.9" />
       <line x1="150" y1="60" x2="150" y2="118" stroke="#92400e" strokeWidth="3" />
-      {(acid ? [106, 128] : [172, 194]).map((x) => <Particle key={x} x={x} y={89} text={acid ? 'H⁺' : 'OH⁻'} fill="#ffffff" stroke={acid ? '#b91c1c' : '#1d4ed8'} r={7} size={6} />)}
+      {(acid ? [106, 128] : [172, 194]).map((x) => <Particle key={x} x={x} y={89} text={acid ? 'H⁺' : 'OH⁻'} fill="#ffffff" stroke={acid ? '#b91c1c' : '#1d4ed8'} r={7} size={8.5} />)}
       <Arrow from={acid ? [140, 134] : [160, 134]} to={acid ? [90, 134] : [210, 134]} color={acid ? '#dc2626' : '#2563eb'} width={2} />
       <Label x={150} y={152} anchor="middle" size={8.5} weight="800" color={acid ? '#b91c1c' : '#1d4ed8'}>{acid ? '赤色に変わった部分が陰極側へ広がる' : '青色に変わった部分が陽極側へ広がる'}</Label>
       <Label x={150} y={46} anchor="middle" size={8.5}>{acid ? '塩酸をしみこませた糸' : '水酸化ナトリウム水溶液をしみこませた糸'}</Label>
       <Label x={26} y={134} anchor="middle" size={8.5} weight="800" color="#1d4ed8">陰極</Label>
       <Label x={274} y={134} anchor="middle" size={8.5} weight="800" color="#b91c1c">陽極</Label>
-      <Label x={150} y={170} anchor="middle" size={8} color={LINE}>{acid ? '青色リトマス紙' : '赤色リトマス紙'}を、硝酸カリウム水溶液でしめらせたろ紙にのせる</Label>
+      <Label x={150} y={170} anchor="middle" size={8.5} color={LINE}>{acid ? '青色リトマス紙' : '赤色リトマス紙'}を、硝酸カリウム水溶液でしめらせたろ紙にのせる</Label>
     </svg>
   )
 }
@@ -2904,7 +2898,7 @@ function PhScaleDiagram() {
       <Label x={20} y={114} size={8.5} weight="800" color="#b91c1c">← 酸性が強い</Label>
       <Label x={150} y={114} anchor="middle" size={8.5} weight="800" color="#15803d">中性</Label>
       <Label x={280} y={114} anchor="end" size={8.5} weight="800" color="#1d4ed8">アルカリ性が強い →</Label>
-      <Label x={150} y={128} anchor="middle" size={8} color={LINE}>身近なもののpHは、およその値</Label>
+      <Label x={150} y={128} anchor="middle" size={8.5} color={LINE}>身近なもののpHは、およその値</Label>
     </svg>
   )
 }
@@ -2914,10 +2908,10 @@ function PhScaleDiagram() {
 // 塩酸（H⁺・Cl⁻）と水酸化ナトリウム水溶液（Na⁺・OH⁻）を混ぜると、H⁺とOH⁻が結びついて水になり、Na⁺とCl⁻が残る（塩化ナトリウム）。
 function NeutralizationModelDiagram() {
   const box = (x, w) => <rect x={x} y="36" width={w} height="86" rx="8" fill="#f0f9ff" stroke={LINE} strokeWidth="1" />
-  const H = (x, y) => <Particle key={`h${x}-${y}`} x={x} y={y} text="H⁺" fill="#fee2e2" stroke="#dc2626" r={10} size={7} />
-  const Cl = (x, y) => <Particle key={`c${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#dcfce7" stroke="#15803d" r={10} size={7} />
-  const Na = (x, y) => <Particle key={`n${x}-${y}`} x={x} y={y} text="Na⁺" fill="#ffedd5" stroke="#ea580c" r={10} size={7} />
-  const OH = (x, y) => <Particle key={`o${x}-${y}`} x={x} y={y} text="OH⁻" fill="#dbeafe" stroke="#2563eb" r={11} size={6.5} />
+  const H = (x, y) => <Particle key={`h${x}-${y}`} x={x} y={y} text="H⁺" fill="#fee2e2" stroke="#dc2626" r={10} size={8.5} />
+  const Cl = (x, y) => <Particle key={`c${x}-${y}`} x={x} y={y} text="Cl⁻" fill="#dcfce7" stroke="#15803d" r={10} size={8.5} />
+  const Na = (x, y) => <Particle key={`n${x}-${y}`} x={x} y={y} text="Na⁺" fill="#ffedd5" stroke="#ea580c" r={10} size={8.5} />
+  const OH = (x, y) => <Particle key={`o${x}-${y}`} x={x} y={y} text="OH⁻" fill="#dbeafe" stroke="#2563eb" r={11} size={8.5} />
   const water = (x, y) => (
     <g key={`w${x}-${y}`}>
       <Atom x={x} y={y - 3} kind="O" r={7} />
@@ -2984,13 +2978,13 @@ function MetalDisplacementDiagram() {
       <path d="M60,36 L60,170 Q60,176 66,176 L234,176 Q240,176 240,170 L240,36" fill="none" stroke={LINE} strokeWidth="1.3" />
       <rect x="142" y="20" width="16" height="140" fill="#cbd5e1" stroke={LINE} strokeWidth="0.8" />
       {[70, 88, 106, 124, 142].map((y) => <g key={y}><rect x="136" y={y} width="6" height="10" rx="2" fill="#b45309" /><rect x="158" y={y + 6} width="6" height="10" rx="2" fill="#b45309" /></g>)}
-      <Particle x={196} y={84} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={7} />
+      <Particle x={196} y={84} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={8.5} />
       <Arrow from={[166, 96]} to={[184, 88]} color={LINE} width={1.4} />
-      <Particle x={96} y={136} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={7} />
+      <Particle x={96} y={136} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={12} size={8.5} />
       <Arrow from={[134, 124]} to={[110, 132]} color={LINE} width={1.4} />
-      <Particle x={206} y={140} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={7} />
+      <Particle x={206} y={140} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={8.5} />
       <Arrow from={[192, 136]} to={[168, 128]} color="#1d4ed8" width={1.4} />
-      <Particle x={92} y={88} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={7} />
+      <Particle x={92} y={88} text="Cu²⁺" fill="#bfdbfe" stroke="#1d4ed8" r={12} size={8.5} />
       <Arrow from={[106, 92]} to={[132, 98]} color="#1d4ed8" width={1.4} />
       <Label x={150} y={14} anchor="middle" size={8.5} weight="800">亜鉛板</Label>
       <Callout from={[138, 146]} to={[96, 164]} text="付着した銅（赤色）" />
@@ -3022,22 +3016,22 @@ function DanielCellDiagram({ view }) {
       <Label x={78} y={44} anchor="end" size={9} weight="800" color="#1d4ed8">－極</Label>
       <Label x={222} y={44} size={9} weight="800" color="#b91c1c">＋極</Label>
       <Label x={150} y={64} anchor="middle" size={8.5} color={LINE}>セロハン</Label>
-      <Label x={95} y={170} anchor="middle" size={8} color={LINE}>硫酸亜鉛水溶液</Label>
-      <Label x={205} y={170} anchor="middle" size={8} color="#0369a1">硫酸銅水溶液</Label>
+      <Label x={95} y={170} anchor="middle" size={8.5} color={LINE}>硫酸亜鉛水溶液</Label>
+      <Label x={205} y={170} anchor="middle" size={8.5} color="#0369a1">硫酸銅水溶液</Label>
       {membrane ? (
         <g>
-          <Particle x={124} y={104} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={11} size={6.5} />
+          <Particle x={124} y={104} text="Zn²⁺" fill="#f1f5f9" stroke={LINE} r={11} size={8.5} />
           <Arrow from={[136, 104]} to={[170, 104]} color={LINE} width={1.6} />
-          <Particle x={178} y={140} text="SO₄²⁻" fill="#fef3c7" stroke="#b45309" r={13} size={6} />
+          <Particle x={178} y={140} text="SO₄²⁻" fill="#fef3c7" stroke="#b45309" r={13} size={8.5} />
           <Arrow from={[164, 140]} to={[130, 140]} color="#b45309" width={1.6} />
           <Label x={150} y={196} anchor="middle" size={8.5}>イオンがセロハンを少しずつ通りぬけ、電気のかたよりを防ぐ</Label>
         </g>
       ) : (
         <g>
-          <Label x={95} y={196} anchor="middle" size={8}>Zn → Zn²⁺＋電子2個</Label>
-          <Label x={205} y={196} anchor="middle" size={8} color="#1d4ed8">Cu²⁺＋電子2個 → Cu</Label>
-          <Label x={95} y={209} anchor="middle" size={8} color={LINE}>（亜鉛がとけ出す）</Label>
-          <Label x={205} y={209} anchor="middle" size={8} color={LINE}>（銅が付着する）</Label>
+          <Label x={95} y={196} anchor="middle" size={8.5}>Zn → Zn²⁺＋電子2個</Label>
+          <Label x={205} y={196} anchor="middle" size={8.5} color="#1d4ed8">Cu²⁺＋電子2個 → Cu</Label>
+          <Label x={95} y={209} anchor="middle" size={8.5} color={LINE}>（亜鉛がとけ出す）</Label>
+          <Label x={205} y={209} anchor="middle" size={8.5} color={LINE}>（銅が付着する）</Label>
         </g>
       )}
     </svg>
@@ -3342,7 +3336,7 @@ function TickerTapeDiagram() {
       {groups.map((length, i) => (
         <g key={i}>
           <path d={`M${bounds[i] + 1},46 L${bounds[i] + 1},50 L${bounds[i + 1] - 1},50 L${bounds[i + 1] - 1},46`} fill="none" stroke={LINE} strokeWidth="0.8" />
-          <Label x={(bounds[i] + bounds[i + 1]) / 2} y={62} anchor="middle" size={8}>0.1秒</Label>
+          <Label x={(bounds[i] + bounds[i + 1]) / 2} y={62} anchor="middle" size={8.5}>0.1秒</Label>
         </g>
       ))}
       <line x1="40" y1="186" x2="200" y2="186" stroke={DARK} strokeWidth="1" />
@@ -3350,7 +3344,7 @@ function TickerTapeDiagram() {
         <g key={`c${i}`}>
           <rect x={52 + i * 34} y={186 - length} width="24" height={length} fill="#fef9c3" stroke="#a16207" strokeWidth="1" />
           {[0, 1, 2, 3, 4].map((k) => <circle key={k} cx={64 + i * 34} cy={186 - (length * k) / 5 - length / 10} r="1.6" fill={INK} />)}
-          <Label x={64 + i * 34} y={198} anchor="middle" size={8}>{`${i + 1}本目`}</Label>
+          <Label x={64 + i * 34} y={198} anchor="middle" size={8.5}>{`${i + 1}本目`}</Label>
         </g>
       ))}
       <Label x={206} y={124} size={8.5}>0.1秒ごとに切って</Label>
@@ -3438,7 +3432,7 @@ function ForceCompositionDiagram() {
       <Arrow from={[60, 212]} to={[100, 170]} color={BLUE} width={2.2} />
       <Arrow from={[60, 212]} to={[200, 170]} color={SUM} width={3} />
       <Label x={206} y={170} size={8.5} weight="800" color={SUM}>合力</Label>
-      <Label x={206} y={184} size={8} color={LINE}>（平行四辺形の対角線）</Label>
+      <Label x={206} y={184} size={8.5} color={LINE}>（平行四辺形の対角線）</Label>
     </svg>
   )
 }
@@ -3548,7 +3542,7 @@ function PendulumEnergyDiagram() {
       <line x1="120" y1={pivot[1]} x2="180" y2={pivot[1]} stroke={DARK} strokeWidth="2" />
       <path d={`M${bob(-40).map((v) => v.toFixed(1)).join(',')} A${len},${len} 0 0,0 ${bob(40).map((v) => v.toFixed(1)).join(',')}`} fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
       <line x1="40" y1="104" x2="260" y2="104" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="4 3" />
-      <Label x={262} y={108} size={8} color={LINE}>基準面</Label>
+      <Label x={262} y={108} size={8.5} color={LINE}>基準面</Label>
       {points.map(([name, deg]) => {
         const [x, y] = bob(deg)
         return (
@@ -3561,7 +3555,7 @@ function PendulumEnergyDiagram() {
       })}
       <line x1="60" y1="190" x2="240" y2="190" stroke={DARK} strokeWidth="1" />
       <line x1="60" y1="140" x2="240" y2="140" stroke="#7c3aed" strokeWidth="1" strokeDasharray="4 3" />
-      <Label x={240} y={134} anchor="end" size={8} color="#7c3aed">和はいつも同じ（力学的エネルギー）</Label>
+      <Label x={240} y={134} anchor="end" size={8.5} color="#7c3aed">和はいつも同じ（力学的エネルギー）</Label>
       {points.map(([name, deg, pos, kin]) => {
         const [x] = bob(deg)
         return (
@@ -3682,8 +3676,8 @@ function TransparentHemisphereDiagram() {
       <Label x={cx + R + 4} y={cy + 4} size={10} weight="800">東</Label>
       <Label x={cx - R - 4} y={cy + 4} anchor="end" size={10} weight="800">西</Label>
       <Label x={top[0]} y={top[1] - 10} anchor="middle" size={8.5} weight="800" color="#b91c1c">南中</Label>
-      <Label x={cx + R - 12} y={cy + 30} anchor="end" size={8} color={LINE}>日の出</Label>
-      <Label x={cx - R + 12} y={cy + 30} size={8} color={LINE}>日の入り</Label>
+      <Label x={cx + R - 12} y={cy + 30} anchor="end" size={8.5} color={LINE}>日の出</Label>
+      <Label x={cx - R + 12} y={cy + 30} size={8.5} color={LINE}>日の入り</Label>
     </svg>
   )
 }
@@ -3703,7 +3697,7 @@ function EarthRotationDiagram() {
       <path d={`M${c[0] + 22},${c[1]} A22,22 0 1,0 ${c[0]},${c[1] + 22}`} fill="none" stroke="#dc2626" strokeWidth="1.6" />
       <path d={`M${c[0] + 6},${c[1] + 22} L${c[0] - 2},${c[1] + 17} L${c[0] - 2},${c[1] + 27} Z`} fill="#dc2626" />
       <circle cx={c[0]} cy={c[1]} r="2.6" fill={INK} />
-      <Label x={c[0] - 4} y={c[1] - 5} anchor="end" size={8} color={INK}>北極</Label>
+      <Label x={c[0] - 4} y={c[1] - 5} anchor="end" size={8.5} color={INK}>北極</Label>
       {[[c[0] - r, c[1], '正午', 'end', -6, 4], [c[0] + r, c[1], '真夜中', 'start', 6, 4], [c[0], c[1] - r, '明け方', 'middle', 0, -8], [c[0], c[1] + r, '夕方', 'middle', 0, 16]].map(([x, y, text, anchor, dx, dy]) => (
         <g key={text}>
           <circle cx={x} cy={y} r="3.2" fill="#f97316" />
@@ -3728,8 +3722,8 @@ function StarTrailsDiagram() {
       <rect x={x0} y={y0} width="144" height="100" rx="6" fill="#0f172a" />
       <line x1={x0 + 4} y1={y0 + 88} x2={x0 + 140} y2={y0 + 88} stroke="#94a3b8" strokeWidth="1.2" />
       <text x={x0 + 8} y={y0 + 14} fontSize="9" fontWeight="800" fill="#f8fafc">{title}</text>
-      <text x={x0 + 6} y={y0 + 98} fontSize="8" fontWeight="700" fill="#cbd5e1">{left}</text>
-      <text x={x0 + 138} y={y0 + 98} fontSize="8" fontWeight="700" fill="#cbd5e1" textAnchor="end">{right}</text>
+      <text x={x0 + 6} y={y0 + 98} fontSize="8.5" fontWeight="700" fill="#cbd5e1">{left}</text>
+      <text x={x0 + 138} y={y0 + 98} fontSize="8.5" fontWeight="700" fill="#cbd5e1" textAnchor="end">{right}</text>
       {draw(x0, y0)}
     </g>
   )
@@ -3750,7 +3744,7 @@ function StarTrailsDiagram() {
             )
           })}
           <StarShape x={x0 + 72} y={y0 + 50} r={4} />
-          <text x={x0 + 80} y={y0 + 66} fontSize="7.5" fill="#fde68a">北極星</text>
+          <text x={x0 + 80} y={y0 + 66} fontSize="8.5" fill="#fde68a">北極星</text>
         </g>
       ))}
       {panel(152, 4, '東の空', '北', '南', (x0, y0) => (
@@ -3832,7 +3826,7 @@ function SeasonsOrbitDiagram() {
         <g key={name}>
           <circle cx={x} cy={y} r="14" fill="#93c5fd" stroke="#1d4ed8" strokeWidth="1" />
           <line x1={x - axis[0] * 22} y1={y - axis[1] * 22} x2={x + axis[0] * 22} y2={y + axis[1] * 22} stroke={INK} strokeWidth="1.4" />
-          <text x={x + axis[0] * 27} y={y + axis[1] * 27 + 3} fontSize="8" fontWeight="800" textAnchor="middle" fill={INK}>N</text>
+          <text x={x + axis[0] * 27} y={y + axis[1] * 27 + 3} fontSize="8.5" fontWeight="800" textAnchor="middle" fill={INK}>N</text>
           <Label x={x + dx} y={y + dy} anchor={anchor} size={9} weight="800">{name}</Label>
         </g>
       ))}
@@ -4075,9 +4069,9 @@ function VenusVisibilityDiagram() {
       <PhaseDisk cx={east[0]} cy={east[1]} r={5.5} alpha={90} rotate={face(east)} />
       <PhaseDisk cx={west[0]} cy={west[1]} r={5.5} alpha={90} rotate={face(west)} />
       <Label x={east[0] - 9} y={east[1] - 2} anchor="end" size={9} weight="800">よいの明星</Label>
-      <Label x={east[0] - 9} y={east[1] + 10} anchor="end" size={8}>（夕方、西の空）</Label>
+      <Label x={east[0] - 9} y={east[1] + 10} anchor="end" size={8.5}>（夕方、西の空）</Label>
       <Label x={west[0] + 9} y={west[1] - 2} size={9} weight="800">明けの明星</Label>
-      <Label x={west[0] + 9} y={west[1] + 10} size={8}>（明け方、東の空）</Label>
+      <Label x={west[0] + 9} y={west[1] + 10} size={8.5}>（明け方、東の空）</Label>
       <circle cx={earth[0]} cy={earth[1]} r={re} fill="#dbeafe" stroke={LINE} strokeWidth="1" />
       <path d={`M${earth[0] + re},${earth[1]} A${re},${re} 0 0,1 ${earth[0] - re},${earth[1]} Z`} fill="#334155" opacity="0.55" />
       <Label x={earth[0]} y={earth[1] - 4} anchor="middle" size={8.5} weight="800">地球</Label>
@@ -4132,7 +4126,7 @@ function VenusPhasesDiagram() {
       <line x1={earth[0]} y1={earth[1]} x2={place(maxDeg)[0]} y2={place(maxDeg)[1]} stroke="#ca8a04" strokeWidth="0.9" strokeDasharray="3 2" />
       <line x1={earth[0]} y1={earth[1]} x2={place(540 - maxDeg)[0]} y2={place(540 - maxDeg)[1]} stroke="#ca8a04" strokeWidth="0.9" strokeDasharray="3 2" />
       <circle cx={sun[0]} cy={sun[1]} r="10" fill="#fde047" stroke="#ca8a04" strokeWidth="1" />
-      <Label x={sun[0]} y={sun[1] + 3} anchor="middle" size={7.5} weight="800" color="#a16207">太陽</Label>
+      <Label x={sun[0]} y={sun[1] + 3} anchor="middle" size={8.5} weight="800" color="#a16207">太陽</Label>
       <circle cx={earth[0]} cy={earth[1]} r="8" fill="#dbeafe" stroke={LINE} strokeWidth="1" />
       <path d={`M${earth[0] + 8},${earth[1]} A8,8 0 0,1 ${earth[0] - 8},${earth[1]} Z`} fill="#334155" opacity="0.55" />
       <Label x={earth[0]} y={earth[1] + 20} anchor="middle" size={8.5} weight="800">地球</Label>
@@ -4504,7 +4498,7 @@ function PopulationBalanceDiagram() {
   const cx = 82
   return (
     <svg viewBox="0 0 300 262" className="h-auto w-full" role="img" aria-label="生物の数量のつり合い" data-subject-diagram="populationBalance">
-      <Label x={cx} y={12} anchor="middle" size={8} color={LINE}>上から肉食・草食・植物</Label>
+      <Label x={cx} y={12} anchor="middle" size={8.5} color={LINE}>上から肉食・草食・植物</Label>
       {rows.map(([mark, scale, change, lines], i) => {
         const y0 = 20 + i * 48
         return (
@@ -4570,7 +4564,7 @@ function CarbonCycleDiagram() {
     <g>
       <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx="6" fill={fill} stroke={stroke} strokeWidth="1" />
       {lines.map((line, k) => (
-        <text key={line} x={x} y={y + (lines.length === 1 ? 3.5 : k === 0 ? -2 : 11)} fontSize={k === 0 ? 9.5 : 8} fontWeight="800" textAnchor="middle" fill={k === 0 ? INK : LINE}>{line}</text>
+        <text key={line} x={x} y={y + (lines.length === 1 ? 3.5 : k === 0 ? -2 : 11)} fontSize={k === 0 ? 9.5 : 8.5} fontWeight="800" textAnchor="middle" fill={k === 0 ? INK : LINE}>{line}</text>
       ))}
     </g>
   )
@@ -4597,9 +4591,9 @@ function CarbonCycleDiagram() {
       <Label x={156} y={78} size={8.5} weight="800" color={CO2}>呼吸</Label>
       <Label x={238} y={78} anchor="end" size={8.5} weight="800" color={CO2}>呼吸</Label>
       <Label x={284} y={96} anchor="end" size={8.5} weight="800" color={CO2}>呼吸</Label>
-      <Label x={102} y={112} anchor="middle" size={8} weight="800" color={ORG}>食べる</Label>
-      <Label x={196} y={112} anchor="middle" size={8} weight="800" color={ORG}>食べる</Label>
-      <Label x={188} y={168} anchor="middle" size={8} weight="800" color={ORG}>死がい・排出物</Label>
+      <Label x={102} y={112} anchor="middle" size={8.5} weight="800" color={ORG}>食べる</Label>
+      <Label x={196} y={112} anchor="middle" size={8.5} weight="800" color={ORG}>食べる</Label>
+      <Label x={188} y={168} anchor="middle" size={8.5} weight="800" color={ORG}>死がい・排出物</Label>
       <line x1="24" y1="228" x2="40" y2="228" stroke={CO2} strokeWidth="2" />
       <Label x={44} y={231.5} size={8.5}>二酸化炭素として移る</Label>
       <line x1="160" y1="228" x2="176" y2="228" stroke={ORG} strokeWidth="2" />
@@ -4818,7 +4812,7 @@ function GreenhouseEffectDiagram() {
           </g>
         ))}
         <Label x={x0 + 72} y={12} anchor="middle" size={8.5} weight="800">{title}</Label>
-        <Label x={x0 + 72} y={186} anchor="middle" size={8}>{note}</Label>
+        <Label x={x0 + 72} y={186} anchor="middle" size={8.5}>{note}</Label>
       </g>
     )
   }

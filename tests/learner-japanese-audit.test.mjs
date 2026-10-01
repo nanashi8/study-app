@@ -72,11 +72,16 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-01、疑問詞・関係詞の語の「文の中での働き」で、働きのデータ（src/data/word-grammar-roles.js）と
   // 働きの欄の部品（src/components/GrammarRoles.jsx）の2ファイルが増え、画面の文言が7表記（重複なし5）、
   // 教材の日本語が 233134 から 233340 になった（requests/2026-10-01-wh-word-grammar-roles.json）。
-  assert.equal(result.learnerFiles, 341)
-  assert.equal(result.learnerJapaneseEntries, 17565)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13052)
-  assert.equal(result.sourceFiles, 816)
-  assert.equal(result.sourceJapaneseEntries, 233340)
+  // 2026-10-01、社会・理科の図表の充実で、図を描く部品が6ファイル（src/components/SubjectFigureKinds.jsx・
+  // SubjectScienceParts.jsx・SubjectBiologyDiagrams.jsx・SubjectChemistryDiagrams.jsx・SubjectPhysicsDiagrams.jsx・
+  // SubjectEarthDiagrams.jsx）と、図を押して大きく見る部品が1ファイル（src/components/SubjectFigureZoom.jsx）増えた。
+  // 足した図・図の読み方・出典と、読みがなの辞書の5語（高句麗・百済・長宗我部・象潟・泉北）で、学習者画面の日本語が
+  // 17565 から 18346 に、ソース全体が 233340 から 235558 になった（requests/2026-10-01-subject-figure-enrich.json）。
+  assert.equal(result.learnerFiles, 348)
+  assert.equal(result.learnerJapaneseEntries, 18346)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13709)
+  assert.equal(result.sourceFiles, 823)
+  assert.equal(result.sourceJapaneseEntries, 235558)
   assert.equal(result.issues.length, 0)
 })
 

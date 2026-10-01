@@ -53,7 +53,9 @@ function figureProblems(figure, where) {
       }
     }
   }
-  for (const point of [...(Array.isArray(figure.points) ? figure.points : []), ...(Array.isArray(figure.labels) ? figure.labels : [])]) {
+  // 地図の点と文字は緯度・経度で置く（しくみの図の文字は x・y で置くので、ここでは調べない）。
+  const isMap = ['worldMap', 'japanMap', 'azimuthalMap', 'worldOverview'].includes(figure.type)
+  for (const point of isMap ? [...(Array.isArray(figure.points) ? figure.points : []), ...(Array.isArray(figure.labels) ? figure.labels : [])] : []) {
     if (!lonOk(point.lon) || !latOk(point.lat)) problems.push(`${where}: 緯度・経度がおかしい（${point.text ?? point.label}）`)
   }
   // 横棒グラフの名前は、名前の欄（labelWidth、既定92）に右寄せで入る。はみ出すと左が切れて読めない。
@@ -73,6 +75,48 @@ function figureProblems(figure, where) {
     for (const row of figure.rows ?? []) if (row.length !== figure.columns.length) problems.push(`${where}: 表の列の数が合わない（${row[0]}）`)
   }
   if (figure.type === 'set' && !(figure.items?.length >= 2)) problems.push(`${where}: 並べる図が2つ未満`)
+  // しくみの図：箱は図の中に収まり、たがいに重ならない。矢印の両端の箱がある。
+  if (figure.type === 'relation') {
+    const width = figure.width ?? 300
+    const ids = new Set()
+    if (!(figure.height > 0) || !figure.nodes?.length) problems.push(`${where}: しくみの図が空`)
+    for (const node of figure.nodes ?? []) {
+      if (!node.id || ids.has(node.id)) problems.push(`${where}: しくみの図の箱の id がない・重なる（${node.id}）`)
+      ids.add(node.id)
+      if (!String(node.text ?? '').trim()) problems.push(`${where}: しくみの図の箱に文字がない（${node.id}）`)
+      const inside = [node.x, node.y, node.w, node.h].every(Number.isFinite) && node.x - node.w / 2 >= 0 && node.x + node.w / 2 <= width && node.y - node.h / 2 >= 0 && node.y + node.h / 2 <= figure.height
+      if (!inside) problems.push(`${where}: しくみの図の箱が図の外にはみ出す（${node.id}）`)
+    }
+    const nodes = figure.nodes ?? []
+    for (let i = 0; i < nodes.length; i += 1) {
+      for (let j = i + 1; j < nodes.length; j += 1) {
+        const [a, b] = [nodes[i], nodes[j]]
+        if (Math.abs(a.x - b.x) < (a.w + b.w) / 2 && Math.abs(a.y - b.y) < (a.h + b.h) / 2) problems.push(`${where}: しくみの図の箱が重なる（${a.id}・${b.id}）`)
+      }
+    }
+    for (const edge of figure.edges ?? []) {
+      if (!ids.has(edge.from) || !ids.has(edge.to) || edge.from === edge.to) problems.push(`${where}: しくみの図の矢印の端の箱がない（${edge.from}→${edge.to}）`)
+    }
+  }
+  // 帯グラフ：どの帯にも名前と0以上の値があり、割合（％）の帯は合計が100になる（四捨五入の差は1まで）。
+  if (figure.type === 'ratio') {
+    if (!figure.rows?.length) problems.push(`${where}: 帯グラフが空`)
+    for (const row of figure.rows ?? []) {
+      if (!row.label || !row.parts?.length || row.parts.some(([name, value]) => !name || !(value >= 0))) problems.push(`${where}: 帯グラフの帯がおかしい（${row.label}）`)
+      const total = (row.parts ?? []).reduce((sum, [, value]) => sum + value, 0)
+      if ((figure.unit ?? '％') === '％' && Math.abs(total - 100) > 1.05) problems.push(`${where}: 帯グラフの割合の合計が100にならない（${row.label}：${total}）`)
+    }
+  }
+  // 時代の帯：行ごとに始まりが終わりより前で、帯・目もり・しるしがその行の範囲に入る。
+  if (figure.type === 'periods') {
+    if (!figure.rows?.length) problems.push(`${where}: 時代の帯が空`)
+    for (const row of figure.rows ?? []) {
+      const within = (value) => Number.isFinite(value) && value >= row.from && value <= row.to
+      if (!(row.from < row.to) || !row.bands?.length) problems.push(`${where}: 時代の帯の範囲がおかしい（${row.label ?? row.from}）`)
+      for (const band of row.bands ?? []) if (!(band.from < band.to) || !within(band.from) || !within(band.to) || !band.text) problems.push(`${where}: 時代の帯「${band.text}」の範囲がおかしい`)
+      for (const mark of [...(row.ticks ?? []), ...(row.marks ?? [])]) if (!within(mark.at) || !mark.text) problems.push(`${where}: 時代の帯の目もり・しるし「${mark.text}」が範囲の外`)
+    }
+  }
   if (figure.type === 'decision' && (!(figure.steps?.length >= 2) || !figure.otherwise || figure.steps.some((step) => !step.ask || !step.yes))) problems.push(`${where}: 判断の手順が足りない`)
   if (figure.type === 'chain' && !(figure.items?.length >= 2)) problems.push(`${where}: 流れの項目が2つ未満`)
   if (figure.type === 'timeline' && (!figure.groups?.length || figure.groups.some((group) => !group.events?.length))) problems.push(`${where}: 年表が空`)

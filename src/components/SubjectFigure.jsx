@@ -2,6 +2,8 @@ import { SubjectText } from './SubjectText.jsx'
 import { ClimateFigure, climateAxisMax, climateAxisMin } from './SubjectClimateFigure.jsx'
 import { AzimuthalMapFigure, JapanMapFigure, WorldMapFigure, WorldOverviewFigure } from './SubjectMapFigures.jsx'
 import { DiagramFigure } from './SubjectDiagrams.jsx'
+import { PeriodsFigure, RatioFigure, RelationFigure } from './SubjectFigureKinds.jsx'
+import { ZoomableFigure } from './SubjectFigureZoom.jsx'
 import { CLIMATE_STATIONS } from '../data/subjects/climate.js'
 
 export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
@@ -21,6 +23,7 @@ export { JAPAN_REGION_META, WORLD_STATE_META } from './SubjectMapFigures.jsx'
 //   chain    … 流れ・順序・循環。{ items: [文, …], loop? }
 //   timeline … 年表。{ groups: [{ era?, events: [[年, できごと], …] }] }
 //   tree     … しくみの図（組織・分類の枝分かれ）。{ root: { text, children?: [{ text, children? }, …] } }
+//   relation … しくみの図（箱と矢印）。ratio … 帯グラフ。periods … 時代の帯（SubjectFigureKinds.jsx）
 //   set      … 図を並べて比べる。{ items: [図, …], layout?: 'stack' | 'scroll' }
 // どの図も caption（図の題）と note（図の下の注）を持てる。要点の図は guide（図の読み方：何を表すか・どこを見るか・
 // 特徴・判断の仕方を順に書いた文の並び）を持ち、単元のページで図の下に出す（演習の図の読み取り方は、答えたあとの解説に出す）。
@@ -87,6 +90,7 @@ function TableFigure({ figure }) {
     )
   }
   // 行の見出し（1列目）が短い表は、見出しを1行に収める（「インドネシ／ア」のように折れないように）。
+  // ほかの列も、3字以下の短い中身（うろこ・変温など）は折り返さない。
   const shortHeads = figure.rows.every((row) => [...String(row[0])].length <= 7)
   return (
     <div className="overflow-x-auto">
@@ -94,7 +98,7 @@ function TableFigure({ figure }) {
         <thead>
           <tr>
             {figure.columns.map((column, columnIndex) => (
-              <th key={column} scope="col" className={`border border-slate-300 bg-slate-100 px-2 py-1.5 font-extrabold ${columnIndex === 0 && shortHeads && [...String(column)].length <= 7 ? 'whitespace-nowrap' : ''}`}><SubjectText>{column}</SubjectText></th>
+              <th key={column} scope="col" className={`border border-slate-300 bg-slate-100 px-2 py-1.5 font-extrabold ${(columnIndex === 0 && shortHeads && [...String(column)].length <= 7) || [...String(column)].length <= 3 ? 'whitespace-nowrap' : ''}`}><SubjectText>{column}</SubjectText></th>
             ))}
           </tr>
         </thead>
@@ -104,7 +108,7 @@ function TableFigure({ figure }) {
               {row.map((cell, cellIndex) => (
                 cellIndex === 0
                   ? <th key={cellIndex} scope="row" className={`border border-slate-300 px-2 py-1.5 font-extrabold ${shortHeads ? 'whitespace-nowrap' : ''} ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></th>
-                  : <td key={cellIndex} className={`border border-slate-300 px-2 py-1.5 leading-relaxed ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></td>
+                  : <td key={cellIndex} className={`border border-slate-300 px-2 py-1.5 leading-relaxed ${[...String(cell)].length <= 3 ? 'whitespace-nowrap' : ''} ${highlight.has(rowIndex) ? 'bg-amber-50' : 'bg-white'}`}><SubjectText>{cell}</SubjectText></td>
               ))}
             </tr>
           ))}
@@ -188,7 +192,7 @@ function LinesFigure({ figure }) {
             {mark.x !== undefined && <line x1={sx(mark.x)} x2={sx(mark.x)} y1={top} y2={height - bottom} stroke="#94a3b8" strokeDasharray="3 3" />}
             {mark.y !== undefined && <line x1={left} x2={width - right} y1={sy(mark.y)} y2={sy(mark.y)} stroke="#94a3b8" strokeDasharray="3 3" />}
             {mark.text && (
-              <text x={mark.x !== undefined ? sx(mark.x) + 3 : mark.at !== undefined ? sx(mark.at) : left + 4} y={mark.y !== undefined ? sy(mark.y) - 4 : top + 10} fontSize="9.5" fontWeight="800" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">{mark.text}</text>
+              <text x={mark.x !== undefined ? sx(mark.x) + 3 : mark.at !== undefined ? sx(mark.at) : left + 4} y={mark.y !== undefined ? sy(mark.y) - 4 : top + 10} fontSize="10" fontWeight="800" fill="#475569" stroke="#ffffff" strokeWidth="2.5" paintOrder="stroke">{mark.text}</text>
             )}
           </g>
         ))}
@@ -213,7 +217,7 @@ function LinesFigure({ figure }) {
           {figure.series.map((series, index) => (
             <span key={series.name} className="inline-flex items-center gap-1">
               <i className="inline-block h-1 w-4 rounded" style={{ backgroundColor: series.color ?? SERIES_COLORS[index % SERIES_COLORS.length] }} />
-              {series.name}
+              <SubjectText>{series.name}</SubjectText>
             </span>
           ))}
         </div>
@@ -356,18 +360,33 @@ const FIGURES = Object.freeze({
   chain: ChainFigure,
   timeline: TimelineFigure,
   tree: TreeFigure,
+  relation: RelationFigure,
+  ratio: RatioFigure,
+  periods: PeriodsFigure,
   set: SetFigure,
 })
 
 export const SUBJECT_FIGURE_TYPES = Object.freeze(Object.keys(FIGURES))
+/** svg で描く図の種類。押すと（「大きく見る」でも）画面いっぱいに大きくして見られる（SubjectFigureZoom.jsx）。 */
+export const ZOOMABLE_FIGURE_TYPES = Object.freeze(['bars', 'lines', 'climate', 'japanMap', 'worldMap', 'azimuthalMap', 'worldOverview', 'diagram', 'relation', 'ratio', 'periods'])
 
 export function SubjectFigure({ figure, showGuide = false }) {
   const Figure = FIGURES[figure?.type]
   if (!Figure) return null
   return (
     <figure className="m-0" data-subject-figure={figure.type}>
-      <Caption>{figure.caption}</Caption>
-      <Figure figure={figure} />
+      {ZOOMABLE_FIGURE_TYPES.includes(figure.type)
+        ? (
+          <ZoomableFigure caption={figure.caption} renderCaption={<Caption>{figure.caption}</Caption>}>
+            <Figure figure={figure} />
+          </ZoomableFigure>
+        )
+        : (
+          <>
+            <Caption>{figure.caption}</Caption>
+            <Figure figure={figure} />
+          </>
+        )}
       <Note>{figure.note}</Note>
       {showGuide && <FigureGuide guide={figure.guide} />}
     </figure>

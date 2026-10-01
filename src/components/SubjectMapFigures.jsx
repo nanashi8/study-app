@@ -1,5 +1,6 @@
 import { AZIMUTHAL_MAP, GLOBE_LAND, JAPAN_MAP, WORLD_MAP } from '../data/subjects/maps.js'
 import { tokenizeSubjectText } from '../lib/subjectText.js'
+import { SubjectText } from './SubjectText.jsx'
 import {
   AZIMUTHAL_PROJECTION,
   JAPAN_PROJECTION,
@@ -20,7 +21,9 @@ import {
 //   grid   … 緯線・経線を引く間隔（度）。例 30。gridLabels: false で目盛りの文字を出さない。gridLabelEvery: 2 で経線の文字を1本おきに
 //   parallels / meridians … 1本ずつ引く緯線・経線。[{ lat: 22, text: '北緯22度', side?: 'right' }] / [{ lon: 25, text: '東経25度' }]
 //   lines  … 特別な緯線・経線（世界地図）。['equator', 'tropicN', 'tropicS', 'primeMeridian', 'meridian180', 'meridian135']
-//   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京', side?: 'left' | 'right' }]（地名は、図の右寄りなら点の左、ほかは右。side で決められる）
+//   points … 緯度・経度で置く点。[{ lon, lat, label?: 'A', text?: '東京', side?: 'left' | 'right', color?, shape?: 'circle' | 'square' | 'triangle' | 'diamond' }]
+//            （地名は、図の右寄りなら点の左、ほかは右。side で決められる。種類で分けるときは color と shape を両方変え、legend に同じ色と形を書く）
+//   legend … 凡例。[[名前, 色, 形?], …]（形は points の shape。形がなければ色の四角）
 //   arrows … 緯度・経度を順にたどる矢印。[{ path: [[lon, lat], …], color?, dashed?, text?, textAt?: [lon, lat], head?: false（矢じりなしの線）, width?: 線の太さ（帯のように太く引くとき）, textSize?, textColor? }]
 //   labels … 緯度・経度に置く文字（海・山脈など）。[{ lon, lat, text, color?, size?, italic? }]
 //   states: true … 州で色分け（hideLegend: true で凡例を出さない。同じ凡例の図を並べるとき）
@@ -85,15 +88,26 @@ export const longitudeText = (lon) => {
 function Legend({ items }) {
   if (!items?.length) return null
   return (
-    <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] font-bold text-ink/70">
+    <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] font-bold text-ink/70" data-subject-figure-legend>
       {items.map((item) => (
         <span key={item.label} className="inline-flex items-center gap-1">
-          <i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: item.color }} />
-          {item.label}
+          {item.shape
+            ? <svg viewBox="-6 -6 12 12" className="h-3 w-3" aria-hidden="true"><PointShape x={0} y={0} r={4.6} shape={item.shape} color={item.color} stroke={1.2} /></svg>
+            : <i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: item.color }} />}
+          <SubjectText>{item.label}</SubjectText>
         </span>
       ))}
     </div>
   )
+}
+
+/** 点の形（丸・四角・三角・ひし形）。種類を色だけでなく形でも見分けられるようにする。 */
+function PointShape({ x, y, r, shape = 'circle', color = INK, stroke }) {
+  const common = { fill: color, stroke: '#ffffff', strokeWidth: stroke }
+  if (shape === 'square') return <rect x={x - r * 0.9} y={y - r * 0.9} width={r * 1.8} height={r * 1.8} {...common} />
+  if (shape === 'triangle') return <path d={`M${x},${y - r * 1.15} L${x + r * 1.05},${y + r * 0.75} L${x - r * 1.05},${y + r * 0.75} Z`} {...common} />
+  if (shape === 'diamond') return <path d={`M${x},${y - r * 1.2} L${x + r * 1.2},${y} L${x},${y + r * 1.2} L${x - r * 1.2},${y} Z`} {...common} />
+  return <circle cx={x} cy={y} r={r} {...common} />
 }
 
 /** 記号（白い丸に文字）。u は画面の1pxにあたる図の長さ。 */
@@ -108,8 +122,9 @@ function Mark({ x, y, label, u, tone = INK }) {
 }
 
 /** 点（小さな丸と地名）。図の右寄りの点は、地名を左に置く。地名が図の外へはみ出すときは、反対の側へ移すか内側へ寄せる。 */
-function Point({ x, y, label, text, u, flip = false, box = null }) {
-  const gap = (label ? 11 : 5) * u
+function Point({ x, y, label, text, u, flip = false, box = null, color, shape }) {
+  const styled = Boolean(color || shape)
+  const gap = (label ? 11 : styled ? 7 : 5) * u
   let left = flip
   let textX = left ? x - gap : x + gap
   if (box && text) {
@@ -125,15 +140,20 @@ function Point({ x, y, label, text, u, flip = false, box = null }) {
   }
   const anchor = left ? 'end' : 'start'
   return (
-    <g>
-      {label ? <Mark x={x} y={y} label={label} u={u} /> : <circle cx={x} cy={y} r={3.2 * u} fill={INK} stroke="#ffffff" strokeWidth={1.2 * u} />}
+    <g data-subject-map-point>
+      {label
+        ? <Mark x={x} y={y} label={label} u={u} />
+        : styled
+          ? <PointShape x={x} y={y} r={4.4 * u} shape={shape} color={color ?? INK} stroke={1.2 * u} />
+          : <circle cx={x} cy={y} r={3.2 * u} fill={INK} stroke="#ffffff" strokeWidth={1.2 * u} />}
       {text && <Halo x={textX} y={y + 3.5 * u} u={u} size={10} weight="800" anchor={anchor}>{text}</Halo>}
     </g>
   )
 }
 
-/** 白いふちどりの文字（地図の上でも読めるように）。読みがなの辞書にある語には、上に小さく読みがなを出す。 */
-export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor = 'start', italic = false, children }) {
+/** 白いふちどりの文字（地図の上でも読めるように）。読みがなの辞書にある語には、上に小さく読みがなを出す。
+ * 色の濃い箱の上の白い文字は、ふちどりを箱の色にする（haloColor）。 */
+export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor = 'start', italic = false, haloColor = '#ffffff', children }) {
   const common = {
     x,
     y,
@@ -155,11 +175,11 @@ export function Halo({ x, y, u, size = 10, weight = '700', color = INK, anchor =
   }
   return (
     <g data-subject-halo>
-      <text {...common} fill="none" stroke="#ffffff" strokeWidth={3 * u} strokeLinejoin="round">{children}</text>
+      <text {...common} fill="none" stroke={haloColor} strokeWidth={3 * u} strokeLinejoin="round">{children}</text>
       <text {...common} fill={color}>{children}</text>
       {rubies.map((ruby) => (
         <g key={`${ruby.x}-${ruby.text}`} data-subject-ruby>
-          <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill="none" stroke="#ffffff" strokeWidth={2 * u} strokeLinejoin="round">{ruby.text}</text>
+          <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill="none" stroke={haloColor} strokeWidth={2 * u} strokeLinejoin="round">{ruby.text}</text>
           <text x={ruby.x} y={y - size * u * 0.95} fontSize={size * u * 0.5} fontWeight="700" textAnchor="middle" fill={color}>{ruby.text}</text>
         </g>
       ))}
@@ -348,12 +368,12 @@ export function WorldMapFigure({ figure }) {
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectWorld(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} color={point.color} shape={point.shape} />
           })}
         </g>
       </svg>
       {figure.states && !figure.hideLegend && <Legend items={Object.values(WORLD_STATE_META)} />}
-      {figure.legend && <Legend items={figure.legend.map(([label, color]) => ({ label, color }))} />}
+      {figure.legend && <Legend items={figure.legend.map(([label, color, shape]) => ({ label, color, shape }))} />}
     </div>
   )
 }
@@ -427,12 +447,12 @@ export function JapanMapFigure({ figure }) {
           ))}
           {(figure.points ?? []).map((point, index) => {
             const [x, y] = projectJapan(point.lon, point.lat)
-            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} />
+            return <Point key={`point-${index}`} x={x} y={y} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : x > box.x + box.w * 0.62} box={box} color={point.color} shape={point.shape} />
           })}
         </g>
       </svg>
       {figure.regions && <Legend items={Object.values(JAPAN_REGION_META)} />}
-      {figure.legend && <Legend items={figure.legend.map(([label, color]) => ({ label, color }))} />}
+      {figure.legend && <Legend items={figure.legend.map(([label, color, shape]) => ({ label, color, shape }))} />}
     </div>
   )
 }
@@ -540,7 +560,7 @@ export function WorldOverviewFigure({ figure }) {
       <Arrows arrows={figure.arrows} project={project} u={u} box={box} />
       {(figure.points ?? []).map((point, index) => {
         const [px, py] = project(point.lon, point.lat)
-        return <Point key={`point-${index}`} x={px} y={py} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : px > width * 0.62} box={box} />
+        return <Point key={`point-${index}`} x={px} y={py} label={point.label} text={point.text} u={u} flip={point.side ? point.side === 'left' : px > width * 0.62} box={box} color={point.color} shape={point.shape} />
       })}
       {(figure.labels ?? []).map((label, index) => (
         <Halo key={index} x={clampTextX(x(label.lon), label.text, (label.size ?? 10) * u, box, 'middle', 2 * u)} y={y(label.lat)} u={u} size={label.size ?? 10} weight="800" color={label.color ?? INK} anchor="middle">{label.text}</Halo>

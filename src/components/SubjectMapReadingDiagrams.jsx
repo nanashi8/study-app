@@ -186,7 +186,7 @@ function ContourDiagram({ showLabels = true, profile = true, marks = [] }) {
       ))}
       {showLabels && [50, 100, 150].filter((level) => level < summit).map((level) => {
         const x = numberAt(level)
-        return x === null ? null : <Label key={`n-${level}`} x={x} y={PROFILE_Y - 3} size={8} weight="800" color={BROWN} anchor="middle">{String(level)}</Label>
+        return x === null ? null : <Label key={`n-${level}`} x={x} y={PROFILE_Y - 3} size={8.5} weight="800" color={BROWN} anchor="middle">{String(level)}</Label>
       })}
       <path d={`M${SUMMIT.x},${SUMMIT.y - 4.5} L${SUMMIT.x - 4},${SUMMIT.y + 2.5} L${SUMMIT.x + 4},${SUMMIT.y + 2.5} Z`} fill={INK} />
       {showLabels && <Label x={SUMMIT.x + 6} y={SUMMIT.y - 5} size={9} weight="800">{`山頂 ${summit}m`}</Label>}
@@ -223,11 +223,11 @@ function ContourDiagram({ showLabels = true, profile = true, marks = [] }) {
             <g key={`p-${h}`}>
               <line x1={A} x2={B} y1={py(h)} y2={py(h)} stroke="#e2e8f0" />
               {/* 目もりの数は、図の右の端（幅300）をこえないように右の端にそろえる。 */}
-              <text x={299} y={py(h) + 3} textAnchor="end" fontSize="7.5" fill={MUTED}>{h}</text>
+              <text x={299} y={py(h) + 3} textAnchor="end" fontSize="8.5" fill={MUTED}>{h}</text>
             </g>
           ))}
           <path d={`M${A},${py(0)} ${samples.map(([x, h]) => `L${x},${Math.round(py(h) * 10) / 10}`).join(' ')} L${B},${py(0)} Z`} fill="#e7d9b8" stroke={BROWN} strokeWidth="1.2" />
-          <text x={299} y={profileTop - 4} textAnchor="end" fontSize="7.5" fill={MUTED}>m</text>
+          <text x={299} y={profileTop - 10} textAnchor="end" fontSize="8.5" fill={MUTED}>m</text>
           <Label x={A} y={py(0) + 12} size={9} weight="800" color="#b91c1c" anchor="middle">A</Label>
           <Label x={B} y={py(0) + 12} size={9} weight="800" color="#b91c1c" anchor="middle">B</Label>
         </g>

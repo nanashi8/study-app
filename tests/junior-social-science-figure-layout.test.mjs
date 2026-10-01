@@ -1,25 +1,36 @@
-// 社会・理科の図の文字が、ほかの文字と重ならず、図の外にはみ出さないことの確認
-// （依頼台帳 requests/2026-09-30-subject-katakana-quality.json の figure-layout）。
-// 2026-09-30 利用者「コンテンツの品質を精査しなさい。」
+// 社会・理科の図の文字が、ほかの文字と重ならず、図の外にはみ出さず、読める大きさであることの確認
+// （依頼台帳 requests/2026-09-30-subject-katakana-quality.json の figure-layout と、
+//  requests/2026-10-01-subject-figure-enrich.json の layout-375）。
+// 2026-09-30 利用者「コンテンツの品質を精査しなさい。」／2026-10-01「中学理科社会の図表を充実させて生徒の理解を助けるように改善しなさい。」
 // 375px の幅の Chromium で、全102単元のページの要点の図（図の組の中の図もふくむ）と、図を使う全問の問題の図を描き、
-// 図（svg）ごとに、見えている文字（text）どうしの重なりと、文字が svg の枠の外に出ていないかを確かめる。
-// 文字のふちどりのために同じ文字を同じ位置に2回かいたもの（下の1つは白い線）は、1つの文字として数える。
-// 地図のラベルの上に小さく出す読みがなは、そのラベル自身とは重なりを数えない（ルビとしてすぐ上に付けている）。
-// ほかのラベルや、ほかのラベルの読みがなとの重なりは数える。読みがなは、ほかの文字の白いふちどりの幅（1.5px）まで離れていること。
-// 比べるのは字の枠（行の高さ）ではなく、字の見える部分。アプリの字体では、字の枠は基準線の上1.04字・下0.34字あり、
-// 漢字の見える部分は上0.88字・下0.12字なので、枠の上を12%、下を16%けずって比べる（2026-09-30 に測った）。
-// 文字の始まりの全角の「（」の左半分と、終わりの「）」の右半分も空いているので、けずって比べる。
+// 図（svg）ごとに、文字どうしの重なり・読みがなとふちどりのかかり・地名と点の印のかかり・図の外へのはみ出し・
+// 文字の大きさ（8px以上）を確かめる。判定の中身は tests/subject-figure-inspect.mjs。
+// あわせて、描いた図の文字（svg と、図の中の文）に読みがなが付くことを確かめる。図の部品（src/components の
+// Subject…Diagrams.jsx など）は、図の文字を Halo で描き、src/data/subjects/readings.js の辞書で読みがなを付ける。
+// 学習者の日本語の台帳（docs/audits/learner-japanese-review.json）は、この確かめを頼りに図の部品を rubyMaterials に置く。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import net from 'node:net'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 import { chromium } from 'playwright'
 import { ALL_SUBJECT_QUESTIONS, ALL_SUBJECT_UNITS, SUBJECTS } from '../src/data/subjects/index.js'
+import { tokenizeSubjectText } from '../src/lib/subjectText.js'
+import { inspectSubjectFigures } from './subject-figure-inspect.mjs'
+
+const require = createRequire(import.meta.url)
+const { kanji: JOYO_KANJI } = require('joyo-kanji')
+const JOYO = new Set(JOYO_KANJI)
+// 常用漢字表にない字を、読みを添えずに残すと決めた語（地図記号の卍、仮名のもとになった漢字など。理由は台帳に書く）。
+const JOYO_EXCEPTIONS = JSON.parse(readFileSync(new URL('../docs/audits/learner-japanese-review.json', import.meta.url), 'utf8')).joyoExceptions ?? {}
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const WIDTH = 375
 const HEIGHT = 740
+// 図の中の文字の大きさの下限（375pxの幅の画面のpx）。2026-10-01 に決めた（依頼台帳 layout-375）。
+const MIN_TEXT_PX = 8
 
 let vite
 let browser
@@ -54,73 +65,79 @@ async function open(screen, params = {}) {
   await waitScreen(screen)
 }
 
-// root の中の図（いちばん外の svg）ごとに、文字の重なりとはみ出しを並べる。
-const inspect = (root, where) => page.evaluate(([selector, label]) => {
-  const found = []
-  const scope = document.querySelector(selector)
-  if (!scope) return [`${label}: 画面が見つからない`]
-  const figureName = (svg) => {
-    const figure = svg.closest('[data-subject-figure]')
-    const caption = figure?.querySelector('figcaption, [data-subject-figure-caption]')?.textContent?.trim()
-    return caption || figure?.getAttribute('data-subject-figure') || 'の図'
-  }
-  for (const svg of scope.querySelectorAll('svg')) {
-    if (svg.parentElement.closest('svg')) continue
-    const frame = svg.getBoundingClientRect()
-    if (frame.width < 40 || frame.height < 40) continue
-    const texts = []
-    for (const element of svg.querySelectorAll('text')) {
-      const text = (element.textContent ?? '').trim()
+// root の中の図（いちばん外の svg）ごとに、文字の重なり・はみ出し・印へのかかり・文字の大きさを並べる（tests/subject-figure-inspect.mjs）。
+const inspect = (root, where) => page.evaluate(inspectSubjectFigures, [root, where, MIN_TEXT_PX])
+
+// root の中の図（図の枠の中）の、見えている文字と、その文字に付いた読みがな。
+//   svg … 文字ごとに、同じ Halo の中の読みがな（data-subject-ruby）を集める。
+//   文 … 図の中の表・凡例などの文。<ruby> の中の文字は、読みがなが付いている。
+const figureTexts = (root) => page.evaluate((selector) => {
+  const rows = []
+  for (const figure of document.querySelectorAll(`${selector} [data-subject-figure]`)) {
+    for (const node of figure.querySelectorAll('svg text')) {
+      if (node.getAttribute('fill') === 'none' || node.closest('[data-subject-ruby]')) continue
+      const text = node.textContent.trim()
       if (!text) continue
-      const style = getComputedStyle(element)
-      if (style.visibility === 'hidden' || style.display === 'none' || Number(style.opacity) === 0) continue
-      const box = element.getBoundingClientRect()
-      if (!box.width || !box.height) continue
-      // 全角のかっこは、外側の半字が空いている（「（」は左、「）」は右）。
-      const em = box.height / 1.38
-      const left = box.left + (/^[（「『【〔]/.test(text) ? em * 0.5 : 0)
-      const right = box.right - (/[）」』】〕]$/.test(text) ? em * 0.5 : 0)
-      const rect = { left, right, top: box.top + box.height * 0.12, bottom: box.bottom - box.height * 0.16, width: right - left, height: box.height * 0.72 }
-      // ふちどり用に同じ文字を同じ位置に重ねたものは1つに数える。
-      if (texts.some((other) => other.text === text && Math.abs(other.rect.left - rect.left) < 1.5 && Math.abs(other.rect.top - rect.top) < 1.5)) continue
-      texts.push({ text, rect, halo: element.closest('[data-subject-halo]'), ruby: Boolean(element.closest('[data-subject-ruby]')) })
+      const halo = node.closest('[data-subject-halo]')
+      const rubies = halo ? [...halo.querySelectorAll('[data-subject-ruby] text')].filter((ruby) => ruby.getAttribute('fill') !== 'none').map((ruby) => ruby.textContent) : []
+      rows.push({ name: node.closest('svg[aria-label]')?.getAttribute('aria-label') ?? '図', text, rubies })
     }
-    const name = figureName(svg)
-    for (const { text, rect } of texts) {
-      const out = Math.max(frame.left - rect.left, rect.right - frame.right, frame.top - rect.top, rect.bottom - frame.bottom)
-      if (out > 1.5) found.push(`${label}「${name}」: 「${text.slice(0, 14)}」が図の外に${Math.round(out)}px はみ出す`)
+    const walker = document.createTreeWalker(figure, NodeFilter.SHOW_TEXT)
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const parent = node.parentElement
+      if (!parent || parent.closest('svg, rt, rp, ruby')) continue
+      const text = node.textContent.trim()
+      if (text) rows.push({ name: '図の中の文', text, rubies: null })
     }
-    for (let i = 0; i < texts.length; i += 1) {
-      for (let j = i + 1; j < texts.length; j += 1) {
-        // ラベルと、そのラベル自身の読みがな。
-        if (texts[i].halo && texts[i].halo === texts[j].halo && texts[i].ruby !== texts[j].ruby) continue
-        const a = texts[i].rect
-        const b = texts[j].rect
-        const x = Math.min(a.right, b.right) - Math.max(a.left, b.left)
-        const y = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
-        // 読みがなは字が小さく、ほかのラベルの白いふちどり（字の見える部分の外1.5px）に少しかかっただけで欠けて読めなくなる
-        // （2026-09-30、牧ノ原の「まきのはら」が焼津港のふちどりで「まぞのはら」に見えた）。読みがなは、ふちどりの幅まで離す。
-        if ((texts[i].ruby || texts[j].ruby) && x > -1.5 && y > -1.5) {
-          found.push(`${label}「${name}」: 読みがな「${(texts[i].ruby ? texts[i] : texts[j]).text}」が「${(texts[i].ruby ? texts[j] : texts[i]).text.slice(0, 14)}」のふちどりにかかる`)
-          continue
-        }
-        if (x <= 1.5 || y <= 1.5) continue
-        const smaller = Math.min(a.width * a.height, b.width * b.height)
-        if (x * y < smaller * 0.12) continue
-        found.push(`${label}「${name}」: 「${texts[i].text.slice(0, 14)}」と「${texts[j].text.slice(0, 14)}」が重なる（${Math.round(x)}×${Math.round(y)}px）`)
+  }
+  return rows
+}, root)
+
+// 描いた図の文字の読みがなの抜け。辞書の語には読みがなが付き、常用漢字表にない字をふくむ語は、
+// 読みがな・文の中の（よみ）・理由つきの例外のどれかがある。
+const KANJI_RUN = /[\p{Script=Han}々〆ヶ]+/gu
+const readingProblems = (rows, where) => {
+  const problems = []
+  for (const { name, text, rubies } of rows) {
+    const segments = tokenizeSubjectText(text)
+    const left = [...(rubies ?? [])]
+    for (const segment of segments) {
+      if (!segment.reading || JOYO_EXCEPTIONS[segment.text]) continue
+      const at = left.indexOf(segment.reading)
+      if (at < 0) problems.push(`${where}「${name}」: 「${text}」の「${segment.text}」に読みがな（${segment.reading}）が付いていない`)
+      else left.splice(at, 1)
+    }
+    for (const segment of segments) {
+      if (segment.reading) continue
+      for (const match of segment.text.matchAll(KANJI_RUN)) {
+        if (![...match[0]].some((char) => !'々〆ヶ'.includes(char) && !JOYO.has(char)) || JOYO_EXCEPTIONS[match[0]]) continue
+        const after = segment.text.slice(match.index + match[0].length, match.index + match[0].length + 2)
+        if (/^[(（][ぁ-ゖー・]/u.test(after)) continue
+        problems.push(`${where}「${name}」: 「${text}」の「${match[0]}」は常用漢字表にない字をふくむのに、読みがない`)
       }
     }
   }
-  return found
-}, [root, where])
+  return problems
+}
 
 before(async () => {
   const port = await freePort()
-  vite = await createServer({ root: ROOT, logLevel: 'error', server: { port, strictPort: true, host: '127.0.0.1' } })
+  vite = await createServer({
+    root: ROOT,
+    logLevel: 'error',
+    // 動かしている開発サーバーの依存の置き場を書き換えない。
+    cacheDir: 'node_modules/.vite-figure-layout-test',
+    // 画面の依存を最初に見つけておく（途中で見つけるとページを読み直し、開いた画面が入口へ戻る）。
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'] },
+    server: { port, strictPort: true, host: '127.0.0.1', hmr: false, watch: null },
+  })
   await vite.listen()
   base = `http://127.0.0.1:${port}/`
   browser = await chromium.launch()
-  page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 })
+  const context = await browser.newContext({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 })
+  // 外への通信（Firebase・フォント）は止める。開発版の Firebase は本番のデータベースにつながっている。
+  await context.route((url) => !url.href.startsWith(base), (route) => route.abort())
+  page = await context.newPage()
   await page.goto(base)
   await page.waitForSelector('.study-app-content', { timeout: 60_000 })
   await page.evaluate(async () => {
@@ -145,12 +162,16 @@ test('全102単元の要点の図で、文字が重ならず、図の外には�
     await open(SUBJECTS[unit.subject].screens.unit, { unitId: unit.id })
     const root = `[data-subject-unit-page="${unit.id}"] [data-subject-unit-points]`
     await page.waitForSelector(root)
-    figures += await page.evaluate((selector) => [...document.querySelectorAll(`${selector} svg`)].filter((svg) => !svg.parentElement.closest('svg')).length, root)
+    // 図（図の枠の中のいちばん外の svg）。「大きく見る」の虫めがねのような小さな印（40px未満）は数えない。
+    figures += await page.evaluate((selector) => [...document.querySelectorAll(`${selector} [data-subject-figure] svg`)].filter((svg) => {
+      const rect = svg.getBoundingClientRect()
+      return !svg.parentElement.closest('svg') && rect.width >= 40 && rect.height >= 40
+    }).length, root)
     problems.push(...await inspect(root, unit.id))
   }
   assert.deepEqual(problems, [])
-  // 表・流れ図・年表などは svg ではないので数えない（2026-09-30 に378）。
-  assert.ok(figures >= 370, `描いた図（svg）の数（${figures}）`)
+  // 表・流れ図・年表などは svg ではないので数えない（2026-09-30 に378、図表を充実させた 2026-10-01 に581）。
+  assert.ok(figures >= 581, `描いた図（svg）の数（${figures}）`)
 })
 
 test('図を使う全問の問題の図で、文字が重ならず、図の外にはみ出さない（375px）', async () => {
@@ -166,4 +187,29 @@ test('図を使う全問の問題の図で、文字が重ならず、図の外�
     problems.push(...await inspect(root, question.id))
   }
   assert.deepEqual(problems, [])
+})
+
+test('全102単元の要点の図と、図を使う全問の問題の図で、描いた文字に読みがなが付く（辞書の語・常用漢字表にない字）', async () => {
+  const problems = []
+  let texts = 0
+  for (const unit of ALL_SUBJECT_UNITS) {
+    await open(SUBJECTS[unit.subject].screens.unit, { unitId: unit.id })
+    const root = `[data-subject-unit-page="${unit.id}"] [data-subject-unit-points]`
+    await page.waitForSelector(root)
+    const rows = await figureTexts(root)
+    texts += rows.length
+    problems.push(...readingProblems(rows, unit.id))
+  }
+  for (const question of ALL_SUBJECT_QUESTIONS.filter((item) => item.figure)) {
+    await open('portal')
+    await open(SUBJECTS[question.subject].screens.practice, { ids: [question.id], preserveOrder: true, title: '図の確認' })
+    const root = `[data-subject-practice-question="${question.id}"]`
+    await page.waitForSelector(root)
+    const rows = await figureTexts(root)
+    texts += rows.length
+    problems.push(...readingProblems(rows, question.id))
+  }
+  assert.deepEqual(problems, [])
+  // 2026-10-01 に数えた、図の中の文字（svg の文字と、図の中の文）の数。
+  assert.ok(texts >= 32058, `確かめた図の中の文字の数（${texts}）`)
 })

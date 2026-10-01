@@ -1,0 +1,78 @@
+{
+  "id": "2026-10-01-subject-figure-enrich",
+  "title": "中学の理科・社会の図表を充実させ、生徒の理解を助ける",
+  "asked": [
+    "中学理科社会の図表を充実させて生徒の理解を助けるように改善しなさい。",
+    "電源を切るので再開できるように中断しなさい。",
+    "再開しなさい。"
+  ],
+  "sessions": [
+    "6e6f58b9-978c-4168-a59a-8209991f2b32"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "text-figures-visual",
+      "text": "図が文字だけ（表・流れ図・年表だけ）の要点を1件ずつ読み、要点の中身が目で見てわかる図（地図・グラフ・帯グラフ・時代の帯・しくみの図・装置や生物のつくりの図など）を足すか置きかえる。文字の図のままにする要点は、文字のほうが理解を助ける理由を台帳に書き、報告で件数と理由を示す",
+      "population": "要点538件のうち、図が表・流れ図・年表だけの216件（2026-10-01 に数えた。地理22・歴史67・公民56・理科1年23・2年20・3年28。一覧は docs/audits/junior-social-science-figure-enrich.json）",
+      "check": "node --test tests/junior-social-science-figure-enrich.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "all-figures-understanding",
+      "text": "要点の図と演習の図をすべて375pxの幅で見て、図が要点・問題の中身を示しているか、見る所（色・記号・凡例・単位・目もり・名前）が読み取れるか、比べる表が見比べられる形かを確かめ、足りない図を直す。1件ずつ見た記録を指紋つきで台帳に残す",
+      "population": "要点の図538件（図の組の中の図もふくむ）と演習の図47件",
+      "check": "node --test tests/junior-social-science-figure-enrich.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "guides-follow-figures",
+      "text": "図を変えた要点の「図の読み方」を、新しい図の見る所（図1・図2、色・記号・矢印・目もり）に合わせて書き直し、図の判断の記録を押し直す。演習の図を変えたら読み取り方も合わせる",
+      "population": "図を変えた要点と演習の問題すべて",
+      "check": "node --test tests/junior-social-science-figures.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-review.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "data-sourced",
+      "text": "新しく足したグラフ・地図の数値や位置は、公的な統計や資料で確かめる。実際の数値を使う図には出典の id を付けて出典のページに載せ、数値と資料の照らし合わせを台帳に記録する",
+      "population": "この依頼で足した、数値を使う図（グラフ・帯グラフ・数値の地図）すべて",
+      "check": "node --test tests/junior-social-science-figure-enrich.test.mjs tests/junior-social-science.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "layout-375",
+      "text": "足した図をふくむ全部の図で、375pxの幅で文字が重ならず、図の外へはみ出さない。図の中の文字は375pxの幅で8px以上（地図のラベルの上の小さな読みがなをのぞく）にする（2026-10-01 に測ると、6,544字のうち8px未満が553字・86図あった）",
+      "population": "要点の図と演習の図のすべての svg の文字（2026-10-01 に要点の図で6,544字）",
+      "check": "node --test tests/junior-social-science-figure-layout.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "figure-zoom",
+      "text": "スマホでは画面を指で拡大できないので、図を押すと（「大きく見る」でも）図を画面いっぱいに大きくして見られ、縦横に動かして細かい文字や読みがなまで読める。大きくした図では、文字が16px以上・読みがなが8px以上になる。閉じると元の画面の同じ位置に戻る",
+      "population": "svg で描く図すべて（要点の図・演習の図。図の組の中の図も1枚ずつ）",
+      "check": "node --test tests/junior-social-science-figure-zoom.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "screens-and-audits",
+      "text": "新しい図が単元のページと演習に375pxの幅で出て横にはみ出さないことを確かめ、学習者向けの日本語の決まり・全教材監査・既存のテストをすべて通す",
+      "population": "社会・理科の全画面と、npm test・npm run check の全件",
+      "check": "node --test tests/junior-social-science-screens.test.mjs && npm test && npm run check",
+      "status": "todo"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で新しい図が出ることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない",
+      "population": "この端末の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones",
+      "status": "todo"
+    }
+  ]
+}

@@ -1,0 +1,2739 @@
+{
+  "readMe": "社会・理科の図表を、生徒の理解を助ける形に充実させた記録（依頼台帳 requests/2026-10-01-subject-figure-enrich.json）。baseline.textOnly は 2026-10-01 に図が表・流れ図・年表だけだった要点。points は全要点を375pxで見て判断した記録（decision: visual＝目で見てわかる図がある／text＝文字の図のほうが理解を助ける。reason に理由）。questions は図を使う演習。data は数値を使う図の資料との照らし合わせ。sha256 は判断したときの中身の指紋（中身を変えたら見直して押し直す）。",
+  "reviewedOn": "2026-10-01",
+  "baseline": {
+    "countedOn": "2026-10-01",
+    "points": 538,
+    "figureQuestions": 47,
+    "textOnly": [
+      "geo-03#6",
+      "geo-08#5",
+      "geo-09#2",
+      "geo-10#1",
+      "geo-10#5",
+      "geo-11#3",
+      "geo-11#6",
+      "geo-13#5",
+      "geo-14#2",
+      "geo-14#3",
+      "geo-14#4",
+      "geo-14#5",
+      "geo-16#5",
+      "geo-17#2",
+      "geo-17#5",
+      "geo-18#2",
+      "geo-18#4",
+      "geo-19#1",
+      "geo-19#2",
+      "geo-19#3",
+      "geo-19#4",
+      "geo-19#5",
+      "his-01#2",
+      "his-01#3",
+      "his-01#4",
+      "his-01#5",
+      "his-02#1",
+      "his-02#2",
+      "his-02#3",
+      "his-02#4",
+      "his-02#5",
+      "his-03#1",
+      "his-04#1",
+      "his-04#2",
+      "his-04#3",
+      "his-05#1",
+      "his-05#2",
+      "his-05#3",
+      "his-05#4",
+      "his-05#5",
+      "his-06#2",
+      "his-06#4",
+      "his-06#5",
+      "his-07#2",
+      "his-07#5",
+      "his-07#6",
+      "his-08#1",
+      "his-08#4",
+      "his-08#5",
+      "his-08#6",
+      "his-09#2",
+      "his-09#3",
+      "his-10#1",
+      "his-10#3",
+      "his-10#4",
+      "his-10#5",
+      "his-10#6",
+      "his-11#1",
+      "his-11#2",
+      "his-11#3",
+      "his-11#4",
+      "his-11#5",
+      "his-12#4",
+      "his-13#1",
+      "his-13#2",
+      "his-13#3",
+      "his-13#4",
+      "his-14#1",
+      "his-14#4",
+      "his-14#5",
+      "his-14#6",
+      "his-15#1",
+      "his-15#3",
+      "his-15#4",
+      "his-15#5",
+      "his-16#1",
+      "his-16#2",
+      "his-16#3",
+      "his-16#4",
+      "his-16#5",
+      "his-17#1",
+      "his-17#2",
+      "his-17#3",
+      "his-18#4",
+      "his-19#1",
+      "his-19#2",
+      "his-19#3",
+      "his-19#4",
+      "his-20#5",
+      "civ-01#2",
+      "civ-02#1",
+      "civ-02#2",
+      "civ-02#3",
+      "civ-02#5",
+      "civ-03#2",
+      "civ-03#3",
+      "civ-03#4",
+      "civ-03#5",
+      "civ-04#1",
+      "civ-04#2",
+      "civ-04#4",
+      "civ-04#5",
+      "civ-04#6",
+      "civ-05#1",
+      "civ-05#5",
+      "civ-06#1",
+      "civ-06#2",
+      "civ-06#3",
+      "civ-06#4",
+      "civ-06#5",
+      "civ-07#1",
+      "civ-07#2",
+      "civ-07#4",
+      "civ-08#1",
+      "civ-08#2",
+      "civ-08#3",
+      "civ-08#4",
+      "civ-09#1",
+      "civ-09#5",
+      "civ-10#3",
+      "civ-10#4",
+      "civ-10#5",
+      "civ-11#2",
+      "civ-11#3",
+      "civ-11#4",
+      "civ-12#2",
+      "civ-12#3",
+      "civ-12#5",
+      "civ-13#2",
+      "civ-13#3",
+      "civ-14#2",
+      "civ-14#3",
+      "civ-14#4",
+      "civ-15#3",
+      "civ-16#2",
+      "civ-16#3",
+      "civ-16#5",
+      "civ-17#2",
+      "civ-17#3",
+      "civ-17#5",
+      "civ-18#1",
+      "civ-18#2",
+      "civ-18#3",
+      "civ-18#4",
+      "civ-18#5",
+      "sc1-01#2",
+      "sc1-01#4",
+      "sc1-02#2",
+      "sc1-03#2",
+      "sc1-03#3",
+      "sc1-04#1",
+      "sc1-04#3",
+      "sc1-05#2",
+      "sc1-05#3",
+      "sc1-05#5",
+      "sc1-06#2",
+      "sc1-06#4",
+      "sc1-07#2",
+      "sc1-09#1",
+      "sc1-10#1",
+      "sc1-10#4",
+      "sc1-11#1",
+      "sc1-11#3",
+      "sc1-11#5",
+      "sc1-12#2",
+      "sc1-12#5",
+      "sc1-13#2",
+      "sc1-13#3",
+      "sc2-01#3",
+      "sc2-02#1",
+      "sc2-02#2",
+      "sc2-02#4",
+      "sc2-03#5",
+      "sc2-04#1",
+      "sc2-04#2",
+      "sc2-05#1",
+      "sc2-05#3",
+      "sc2-05#4",
+      "sc2-05#5",
+      "sc2-06#1",
+      "sc2-06#3",
+      "sc2-06#4",
+      "sc2-06#5",
+      "sc2-07#2",
+      "sc2-08#5",
+      "sc2-12#7",
+      "sc2-13#2",
+      "sc2-14#6",
+      "sc3-01#1",
+      "sc3-02#1",
+      "sc3-03#5",
+      "sc3-04#3",
+      "sc3-05#1",
+      "sc3-05#2",
+      "sc3-05#5",
+      "sc3-05#6",
+      "sc3-06#1",
+      "sc3-06#2",
+      "sc3-06#4",
+      "sc3-06#5",
+      "sc3-07#1",
+      "sc3-08#3",
+      "sc3-09#1",
+      "sc3-09#4",
+      "sc3-09#6",
+      "sc3-12#6",
+      "sc3-14#2",
+      "sc3-14#3",
+      "sc3-14#4",
+      "sc3-15#1",
+      "sc3-15#2",
+      "sc3-15#4",
+      "sc3-15#6",
+      "sc3-16#1",
+      "sc3-16#4",
+      "sc3-16#6"
+    ],
+    "numericFigures": [
+      "0047db598f8452358fbe71fc5eaa64ee482f70564c609853a5760dfdaaa618b8",
+      "08a7ada94d6af1303c797064c0a62a6e73e5f37bab27859df5458e85e47c8073",
+      "0af11dc153fe4d01998710242e2c512bec4394c49ce8655ef3550fada23f13dd",
+      "1ee981b7d60c890bf2c4ad8ea229217a2519507ab59570a288a51e99f904c3fa",
+      "224ee1e457f5ae42b9db151b9211f349e5a27e01e72d7fd2ac98bfced3f25cba",
+      "2456a113460803113b63bcbeb11f247d8f04e3bf198ad9875127050a029a8b66",
+      "28e886af98c0f759bdf1f5d52100c0ae8d74803bb64fbe0302080e5605547772",
+      "2c0c6272f531e5fb629e3b58303770a53530f3173b96c1b934ee385caf00abcc",
+      "339ccd9bd6de1ad51b94351b34e01a48dfdbf96b2aaa622bebccce9f3e8d3d85",
+      "354e851b730498dbf4efd0344f021a8328aa370c7cec2324006017222002062e",
+      "35884b56dcd68d5d36ff9522355adcc908301bf359f06a9bf00af33838d58506",
+      "362059a2ec06d03c9660ebb0b944162ef8b49e65b7ab556e6728b4f4f24993bd",
+      "38340208a079e3ff7310803f9336603a5935391b3f1136c358f040b7b6f7a66e",
+      "39f5c00f67bf5510076a97f041b0fa209a57b8760c8708c80b0e2185e9b25ebb",
+      "3b24f4d6f067b300a5e5dce42ec05911d4fb27b0fec37b62cb0d8eda35e6fd53",
+      "417c008e9977caa1db26bb809ae088f7e64f740475779c1e52f936c6e1dda9a8",
+      "42d06e62d094da470353126178ce2df932f0e234ea9e2e2286e69930602f07fe",
+      "43f28c1252fcf0eb9ef88b58d98f7133a7cf00fc8bc9cc5982c205c1d1b5b3ae",
+      "531732ef7f2348bef162cf53d68a21f86b50b08474e09e3af4725f6fc6d7c51d",
+      "5403ffd3139d5623b22ef34e6af57afdcaf1242c8c7b02b01c2aeb89d780897f",
+      "57ba84a121a8023b505dd1eac26ed9be2033e1798b4248f48b713126ea99195a",
+      "5a44fad69b2266db73bcf804aa105f4d5a08c9d32aa1b8bf72cad5957babc4be",
+      "5b3679c99a58c6b37c421fe0caedc4d9521f97ed243cccfebf23f58052d4f7d1",
+      "5de808f97d0107fa70224436e8f9785c7fe709b600060e99d8877a683dbcc525",
+      "69e35ef9cc0605764f659754b5317a2f4d1c4940f63735346e6aac3188e57b96",
+      "6a26914e5d8f0bba3de898b651ddb8fda5ce021dff2a5faf08b52b25e15d963a",
+      "6b11def8b11bfa2f85bba84c95e132b982be5736891aec48b1d1ef32f455cd73",
+      "72e72b0ddccd4f91c9acb456bb5a4bd02ca8464d58dd45b2ca2b9f83baff0675",
+      "75094ca43969c0e759586861d18b9d451ee6dea078599ac400dfad224a2837b1",
+      "75d11e5c497395c1773928ef9a2717de46b694380a0d95e227d3dc09fadbed30",
+      "7832165267c9045e7afff34995468a1d3ef1626995a8a4578e6eededf05caae2",
+      "7d20c242644e36437062f36ea09c954bc45f68d65f3aa995f8c91999a2caf39a",
+      "7f99408fbe4d48c49fc952fc92cf54f420a3a2961c2ce78b0b8bd950e1f29eb7",
+      "8778df5a6a0cce71345288cd9f096a1195d28f67346a67cbbf8e3f9049aafc9e",
+      "87afc15197a70a9bc2e34433eaee767c0a8d287dcec42f36cc23411873989ed0",
+      "8f48359f9e29eed4c655641612bf1d5b5ecb28231d514e0066778cddbc4f1e26",
+      "901f2c6f7ac265f93de10c8e60a03e60df30b1c702483d2aa85c7d3b187f2022",
+      "95edaa6adc5b5e5d64c64679cdfac95ebd1455051be62c6ad08a84e31fec5761",
+      "979e6809b549f1feecacd7da05e0b095714ebd801b83877899c0519a88c070d6",
+      "98684028e3e281aadfd279d57db468505e48980fbb098f9811841efbd2988c24",
+      "9c65aafaedeedc8e962417c74dc1fa96835a807c012b482b7e3cec83c5accd01",
+      "a26b1c5b0b13365e0ad8e800e71507b83c6735a2aacf05d3e45ece5cc9e6160d",
+      "a4b41181463ae50b7d43dd5f4e279266fc16d41240a26ad0d0f596c7cb82039a",
+      "a6309ff5aa9769bec7f6f8dff62f529eb578f2f29127a1b10da929863a3c50d8",
+      "aea89d1b33b0351b41fccb13c9b10e49633303a932bbdbea0c45c930540c5822",
+      "af0cfb617f1eda6b3297cfb846d16520c28f0572dac05353526df91911b9c9b0",
+      "b55e070137092606c55c868595d2dee28a89d5f6e7823d61faf77e031d5a62fb",
+      "c0f792dfc11503798f251adeaff9f047cf09f76b60675ed0094dc791a4243498",
+      "c1db76810764413dde8e50bc0b7ba8c177b808bccbc02bd46d17c5bb43e94fb6",
+      "c2c13d300e9c43365ae4121656aff3dd305287dfc8681a3444e8f93a2154aca3",
+      "c908d48c2f2b35b1fea90ce1e2f3fcd670b46b45ec8c6bd1caee7460b72316cd",
+      "cb4afeae9cb48d04ccb003af554da3fa5bf67cb643594e4a13c156ab7f45f686",
+      "d5c4afcadff3253a5120156ff08d7e680689ab4a9a84b9fda4b614a577170fa6",
+      "daeffc3a8179304d53aa009ac8cb9521a6472518e3bd12f96e0f6edc9bfd10d5",
+      "e73ba7d23095bb4e0213cfd3698fffa592e0ce968544886f77c13847a6bfc865",
+      "e77d834c824142cf00386c440c6d6368208331cc9c323e9a3759fcf7d68633f7",
+      "ed9ebd273d98bbc96bb984142a2a6a97db5401bb22b0db14d8b3108b1dec3b32",
+      "efd969905c53c8f48e5538c99984aa09049bf4712453f09c31150614698282ce",
+      "f30a52888284304fe6a000983b620dbd356843ea3db0396ecff37785892a9bc9",
+      "f495553162838751f940c858e49d3750fd15f16eaa38a8300ead368aea3640dc",
+      "f4a6bc0b78140e23f3753056219ec97e5bd9fa054f0a22948308a62babadc31a",
+      "f4da7615c14e15a1f79adca507424d6fe1d324a8e6806faa9806c49005520f19",
+      "f656a5f3ae9e844b64d3499fe4000bc50ae79955a1e6d839ee463e6961f25347",
+      "f763e25931ad7239fc858921e367f9dc6fe80a9f58a2a1b024288887f467089d",
+      "f815f4816c117544abf4d39d8d25b201fda289f930efa4d248812854f07cc3ed",
+      "ff6e91f9dd9a7fe7552191b9db0fdb14e16db1c9d90044098db46c56a3165dab"
+    ]
+  },
+  "points": {
+    "civ-01#1": {
+      "decision": "visual",
+      "sha256": "98007406fd09e12de5b96e80a2cf26e70e470f82161b5608eb761dbcfa0f1f29"
+    },
+    "civ-01#2": {
+      "decision": "visual",
+      "sha256": "ae8e8d89da8c5adb12faec143474052c251569446d92ba78ef88b5f21aab0f38"
+    },
+    "civ-01#3": {
+      "decision": "visual",
+      "sha256": "479722c7ce6b6bb30ed0a719e34c9651b9b4f420f868c28ad6a58c5c9b49c9fc"
+    },
+    "civ-01#4": {
+      "decision": "visual",
+      "sha256": "e57fb3f849dc64b4e1ef6960451296c44f0c3d65f234ec5cf0c64e2d01ba617a"
+    },
+    "civ-01#5": {
+      "decision": "visual",
+      "sha256": "41fc6cc4d2ed1228bab05ce4346a070f27753f42aca0575a4d818e80f273380d"
+    },
+    "civ-02#1": {
+      "decision": "text",
+      "reason": "文化の3つの領域（科学・宗教・芸術）のはたらきと例を組にした表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0a367e175cf5a2003151c11c863990141f13aa6421799c27f8ad524af1eae7a3"
+    },
+    "civ-02#2": {
+      "decision": "visual",
+      "sha256": "8332d6be305cd1382892e4c156d2852c675c2062442668de04da80c1599efd88"
+    },
+    "civ-02#3": {
+      "decision": "visual",
+      "sha256": "e18774724e6412d9120526e599290bbbe61adb5a5d886c6eea50b2e471c881d9"
+    },
+    "civ-02#4": {
+      "decision": "visual",
+      "sha256": "d213bf799ccdc9f3325b29bb9a7a5bce4a9ac6d69989712a8c57957744f2a40c"
+    },
+    "civ-02#5": {
+      "decision": "text",
+      "reason": "伝統文化の継承と異文化理解を、課題・取り組み・大切な態度の行で見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6c3e0d7b0eeb706ecf07b538aa4a5b60a4c67e38722fcb8bcdbb24400244aac4"
+    },
+    "civ-03#1": {
+      "decision": "visual",
+      "sha256": "a7f59489b9889a9a7097f19c77c3479f5c30854789371dce0d4fdcbc4d76867a"
+    },
+    "civ-03#2": {
+      "decision": "visual",
+      "sha256": "861e5325bf25dac4c675b67ab8efb42cbea1a21e8ec3a8aa81f16c2f4ce44266"
+    },
+    "civ-03#3": {
+      "decision": "visual",
+      "sha256": "7c401b78e98e3b011f98db8ec084010f8523a1d6c3ee9119071c043319beca70"
+    },
+    "civ-03#4": {
+      "decision": "text",
+      "reason": "きまりの例ごとに、守られることと生まれる義務を対にした表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "da13420b65f6c7f7e4ad7b331563f42a3b576e0b0f1783c7def755704f89bbfc"
+    },
+    "civ-03#5": {
+      "decision": "visual",
+      "sha256": "09a33d12c256771f096bfaf98ddae24fbf30036ed3244d6ea85c4591dbca7ca7"
+    },
+    "civ-04#1": {
+      "decision": "visual",
+      "sha256": "bb793fb815c645679c50138a59e6a46032a5c7ce1fd607d7dbe6f217b0034f91"
+    },
+    "civ-04#2": {
+      "decision": "visual",
+      "sha256": "81bd78db42b8ea37bd77fa91eed7007a901f624231bd3c7c2c612e68b661034e"
+    },
+    "civ-04#3": {
+      "decision": "visual",
+      "sha256": "645cf6b13228d24e8debcfedff0b651db59110447438c0f15b502c348eb29077"
+    },
+    "civ-04#4": {
+      "decision": "visual",
+      "sha256": "d0a645b985bde68be323392d4e90b01c6d45b8470e972dcd94242c960bfa91a3"
+    },
+    "civ-04#5": {
+      "decision": "text",
+      "reason": "憲法第9条の条文と、自衛隊・日米安全保障条約・非核三原則の内容を並べた表が中身で、条文の言葉を正確に読むことが大切",
+      "sha256": "db88bcf130f1593ae99a327a8ac89cc4194d15f3d534ecb0140029fcb6fe7927"
+    },
+    "civ-04#6": {
+      "decision": "visual",
+      "sha256": "440f74201bc4eeb3dd8a36c903326713bc5a44f75711a4af277999faf97292b7"
+    },
+    "civ-05#1": {
+      "decision": "visual",
+      "sha256": "6ce07522b16b61af6dcfdf23716bf568384f31dbce510ebf55bfc458315e39a7"
+    },
+    "civ-05#2": {
+      "decision": "visual",
+      "sha256": "0624e21ddce9360edbd25f9be78f19f438e10dcc30e21864d9a46e8658636c0c"
+    },
+    "civ-05#3": {
+      "decision": "visual",
+      "sha256": "59b07ab156fab7b8122b6a08f126904952f0588ed7ff86a2585e9825c0e4582b"
+    },
+    "civ-05#4": {
+      "decision": "visual",
+      "sha256": "dd4bcfc85b5b5371e05a9221d06c5c0cfacb51f0dedcb0568dafe35b8a0d4954"
+    },
+    "civ-05#5": {
+      "decision": "visual",
+      "sha256": "6275b947b04005bb69f80239b53a0ddfe6efccda35f3664d9dbd49ef75fbc8df"
+    },
+    "civ-06#1": {
+      "decision": "visual",
+      "sha256": "5ca994b4754428e7984725fc93d1cdad131a856e924da9ac227ce8f186518352"
+    },
+    "civ-06#2": {
+      "decision": "visual",
+      "sha256": "b135aa910ba8dc89dea239920970e6d0abb9e85d240d865b12c36c445aeb1b44"
+    },
+    "civ-06#3": {
+      "decision": "visual",
+      "sha256": "3bf323441e2911ac394ca9f16fb02c1b7294fb40163f27c9a26e5a955c5307c1"
+    },
+    "civ-06#4": {
+      "decision": "visual",
+      "sha256": "ea596cd7b0b5a38ed9011c7f6eee246abfad1e6d6f587482cea31cdb04573c24"
+    },
+    "civ-06#5": {
+      "decision": "visual",
+      "sha256": "ea02869a82c8dee4fa66a6ba17c702d5d205d6593b691302e9c22e37172b13b4"
+    },
+    "civ-07#1": {
+      "decision": "visual",
+      "sha256": "cdfe31043f1e9e768c956a0cbae7fbdaedabcb7bffeba9c0612008fb9f6658db"
+    },
+    "civ-07#2": {
+      "decision": "text",
+      "reason": "選挙の4つの原則と、それに反する選挙を組にした表が中身で、表で見比べるのがいちばん伝わる。選挙権の広がりは歴史の単元のグラフで示した",
+      "sha256": "b89054d43724e806b5900704e45656ada67de09f7fe9256c1fac3b683cd41a88"
+    },
+    "civ-07#3": {
+      "decision": "visual",
+      "sha256": "c9931a8d22d7fa666312f616057e57776efe89a2f3b649c573f5a8f0ab4e8bab"
+    },
+    "civ-07#4": {
+      "decision": "visual",
+      "sha256": "a75a4fd66543d190307180e955550362109b3f58e2c5f8ae63efafeaf6fb9c9e"
+    },
+    "civ-07#5": {
+      "decision": "visual",
+      "sha256": "7ac50a193721fea9a2dfa9f9e72c86ae9ee26882f964204309e317403417dc64"
+    },
+    "civ-08#1": {
+      "decision": "visual",
+      "sha256": "a5422a5d06af193457d1942e91d291cd73cb70c6a5559e94833a3201a18df89c"
+    },
+    "civ-08#2": {
+      "decision": "visual",
+      "sha256": "a9b5fc58dfd62a1f1060ad06fdb5923006dd1f08b8b6746e2df9e1d830cf14f4"
+    },
+    "civ-08#3": {
+      "decision": "visual",
+      "sha256": "278b3bda7c5f216261396831671bb90f048b5f1e38566f36a1d3d113ed7aee17"
+    },
+    "civ-08#4": {
+      "decision": "visual",
+      "sha256": "1ad964578ba966e762db9d64b6ff7d9aab1f1984051619d29bb926cf36351504"
+    },
+    "civ-08#5": {
+      "decision": "visual",
+      "sha256": "d49e2775c902fc49977cee2ece3f9925b1077b0451795d75e63896e70500f5f2"
+    },
+    "civ-09#1": {
+      "decision": "text",
+      "reason": "都道府県と市（区）町村の仕事を並べて比べる表が中身で、表で見比べるのがいちばん伝わる。地方公共団体のしくみは同じ単元の図解で示した",
+      "sha256": "1e01cf7c8d4419c7aea2de59e055a3fc9c27df4b8767c41c2babbfcbf8dd062a"
+    },
+    "civ-09#2": {
+      "decision": "visual",
+      "sha256": "37a02b13e647011fd5b2e55e436fcc5d254e011aa52c653e3e742309ee9aee2d"
+    },
+    "civ-09#3": {
+      "decision": "visual",
+      "sha256": "7f8fdacfb264804a6b87affe7456eca97c72a0d1fa259f00f4635a579f7fdb26"
+    },
+    "civ-09#4": {
+      "decision": "visual",
+      "sha256": "e87db5e69fa79aa247c90a2f12ff6cb088a3035f2d83a1b2dfee8a169ab8d621"
+    },
+    "civ-09#5": {
+      "decision": "visual",
+      "sha256": "5797555c8da088048898510b1f5bd352d25f4eaed9609f3fcacf57413d4ad0f3"
+    },
+    "civ-10#1": {
+      "decision": "visual",
+      "sha256": "f30f8f9d27f53ca3d2695c97f82728f67dafbdf1691568783cccc616bfe4ca0f"
+    },
+    "civ-10#2": {
+      "decision": "visual",
+      "sha256": "21c73f22a7a7f89732c35f68a90113d0e8bfe6c5733b6d01e7e03ae0262c41b2"
+    },
+    "civ-10#3": {
+      "decision": "visual",
+      "sha256": "54eb0d3e3b8afa0b64880ddba0872b3cdb02fba97a837c300a456ed64e437437"
+    },
+    "civ-10#4": {
+      "decision": "visual",
+      "sha256": "774ae102616f3bc2d7b0ffe196c0505434252af356ebffb235f5a2be16eaa919"
+    },
+    "civ-10#5": {
+      "decision": "visual",
+      "sha256": "9d9bcbb55df4f272829028c2e5e8b8add78e63a2f93064b93fdd71a9d1f492b2"
+    },
+    "civ-11#1": {
+      "decision": "visual",
+      "sha256": "7fac4b7418b8908162d7eed999b820a94c24ed64c7cedab5ec05eafb759c5aa6"
+    },
+    "civ-11#2": {
+      "decision": "visual",
+      "sha256": "1c1cb915afe842f24e048f98a1bca47f6811a7413889d04946d52b9c039a14d9"
+    },
+    "civ-11#3": {
+      "decision": "visual",
+      "sha256": "a30d55aec7f18d051974b4b0612d6e770d31ea97e73fe479bfa61f5c81420693"
+    },
+    "civ-11#4": {
+      "decision": "visual",
+      "sha256": "14852a4524b0888e544a06dec0895cb8c2985b062722fb0c8b245d07333f2580"
+    },
+    "civ-11#5": {
+      "decision": "visual",
+      "sha256": "f03e551b5720348e69d62ea7d05343bcf32f64ab8acb263eb68efd783f7e831a"
+    },
+    "civ-12#1": {
+      "decision": "visual",
+      "sha256": "aa921828f2ffae24eab2fb8275f49dfd9af935778d5b9fadd15e0554338177b9"
+    },
+    "civ-12#2": {
+      "decision": "visual",
+      "sha256": "21de6a9705332c87f58788306c909aa78506ea7e77a68afba57f7fdad4156d41"
+    },
+    "civ-12#3": {
+      "decision": "visual",
+      "sha256": "cb5c9307ec4a665654cd74e9761d00f80393e0606ec4718c56551241bc3286e5"
+    },
+    "civ-12#4": {
+      "decision": "visual",
+      "sha256": "849a49cc32513e7ab3e7323833588f7fb3bf43f396ad48ce646ab0360038d898"
+    },
+    "civ-12#5": {
+      "decision": "visual",
+      "sha256": "1337d44fa3ba68aa3e5470d73832a616272e95e7a7e7fd7457274bec649e6846"
+    },
+    "civ-13#1": {
+      "decision": "visual",
+      "sha256": "655c55146a0f6cf2eed238cf296b78fa71a102a4712887dd92cb2aa0c9e84ae4"
+    },
+    "civ-13#2": {
+      "decision": "visual",
+      "sha256": "8fb82278bd9472845500d21d997a12eeeecedd83c27cc28b1523d81fd1e030f6"
+    },
+    "civ-13#3": {
+      "decision": "visual",
+      "sha256": "6405441a746bd01cb27f876f9c0b1a1bb453b17114db35eb027822f01a9d54f5"
+    },
+    "civ-13#4": {
+      "decision": "visual",
+      "sha256": "2a1cca0aa86de668560365635635cea2af7721657f10bafb73149c66c3544de2"
+    },
+    "civ-13#5": {
+      "decision": "visual",
+      "sha256": "02d9457d91470c2aed007b5a779e7649e4c84f62d0b3119af62256aacdefe0e9"
+    },
+    "civ-14#1": {
+      "decision": "visual",
+      "sha256": "a2f9ffe2675335aa4867fe765797cd36981b64d26e0a44e453d617c14305e861"
+    },
+    "civ-14#2": {
+      "decision": "visual",
+      "sha256": "bbb1f40d8b01f4dae90a139fa627bb3c76585779693ff6928cae83209ec433b3"
+    },
+    "civ-14#3": {
+      "decision": "visual",
+      "sha256": "dcb3a3511d8b0df7f374956c699fd7fd2f32cb1e082ea0b24b8e8a9ab33d59ea"
+    },
+    "civ-14#4": {
+      "decision": "text",
+      "reason": "新しい技術と、広がっている使い方の例を並べた表が中身で、技術の写真や絵がないため、図にしても名前を並べるだけになる",
+      "sha256": "17622b941d1438ce798235da7b478078c01fac98569881d9201d203666ef3b83"
+    },
+    "civ-14#5": {
+      "decision": "visual",
+      "sha256": "d53a4b876296739d04c01cf275d07ea396042d40092c7eaaeecb787551a6bae8"
+    },
+    "civ-15#1": {
+      "decision": "visual",
+      "sha256": "b0c1754424e5ab6a6369bf5a908b7f970e8e143a336f5bfce69057a25a224099"
+    },
+    "civ-15#2": {
+      "decision": "visual",
+      "sha256": "a4c12d8f61ab165d27114190c78fbf1a81a6ee87064b52fa49f031d0529fbb94"
+    },
+    "civ-15#3": {
+      "decision": "visual",
+      "sha256": "afdac82e29eec4a59aefbe58ab2ef66e98a89451e57c3d05898cc9e23107e0b1"
+    },
+    "civ-15#4": {
+      "decision": "visual",
+      "sha256": "af10eb5bfd46d05f87b0d4aeac99c04a73020e56f07f34921f39aff37d752141"
+    },
+    "civ-15#5": {
+      "decision": "visual",
+      "sha256": "92f521b9fac67f09ccfc18d9c4154a970bef02bab5857743f36859647a3e61f6"
+    },
+    "civ-16#1": {
+      "decision": "visual",
+      "sha256": "86f0c42abca3f0cb748ebe4ff59d498ef5b7c6e1c912e1190f19f8f99ef2cf52"
+    },
+    "civ-16#2": {
+      "decision": "visual",
+      "sha256": "36826c5503045001a28f93104d38a81784aff8b4aac29ae2657d378367d839c3"
+    },
+    "civ-16#3": {
+      "decision": "visual",
+      "sha256": "dafafae64542e032e7abaf252c74fa2cc2ff01da1d7538bd4c26fd631f8ba1e1"
+    },
+    "civ-16#4": {
+      "decision": "visual",
+      "sha256": "1c94ee8269f9e4b6b30a164d9d8bbe4b6844d01c5f67429d8e0f9f53b7aa924e"
+    },
+    "civ-16#5": {
+      "decision": "visual",
+      "sha256": "9f7860d9b3ae1ffa5171038620d536c98d802e6de54de0bdcbb5e02ea60a8671"
+    },
+    "civ-17#1": {
+      "decision": "visual",
+      "sha256": "ac42c37fb9c40da87a9eacf05b8a4717f43cc440f6b97b15134acf42924496b6"
+    },
+    "civ-17#2": {
+      "decision": "visual",
+      "sha256": "8882769959a921c1360990aa10beb446f5e93ec1d36ee75da2445337ca7a1bdc"
+    },
+    "civ-17#3": {
+      "decision": "visual",
+      "sha256": "feb20c279f558861c90ea26d7db102bf2970900da25cf875dd612902f472f621"
+    },
+    "civ-17#4": {
+      "decision": "visual",
+      "sha256": "5197f7957a71cf2f6dfacc2ca4d8a659150e99d8193dca361ffac43814021d89"
+    },
+    "civ-17#5": {
+      "decision": "text",
+      "reason": "地球市民として行動する手順（知る・考える・行動する・伝える）そのものが中身で、上から順に進む流れ図がいちばん伝わる",
+      "sha256": "ed72d8d4b86f406ee29a64c99f38e9dc606bbe1a47769732b2f3cdde6319dc28"
+    },
+    "civ-18#1": {
+      "decision": "text",
+      "reason": "テーマを「なぜ」と「どうすれば」の問いの形にする例を並べた表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "fccad600577c0b94b1f93ff8ee7c77e2bb2a0633e85b568f196467a223cc9fc7"
+    },
+    "civ-18#2": {
+      "decision": "text",
+      "reason": "資料の種類ごとに、手に入れ方と確かめることを並べた表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "ca02facd6064e14f072cc19e4c5bde3e93a9224cb531c7b28907dbd92fd39327"
+    },
+    "civ-18#3": {
+      "decision": "text",
+      "reason": "考察から解決策を構想するまでの手順そのものが中身で、上から順に進む流れ図がいちばん伝わる",
+      "sha256": "dd622014f2b68509dd3984b618d29c7ef14b5b305ecb7af2ae2555f1d81e72e9"
+    },
+    "civ-18#4": {
+      "decision": "text",
+      "reason": "レポートで事実と意見を書き分ける方法を、意味・例・書き方の行で比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "ce58f202f4e4fe55f2611b32195db4284bc4d7473b980306bdd14724209cee86"
+    },
+    "civ-18#5": {
+      "decision": "text",
+      "reason": "社会に参画する方法を並べた表が中身で、表で見比べるのがいちばん伝わる。年代別の投票率は「現代の民主政治」のグラフで示した",
+      "sha256": "c009ccf9cc806c317fe0f22326f649d9fdc602dd086f58913359894c62b4426e"
+    },
+    "geo-01#1": {
+      "decision": "visual",
+      "sha256": "bf13f66b67c56baf65ccb93a818977b026516f9950360ea5699e8f240e1ad9c9"
+    },
+    "geo-01#2": {
+      "decision": "visual",
+      "sha256": "5090479e344f4a0d7f6ae283b281f020e806bd3be1cfb6473aad8b617a56a6a6"
+    },
+    "geo-01#3": {
+      "decision": "visual",
+      "sha256": "290310404e64e42ce5d6bde01680e5128e6a0ecd3909a56a49e8764e61adc416"
+    },
+    "geo-01#4": {
+      "decision": "visual",
+      "sha256": "258cdb4cb369b0ba052d5c7bc45fdfad25c5b8489cd5fbe268728c57de6d393f"
+    },
+    "geo-01#5": {
+      "decision": "visual",
+      "sha256": "8666666a4d8846154847a5e04213fe1e6de993a80e0059751ee6d9b0c20ecdb9"
+    },
+    "geo-02#1": {
+      "decision": "visual",
+      "sha256": "c3d275933c59d81b1474f8d9a9a78690f7743e6e0bfa5af9264282cc6c6d6600"
+    },
+    "geo-02#2": {
+      "decision": "visual",
+      "sha256": "885347e45bbe1cd3b31daff8a453310d6a31f1e0dc775ac40c214f86d63e978f"
+    },
+    "geo-02#3": {
+      "decision": "visual",
+      "sha256": "6f4166f9de7b6e68ca1a6ae82cc89b3d5c93450ef4b0aa693f78a061ca8d5096"
+    },
+    "geo-02#4": {
+      "decision": "visual",
+      "sha256": "c48d0343c177b5ac3f8d1b9dc825fc1ceb6e48232ee76020eb9b1f595f3a7e66"
+    },
+    "geo-02#5": {
+      "decision": "visual",
+      "sha256": "94ca7af490390391daacfed20cd550bf1731a5d3f85ef2b2257ce8a0ebeb252d"
+    },
+    "geo-03#1": {
+      "decision": "visual",
+      "sha256": "b8f998b7484eab95f54a283ede8832223037057c75f0526a080b5d5345b649e8"
+    },
+    "geo-03#2": {
+      "decision": "visual",
+      "sha256": "b174167e773714879554b8991fe02d1a1ff5b4e1958545cba6dbddcb91250dbb"
+    },
+    "geo-03#3": {
+      "decision": "visual",
+      "sha256": "283aa569ba5f27431379c7f2ffd9aa83df3adf70418b6a91b996ecf21ea6bdd4"
+    },
+    "geo-03#4": {
+      "decision": "visual",
+      "sha256": "f0c21d02145acda5b879a6c68a7a775c430a06a618e17e559c478ebaeea9deed"
+    },
+    "geo-03#5": {
+      "decision": "visual",
+      "sha256": "f69a298dc61349e19e4ea893ff0db882234a4d4c98cfd51911aa8479b0565869"
+    },
+    "geo-03#6": {
+      "decision": "visual",
+      "sha256": "0d9f3d5029c9c8473acbe86cf39a61c04fc0cf5259a24b56401fdded2c7d054c"
+    },
+    "geo-04#1": {
+      "decision": "visual",
+      "sha256": "e52f7d7d0af4f84712302694818a914bddf43d675b9d7fd8de04f99ae249d2cf"
+    },
+    "geo-04#2": {
+      "decision": "visual",
+      "sha256": "6c5a5f69a2ec46d61ab53631b84461e24d91bd7a31319f819c7cde4ef3bce97c"
+    },
+    "geo-04#3": {
+      "decision": "visual",
+      "sha256": "24a3529956c443b694548471dc544a62e5dbae9b99e866a10f8503cb3266009c"
+    },
+    "geo-04#4": {
+      "decision": "visual",
+      "sha256": "4caffc33129d45efa069f936b15da13a26a6e768788644a29c4fa5c22b46ede3"
+    },
+    "geo-04#5": {
+      "decision": "visual",
+      "sha256": "215b0ca60eaf184840d8ee82a4e770fc25740fa51e470bf9f59da833cccd9162"
+    },
+    "geo-05#1": {
+      "decision": "visual",
+      "sha256": "5e9cc39cb50311014f343e5ef1b761a34d0c1c27f04ead7992feadb3795a4ad9"
+    },
+    "geo-05#2": {
+      "decision": "visual",
+      "sha256": "7b373501190c5697f3ec589375761102f969dac2693d83c2f9ed925fc7b769f3"
+    },
+    "geo-05#3": {
+      "decision": "visual",
+      "sha256": "c50f17c583f29317374e931a0dd2daf2707125868203c6a89d3b47ca56aa7c70"
+    },
+    "geo-05#4": {
+      "decision": "visual",
+      "sha256": "5df69081ca283666e260265ea13b28e31f15b47af5a1aec9af0fbea79cd0c893"
+    },
+    "geo-05#5": {
+      "decision": "visual",
+      "sha256": "c4a8e323655ca9e32bf3f8d9cb4c12965f969ca749206934fe81ed63c7bd0379"
+    },
+    "geo-06#1": {
+      "decision": "visual",
+      "sha256": "4f871c8edd6b5ba5c3c4dff7be817c8fb933cb29daee9c3fa560ba1d22e53593"
+    },
+    "geo-06#2": {
+      "decision": "visual",
+      "sha256": "0f2bf773e42d53881284faed49e3e0ce5a146bb4cbb02793a7cb0687dd15a041"
+    },
+    "geo-06#3": {
+      "decision": "visual",
+      "sha256": "1c051e2a02c55b46f88ed5cf526755b9c5a2770e0b0392e483e77b0117078b54"
+    },
+    "geo-06#4": {
+      "decision": "visual",
+      "sha256": "95244183ca2ee6dddb18ecf6703729c7d2a5542b4e68d6fb9a8e56116f7b6cac"
+    },
+    "geo-06#5": {
+      "decision": "visual",
+      "sha256": "4ddf6dd6a82ee6152d6d79bdf6857d7398c9ae2e4d55836a66393cec4131bbf7"
+    },
+    "geo-07#1": {
+      "decision": "visual",
+      "sha256": "fbaa0b7e9ac0c848cecf622abc577e7d0ba37cb0e1bab71b43a71da7eda3d166"
+    },
+    "geo-07#2": {
+      "decision": "visual",
+      "sha256": "d0b5989c1caa0d800aed1f9304a394471d95791da801d70cf957657498e8c5c3"
+    },
+    "geo-07#3": {
+      "decision": "visual",
+      "sha256": "3de2492974f9b8aaee1e06d24c8ed8e7a5a13d3662669e579372a902a245beba"
+    },
+    "geo-07#4": {
+      "decision": "visual",
+      "sha256": "028546041b6a009a42cab59b3d93997ebbdf1f404b37e43399564e746bf09e38"
+    },
+    "geo-07#5": {
+      "decision": "visual",
+      "sha256": "78e9284adcfea57d8b5b766c5904c18dd020f988a90cf218fba6e29f0bd8daf5"
+    },
+    "geo-08#1": {
+      "decision": "visual",
+      "sha256": "6b340baef3fb2ec61fc1047f853dde64e4fc1abbd824e2d440f5bd67d0ec0fac"
+    },
+    "geo-08#2": {
+      "decision": "visual",
+      "sha256": "cda177304964c16307521b64fc33dc2ef6d5b65459bed8e0414334dee1cdef92"
+    },
+    "geo-08#3": {
+      "decision": "visual",
+      "sha256": "b5310c9acee346b0d51be2d4be2651a4b91dd3080ac5d61668bf1cab09e2ffa7"
+    },
+    "geo-08#4": {
+      "decision": "visual",
+      "sha256": "26be54b67c44e8011afe55add5f84937f927675cc8256882930fb5c7d2ba2067"
+    },
+    "geo-08#5": {
+      "decision": "visual",
+      "sha256": "1c39e69be4161a7b5c99a048ebdbb96c705d691f99d9b31a16e51da914ba20e0"
+    },
+    "geo-09#1": {
+      "decision": "visual",
+      "sha256": "af7a242f555c64bcc2ac98a61307efb85bbb218623743ce568eedf900138e462"
+    },
+    "geo-09#2": {
+      "decision": "visual",
+      "sha256": "928451219c78905cb7466e00d926cbd71d3e161c0da1c843968fea20391958b0"
+    },
+    "geo-09#3": {
+      "decision": "visual",
+      "sha256": "719db1330024b3f9d655dfa7c27fae91c3bb0bc363f54b526ebe7714325262cf"
+    },
+    "geo-09#4": {
+      "decision": "visual",
+      "sha256": "0191f6007afe10d1ce398567c54d10eb6af3ca036237654c9d4cceeef39d2fe8"
+    },
+    "geo-09#5": {
+      "decision": "visual",
+      "sha256": "fdde6ecb1f75ba547aca916844646206d670f2f233d4db90ffe86c091efd1a54"
+    },
+    "geo-10#1": {
+      "decision": "text",
+      "reason": "地域調査の手順の順番そのものが中身で、上から順に進む流れ図がいちばん伝わる。調べ方の3つ（野外観察・聞き取り・文献）は流れ図の中の1段で示している",
+      "sha256": "5b83d56947bb078940a89c29a840b2c97072e7f4ef1d2c9840cf3b96acd85107"
+    },
+    "geo-10#2": {
+      "decision": "visual",
+      "sha256": "cd51b29c668ed8db979e5dfed02b7d72c066525c566dc5d69248902d4336c9d9"
+    },
+    "geo-10#3": {
+      "decision": "visual",
+      "sha256": "6707e4bfb4a97c562860f6e88e8a6b7dd5b9647d55deb514b7cbed3993391b0c"
+    },
+    "geo-10#4": {
+      "decision": "visual",
+      "sha256": "d725bff104372fc76b8e9b6afbebe61386505c0fb1a8cc103363c714f61e4116"
+    },
+    "geo-10#5": {
+      "decision": "visual",
+      "sha256": "3abbf8fbd3c03a047e86efa37083ff9071c127b58def535e2411042f47963e9e"
+    },
+    "geo-11#1": {
+      "decision": "visual",
+      "sha256": "ef6b48a9e11404773d4ba29b71bd8b6050fca78b055ef1e71ca4048601fd74cf"
+    },
+    "geo-11#2": {
+      "decision": "visual",
+      "sha256": "9871f2a83d300ba4dbe9e242698bf21bc6feb5ddb6062039b934f2eced39a5a4"
+    },
+    "geo-11#3": {
+      "decision": "visual",
+      "sha256": "fa8c2ea54b8ff517b4fbc3557b1a5bababadefe75f9d45e803dce933f6e4d57c"
+    },
+    "geo-11#4": {
+      "decision": "visual",
+      "sha256": "4050674da568cd5196536bf90e8130743977b34da776a8a076b23dc8c7c049f5"
+    },
+    "geo-11#5": {
+      "decision": "visual",
+      "sha256": "56be6772d60d1e36900ab43ee9af69551a4428408774549b593836b270451442"
+    },
+    "geo-11#6": {
+      "decision": "visual",
+      "sha256": "1c9604e5da5478c2f1a6c32614511a012ffd92dd06eac79fe9aa20da45b32fc1"
+    },
+    "geo-12#1": {
+      "decision": "visual",
+      "sha256": "85ceb8f8d2d1d2e1e9e0f2234c056e4e17ee5f72bb8f3248421e8a0b817e85a0"
+    },
+    "geo-12#2": {
+      "decision": "visual",
+      "sha256": "7f098e1753665f97c5751f6e61c66aafaa0596154699e8e49710482cb2998bf1"
+    },
+    "geo-12#3": {
+      "decision": "visual",
+      "sha256": "82cd20477f6b8cf061ac32976e94a69364d670eaa9cc7036b0360af2799327e0"
+    },
+    "geo-12#4": {
+      "decision": "visual",
+      "sha256": "47030642c240cbc55f0eea2515ebed9acc08bd5f8fad04e0d1b479fcf273abf3"
+    },
+    "geo-12#5": {
+      "decision": "visual",
+      "sha256": "271e129bff1ff5682f61544bfe84913c7db1f13fe4cb8b49a8baa6340d14f4bb"
+    },
+    "geo-13#1": {
+      "decision": "visual",
+      "sha256": "0bcca01cc03fd92311b5dce970e5f1178db9aec3cd952dcfdd3837c89e17e0ca"
+    },
+    "geo-13#2": {
+      "decision": "visual",
+      "sha256": "5a4a4599f6509c5ca261dd9e7d34994f223e3b07800e56a3fb91518c7d4e9e47"
+    },
+    "geo-13#3": {
+      "decision": "visual",
+      "sha256": "2cc7ef43a9f710e996c4b7190a2528ba49d2c2baee6d5ff06fa3fce3f025077f"
+    },
+    "geo-13#4": {
+      "decision": "visual",
+      "sha256": "731e1cc33612469ec6ffb16ceb55da6fccc1618ad47d2bd0ff6874e826798688"
+    },
+    "geo-13#5": {
+      "decision": "visual",
+      "sha256": "4116cc833d1558f7a67992621d335c0334d7e648ee1b9a6269fbb20c0525fb6e"
+    },
+    "geo-14#1": {
+      "decision": "visual",
+      "sha256": "d31fc3a7c79504363d3fb2c2e13ef79934d52fed4ac6aa62d58fe6b6e5e925ee"
+    },
+    "geo-14#2": {
+      "decision": "visual",
+      "sha256": "3a156e2c151a2e0cb9152c47420d13e9ab7b6d57ea231e16c13b743896035cc2"
+    },
+    "geo-14#3": {
+      "decision": "visual",
+      "sha256": "9b58df7b4545329af4000b952d52bd1e723774e7394264b19f48c75424f7fafa"
+    },
+    "geo-14#4": {
+      "decision": "visual",
+      "sha256": "4132a31f052ea61c86716a6493485d73fa98496f297e97f96ed2e509d3fa957e"
+    },
+    "geo-14#5": {
+      "decision": "visual",
+      "sha256": "c188bff491d0bdc0049c697b19c47de05e50d03308b03c3d11c65c8a25f23abc"
+    },
+    "geo-15#1": {
+      "decision": "visual",
+      "sha256": "ededde9dc5e786d797c9dc0b48d5a793956f2957ede5d2edcdac54bfb458f57f"
+    },
+    "geo-15#2": {
+      "decision": "visual",
+      "sha256": "85a66466cb5d012264ed80e8b467977d15e1f3526c73e4a24c89e62778b85205"
+    },
+    "geo-15#3": {
+      "decision": "visual",
+      "sha256": "c6594b00a36265a306cf8246b518baf44dfbd48bff3c8738420942ae58a6c45a"
+    },
+    "geo-15#4": {
+      "decision": "visual",
+      "sha256": "12e5ed27a678711f5e51d3359cc7d8635ce9920b1c45c91e74c72110ef8ce673"
+    },
+    "geo-15#5": {
+      "decision": "visual",
+      "sha256": "0e559d6472a932fcea4413170079bc72c78950dc5a6a2883d1ea24ae92cf155a"
+    },
+    "geo-16#1": {
+      "decision": "visual",
+      "sha256": "054026b335a2867e271bfdc30d4c388eec24627ec358635e5764e481e755d993"
+    },
+    "geo-16#2": {
+      "decision": "visual",
+      "sha256": "222811f98a2bd774443557d98720d27a86c9d068916fc18f60e2dd32d9ccd35b"
+    },
+    "geo-16#3": {
+      "decision": "visual",
+      "sha256": "b1bd3c77c0998eb266458e4abbee9b650e8ab9fbdb4992eca2e47666b14fbff8"
+    },
+    "geo-16#4": {
+      "decision": "visual",
+      "sha256": "9174486f3f81dfda4e7c2d3f4bda7a105d835dca0013e5cc5d4aa40b18e64f99"
+    },
+    "geo-16#5": {
+      "decision": "visual",
+      "sha256": "94ce6f3384e6bc2d91bf9cef745c50c0c6c23da38edbc495517e87bea8cba3be"
+    },
+    "geo-17#1": {
+      "decision": "visual",
+      "sha256": "9d999520f518f296e1583d2babf608a0a1cd4a1b4b298b0b32f31983341241fc"
+    },
+    "geo-17#2": {
+      "decision": "visual",
+      "sha256": "d8aab2952b697fd6290a10545022348091b6344e3d4ed041fae0a212ed0864e0"
+    },
+    "geo-17#3": {
+      "decision": "visual",
+      "sha256": "65e7bccb361b9ce0f1a6734d92092b5336ec2d1e91b54235025d41c7b4c0b60c"
+    },
+    "geo-17#4": {
+      "decision": "visual",
+      "sha256": "2c2676dcce0170a38d2a9bf6ea14e1fb11fd4d089e9b7dbb6b6cbc16b8bcbb05"
+    },
+    "geo-17#5": {
+      "decision": "visual",
+      "sha256": "2c9f8fff641fc7a0b4d56f002889415132662e848eacabcc8e7213e78c07f415"
+    },
+    "geo-18#1": {
+      "decision": "visual",
+      "sha256": "4c1a1a15eb1672bc38b69e70c227c9534c248a14a609e768cad1a6ed75df9dbd"
+    },
+    "geo-18#2": {
+      "decision": "visual",
+      "sha256": "81bff19da89f4ce41cfa46f12e4c289024677144ff69f119a34364ebe768ba97"
+    },
+    "geo-18#3": {
+      "decision": "visual",
+      "sha256": "1b3e65f6bfaefc72c587b69f48dbce31f89c5f9b03b61de7a6b8de0d7c78790c"
+    },
+    "geo-18#4": {
+      "decision": "visual",
+      "sha256": "98482147be7b9561e794b70d54475a3d3f11fc30a051b91798a7b01ebf989c16"
+    },
+    "geo-18#5": {
+      "decision": "visual",
+      "sha256": "0b7d953d7077b38bd0d594bcfc49320fea622ee70c1b220abcada845c309931a"
+    },
+    "geo-19#1": {
+      "decision": "text",
+      "reason": "地域の課題をとらえる3つの見方（特色・比較・移り変わり）と調べ方を並べた表で、見方の種類そのものが中身。地図やグラフの見本は、地域調査の手法の単元の図（グラフと主題図の形）で見られる",
+      "sha256": "b21c8199a57e83f3b2d21b7073380916ffa4c2fb6e6de950ea0ecbe0eb273cd7"
+    },
+    "geo-19#2": {
+      "decision": "visual",
+      "sha256": "01a6800eaba12be1cb13bd20e432c579404244b7ed11f009b22182a1ec3db212"
+    },
+    "geo-19#3": {
+      "decision": "visual",
+      "sha256": "056d5a609c68ffdcda14ad6e69165bda404b85470b28123ba5fd736998c075bc"
+    },
+    "geo-19#4": {
+      "decision": "visual",
+      "sha256": "337d1411bf8234011fb68876ca87d7e820fb712accefbe05cdeeb5e54f46522c"
+    },
+    "geo-19#5": {
+      "decision": "text",
+      "reason": "地域の在り方を考えて発表するまでの手順そのものが中身で、上から順に進む流れ図がいちばん伝わる",
+      "sha256": "84d9f40781a8e704efbdf109adc4eefeea9da892b59968d19a78d9c0aa304096"
+    },
+    "his-01#1": {
+      "decision": "visual",
+      "sha256": "2439486b4696ee718c704aaecc3a13d23059c519c164c215d127410d81e9d2e3"
+    },
+    "his-01#2": {
+      "decision": "visual",
+      "sha256": "88cf3e887d1496c6246d0982d941f5155ad3da4984650d01a2225ed351d6b115"
+    },
+    "his-01#3": {
+      "decision": "visual",
+      "sha256": "64bce741fcf2af3b576f64b045fd86546c45f13fbaacaa5fde417383681225c3"
+    },
+    "his-01#4": {
+      "decision": "text",
+      "reason": "資料の種類（文献・遺物・遺跡・絵画や写真・聞き取り）と例を組にした一覧が中身で、表で見比べるのがいちばん伝わる。実物の絵や写真がない図にすると、例の名前を並べるだけになる",
+      "sha256": "51cdacd8e687b513a26e81e3dd83ff1611a6f40171794c4f6d0fd3b4bc3ae96b"
+    },
+    "his-01#5": {
+      "decision": "text",
+      "reason": "歴史の見方（時期・推移・比較・相互の関連・現在とのつながり）と問いの例を組にした一覧が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7f24c469f6cbe9975edafb1887041c1d0a7af077a45eeb2423510245f0a88880"
+    },
+    "his-02#1": {
+      "decision": "text",
+      "reason": "地域の歴史を調べる手がかりと、そこからわかることを組にした一覧が中身で、表で見比べるのがいちばん伝わる。地名からわかる町の成り立ちは、同じ単元の地名の要点で架空の町の地図にした",
+      "sha256": "90a4c3d57bddfe811bf54a52f93f8eecd3300d4aecd1ad2548ad9f1dfd238305"
+    },
+    "his-02#2": {
+      "decision": "visual",
+      "sha256": "cc19450ff11d3c9897be5f7e944707df5a0bbd5df41fd621685dcb515d6bf5a5"
+    },
+    "his-02#3": {
+      "decision": "text",
+      "reason": "身近な地域の歴史を調べる手順そのものが中身で、上から順に進む流れ図がいちばん伝わる",
+      "sha256": "4ea4d77f2be3b7056a5713b2da6eb86cad4c8b3f38487ec6fa9778a2b743ce5d"
+    },
+    "his-02#4": {
+      "decision": "visual",
+      "sha256": "2952fb256fc4156c3148f1cdb2eaaf59eeefce3c7a1bfa0bfad8ea3768686bbf"
+    },
+    "his-02#5": {
+      "decision": "visual",
+      "sha256": "44022d9ab949599e2c5bac14c3468b9e51dab91291c3fc75a6309f38ecb0a623"
+    },
+    "his-03#1": {
+      "decision": "visual",
+      "sha256": "43f43c00ea4789b792737651df9c510a67ccd9e45dfbf5da733d32a63633d782"
+    },
+    "his-03#2": {
+      "decision": "visual",
+      "sha256": "7f76286ac20a7e37d8cc262033c536005453f94a9699c1045fe47b20b96c5461"
+    },
+    "his-03#3": {
+      "decision": "visual",
+      "sha256": "9181f3b3ec8a490116cafe6904352b19e25dcf96e0addf950831a14978b8adf4"
+    },
+    "his-03#4": {
+      "decision": "visual",
+      "sha256": "f0124103599d62c7069f04c5caaf54fd6d6cb8ba4c65a22284fc34fc4c939d58"
+    },
+    "his-03#5": {
+      "decision": "visual",
+      "sha256": "f658ac8ba1647d75c88debb8a3b194cacdd6aa0291c063d237e97f7bcaa34cc6"
+    },
+    "his-04#1": {
+      "decision": "visual",
+      "sha256": "8f9bffd1c4d26f39e48a0fddae42f822e0e08a87a707c98987ea4aa59202444a"
+    },
+    "his-04#2": {
+      "decision": "visual",
+      "sha256": "723c50c13342873a6bdbceb95fe3c99a9c8d03059db84d66f55789c10145b622"
+    },
+    "his-04#3": {
+      "decision": "visual",
+      "sha256": "834ed82835e6a13efbb399cf4889ee8b2d8e20421009099fa1caa3ba8ca70d9f"
+    },
+    "his-04#4": {
+      "decision": "visual",
+      "sha256": "fbde1197bebf66cd44c17b674aacd5d45ed8525fd9bdb9c64b766faef3a27ec3"
+    },
+    "his-04#5": {
+      "decision": "visual",
+      "sha256": "cd894e0afae07edb48a95c9dcf2c2bb58e6291cc56e6c5861dad3f642fe387cf"
+    },
+    "his-05#1": {
+      "decision": "visual",
+      "sha256": "32ac682e031bf7cbf4a929ec708a4842730883d282199b6f2085aff82a478355"
+    },
+    "his-05#2": {
+      "decision": "visual",
+      "sha256": "f878653fca337d3fdf9475b2cd19c092432eebf3249b62a1a7648231434b5c23"
+    },
+    "his-05#3": {
+      "decision": "visual",
+      "sha256": "d56205f808a8f5f7447dc97b2da9b389a0d7ce529767316c66bcbe74e44890ab"
+    },
+    "his-05#4": {
+      "decision": "visual",
+      "sha256": "2c4853df33515ee114a38ee19c986d91f4c2732117410b8453627568d7cae41a"
+    },
+    "his-05#5": {
+      "decision": "visual",
+      "sha256": "06acbdf971134bd78194a7b20d95b987a50d5f428cae725aa50d60fe14783eb8"
+    },
+    "his-06#1": {
+      "decision": "visual",
+      "sha256": "d23edcd856ee848b0627d570d91c8f9bda380028c6381ce25d532503c326f8f6"
+    },
+    "his-06#2": {
+      "decision": "visual",
+      "sha256": "f37730c243ca55e93e7d53f583caa6ec63287c26fada77b5dff9adaa548c1e13"
+    },
+    "his-06#3": {
+      "decision": "visual",
+      "sha256": "bf98a7e270022d85c26b743d3891b3dca35784fddc24b6ebabf91ecf9bca67b7"
+    },
+    "his-06#4": {
+      "decision": "visual",
+      "sha256": "9cc56c196b5a91cd0d7559a70048b6207595700c7a91d9c5b1b217ff43353333"
+    },
+    "his-06#5": {
+      "decision": "visual",
+      "sha256": "8f02714ad9d771e73acfc9c734904833c5a21a600597ef994fd7d0e052d1f3b0"
+    },
+    "his-07#1": {
+      "decision": "visual",
+      "sha256": "71902d2fd68f271f8dce5cab49284436cfcd1c89e35bd06d9b45f4b8da57486b"
+    },
+    "his-07#2": {
+      "decision": "visual",
+      "sha256": "cfb90300d8e8d5b153fbe2bdd7e9cdb5b44ffe36a17f2277cf42ce4b2f70ba1c"
+    },
+    "his-07#3": {
+      "decision": "visual",
+      "sha256": "f774a9fd07f225a4c0b7500d1ccdbb62c8bb89f54a33c07ad3835b1d47690bb9"
+    },
+    "his-07#4": {
+      "decision": "visual",
+      "sha256": "8044f1aec766e67122949d5aff78dadce1ae3dc79e4549d853563c8231ad3df2"
+    },
+    "his-07#5": {
+      "decision": "visual",
+      "sha256": "9ce2eca921c0cec1437aae63c1a66d36b26262d5ec11ab03a4652cf97fa65356"
+    },
+    "his-07#6": {
+      "decision": "visual",
+      "sha256": "e21accb15742941deb7cdb006fa506aa1a655a9cecf5941cfd67bf648e1c50b8"
+    },
+    "his-08#1": {
+      "decision": "visual",
+      "sha256": "cfd3de7eb17462a0b34e207cf5c04c4a346fb2492f4fd9569df3224bd0a56e0e"
+    },
+    "his-08#2": {
+      "decision": "visual",
+      "sha256": "ef8184a8bca334bd0e8ee9e7ef10734f7bdfa721703e3a17cf3154a5d207935e"
+    },
+    "his-08#3": {
+      "decision": "visual",
+      "sha256": "a2f58d96e0b1ee80eb20be8c5345f50fd373084320a0c7a9c4031b58c3937679"
+    },
+    "his-08#4": {
+      "decision": "visual",
+      "sha256": "59fc9d8ce780fa2caf4e5fb9aab79eba6f09d950c215996eaa3140554f4d924e"
+    },
+    "his-08#5": {
+      "decision": "visual",
+      "sha256": "23dea5e54e8c43ef1f5d57e126735dc120b9095df71e39b2fb6fb7cc463058dd"
+    },
+    "his-08#6": {
+      "decision": "visual",
+      "sha256": "21cc23cf3fe3c5c5ab801256802d537732ba0879f692cbd197ea9747c95d840b"
+    },
+    "his-09#1": {
+      "decision": "visual",
+      "sha256": "0d1fc7660626223c12e4eed90a6119d8a60acf20661a09ddabc9cc82f1d0151d"
+    },
+    "his-09#2": {
+      "decision": "visual",
+      "sha256": "5464a7fdfe543234caf042f51448f33204feab417f9f023972506995d0c48690"
+    },
+    "his-09#3": {
+      "decision": "visual",
+      "sha256": "1531ab53b59880bbf46f797eb9ab0106deb4cd7770ce65d3f61437515b8a6758"
+    },
+    "his-09#4": {
+      "decision": "visual",
+      "sha256": "84d83bab64fa7331bc9a67c9c180ac1b65b7fdcaac9524bd8adf4405f1ab656b"
+    },
+    "his-09#5": {
+      "decision": "visual",
+      "sha256": "d5b84733ee0c4d40eed3149364cb9c7ae7b736cdf7ef0c7e2c7e856cdf919f33"
+    },
+    "his-10#1": {
+      "decision": "visual",
+      "sha256": "c121830ebda9b9bf9dd3e211ee4e3732d8238a7c4e997d434094e108e98ad0f1"
+    },
+    "his-10#2": {
+      "decision": "visual",
+      "sha256": "77b4c6389094c39a9a6d90d8bd85eb763064772de9968cd2cf906349dc43e3e7"
+    },
+    "his-10#3": {
+      "decision": "visual",
+      "sha256": "90e7e12f666be038020940a6d557ba8a846de44d4923c39da4fb032dd38b6f1c"
+    },
+    "his-10#4": {
+      "decision": "visual",
+      "sha256": "fbd383eadac10fbde4f74b01ee8b23403e0d14c6afb0251a389c6e2e60db4af6"
+    },
+    "his-10#5": {
+      "decision": "visual",
+      "sha256": "02cac92a062da4c6f11e1b4bc22eb2d56d5ce54481ad34623f93fc41d147da81"
+    },
+    "his-10#6": {
+      "decision": "visual",
+      "sha256": "9a221e8bf0ab8c0eb08804721043681b168a51d43482284ab0ce04597a004438"
+    },
+    "his-11#1": {
+      "decision": "visual",
+      "sha256": "a20a9fe1231ea2cb5eca11d72a461cd023a7a967064f4aad1b1729607d8881fb"
+    },
+    "his-11#2": {
+      "decision": "visual",
+      "sha256": "b6c4d684bb3db1a02e82f1eca5dcac60feb13ca389e58a8ef7e3fb366c5d020e"
+    },
+    "his-11#3": {
+      "decision": "visual",
+      "sha256": "8f2fb4c6981aa923af4f09edb635c34068f0ff2945f2550310663912d369fbd7"
+    },
+    "his-11#4": {
+      "decision": "visual",
+      "sha256": "26783828981744d35b4083433984e8cafe0cfa517adce16b8108c284cc4b1439"
+    },
+    "his-11#5": {
+      "decision": "visual",
+      "sha256": "fef27a39be0c0b8284e4470595a65d5a9063d559f4dca94cf93b330fe9d4a00f"
+    },
+    "his-12#1": {
+      "decision": "visual",
+      "sha256": "54d8006a89e027d627ec0a24963202ccfbf62c17adad8541d0a55cfac85717d7"
+    },
+    "his-12#2": {
+      "decision": "visual",
+      "sha256": "f3dc180e615a6f144870a2cb798ccb5553e9d103618b65241bc0b81c25116ff9"
+    },
+    "his-12#3": {
+      "decision": "visual",
+      "sha256": "e5568f97e5a2ce5efd2bf8058a8ae8c0f66906532f9755a0a58ff0c54c422150"
+    },
+    "his-12#4": {
+      "decision": "visual",
+      "sha256": "ef0005665ae77b0ef0b91b4e24f760440b604e617ffc7f93a440833aab64fcbc"
+    },
+    "his-12#5": {
+      "decision": "visual",
+      "sha256": "08e197eb9891cf944d5df6ba470475adda727aba08ebbdc02e7c15c6954be2ea"
+    },
+    "his-13#1": {
+      "decision": "visual",
+      "sha256": "7aae67070e7845c5141e501d1013acc1d69846a1680193eea0c27798cbb20508"
+    },
+    "his-13#2": {
+      "decision": "visual",
+      "sha256": "29fdd4431a25cc86471323aa7c6ebe206f9418bb90f8d9ba853a02f1fa3d532b"
+    },
+    "his-13#3": {
+      "decision": "visual",
+      "sha256": "1b0aa812ae421146268b687cd61d2a09019ff765e56f9f8551d15ead086f9832"
+    },
+    "his-13#4": {
+      "decision": "visual",
+      "sha256": "213f7c561d8fbe9df3fba0b3d8f274b2d160c9bca770430b94ec1a71f72d41da"
+    },
+    "his-13#5": {
+      "decision": "visual",
+      "sha256": "8f822716d2e26f6e9f493555de773b382d8853a88819d442bdea05c90d9d8f67"
+    },
+    "his-14#1": {
+      "decision": "visual",
+      "sha256": "c699d1ce212280625be3656d4b72d7916936db120dab746c7e5438454d7d8809"
+    },
+    "his-14#2": {
+      "decision": "visual",
+      "sha256": "febc24d8d4a2f680ad16aad62a8f522e40e64699aebac98d4fe0d38dc7d51161"
+    },
+    "his-14#3": {
+      "decision": "visual",
+      "sha256": "5ce7f65f2b253a0ce829110031de065072e4bca387f9f1e4866b3fabc94e3941"
+    },
+    "his-14#4": {
+      "decision": "visual",
+      "sha256": "fe3b6c69604f934b6aabb4d6a01ba613e61f00e15e4c59469c7bdd18f30a6ec5"
+    },
+    "his-14#5": {
+      "decision": "visual",
+      "sha256": "d2d282a4117f5393ef6d8c9618a9ff909a87c96da9ce670e8669a323306599b6"
+    },
+    "his-14#6": {
+      "decision": "visual",
+      "sha256": "a1cb944e3c938799d844714e71651f66e3d914e131288b6538cf86b5d9a9aa71"
+    },
+    "his-15#1": {
+      "decision": "visual",
+      "sha256": "166fdae1337e4efc731f294f234e602ec187a3229774f63458abf97923f363f2"
+    },
+    "his-15#2": {
+      "decision": "visual",
+      "sha256": "fe53e6b9652be23f56796da835bebf3c0b777be556692d5f7350330f89cb8146"
+    },
+    "his-15#3": {
+      "decision": "visual",
+      "sha256": "f24bb9ceb9decfb9426bf1d4c069e048af57ba427bf7691e4321340909845112"
+    },
+    "his-15#4": {
+      "decision": "visual",
+      "sha256": "8e98b9fafca8a92dddec0dc66a7141c411c9056f861451f63b40454218c82a41"
+    },
+    "his-15#5": {
+      "decision": "visual",
+      "sha256": "2e14048fec05e85d0b7278ba835eb9b6f113f6a09acc671b320052bd3547b1b5"
+    },
+    "his-16#1": {
+      "decision": "visual",
+      "sha256": "c471d571d3d6bab56bc4d3ea3cf85409ae5d4d4c701e66dff4ca50e267ee20c4"
+    },
+    "his-16#2": {
+      "decision": "visual",
+      "sha256": "d3c75324b8bbebd7eb6b4f6eb5b59ce3175aa60ad25ee19e957bd65e618b4cf6"
+    },
+    "his-16#3": {
+      "decision": "visual",
+      "sha256": "b5951d57e7a1c9c5ae49a13d3f451a67772353b72627f88f9cab918200dde916"
+    },
+    "his-16#4": {
+      "decision": "text",
+      "reason": "4つの社会運動（労働・農民・部落解放・女性）の内容と、できた団体・年を並べた表が中身で、表で見比べるのがいちばん伝わる。大正時代の政治の流れは、同じ単元の時代の帯の図で示した",
+      "sha256": "df46b5f6296f13414d5ae5e2112a98a066c9efdea3f877eee5f54e3fad4d8e7f"
+    },
+    "his-16#5": {
+      "decision": "visual",
+      "sha256": "0fb3f6a0312d23d0b054a4465e31a9a44ff430afc8f879b6a9c49d06bbc59a60"
+    },
+    "his-17#1": {
+      "decision": "visual",
+      "sha256": "d28510b46f9880cb2e98a63f3addf267858eeee52dafe356ab624251e96f701b"
+    },
+    "his-17#2": {
+      "decision": "visual",
+      "sha256": "76d3c92a19244109a5f7265cd838a657ccfd0c6ee41586aeffcd05c3891a8bd4"
+    },
+    "his-17#3": {
+      "decision": "visual",
+      "sha256": "13cceebb23934724b2911968c77ca82be0517b332eefd1e4643f56b4a8225465"
+    },
+    "his-17#4": {
+      "decision": "visual",
+      "sha256": "86125a665927389b64a637743ff750fbc5bc004fc2bc39d4d08d2ddb9a48c88c"
+    },
+    "his-17#5": {
+      "decision": "visual",
+      "sha256": "dfba7530e308cc9fedac5f2035e328cd113e7758b0241b91669eb99a24796477"
+    },
+    "his-18#1": {
+      "decision": "visual",
+      "sha256": "adf2d8d8e8d7da79fd39d3c250d50e6f9ab745cdbcd8b4598830708c1f49a595"
+    },
+    "his-18#2": {
+      "decision": "visual",
+      "sha256": "07a1c6ee7a300cfffa16e41b51cecb08e0054d77bafa992997fb711a6ce33e8e"
+    },
+    "his-18#3": {
+      "decision": "visual",
+      "sha256": "fdc904d3a673e59238d002c5c448e98fdb058764d356471fd7657e0d45d3e659"
+    },
+    "his-18#4": {
+      "decision": "visual",
+      "sha256": "35742e7ffdf7dc57ec2ac60b97936554d69dd42501ee799a01aa9f0857f3c4ca"
+    },
+    "his-18#5": {
+      "decision": "visual",
+      "sha256": "ceddd30a298e0fed1bb4f3fbfff3868a59716565656be94c053e2d611233fc16"
+    },
+    "his-19#1": {
+      "decision": "visual",
+      "sha256": "3deb3a76a2222ed77d074d548bc52b09bf90a8f9074024a8c54da2f3c4d3f3c7"
+    },
+    "his-19#2": {
+      "decision": "visual",
+      "sha256": "cbac99a156ee81f92f257d373df1607818693f100762344dbf806c38a6cda5a4"
+    },
+    "his-19#3": {
+      "decision": "text",
+      "reason": "大日本帝国憲法と日本国憲法を、項目ごとに横の行で比べる表が中身で、表で見比べるのがいちばん伝わる。日本国憲法のしくみは公民の単元で図にしている",
+      "sha256": "85dbb9511bc5364743c9377b72042dc7bf8ec7a6a969edbfb1bdd7022531d127"
+    },
+    "his-19#4": {
+      "decision": "visual",
+      "sha256": "f2aa3921fe5532e8065ceec39177e4a795ca02c913b7407fa57af92da54530aa"
+    },
+    "his-19#5": {
+      "decision": "visual",
+      "sha256": "7dce20882da2e18ebb135c3c22b278afbff5ce2e5d59f35782fb6a8d686e37f3"
+    },
+    "his-20#1": {
+      "decision": "visual",
+      "sha256": "88619c1a493a9fede3a98dd71cd4f23874184da5696128ab950d9044e623519d"
+    },
+    "his-20#2": {
+      "decision": "visual",
+      "sha256": "dc58da9514eb90ba02ae8c45b6758a3bf48c944ed295a2639db71d08ba02739e"
+    },
+    "his-20#3": {
+      "decision": "visual",
+      "sha256": "6875b7a22d3e701b181c3b6ceed053052b77e5db5f675d77c5e37dbd5fec1d4c"
+    },
+    "his-20#4": {
+      "decision": "visual",
+      "sha256": "64ccc6854e7e8ecfa5bef767a4eaa595f19b00bc95c91301cd175c54c6285e04"
+    },
+    "his-20#5": {
+      "decision": "visual",
+      "sha256": "5c870ce3eb59ee02557913c922ab7f487592c9b223849051b307ba534bc5ed6f"
+    },
+    "his-21#1": {
+      "decision": "visual",
+      "sha256": "54da6fc4238043bd3b899db47c568fc58c259f0f85626ea5ee70d5e88649062b"
+    },
+    "his-21#2": {
+      "decision": "visual",
+      "sha256": "bbe1f0632c8a54d98a3b3e801731abb13d21852e4cdc2d066a62c6b0712dc4d5"
+    },
+    "his-21#3": {
+      "decision": "visual",
+      "sha256": "39b2829e74f57c5c5dafaf4ce2878015564b5d52a8df832220ccd2df6f0df741"
+    },
+    "his-21#4": {
+      "decision": "visual",
+      "sha256": "5b4a9f3ab1194beb02ad4410f18270a4cdc83330f1893c2facf102dc27a6d8b6"
+    },
+    "his-21#5": {
+      "decision": "visual",
+      "sha256": "e2bc2c13518b8c7d1c17316e94fc0f85b05fbbba5ea4875784e8936830b1847b"
+    },
+    "sc1-01#1": {
+      "decision": "visual",
+      "sha256": "9784d8da717ce654a08bfcb4d299414aeff8b5284e6356f0895f99d0404be10d"
+    },
+    "sc1-01#2": {
+      "decision": "visual",
+      "sha256": "db4f809eb092b1b9e34bfada94f3e0d6b2a97cf6a5f5ad88c6bb3065329faabb"
+    },
+    "sc1-01#3": {
+      "decision": "visual",
+      "sha256": "c6fc6fb2b96ce888cc8385cc0228aa18437fb3d29a7f3a4ffe55cd841dc8bb9c"
+    },
+    "sc1-01#4": {
+      "decision": "visual",
+      "sha256": "f29295d99d17d12f485d1dd49fe1a8882da2ef67d7b1e3755f8bf23616d99718"
+    },
+    "sc1-01#5": {
+      "decision": "visual",
+      "sha256": "6bc44bc4d009b836e5833c3bb23e85407fdbeb74df0c4243d12501b1dd3d1feb"
+    },
+    "sc1-02#1": {
+      "decision": "visual",
+      "sha256": "7d8b8c6df6c167f4d26deb24dcf911767bc810e46e005dea0c797bc8d8289f54"
+    },
+    "sc1-02#2": {
+      "decision": "visual",
+      "sha256": "725f24dded16bebad7d80719022c8e36fcb049ae681315aeced3a124b29c168c"
+    },
+    "sc1-02#3": {
+      "decision": "visual",
+      "sha256": "95030ce43483b9714aa5515c9b1c8f66d1488d6e6c43f5fb1ad139db8727683b"
+    },
+    "sc1-02#4": {
+      "decision": "visual",
+      "sha256": "dd85d681756c4944c8f83806b6d192b1fe3a9d956b40880314ea8dcad61a8b11"
+    },
+    "sc1-02#5": {
+      "decision": "visual",
+      "sha256": "a2740ed42f4be036b30f0016194684f7600f800f21ab77f1f646d2972aa18b1d"
+    },
+    "sc1-03#1": {
+      "decision": "visual",
+      "sha256": "7adf94e5369cec3957f43592d1c1756785984ce10b334145169abf312d22d5e2"
+    },
+    "sc1-03#2": {
+      "decision": "visual",
+      "sha256": "e9794853138f27c4b303c4919ded92d9a48562b7323477823e55dd974e458433"
+    },
+    "sc1-03#3": {
+      "decision": "visual",
+      "sha256": "b990028a7a39bbfe655d550ee078f8afa99810df6650da75ce1f885fd6e1177d"
+    },
+    "sc1-03#4": {
+      "decision": "visual",
+      "sha256": "b8395cf3899c990e40fe50ac1d7eded676585de71a247bcd3d50d43a688ad7cd"
+    },
+    "sc1-03#5": {
+      "decision": "visual",
+      "sha256": "d11073893f0e5761cb720862abad8913e316626a05a48142aa66a9ae2b8464c5"
+    },
+    "sc1-03#6": {
+      "decision": "visual",
+      "sha256": "aae546083f9be1da00dbd924cb80814ed45c5a60168cd9555cab3c10aa10a5b2"
+    },
+    "sc1-04#1": {
+      "decision": "visual",
+      "sha256": "175aae497f23c74db10eaa076001a2dd5c9bb6c3ec205eb1779ef103eb69c813"
+    },
+    "sc1-04#2": {
+      "decision": "visual",
+      "sha256": "039711150388d0345ef77da9cf5d0ac117533ebd327e4afb22ed94472177c082"
+    },
+    "sc1-04#3": {
+      "decision": "visual",
+      "sha256": "6f923126a41659699b3d280835841ae47070da7606e395346f76dc5be9c8fdbf"
+    },
+    "sc1-04#4": {
+      "decision": "visual",
+      "sha256": "7981312600f053c57c3bedd6e352ac9f8f17821a10482f09d069fbb8e92fb49d"
+    },
+    "sc1-04#5": {
+      "decision": "visual",
+      "sha256": "d3af3ad852455a78e0d1cb6df80d2d69afbce45755ef5b690e6164e962df2ff3"
+    },
+    "sc1-05#1": {
+      "decision": "visual",
+      "sha256": "bb10caed12498cab6b20ccc3eac380f8f093004cbe4e2c7bb267e5589ed84bd9"
+    },
+    "sc1-05#2": {
+      "decision": "visual",
+      "sha256": "593719b1992fe311f1923b835c8a9cd24b31180e533b4f466f667c6c1316d304"
+    },
+    "sc1-05#3": {
+      "decision": "visual",
+      "sha256": "892da79dc0c192c7808af4e1010b49eddba81f6d1b775952c78e9e77039f7047"
+    },
+    "sc1-05#4": {
+      "decision": "visual",
+      "sha256": "0a95abdef99fcfc78cc8199c48581066f6a465267fe1f7518c9991c791f1d37f"
+    },
+    "sc1-05#5": {
+      "decision": "visual",
+      "sha256": "0c93ae62db81c0d70cb972cc737e8dbcdbbd3187ac3bda3335804c64fae5e187"
+    },
+    "sc1-06#1": {
+      "decision": "visual",
+      "sha256": "8ddb639f1ddf1e3a11c6cafc130c8031306e68dcfa1a6fb758fe32b27457512d"
+    },
+    "sc1-06#2": {
+      "decision": "visual",
+      "sha256": "e49179ccb222bfbba2d08ce38ad162ccb865ed84e4daf9fcb4e6410140ed9309"
+    },
+    "sc1-06#3": {
+      "decision": "visual",
+      "sha256": "8fc349ddfe5675042e7397ac8f02285907bee084cac0f9381a944f1b75fa4390"
+    },
+    "sc1-06#4": {
+      "decision": "visual",
+      "sha256": "d4ee83e124e20ceee4935d5b06331c68e20d2144b56393878afd6731ab8bb5ba"
+    },
+    "sc1-06#5": {
+      "decision": "visual",
+      "sha256": "98b3d93c7013c89ebac4f14586bd9f3e5824b65e08e4d55c4cef35cb44929905"
+    },
+    "sc1-07#1": {
+      "decision": "visual",
+      "sha256": "f6c8a9d7c47ce86a5a5ac45296f115bf0008a09d9e1536e05dedf0456dbbe225"
+    },
+    "sc1-07#2": {
+      "decision": "visual",
+      "sha256": "35aa098f2af55882f4e6b37666e89467340a2d5a6aaff4f7c87f2d280e8d8561"
+    },
+    "sc1-07#3": {
+      "decision": "visual",
+      "sha256": "8bfe84ca469fdf893ed4a393683c3c7e8d221a04cc75e1a20de97a794b37b390"
+    },
+    "sc1-07#4": {
+      "decision": "visual",
+      "sha256": "a3b62f77b3b939d1d812a03b5d196c047e99fecefd909e325d7da9308c72892b"
+    },
+    "sc1-07#5": {
+      "decision": "visual",
+      "sha256": "72e998a24a274c327542b28d0587f34b4404515cc2908d91f37403c03499617b"
+    },
+    "sc1-08#1": {
+      "decision": "visual",
+      "sha256": "bbcd16ff2e7f38db92dca8984ca544c40861b46f34de20332f896bc250ff6d1e"
+    },
+    "sc1-08#2": {
+      "decision": "visual",
+      "sha256": "61f7020b938f90f94eea348435723d636a1d385eef5c3f80ea0123b525f343a5"
+    },
+    "sc1-08#3": {
+      "decision": "visual",
+      "sha256": "5b67f3a8c10ede4558600749eb09abe52d51ba8434a1fe79d2c52265e85aa837"
+    },
+    "sc1-08#4": {
+      "decision": "visual",
+      "sha256": "4fd1210cf9b9682252173d6ecb034a66bde1888af2fe4a959cc1b6699e79a324"
+    },
+    "sc1-08#5": {
+      "decision": "visual",
+      "sha256": "77ae36fdfae76ffe36fc3e5a0adb86089b9af13a02dec4531367ad2c952fc008"
+    },
+    "sc1-09#1": {
+      "decision": "visual",
+      "sha256": "6fb5a4a338974e4231e4e18b1a6c5b831d3ec03d862c06aa1ea4ba25eba5cea6"
+    },
+    "sc1-09#2": {
+      "decision": "visual",
+      "sha256": "673532068ae164a21142c80601976272a6d37b6f31f374d3cd62074cca9437c3"
+    },
+    "sc1-09#3": {
+      "decision": "visual",
+      "sha256": "0bac21dd7601228d4a264796a4c71a864a6d0830792e5e35596d08e2607e9cb7"
+    },
+    "sc1-09#4": {
+      "decision": "visual",
+      "sha256": "95ec8671684c7a87afb7931dc0601baa5809c82712113fd8bfab75f94a294831"
+    },
+    "sc1-09#5": {
+      "decision": "visual",
+      "sha256": "f74033af1b64827fad82bc4ab7c0de26547fd98c02f92bbfd7ae3dffc7039158"
+    },
+    "sc1-10#1": {
+      "decision": "visual",
+      "sha256": "64f3f04fcc304e1d5068b552d9e055cde24d7e27648b9a11f00f271947ea2cda"
+    },
+    "sc1-10#2": {
+      "decision": "visual",
+      "sha256": "75cdef8ea632b075ea70ad16c4b7d372639cb13ac3ddfd66e4519586d638f36f"
+    },
+    "sc1-10#3": {
+      "decision": "visual",
+      "sha256": "a4a4b558c7318780bc85b34595dec7714edec961ce694ed2bfb581b4120d4a90"
+    },
+    "sc1-10#4": {
+      "decision": "visual",
+      "sha256": "3dd45b512daf25d89bb8ac38459da9065b4b2d084caf14d8559036e9d980507d"
+    },
+    "sc1-10#5": {
+      "decision": "visual",
+      "sha256": "8693262778cee03777b72654e394d830d1abea9fff89556b435a64c7d967838b"
+    },
+    "sc1-11#1": {
+      "decision": "visual",
+      "sha256": "967a6c4b7310e80ea2d38ebd0b75d2752fe98cf3bf3b47a60e7f8c89f7d56b56"
+    },
+    "sc1-11#2": {
+      "decision": "visual",
+      "sha256": "3927dfbfd0726fc09dac6ed2f6ef0302401accc155cfab9cbc4f05ffaff8cc12"
+    },
+    "sc1-11#3": {
+      "decision": "visual",
+      "sha256": "aacc8e9e0779a9e89bf226cfda079f597adc99cab5a517931ff72811288a0df9"
+    },
+    "sc1-11#4": {
+      "decision": "visual",
+      "sha256": "6f9e2158ab189ee38e7d3b210618cb581a460962c6227a472372e8a6b6c146ab"
+    },
+    "sc1-11#5": {
+      "decision": "visual",
+      "sha256": "ef64cf077601b6def924045d7e458334409b8e24e82a2c64e9b0495e25986b80"
+    },
+    "sc1-12#1": {
+      "decision": "visual",
+      "sha256": "533d74047806aadc87a0299081b65e41d6aa039948c0fb22c6613a5cdfd7e862"
+    },
+    "sc1-12#2": {
+      "decision": "visual",
+      "sha256": "06e01ade8dd43f8e8798511d121682fcd259ea26a3a935250e1b3a830e5a127f"
+    },
+    "sc1-12#3": {
+      "decision": "visual",
+      "sha256": "fb9e7b1aadcd1b59de6ea3255b433482a717b82fbd28849fa84b297bc0322f8d"
+    },
+    "sc1-12#4": {
+      "decision": "visual",
+      "sha256": "4865d152c6789f2b75d92862c324fc0887bde025900d961545999a10d8334bb7"
+    },
+    "sc1-12#5": {
+      "decision": "visual",
+      "sha256": "d5c463cc4fd5774429037650e915b9c2db5a68b077f74dfc449e8421076a8fd8"
+    },
+    "sc1-13#1": {
+      "decision": "visual",
+      "sha256": "c3b827362a029a89a54cc4e7f6174d583fe87f7bfa8f350740333604685237dd"
+    },
+    "sc1-13#2": {
+      "decision": "visual",
+      "sha256": "5d33682c270e8d922c8c758891c40578df260e58b2d1817f99ee25d73ecb9183"
+    },
+    "sc1-13#3": {
+      "decision": "visual",
+      "sha256": "5123843dd0443251fb890a967dca052d4d7ba601627db6c97da0ccf0eaad2428"
+    },
+    "sc1-13#4": {
+      "decision": "visual",
+      "sha256": "4056694ed6dd43abf060336a8fb4bd54e1b907ec23f76dcfbd87ba78dbeb1c3c"
+    },
+    "sc1-13#5": {
+      "decision": "visual",
+      "sha256": "2f7dcb7c03aab2ffc939592657945544634fe0261c0fedeb94a69ab663b22c3e"
+    },
+    "sc2-01#1": {
+      "decision": "visual",
+      "sha256": "4f214e74f94f54f5af32d0f20944f9e2ebaeef05726d048b2cce6de0ca15eec7"
+    },
+    "sc2-01#2": {
+      "decision": "visual",
+      "sha256": "d7879f585e6c4d7b9395fcdf0afa2bffc47b91b1f518550d3b88147998c58779"
+    },
+    "sc2-01#3": {
+      "decision": "visual",
+      "sha256": "b1f0d0de9b010a183a2548eb1be040d99b06730eeed06ac482b7ea9aff9a6384"
+    },
+    "sc2-01#4": {
+      "decision": "visual",
+      "sha256": "805c9d3385a8e6fda8f186cbb9508d32f251696bc0df0df3955cc5d4aa2a3202"
+    },
+    "sc2-01#5": {
+      "decision": "visual",
+      "sha256": "b90a778cd2204895108803c7fffc5146715d806cb4133eb02c544091ac551f5d"
+    },
+    "sc2-02#1": {
+      "decision": "visual",
+      "sha256": "b47ef3f96a88d4b6faa34863e64731734627b940774798b02a62b75a43e8a8e6"
+    },
+    "sc2-02#2": {
+      "decision": "visual",
+      "sha256": "a0ee2d8103e9650d385d1af32b7ee19b08f73d1eb1d6f4437b1994dd51522616"
+    },
+    "sc2-02#3": {
+      "decision": "visual",
+      "sha256": "323ab4f9dc3ac04be6cc86b04c350b527074669134ac93bd914707ac122c9f27"
+    },
+    "sc2-02#4": {
+      "decision": "visual",
+      "sha256": "e205331252217a7b835451e46762ac14f65e5af763d182a4a839e23b32b27d84"
+    },
+    "sc2-02#5": {
+      "decision": "visual",
+      "sha256": "fc779b21b5013ec866ac194c278e52be0c8ffc27e7afdc23a76c13a27c52d865"
+    },
+    "sc2-03#1": {
+      "decision": "visual",
+      "sha256": "2bbb73b2e5284264029af551d47e013f9394d5982c881297a0e95e06edda405b"
+    },
+    "sc2-03#2": {
+      "decision": "visual",
+      "sha256": "1c9ee78d711e3cc9b989d805481d4f098aa4192694a70f8296df8c551d3cfe63"
+    },
+    "sc2-03#3": {
+      "decision": "visual",
+      "sha256": "e15657d23da663e56ee61c1d960a78d731c5d10d0161d7ed44c571d7473d2d6f"
+    },
+    "sc2-03#4": {
+      "decision": "visual",
+      "sha256": "88dcc1da03d74e676e4812238123306426794f4aeec414ba02f9a2b0a80d5d89"
+    },
+    "sc2-03#5": {
+      "decision": "visual",
+      "sha256": "e65c1a7e183caa47a9dfb878d250bc16c28519cf196c6a04b1d893fdeec787de"
+    },
+    "sc2-04#1": {
+      "decision": "visual",
+      "sha256": "1aa6208cc0445afc1e43d4ab42c83193c0ecc7a3e9fb6a27987d7df1ebcba4a0"
+    },
+    "sc2-04#2": {
+      "decision": "visual",
+      "sha256": "a9ef7580ae0deb9c64f77142ba9b6ef86429c5b23b8780143369d814df07508c"
+    },
+    "sc2-04#3": {
+      "decision": "visual",
+      "sha256": "8fea28ca3635eba4fa3ea7248c7434775181398d0d13312c5564a5a3ebada2c7"
+    },
+    "sc2-04#4": {
+      "decision": "visual",
+      "sha256": "9e7b8ffce086998bbbf8749b18bc7b2a8b0b2e64a9ea85fbc18f00e74ea47685"
+    },
+    "sc2-04#5": {
+      "decision": "visual",
+      "sha256": "8e19eb8d8a7d70f9f79b6307e4f261e6aba3d132d4ac4c7f1d2a4f5db195d652"
+    },
+    "sc2-05#1": {
+      "decision": "visual",
+      "sha256": "0fee651a4f6fe1e6fd9c3f446c0328e8ac4b821916c3379d27272cb28659e899"
+    },
+    "sc2-05#2": {
+      "decision": "visual",
+      "sha256": "7c0475526b3a95f478235f66b6a96c3b87a91a8ae6660c78e0b16a02bb80a138"
+    },
+    "sc2-05#3": {
+      "decision": "visual",
+      "sha256": "193be1e85e19206f9baac6e4dab404d9d9a02e3115f618efa7c1c07da584fdbe"
+    },
+    "sc2-05#4": {
+      "decision": "visual",
+      "sha256": "3855a0a4b639cc039be5892aa3987a87a6b22108b20d1a3404350aa0e8b0fcdd"
+    },
+    "sc2-05#5": {
+      "decision": "visual",
+      "sha256": "cb0784ed9a4e9bc675ff8dedd1df70e79be71b9266deedf46ec5fe52a1f6c8b1"
+    },
+    "sc2-06#1": {
+      "decision": "visual",
+      "sha256": "3ac9f2bc0e1cf87f4b3b7d105a787710527a6466a013cf4453d7845b8c4f4b80"
+    },
+    "sc2-06#2": {
+      "decision": "visual",
+      "sha256": "923fee79f246e68d28cc8cebdf66d1e75cbd38a5d0f52e402d4fcb2b504929b1"
+    },
+    "sc2-06#3": {
+      "decision": "visual",
+      "sha256": "e4228eff962b441751bae084a439ef3bf9879d57f63bf9e141fffc317e252378"
+    },
+    "sc2-06#4": {
+      "decision": "visual",
+      "sha256": "bd88b22c266f65e82c124af734f7d88534f4b1f217549d82ab89560daf13aa5f"
+    },
+    "sc2-06#5": {
+      "decision": "visual",
+      "sha256": "7dd28cb25e7ec89eab7c5fff7b39cba11d59899c77fe9c67fea45212a0d9e439"
+    },
+    "sc2-07#1": {
+      "decision": "visual",
+      "sha256": "2d07bc3256d326cd52b072a58b6986dff5afee2cc6e30ef1ab66d89644a40b21"
+    },
+    "sc2-07#2": {
+      "decision": "visual",
+      "sha256": "4c3991b964fad15f8a93bc7069fb561f4fcbd805089bb6ce457a37c728d9f784"
+    },
+    "sc2-07#3": {
+      "decision": "visual",
+      "sha256": "9afc2eb607df602a81a15a19b165b8bf319b1e6c94e4d02cf62c5a594f39de85"
+    },
+    "sc2-07#4": {
+      "decision": "visual",
+      "sha256": "c0f3065f3ca457fab9ac2defe80b3a298081386d93711ba5f4d1c6ca41ff849f"
+    },
+    "sc2-07#5": {
+      "decision": "visual",
+      "sha256": "1d85e9f944b32115e1b84cc57a5c16cc5b87ef5c229b14c448ee4f91c1cf300a"
+    },
+    "sc2-08#1": {
+      "decision": "visual",
+      "sha256": "8f6c6c84f9958b0082db59e80089fdff7ed8f9c5569338a7ddecd1a2aa99fc39"
+    },
+    "sc2-08#2": {
+      "decision": "visual",
+      "sha256": "c3bc2f66dcd2d0b590d625d2d5f787b1b8088da0ecbc0a647dd2f4f9a41ab2c1"
+    },
+    "sc2-08#3": {
+      "decision": "visual",
+      "sha256": "d889533298bb55919219934fe25a751be6e09bd56071c4e646f8a91f5e3c9829"
+    },
+    "sc2-08#4": {
+      "decision": "visual",
+      "sha256": "825ab0eb6e077b50b6fb5390d4f6e3a427eaf145592ed95de4e31cf930d0779f"
+    },
+    "sc2-08#5": {
+      "decision": "visual",
+      "sha256": "ee6f9ce7424f2e286d0415b6f299e1730ac34ba6f1d44c521687915f20c3ac69"
+    },
+    "sc2-09#1": {
+      "decision": "visual",
+      "sha256": "21c49ecbab149025d794d088e74ba0c088fbe45a4b46380b98d4f17a56d13d59"
+    },
+    "sc2-09#2": {
+      "decision": "visual",
+      "sha256": "2c5d2ba0bb316741d57a8f20f8bd3fe5cf2b76380704240aafe1f3a7fe05c2b7"
+    },
+    "sc2-09#3": {
+      "decision": "visual",
+      "sha256": "0266db151523c2fc916573c2f2de611052addf8f79ca3e8a88431fe53ec07cc6"
+    },
+    "sc2-09#4": {
+      "decision": "visual",
+      "sha256": "88407f119ed861d21340ed6439273c75cf9b99bd529fb4e139d53fe6b313d0e7"
+    },
+    "sc2-09#5": {
+      "decision": "visual",
+      "sha256": "125b3aa05c4fa692f1673fa90a211efe9004381c3390ea009abf23b5069a36d9"
+    },
+    "sc2-10#1": {
+      "decision": "visual",
+      "sha256": "dbd52eaa7026f75ef50161869efe4aa30e0e16066aa316f6cf15a907dc19942f"
+    },
+    "sc2-10#2": {
+      "decision": "visual",
+      "sha256": "b0e834645501e048a4c6294c5f05b6c65cfd5f76cd338d46544d061a30d4a3ad"
+    },
+    "sc2-10#3": {
+      "decision": "visual",
+      "sha256": "19a9fdfb0b3fec6a2b16dc2d46d33730de1d5fb6296eca9e6ffa1261dd972975"
+    },
+    "sc2-10#4": {
+      "decision": "visual",
+      "sha256": "99ca53bd13f15613734f4f2ffa09c6d859d0eae211e188d8af76780b968e57fc"
+    },
+    "sc2-10#5": {
+      "decision": "visual",
+      "sha256": "13aecf1bfb4f368d572c7d5a3bdbf8746162ba1dc0141c1cf56dddd40bf678bd"
+    },
+    "sc2-10#6": {
+      "decision": "visual",
+      "sha256": "f18c37ba4d4360b3ad71e1946a2f302e78f9539f91fbb561c32f1f57807fca49"
+    },
+    "sc2-11#1": {
+      "decision": "visual",
+      "sha256": "b1620efbd54bee442cebb248924e38bb3e54c187562d2327f8e7c72e5d78f8fd"
+    },
+    "sc2-11#2": {
+      "decision": "visual",
+      "sha256": "2aaa7faefd4031ae2002276368897949ee95c9dfd94202a650a8f4786d19e394"
+    },
+    "sc2-11#3": {
+      "decision": "visual",
+      "sha256": "f67b8b7ef52a5b238f752017af4562bc5ad40bc713cb8e0e3de19456a3f3b5db"
+    },
+    "sc2-11#4": {
+      "decision": "visual",
+      "sha256": "e604230364d35867564e1416395888e9d062b977a9659573008e3eddc170fe28"
+    },
+    "sc2-11#5": {
+      "decision": "visual",
+      "sha256": "98573ca6fb6e6e1612310ba946cd177e85bce02705602e26f0ffd0201e7f5172"
+    },
+    "sc2-11#6": {
+      "decision": "visual",
+      "sha256": "eac5fce06eb26d3ced7daac8a18510050140838684ddcffb487d5b2bc008d784"
+    },
+    "sc2-11#7": {
+      "decision": "visual",
+      "sha256": "3f2fa1f4858c661d2874282b2ae18040bb2672021cf002724c0acd702cf097bd"
+    },
+    "sc2-12#1": {
+      "decision": "visual",
+      "sha256": "706094d5cef8c9f33aa882b7acef31a162d1a7ab2a0cd80475a518edfff5b6f2"
+    },
+    "sc2-12#2": {
+      "decision": "visual",
+      "sha256": "d3f64d39c5dbd2a2f26e7a6e74037b9d39b33c4c693ad29b581bf766530a34a0"
+    },
+    "sc2-12#3": {
+      "decision": "visual",
+      "sha256": "eccc37f9f0d2fc51b2677c05a3a123ebcb216b098c4625014d14b555d6e270fd"
+    },
+    "sc2-12#4": {
+      "decision": "visual",
+      "sha256": "e518ef1165f3e483062db3b0e9ff1e6101c79ff0ce8f8300a5db360a4346f6ed"
+    },
+    "sc2-12#5": {
+      "decision": "visual",
+      "sha256": "f7bb4e97c8a671b9f76a71d6486655141cf57998231248911fab9189d345fd84"
+    },
+    "sc2-12#6": {
+      "decision": "visual",
+      "sha256": "2f0fba985501e4a0032a9162c40616c8e58732fee7ad74836b718ebd3baa7e09"
+    },
+    "sc2-12#7": {
+      "decision": "visual",
+      "sha256": "010effb384a4cf69d5ed9d0b36fe5cb81cbae2938b718c0002026bc6711ea3f4"
+    },
+    "sc2-13#1": {
+      "decision": "visual",
+      "sha256": "3fd06591f36aba8fa366708c607096f57551d8ea54500205f7bf4e54484adada"
+    },
+    "sc2-13#2": {
+      "decision": "visual",
+      "sha256": "4eca55e2303604a1c3dd6e708eefc67e381e43e26a40801719925a487cc30f76"
+    },
+    "sc2-13#3": {
+      "decision": "visual",
+      "sha256": "974e80ac48b212038e741f67e96add0de44e4245302988611aa7969c282f5286"
+    },
+    "sc2-13#4": {
+      "decision": "visual",
+      "sha256": "383e331d91f3745d48189ffa3fa2f02cbb2b6b3e738552e1c5359e21d2756661"
+    },
+    "sc2-13#5": {
+      "decision": "visual",
+      "sha256": "d02e3b5258cf3a9286367931bb902c19d2a44019e67af8b829c546e2f3959c9c"
+    },
+    "sc2-14#1": {
+      "decision": "visual",
+      "sha256": "59673f39cc906969429293fcc448f7dfc5e9d61ba25635bd8ab5cb740d6db475"
+    },
+    "sc2-14#2": {
+      "decision": "visual",
+      "sha256": "6305811e903dd26724a7c4e1cb6a1dc566ef9f49521f35208230aca6d7bb3035"
+    },
+    "sc2-14#3": {
+      "decision": "visual",
+      "sha256": "37fafafedb6c46a0697235927196ccc042931d22c6017b0a5b47b59bae8b3f58"
+    },
+    "sc2-14#4": {
+      "decision": "visual",
+      "sha256": "0ab225e20a3dd5dc1791673137a7d17c6c7a7bdb72a0ce1f3a26b97594f68980"
+    },
+    "sc2-14#5": {
+      "decision": "visual",
+      "sha256": "65bd67d3e252ef89fd38d648def364006c54305d11ea8b35016b12596793c79a"
+    },
+    "sc2-14#6": {
+      "decision": "visual",
+      "sha256": "886dd5bdb166b762a1b4017f1f4a1eb0b46e134fd26f901b81fd079c6898cdf9"
+    },
+    "sc2-15#1": {
+      "decision": "visual",
+      "sha256": "eddbc2cb25dfd5f0293d004acf5fa9a28cf34ca1e821693ab2d974b21694685b"
+    },
+    "sc2-15#2": {
+      "decision": "visual",
+      "sha256": "4ee2f7f0416df31ab5dfd6601776220355d99d5a2a6f8fee23f2daa6c2e8b2c8"
+    },
+    "sc2-15#3": {
+      "decision": "visual",
+      "sha256": "5b961f87e0ca176f8bddd6ffbb12bed7d6e056dd5cd959497704eb2965261724"
+    },
+    "sc2-15#4": {
+      "decision": "visual",
+      "sha256": "c4b8ee5e037f93a2993f1674eb7f24a06a1b7f00180422101a890468436659e8"
+    },
+    "sc2-15#5": {
+      "decision": "visual",
+      "sha256": "d0fe53ad8e3183cbe6318e65c0672f950103762ae7c4847a3fe1de9aca1a9c78"
+    },
+    "sc2-15#6": {
+      "decision": "visual",
+      "sha256": "abf50e5dffd53b23a6110ef6791533cbdaa3f21a52147c55fe900488bffcee0d"
+    },
+    "sc3-01#1": {
+      "decision": "visual",
+      "sha256": "753b817420cc7385af820c57a552db04ed6117a25f603d60a1cb2c996f221e09"
+    },
+    "sc3-01#2": {
+      "decision": "visual",
+      "sha256": "fada0a9239947442fd356f0243857307731f605d53395dd5149faae16449bfaf"
+    },
+    "sc3-01#3": {
+      "decision": "visual",
+      "sha256": "a6974e0f5df1d10b0270359d4f0d781e46104c115e054c38af381175677249c0"
+    },
+    "sc3-01#4": {
+      "decision": "visual",
+      "sha256": "a5671442d289bee61f439f1ee42c38d801493835dc77dc76579468dcf01d87e9"
+    },
+    "sc3-01#5": {
+      "decision": "visual",
+      "sha256": "d20b665282fd43617d3b1d882612fc05bd8451ccae528666ef58e4a2a0af563b"
+    },
+    "sc3-01#6": {
+      "decision": "visual",
+      "sha256": "3dc0f6c36db5b9f3d96d7d7ba31c4308c49ef54c1a8bba2fee007a66b2f2ef79"
+    },
+    "sc3-02#1": {
+      "decision": "visual",
+      "sha256": "4b126c12d887ff9f42bd1719c17e319c76c803289a9a31a43b79f6441f332fce"
+    },
+    "sc3-02#2": {
+      "decision": "visual",
+      "sha256": "67e22f6ca7f8f8ef6b459da0ef0b59b64407b643586763af78f213e80e9e56f8"
+    },
+    "sc3-02#3": {
+      "decision": "visual",
+      "sha256": "f3e45085bb0bb2c6e1926a32e81de70dd14928734a830ba0bbe5bcd674e125a8"
+    },
+    "sc3-02#4": {
+      "decision": "visual",
+      "sha256": "9251b6baf4532f821cfed754737538330a85ad6d3a60fc4e0fb2b659592b0848"
+    },
+    "sc3-02#5": {
+      "decision": "visual",
+      "sha256": "8b74eb5fb915cf05ee5a033982d6de5ed53ab81fe3c0d2fd306150b92216da5a"
+    },
+    "sc3-02#6": {
+      "decision": "visual",
+      "sha256": "754c1c6cecce6f081a8623cec112fa748a9c381e9b06ce560016911e235bf86b"
+    },
+    "sc3-03#1": {
+      "decision": "visual",
+      "sha256": "e600a500a8d76a88a3394b3785c7920382a8dd5c6f14e4356b743af607cbb875"
+    },
+    "sc3-03#2": {
+      "decision": "visual",
+      "sha256": "0ccf560f12ac2baaf17251d7097f0b324a47a3bb4fb7329f19ce1a69116163a2"
+    },
+    "sc3-03#3": {
+      "decision": "visual",
+      "sha256": "51b46db49d4d197621dce2c124f317008dfa4c313984160d20bb7bd0c0d7ea57"
+    },
+    "sc3-03#4": {
+      "decision": "visual",
+      "sha256": "49f288070318ab052c61bd28c24d574d1d364ec6cc95848072e01b6ff4f62b29"
+    },
+    "sc3-03#5": {
+      "decision": "visual",
+      "sha256": "ce5034f29bac10b4edf2cefc96f57607f9f93d4a021af545ecd1d4c3836bab0d"
+    },
+    "sc3-03#6": {
+      "decision": "visual",
+      "sha256": "0fc5b229733c851afe82895a0f9d64d3bb1ee343e3a090697716e38c11961d70"
+    },
+    "sc3-04#1": {
+      "decision": "visual",
+      "sha256": "a767742a01403885ffb3b8b72a0cf6e1a04d86231b926d23801e6b192af40d94"
+    },
+    "sc3-04#2": {
+      "decision": "visual",
+      "sha256": "6e4a98dc31f879a0d926c27020bbc2cb90ac625b0cba21a9be08c63c640bae75"
+    },
+    "sc3-04#3": {
+      "decision": "visual",
+      "sha256": "f31df2714ebdc45415dd8b16bb28e9d4dc0fe9b7ba829ac7370267733ed7d497"
+    },
+    "sc3-04#4": {
+      "decision": "visual",
+      "sha256": "0bb96f58f9e21ed8b97ec6a72495f380b6efb6e497a008c502bcc7340fe001b7"
+    },
+    "sc3-04#5": {
+      "decision": "visual",
+      "sha256": "f09580c0e7f60055e81e2f3ecef83b4e20d28aa3f944bdf201883b1748050870"
+    },
+    "sc3-04#6": {
+      "decision": "visual",
+      "sha256": "67fe0f671eee864d6f7a33fa202fa9b99aed2a9de38a83c9efdf79a98c430e57"
+    },
+    "sc3-05#1": {
+      "decision": "visual",
+      "sha256": "106d2bad476c41913bcaad816674359ca36895ef3af76bdb21fd8e6bef45b579"
+    },
+    "sc3-05#2": {
+      "decision": "visual",
+      "sha256": "2f17a29246c398aafd4a896d94b244becc035a8f7668eba832125ec92a4d73df"
+    },
+    "sc3-05#3": {
+      "decision": "visual",
+      "sha256": "397150e39df05013996979715450e1ff7ef2bf5a48cffdc7bd8508b3fc2096c4"
+    },
+    "sc3-05#4": {
+      "decision": "visual",
+      "sha256": "37e8ec2b72f9d3d1290cd579167a23c4e8ae84e8fcbf374da05c5e09857b1b68"
+    },
+    "sc3-05#5": {
+      "decision": "visual",
+      "sha256": "2f3dbf3f7e1646ffde7ac8f6b06342122f72b1e85469dc399e7c08c5f464b432"
+    },
+    "sc3-05#6": {
+      "decision": "visual",
+      "sha256": "339e685fffcce4a1dd1785b394fc35e2e259fe72edf89a5f53efdc47071a24cd"
+    },
+    "sc3-06#1": {
+      "decision": "visual",
+      "sha256": "affee12722aa691e7565d04885dbbbec4e05bcb63a8596787c5ce83fa2f12355"
+    },
+    "sc3-06#2": {
+      "decision": "visual",
+      "sha256": "cd835193aa84cfbb2fbb94e771bee2f0a5c8c94a194a7fdd7b34f70c9d7943eb"
+    },
+    "sc3-06#3": {
+      "decision": "visual",
+      "sha256": "6845fc0fb0db1a840deaece17d5e47643fe345e60f5f3e2094ae0ffcaf360543"
+    },
+    "sc3-06#4": {
+      "decision": "visual",
+      "sha256": "9d81f2979ea5e7410d87641425f7f2f22a1e621a4291ae7d58c4dc2c8b48a2f7"
+    },
+    "sc3-06#5": {
+      "decision": "visual",
+      "sha256": "8284c05224d076a8b046259346ea945c363a8286ea3027a8450fdd07f8fb242e"
+    },
+    "sc3-07#1": {
+      "decision": "visual",
+      "sha256": "4d94d3d2d8165ead0612eeb8019c11496cb832d85c1add58c09fe82d26c3371c"
+    },
+    "sc3-07#2": {
+      "decision": "visual",
+      "sha256": "bf19b9c3dd045ea8c164da04eec9ff49b4fea24acfcf31575593eb41513f71ae"
+    },
+    "sc3-07#3": {
+      "decision": "visual",
+      "sha256": "454142871ee97b3c823a50bef7f09d303dc9f9eb5f4d7581594fec53061ce8ef"
+    },
+    "sc3-07#4": {
+      "decision": "visual",
+      "sha256": "82e0c7b73b6d39313c90a90d051706168c232c295488c1a93be3fde9c02c4ec9"
+    },
+    "sc3-07#5": {
+      "decision": "visual",
+      "sha256": "4aa03eae3f1c6a54cac1c052f1925b92c7bf59d7da260a2fe536b8ba25081f6e"
+    },
+    "sc3-08#1": {
+      "decision": "visual",
+      "sha256": "2cac6f4d25fb6b7ec7b81d5721a88a97f9a39e9242b276768c9b16556e1bb349"
+    },
+    "sc3-08#2": {
+      "decision": "visual",
+      "sha256": "3a7d656bcaefdcdd6860f3b90be833dbfa7751009612ef63e0edda92565cda36"
+    },
+    "sc3-08#3": {
+      "decision": "visual",
+      "sha256": "3536eeb7880be3beeba50cd054da00195cdbf4a0d6e6e13a1ae6d4528da63688"
+    },
+    "sc3-08#4": {
+      "decision": "visual",
+      "sha256": "58b03d274c5a33f766878b2e1d8e75d208a6c9303f66fef5b3dc619d5f7d433a"
+    },
+    "sc3-08#5": {
+      "decision": "visual",
+      "sha256": "10da6b9d9e95f5903e01d762ce217265527e39d74d657a7a1c67f9aca968d8b0"
+    },
+    "sc3-08#6": {
+      "decision": "visual",
+      "sha256": "2f351a91956ef8ee366c1598a85f062ed795d0cf67851ac6d6b8fc6d15da80fa"
+    },
+    "sc3-09#1": {
+      "decision": "visual",
+      "sha256": "4d56f398ddf3d9407d118b1cd2787a8a5a9d2c28685bcaaf2af311c3db7b6e95"
+    },
+    "sc3-09#2": {
+      "decision": "visual",
+      "sha256": "1ac68942860d86088d7ec239ec34e5e8de900014f388cef634d27d20320c5137"
+    },
+    "sc3-09#3": {
+      "decision": "visual",
+      "sha256": "e7636b09e94829774421fc8206445d2dd6b1eef084c5bff2f1828a42ebf5f693"
+    },
+    "sc3-09#4": {
+      "decision": "visual",
+      "sha256": "53c65f375395d24e21df4083975911ca8c9d93b04c31248d32f442d9e20f4c4a"
+    },
+    "sc3-09#5": {
+      "decision": "visual",
+      "sha256": "4924760ac56f60913a1f88430b18f1f47d304e98e7197c562b6b55216c851b9c"
+    },
+    "sc3-09#6": {
+      "decision": "visual",
+      "sha256": "0b0ac1beb8f122a52296299ff86504ab24d039b992092dd7b02ae5ecdf1f6b10"
+    },
+    "sc3-09#7": {
+      "decision": "visual",
+      "sha256": "1b946486e6b1c1dc5f41a942795ba2dad36f30387379e6b0c4d33e597b6e11e8"
+    },
+    "sc3-10#1": {
+      "decision": "visual",
+      "sha256": "662f453809b4961ac697efa3fafb071a968cfa1726944d788b7f8f5f960e5660"
+    },
+    "sc3-10#2": {
+      "decision": "visual",
+      "sha256": "0b07e0b8ce19651a736236cb59c9959eae00fb9e525525eeaa9af618c98fae5d"
+    },
+    "sc3-10#3": {
+      "decision": "visual",
+      "sha256": "2d183fda7bb8795e4acf7d6963171cb78d19ac332d368f382e6b90ded3a52eb3"
+    },
+    "sc3-10#4": {
+      "decision": "visual",
+      "sha256": "f28e1ea7a90bbc14b8364c7114f67ef628255825d4ae04c61a79870521e1f9f9"
+    },
+    "sc3-10#5": {
+      "decision": "visual",
+      "sha256": "8a606ee511e9e5184b8c7257f4b6ab7792ce70f0b665c9bcfbcd4cbaade67fd9"
+    },
+    "sc3-10#6": {
+      "decision": "visual",
+      "sha256": "e8410b13022dc5e14d13d1a2109a392301655dbfc4a7ed144113cf82154d348a"
+    },
+    "sc3-11#1": {
+      "decision": "visual",
+      "sha256": "65c83544f48213cdf7cd0a9a934d1fe7daa7d5c600c1266f1bf3da17c2a90c0d"
+    },
+    "sc3-11#2": {
+      "decision": "visual",
+      "sha256": "dce15fc9ac583d5e0235d36d8507cb8a84187308caceb642e12fb656675819e0"
+    },
+    "sc3-11#3": {
+      "decision": "visual",
+      "sha256": "8cda71bd0b4a3d8022c5a6cc9e7400699153cce7e3a082a22d756b53ee927f02"
+    },
+    "sc3-11#4": {
+      "decision": "visual",
+      "sha256": "acd788ac230d7d0c3936889b7d4004ff7fc133e817765062513f2740bd62f0d5"
+    },
+    "sc3-11#5": {
+      "decision": "visual",
+      "sha256": "e7f0e33f6bc7c638a3b605c62cf9fb9199a4b1adc2f4010648f5f67254cc75a0"
+    },
+    "sc3-12#1": {
+      "decision": "visual",
+      "sha256": "a77d75a71877ee10a69e99d8b05f306ad4676d1086fd5d5e753a2e8be2da1866"
+    },
+    "sc3-12#2": {
+      "decision": "visual",
+      "sha256": "1ca3b26ae847199cd14100087a8a155bfc2d3e85e7f9202f78bcec4ee74800d3"
+    },
+    "sc3-12#3": {
+      "decision": "visual",
+      "sha256": "1f6be4572268f8a457c32e441b81e8be9c45029c7713c1fb2a7e952e8fded16b"
+    },
+    "sc3-12#4": {
+      "decision": "visual",
+      "sha256": "f0dbae9163ff515abdc3a0fb1d15131493eca9a19a530884082a4297fb858cfc"
+    },
+    "sc3-12#5": {
+      "decision": "visual",
+      "sha256": "19fd04268794f161adc6ec9985d29d560b935f818cb39112a681737ed51179e7"
+    },
+    "sc3-12#6": {
+      "decision": "visual",
+      "sha256": "414753737c0cb7a5208cb2dbda99de61d605b112458070f4a34895f9c7ec4258"
+    },
+    "sc3-13#1": {
+      "decision": "visual",
+      "sha256": "1d82f93b72199d86b948e6ebfc5d75548cd036a7d2e84025abe899361858d300"
+    },
+    "sc3-13#2": {
+      "decision": "visual",
+      "sha256": "87cd146a1ae9a64abc8db4441e99691a76061dad240ad8d5c8f38ee17d882e53"
+    },
+    "sc3-13#3": {
+      "decision": "visual",
+      "sha256": "36c59949f5176380ed3e53cfcef422aa65a10ea83e4ea44e924d0f823b774615"
+    },
+    "sc3-13#4": {
+      "decision": "visual",
+      "sha256": "adcc36eb8f884e57d8b18185554759e59dbb0f74523df35d1fbdb1a085a0942d"
+    },
+    "sc3-13#5": {
+      "decision": "visual",
+      "sha256": "e201847bd63dba7296189bfc0d34f4cd461f727610a170c8639a71297ccc3c82"
+    },
+    "sc3-14#1": {
+      "decision": "visual",
+      "sha256": "681a40e9af096cf5f7884ca1da53feabe5e70b8b417a0dd64251bc3674de9e81"
+    },
+    "sc3-14#2": {
+      "decision": "visual",
+      "sha256": "f6dacd06faef22ded450dd7fd79b3dff09ba6b1ba2b76bb93485da7188a63ebc"
+    },
+    "sc3-14#3": {
+      "decision": "visual",
+      "sha256": "75f3a3bf2c6087b27c0692c673b192935aac0a0734d33db8562f9424768d62c2"
+    },
+    "sc3-14#4": {
+      "decision": "visual",
+      "sha256": "1e78ce7536cae074d2c6e8354df3578ace0f08331735ec7725f8c6f76df06893"
+    },
+    "sc3-14#5": {
+      "decision": "visual",
+      "sha256": "9d3ab159c322c6909635023f0a48042ef7a7015871e5c40a30003c5d65572724"
+    },
+    "sc3-14#6": {
+      "decision": "visual",
+      "sha256": "af1edfd075cbb7f2d042482241198939f635d1e165063da424c260a3c10bda9a"
+    },
+    "sc3-15#1": {
+      "decision": "visual",
+      "sha256": "67c0bfc05e244b7e8ae2ff4b2869596fac476df602ef40f3f73453ffa4e699bd"
+    },
+    "sc3-15#2": {
+      "decision": "visual",
+      "sha256": "c85c16824c67fbd0f4dd8f5c34d4584db3329eb1e580409339204cefda0160c9"
+    },
+    "sc3-15#3": {
+      "decision": "visual",
+      "sha256": "0aa3008582f967df3a67197e893242d519c99ed10a64fc069808817e3273cbed"
+    },
+    "sc3-15#4": {
+      "decision": "visual",
+      "sha256": "2392f3cd120c901e9cbe7ef3e7aa03f5d690f3bac014ba89e51d9d74bf5e1718"
+    },
+    "sc3-15#5": {
+      "decision": "visual",
+      "sha256": "53f93e81e0db9f3a70b72c67b86f424749597236ccc42022a1875c31d482f333"
+    },
+    "sc3-15#6": {
+      "decision": "visual",
+      "sha256": "beba9eb1c622daa77c7f6a35f48b89266f2d55f467f5548d559364ee878e6f39"
+    },
+    "sc3-16#1": {
+      "decision": "visual",
+      "sha256": "aefae8e48047babf518c9d1c03d171c54260eccc9875bb3c0c9eec24fcd1f21b"
+    },
+    "sc3-16#2": {
+      "decision": "visual",
+      "sha256": "2aa7a5df51b0d365166c81e8549165596239beeeb1d86270148223f80cf8f9f2"
+    },
+    "sc3-16#3": {
+      "decision": "visual",
+      "sha256": "d3665114da736d3a1ede85b2622a02883eca94878ee55f333c6c26a5f922b32d"
+    },
+    "sc3-16#4": {
+      "decision": "visual",
+      "sha256": "c43bd020b113dc0fd67a6c234278b64be9516cc9f63d8731cc8f67c76dfd3de4"
+    },
+    "sc3-16#5": {
+      "decision": "visual",
+      "sha256": "4acb09b974162756647dd6c670b3dd06976d86b526e6dbba3531aca171799fc5"
+    },
+    "sc3-16#6": {
+      "decision": "visual",
+      "sha256": "6a89287e679c031df72650b2b92ef5cc797bb756802860611341a197577f0963"
+    }
+  },
+  "questions": {
+    "civ-07-q04": {
+      "sha256": "d2a5e072c7842e559e6754bf261d348843ed3b66c88c653493172b5f000d95cc"
+    },
+    "civ-09-q08": {
+      "sha256": "16afaabcb4f15e44a1e17866be2039b743951b93f79ff0f4196ec2a63431dd63"
+    },
+    "civ-12-q04": {
+      "sha256": "ffe9df39e09497303af53af82c4b218c54eecd924448adb9d8a0aea2cef512ce"
+    },
+    "civ-13-q07": {
+      "sha256": "5569c676e86ab5a98cd4d776c5e66315da86725a98bc9a89f6290f97ba5cb91b"
+    },
+    "geo-01-q04": {
+      "sha256": "b1e5c4778f02a77399d1a18da189c9e037acc5b7379ae4275bf6013f558f2270"
+    },
+    "geo-01-q07": {
+      "sha256": "5b3e841bd1dc0eff35f5bf56b5cbc867726ca983ab709c31dd5cd079e3211bfb"
+    },
+    "geo-02-q04": {
+      "sha256": "40533771239b8a435aae418a6527b0d425ed69e92b84d3d2ef328305fd69dae7"
+    },
+    "geo-02-q06": {
+      "sha256": "86e6c7cf690bab640c423b31f2661cfc86e125ec9f3df9b246c8ae1359de68f2"
+    },
+    "geo-02-q08": {
+      "sha256": "886e6dacf5dc1c1f0b4badf4002fc06268814f86f8253a37fbeb48ab6f9d4080"
+    },
+    "geo-03-q02": {
+      "sha256": "bf1f19a5a77355076d97878ac60a2fb715caa5f226a19b61c735c323559278a4"
+    },
+    "geo-03-q04": {
+      "sha256": "7a4b8f9268951f2e57e5413c55ed5616a32471a45a7b1f7759a7763895385c2d"
+    },
+    "geo-03-q05": {
+      "sha256": "9c0b0ebc8d3ec82f1965041ab9e2f0af4a03df59fab6e3e95a839ef099e58b99"
+    },
+    "geo-03-q07": {
+      "sha256": "f28589563385ae6ab4ca3bfe2a89d2b4e849ddb620d054fc08bab77943179404"
+    },
+    "geo-04-q06": {
+      "sha256": "821af3e23a0337e817924bff1b7520eac462f624558ef20934229bcb0cf2ece2"
+    },
+    "geo-05-q06": {
+      "sha256": "fc84f1c3fff40f72e8209cf4faeeef1c29ac916714a5af646124f1074ce023a7"
+    },
+    "geo-08-q09": {
+      "sha256": "9ea3927a26a0dc9c12302eed83d10d3e5e80b34ba95e645a3f88040b9fcaec19"
+    },
+    "geo-09-q06": {
+      "sha256": "015679c065a4ecad90a243975b2c56c476a57b70020ba47479fc2fb63a8ea359"
+    },
+    "geo-10-q07": {
+      "sha256": "ec3a713f3eeffbd8280820263896b55f2cb745ca4c4e8ca8414ac39e066161f6"
+    },
+    "geo-11-q04": {
+      "sha256": "f41008131c82ca87423876e5b409b6ea3dac1f08648c019229a6b2acdd9e46cb"
+    },
+    "geo-12-q06": {
+      "sha256": "6365030af6681393628193592a88a23e4ec8938fc92810b6ba4008bcdd53ffcc"
+    },
+    "geo-13-q04": {
+      "sha256": "e220cf897a123387450dfc60e385d639823ea7ea69377636aca5a1b373303163"
+    },
+    "geo-13-q07": {
+      "sha256": "dea0a665d566564323b56cb616b16dc37a6d1f6302ea8135c888051ea94df2e5"
+    },
+    "geo-14-q09": {
+      "sha256": "8a4f3e21a7f8b3405f493727b01cb07f1fdc05cb94a518c9ac95c7825e37e528"
+    },
+    "geo-15-q04": {
+      "sha256": "084cb3d194c0cabff9726278e935356331785e87e0b462bf6ad1f4ce8c41733f"
+    },
+    "geo-17-q09": {
+      "sha256": "9a6e154fbab8c53b7f4ea4fb27c1195fc717a30c958fa5fca5632e93d27e0dc4"
+    },
+    "geo-18-q07": {
+      "sha256": "3a2384732baf55f54fe5bb920fa52ac2b9f2c453a94147c9fa704e466bc977f1"
+    },
+    "sc1-03-q07": {
+      "sha256": "8c842cd06205fb0bf46baa5a882b5daa7db9fc02cb02f2110e9891a6fe9b0fb7"
+    },
+    "sc1-04-q08": {
+      "sha256": "2ee482ee794775a311e0d97c4d72b38bf04cf0cb840d206406cd848ab8fd1d05"
+    },
+    "sc1-06-q07": {
+      "sha256": "48eb40ab26d6c6633199914440ce7ad15213d9f202dbd6ba1d89592961b0fc17"
+    },
+    "sc1-07-q06": {
+      "sha256": "9d7430eb21867a0f5803925a4381abfc47c01e292eda485393c90a4743f9c1e7"
+    },
+    "sc1-11-q08": {
+      "sha256": "4d0f90669edde7c65c8b88550455bc8589332438c155a48f0050bb65cf7c1753"
+    },
+    "sc1-12-q08": {
+      "sha256": "7a45d1e685d8964f6ddcb97f19b905ae431f0e103b3c75f86e42a79f59418643"
+    },
+    "sc1-13-q07": {
+      "sha256": "08aee96ee16edf50f70a5cc09c9bb058e86773414f9cebd48c62469533a76cda"
+    },
+    "sc2-05-q07": {
+      "sha256": "bcc5ca01523833dcfd5df0a699f36a2340010299d9183dbbfb68f3e013c70426"
+    },
+    "sc2-07-q07": {
+      "sha256": "40e1a838600990df819b11bb6fb8cfdd588e872faf65c3725cb02bd225db6318"
+    },
+    "sc2-10-q07": {
+      "sha256": "6acbfc058e3018986d66eb798f5c95adef1c777fd5d90ecea2b33f0b70915316"
+    },
+    "sc2-10-q08": {
+      "sha256": "262b019be17822d814e77d47c54645b3380ec8e124a38d1c4ebb0fa70aa69df8"
+    },
+    "sc2-11-q08": {
+      "sha256": "71be1d710d9c07fe62a034487cff4324365124ad8296fcc31c32c9c75f92ac71"
+    },
+    "sc2-14-q06": {
+      "sha256": "6b8bb40e222ee4bb163ac286b3addffa68b4b8c4720e1bf5abfbd7bc857c99f9"
+    },
+    "sc2-14-q09": {
+      "sha256": "c3f9156b65b91789f6c0c4984596168e058424720fe7076c0939bac33fa677b5"
+    },
+    "sc3-02-q07": {
+      "sha256": "34a7aba985f39fb4cb0b0e32f98b2f070b32414aa61ea5a171272e8658c4f423"
+    },
+    "sc3-03-q08": {
+      "sha256": "5c8cd7d85c69ea0a4cf62917f5bde8abd7a9e788838e052d81c57702ac22eaca"
+    },
+    "sc3-06-q08": {
+      "sha256": "d2519945d52797bed9ac51831a6da45352ea93ae62868dccf1112ffabe2590f7"
+    },
+    "sc3-07-q06": {
+      "sha256": "925daf37b20b6d3b52e0fad927493bab4525f78bb242524a6a8b0ec109cffe3d"
+    },
+    "sc3-07-q07": {
+      "sha256": "b2cfd8316d16b100c7ded34134963db08b1190922ec23ac81f08e4c03f6bf437"
+    },
+    "sc3-15-q08": {
+      "sha256": "e3c7a87907512f2803993aa77daa6b71e202a221e3075717af645275a0ed74b2"
+    },
+    "sc3-16-q07": {
+      "sha256": "f15feda8851f397728e5da8c5489b8923b3523859434023f1d13c080d14d1d95"
+    }
+  },
+  "data": {
+    "his-09#3 図1 身分別の人口の割合": {
+      "sha256": "b0e683d4703a0473d550b433aad45436dd283e619e47b6632b93eeb6a1a06549",
+      "source": "sekiyama-edo-population",
+      "checked": "関山直太郎『近世日本の人口構造』の推計として広く引かれる値（百姓約85％・武士約7％・町人約5％・その他約3％）と照らし合わせた。教科書や学習資料と同じ値"
+    },
+    "geo-03#6 図1 国でいちばん信者の多い宗教（2020年の推計）": {
+      "sha256": "09fc6304b9663d2c4bcbe8db9c9fbdf20da4042c73a490bb3f74405cffb5fe81",
+      "source": "pew-religion-2020",
+      "checked": "Our World in Data の most-common-religion（Pew Research Center 2025 年公表の2020年の推計）の CSV から、国・地域の「最も信者の多い宗教」をそのまま色にした（地図の記号がちがう4つは KOS・PSX・SDS・SAH に読み替え、地図に描かれない小さな島など8つはのぞいた）。日本・中国・韓国などは宗教を信じない人が最も多い"
+    },
+    "geo-08#5 図1 ブラジルの森林面積の移り変わり": {
+      "sha256": "7ed213a8d55599c4c9e2dcda26bce3ae16d40f12c07ce605c80d53fa6ac50156",
+      "source": "world-bank-wdi",
+      "checked": "世界銀行 API の AG.LND.FRST.K2（Forest area, sq. km、国連食糧農業機関の値、2026-07-13 更新）のブラジルの値を1万km²で割って小数第1位にした（1990年5,888,980km²→588.9、2023年4,929,787km²→493.0）"
+    },
+    "geo-09#2 図2 オーストラリアに住む、外国生まれの人の出身地域": {
+      "sha256": "29d2ca93d5b5ac97c9d54a6b5f774723e21abd1074c6b2e70cd0b58d3bb8aafa",
+      "source": "abs-census-2016",
+      "checked": "ABS「Census of Population and Housing: Australia Revealed, 2016」の本文（外国生まれの人のうちヨーロッパ生まれ 2001年52％・2011年40％・2016年34％、アジア生まれ 24％・33％・40％）と照らし合わせた。その他は100からの残り"
+    },
+    "geo-11#5 図2 発電電力量の割合": {
+      "sha256": "6d7208be1df29e70d316924de200dfaf5b8a8900239bda14ae938ec2d97b581f",
+      "source": "enecho-energy-2024",
+      "checked": "資源エネルギー庁「令和6年度エネルギー需給実績（確報）」の『電源構成と最終電力消費』の表の発電電力量（億kWh）から割合を計算した（2010年度は総計11,494のうち石炭3,199・天然ガス3,339・石油等983・原子力2,882・水力838・太陽光35・風力40・地熱26・バイオマス152、2024年度は総計9,911のうち2,785・3,194・711・935・735・981・117・39・414）。2024年度の火力の合計67.5％は本文の値と一致"
+    },
+    "geo-11#6 図1 貿易の荷物を運んだ船と航空機の割合": {
+      "sha256": "104ac40c5a4cc355062bd2d58081764b11050efe41a60dd26c7c8f28377fccb0",
+      "source": "trade-transport",
+      "checked": "重さは国土交通省海事局「海事レポート」第4章の『貿易量（輸出入合計）の99.6％（2023年、トン数ベース）を海上輸送』。金額は、e-Stat の普通貿易統計・運送形態別の航空貨物国別総額表（2024年）の国の合計（輸出34,661,835,092千円・輸入30,996,153,126千円）を、税関の年別輸出入総額（輸出107,087,511,087千円・輸入112,715,960,939千円）で割った（32.4％・27.5％）。船は残り"
+    },
+    "geo-13#5 図1 65歳以上の人の割合（2020年）": {
+      "sha256": "9209356cc3693c87b723477626cdd64c202d71cefca098f93b173d6aaf4e0fb4",
+      "source": "census-2020-aging",
+      "checked": "令和2年国勢調査の都道府県別の総人口と65歳以上人口（鹿児島県が転載した一覧）から割合を計算し、10の値すべてを確かめた（全国36,026,632÷126,146,099＝28.6％、高知県245,359÷691,527＝35.5％、島根県229,554÷671,126＝34.2％ など）"
+    },
+    "geo-18#4 図1 日本の漁業・養殖業の生産量の移り変わり": {
+      "sha256": "38778af222120dc53f68578a2829e370cbca824bb8eb05648b31ac76e46bdf15",
+      "source": "maff-fishery-stat",
+      "checked": "e-Stat の海面漁業生産統計調査 長期累年『漁業・養殖業部門別累年統計 生産量 全国（昭和54年〜令和6年）』（2026-02-27 公開）の遠洋・沖合・沿岸・海面養殖業の値を1万tにした（2002年までは千t、2003年からはtの表なので単位をそろえた。例：遠洋 1980年2,167.2千t→216.7、2024年289,287t→28.9）"
+    },
+    "his-13#2 図3 年貢と地租のちがい（例）": {
+      "sha256": "d650811c9eace530d5d902de71435780360847de5a5a4898c67c32b3a6ea2b31",
+      "illustrative": "年貢は収穫で変わり、地租は地価の3％で毎年同じというしくみを示すための例の数値。図の注にも例と書いた"
+    },
+    "his-14#6 図1 小学校の就学率の移り変わり": {
+      "sha256": "9528f288638975658df1d32e13b3a41c418912fec67dc2534af65acef42efb23",
+      "source": "mext-gakusei-100",
+      "checked": "文部省『学制百年史』資料編の第1表（学齢児童数・就学児童数）から、就学児童数÷学齢児童数で計算した（例：1873年 男880,335÷2,206,125＝39.9％、女302,633÷1,999,216＝15.1％、1910年 男3,861,791÷3,907,437＝98.8％、女3,473,754÷3,567,266＝97.4％）。男女の和が計と一致することで読み取りを確かめた"
+    },
+    "his-16#3 図2 有権者が人口にしめる割合": {
+      "sha256": "9625ef6dbedefa2651e0dab05805297104e774ef0251c636cbf79ae535311ba3",
+      "source": "soumu-senkyo-ayumi",
+      "checked": "総務省の資料の「有権者数（全人口にしめる割合）」の数値と照らし合わせた（1890年 約45万人 1.1％、1902年 約98万人 2.2％、1920年 約307万人 5.5％、1928年 約1,241万人 20％、1946年 約3,688万人 48.7％、2025年 約1億359万人 84％）"
+    },
+    "his-19#2 図3 自作地と小作地の割合の変化": {
+      "sha256": "66cbc23cf7538dbeb6e15f0a7874f7758887427dad89a00b444c974e52233843",
+      "source": "sekiya-nochi-kaikaku",
+      "checked": "関谷俊作の論文の本文（自作地の割合は改革前約54％、改革後おおむね9割。小作地は改革前46％から改革後約10％）と照らし合わせた。図の注に「およその値」と書いた"
+    },
+    "his-20#5 図1 テレビの普及率の移り変わり": {
+      "sha256": "6d5981740e83423f7b5ce6857081c8f993f204b9937a05dd7b09e4df9edfecbe",
+      "source": "cao-durables",
+      "checked": "内閣府「主要耐久消費財等の普及率（全世帯）」（2004年3月末現在、0403fukyuritsu.xls）の白黒テレビ・カラーテレビの列を、調査した年ごとにそのまま使った（1957年は9月、1958〜77年は2月、1978年からは3月の調査）。表の注のとおり、1963年までは都市の非農家世帯の値なので、図の注に書いた"
+    },
+    "civ-01#2 図1 日本で暮らす外国人の数（在留外国人数）": {
+      "sha256": "5c86a0819266eefdeffce00dec93e526b1cf6c7bf0e813b0fe26d0e55db02b7d",
+      "source": "moj-isa-r6",
+      "checked": "出入国在留管理庁「令和6年の出入国在留管理業務の状況」のグラフの数値（2019年末2,933,137人・2020年末2,887,116人・2021年末2,760,635人・2022年末3,075,213人・2023年末3,410,992人・2024年末3,768,977人）を1万人で割って小数第1位にした"
+    },
+    "civ-03#5 図1 30人で決めるときの例": {
+      "sha256": "87c2098867f6bb6377d524392408da869fee61d19b6989209fadd9d81e92f3f7",
+      "illustrative": "30人のクラスで多数決と全会一致をくらべる例の数。過半数（16人）の説明に合わせた"
+    },
+    "civ-09#5 図2 必要な署名の数（有権者9万人の例）": {
+      "sha256": "65a8b003bb14bf6e54d3884eae35c48f96627963e60387243adef5a24e229c16",
+      "illustrative": "有権者9万人の市の例で、50分の1（1,800人）と3分の1（30,000人）を計算した数。図の注に例と書いた"
+    },
+    "civ-13#2 図3 所得の区分ごとの税率の高さ": {
+      "sha256": "805d331a1223f44c9bc12e4043b3655051735623bf2e37869392cb893d82ef2b",
+      "source": "nta-income-tax",
+      "checked": "国税庁「No.2260 所得税の税率」の速算表（195万円未満5％、195万〜330万円10％、330万〜695万円20％、695万〜900万円23％、900万〜1,800万円33％、1,800万〜4,000万円40％、4,000万円以上45％）と照らし合わせた"
+    },
+    "civ-16#3 図1 化石燃料の可採年数": {
+      "sha256": "99269cdc63889949b57e8914cda4760c7ea71f73dec2dfd02a2cc908ee3b3a01",
+      "source": "enecho-whitepaper-2024",
+      "checked": "エネルギー白書2024 第2部第2章第2節の本文（石油の可採年数53.5年、天然ガス48.8年、石炭139年、いずれも2020年末時点）と照らし合わせた"
+    },
+    "sc1-06#2 図1 溶液の質量の中で、溶質がしめる割合": {
+      "sha256": "34f5b2c95e7283c7d8e172a0a4cda5038e6cc8de49a9805afe005c7d268ffd95",
+      "illustrative": "要点の表の例（食塩25gと水225g）と、同じ割合の例（食塩10gと水90g）を帯にした計算の例。統計ではない"
+    },
+    "sc2-14#6 図2 図1の電力量を、長さで比べる": {
+      "sha256": "c9a9be3aa7cefd1e2ba557e638d873d241d31e105af0691eb6b5e2fa5c3b0d28",
+      "illustrative": "図1の計算の例（10W×2時間＝20Wh、1000W×0.1時間＝100Wh、1200W×6分の1時間＝200Wh）を棒にしたもの。統計ではない"
+    },
+    "sc3-05#2 図2 メンデルの実験で、孫の代に現れた形質の数": {
+      "sha256": "0d12677ffbfa5c74ffc7050880ae8e02a5a468c2dba3a58df937503aee508bfa",
+      "source": "mendel-1866",
+      "checked": "Genetics誌（2016年）の英訳の本文「First Generation of the Hybrids」と照らし合わせた。実験1（種子の形）7324個のうち丸5474・しわ1850（2.96：1）、実験2（子葉の色）8023個のうち黄6022・緑2001（3.01：1）、実験5（さやの色）580株のうち緑428・黄152（2.82：1）、実験7（草たけ）1064株のうち高い787・低い277（2.84：1）。"
+    },
+    "sc3-07#1 図1 自転車の速さの変化（例）": {
+      "sha256": "b54a8ccc2f5ec7ce153ee1ae4586f7ada846cc94cf95a7e3105072e6f5da6bc9",
+      "illustrative": "平均の速さと瞬間の速さのちがいを示す例。0〜4秒で0から8m/sまで一定に速くなり、16秒まで8m/s、20秒で止まるとすると、進んだ距離は16＋96＋16＝128mで、平均の速さは6.4m/s"
+    },
+    "sc3-15#4 図1 再生可能エネルギーによる発電電力量": {
+      "sha256": "0114aacd7ab46b0b01376f2ea012b80d56ebb7a41a9918105411b61c63e9c659",
+      "source": "enecho-energy-2024",
+      "checked": "資源エネルギー庁「令和6年度エネルギー需給実績（確報）」の概要の表「電源構成と最終電力消費」の発電電力量（億kWh）の水力・太陽光・風力・地熱・バイオマスの2010〜2024年度の15年分と照らし合わせた（2024年度：太陽光981・水力735・バイオマス414・風力117・地熱39、再エネ合計2,286で全体9,911の23.1％）。"
+    },
+    "sc3-15#6 図1 主な情報通信機器の世帯保有率": {
+      "sha256": "b4af31e93ea5bf4ee65eeb780157caf66be619ad1c3dbca06abe6d45cbd7bf2e",
+      "source": "soumu-tsushin-2025",
+      "checked": "総務省「令和7年通信利用動向調査の結果」の結果の概要の表「主な情報通信機器の保有状況（世帯）」の平成28年〜令和7年（2016〜2025年）のスマートフォン・パソコン・固定電話の値と照らし合わせた（2025年：スマートフォン91.8％・パソコン64.4％・固定電話53.6％）。"
+    },
+    "sc3-16#6 図1 家庭から出る二酸化炭素の、用途ごとの量": {
+      "sha256": "71683a204202b78767827c97c0f418bfc035d179a505dabddf7fd47c4aaf8a49",
+      "source": "jccca-household-co2-2024",
+      "checked": "全国地球温暖化防止活動推進センターの「家庭からの二酸化炭素排出量（2024年度）」の用途別内訳（1世帯あたりkg-CO2）と照らし合わせた：暖房539・冷房130・給湯470・厨房190・照明・動力他1,057・自家用乗用車933・一般廃棄物144・水道61.9、合計3,525。"
+    },
+    "civ-09-q08 ある2つの市の歳入の割合（％）": {
+      "sha256": "a70a7dd4a9c80ed8120afa7c58992aa62d175464908e7ed80c4ad1eaf5327f92",
+      "illustrative": "演習のために作った2つの市の例（A市は地方税が多く、B市は地方交付税交付金が多い）。それぞれ合計100％。統計ではない"
+    }
+  }
+}
