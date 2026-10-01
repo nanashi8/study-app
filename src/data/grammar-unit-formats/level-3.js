@@ -135,7 +135,7 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
         'sound は「〜に聞こえる」で、知らせを受け取る意味にならない。',
         'speak the news という結び付きはない。',
       ]],
-      ['verbForm', 'ask＋人＋to＋原形', 'My mother ___ me to clean my room.', ['asked', 'said', 'spoke', 'talked'], 'asked', '母は私に部屋をそうじするように言いました。', 'ask＋人＋to＋動詞の原形で「人に〜するよう頼む」。say・speak・talk は〈人＋to＋原形〉を続けられない。過去の文なので asked にする。', [
+      ['verbForm', 'ask＋人＋to＋原形', 'My mother ___ me to clean my room.', ['asked', 'said', 'spoke', 'talked'], 'asked', '母は私に部屋をそうじするように頼みました。', 'ask＋人＋to＋動詞の原形で「人に〜するよう頼む」。say・speak・talk は〈人＋to＋原形〉を続けられない。過去の文なので asked にする。', [
         'ask＋人＋to＋原形で「人に〜するよう頼む」。人を直接後ろに置ける。',
         'say は人を直接後ろに置けない。say to me のように to が必要で、to＋原形も続かない。',
         'speak は speak to me の形で使い、〈人＋to＋原形〉を続けられない。',
@@ -212,7 +212,7 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
     order: [
       ['中の語順は〈疑問詞＋主語＋動詞〉', 'Do you know where your brother works?', 'あなたはお兄さんがどこで働いているか知っていますか。', '文の中に入れた疑問は〈疑問詞＋主語＋動詞〉の語順にする。does は使わず、動詞に s を付けて表す。'],
       ['文の動詞が過去なら中も過去に', 'I asked Emi where she lived.', '私はエミにどこに住んでいるのかたずねました。', '文の動詞 asked が過去なので、中の動詞も過去形 lived にする。語順は〈疑問詞＋主語＋動詞〉のまま。'],
-      ['疑問詞が主語のときはそのまま', 'I know who broke the window.', '私はだれが花びんを割ったか知っています。', '疑問詞が中の文の主語になっているときは、〈疑問詞＋動詞〉の順のままにする。主語を後ろに補わない。'],
+      ['疑問詞が主語のときはそのまま', 'I know who broke the window.', '私はだれが窓を割ったか知っています。', '疑問詞が中の文の主語になっているときは、〈疑問詞＋動詞〉の順のままにする。主語を後ろに補わない。'],
     ],
     usage: [
       ['confusable', '「〜かどうか」は if で表す', 'I don’t know ___ he will come today.', ['if', 'that', 'what', 'who'], 'if', '私は彼が今日来るかどうか分かりません。', '「〜かどうか」を文の中に入れるときは if（または whether）でつなぐ。', [
@@ -221,13 +221,13 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
         'what は「何を」を表す語で、後ろに足りない部分のある文を続ける。ここでは文がそろっている。',
         'who は「だれが」を表す語で、来るかどうかという内容にはならない。',
       ]],
-      ['verbNoun', '窓を割るは break the window', 'I know who ___ the vase.', ['broke', 'cut', 'fell', 'wrote'], 'broke', '私はだれが窓を割ったか知っています。', 'break the vase で「花びんを割る」という決まった結び付きになる。過去の文なので broke にする。', [
+      ['verbNoun', '花びんを割るは break the vase', 'I know who ___ the vase.', ['broke', 'cut', 'fell', 'wrote'], 'broke', '私はだれが花びんを割ったか知っています。', 'break the vase で「花びんを割る」という決まった結び付きになる。過去の文なので broke にする。', [
         'break the vase で「花びんを割る」。こわすことを break で表す。',
         'cut the vase では「花びんを切る」となり、割る意味にならない。',
         'fall は「落ちる」で、後ろに目的語を置けない。',
         'write the vase では意味が通らない。',
       ]],
-      ['confusable', '電車が出発するは leave', 'Do you know when the bus ___?', ['leaves', 'goes out', 'takes off', 'puts on'], 'leaves', 'あなたはそのバスがいつ出発するか知っていますか。', '電車やバスが出発することは leave で表す。飛行機が離陸する take off と使い分ける。主語が3人称単数なので leaves にする。', [
+      ['confusable', 'バスが出発するは leave', 'Do you know when the bus ___?', ['leaves', 'goes out', 'takes off', 'puts on'], 'leaves', 'あなたはそのバスがいつ出発するか知っていますか。', '電車やバスが出発することは leave で表す。飛行機が離陸する take off と使い分ける。主語が3人称単数なので leaves にする。', [
         'leave は乗り物が「出発する」を表す。The bus leaves at nine. のように使う。',
         'go out は人が「出かける」を表し、バスの出発には使わない。',
         'take off は飛行機が「離陸する」を表し、バスには使わない。',
@@ -256,13 +256,13 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
       ['目的格は〈関係代名詞＋主語＋動詞〉', 'The song that he wrote became famous.', '彼が書いた歌は有名になりました。', 'that がつなぐ文の目的語になるので、後ろは〈主語＋動詞〉の順にする。wrote の後ろに目的語は置かない。'],
     ],
     usage: [
-      ['verbNoun', 'ケーキを作るは make a cake', 'The soup that she ___ was delicious.', ['made', 'did', 'took', 'wrote'], 'made', '彼女が作ったスープはおいしかったです。', 'make soup で「スープを作る」という決まった結び付きになる。過去の文なので made にする。', [
+      ['verbNoun', 'スープを作るは make soup', 'The soup that she ___ was delicious.', ['made', 'did', 'took', 'wrote'], 'made', '彼女が作ったスープはおいしかったです。', 'make soup で「スープを作る」という決まった結び付きになる。過去の文なので made にする。', [
         'make soup で「スープを作る」。料理を作ることは make で表す。',
         'do soup という結び付きはない。',
         'take soup では「スープを取る」となり、作る意味にならない。',
         'write soup では意味が通らない。',
       ]],
-      ['verbNoun', '電車に乗って行くは take a train', 'I ___ a bus which goes to the airport.', ['took', 'made', 'did', 'put'], 'took', '私は空港へ行くバスに乗りました。', 'take a train で「電車に乗って行く」。交通手段を利用することは take で表す。過去の文なので took にする。', [
+      ['verbNoun', 'バスに乗って行くは take a bus', 'I ___ a bus which goes to the airport.', ['took', 'made', 'did', 'put'], 'took', '私は空港へ行くバスに乗りました。', 'take a bus で「バスに乗って行く」。交通手段を利用することは take で表す。過去の文なので took にする。', [
         'take a bus で「バスに乗って行く」。バスや電車を利用するときは take を使う。',
         'make a bus では「バスを作る」となり、乗る意味にならない。',
         'do a bus という結び付きはない。',
@@ -488,7 +488,7 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
   {
     unit: 'gref_3_tag',
     order: [
-      ['現在完了の文には haven’t you', 'You have seen this movie, haven’t you?', 'あなたは以前この番組を見たことがありますよね。', '付加疑問は文の動詞と同じ種類の語を使う。現在完了の have の文なので haven’t you? を付ける。'],
+      ['現在完了の文には haven’t you', 'You have seen this movie, haven’t you?', 'あなたはこの映画を見たことがありますよね。', '付加疑問は文の動詞と同じ種類の語を使う。現在完了の have の文なので haven’t you? を付ける。'],
       ['否定文には肯定の形', 'She is not busy today, is she?', '彼女は今日忙しくないですよね。', '否定文の後ろには肯定の形を付ける。be動詞 is の否定文なので is she? を続ける。'],
       ['There is の文には there をくり返す', 'There are many shops here, aren’t there?', 'ここにはお店がたくさんありますよね。', 'There の文の付加疑問では、主語のかわりに there をそのまま使って aren’t there? とする。'],
     ],
@@ -499,7 +499,7 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
         'do a break という結び付きはない。',
         'put a break という結び付きもない。',
       ]],
-      ['confusable', '映画を見たは have seen', 'You have ___ this show before, haven’t you?', ['seen', 'listened', 'spoken', 'said'], 'seen', 'あなたはこの映画を見たことがありますよね。', '番組や試合を見ることは see で表す。see a show の形で覚える。完了形・受け身の形なので過去分詞 seen にする。', [
+      ['confusable', '番組を見たは have seen', 'You have ___ this show before, haven’t you?', ['seen', 'listened', 'spoken', 'said'], 'seen', 'あなたは以前この番組を見たことがありますよね。', '番組や試合を見ることは see で表す。see a show の形で覚える。完了形・受け身の形なので過去分詞 seen にする。', [
         'see a show で「番組を見る」。作品を見ることは see で表す。',
         'listen は「耳をかたむける」で、番組を見る意味にならない。',
         'speak は「話す」で、見る意味にならない。',
@@ -547,7 +547,7 @@ export const GRAMMAR_UNIT_FORMATS_3 = unitFormats('3', [
         'talk も talk to him の形で使う。',
         'say は言う内容を目的語にする語で、人を直接置けない。',
       ]],
-      ['verbNoun', '世界中を旅するは travel around the world', 'If I were rich, I would ___ across the country.', ['travel', 'wear', 'wash', 'write'], 'travel', 'もしお金持ちなら、その国を旅して回るのに。', 'travel across 〜 で「〜を旅して回る」という決まった結び付きになる。', [
+      ['verbNoun', '〜を旅して回るは travel across', 'If I were rich, I would ___ across the country.', ['travel', 'wear', 'wash', 'write'], 'travel', 'もしお金持ちなら、その国を旅して回るのに。', 'travel across 〜 で「〜を旅して回る」という決まった結び付きになる。', [
         'travel across 〜 で「〜を旅して回る」。旅することは travel で表す。',
         'wear across 〜 という結び付きはない。',
         'wash across 〜 という結び付きもない。',

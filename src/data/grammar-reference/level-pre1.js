@@ -45,7 +45,7 @@ export const GRAMMAR_REFERENCE_PRE1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'ought のあとに to を落とさない／おそらく〜は may well／いくら〜してもしすぎない。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'ought のあとに to を落とさない／おそらく〜は may well／いくら〜してもしすぎないは cannot be too 〜。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['You ought to have consulted us first.', 'あなたはまず私たちに相談すべきでした。'],
@@ -181,7 +181,7 @@ export const GRAMMAR_REFERENCE_PRE1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '〜を受けるは be subject to／見込みを表す be subject to／責任があるは be responsible for。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '〜を受けるは be subject to／変更されることがあるは be subject to change／責任があるは be responsible for。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['The rule is subject to review every year.', 'その規則は毎年見直しの対象となります。'],
@@ -241,7 +241,7 @@ export const GRAMMAR_REFERENCE_PRE1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'tell＋人＋to＋原形／deny のあとは動名詞／be said to have＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'tell＋人＋to＋原形／deny のあとは動名詞／be believed to have＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['He told me to be careful on the icy road.', '彼は私に凍った道では気をつけるように言いました。'],
@@ -417,7 +417,7 @@ export const GRAMMAR_REFERENCE_PRE1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '付帯状況を表すのは with／腕を組むは fold one’s arms／手に持ってはin one’s hand。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '付帯状況を表すのは with／腕を組むは fold one’s arms／手に持っては in one’s hand。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['He walked in with a book in his hand.', '彼は本を手に持って入ってきました。'],
@@ -471,7 +471,7 @@ export const GRAMMAR_REFERENCE_PRE1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '「だれが〜と思うか」は Who do you think／問題を解決するは solve a problem／選び出すは select。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '「だれが〜と思うか」は Who do you think／難問を解決するは solve a puzzle／選び出すは select。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['Who do you think will win the final game?', 'だれが決勝戦に勝つと思いますか。'],

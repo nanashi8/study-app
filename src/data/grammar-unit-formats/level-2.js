@@ -212,7 +212,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
       ['be not to は禁止', 'No one is to enter this room without a pass.', '通行証なしにだれもこの部屋に入ってはいけません。', 'be to の否定は be動詞のあとに not を置き、「〜してはならない」という禁止を表す。'],
     ],
     usage: [
-      ['verbNoun', '会議を開くは hold a meeting', 'The ceremony is to be ___ on Friday afternoon.', ['held', 'taken', 'made', 'done'], 'held', '式典は金曜日の午後に行われることになっています。', 'hold a ceremony で「式典を行う」という決まった結び付きになる。受け身では be held になる。', [
+      ['verbNoun', '式典を行うは hold a ceremony', 'The ceremony is to be ___ on Friday afternoon.', ['held', 'taken', 'made', 'done'], 'held', '式典は金曜日の午後に行われることになっています。', 'hold a ceremony で「式典を行う」という決まった結び付きになる。受け身では be held になる。', [
         'hold a ceremony で「式典を行う」。受け身にすると be held となる。',
         'take a ceremony という結び付きはふつう使わない。',
         'make a ceremony という結び付きもない。',
@@ -360,7 +360,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
     order: [
       ['what 節が主語になる', 'What he said at the meeting surprised everyone.', '彼が会議で言ったことは、みんなを驚かせました。', 'What he said が「彼が言ったこと」という主語のまとまりになる。動詞は単数に合わせる。'],
       ['what 節が補語になる', 'What this town needs is a larger hospital.', 'この町が必要としているのは、もっと大きな病院です。', 'What this town needs を主語のまとまりにし、is のあとに答えを置く。'],
-      ['what is called で「いわゆる」', 'He is what is called a born leader.', '彼女はいわゆる生まれながらの教師です。', 'what is called 〜 で「いわゆる〜」という決まった言い方になる。'],
+      ['what is called で「いわゆる」', 'He is what is called a born leader.', '彼はいわゆる生まれながらの指導者です。', 'what is called 〜 で「いわゆる〜」という決まった言い方になる。'],
     ],
     usage: [
       ['setPhrase', 'AとBの関係は A is to B what C is to D', 'Exercise is to the body ___ study is to the mind.', ['what', 'that', 'as', 'which'], 'what', '運動と体の関係は、勉強と心の関係と同じです。', 'A is to B what C is to D で「AのBに対する関係は、CのDに対する関係と同じ」を表す。', [
@@ -375,7 +375,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
         'problem は「問題」そのもので、解決策を表さない。',
         'trouble は「困りごと」で、解決策を表さない。',
       ]],
-      ['setPhrase', 'いわゆるは what is called', 'She is what is ___ a born teacher.', ['called', 'said', 'told', 'spoken'], 'called', '彼はいわゆる生まれながらの指導者です。', 'what is called 〜 で「いわゆる〜」という決まった言い方になる。', [
+      ['setPhrase', 'いわゆるは what is called', 'She is what is ___ a born teacher.', ['called', 'said', 'told', 'spoken'], 'called', '彼女はいわゆる生まれながらの教師です。', 'what is called 〜 で「いわゆる〜」という決まった言い方になる。', [
         'what is called 〜 で「いわゆる〜」。まとまりで覚える。',
         'what is said 〜 という決まった言い方はない。',
         'what is told 〜 という言い方もない。',
@@ -411,7 +411,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
         'keep は「保つ」で、ぬすむ意味にならない。',
         'hold は「つかむ」で、ぬすむ意味にならない。',
       ]],
-      ['verbNoun', '賞をとるは win a prize', 'We met a student whose essay ___ the contest.', ['won', 'beat', 'defeated', 'fought'], 'won', '私たちは、作文がそのコンテストで優勝した生徒に会いました。', 'win は賞や試合を目的語に取る。相手を負かす beat・defeat と使い分ける。過去の文なので won にする。', [
+      ['verbNoun', 'コンテストで優勝するは win the contest', 'We met a student whose essay ___ the contest.', ['won', 'beat', 'defeated', 'fought'], 'won', '私たちは、作文がそのコンテストで優勝した生徒に会いました。', 'win は賞や試合を目的語に取る。相手を負かす beat・defeat と使い分ける。過去の文なので won にする。', [
         'win the contest で「コンテストで優勝する」。賞や試合には win を使う。',
         'beat は「（相手を）負かす」で、コンテストそのものを目的語にしない。',
         'defeat も「（相手を）打ち負かす」で、コンテストを目的語にしない。',
@@ -496,7 +496,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
   {
     unit: 'gref_2_subjunctive',
     order: [
-      ['as if＋過去形', 'He acts as if he were the manager here.', '彼女はまるでここの持ち主であるかのようにふるまいます。', 'as if のあとを過去形にすると「まるで〜かのように」と事実とちがうことを表す。be動詞は were にする。'],
+      ['as if＋過去形', 'He acts as if he were the manager here.', '彼はまるでここの責任者であるかのようにふるまいます。', 'as if のあとを過去形にすると「まるで〜かのように」と事実とちがうことを表す。be動詞は were にする。'],
       ['It’s time＋過去形', 'It is time you went to bed.', 'もう寝る時間ですよ。', 'It is time のあとを過去形にすると「もう〜してよいころだ」という意味になる。'],
       ['But for＋名詞', 'But for her advice, we would have lost our way.', '彼女の助言がなかったら、私たちは道に迷っていたでしょう。', 'But for＋名詞で「〜がなかったら」を表し、後ろを would have＋過去分詞にする。'],
     ],
@@ -513,7 +513,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
         'If 〜 could では「できるなら」となり、万一という意味にならない。',
         'If 〜 might という形もふつう使わない。',
       ]],
-      ['setPhrase', 'まるで〜かのようには as if', 'She acts as ___ she were the owner here.', ['if', 'so', 'that', 'when'], 'if', '彼はまるでここの責任者であるかのようにふるまいます。', 'as if＋〈主語＋過去形〉で「まるで〜かのように」という決まった言い方になる。', [
+      ['setPhrase', 'まるで〜かのようには as if', 'She acts as ___ she were the owner here.', ['if', 'so', 'that', 'when'], 'if', '彼女はまるでここの持ち主であるかのようにふるまいます。', 'as if＋〈主語＋過去形〉で「まるで〜かのように」という決まった言い方になる。', [
         'as if 〜 で「まるで〜かのように」。as though にも置きかえられる。',
         'as so 〜 という言い方はない。',
         'as that 〜 という言い方もない。',
@@ -536,7 +536,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
       ['if を省くと倒置', 'Had we known about the storm, we would have stayed.', '嵐のことを知っていたら、私たちはとどまっていたのに。', 'if を省くと Had＋主語＋過去分詞 という語順になる。意味は If we had known 〜 と同じ。'],
     ],
     usage: [
-      ['verbNoun', '間に合うは catch the train', 'If he had left earlier, he would have ___ the bus.', ['caught', 'missed', 'lost', 'dropped'], 'caught', 'もっと早く出ていたら、彼はバスに間に合ったのに。', 'catch the bus で「バスに間に合う」。乗りそこなう miss と対にして覚える。完了形・受け身の形なので過去分詞 caught にする。', [
+      ['verbNoun', 'バスに間に合うは catch the bus', 'If he had left earlier, he would have ___ the bus.', ['caught', 'missed', 'lost', 'dropped'], 'caught', 'もっと早く出ていたら、彼はバスに間に合ったのに。', 'catch the bus で「バスに間に合う」。乗りそこなう miss と対にして覚える。完了形・受け身の形なので過去分詞 caught にする。', [
         'catch the bus で「バスに間に合う」。間に合うことを catch で表す。',
         'miss the bus は「バスに乗り遅れる」で、意味が逆になる。',
         'lose the bus という結び付きはない。',
@@ -596,7 +596,7 @@ export const GRAMMAR_UNIT_FORMATS_2 = unitFormats('2', [
         'that は「〜ということ」を表し、不確かさを表せない。',
         'what は後ろの文に足りない部分があるときに使う。ここではそろっている。',
       ]],
-      ['verbNoun', '進み具合を測るは measure progress', 'The question is how we should ___ success.', ['measure', 'count', 'weigh', 'number'], 'measure', '問題は、成功をどう測るかということです。', 'measure success で「成功の度合いを測る」。数や重さを数える count・weigh と使い分ける。', [
+      ['verbNoun', '成功の度合いを測るは measure success', 'The question is how we should ___ success.', ['measure', 'count', 'weigh', 'number'], 'measure', '問題は、成功をどう測るかということです。', 'measure success で「成功の度合いを測る」。数や重さを数える count・weigh と使い分ける。', [
         'measure は大きさや度合いを測ることを表す。成功の度合いにも measure を使う。',
         'count は数を1つずつ数えることを表し、度合いには使わない。',
         'weigh は重さを量ることを表す。',

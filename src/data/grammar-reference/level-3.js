@@ -23,7 +23,7 @@ export const GRAMMAR_REFERENCE_3 = [
         examples: [
           ['I have known him since 2010.', '私は2010年から彼を知っています。'],
           ['Ken has lived in this town for five years.', 'ケンはこの町に5年間住んでいます。'],
-          ['How long have you known Ms. Sato? — For three years.', 'あなたは佐藤先生をどのくらい前から知っていますか。— 3年前からです。'],
+          ['How long have you known Ms. Sato? — For three years.', 'あなたは佐藤さんをどのくらい前から知っていますか。— 3年前からです。'],
           ['She has had a cold since Monday.', '彼女は月曜日からかぜをひいています。'],
         ],
       },
@@ -418,7 +418,7 @@ export const GRAMMAR_REFERENCE_3 = [
         examples: [
           ['My teacher advised me to check the source.', '先生は私に出典を確認するよう助言しました。'],
           ['We were glad to hear the news.', '私たちはその知らせを聞いてうれしかったです。'],
-          ['My mother asked me to clean my room.', '母は私に部屋をそうじするように言いました。'],
+          ['My mother asked me to clean my room.', '母は私に部屋をそうじするように頼みました。'],
         ],
       },
     ],
@@ -674,11 +674,11 @@ export const GRAMMAR_REFERENCE_3 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '「〜かどうか」は if で表す／窓を割るは break the window／電車が出発するは leave。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '「〜かどうか」は if で表す／花びんを割るは break the vase／バスが出発するは leave。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['I don’t know if he will come today.', '私は彼が今日来るかどうか分かりません。'],
-          ['I know who broke the vase.', '私はだれが窓を割ったか知っています。'],
+          ['I know who broke the vase.', '私はだれが花びんを割ったか知っています。'],
           ['Do you know when the bus leaves?', 'あなたはそのバスがいつ出発するか知っていますか。'],
         ],
       },
@@ -765,7 +765,7 @@ export const GRAMMAR_REFERENCE_3 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'ケーキを作るは make a cake／電車に乗って行くは take a train／住んでいるは live。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'スープを作るは make soup／バスに乗って行くは take a bus／住んでいるは live。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['The soup that she made was delicious.', '彼女が作ったスープはおいしかったです。'],
@@ -1198,11 +1198,11 @@ export const GRAMMAR_REFERENCE_3 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '休憩するは take a break／映画を見たは have seen／買い物に行くは go shopping。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '休憩するは take a break／番組を見たは have seen／買い物に行くは go shopping。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['Let’s take a short break, shall we?', '少し休憩しましょうよ。'],
-          ['You have seen this show before, haven’t you?', 'あなたはこの映画を見たことがありますよね。'],
+          ['You have seen this show before, haven’t you?', 'あなたは以前この番組を見たことがありますよね。'],
           ['You went shopping yesterday, didn’t you?', 'あなたは昨日、買い物に行きましたよね。'],
         ],
       },
@@ -1274,7 +1274,7 @@ export const GRAMMAR_REFERENCE_3 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '電話をかけるは call／世界中を旅するは travel around the world／夢がかなうは come true。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '電話をかけるは call／〜を旅して回るは travel across／夢がかなうは come true。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['If I knew his number, I would call him.', 'もし彼の番号を知っていたら、電話するのに。'],

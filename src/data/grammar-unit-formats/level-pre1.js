@@ -66,8 +66,8 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
       ['if 節の be to は意図', 'If we are to finish on time, we must start now.', '時間どおりに終えるつもりなら、今始めなければなりません。', 'if のまとまりの中の be to は「〜するつもりなら」という意図を表す。'],
     ],
     usage: [
-      ['adjPrep', '見込みを表す be subject to', 'The contract is subject ___ change without notice.', ['to', 'for', 'of', 'with'], 'to', 'その契約は予告なく変更されることがあります。', 'be subject to＋名詞で「〜を受けることになっている」。形の似た be to＋原形と区別する。', [
-        'be subject to＋名詞で「〜を受けることになっている」を表す。',
+      ['adjPrep', '変更されることがあるは be subject to change', 'The contract is subject ___ change without notice.', ['to', 'for', 'of', 'with'], 'to', 'その契約は予告なく変更されることがあります。', 'be subject to＋名詞で「〜を受けることがある・〜の対象となる」。形の似た be to＋原形と区別する。', [
+        'be subject to＋名詞で「〜を受けることがある」を表す。',
         'subject for という結び付きはない。',
         'subject of は「〜の主題」を表す別の言い方になる。',
         'subject with という結び付きはない。',
@@ -107,7 +107,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'deny copy と原形を置くこともできない。',
         'copied は過去形・過去分詞で、deny のあとには置けない。',
       ]],
-      ['setPhrase', 'be said to have＋過去分詞', 'The policy is believed ___ waste in the city.', ['to have reduced', 'to reduce', 'reducing', 'to be reduced'], 'to have reduced', 'その政策は市のごみを減らしたと考えられています。', '減らしたのは今より前のことなので、to have reduced と to have＋過去分詞にして時の前後を示す。', [
+      ['setPhrase', 'be believed to have＋過去分詞', 'The policy is believed ___ waste in the city.', ['to have reduced', 'to reduce', 'reducing', 'to be reduced'], 'to have reduced', 'その政策は市のごみを減らしたと考えられています。', '減らしたのは今より前のことなので、to have reduced と to have＋過去分詞にして時の前後を示す。', [
         '減らしたのは信じられている今より前なので、to have reduced にする。',
         'to reduce では今のことになり、すでに減らした結果を表せない。',
         'reducing だけでは is believed のあとに続けられない。',
@@ -218,7 +218,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'close は「閉じる」で、腕には使わない。',
         'tie は「しばる」で、腕を組む意味にならない。',
       ]],
-      ['setPhrase', '手に持ってはin one’s hand', 'She walked in with a letter in her ___.', ['hand', 'hands', 'arm', 'finger'], 'hand', '彼女は手紙を手に持って入ってきました。', 'in one’s hand で「手に持って」。1つの物を持つときは単数形 hand にする。', [
+      ['setPhrase', '手に持っては in one’s hand', 'She walked in with a letter in her ___.', ['hand', 'hands', 'arm', 'finger'], 'hand', '彼女は手紙を手に持って入ってきました。', 'in one’s hand で「手に持って」。1つの物を持つときは単数形 hand にする。', [
         'in her hand で「手に持って」。1つの物を持つときは単数形にする。',
         'in her hands は両手でかかえるときの言い方で、手紙1通にはふつう使わない。',
         'in her arm では「うでの中に」となり、手に持つ意味にならない。',
@@ -254,7 +254,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE1 = unitFormats('pre1', [
         'Who you think will win 〜? では疑問文の形になっていない。',
         'Who think you 〜? という語順はない。',
       ]],
-      ['verbNoun', '問題を解決するは solve a problem', 'He is the person who I think can ___ this puzzle.', ['solve', 'answer', 'reply', 'respond'], 'solve', '彼はこの難問を解決できると私が思う人です。', 'solve a puzzle で「難問を解決する」。答えを返す answer・reply と使い分ける。', [
+      ['verbNoun', '難問を解決するは solve a puzzle', 'He is the person who I think can ___ this puzzle.', ['solve', 'answer', 'reply', 'respond'], 'solve', '彼はこの難問を解決できると私が思う人です。', 'solve a puzzle で「難問を解決する」。答えを返す answer・reply と使い分ける。', [
         'solve a puzzle で「難問を解決する」。解き明かすことを solve で表す。',
         'answer は「（問いに）答える」で、問題を解決する意味にならない。',
         'reply は「返事をする」で、reply to 〜 の形にする。',

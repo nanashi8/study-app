@@ -1,0 +1,774 @@
+{
+  "request": "requests/2026-10-01-grammar-reference-translations.json",
+  "readOn": "2026-10-02",
+  "how": "文法の参考書の英文と和訳の組・英語をふくむ地の文と、参考書に結び付く文法の問題（語法問題すべて・単元別の並び替え／選択問題・参考書と同じ英文を使う問題）の英文と和訳・語法の狙いを、1件ずつ読んだ。食いちがいは直して fixes に書いた。pages はページ（単元・系統）ごとの読んだ記録の指紋で、組・地の文・結び付く問題のどれかを変えると変わる。変えたら、そのページを読み直してから node scripts/checks/grammar-reference-translations.mjs --stamp で書き直す。exceptions（和訳）・focusExceptions（狙い）は、手がかりで拾っても食いちがいではないものと理由。",
+  "counts": {
+    "pages": 152,
+    "pairs": 1552,
+    "texts": 2442,
+    "quizSentences": 1523,
+    "usageFocus": 385
+  },
+  "fixes": {
+    "pairs": [
+      {
+        "page": "gref_5_pronoun",
+        "where": "ポイント5の例文1",
+        "en": "Our teacher teaches us science on Mondays.",
+        "before": "先生は金曜日に私たちに音楽を教えます。",
+        "after": "先生は月曜日に私たちに理科を教えます。",
+        "why": "science・Mondays を「音楽」「金曜日」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_4_tag",
+        "where": "ポイント4の例文2",
+        "en": "Let’s go home early, shall we?",
+        "before": "もう家に帰りましょうよ。",
+        "after": "早めに家に帰りましょうよ。",
+        "why": "early を「もう」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_3_perfect",
+        "where": "ポイント1の例文3",
+        "en": "How long have you known Ms. Sato? — For three years.",
+        "before": "あなたは佐藤先生をどのくらい前から知っていますか。— 3年前からです。",
+        "after": "あなたは佐藤さんをどのくらい前から知っていますか。— 3年前からです。",
+        "why": "同じページの別の例文では Ms. Sato を「佐藤さん」と訳している。Ms. は先生という意味ではないのでそろえた"
+      },
+      {
+        "page": "gref_3_inf2",
+        "where": "ポイント5の例文3",
+        "en": "My mother asked me to clean my room.",
+        "before": "母は私に部屋をそうじするように言いました。",
+        "after": "母は私に部屋をそうじするように頼みました。",
+        "why": "ask＋人＋to は「頼む」。「言いました」は tell の訳になっていた"
+      },
+      {
+        "page": "gref_3_indirect",
+        "where": "ポイント5の例文2",
+        "en": "I know who broke the vase.",
+        "before": "私はだれが窓を割ったか知っています。",
+        "after": "私はだれが花びんを割ったか知っています。",
+        "why": "vase（花びん）を「窓」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_3_tag",
+        "where": "ポイント3の例文2",
+        "en": "You have seen this show before, haven’t you?",
+        "before": "あなたはこの映画を見たことがありますよね。",
+        "after": "あなたは以前この番組を見たことがありますよね。",
+        "why": "show（番組）を「映画」と訳し、before（以前）を落としていた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_pre2_reladv",
+        "where": "ポイント4の例文2",
+        "en": "I still remember the summer when we first met.",
+        "before": "私は今でも初めて会った日を覚えています。",
+        "after": "私は今でも、私たちが初めて会った夏を覚えています。",
+        "why": "【見つけていた3件】summer を「日」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_pre2_what",
+        "where": "ポイント4の例文3",
+        "en": "The city is very different from what it was twenty years ago.",
+        "before": "その町は10年前とはすっかりちがいます。",
+        "after": "その都市は20年前とはすっかりちがいます。",
+        "why": "【見つけていた3件】twenty years ago を「10年前」、city を「町」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_pre2_indirect",
+        "where": "ポイント3の例文2",
+        "en": "I wonder whether it will snow this evening.",
+        "before": "午後に雨が降るだろうか。",
+        "after": "今晩、雪が降るだろうか。",
+        "why": "【見つけていた3件】snow this evening を「午後に雨」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_pre2_reflexive",
+        "where": "ポイント3の例文2",
+        "en": "Be careful not to hurt yourself with the knife.",
+        "before": "ナイフで手を切らないように気をつけて。",
+        "after": "ナイフでけがをしないように気をつけて。",
+        "why": "hurt yourself（けがをする）を、英文にない「手を切る」と訳していた（狙いは「けがをするは hurt oneself」）"
+      },
+      {
+        "page": "gref_2_what",
+        "where": "ポイント3の例文3",
+        "en": "She is what is called a born teacher.",
+        "before": "彼はいわゆる生まれながらの指導者です。",
+        "after": "彼女はいわゆる生まれながらの教師です。",
+        "why": "She を「彼」、teacher を「指導者」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_2_subjunctive",
+        "where": "ポイント4の例文3",
+        "en": "She acts as if she were the owner here.",
+        "before": "彼はまるでここの責任者であるかのようにふるまいます。",
+        "after": "彼女はまるでここの持ち主であるかのようにふるまいます。",
+        "why": "She を「彼」、owner を「責任者」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      },
+      {
+        "page": "gref_1_agreement",
+        "where": "ポイント3の例文2",
+        "en": "More than one member has withdrawn from the committee.",
+        "before": "選考から辞退した応募者は1人ではありません。",
+        "after": "委員会から身を引いた委員は1人ではありません。",
+        "why": "member・committee を「応募者」「選考」と訳していた（同じ単元の並び替え問題の和訳と入れかわっていた）"
+      }
+    ],
+    "texts": [
+      {
+        "page": "gref_3_indirect",
+        "where": "ポイント5の本文1",
+        "before": "「〜かどうか」は if で表す／窓を割るは break the window／電車が出発するは leave。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "「〜かどうか」は if で表す／花びんを割るは break the vase／バスが出発するは leave。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「窓を割る」「電車が出発する」が、例文の vase・bus とちがっていた"
+      },
+      {
+        "page": "gref_3_relative",
+        "where": "ポイント5の本文1",
+        "before": "ケーキを作るは make a cake／電車に乗って行くは take a train／住んでいるは live。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "スープを作るは make soup／バスに乗って行くは take a bus／住んでいるは live。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「ケーキを作る」「電車に乗って行く」が、例文の soup・bus とちがっていた"
+      },
+      {
+        "page": "gref_3_tag",
+        "where": "ポイント3の本文1",
+        "before": "休憩するは take a break／映画を見たは have seen／買い物に行くは go shopping。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "休憩するは take a break／番組を見たは have seen／買い物に行くは go shopping。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「映画を見た」が、例文の show（番組）とちがっていた"
+      },
+      {
+        "page": "gref_3_subjunctive",
+        "where": "ポイント5の本文1",
+        "before": "電話をかけるは call／世界中を旅するは travel around the world／夢がかなうは come true。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "電話をかけるは call／〜を旅して回るは travel across／夢がかなうは come true。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「世界中を旅する travel around the world」が、例文の travel across the country とちがっていた"
+      },
+      {
+        "page": "gref_pre2_tooenough",
+        "where": "ポイント3の本文1",
+        "before": "熱すぎて飲めないは too hot／重すぎて運べないは too heavy／手が届くは reach。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "熱すぎて食べられないは too hot／重すぎて運べないは too heavy／手が届くは reach。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「熱すぎて飲めない」が、例文の too hot to eat（食べられない）とちがっていた"
+      },
+      {
+        "page": "gref_pre2_partconst",
+        "where": "ポイント3の本文1",
+        "before": "通りを歩くは walk down the street／風呂に入るは take a bath／寝るは go to bed。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "道を歩いていくは walk down the road／風呂に入るは take a bath／寝るは go to bed。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「通りを歩く walk down the street」が、例文の walk down the road とちがっていた"
+      },
+      {
+        "page": "gref_pre2_indirect",
+        "where": "ポイント3の本文1",
+        "before": "〜かどうかは whether／〜だろうかと思うは wonder／行き方は the way to。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "〜かどうかは if／〜だろうかと思うは wonder／行き方は the way to。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「〜かどうかは whether」が、例文の答え if とちがっていた"
+      },
+      {
+        "page": "gref_pre2_correlative",
+        "where": "ポイント4の本文1",
+        "before": "AだけでなくBもは not only A but also B／チームを率いるは lead the team／言語の名前に冠詞は付けない。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "AだけでなくBもは not only A but also B／グループを率いるは lead the group／言語の名前に冠詞は付けない。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「チームを率いる lead the team」が、例文の lead the group とちがっていた"
+      },
+      {
+        "page": "gref_2_modalperf",
+        "where": "ポイント3の本文1",
+        "before": "する必要はなかったのに／忘れるは forget／見落とすは overlook。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "〜する必要はなかったのには need not have＋過去分詞／忘れるは forget／見落とすは overlook。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "「する必要はなかったのに」に英語がなく、結び付きになっていなかった（need not have＋過去分詞）"
+      },
+      {
+        "page": "gref_2_beto",
+        "where": "ポイント3の本文1",
+        "before": "会議を開くは hold a meeting／visit は前置詞を置かない／許可は permission。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "式典を行うは hold a ceremony／visit は前置詞を置かない／許可は permission。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「会議を開く hold a meeting」が、例文の The ceremony is to be held とちがっていた"
+      },
+      {
+        "page": "gref_2_whose",
+        "where": "ポイント3の本文1",
+        "before": "物をぬすむは steal／賞をとるは win a prize／本が読まれるは be read。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "物をぬすむは steal／コンテストで優勝するは win the contest／本が読まれるは be read。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「賞をとる win a prize」が、例文の won the contest とちがっていた"
+      },
+      {
+        "page": "gref_2_subjpastperf",
+        "where": "ポイント4の本文1",
+        "before": "間に合うは catch the train／〜について知っているは know about／試験に失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "バスに間に合うは catch the bus／〜について知っているは know about／試験に失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「間に合う catch the train」が、例文の caught the bus とちがっていた"
+      },
+      {
+        "page": "gref_2_nounclause",
+        "where": "ポイント4の本文1",
+        "before": "主語の位置は whether／前置詞のあとも whether／進み具合を測るは measure progress。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "主語の位置は whether／前置詞のあとも whether／成功の度合いを測るは measure success。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「進み具合を測る measure progress」が、例文の measure success とちがっていた"
+      },
+      {
+        "page": "gref_pre1_modal",
+        "where": "ポイント3の本文1",
+        "before": "ought のあとに to を落とさない／おそらく〜は may well／いくら〜してもしすぎない。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "ought のあとに to を落とさない／おそらく〜は may well／いくら〜してもしすぎないは cannot be too 〜。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "「いくら〜してもしすぎない」に英語がなく、結び付きになっていなかった（cannot be too 〜）"
+      },
+      {
+        "page": "gref_pre1_beto",
+        "where": "ポイント3の本文1",
+        "before": "〜を受けるは be subject to／見込みを表す be subject to／責任があるは be responsible for。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "〜を受けるは be subject to／変更されることがあるは be subject to change／責任があるは be responsible for。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "「見込みを表す be subject to」は be subject to の意味ではなく、例文の be subject to change（変更されることがある）ともちがっていた"
+      },
+      {
+        "page": "gref_pre1_speech",
+        "where": "ポイント3の本文1",
+        "before": "tell＋人＋to＋原形／deny のあとは動名詞／be said to have＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "tell＋人＋to＋原形／deny のあとは動名詞／be believed to have＋過去分詞。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「be said to have」が、例文の is believed to have とちがっていた"
+      },
+      {
+        "page": "gref_pre1_with",
+        "where": "ポイント3の本文1",
+        "before": "付帯状況を表すのは with／腕を組むは fold one’s arms／手に持ってはin one’s hand。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "付帯状況を表すのは with／腕を組むは fold one’s arms／手に持っては in one’s hand。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "「手に持ってはin」の、は と英語のあいだの空白が抜けていた（表記の直し）"
+      },
+      {
+        "page": "gref_pre1_chainrel",
+        "where": "ポイント3の本文1",
+        "before": "「だれが〜と思うか」は Who do you think／問題を解決するは solve a problem／選び出すは select。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "「だれが〜と思うか」は Who do you think／難問を解決するは solve a puzzle／選び出すは select。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「問題を解決する solve a problem」が、例文の solve this puzzle（難問）とちがっていた"
+      },
+      {
+        "page": "gref_1_tense",
+        "where": "ポイント4の本文1",
+        "before": "This is the first time のあとは現在完了／調査を完了するは complete the survey／意見の一致が生まれるは emerge。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "This is the first time のあとは現在完了／研究を完了するは complete the study／意見の一致が生まれるは emerge。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「調査を完了する complete the survey」が、例文の completed the study（研究）とちがっていた"
+      },
+      {
+        "page": "gref_1_comparison",
+        "where": "チェック1",
+        "before": "all the＋比較級＋because＝なおさら、none the＋比較級＋for＝〜だからといって劣らない。",
+        "after": "all the＋比較級＋because＝なおさら、none the＋比較級＋for＝〜だからといって少しも…でない（none the less なら少しも劣らない）。",
+        "why": "none the＋比較級＋for を「劣らない」としていた。「劣らない」は none the less のときだけで、表は「〜だからといって少しも…でない」"
+      },
+      {
+        "page": "gref_1_agreement",
+        "where": "ポイント3の本文1",
+        "before": "異議が出されるは be raised／辞退するは withdraw／改革が失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "after": "質問が出されるは be raised／身を引くは withdraw from／計画が失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。",
+        "why": "狙い「異議が出される」「辞退する」「改革が失敗する」が、例文の questions・withdrawn from the committee・plan とちがっていた"
+      }
+    ],
+    "quizJa": [
+      {
+        "id": "gr_unit_wo_5_pronoun_01",
+        "en": "Our teacher teaches us music on Fridays.",
+        "before": "先生は月曜日に私たちに理科を教えます。",
+        "after": "先生は金曜日に私たちに音楽を教えます。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_5_pronoun_01",
+        "en": "Our teacher teaches us science on Mondays.",
+        "before": "先生は金曜日に私たちに音楽を教えます。",
+        "after": "先生は月曜日に私たちに理科を教えます。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_4_tag_03",
+        "en": "Let’s go home now, shall we?",
+        "before": "早く家に帰りましょうよ。",
+        "after": "もう家に帰りましょうよ。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_4_tag_02",
+        "en": "Let’s go home early, shall we?",
+        "before": "もう家に帰りましょうよ。",
+        "after": "早めに家に帰りましょうよ。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_us_3_inf2_02",
+        "en": "My mother asked me to clean my room.",
+        "before": "母は私に部屋をそうじするように言いました。",
+        "after": "母は私に部屋をそうじするように頼みました。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_3_indirect_03",
+        "en": "I know who broke the window.",
+        "before": "私はだれが花びんを割ったか知っています。",
+        "after": "私はだれが窓を割ったか知っています。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_3_indirect_02",
+        "en": "I know who broke the vase.",
+        "before": "私はだれが窓を割ったか知っています。",
+        "after": "私はだれが花びんを割ったか知っています。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_3_tag_01",
+        "en": "You have seen this movie, haven’t you?",
+        "before": "あなたは以前この番組を見たことがありますよね。",
+        "after": "あなたはこの映画を見たことがありますよね。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_3_tag_02",
+        "en": "You have seen this show before, haven’t you?",
+        "before": "あなたはこの映画を見たことがありますよね。",
+        "after": "あなたは以前この番組を見たことがありますよね。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_pre2_reladv_01",
+        "en": "I still remember the day when we first met.",
+        "before": "私は今でも初めて会った夏を覚えています。",
+        "after": "私は今でも、私たちが初めて会った日を覚えています。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_pre2_reladv_02",
+        "en": "I still remember the summer when we first met.",
+        "before": "私は今でも初めて会った日を覚えています。",
+        "after": "私は今でも、私たちが初めて会った夏を覚えています。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_pre2_what_03",
+        "en": "The town is very different from what it was ten years ago.",
+        "before": "その都市は20年前とはすっかりちがいます。",
+        "after": "その町は10年前とはすっかりちがいます。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_pre2_what_03",
+        "en": "The city is very different from what it was twenty years ago.",
+        "before": "その町は10年前とはすっかりちがいます。",
+        "after": "その都市は20年前とはすっかりちがいます。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_pre2_indirect_01",
+        "en": "I wonder whether it will rain this afternoon.",
+        "before": "今晩雪が降るだろうか。",
+        "after": "今日の午後、雨が降るだろうか。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_pre2_indirect_02",
+        "en": "I wonder whether it will snow this evening.",
+        "before": "午後に雨が降るだろうか。",
+        "after": "今晩、雪が降るだろうか。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_us_pre2_reflexive_02",
+        "en": "Be careful not to hurt yourself with the knife.",
+        "before": "ナイフで手を切らないように気をつけて。",
+        "after": "ナイフでけがをしないように気をつけて。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_2_what_03",
+        "en": "He is what is called a born leader.",
+        "before": "彼女はいわゆる生まれながらの教師です。",
+        "after": "彼はいわゆる生まれながらの指導者です。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_2_what_03",
+        "en": "She is what is called a born teacher.",
+        "before": "彼はいわゆる生まれながらの指導者です。",
+        "after": "彼女はいわゆる生まれながらの教師です。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_2_subjunctive_01",
+        "en": "He acts as if he were the manager here.",
+        "before": "彼女はまるでここの持ち主であるかのようにふるまいます。",
+        "after": "彼はまるでここの責任者であるかのようにふるまいます。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_2_subjunctive_03",
+        "en": "She acts as if she were the owner here.",
+        "before": "彼はまるでここの責任者であるかのようにふるまいます。",
+        "after": "彼女はまるでここの持ち主であるかのようにふるまいます。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      },
+      {
+        "id": "gr_unit_wo_1_agreement_02",
+        "en": "More than one applicant has withdrawn from the selection.",
+        "before": "委員会から身を引いた委員は1人ではありません。",
+        "after": "選考から辞退した応募者は1人ではありません。",
+        "why": "同じ単元の語法問題の和訳と入れかわっていた"
+      },
+      {
+        "id": "gr_unit_us_1_agreement_02",
+        "en": "More than one member has withdrawn from the committee.",
+        "before": "選考から辞退した応募者は1人ではありません。",
+        "after": "委員会から身を引いた委員は1人ではありません。",
+        "why": "参考書の「語と語の決まった結び付き」の例文と同じ直し"
+      }
+    ],
+    "quizFocus": [
+      {
+        "id": "gr_unit_us_3_indirect_02",
+        "en": "I know who broke the vase.",
+        "before": "窓を割るは break the window",
+        "after": "花びんを割るは break the vase",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_3_indirect_03",
+        "en": "Do you know when the bus leaves?",
+        "before": "電車が出発するは leave",
+        "after": "バスが出発するは leave",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_3_relative_01",
+        "en": "The soup that she made was delicious.",
+        "before": "ケーキを作るは make a cake",
+        "after": "スープを作るは make soup",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_3_relative_02",
+        "en": "I took a bus which goes to the airport.",
+        "before": "電車に乗って行くは take a train",
+        "after": "バスに乗って行くは take a bus",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_3_tag_02",
+        "en": "You have seen this show before, haven’t you?",
+        "before": "映画を見たは have seen",
+        "after": "番組を見たは have seen",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_3_subjunctive_02",
+        "en": "If I were rich, I would travel across the country.",
+        "before": "世界中を旅するは travel around the world",
+        "after": "〜を旅して回るは travel across",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre2_tooenough_01",
+        "en": "This soup is too hot to eat right now.",
+        "before": "熱すぎて飲めないは too hot",
+        "after": "熱すぎて食べられないは too hot",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre2_partconst_01",
+        "en": "Walking down the road, I found a small shop.",
+        "before": "通りを歩くは walk down the street",
+        "after": "道を歩いていくは walk down the road",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre2_indirect_01",
+        "en": "I asked her if she was free on Sunday.",
+        "before": "〜かどうかは whether",
+        "after": "〜かどうかは if",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre2_correlative_02",
+        "en": "Either you or Ken must lead the group.",
+        "before": "チームを率いるは lead the team",
+        "after": "グループを率いるは lead the group",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_2_beto_01",
+        "en": "The ceremony is to be held on Friday afternoon.",
+        "before": "会議を開くは hold a meeting",
+        "after": "式典を行うは hold a ceremony",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_2_whose_02",
+        "en": "We met a student whose essay won the contest.",
+        "before": "賞をとるは win a prize",
+        "after": "コンテストで優勝するは win the contest",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_2_subjpastperf_01",
+        "en": "If he had left earlier, he would have caught the bus.",
+        "before": "間に合うは catch the train",
+        "after": "バスに間に合うは catch the bus",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_2_nounclause_03",
+        "en": "The question is how we should measure success.",
+        "before": "進み具合を測るは measure progress",
+        "after": "成功の度合いを測るは measure success",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre1_beto_01",
+        "en": "The contract is subject to change without notice.",
+        "before": "見込みを表す be subject to",
+        "after": "変更されることがあるは be subject to change",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre1_speech_03",
+        "en": "The policy is believed to have reduced waste in the city.",
+        "before": "be said to have＋過去分詞",
+        "after": "be believed to have＋過去分詞",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_pre1_with_03",
+        "en": "She walked in with a letter in her hand.",
+        "before": "手に持ってはin one’s hand",
+        "after": "手に持っては in one’s hand",
+        "why": "表記の直し（は と英語のあいだの空白）"
+      },
+      {
+        "id": "gr_unit_us_pre1_chainrel_02",
+        "en": "He is the person who I think can solve this puzzle.",
+        "before": "問題を解決するは solve a problem",
+        "after": "難問を解決するは solve a puzzle",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_1_tense_02",
+        "en": "By next spring, the team will have completed the study.",
+        "before": "調査を完了するは complete the survey",
+        "after": "研究を完了するは complete the study",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_1_agreement_01",
+        "en": "A number of questions have been raised at the hearing.",
+        "before": "異議が出されるは be raised",
+        "after": "質問が出されるは be raised",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_1_agreement_02",
+        "en": "More than one member has withdrawn from the committee.",
+        "before": "辞退するは withdraw",
+        "after": "身を引くは withdraw from",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      },
+      {
+        "id": "gr_unit_us_1_agreement_03",
+        "en": "Many a promising plan has failed without public support.",
+        "before": "改革が失敗するは fail",
+        "after": "計画が失敗するは fail",
+        "why": "参考書の本文の結び付きと同じ直し（例文に合わせた）"
+      }
+    ],
+    "quizExplain": [
+      {
+        "id": "gr_unit_us_3_relative_02",
+        "before": "take a train で「電車に乗って行く」。交通手段を利用することは take で表す。過去の文なので took にする。",
+        "after": "take a bus で「バスに乗って行く」。交通手段を利用することは take で表す。過去の文なので took にする。",
+        "why": "解説が take a train（電車）のままで、例文の take a bus とちがっていた"
+      },
+      {
+        "id": "gr_unit_us_pre1_beto_01",
+        "before": "be subject to＋名詞で「〜を受けることになっている」。形の似た be to＋原形と区別する。",
+        "after": "be subject to＋名詞で「〜を受けることがある・〜の対象となる」。形の似た be to＋原形と区別する。",
+        "why": "「〜を受けることになっている」は、例文の be subject to change（変更されることがある）の意味とちがっていた"
+      },
+      {
+        "id": "gr_unit_us_pre1_beto_01",
+        "choice": "to",
+        "before": "be subject to＋名詞で「〜を受けることになっている」を表す。",
+        "after": "be subject to＋名詞で「〜を受けることがある」を表す。",
+        "why": "選択肢の説明も解説と同じく、例文の be subject to change の意味にそろえた"
+      }
+    ]
+  },
+  "exceptions": {
+    "5b5050acec176b6b": "midnight を「夜の12時」と言いかえた。和訳の12は英文の midnight にあたる",
+    "a0c5e810cd7a3afc": "you both を「お二人」と訳した。和訳の2は both にあたる",
+    "15fa87474573edf7": "you both を「お二人」と訳した。和訳の2は both にあたる",
+    "8c1b6fa465527aa1": "ことわざを同じ意味の日本のことわざ「覆水盆に返らず」で訳した（milk は訳に出ない）"
+  },
+  "focusExceptions": {
+    "b41de74ae42d84a9": "for と since を比べて覚える狙い。例文は for の文",
+    "0d0da14d6076c3d3": "「to は付けない」と、使わない語を挙げる狙い",
+    "f1300e05bc5783b9": "「to は付けない」と、使わない語を挙げる狙い",
+    "97f0fa17b1064478": "should と比べて強さを覚える狙い。例文は had better の文",
+    "a2d8fc0222b5bfcb": "much と far の両方を挙げる狙い。例文は far の文",
+    "06ebcaaa30c2b07e": "「about を置かない」と、使わない語を挙げる狙い",
+    "9e5dc2a489dc47a4": "quality と quantity を比べて覚える狙い。例文は quality の文",
+    "2a14c11c83ba65ea": "Were I to do の do は動詞の置き場所（例文は start over）",
+    "7ca4a6cdabffdf4b": "「than ではなく to」と、使わない語を挙げる狙い",
+    "d9dd27618b9af1af": "that と those の両方を挙げる狙い。例文は that の文"
+  },
+  "pages": {
+    "gref_1_agreement": "4dcbbb0489d3c59d",
+    "gref_1_comparison": "770f39850da60c4f",
+    "gref_1_determiners": "1b71271ff3b1590a",
+    "gref_1_ellipsis": "ae3496d118516404",
+    "gref_1_emphasis": "1759145c8ad12bf9",
+    "gref_1_hedging": "ec03ad290c5a7dae",
+    "gref_1_inversion": "83bd6adb600c4e3d",
+    "gref_1_optative": "1f7102cd8b796ffc",
+    "gref_1_relapp": "2290455c68c2bc01",
+    "gref_1_subjunctive": "f9c8fe29da0ba0ea",
+    "gref_1_tense": "35ad9d1db5ebe685",
+    "gref_1_usage": "89eaaeeda5d2077e",
+    "gref_2_beto": "848e785ae5109f4c",
+    "gref_2_causative": "aa51d095431363d0",
+    "gref_2_cleft": "f1148a6c672a8655",
+    "gref_2_comparison": "91ab8751ddea49a5",
+    "gref_2_conj": "3b5360c1e762041b",
+    "gref_2_connadv": "e709b41dfe78c4f5",
+    "gref_2_emphasis": "f1197473d6cabe30",
+    "gref_2_formalobj": "97f06017b5f59135",
+    "gref_2_gerundidiom": "abd1def35d23d7c1",
+    "gref_2_inanimate": "d94bb65390e87fb4",
+    "gref_2_inversion": "bd5523d0036fb1cf",
+    "gref_2_modalperf": "6e3a701cef0af29b",
+    "gref_2_nounclause": "2ecb54e497a9bbff",
+    "gref_2_obligation": "6fb2664528b35568",
+    "gref_2_partconst": "4a699b108df33547",
+    "gref_2_partialneg": "0b76bdec0781ca9b",
+    "gref_2_pastperfprog": "75faff61a9c24560",
+    "gref_2_perfect": "a6cc19cd82d9e00b",
+    "gref_2_perfinf": "83ecdb12c7eeacf2",
+    "gref_2_prep": "01f258e8c3d7cbc7",
+    "gref_2_relapp": "35f95543956eeb92",
+    "gref_2_speech": "e42527d5d1a1a469",
+    "gref_2_subjpastperf": "3760211ae7a2c6a5",
+    "gref_2_subjunctive": "6c6aa350bad7280a",
+    "gref_2_what": "e5fe7cb9b893e07e",
+    "gref_2_whose": "d0897984fd6cff69",
+    "gref_3_bareinf": "e411925f4ae01f9a",
+    "gref_3_comparison": "67755ec95186ab8f",
+    "gref_3_conj": "2360436841143ca0",
+    "gref_3_indirect": "f5334e67eb9296e6",
+    "gref_3_inf2": "90e57fcf802a18bd",
+    "gref_3_participle": "8c2cf81b9fd0ef23",
+    "gref_3_passive": "c714f8af619e6888",
+    "gref_3_patterns": "3ea38603c6d76b23",
+    "gref_3_perfect": "f2803767f856ba11",
+    "gref_3_perfprog": "534fbf8fa9dd3273",
+    "gref_3_prep": "b55bb4c34e5fa29d",
+    "gref_3_relative": "c418e9636447b423",
+    "gref_3_sothat": "a6b2db00af0b18ec",
+    "gref_3_subjunctive": "f475fae7cd43ea03",
+    "gref_3_tag": "f3d2b0a1b19750da",
+    "gref_3_verbforms": "c1732b175ef7451b",
+    "gref_4_comparison": "7d671658026afdfc",
+    "gref_4_conj": "49bf80e747446d38",
+    "gref_4_exclamation": "c6174f12f7e3e706",
+    "gref_4_future": "8a3f779dc88c2d1b",
+    "gref_4_ger": "a062ac952b266151",
+    "gref_4_inf": "4170bfa3a45ce012",
+    "gref_4_modal": "d13f8eb966de03f8",
+    "gref_4_past": "036a30da98a2dbea",
+    "gref_4_pastprog": "267f0fbb9231149b",
+    "gref_4_prep": "0a426bda89522090",
+    "gref_4_pronoun": "ed643b80d7a0729c",
+    "gref_4_tag": "4ef71b831d8ebd4a",
+    "gref_4_there": "1269b62035fd2abc",
+    "gref_4_usedto": "824d3025b25aa260",
+    "gref_4_whto": "62c8ff61224dc8c6",
+    "gref_5_article": "214b3fd1858f6c0c",
+    "gref_5_be": "b64fac530be147c7",
+    "gref_5_can": "bd7941e2acc176dd",
+    "gref_5_demonstrative": "99cc9150b522f68e",
+    "gref_5_imperative": "7947c07d7aae2b92",
+    "gref_5_negq": "34ded49c34486683",
+    "gref_5_plural": "181e2da22c599fa3",
+    "gref_5_prep": "a7efe023d59f10cb",
+    "gref_5_progressive": "3b587e8245c155a3",
+    "gref_5_pronoun": "4a9b257d7463ce91",
+    "gref_5_verb": "d147d27223dd6904",
+    "gref_5_wh": "a6bd7d29d15a175e",
+    "gref_pre1_absolute": "29481f892504f732",
+    "gref_pre1_agreement": "bea7892473e774f9",
+    "gref_pre1_apposition": "68ddbb497e5eca0e",
+    "gref_pre1_beto": "5717d5a1c8786737",
+    "gref_pre1_chainrel": "b04557ba9874c00e",
+    "gref_pre1_comparison": "3307f548ed37737e",
+    "gref_pre1_compound": "7206226e00276dd6",
+    "gref_pre1_concession": "7cf8b4a69f1419a7",
+    "gref_pre1_ellipsis": "cdbc592f54705b28",
+    "gref_pre1_emphasis": "2bf3f846dbfd7a7e",
+    "gref_pre1_inversion": "3929f371cbb03b49",
+    "gref_pre1_modal": "2a93227ef3ad95a7",
+    "gref_pre1_nounclause": "a91ea1b288ca0bb5",
+    "gref_pre1_partconst": "697d66d8e6c9691b",
+    "gref_pre1_prep": "de5ff5d9776a1862",
+    "gref_pre1_speech": "b2c4130c3455122c",
+    "gref_pre1_subjunctive": "1e06f6b990007895",
+    "gref_pre1_whale": "f573d22af62bfb6a",
+    "gref_pre1_whatever": "584903fc4b3ff372",
+    "gref_pre1_with": "200c08c2ffb37f9c",
+    "gref_pre2_causative": "9779c10a46c08e26",
+    "gref_pre2_comparison": "52fde97223122d4b",
+    "gref_pre2_conj": "5c7beb239e794389",
+    "gref_pre2_correlative": "fa141ae043c62a42",
+    "gref_pre2_gerundidiom": "6bdc16c6a26196ab",
+    "gref_pre2_habit": "7583db1e7e68d4e1",
+    "gref_pre2_hadbetter": "2e4cdff88fa7dd9c",
+    "gref_pre2_indirect": "658d0354fbb50b91",
+    "gref_pre2_itfor": "c20b4e6f0d3dacc5",
+    "gref_pre2_nonrestrictive": "64157d769fee5a25",
+    "gref_pre2_partconst": "26a04cfc2acd1a48",
+    "gref_pre2_participle": "89b77014fabc9d2e",
+    "gref_pre2_pastperf": "5b4f05230b5484f5",
+    "gref_pre2_perfprog": "d5c6165d448fdf14",
+    "gref_pre2_prep": "6536c3ef04983931",
+    "gref_pre2_preprel": "c0bd443b68450950",
+    "gref_pre2_pronoun": "c9318177b34d52f3",
+    "gref_pre2_purpose": "6765b9614dc8fc7b",
+    "gref_pre2_quantity": "3461db53c9e729ea",
+    "gref_pre2_reflexive": "1c1be120136158de",
+    "gref_pre2_reladv": "a73f315781ee9c98",
+    "gref_pre2_subjunctive": "63b9b02a8c3406d0",
+    "gref_pre2_suchthat": "f501c28316f8e245",
+    "gref_pre2_tooenough": "e5193db1252330d3",
+    "gref_pre2_usedto": "4d9fe2760142be2a",
+    "gref_pre2_what": "72595a933c0fced9",
+    "gstrand_advanced-usage": "dba722fd130ca64a",
+    "gstrand_agreement": "7803e5e1f62a5f99",
+    "gstrand_causative-perception": "76ddceedb8585c36",
+    "gstrand_comparison": "930ca0786aafe03f",
+    "gstrand_conjunction": "5637294b0b11c57b",
+    "gstrand_ellipsis": "b3b61c0ee0feecee",
+    "gstrand_gerund": "f4d0350b009c4a2d",
+    "gstrand_imperative-exclamation": "c8f79ffb7207bee9",
+    "gstrand_infinitive": "8b9988167a365c1e",
+    "gstrand_inversion-emphasis": "561db54683aeb3e3",
+    "gstrand_modal": "c52f4e97acc6ae10",
+    "gstrand_negation-question": "e2ca09645fb258a8",
+    "gstrand_noun-article-quantity": "049c280daa4e03da",
+    "gstrand_noun-clause": "8b5c090ee1e96f76",
+    "gstrand_participle": "099e724fc21eebe0",
+    "gstrand_passive": "fbc3e9e6197ce8f1",
+    "gstrand_perfect": "ddd2fe3ae23db852",
+    "gstrand_preposition": "6fa4121c6645aee5",
+    "gstrand_pronoun": "7ae7a693f565e2e4",
+    "gstrand_relative": "2595b56ad1a80668",
+    "gstrand_reported-speech": "5b165d008656969a",
+    "gstrand_sentence-basics": "aa4393b3669416b6",
+    "gstrand_subjunctive": "a54d93bedbd1de35",
+    "gstrand_tense": "14c629416d685286",
+    "gstrand_used-to": "7071138ec1092718"
+  }
+}

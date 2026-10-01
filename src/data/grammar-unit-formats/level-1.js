@@ -16,7 +16,7 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
         'visited は過去のある時点のことを表すだけで、この形には合わない。',
         'am visiting は今まさにしていることを表し、経験の回数を表せない。',
       ]],
-      ['verbNoun', '調査を完了するは complete the survey', 'By next spring, the team will have ___ the study.', ['completed', 'ended', 'closed', 'stopped'], 'completed', '来年の春までに、チームは研究を完了しているでしょう。', 'complete the study で「研究を完了する」。最後までやり遂げることを complete で表す。完了形・受け身の形なので過去分詞 completed にする。', [
+      ['verbNoun', '研究を完了するは complete the study', 'By next spring, the team will have ___ the study.', ['completed', 'ended', 'closed', 'stopped'], 'completed', '来年の春までに、チームは研究を完了しているでしょう。', 'complete the study で「研究を完了する」。最後までやり遂げることを complete で表す。完了形・受け身の形なので過去分詞 completed にする。', [
         'complete the study で「研究を完了する」。最後まで終えることを表す。',
         'end the study では「研究を打ち切る」という響きになり、やり遂げた意味にならない。',
         'close the study は「（部屋を）閉じる」などの別の意味になる。',
@@ -297,23 +297,23 @@ export const GRAMMAR_UNIT_FORMATS_1 = unitFormats('1', [
     unit: 'gref_1_agreement',
     order: [
       ['neither A nor B は B に合わせる', 'Neither the teacher nor the students were ready to leave.', '先生も生徒たちも帰る用意ができていませんでした。', 'neither A nor B が主語のときは、動詞を近いほうの B（the students）に合わせる。'],
-      ['more than one＋単数名詞は単数扱い', 'More than one applicant has withdrawn from the selection.', '委員会から身を引いた委員は1人ではありません。', 'more than one＋単数名詞は、意味は複数でも形の上では単数として扱う。'],
+      ['more than one＋単数名詞は単数扱い', 'More than one applicant has withdrawn from the selection.', '選考から辞退した応募者は1人ではありません。', 'more than one＋単数名詞は、意味は複数でも形の上では単数として扱う。'],
       ['many a＋単数名詞も単数扱い', 'Many a young writer has struggled before finding success.', '多くの若い作家が、成功する前に苦労してきました。', 'many a＋単数名詞は「多くの〜」を表すが、動詞は単数に合わせる。'],
     ],
     usage: [
-      ['confusable', '異議が出されるは be raised', 'A number of questions have been ___ at the hearing.', ['raised', 'risen', 'arisen', 'aroused'], 'raised', '公聴会では多くの質問が出されました。', 'raise a question で「質問を出す」。受け身にすると be raised になる。自動詞の rise・arise と区別する。', [
+      ['confusable', '質問が出されるは be raised', 'A number of questions have been ___ at the hearing.', ['raised', 'risen', 'arisen', 'aroused'], 'raised', '公聴会では多くの質問が出されました。', 'raise a question で「質問を出す」。受け身にすると be raised になる。自動詞の rise・arise と区別する。', [
         'raise は「〜を上げる・（問題を）持ち出す」で、受け身にできる。',
         'rise は自動詞で目的語を取らないため、受け身にできない。',
         'arise も自動詞で、受け身にできない。',
         'arouse は「（感情を）かき立てる」で、質問には使わない。',
       ]],
-      ['confusable', '辞退するは withdraw', 'More than one member has ___ from the committee.', ['withdrawn', 'wandered', 'worried', 'wondered'], 'withdrawn', '選考から辞退した応募者は1人ではありません。', 'withdraw from 〜 で「〜から身を引く・辞退する」。from と組にして使う。完了形・受け身の形なので過去分詞 withdrawn にする。', [
+      ['confusable', '身を引くは withdraw from', 'More than one member has ___ from the committee.', ['withdrawn', 'wandered', 'worried', 'wondered'], 'withdrawn', '委員会から身を引いた委員は1人ではありません。', 'withdraw from 〜 で「〜から身を引く・辞退する」。from と組にして使う。完了形・受け身の形なので過去分詞 withdrawn にする。', [
         'withdraw from 〜 で「〜から辞退する」。途中で身を引くことを表す。',
         'wander は「さまよう」で、辞退する意味にならない。',
         'worry は「心配する」で、辞退する意味にならない。',
         'wonder は「〜だろうかと思う」で、辞退する意味にならない。',
       ]],
-      ['confusable', '改革が失敗するは fail', 'Many a promising plan has ___ without public support.', ['failed', 'lost', 'missed', 'dropped'], 'failed', '有望な計画の多くが、人々の支持がないまま失敗してきました。', 'fail は「うまくいかない」。目的語を置かずに使える点で lose・miss とちがう。完了形・受け身の形なので過去分詞 failed にする。', [
+      ['confusable', '計画が失敗するは fail', 'Many a promising plan has ___ without public support.', ['failed', 'lost', 'missed', 'dropped'], 'failed', '有望な計画の多くが、人々の支持がないまま失敗してきました。', 'fail は「うまくいかない」。目的語を置かずに使える点で lose・miss とちがう。完了形・受け身の形なので過去分詞 failed にする。', [
         'fail は「失敗する」。目的語を置かずに使える。',
         'lose は「失う」で、目的語が必要になる。',
         'miss は「のがす」で、目的語が必要になる。',

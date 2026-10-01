@@ -1104,7 +1104,7 @@ export const GRAMMAR_REFERENCE_4 = [
         ],
         examples: [
           ['Ken plays tennis every Sunday, doesn’t he?', 'ケンは毎週日曜日にテニスをしますよね。'],
-          ['Let’s go home early, shall we?', 'もう家に帰りましょうよ。'],
+          ['Let’s go home early, shall we?', '早めに家に帰りましょうよ。'],
           ['Please open the door, will you?', 'ドアを開けてくれませんか。'],
         ],
       },

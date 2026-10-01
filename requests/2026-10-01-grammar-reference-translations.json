@@ -1,0 +1,91 @@
+{
+  "id": "2026-10-01-grammar-reference-translations",
+  "title": "文法の参考書の例文と和訳の食いちがいを直す",
+  "asked": [
+    "このタスクをここで実行してください：「文法の参考書の例文と和訳の食いちがいを直す」"
+  ],
+  "sessions": [
+    "14d551bc-0038-446a-b661-dead4caaca84"
+  ],
+  "status": "open",
+  "notes": "前の依頼（requests/2026-10-01-wh-word-grammar-roles.json）の作業中に参考書を読んで見つけ、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。提案に書いた内容：準2級の3件（関係副詞 'I still remember the summer when we first met.' の和訳が「私は今でも初めて会った日を覚えています。」、間接疑問 'I wonder whether it will snow this evening.' の和訳が「午後に雨が降るだろうか。」、関係代名詞 what 'The city is very different from what it was twenty years ago.' の和訳が「その町は10年前とはすっかりちがいます。」）だけでなく、参考書の全単元の英文と和訳を1件ずつ照らし合わせ、数・時・語（季節・天気・人・場所）の食いちがいを洗い出して直し、母集団と直した件数を報告する。参考書は127単元（級×単元）と25系統（級をまたいだページ）。英文と和訳の組は、基本の形・ポイントの例文・発展の例文・系統の段の例文。言いかえ・間違えやすいところ・表・本文には和訳の組はないが、英語の語句に日本語の訳や説明を添えているので、その食いちがいも同じく読む。 2026-10-02、参考書の「語と語の決まった結び付き」の例文が語法問題（文法のテスト）と英文・和訳とも同じ文で、直す和訳11件が語法問題にもあること、語法問題の狙い（参考書の本文に並ぶ結び付き）に例文とちがう語が22件あることが分かったので、条件 usage-same-pairs・usage-focus-read・quiz-same-english-read を足した。 2026-10-02、単元別の並び替え・選択問題も同じ時に作られていて、語法問題と和訳が入れかわった並び替え問題が10件あったので、条件 unit-formats-read を足した。読んでいないもの：参考書と結び付かない文法の問題（文法4択など）2,907問の和訳は1件ずつは読んでいない（数・人名・時などの手がかりを4,430問すべてに当てて拾った141件は読み、食いちがいは0件）。",
+  "criteria": [
+    {
+      "id": "known-three",
+      "text": "見つけていた準2級の3件（関係副詞の summer、間接疑問の snow this evening、関係代名詞 what の twenty years ago）の和訳を英文に合わせて直す",
+      "population": "提案に書いた3件",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "pairs-all-read",
+      "text": "文法の参考書の英文と和訳の組すべてを1件ずつ読み、和訳が英文と食いちがうもの（数・時・時制・人・場所・季節・天気・物・肯定と否定・主語や目的語の取り違え・訳し落とし）を直す。読んだ記録を単元・系統ごとの指紋で台帳に残し、直したものと直し方を台帳に書く",
+      "population": "127単元と25系統の英文と和訳の組すべて（基本の形・ポイントの例文・発展の例文・系統の段の例文。2026-10-01 に数えて1,552組）",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "inline-texts-read",
+      "text": "英語の語句をふくむ地の文（ここで学ぶこと・基本の形の形・ポイントの本文と表・発展の本文と表・言いかえ・間違えやすいところ・チェック・系統の概要とつながり）を1件ずつ読み、英語の語句と、それに添えた日本語の訳・説明が食いちがうものを直す。読んだ記録は同じ指紋の台帳に残す",
+      "population": "127単元と25系統の、英語をふくむ地の文すべて（2026-10-02 に数えて2,442件）",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-same-pairs",
+      "text": "語法問題（文法のテスト）は、参考書の「語と語の決まった結び付き」の例文と英文・和訳が同じ文を使う。参考書の和訳を直したら、同じ文の語法問題の和訳も同じに直し、385問すべてで英文と和訳が参考書の例文と一致することをテストで守る",
+      "population": "語法問題385問（2026-10-02 に数えて、385問すべてが参考書の例文と英文・和訳とも一致。直した参考書の和訳13件のうち12件が語法問題にもある）",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-focus-read",
+      "text": "語法問題の狙い（参考書の「語と語の決まった結び付き」の本文に「〜は …」と並ぶ）を、その例文と1件ずつ照らし合わせ、例文とちがう語（電車とバス、会議と式典など）を直す。解説が同じ食いちがいを持つものも直す",
+      "population": "語法問題385問の狙い・例文・和訳",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "quiz-same-english-read",
+      "text": "文法のテストの問題のうち、参考書の例文と同じ英文を使う問題の和訳を1件ずつ読み、英文と食いちがうものを直す（参考書と和訳が同じ問題は参考書の読みと直しで確かめる）",
+      "population": "文法の問題4,430問のうち、参考書の例文と同じ英文を使う語法以外の694問（和訳が参考書と同じ134問は参考書の読みと直しで確かめ、ちがう560問を1件ずつ読んだ）",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "unit-formats-read",
+      "text": "単元別の並び替え・選択問題（参考書の各ページで学ぶ形を問う問題）の英文と和訳を1件ずつ読み、食いちがうもの（同じ単元の語法問題と和訳が入れかわったものなど）を直す",
+      "population": "単元別の並び替え346問・選択179問（計525問。うち参考書と同じ英文の81問は quiz-same-english-read で読み、残り444問をここで読んだ）",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "machine-gate",
+      "text": "数・人名・時（曜日・月・季節・時刻・年・昨日や明日など）・天気・色・家族・物の名前・彼と彼女の手がかりで英文と和訳の食いちがいの候補を、語法の狙いの語で狙いと例文の食いちがいの候補を、機械で拾うテストを置く。拾った候補は全件を読み、直すか、食いちがいではない理由を台帳に書く。ページ（単元・系統）ごとに読んだ記録の指紋を残し、例文を足したり和訳・本文・結び付く問題を変えたりしたら、読み直して --stamp するまで止まる",
+      "population": "参考書の英文と和訳1,552組と、参考書に結び付く文法の問題1,523問（語法385・単元別の並び替え／選択525・参考書と同じ英文を使うそのほか613）の英文と和訳、語法の狙い385件。手がかりで拾った候補（和訳4組・狙い10問）はすべて読み、食いちがいではない理由を台帳に書いた",
+      "check": "node --test tests/grammar-reference-translations.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "content-rules",
+      "text": "直した和訳と本文が、学習者の日本語の見直し台帳・単語のタップの意味（gloss）・全教材の監査・既存のテストをすべて通る",
+      "population": "この依頼で直した和訳・本文すべてと、npm test・npm run check の全件",
+      "check": "node --test tests/grammar-reference-translations.test.mjs tests/grammar-reference.test.mjs && npm test && npm run check",
+      "status": "done"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の参考書のページに直した和訳が出ることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない",
+      "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

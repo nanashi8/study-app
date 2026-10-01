@@ -222,7 +222,7 @@ export const GRAMMAR_REFERENCE_2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'する必要はなかったのに／忘れるは forget／見落とすは overlook。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '〜する必要はなかったのには need not have＋過去分詞／忘れるは forget／見落とすは overlook。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['You need not have hurried; we had plenty of time.', '急ぐ必要はなかったのに。時間はたっぷりありました。'],
@@ -341,7 +341,7 @@ export const GRAMMAR_REFERENCE_2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '会議を開くは hold a meeting／visit は前置詞を置かない／許可は permission。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '式典を行うは hold a ceremony／visit は前置詞を置かない／許可は permission。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['The ceremony is to be held on Friday afternoon.', '式典は金曜日の午後に行われることになっています。'],
@@ -601,7 +601,7 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['Exercise is to the body what study is to the mind.', '運動と体の関係は、勉強と心の関係と同じです。'],
           ['What this team needs now is a practical solution.', 'このチームが今必要としているのは、実際に使える解決策です。'],
-          ['She is what is called a born teacher.', '彼はいわゆる生まれながらの指導者です。'],
+          ['She is what is called a born teacher.', '彼女はいわゆる生まれながらの教師です。'],
         ],
       },
     ],
@@ -650,7 +650,7 @@ export const GRAMMAR_REFERENCE_2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '物をぬすむは steal／賞をとるは win a prize／本が読まれるは be read。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '物をぬすむは steal／コンテストで優勝するは win the contest／本が読まれるは be read。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['I met a woman whose bicycle was stolen last week.', '私は先週、自転車をぬすまれた女性に会いました。'],
@@ -782,7 +782,7 @@ export const GRAMMAR_REFERENCE_2 = [
         examples: [
           ['Without water, we could not live even a week.', '水がなければ、私たちは1週間も生きられないでしょう。'],
           ['If you should change your mind, please let me know.', '万一考えが変わったら、知らせてください。'],
-          ['She acts as if she were the owner here.', '彼はまるでここの責任者であるかのようにふるまいます。'],
+          ['She acts as if she were the owner here.', '彼女はまるでここの持ち主であるかのようにふるまいます。'],
         ],
       },
     ],
@@ -841,7 +841,7 @@ export const GRAMMAR_REFERENCE_2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '間に合うは catch the train／〜について知っているは know about／試験に失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'バスに間に合うは catch the bus／〜について知っているは know about／試験に失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['If he had left earlier, he would have caught the bus.', 'もっと早く出ていたら、彼はバスに間に合ったのに。'],
@@ -905,7 +905,7 @@ export const GRAMMAR_REFERENCE_2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '主語の位置は whether／前置詞のあとも whether／進み具合を測るは measure progress。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '主語の位置は whether／前置詞のあとも whether／成功の度合いを測るは measure success。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['Whether the project will continue remains undecided.', 'その事業が続くかどうかは、まだ決まっていません。'],

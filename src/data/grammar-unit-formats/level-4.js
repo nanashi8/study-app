@@ -406,7 +406,7 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
     order: [
       ['一般動詞の文には doesn’t he', 'Your sister plays the violin, doesn’t she?', 'あなたのお姉さんはバイオリンをひきますよね。', 'ふつうの文には否定の短い疑問を付ける。一般動詞の3人称単数の文なので doesn’t を使い、主語は代名詞 she にする。'],
       ['否定文には肯定の形を付ける', 'Tom doesn’t eat meat, does he?', 'トムは肉を食べませんよね。', '否定文の後ろには肯定の形を付ける。doesn’t の文なので does he? を続ける。'],
-      ['Let’s の文には shall we', 'Let’s go home now, shall we?', '早く家に帰りましょうよ。', 'Let’s 〜. の文に付ける短い疑問は shall we? と決まっている。'],
+      ['Let’s の文には shall we', 'Let’s go home now, shall we?', 'もう家に帰りましょうよ。', 'Let’s 〜. の文に付ける短い疑問は shall we? と決まっている。'],
     ],
     usage: [
       ['verbNoun', 'テニスをするは play tennis', 'Ken ___ tennis every Sunday, doesn’t he?', ['plays', 'does', 'makes', 'takes'], 'plays', 'ケンは毎週日曜日にテニスをしますよね。', 'play tennis で「テニスをする」。スポーツや楽器には play を使う。主語が3人称単数なので plays にする。', [
@@ -415,7 +415,7 @@ export const GRAMMAR_UNIT_FORMATS_4 = unitFormats('4', [
         'make tennis では「テニスを作る」となり、意味が通らない。',
         'take tennis という結び付きはない。',
       ]],
-      ['phrasal', '家に帰るは go home', 'Let’s ___ home early, shall we?', ['go', 'put', 'make', 'hold'], 'go', 'もう家に帰りましょうよ。', 'go home で「家に帰る」。home は副詞なので前に to を置かない。', [
+      ['phrasal', '家に帰るは go home', 'Let’s ___ home early, shall we?', ['go', 'put', 'make', 'hold'], 'go', '早めに家に帰りましょうよ。', 'go home で「家に帰る」。home は副詞なので前に to を置かない。', [
         'go home で「家に帰る」。home の前に to は付けない。',
         'put home という結び付きはない。',
         'make home という結び付きもない。',

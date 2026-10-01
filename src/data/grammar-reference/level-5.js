@@ -508,7 +508,7 @@ export const GRAMMAR_REFERENCE_5 = [
           '教えるは teach／tell は人を直接置く／呼びかけは Excuse me。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
-          ['Our teacher teaches us science on Mondays.', '先生は金曜日に私たちに音楽を教えます。'],
+          ['Our teacher teaches us science on Mondays.', '先生は月曜日に私たちに理科を教えます。'],
           ['Please tell me your phone number.', 'あなたの電話番号を私に教えてください。'],
           ['Excuse me. Is this your notebook?', 'すみません。これはあなたのノートですか。'],
         ],

@@ -232,7 +232,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
       ['too 〜 to … で打ち消す', 'The music was too loud to enjoy.', 'その音楽は大きすぎて楽しめませんでした。', 'too＋形容詞＋to＋原形で「〜すぎて…できない」。主語が drink の目的語なので、最後に it は置かない。'],
     ],
     usage: [
-      ['confusable', '熱すぎて飲めないは too hot', 'This soup is too ___ to eat right now.', ['hot', 'warm', 'high', 'strong'], 'hot', 'このスープは熱すぎて今は食べられません。', '食べ物や飲み物の温度が高いことは hot で表す。ほどよく温かいことを表す warm と使い分ける。', [
+      ['confusable', '熱すぎて食べられないは too hot', 'This soup is too ___ to eat right now.', ['hot', 'warm', 'high', 'strong'], 'hot', 'このスープは熱すぎて今は食べられません。', '食べ物や飲み物の温度が高いことは hot で表す。ほどよく温かいことを表す warm と使い分ける。', [
         'hot は温度が高いことを表す。too hot to eat で「熱すぎて食べられない」となる。',
         'warm は「ほどよく温かい」で、熱すぎて食べられない理由にならない。',
         'high は位置や数値が高いことを表し、食べ物の温度には使わない。',
@@ -365,7 +365,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
       ['意味は文の流れで決まる', 'Walking home, Emi found a small coin.', '歩いて家へ帰る途中、エミは小さな硬貨を見つけました。', '分詞構文は「〜しているとき」「〜なので」などの意味を、後ろの文との関係から読み取る。'],
     ],
     usage: [
-      ['preposition', '通りを歩くは walk down the street', 'Walking ___ the road, I found a small shop.', ['down', 'of', 'into', 'off'], 'down', '道を歩いていると、私は小さな店を見つけました。', 'walk down the road で「道を歩いていく」。道に沿って進むことを down で表す。', [
+      ['preposition', '道を歩いていくは walk down the road', 'Walking ___ the road, I found a small shop.', ['down', 'of', 'into', 'off'], 'down', '道を歩いていると、私は小さな店を見つけました。', 'walk down the road で「道を歩いていく」。道に沿って進むことを down で表す。', [
         'walk down the road で「道を歩いていく」。道に沿って進むときは down を使う。',
         'walk of the road という結び付きはない。',
         'walk into 〜 は「〜の中へ歩いて入る」で、道に沿って進む意味にならない。',
@@ -408,7 +408,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
   {
     unit: 'gref_pre2_reladv',
     order: [
-      ['時を説明する when', 'I still remember the day when we first met.', '私は今でも初めて会った夏を覚えています。', '先行詞が時を表す名詞で、後ろの文が欠けていないので関係副詞 when を使う。'],
+      ['時を説明する when', 'I still remember the day when we first met.', '私は今でも、私たちが初めて会った日を覚えています。', '先行詞が時を表す名詞で、後ろの文が欠けていないので関係副詞 when を使う。'],
       ['理由を説明する why', 'Please tell me the reason why you changed your mind.', 'あなたが考えを変えた理由を教えてください。', '先行詞が the reason のときは関係副詞 why でつなぐ。後ろには主語も目的語もそろった文が続く。'],
     ],
     usage: [
@@ -418,7 +418,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
         'bearing は「（重さを）支えている」などを表し、生まれる意味にならない。',
         'borne は bear の過去分詞だが、生まれる意味では born を使う。',
       ]],
-      ['confusable', '覚えているは remember', 'I still ___ the summer when we first met.', ['remember', 'remind', 'memorize', 'forget'], 'remember', '私は今でも初めて会った日を覚えています。', 'remember は「覚えている・思い出す」。人に思い出させる remind と使い分ける。', [
+      ['confusable', '覚えているは remember', 'I still ___ the summer when we first met.', ['remember', 'remind', 'memorize', 'forget'], 'remember', '私は今でも、私たちが初めて会った夏を覚えています。', 'remember は「覚えている・思い出す」。人に思い出させる remind と使い分ける。', [
         'remember は自分が覚えていることを表す。目的語を直接置ける。',
         'remind は「人に思い出させる」で、remind me of 〜 の形にする。',
         'memorize は「暗記する」で、覚えようと努力することを表す。',
@@ -505,7 +505,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
     order: [
       ['what は先行詞をふくむ', 'Please tell me what you need today.', '今日あなたが必要とする物を教えてください。', 'what は「〜する物」を1語で表すので、前に名詞を置かない。tell＋人＋内容 の内容として置く。'],
       ['What が主語のまとまりになる', 'What surprised us was his calm answer.', '私たちを驚かせたのは、彼の落ち着いた返事でした。', 'What surprised us が「私たちを驚かせたこと」という主語のまとまりになる。後ろに was を続けて説明する。'],
-      ['what it was で昔と比べる', 'The town is very different from what it was ten years ago.', 'その都市は20年前とはすっかりちがいます。', 'what it was で「かつての姿」を表す。from の後ろに置いて、今の姿と比べる。'],
+      ['what it was で昔と比べる', 'The town is very different from what it was ten years ago.', 'その町は10年前とはすっかりちがいます。', 'what it was で「かつての姿」を表す。from の後ろに置いて、今の姿と比べる。'],
     ],
     usage: [
       ['confusable', '大切であるは matter', 'What ___ most is that you tried your best.', ['matters', 'minds', 'cares', 'means'], 'matters', 'いちばん大切なのは、あなたが全力を尽くしたということです。', 'matter は「重要である」。主語の what と組にして「大切なこと」を表す。主語が3人称単数なので matters にする。', [
@@ -520,7 +520,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
         'take your best という結び付きはない。',
         'play your best は演技や演奏について言う形で、全力を尽くすという意味にはならない。',
       ]],
-      ['adjPrep', '〜とちがうは be different from', 'The city is very different ___ what it was twenty years ago.', ['from', 'to', 'with', 'of'], 'from', 'その町は10年前とはすっかりちがいます。', 'be different from 〜 で「〜とちがう」。比べる相手を from で示す。', [
+      ['adjPrep', '〜とちがうは be different from', 'The city is very different ___ what it was twenty years ago.', ['from', 'to', 'with', 'of'], 'from', 'その都市は20年前とはすっかりちがいます。', 'be different from 〜 で「〜とちがう」。比べる相手を from で示す。', [
         'be different from 〜 で「〜とちがう」。比べる相手は from で示す。',
         'different to 〜 は一部の地域で使われるが、英検では from を選ぶ。',
         'different with 〜 という結び付きはない。',
@@ -599,18 +599,18 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
   {
     unit: 'gref_pre2_indirect',
     order: [
-      ['whether で「〜かどうか」', 'I wonder whether it will rain this afternoon.', '今晩雪が降るだろうか。', 'Yes / No でたずねる内容を文に入れるときは whether（または if）＋主語＋動詞にする。'],
+      ['whether で「〜かどうか」', 'I wonder whether it will rain this afternoon.', '今日の午後、雨が降るだろうか。', 'Yes / No でたずねる内容を文に入れるときは whether（または if）＋主語＋動詞にする。'],
       ['疑問詞のあとは主語＋動詞', 'Could you tell me when the store opens?', 'その店がいつ開くか教えていただけますか。', '文に入れた疑問は〈疑問詞＋主語＋動詞〉の順にする。does を使わず動詞に s を付けて表す。'],
       ['文の動詞に時をそろえる', 'I wonder why he left so early yesterday.', '彼が昨日なぜあんなに早く帰ったのだろう。', '文に入れた疑問では did を使わず、動詞を過去形にして時を表す。'],
     ],
     usage: [
-      ['confusable', '〜かどうかは whether', 'I asked her ___ she was free on Sunday.', ['if', 'that', 'what', 'which'], 'if', '私は彼女に日曜日はひまかどうかたずねました。', 'Yes / No でたずねる内容を文に入れるときは if または whether を使う。that は使わない。', [
+      ['confusable', '〜かどうかは if', 'I asked her ___ she was free on Sunday.', ['if', 'that', 'what', 'which'], 'if', '私は彼女に日曜日はひまかどうかたずねました。', 'Yes / No でたずねる内容を文に入れるときは if または whether を使う。that は使わない。', [
         'if＋〈主語＋動詞〉で「〜かどうか」を表す。whether にも置きかえられる。',
         'that は「〜ということ」を表し、「かどうか」という不確かさは表せない。',
         'what は「何を」を表す語で、後ろに足りない部分のある文を続ける。',
         'which は「どちらを」を表す語で、ここでは意味が通らない。',
       ]],
-      ['verbForm', '〜だろうかと思うは wonder', 'I ___ whether it will snow this evening.', ['wonder', 'speak', 'talk', 'say'], 'wonder', '午後に雨が降るだろうか。', 'wonder＋whether / 疑問詞 で「〜だろうかと思う」。後ろにまとまりを続けられる。', [
+      ['verbForm', '〜だろうかと思うは wonder', 'I ___ whether it will snow this evening.', ['wonder', 'speak', 'talk', 'say'], 'wonder', '今晩、雪が降るだろうか。', 'wonder＋whether / 疑問詞 で「〜だろうかと思う」。後ろにまとまりを続けられる。', [
         'wonder whether 〜 で「〜だろうかと思う」。後ろに〈主語＋動詞〉のまとまりを続ける。',
         'speak は speak to 〜 の形で使い、whether のまとまりを続けられない。',
         'talk も talk about 〜 の形で使い、whether のまとまりを続けられない。',
@@ -771,7 +771,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
         'or は「AかBか」を表し、not only とは組にならない。',
         'nor は neither と組にする語で、not only とは組にならない。',
       ]],
-      ['verbNoun', 'チームを率いるは lead the team', 'Either you or Ken must ___ the group.', ['lead', 'take', 'make', 'do'], 'lead', 'あなたかケンのどちらかがそのグループを率いなければなりません。', 'lead the group で「グループを率いる」という決まった結び付きになる。', [
+      ['verbNoun', 'グループを率いるは lead the group', 'Either you or Ken must ___ the group.', ['lead', 'take', 'make', 'do'], 'lead', 'あなたかケンのどちらかがそのグループを率いなければなりません。', 'lead the group で「グループを率いる」という決まった結び付きになる。', [
         'lead the group で「グループを率いる」。先頭に立って導くことを lead で表す。',
         'take the group では「グループを連れていく」となり、率いる意味にならない。',
         'make the group という結び付きはこの意味では使わない。',
@@ -919,7 +919,7 @@ export const GRAMMAR_UNIT_FORMATS_PRE2 = unitFormats('pre2', [
         'ourself という形はない。複数の主語には ourselves を使う。',
         'our は名詞の前に置く形で、動詞の目的語にはならない。',
       ]],
-      ['setPhrase', 'けがをするは hurt oneself', 'Be careful not to hurt ___ with the knife.', ['yourself', 'you', 'your', 'yours'], 'yourself', 'ナイフで手を切らないように気をつけて。', '主語と同じ人がけがをするので、目的語を再帰代名詞にする。相手1人なら yourself。', [
+      ['setPhrase', 'けがをするは hurt oneself', 'Be careful not to hurt ___ with the knife.', ['yourself', 'you', 'your', 'yours'], 'yourself', 'ナイフでけがをしないように気をつけて。', '主語と同じ人がけがをするので、目的語を再帰代名詞にする。相手1人なら yourself。', [
         '命令文の主語は you なので、目的語も yourself にする。',
         'hurt you では自分以外の人を傷つけることになってしまう。',
         'your は名詞の前に置く形で、動詞の目的語にはならない。',

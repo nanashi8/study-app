@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-01T14:03:59.548Z",
+  "auditedAt": "2026-10-01T15:46:02.706Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "5c41b36e0d2b7ad176298e7e793274502459ecd19dbc46b66569e407342a9ebf"
+    "overallContentSha256": "5897d60ef9f4d4be3cd163c14d7f8c325230b1c1523ce6d798956608aa98a944"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "96793fd9694d005540113b383adaddbaf87d495cb3265d370dc8430fc62d6f6e",
+    "sha256": "fcdab7ef6be370c2269727a075e140b2f90387bdeaa2a6b12a8034ab716f1221",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -239,6 +239,7 @@
       "tests/grammar-entry-divisions.test.mjs",
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
+      "tests/grammar-reference-translations.test.mjs",
       "tests/grammar-reference.test.mjs",
       "tests/grammar-strand.test.mjs",
       "tests/grammar-unit-formats.test.mjs",
@@ -430,7 +431,7 @@
       "quizItemCount": 4430,
       "learningIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
       "quizIdOrderSha256": "9962b4230a7354ad0ca1c0153054e644dd005a183164fb66f326641f68ae9f11",
-      "contentSha256": "c43e648d481ed10c8a1e6ece4efac3d38ff08672aa8e96dfcec87ff2f4fdeb08",
+      "contentSha256": "73f4493c1c6a07e3fc04a3a8f63ddc55e7cbd894cef64faec49c6b394d4b3ebe",
       "auditGateIds": [
         "inventory",
         "coreData",

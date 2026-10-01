@@ -139,12 +139,12 @@ export const GRAMMAR_UNIT_FORMATS_5 = unitFormats('5', [
   {
     unit: 'gref_5_pronoun',
     order: [
-      ['動詞の後ろの人は目的格', 'Our teacher teaches us music on Fridays.', '先生は月曜日に私たちに理科を教えます。', 'teach＋人＋物の形で「人に物を教える」。動詞のすぐ後ろに置く「私たちに」は目的格 us にする。'],
+      ['動詞の後ろの人は目的格', 'Our teacher teaches us music on Fridays.', '先生は金曜日に私たちに音楽を教えます。', 'teach＋人＋物の形で「人に物を教える」。動詞のすぐ後ろに置く「私たちに」は目的格 us にする。'],
       ['名詞の前は所有格', 'His notebook is on my desk.', '彼のノートは私の机の上にあります。', '名詞の前に置いて「〜の」を表すのは所有格。he は his、I は my になり、それぞれ後ろの名詞と組にして置く。'],
       ['〜のものは所有代名詞1語で言う', 'That blue bike is not mine.', 'あの青い自転車は私のものではありません。', '「私のもの」は所有代名詞 mine の1語で表し、後ろに名詞を置かない。所有格 my は名詞の前に置く点で異なる。'],
     ],
     usage: [
-      ['confusable', '教えるは teach', 'Our teacher ___ us science on Mondays.', ['teaches', 'learns', 'studies', 'knows'], 'teaches', '先生は金曜日に私たちに音楽を教えます。', 'teach は「人に教える」。学ぶ側を主語にする learn・study と使い分ける。主語が3人称単数なので teaches にする。', [
+      ['confusable', '教えるは teach', 'Our teacher ___ us science on Mondays.', ['teaches', 'learns', 'studies', 'knows'], 'teaches', '先生は月曜日に私たちに理科を教えます。', 'teach は「人に教える」。学ぶ側を主語にする learn・study と使い分ける。主語が3人称単数なので teaches にする。', [
         'teach＋人＋物 で「人に物を教える」。教える側が主語になる。',
         'learn は「学ぶ」で、教わる側が主語になる。先生を主語にすると意味が逆になる。',
         'study は「勉強する」で、後ろに〈人＋物〉を続けて「人に教える」意味にはならない。',

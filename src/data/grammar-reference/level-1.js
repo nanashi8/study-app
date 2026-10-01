@@ -47,7 +47,7 @@ export const GRAMMAR_REFERENCE_1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'This is the first time のあとは現在完了／調査を完了するは complete the survey／意見の一致が生まれるは emerge。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'This is the first time のあとは現在完了／研究を完了するは complete the study／意見の一致が生まれるは emerge。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['This is the first time I have visited this city.', '私がこの都市を訪れたのは、これが初めてです。'],
@@ -524,7 +524,7 @@ export const GRAMMAR_REFERENCE_1 = [
       ['The issue is all the most serious because children are affected.', 'The issue is all the more serious because children are affected.', 'all the＋比較級。'],
     ],
     check: [
-      'all the＋比較級＋because＝なおさら、none the＋比較級＋for＝〜だからといって劣らない。',
+      'all the＋比較級＋because＝なおさら、none the＋比較級＋for＝〜だからといって少しも…でない（none the less なら少しも劣らない）。',
       'superior / inferior / senior / junior / prior＋to。',
       'not so much A as B、no more A than B。',
     ],
@@ -574,11 +574,11 @@ export const GRAMMAR_REFERENCE_1 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '異議が出されるは be raised／辞退するは withdraw／改革が失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '質問が出されるは be raised／身を引くは withdraw from／計画が失敗するは fail。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['A number of questions have been raised at the hearing.', '公聴会では多くの質問が出されました。'],
-          ['More than one member has withdrawn from the committee.', '選考から辞退した応募者は1人ではありません。'],
+          ['More than one member has withdrawn from the committee.', '委員会から身を引いた委員は1人ではありません。'],
           ['Many a promising plan has failed without public support.', '有望な計画の多くが、人々の支持がないまま失敗してきました。'],
         ],
       },

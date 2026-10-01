@@ -476,7 +476,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '熱すぎて飲めないは too hot／重すぎて運べないは too heavy／手が届くは reach。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '熱すぎて食べられないは too hot／重すぎて運べないは too heavy／手が届くは reach。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['This soup is too hot to eat right now.', 'このスープは熱すぎて今は食べられません。'],
@@ -730,7 +730,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '通りを歩くは walk down the street／風呂に入るは take a bath／寝るは go to bed。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '道を歩いていくは walk down the road／風呂に入るは take a bath／寝るは go to bed。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['Walking down the road, I found a small shop.', '道を歩いていると、私は小さな店を見つけました。'],
@@ -805,7 +805,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
         ],
         examples: [
           ['This is the town where I was born.', 'ここは私が生まれた町です。'],
-          ['I still remember the summer when we first met.', '私は今でも初めて会った日を覚えています。'],
+          ['I still remember the summer when we first met.', '私は今でも、私たちが初めて会った夏を覚えています。'],
           ['Please tell me the reason why you were absent.', 'あなたが欠席した理由を私に教えてください。'],
         ],
       },
@@ -934,7 +934,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
         examples: [
           ['What matters most is that you tried your best.', 'いちばん大切なのは、あなたが全力を尽くしたということです。'],
           ['What matters is that you did your best.', '大切なのは、あなたが全力を尽くしたということです。'],
-          ['The city is very different from what it was twenty years ago.', 'その町は10年前とはすっかりちがいます。'],
+          ['The city is very different from what it was twenty years ago.', 'その都市は20年前とはすっかりちがいます。'],
         ],
       },
     ],
@@ -1036,11 +1036,11 @@ export const GRAMMAR_REFERENCE_PRE2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          '〜かどうかは whether／〜だろうかと思うは wonder／行き方は the way to。文の形といっしょに、この結び付きをまとまりで覚える。',
+          '〜かどうかは if／〜だろうかと思うは wonder／行き方は the way to。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['I asked her if she was free on Sunday.', '私は彼女に日曜日はひまかどうかたずねました。'],
-          ['I wonder whether it will snow this evening.', '午後に雨が降るだろうか。'],
+          ['I wonder whether it will snow this evening.', '今晩、雪が降るだろうか。'],
           ['Could you tell me the way to the station?', '駅への行き方を教えていただけますか。'],
         ],
       },
@@ -1300,7 +1300,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
       {
         title: '語と語の決まった結び付き',
         text: [
-          'AだけでなくBもは not only A but also B／チームを率いるは lead the team／言語の名前に冠詞は付けない。文の形といっしょに、この結び付きをまとまりで覚える。',
+          'AだけでなくBもは not only A but also B／グループを率いるは lead the group／言語の名前に冠詞は付けない。文の形といっしょに、この結び付きをまとまりで覚える。',
         ],
         examples: [
           ['She can play not only the piano but also the violin.', '彼女はピアノだけでなくバイオリンもひけます。'],
@@ -1555,7 +1555,7 @@ export const GRAMMAR_REFERENCE_PRE2 = [
         ],
         examples: [
           ['We enjoyed ourselves at the summer festival.', '私たちは夏祭りで楽しく過ごしました。'],
-          ['Be careful not to hurt yourself with the knife.', 'ナイフで手を切らないように気をつけて。'],
+          ['Be careful not to hurt yourself with the knife.', 'ナイフでけがをしないように気をつけて。'],
           ['Please help yourself to the fruit on the table.', 'テーブルの上の果物を自由に取ってください。'],
         ],
       },
