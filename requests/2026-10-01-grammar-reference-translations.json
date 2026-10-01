@@ -7,7 +7,7 @@
   "sessions": [
     "14d551bc-0038-446a-b661-dead4caaca84"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "前の依頼（requests/2026-10-01-wh-word-grammar-roles.json）の作業中に参考書を読んで見つけ、別のタスクとして提案したものを、利用者がこのセッションで実行するよう指示した。提案に書いた内容：準2級の3件（関係副詞 'I still remember the summer when we first met.' の和訳が「私は今でも初めて会った日を覚えています。」、間接疑問 'I wonder whether it will snow this evening.' の和訳が「午後に雨が降るだろうか。」、関係代名詞 what 'The city is very different from what it was twenty years ago.' の和訳が「その町は10年前とはすっかりちがいます。」）だけでなく、参考書の全単元の英文と和訳を1件ずつ照らし合わせ、数・時・語（季節・天気・人・場所）の食いちがいを洗い出して直し、母集団と直した件数を報告する。参考書は127単元（級×単元）と25系統（級をまたいだページ）。英文と和訳の組は、基本の形・ポイントの例文・発展の例文・系統の段の例文。言いかえ・間違えやすいところ・表・本文には和訳の組はないが、英語の語句に日本語の訳や説明を添えているので、その食いちがいも同じく読む。 2026-10-02、参考書の「語と語の決まった結び付き」の例文が語法問題（文法のテスト）と英文・和訳とも同じ文で、直す和訳11件が語法問題にもあること、語法問題の狙い（参考書の本文に並ぶ結び付き）に例文とちがう語が22件あることが分かったので、条件 usage-same-pairs・usage-focus-read・quiz-same-english-read を足した。 2026-10-02、単元別の並び替え・選択問題も同じ時に作られていて、語法問題と和訳が入れかわった並び替え問題が10件あったので、条件 unit-formats-read を足した。読んでいないもの：参考書と結び付かない文法の問題（文法4択など）2,907問の和訳は1件ずつは読んでいない（数・人名・時などの手がかりを4,430問すべてに当てて拾った141件は読み、食いちがいは0件）。",
   "criteria": [
     {
@@ -75,17 +75,17 @@
     },
     {
       "id": "on-main-deployed",
-      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の参考書のページに直した和訳が出ることを確かめる",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版の参考書のページに直した和訳が出ることを確かめる（2026-10-02 に 7de958da を push し、デプロイ 36890018650 の成功を確かめた。公開版の JS に直した81件（組13・本文21・問題の和訳22・狙い22・解説3）がすべて入り、直す前のものが残っていないこと、公開版の準2級「関係副詞」のページで I still remember the summer when we first met. の和訳が直した文で出ることを確かめた）",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 7de958da origin/main && test \"$(gh run view 36890018650 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     },
     {
       "id": "nothing-left-behind",
       "text": "このセッションの変更で main に入っていないものが残っていない",
       "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
       "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/14d551bc-0038-446a-b661-dead4caaca84 && node --test tests/leftover-changes.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
