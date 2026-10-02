@@ -37,6 +37,31 @@ test('重複の調べ：古典・漢文の8教材1,393件で、2つの段に入�
   ])
 })
 
+// 「もう一度検査しなさい。」（2026-10-02）の再検査。見出しが違っても同じ語かもしれない組を、読みの部分・漢字表記・つづりの近さ・
+// 訳語の重なり・見出しを含む組などで拾い、1組ずつ読んで分けた（scripts/checks/classics-wide-overlap.mjs の WIDE_PAIRS）。
+test('再検査：物差しを広げて拾った候補305組をすべて分けてあり、同じ語の二重登録は0組、同じ語の別の形は古典単語の6組', () => {
+  const { wide } = surveyClassicsLevels()
+  assert.deepEqual(wide.problems, [])
+  assert.deepEqual(
+    wide.sets.map((set) => [set.label, set.candidates, set.duplicate.length, set.form.length, set.same, set.different]),
+    [
+      ['古典単語', 109, 0, 6, 0, 103],
+      ['古典文法', 34, 0, 0, 0, 34],
+      ['古典常識', 0, 0, 0, 0, 0],
+      ['短文解釈', 0, 0, 0, 0, 0],
+      ['漢語', 140, 0, 0, 0, 140],
+      ['漢文法', 5, 0, 0, 0, 5],
+      ['漢文常識', 0, 0, 0, 0, 0],
+      ['返り点・訓読', 0, 0, 0, 0, 0],
+      ['古典単語 × 漢語', 17, 0, 0, 11, 6],
+    ],
+  )
+  assert.deepEqual(
+    wide.sets[0].form.map((pair) => `${pair.a}／${pair.b}`).sort(),
+    ['いかで／いかでか', 'おぼす／おもほす', 'おぼゆ／おもほゆ', 'けし／けしからず', 'さらなり／いへばさらなり', 'たまふ／たぶ'].sort(),
+  )
+})
+
 test('古典単語：重要度は中学入門・高校基礎・共通テスト・中堅大・難関大学の4段で、最難関だった51語はすべて難関（難関158語）', () => {
   assert.deepEqual(KOTEN_WORD_LEVELS.map((level) => level.id), LEVEL_IDS)
   assert.deepEqual(KOTEN_WORD_LEVELS.map((level) => level.label), ['中学入門', '高校基礎', '共通テスト・中堅大', '難関大学'])

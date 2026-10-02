@@ -7,9 +7,13 @@
 //   ④ 教材をまたぐ組：古典文法の題名の「」の中の語と古典単語の見出し語・漢字表記、漢文法の題名の字と漢語の見出しが
 //      同じ文字になる組をすべて出し、CROSS_PAIRS（1組ずつ本文を読んで決めた分け方）で
 //      同じ語・識別の項目が見分ける語の1つ・別の語に分ける。同じ語の組は段の食い違いを数える
-// ①②③の重複と、④で分け方を決めていない組が1件でもあれば失敗する。④の段の食い違いは数えて報告するだけ。
+//   ⑤ 物差しを広げた重複（2026-10-02 の再検査）：見出しが違っても同じ語かもしれない組（読みの部分・漢字表記・つづりの近さ・
+//      訳語の重なり・見出しを含む組、古典単語×漢語など）を classics-wide-overlap.mjs で拾い、1組ずつ読んだ分け方で
+//      同じ語の二重登録・同じ語の別の形・別の語に分ける
+// ①②③の重複、④⑤で分け方を決めていない組、⑤の二重登録が1件でもあれば失敗する。④の段の食い違いと⑤の別の形は数えて報告する。
 // 使い方: node scripts/checks/classics-level-overlap.mjs [--json]
 import { fileURLToPath } from 'node:url'
+import { surveyWideOverlap } from './classics-wide-overlap.mjs'
 import { KOTEN_WORD_LEVELS, KOTEN_WORDS } from '../../src/data/koten.js'
 import { KOTEN_GRAMMAR, KOTEN_GRAMMAR_ITEM_LEVELS } from '../../src/data/koten-grammar.js'
 import { KOTEN_CULTURE, KOTEN_CULTURE_LEVELS } from '../../src/data/koten-culture.js'
@@ -333,7 +337,9 @@ export function surveyClassicsLevels() {
     ...cross.flatMap((set) => set.unclassified.map((text) => `${set.label}: 分け方を決めていない組 ${text}`)),
     ...staleDecisions.map((key) => `CROSS_PAIRS: 候補にない組 ${key}（データが変わったら読み直す）`),
   ]
-  return { contents, kotenHomographs, courses, cross, problems }
+  const wide = surveyWideOverlap()
+  problems.push(...wide.problems)
+  return { contents, kotenHomographs, courses, cross, wide, problems }
 }
 
 function printReport(result) {
@@ -359,11 +365,19 @@ function printReport(result) {
     console.log(`    同じ語で段が違う組: ${set.mismatched.length}組（単語のほうが易しい${set.mismatched.filter((pair) => pair.vocabEasier).length}組）`)
     for (const pair of set.mismatched) console.log(`      ${pair.grammar}＝${pair.grammarLevel} ／ ${pair.vocab}＝${pair.vocabLevel}`)
   }
+  const wideCandidates = result.wide.sets.reduce((sum, set) => sum + set.candidates, 0)
+  console.log(`■ ⑤物差しを広げた重複（候補${wideCandidates}組を1組ずつ読んで分けた）`)
+  for (const set of result.wide.sets) {
+    const by = Object.entries(set.differentBy).map(([why, count]) => `${why}${count}`).join('・')
+    const same = set.same ? `・両方で同じ語${set.same}組` : ''
+    console.log(`  ${set.label}: 候補${set.candidates}組 → 二重登録${set.duplicate.length}・別の形${set.form.length}${same}・別の語${set.different}${by ? `（${by}）` : ''}`)
+    for (const pair of set.form) console.log(`      別の形 ${pair.a}[${pair.aLevel}] ／ ${pair.b}[${pair.bLevel}]：${pair.why}`)
+  }
   if (result.problems.length) {
     console.log(`✗ 重複・決めていない組 ${result.problems.length}件`)
     for (const problem of result.problems) console.log(`  ${problem}`)
   } else {
-    console.log('✓ 段の誤り・二重登録・中身が同じコース・決めていない組はどれも0件')
+    console.log('✓ 段の誤り・二重登録（⑤の広げた物差しも）・中身が同じコース・決めていない組はどれも0件')
   }
 }
 
