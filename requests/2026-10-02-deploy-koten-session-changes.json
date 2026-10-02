@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-02-deploy-koten-session-changes",
+  "title": "このセッションの変更をデプロイまで完了させる（古典の最難関を難関へ統合、重複の再検査、ほかの16教材の重複の調べ）",
+  "asked": [
+    "このセッションの変更をデプロイまで完了しなさい。"
+  ],
+  "sessions": [
+    "b0ab8c7b-063e-4391-a1f2-bbb9c307c91c"
+  ],
+  "status": "open",
+  "notes": "このセッション（b0ab8c7b）の依頼は requests/2026-10-02-koten-level-merge.json の1つ（指示4つ：重複の調べと古典単語の最難関の統合・もう一度検査・ほかのコンテンツの同様の重複）で、閉じてある。2026-10-02 に調べると、共有の作業ツリーは origin/main の 4c0affff と同じで未コミット 0・stash 0・未 push 0・worktree はこの1つだけ。このセッションのコミットは4件（84209f5d・dd7c2fcf・8c275183・4c0affff。セッションを始めたときの main は c6669b73）で、どれも main に入り、それぞれのデプロイ（84209f5d の run 36952699890・dd7c2fcf の 36953464821・8c275183 の 36961257674・4c0affff の 36961894830）はどれも build・deploy とも成功している。このセッションの作業場所は scratchpad の study-app の複製2つ（study-app・recheck/study-app）。報告で聞いた「見つかった重複を整理するか」は利用者の判断待ちで、このセッションの変更ではないので、この依頼には含めない。",
+  "criteria": [
+    {
+      "id": "session-commits-deployed",
+      "text": "このセッションのコミット4件が main に入り、それぞれのデプロイ4回がどれも成功している。公開版で、古典の最難関を難関へ統合した変更が出ていることを確かめる（公開版の JS に「最難関大学」がなく、古典単語のトップの新しい説明・難関コースの新しい説明が出る。古典アプリのホームの「学年・目標から選ぶ」が中学・基礎・標準・難関の4つ）（2026-10-02 に確かめた。4件とも origin/main に入り、デプロイ 36952699890・36953464821・36961257674・36961894830 はどれも build・deploy とも success。公開版の JS 167ファイルで「最難関大学」0件、「中学古典〜難関大学の重要語を暗記・テスト」1件、難関コースの新しい説明1件、旧最難関コースの説明0件。公開版の古典アプリのホームの「学年・目標から選ぶ」は中学・基礎・標準・難関の4つ）",
+      "population": "このセッションのコミット4件（84209f5d・dd7c2fcf・8c275183・4c0affff）と、そのデプロイ4回、公開版 https://nanashi8.github.io/study-app/",
+      "check": "git fetch -q origin main && for c in 84209f5d dd7c2fcf 8c275183 4c0affff; do git merge-base --is-ancestor $c origin/main || exit 1; done && for r in 36952699890 36953464821 36961257674 36961894830; do test \"$(gh run view $r --json conclusion -q .conclusion)\" = success || exit 1; done && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない。共有の作業ツリーは未コミット 0・stash 0・未 push 0、このセッションの scratchpad の複製は main の履歴にないコミット 0・main に入っていない変更 0",
+      "population": "共有の作業ツリー（~/projects/study-app）と、このセッションの作業場所（scratchpad の study-app の複製すべて）",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/b0ab8c7b-063e-4391-a1f2-bbb9c307c91c && node --test tests/leftover-changes.test.mjs && git fetch -q origin main && test -z \"$(git status --porcelain)\" && test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test -z \"$(git log origin/main..HEAD --oneline)\"",
+      "status": "waiting",
+      "waitingFor": "この台帳のコミットを push して作業ツリーを main に早送りしたあとに確かめる（いまは作業ツリーにこの台帳だけが未コミット）"
+    },
+    {
+      "id": "deployed",
+      "text": "この依頼の台帳のコミットを push し、そのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "false",
+      "status": "waiting",
+      "waitingFor": "この台帳のコミットの push とデプロイ"
+    }
+  ]
+}
