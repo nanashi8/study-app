@@ -26,12 +26,12 @@ import { KOTEN_ADDED_4 } from './koten-added-4.js'
 import { KOTEN_WORD_DETAILS } from './koten-word-details.js'
 
 // 重要度。英単語の「級」と同じく、易しい段から順に積み上げる（学年・目標別コースもこの段で組む）。
+// 2026-10-02 に最難関の段をなくし、その語を難関に入れた（難関と最難関のコースが重なっていたため。利用者の指示）。
 export const KOTEN_WORD_LEVELS = [
   { id: 'middle', label: '中学入門', shortLabel: '中学', color: '#10b981' },
   { id: 'basic', label: '高校基礎', shortLabel: '基礎', color: '#0ea5e9' },
   { id: 'standard', label: '共通テスト・中堅大', shortLabel: '標準', color: '#f59e0b' },
   { id: 'advanced', label: '難関大学', shortLabel: '難関', color: '#e11d48' },
-  { id: 'elite', label: '最難関大学', shortLabel: '最難関', color: '#7c3aed' },
 ]
 export const KOTEN_WORD_LEVEL_BY_ID = Object.fromEntries(KOTEN_WORD_LEVELS.map((level) => [level.id, level]))
 

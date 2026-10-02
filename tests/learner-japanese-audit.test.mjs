@@ -83,11 +83,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-02、「語の成り立ち」の見出しが2回続けて出ないよう、部品（EtymologyBlock）の本文の箱の見出しを外したので、
   // 学習者画面の日本語が 18348 から 18347 に、ソース全体が 235560 から 235559 になった（重複なしは変わらない。
   // requests/2026-10-02-etymology-heading-once.json）。
+  // 2026-10-02、古典単語・古典文法の重要度とコースから最難関をなくして難関に統合したので、最難関の段の名前
+  // （古典単語と古典文法で「最難関大学」「最難関」を2つずつ）と最難関コースの名前・短い名前・説明の7表記が消え、
+  // ソース全体が 235559 から 235552 になった（学習者画面の日本語は、古典単語のトップの説明の言い換えだけなので変わらない。
+  // requests/2026-10-02-koten-level-merge.json）。
   assert.equal(result.learnerFiles, 348)
   assert.equal(result.learnerJapaneseEntries, 18347)
   assert.equal(result.learnerUniqueJapaneseEntries, 13709)
   assert.equal(result.sourceFiles, 823)
-  assert.equal(result.sourceJapaneseEntries, 235559)
+  assert.equal(result.sourceJapaneseEntries, 235552)
   assert.equal(result.issues.length, 0)
 })
 

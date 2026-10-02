@@ -16,13 +16,12 @@ export const KOTEN_GRAMMAR_CATEGORIES = [
   { id: 'reading', label: '文の読み方', emoji: '📖', color: '#0d9488' },
 ]
 
-// 重要度（古典単語の KOTEN_WORD_LEVELS と同じ5段）。学年・目標別コースもこの段で組む。
+// 重要度（古典単語の KOTEN_WORD_LEVELS と同じ4段）。学年・目標別コースもこの段で組む。
 export const KOTEN_GRAMMAR_ITEM_LEVELS = [
   { id: 'middle', label: '中学入門', shortLabel: '中学', color: '#10b981' },
   { id: 'basic', label: '高校基礎', shortLabel: '基礎', color: '#0ea5e9' },
   { id: 'standard', label: '共通テスト・中堅大', shortLabel: '標準', color: '#f59e0b' },
   { id: 'advanced', label: '難関大学', shortLabel: '難関', color: '#e11d48' },
-  { id: 'elite', label: '最難関大学', shortLabel: '最難関', color: '#7c3aed' },
 ]
 export const KOTEN_GRAMMAR_ITEM_LEVEL_BY_ID = Object.fromEntries(KOTEN_GRAMMAR_ITEM_LEVELS.map((level) => [level.id, level]))
 

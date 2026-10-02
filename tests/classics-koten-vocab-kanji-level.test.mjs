@@ -1,6 +1,7 @@
 // 依頼 2026-09-24-classics-enrich の条件 koten-vocab-kanji-level。
-// 全古典単語が漢字表記（慣用の漢字がない語は空文字）と5段階の重要度を持ち、
+// 全古典単語が漢字表記（慣用の漢字がない語は空文字）と重要度を持ち、
 // 古典単語のトップの「レベルから選ぶ」と学年・目標別コースがこの重要度で組まれていること。
+// 重要度は 2026-10-02 に最難関を難関に統合して4段階にした（requests/2026-10-02-koten-level-merge.json）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -8,9 +9,9 @@ import { readFileSync } from 'node:fs'
 import { KOTEN_WORD_LEVELS, KOTEN_WORDS } from '../src/data/koten.js'
 import { KOTEN_CURRICULUM_PATHS } from '../src/data/koten-curriculum.js'
 
-const LEVEL_IDS = ['middle', 'basic', 'standard', 'advanced', 'elite']
+const LEVEL_IDS = ['middle', 'basic', 'standard', 'advanced']
 
-test('古典単語の漢字表記と重要度：全語が漢字表記（空と明記を含む）と5段階の重要度を持つ', () => {
+test('古典単語の漢字表記と重要度：全語が漢字表記（空と明記を含む）と4段階の重要度を持つ', () => {
   assert.deepEqual(KOTEN_WORD_LEVELS.map((level) => level.id), LEVEL_IDS)
   for (const word of KOTEN_WORDS) {
     assert.equal(typeof word.kanji, 'string', `${word.id} ${word.word}: 漢字表記の判断がない`)

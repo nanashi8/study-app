@@ -2,7 +2,7 @@
 // 項目の本体（koten-grammar.js）は進捗の id と結びつくので動かさず、ここで足す。
 // 2026-09-24 に足した項目（koten-grammar-more.js）は、同じ項目を本体に直接書いている。
 //
-//   level      … 重要度 middle / basic / standard / advanced / elite（学年・目標別コースと同じ段）
+//   level      … 重要度 middle / basic / standard / advanced（学年・目標別コースと同じ段）
 //   usage      … 使い分け・見分け方の解説。紛らわしい相手がない項目は null（読んで決めた印）
 //   background … 時代背景・歴史的な変化の解説。関わらない項目は null
 //   table      … 表。{ conj: [{ word, type }] } は活用表、{ aux: ['ず'] } は助動詞の活用表、

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-01T16:44:10.219Z",
+  "auditedAt": "2026-10-02T01:47:24.095Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20708,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "2b509136c73b02afb7951a795138c06357b10ffb04abcccd92c37580b49452e1"
+    "overallContentSha256": "3e54a22d66e400ffed4fc8e18e3708ef4d22cbe1d57c21948261cd66f9ec9244"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "336cd85426145d69140638782d381650c724eeda2f984022a419834f0ff9f591",
+    "sha256": "b20f9aa619bb52e82ad8e13bb8ca6adfed20badee1570d5ddc25bf355de5a31a",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -270,6 +270,8 @@
       "tests/koten-culture.test.mjs",
       "tests/koten-curriculum.test.mjs",
       "tests/koten-grammar.test.mjs",
+      "tests/koten-level-merge-screens.test.mjs",
+      "tests/koten-level-merge.test.mjs",
       "tests/koten.test.mjs",
       "tests/learner-japanese-audit.test.mjs",
       "tests/learning-analytics.test.mjs",
@@ -578,7 +580,7 @@
       "quizItemCount": 612,
       "learningIdOrderSha256": "80b3cde1bf3cc31ccf1f2cefed88b5c2a1600f936fae970f8c244a0919421d8f",
       "quizIdOrderSha256": "80b3cde1bf3cc31ccf1f2cefed88b5c2a1600f936fae970f8c244a0919421d8f",
-      "contentSha256": "b7b9d5546f83bf9a91e803ab3eea38b3c493a00bd1c564fa7208f8ad21683866",
+      "contentSha256": "ce6f8e45c61be40111015c58567ebc24253d95e50cb9c1fe192e8e8eaf60a1e8",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -601,7 +603,7 @@
       "quizItemCount": 264,
       "learningIdOrderSha256": "92432a12754de9ff6f59befec73b8dbf10c7344d19b8e2e27f4830cd6b0dc9a8",
       "quizIdOrderSha256": "3a0a56e8cd126442451a8dc03b5c71179c1e7c30fc3600d8633d8c9d27e983f3",
-      "contentSha256": "2654886b3fed7ea4707ac75ea7d04122b3b5ee662c8a9cc4242c8ad2cc25b673",
+      "contentSha256": "e07be82b39059b92b0e6d486ce522e76944846ad63507403621d77308feedb86",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -3,11 +3,12 @@ import { KOTEN_GRAMMAR, KOTEN_GRAMMAR_CATEGORIES, KOTEN_GRAMMAR_ITEM_LEVELS } fr
 import { KOTEN_CULTURE } from './koten-culture.js'
 
 // 同じ教材を学年別に重複コピーせず、既存の安定IDを保ったまま段階的に広げる。
-// 古典単語・古典文法は項目ごとの重要度（中学→最難関の5段）でその段までを積み上げる。
+// 古典単語・古典文法は項目ごとの重要度（中学→難関の4段）でその段までを積み上げる。
+// 難関のコースは全範囲になる（2026-10-02 に、難関とほとんど重なっていた最難関のコースを難関に統合した）。
 // 文法は、その段の項目にまだない分野があれば、その分野でいちばん易しい項目を入口に1つ足す。
 // 常識はカテゴリを一巡ずつ選ぶため、初級でも偏らない。
 
-// 重要度の段の順番（中学→最難関）。コースの段と同じ id を使う。
+// 重要度の段の順番（中学→難関）。コースの段と同じ id を使う。
 const VOCAB_LEVEL_RANK = Object.fromEntries(KOTEN_WORD_LEVELS.map((level, index) => [level.id, index]))
 const vocabUpTo = (rank) => KOTEN_WORDS.filter((word) => VOCAB_LEVEL_RANK[word.level] <= rank).length
 const GRAMMAR_LEVEL_RANK = Object.fromEntries(KOTEN_GRAMMAR_ITEM_LEVELS.map((level, index) => [level.id, index]))
@@ -49,19 +50,8 @@ export const KOTEN_CURRICULUM_LEVELS = [
     id: 'advanced',
     label: '難関大学',
     shortLabel: '難関',
-    description: '紛らわしい語義・複合文法・文学史を長文読解へ接続する',
-    targets: { vocab: vocabUpTo(3), grammar: GRAMMAR_BY_LEVEL[3].size, culture: 50 },
-  },
-  {
-    id: 'elite',
-    label: '最難関大学',
-    shortLabel: '最難関',
-    description: '全教材を横断し、細部の識別まで説明できる状態を目指す',
-    targets: {
-      vocab: KOTEN_WORDS.length,
-      grammar: KOTEN_GRAMMAR.length,
-      culture: KOTEN_CULTURE.length,
-    },
+    description: '紛らわしい語義・複合文法・文学史まで全範囲を学び、細部の識別まで説明できるようにする',
+    targets: { vocab: vocabUpTo(3), grammar: GRAMMAR_BY_LEVEL[3].size, culture: KOTEN_CULTURE.length },
   },
 ]
 

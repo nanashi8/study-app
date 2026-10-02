@@ -4,7 +4,7 @@
 //
 //   kanji      … 漢字表記。慣用の漢字がない語は ''（空と明記）
 //   conj       … 活用の種類（src/lib/kotenConjugation.js の書き方）。活用しない語は持たない
-//   level      … 重要度 middle（中学）/ basic（高校基礎）/ standard（共通テスト）/ advanced（難関）/ elite（最難関）
+//   level      … 重要度 middle（中学）/ basic（高校基礎）/ standard（共通テスト）/ advanced（難関）
 //   background … 時代背景の解説。意味の理解に背景が関わらない語は null（読んで決めた印）
 //   add        … 本体の語義に足す意味（活用の種類で意味が変わる語など）
 
@@ -89,8 +89,8 @@ export const KOTEN_WORD_DETAILS = {
     background: '男が女のもとへ通う結婚では、通いが途絶えれば関係も終わった。移り気で頼りにならない恋心を「あだ」と言い、はかない命や花にも同じ語を使った。' },
   k051: { kanji: '好き好きし', conj: 'シク', level: 'standard',
     background: '平安時代の「好き（すき）」は、恋愛や和歌・音楽など風流の道に熱心なこと。『伊勢物語』の主人公のような「色好み」は、恋と歌の情趣を知る人としてほめられることもあった。' },
-  k052: { kanji: '', conj: 'ク', level: 'elite', background: null },
-  k053: { kanji: '骨無し', conj: 'ク', level: 'elite', background: null },
+  k052: { kanji: '', conj: 'ク', level: 'advanced', background: null },
+  k053: { kanji: '骨無し', conj: 'ク', level: 'advanced', background: null },
   k054: { kanji: '', conj: 'ナリ', level: 'advanced', background: null },
 
   // ── 程度・副詞 ──
@@ -177,7 +177,7 @@ export const KOTEN_WORD_DETAILS = {
     background: '手紙を使いの者に持たせて届け、取り次ぎを頼んで相手を訪ねるのがふつうだった。手紙そのものも、訪問の知らせや取り次ぎの依頼も「せうそこ」と言う。' },
   k109: { kanji: '文', level: 'middle',
     background: '平安時代の男性貴族にとって「ふみ」の学問は漢文・漢詩のことで、官吏として出世するのに必要な教養だった。恋の場面では和歌を書いた手紙を指す。' },
-  k110: { kanji: '様体・容体', level: 'elite', background: null },
+  k110: { kanji: '様体・容体', level: 'advanced', background: null },
   k111: { kanji: '程', level: 'middle', background: null },
   k112: { kanji: '業・態', level: 'standard',
     background: '人が亡くなると、四十九日や一周忌などの仏事を行って供養した。物語で「わざ」と言えば、そうした法事を指すことが多い。' },
@@ -197,7 +197,7 @@ export const KOTEN_WORD_DETAILS = {
   k123: { kanji: '', conj: 'aux:めり', level: 'standard', background: null },
   k124: { kanji: '', level: 'standard', background: null },
   k125: { kanji: '', level: 'middle', background: null },
-  k126: { kanji: '縦し…とも', level: 'elite', background: null },
+  k126: { kanji: '縦し…とも', level: 'advanced', background: null },
 
   // ── 拡充分（k127〜k200）──
   k127: { kanji: '有り難し', conj: 'ク', level: 'middle',
@@ -220,21 +220,21 @@ export const KOTEN_WORD_DETAILS = {
   k141: { kanji: '無下なり', conj: 'ナリ', level: 'standard', background: null },
   k142: { kanji: '甲斐無し', conj: 'ク', level: 'basic', background: null },
   k143: { kanji: '', conj: 'ク', level: 'advanced', background: null },
-  k144: { kanji: '文無し', conj: 'ク', level: 'elite', background: null },
+  k144: { kanji: '文無し', conj: 'ク', level: 'advanced', background: null },
   k145: { kanji: '付き付きし', conj: 'シク', level: 'standard',
     background: '『枕草子』の「冬はつとめて」の段は、寒い朝に火を急いでおこして炭を持って行き来するのを「いとつきづきし」と言う。季節や場面にぴったり合うことを美しいと感じた。' },
   k146: { kanji: '目安し', conj: 'ク', level: 'standard', background: null },
   k147: { kanji: '幼けなし', conj: 'ク', level: 'advanced', background: null },
-  k148: { kanji: '稚けなし', conj: 'ク', level: 'elite', background: null },
+  k148: { kanji: '稚けなし', conj: 'ク', level: 'advanced', background: null },
   k149: { kanji: '大人し', conj: 'シク', level: 'standard',
     background: '男子は元服、女子は裳着（もぎ）という儀式を十二〜十六歳ごろに行って大人の仲間入りをした。「おとなし」は年齢や儀式にふさわしく分別がついていることを言う。' },
   k150: { kanji: '無礼し', conj: 'ク', level: 'standard',
     background: '身分の順序がきびしく決まっていた宮廷では、座る場所や言葉づかいで相手の身分を軽く扱うことが無礼だった。上達部と同じ列に並ぶのは、身分をわきまえない失礼にあたる。' },
   k151: { kanji: '', conj: 'ク', level: 'standard',
     background: '身分によって望める位や役職がおおよそ決まっていた時代に、分をこえた望みを持つことを責める語。' },
-  k152: { kanji: '僻僻し', conj: 'シク', level: 'elite', background: null },
-  k153: { kanji: '怠怠し', conj: 'シク', level: 'elite', background: null },
-  k154: { kanji: '言痛し', conj: 'ク', level: 'elite', background: null },
+  k152: { kanji: '僻僻し', conj: 'シク', level: 'advanced', background: null },
+  k153: { kanji: '怠怠し', conj: 'シク', level: 'advanced', background: null },
+  k154: { kanji: '言痛し', conj: 'ク', level: 'advanced', background: null },
   k155: { kanji: '所狭し', conj: 'ク', level: 'standard', background: null },
   k156: { kanji: '凄し', conj: 'ク', level: 'standard', background: null },
   k157: { kanji: '煩ふ・患ふ', conj: '四段', level: 'basic',
@@ -320,7 +320,7 @@ export const KOTEN_WORD_DETAILS = {
   k206: { kanji: '遣る方無し', conj: 'ク', level: 'advanced', background: null },
   k207: { kanji: '悩まし', conj: 'シク', level: 'standard', background: null },
   k208: { kanji: '優し・恥し', conj: 'シク', level: 'standard', background: null },
-  k209: { kanji: '気疎し', conj: 'ク', level: 'elite', background: null },
+  k209: { kanji: '気疎し', conj: 'ク', level: 'advanced', background: null },
   k210: { kanji: '猛し', conj: 'ク', level: 'standard', background: null },
   k211: { kanji: '痴なり・烏滸なり', conj: 'ナリ', level: 'standard', background: null },
   k212: { kanji: '漫ろなり', conj: 'ナリ', level: 'basic', background: null },
@@ -330,11 +330,11 @@ export const KOTEN_WORD_DETAILS = {
   k216: { kanji: '頑ななり', conj: 'ナリ', level: 'advanced', background: null },
   k217: { kanji: '頼もし', conj: 'シク', level: 'standard', background: null },
   k218: { kanji: '心細し', conj: 'ク', level: 'middle', background: null },
-  k219: { kanji: '事事し', conj: 'シク', level: 'elite', background: null },
+  k219: { kanji: '事事し', conj: 'シク', level: 'advanced', background: null },
   k220: { kanji: '果無し・儚し', conj: 'ク', level: 'middle',
     background: 'すべてのものは移り変わるという仏教の無常の考えが広まり、人の命や世の中のはかなさが文学の大きな主題になった。『方丈記』『徒然草』『平家物語』はその代表。' },
   k221: { kanji: '', conj: 'ク', level: 'advanced', background: null },
-  k222: { kanji: '寝汚し', conj: 'ク', level: 'elite', background: null },
+  k222: { kanji: '寝汚し', conj: 'ク', level: 'advanced', background: null },
   k223: { kanji: '', conj: 'ク', level: 'advanced', background: null },
   k224: { kanji: '敢へ無し', conj: 'ク', level: 'standard', background: null },
   k225: { kanji: '斜めなり', conj: 'ナリ', level: 'standard', background: null },
@@ -364,7 +364,7 @@ export const KOTEN_WORD_DETAILS = {
   k244: { kanji: '急ぐ', conj: '四段', level: 'basic',
     background: '元日の行事や出発、仏事などは、衣装や贈り物、飾りつけの用意に長い時間がかかった。「いそぐ」がそうした行事の準備を指すのはそのため。' },
   k245: { kanji: '弛む', conj: '四段', level: 'advanced', background: null },
-  k246: { kanji: '争ふ・抗ふ', conj: '四段', level: 'elite', background: null },
+  k246: { kanji: '争ふ・抗ふ', conj: '四段', level: 'advanced', background: null },
   k247: { kanji: '時めく', conj: '四段', level: 'basic',
     background: '帝の寵愛を受けることは、その女性の一族の出世につながった。『源氏物語』冒頭の「すぐれて時めきたまふありけり」は、身分の高くない更衣が帝の寵愛を一身に受けたことを言う。' },
   k248: { kanji: '離る', conj: '下二段', level: 'standard',
@@ -381,9 +381,9 @@ export const KOTEN_WORD_DETAILS = {
   k256: { kanji: '宣はす', conj: '下二段', level: 'standard',
     background: '天皇や上皇など最も身分の高い人の言葉に使う。敬意の高さで「のたまふ」と使い分け、誰の発言かを見分ける手がかりになる。' },
   k257: { kanji: '仰す', conj: '下二段', level: 'basic', background: null },
-  k258: { kanji: '聞こえさす', conj: '下二段', level: 'elite', background: null },
+  k258: { kanji: '聞こえさす', conj: '下二段', level: 'advanced', background: null },
   k259: { kanji: '参らす', conj: '下二段', level: 'standard', background: null },
-  k260: { kanji: '在す・坐す', conj: '四段', level: 'elite', background: null },
+  k260: { kanji: '在す・坐す', conj: '四段', level: 'advanced', background: null },
   k261: { kanji: '', conj: '四段', level: 'basic',
     background: '天皇・上皇・中宮など最も身分の高い人がいる・行く・来ることに使う。敬意の高さで「おはす」と使い分けられる。' },
   k262: { kanji: '聞こし召す', conj: '四段', level: 'standard',

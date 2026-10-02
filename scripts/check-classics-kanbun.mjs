@@ -77,7 +77,8 @@ for (const question of [...KOTEN_GRAMMAR_QUESTIONS, ...KOTEN_CULTURE_QUESTIONS])
   assert.doesNotMatch(question.source, /オリジナル|過去問|作問/, `${question.id}: 作問の出どころをラベルにしています`)
 }
 
-assert.equal(KOTEN_CURRICULUM_PATHS.length, 5)
+// 古典のコースは中学・基礎・標準・難関の4つ（2026-10-02 に最難関を難関に統合した）。
+assert.equal(KOTEN_CURRICULUM_PATHS.length, 4)
 for (const [index, level] of KOTEN_CURRICULUM_PATHS.entries()) {
   for (const field of ['vocabIds', 'grammarIds', 'cultureIds']) {
     assert.equal(new Set(level[field]).size, level[field].length, `${level.id}:${field}`)
@@ -255,9 +256,9 @@ for (const [file, needles] of [
 }
 
 console.log('古典・漢文全件監査: PASS')
-console.log(`  古典: 暗記${KOTEN_WORDS.length + KOTEN_GRAMMAR.length + KOTEN_CULTURE.length}項目 / 選択問題${KOTEN_WORDS.length + KOTEN_GRAMMAR_QUESTIONS.length + KOTEN_CULTURE_QUESTIONS.length}問相当（出題は3択） / 短文読解${KOTEN_INTERPRETATIONS.length}問 / 5段階`)
+console.log(`  古典: 暗記${KOTEN_WORDS.length + KOTEN_GRAMMAR.length + KOTEN_CULTURE.length}項目 / 選択問題${KOTEN_WORDS.length + KOTEN_GRAMMAR_QUESTIONS.length + KOTEN_CULTURE_QUESTIONS.length}問相当（出題は3択） / 短文読解${KOTEN_INTERPRETATIONS.length}問 / ${KOTEN_CURRICULUM_PATHS.length}段階`)
 const kanbunItemCount = KANBUN_VOCAB.length + KANBUN_GRAMMAR.length + KANBUN_CULTURE.length
-console.log(`  漢文: 暗記${kanbunItemCount}項目 / 自動生成3択${kanbunItemCount}問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / 5段階`)
+console.log(`  漢文: 暗記${kanbunItemCount}項目 / 自動生成3択${kanbunItemCount}問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / ${KANBUN_LEVELS.length}段階`)
 console.log(`  用例の訓点: ${markedExampleCount}例文に返り点${exampleReturnMarkCount}個・送り仮名を付けた字${exampleOkuriganaCount} / 訓読文は全件が書き下し文と一字残らず一致`)
 console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

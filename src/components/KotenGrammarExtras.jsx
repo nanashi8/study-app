@@ -14,7 +14,7 @@ import { ChevronDown, ChevronUp } from './Icons.jsx'
 // 表の1列目（語・活用の種類など）は、細く折り返して読みにくくならない幅を取る。
 const FIRST_COLUMN = 'min-w-[5.5rem]'
 
-/** 重要度（中学入門〜最難関大学の5段）。 */
+/** 重要度（中学入門〜難関大学の4段）。 */
 export function KotenGrammarLevelChip({ item, className = '' }) {
   const level = KOTEN_GRAMMAR_ITEM_LEVEL_BY_ID[item?.level]
   if (!level) return null

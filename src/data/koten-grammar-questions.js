@@ -930,13 +930,12 @@ function rotateChoices(values, offset) {
   return [...values.slice(shift), ...values.slice(0, shift)]
 }
 
-// 項目の重要度（中学→最難関の5段）から、基礎問題の難しさ（基礎・標準・発展）を決める。
+// 項目の重要度（中学→難関の4段）から、基礎問題の難しさ（基礎・標準・発展）を決める。
 const FOUNDATION_LEVEL_BY_ITEM_LEVEL = Object.freeze({
   middle: 'basic',
   basic: 'basic',
   standard: 'standard',
   advanced: 'advanced',
-  elite: 'advanced',
 })
 
 // 全項目に最低1問を保証する基礎問題。例文を手掛かりに、意味・接続・活用を

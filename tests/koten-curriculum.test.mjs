@@ -21,12 +21,13 @@ const COLLECTIONS = {
   culture: { items: KOTEN_CULTURE, categories: KOTEN_CULTURE_CATEGORIES, field: 'cultureIds' },
 }
 
-test('古典の5段階コースは中学から最難関大まで三主分野を累積して全件へ到達する', () => {
+// コースは 2026-10-02 に最難関を難関に統合して4つにした（requests/2026-10-02-koten-level-merge.json）。
+test('古典の4段階コースは中学から難関大まで三主分野を累積して全件へ到達する', () => {
   assert.deepEqual(
     KOTEN_CURRICULUM_LEVELS.map((level) => level.id),
-    ['middle', 'basic', 'standard', 'advanced', 'elite'],
+    ['middle', 'basic', 'standard', 'advanced'],
   )
-  assert.equal(KOTEN_CURRICULUM_PATHS.length, 5)
+  assert.equal(KOTEN_CURRICULUM_PATHS.length, 4)
 
   for (const [domain, { items, categories, field }] of Object.entries(COLLECTIONS)) {
     const allIds = new Set(items.map((item) => item.id))
@@ -47,6 +48,6 @@ test('古典の5段階コースは中学から最難関大まで三主分野を�
       previous = new Set(ids)
     }
 
-    assert.deepEqual(previous, allIds, `${domain}:最難関コースが全件ではない`)
+    assert.deepEqual(previous, allIds, `${domain}:難関コースが全件ではない`)
   }
 })

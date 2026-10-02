@@ -1,0 +1,73 @@
+{
+  "id": "2026-10-02-koten-level-merge",
+  "title": "古典・漢文のコース・難易度の重複を調べ、古典単語の最難関を難関に統合する",
+  "asked": [
+    "古典単語や漢語等でコース・難易度間で重複がないか？古典単語は難関と最難関で重複があるが整理して、最難関はなしにして難関に統合しなさい。"
+  ],
+  "sessions": [
+    "b0ab8c7b-063e-4391-a1f2-bbb9c307c91c"
+  ],
+  "status": "open",
+  "notes": "2026-10-02 に調べた作り：古典単語・古典文法の重要度は middle/basic/standard/advanced/elite の5段（古典単語 58/179/217/107/51 語、古典文法 13/50/44/21/2 項目）。古典アプリのホームの「学年・目標から選ぶ」コース（koten-curriculum.js）はこの重要度で組み、1つ下のコースをすべて含む積み上げ（古典単語 58→237→454→561→612 語）。そのため難関コース（561語）の全語が最難関コース（612語）に重なり、最難関コースは全教材そのもの。古典単語のトップの「レベルから選ぶ」は語ごとに1つの段（重なりなし）。古典文法の重要度は「古典単語と同じ5段」でコースを組む作り（koten-grammar.js）なので、古典単語とコースの最難関をなくすと文法の最難関2項目がどのコースにも入らなくなる。そのため古典文法の重要度も同じ4段にそろえる。漢文（漢語・漢文法・漢文常識・返り点と訓読）は KANBUN_LEVELS の5段（最難関は漢語2語・漢文法7項目・漢文常識7テーマ・訓読4題）だが、コースがなく、一覧のしぼり込みは段ごと（重なりなし）。依頼の統合の指示は古典単語に向いているので漢文の段は変えず、調べた結果と、同じように統合できることを報告に書く。画面のコースの選択（params の course）は端末に保存しない（progressCode の PERSISTED_PROGRESS_FIELDS に入っていない）ので、最難関を選んだ状態が残ることはない。",
+  "criteria": [
+    {
+      "id": "overlap-survey",
+      "text": "古典・漢文の全教材で、コース・難易度（重要度）の重複を全件で調べて報告に書く：①各項目がちょうど1つの決まった段を持つか（2つの段に入る項目がないか）、②同じ見出しの二重登録（古典単語は見出し語＋品詞、ほかは題名・本文）、③学年・目標別コースどうしの重なり（コースごとの件数と1つ下のコースと重なる数）、④教材をまたいで同じ語を扱う項目（古典文法の「」の中の語と古典単語の見出し語、漢文法の題名の字と漢語の見出し）とその組の段の食い違い。①②は0件であること",
+      "population": "古典単語612語・古典文法130項目・古典常識56テーマ・短文解釈36問・漢語293語・漢文法131項目・漢文常識95テーマ・返り点と訓読40題の計1,393件と、古典の学年・目標別コースのすべて",
+      "check": "node scripts/checks/classics-level-overlap.mjs",
+      "status": "done"
+    },
+    {
+      "id": "koten-vocab-merge",
+      "text": "古典単語の重要度から最難関をなくし、最難関の51語を難関に移す（重要度は中学入門・高校基礎・共通テスト・中堅大・難関大学の4段。難関は107語＋51語＝158語）",
+      "population": "古典単語の全612語（うち最難関51語）",
+      "check": "node --test tests/koten-level-merge.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "koten-course-merge",
+      "text": "古典アプリの「学年・目標から選ぶ」から最難関コースをなくし、難関コースに統合する。難関コースは旧最難関コースの中身（古典単語612語・古典文法130項目・古典常識56テーマ）をすべて持ち、コースは中学・基礎・標準・難関の4つで、それぞれ1つ下のコースを含む",
+      "population": "古典の学年・目標別コースの全5コース（→4コース）と、その古典単語・古典文法・古典常識の全件",
+      "check": "node --test tests/koten-level-merge.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "koten-grammar-merge",
+      "text": "古典文法の重要度も古典単語・コースと同じ4段にし、最難関の2項目（上代の助動詞「ゆ・らゆ・ふ」・自敬表現）を難関に移す（文法の重要度は古典単語と同じ段でコースを組むため）。この2項目の基礎問題の難しさ（発展）は変えない",
+      "population": "古典文法の全130項目（うち最難関2項目）と、基礎問題130問の難しさ",
+      "check": "node --test tests/koten-level-merge.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "screens",
+      "text": "最難関を出していた画面すべてで最難関がなくなり、移した語・項目が難関として出ることを、375px のブラウザで開いて確かめる：古典単語のトップ（見出しの説明と「レベルから選ぶ」の4枚・語数）、古典アプリのホームの「学年・目標から選ぶ」（4コースと難関コースの件数）、古典単語の辞書ページ（移した51語すべての重要度）、古典文法の文法辞典と暗記カードの重要度の印（移した2項目）。これらの画面の文字に「最難関」が残らず、横にはみ出さない",
+      "population": "古典単語・古典文法の重要度とコースを出す全画面（古典単語のトップ・古典アプリのホーム・古典単語の辞書ページ・文法辞典・文法の暗記カード）と、移した51語・2項目",
+      "check": "node --test tests/koten-level-merge-screens.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "content-rules",
+      "text": "既存のテストと、npm test・npm run check をすべて通す（古典の5段・5コースを書いたテストと検査は4段・4コースに直し、動く固定値は理由を書いて直す）",
+      "population": "npm test・npm run check の全件",
+      "check": "node --test tests/koten-level-merge.test.mjs && npm test && npm run check",
+      "status": "waiting",
+      "waitingFor": "作業ツリーの npm test（1,317件）で落ちた2件（学習者向け日本語の数 235559→235552、漢字語の台帳に残った「最難関大学」）を直し、npm run check:content は作業ツリーで通った。いまクリーンな clone で npm run audit:all-content を流している（裏の処理 b9j50ymvx）。通ったらコミット → push → デプロイの成功と公開版の画面を確かめる"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で古典単語のトップ・古典アプリのホームに最難関がなく、難関に統合されていることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "false",
+      "status": "waiting",
+      "waitingFor": "作業ツリーの npm test（1,317件）で落ちた2件（学習者向け日本語の数 235559→235552、漢字語の台帳に残った「最難関大学」）を直し、npm run check:content は作業ツリーで通った。いまクリーンな clone で npm run audit:all-content を流している（裏の処理 b9j50ymvx）。通ったらコミット → push → デプロイの成功と公開版の画面を確かめる"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない",
+      "population": "このセッションの scratchpad の study-app の複製すべてと、共有の作業ツリーのこのセッションのファイル",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/b0ab8c7b-063e-4391-a1f2-bbb9c307c91c && node --test tests/leftover-changes.test.mjs",
+      "status": "waiting",
+      "waitingFor": "作業ツリーの npm test（1,317件）で落ちた2件（学習者向け日本語の数 235559→235552、漢字語の台帳に残った「最難関大学」）を直し、npm run check:content は作業ツリーで通った。いまクリーンな clone で npm run audit:all-content を流している（裏の処理 b9j50ymvx）。通ったらコミット → push → デプロイの成功と公開版の画面を確かめる"
+    }
+  ]
+}

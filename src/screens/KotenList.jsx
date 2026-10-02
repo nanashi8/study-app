@@ -287,7 +287,7 @@ export function KotenListScreen() {
       <div className="pb-6" data-koten-vocab-top>
         <ScreenHeader
           title="古典単語"
-          subtitle="中学古典〜最難関大学の重要語を暗記・テスト"
+          subtitle="中学古典〜難関大学の重要語を暗記・テスト"
           right={(
             <IconButton onClick={() => openVocabCatalog('all')} aria-label="古典単語を一覧で確認する">
               <Search size={22} />
