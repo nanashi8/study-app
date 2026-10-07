@@ -5,6 +5,7 @@ import { applyRequestedScreenPlace, noteScreenTap } from '../lib/screenScroll.js
 import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft, Menu } from './Icons.jsx'
 import { GlobalSpeechConsole } from './SpeechConsole.jsx'
+import { SaveFailureNotice } from './SaveFailureNotice.jsx'
 
 // アプリ外枠。スマホは全幅、PCでは中央に「スマホ幅」のアプリを表示。
 // 戻る操作とメニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
@@ -100,6 +101,8 @@ export function AppShell({ children, showGlobalMenu = true }) {
             </div>
           </div>
         )}
+        {/* 学習の記録を端末に保存できなかったときだけ出る（保存できたら消える）。 */}
+        <SaveFailureNotice />
         <main
           ref={scrollAreaRef}
           className="study-app-content no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"

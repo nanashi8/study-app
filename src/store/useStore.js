@@ -158,6 +158,7 @@ import { appendMathExamLog, normalizeMathExamLog } from '../lib/mathExamLog.js'
 import { appendSubjectPracticeLog, normalizeSubjectPracticeLog } from '../lib/subjectPractice.js'
 import { SUBJECTS } from '../data/subjects/meta.js'
 import { MATH_EXAM_QUIZ_DOMAIN } from '../lib/mathExam.js'
+import { createAppStorage } from '../lib/appStorage.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // 箱（段階）で間隔をのばす間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -1857,6 +1858,9 @@ export const useStore = create(
     {
       name: 'eigo-quest',
       version: 11,
+      // 保存先は IndexedDB（開けない端末は localStorage）。書き込みの失敗で例外を出さない（lib/appStorage.js）。
+      // localStorage のころは、容量を超えると記録の書き込みが例外を投げ、暗記カードが次へ進まなくなった（2026-10-07）。
+      storage: createAppStorage(),
       migrate: migratePersistedState,
       merge: mergePersistedState,
       // ナビゲーション系は保存しない。

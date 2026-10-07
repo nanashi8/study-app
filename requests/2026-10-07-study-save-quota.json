@@ -1,0 +1,73 @@
+{
+  "id": "2026-10-07-study-save-quota",
+  "title": "暗記の途中で次の単語へ進まなくなる不具合の原因を突き止め、再発を防ぐ",
+  "asked": [
+    "英単語を1回のカード数を100で10問中10問未習からの出題で英検準1級を暗記していたところ、途中から自動で次の単語に進まなくなる不具合が発生したので、原因を究明して、同様の不具合が発生しないようにしなさい。",
+    "IndexedDBはPC・スマホ・iphone・Androidを問わずウェブアプリを実行できるか？"
+  ],
+  "sessions": [
+    "410b68b8-f666-41f1-b95d-e574fff53947"
+  ],
+  "status": "open",
+  "notes": "2026-10-07 の調べ。原因：学習の記録はストア（zustand の persist）が localStorage の 'eigo-quest' 1つに、記録を変えるたびに同じ流れで書く。persist は状態を変えた直後に localStorage.setItem を呼び、容量を超えると QuotaExceededError をそのまま投げる。暗記カードの「まだ／覚えた」（VocabStudy の answer）は review() で記録を書いてから回答を控えて次のカードへ移すので、例外で途中で止まり、メモリ上の記録だけ増えて（押し直すと二重に数える）カードは進まない。再現：Chromium で localStorage の残りを3万文字にして、準1級・1回100枚・未修だけで暗記を始めると、77枚目（残り24枚）で押しても進まず、ページに QuotaExceededError が出た。新しい状態からでは100枚とも進む（覚えた・まだ・混在の3通り）。規模：記録1語あたり約350文字（100枚で srs が35,047文字増えた）。全24教材の学習項目は20,337件（docs/audits/content-audit-ledger.json）で、全部を暗記・テストすると約800万文字。Chromium の localStorage の上限は 5,242,880 文字（測った）。iPhone の Safari も5MBで、日本語を含む文字列は1文字2バイトで数えるので約260万文字（約6,500項目）が見込みで、5級から順に学んで準1級の途中で届く数になる。直し方：①保存先を IndexedDB にする（容量が大きく全教材の記録が入る）。使えない環境では localStorage。②保存の書き込みはどの失敗でも例外を画面へ伝えない（記録はメモリに残り、学習は続けられる）。③保存できなかったときは画面で知らせる。④今の端末の localStorage の記録はそのまま引き継ぐ。止まった時点より後にその端末で学んだ分は保存されていないので戻せない。 2026-10-07、利用者から「IndexedDBはPC・スマホ・iphone・Androidを問わずウェブアプリを実行できるか？」と聞かれ、主なブラウザすべて（iPhone は全ブラウザが WebKit）で使えること、プライベートブラウズ・Safari の7日の消去は localStorage と同じこと、開けない端末では localStorage に切り替えて書き込みの失敗で止まらない作りにすることを答えた。テスト用の WebKit はこの Mac に入っていないので、ブラウザのテストは Chromium で行う（WebKit を入れるかは利用者に聞いた）。",
+  "criteria": [
+    {
+      "id": "cause-reproduced",
+      "text": "原因を再現するテストを置く：端末の保存がいっぱいのとき、直す前の作り（localStorage へそのまま書く persist）では記録の書き込みが QuotaExceededError を投げること、直した作りでは投げないこと（直す前の作り＝createJSONStorage(() => localStorage) では review が QuotaExceededError を投げ、記録だけメモリに入ることをテストで再現。直した作りでは投げない）",
+      "population": "ストアの記録の書き込み（review）を、容量超過で失敗する保存先で動かす場合",
+      "check": "node --test tests/study-save-quota.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "writes-never-throw",
+      "text": "保存の書き込みは、どの失敗（容量超過・保存先が使えない・IndexedDB を開けない・書き込みの失敗）でも例外も reject も画面へ伝えない。ストアの記録を書く全操作（review 系の全操作と選び直し）が、保存に失敗しても例外を投げず、記録はメモリに入る。アプリの中で localStorage・IndexedDB に学習の記録を書くのは保存の部品1つだけ（失敗の型9通り＋成功2通りで throw も reject もなし。記録を書くストアの操作23個すべてで例外なし・記録はメモリに入る。review で始まる操作12個をすべて含むことも確かめる。src の全ファイルで localStorage・indexedDB を使うのは lib/appStorage.js だけ）",
+      "population": "ストアの persist の保存先（アプリの記録を書く唯一の経路）と、ストアの記録を書く全操作",
+      "check": "node --test tests/study-save-quota.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "capacity-all-content",
+      "text": "全教材の全項目を暗記とテストの両方で学んだ最大の記録を、ブラウザで保存して読み戻せる（読み戻した記録が書いた記録と一致する）（全24教材20,337項目の最大の記録は 7,588,534 文字で、Chromium の localStorage の上限 5,242,880 文字を超える。IndexedDB に保存し、読み直して全52欄が書いた記録と一致、暗記・テストで記録する教材の全項目の記録が戻ることを確かめた）",
+      "population": "全24教材の学習項目20,337件（記録の欄ごとの全項目）",
+      "check": "node --test tests/study-save-quota-browser.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "migrate-local-storage",
+      "text": "今の端末の localStorage にある記録を、起動したときにそのまま引き継ぐ（全欄が一致）。引き継いで保存できたら localStorage の古い記録は消して容量を空ける。読み戻しが終わるまで画面を出さず、読み戻す前の空の状態で記録を上書きしない（前の版と同じ読み戻し（IndexedDB なし）と全52欄が一致。IndexedDB へ同じ文字列で写り、localStorage から消える。IndexedDB を開くのを1.5秒遅らせても、そのあいだ画面を出さず localStorage も書き換えない）",
+      "population": "保存している全欄（PERSISTED_PROGRESS_FIELDS の52欄）",
+      "check": "node --test tests/study-save-quota-browser.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "user-scenario",
+      "text": "利用者の場面をブラウザで確かめる：localStorage がいっぱいの端末で、英検準1級・1回のカード数100・出題「未修だけ」（10問中 復習0・未修10）で暗記を始め、100枚すべてで「まだ／覚えた」を押すと次のカードへ進み、結果画面まで行く。その記録は保存され、読み直しても残る（Chromium で localStorage を残り0まで埋め、準1級・100枚・未修だけで100枚すべてが次へ進み結果画面へ。読み直して100語の記録が残る。直す前の作りでは残り3万文字の端末で77枚目に止まった）",
+      "population": "準1級の1回100枚の全100枚",
+      "check": "node --test tests/study-save-quota-browser.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "save-failure-notice",
+      "text": "記録を保存できなかったときは、画面で知らせる（保存できるようになったら消える）（4つの型それぞれの知らせを Node で、IndexedDB なし・localStorage いっぱいの端末での表示と、空きができて保存できたら消えることを375pxのブラウザで確かめた）",
+      "population": "保存の失敗のすべての型（容量超過・保存先が使えない・開けない・書き込みの失敗）",
+      "check": "node --test tests/study-save-quota.test.mjs tests/study-save-quota-browser.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "content-rules",
+      "text": "既存のテストと、npm test・npm run check をすべて通す",
+      "population": "npm test・npm run check の全件",
+      "check": "node --test tests/study-save-quota.test.mjs && npm test && npm run check",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）。作業ツリーの npm test は1,331件中1,330件合格で、落ちた1件（学習者向け日本語の数：3ファイル・5表記増）は理由を書いて直した。npm run check は check:content まで通り、監査台帳が古い確認だけ落ちた（書き直しは audit:all-content）"
+    },
+    {
+      "id": "on-main-deployed",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で記録が IndexedDB に保存されることを確かめる",
+      "population": "この依頼で変えたファイルすべてと、main・公開版",
+      "check": "node --test tests/study-save-quota.test.mjs",
+      "status": "waiting",
+      "waitingFor": "main への push と GitHub Pages のデプロイ"
+    }
+  ]
+}

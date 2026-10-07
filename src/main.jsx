@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.jsx'
 import { startSafeAreaSync } from './lib/safeArea.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
+import { StoreReady } from './components/StoreReady.jsx'
 import { isChunkLoadError, reloadFresh } from './lib/appRecovery.js'
 
 // 上下のふち（時刻表示・ホームバー）に隠れないよう、実測して余白を合わせる。
@@ -22,7 +23,10 @@ try {
     <StrictMode>
       {/* アプリ全体の最後の受け皿。ここまで来た例外も画面として出す。 */}
       <ErrorBoundary>
-        <App />
+        {/* 端末に保存した学習の記録を読み戻してから画面を出す。 */}
+        <StoreReady>
+          <App />
+        </StoreReady>
       </ErrorBoundary>
     </StrictMode>,
   )

@@ -87,11 +87,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （古典単語と古典文法で「最難関大学」「最難関」を2つずつ）と最難関コースの名前・短い名前・説明の7表記が消え、
   // ソース全体が 235559 から 235552 になった（学習者画面の日本語は、古典単語のトップの説明の言い換えだけなので変わらない。
   // requests/2026-10-02-koten-level-merge.json）。
-  assert.equal(result.learnerFiles, 348)
-  assert.equal(result.learnerJapaneseEntries, 18347)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13709)
-  assert.equal(result.sourceFiles, 823)
-  assert.equal(result.sourceJapaneseEntries, 235552)
+  // 2026-10-07、学習の記録の保存先を IndexedDB にし、保存できなかったときの知らせを出したので、保存の部品
+  // （src/lib/appStorage.js）・知らせ（src/components/SaveFailureNotice.jsx）・読み戻しを待つ部品
+  // （src/components/StoreReady.jsx）の3ファイルが増え、知らせの見出しと続け方の5表記（重複なし4）で、学習者画面の日本語が
+  // 18347 から 18352 に、ソース全体が 235552 から 235557 になった（requests/2026-10-07-study-save-quota.json）。
+  assert.equal(result.learnerFiles, 351)
+  assert.equal(result.learnerJapaneseEntries, 18352)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13713)
+  assert.equal(result.sourceFiles, 826)
+  assert.equal(result.sourceJapaneseEntries, 235557)
   assert.equal(result.issues.length, 0)
 })
 
