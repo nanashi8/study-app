@@ -8,7 +8,7 @@
   "sessions": [
     "410b68b8-f666-41f1-b95d-e574fff53947"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "2026-10-07 の調べ。原因：学習の記録はストア（zustand の persist）が localStorage の 'eigo-quest' 1つに、記録を変えるたびに同じ流れで書く。persist は状態を変えた直後に localStorage.setItem を呼び、容量を超えると QuotaExceededError をそのまま投げる。暗記カードの「まだ／覚えた」（VocabStudy の answer）は review() で記録を書いてから回答を控えて次のカードへ移すので、例外で途中で止まり、メモリ上の記録だけ増えて（押し直すと二重に数える）カードは進まない。再現：Chromium で localStorage の残りを3万文字にして、準1級・1回100枚・未修だけで暗記を始めると、77枚目（残り24枚）で押しても進まず、ページに QuotaExceededError が出た。新しい状態からでは100枚とも進む（覚えた・まだ・混在の3通り）。規模：記録1語あたり約350文字（100枚で srs が35,047文字増えた）。全24教材の学習項目は20,337件（docs/audits/content-audit-ledger.json）で、全部を暗記・テストすると約800万文字。Chromium の localStorage の上限は 5,242,880 文字（測った）。iPhone の Safari も5MBで、日本語を含む文字列は1文字2バイトで数えるので約260万文字（約6,500項目）が見込みで、5級から順に学んで準1級の途中で届く数になる。直し方：①保存先を IndexedDB にする（容量が大きく全教材の記録が入る）。使えない環境では localStorage。②保存の書き込みはどの失敗でも例外を画面へ伝えない（記録はメモリに残り、学習は続けられる）。③保存できなかったときは画面で知らせる。④今の端末の localStorage の記録はそのまま引き継ぐ。止まった時点より後にその端末で学んだ分は保存されていないので戻せない。 2026-10-07、利用者から「IndexedDBはPC・スマホ・iphone・Androidを問わずウェブアプリを実行できるか？」と聞かれ、主なブラウザすべて（iPhone は全ブラウザが WebKit）で使えること、プライベートブラウズ・Safari の7日の消去は localStorage と同じこと、開けない端末では localStorage に切り替えて書き込みの失敗で止まらない作りにすることを答えた。テスト用の WebKit はこの Mac に入っていないので、ブラウザのテストは Chromium で行う（WebKit を入れるかは利用者に聞いた）。",
   "criteria": [
     {
@@ -55,19 +55,17 @@
     },
     {
       "id": "content-rules",
-      "text": "既存のテストと、npm test・npm run check をすべて通す",
+      "text": "既存のテストと、npm test・npm run check をすべて通す（作業ツリーの npm test で落ちた1件＝学習者向け日本語の数（3ファイル・5表記増）を理由を書いて直し、クリーンな clone の npm run audit:all-content でテスト1,331件すべて合格・check:content・build・全教材監査台帳（24カテゴリ・教材20,337件・問題経路7,280件・失敗0件）まで通した）",
       "population": "npm test・npm run check の全件",
       "check": "node --test tests/study-save-quota.test.mjs && npm test && npm run check",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content（全テスト・全監査・監査台帳の書き直し）。作業ツリーの npm test は1,331件中1,330件合格で、落ちた1件（学習者向け日本語の数：3ファイル・5表記増）は理由を書いて直した。npm run check は check:content まで通り、監査台帳が古い確認だけ落ちた（書き直しは audit:all-content）"
+      "status": "done"
     },
     {
       "id": "on-main-deployed",
-      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で記録が IndexedDB に保存されることを確かめる",
+      "text": "この依頼の変更を、クリーンな clone で npm run audit:all-content を通してから main へ push し、デプロイの成功と、公開版で記録が IndexedDB に保存されることを確かめる（2026-10-07 に c599818b を main へ push し、デプロイ 37563530705 の成功（build・deploy）を確かめた。公開版を375pxで開き、前の版の記録を localStorage に置いて開くと IndexedDB（eigo-quest-store）へ同じ文字列で写り、localStorage から消え、読み直しても IndexedDB から戻ることを確かめた（デプロイ前の公開版では localStorage に残り IndexedDB は空だった）。保存できない知らせは出ていない）",
       "population": "この依頼で変えたファイルすべてと、main・公開版",
       "check": "node --test tests/study-save-quota.test.mjs",
-      "status": "waiting",
-      "waitingFor": "main への push と GitHub Pages のデプロイ"
+      "status": "done"
     }
   ]
 }
