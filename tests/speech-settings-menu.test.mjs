@@ -117,7 +117,7 @@ test('途中でやめたテストも、答えた分だけを一度その分野�
   // 単語の詳細を見て戻る間は続きを退避するので、そこでも数えない。
   assert.match(
     read('../src/screens/VocabQuiz.jsx'),
-    /const saveBeforeDetail = \(\) => \{\n[^}]*handOffSession\(\)/,
+    /const saveBeforeDetail = \((?:targetId = word\.id)?\) => \{\n[^}]*handOffSession\(\)/,
   )
 })
 

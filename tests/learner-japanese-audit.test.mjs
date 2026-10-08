@@ -91,11 +91,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （src/lib/appStorage.js）・知らせ（src/components/SaveFailureNotice.jsx）・読み戻しを待つ部品
   // （src/components/StoreReady.jsx）の3ファイルが増え、知らせの見出しと続け方の5表記（重複なし4）で、学習者画面の日本語が
   // 18347 から 18352 に、ソース全体が 235552 から 235557 になった（requests/2026-10-07-study-save-quota.json）。
-  assert.equal(result.learnerFiles, 351)
-  assert.equal(result.learnerJapaneseEntries, 18352)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13713)
-  assert.equal(result.sourceFiles, 826)
-  assert.equal(result.sourceJapaneseEntries, 235557)
+  // 2026-10-08、英単語の解説の文に出る英単語をリンクにして意味を添えたので、解説の部品（src/components/ExplainedText.jsx）と
+  // 文の分け方（src/lib/explanationWords.js。言語名・助詞などの見分けに日本語を持つ）の2ファイルが学習者画面に、
+  // 添える意味の台帳（src/data/explanation-words.js）がソース全体に増えた。学習者画面の日本語が 18352 から 18376
+  // （重複なし 13713 から 13722）に、ソース全体が 235557 から 237094 になった（requests/2026-10-08-explanation-word-links.json）。
+  assert.equal(result.learnerFiles, 353)
+  assert.equal(result.learnerJapaneseEntries, 18376)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13722)
+  assert.equal(result.sourceFiles, 829)
+  assert.equal(result.sourceJapaneseEntries, 237094)
   assert.equal(result.issues.length, 0)
 })
 

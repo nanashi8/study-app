@@ -5,7 +5,7 @@ import { ArrowRight } from './Icons.jsx'
 import { isAmbiguousSpeechText } from '../lib/speechGuard.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { FORM_POS_LABELS } from '../lib/wordRelations.js'
-import { MeaningText } from './MeaningText.jsx'
+import { ExplainedText } from './ExplainedText.jsx'
 import { OriginNote } from './LookalikeOrigins.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { Chip, cx } from './ui.jsx'
@@ -46,7 +46,7 @@ function UsageNote({ text }) {
   return (
     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-amber-900/85 ring-1 ring-amber-100" data-word-usage-note>
       <span className="mr-1 font-extrabold text-amber-700">使い分け</span>
-      <MeaningText>{text}</MeaningText>
+      <ExplainedText>{text}</ExplainedText>
     </p>
   )
 }
@@ -85,32 +85,40 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
                 )}
                 {level && <Chip color={level.color}>{level.label}</Chip>}
               </div>
-              {row.meaning && (
-                <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{row.meaning}</MeaningText></p>
-              )}
-              {/* 意味が広がった・ずれた形は、もとの語の意味からの筋道を添える。 */}
-              {row.note && (
-                <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-note>{row.note}</p>
-              )}
-              <UsageNote text={row.usage} />
             </div>
             {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
           </>
         )
-        return (
-          <li key={`${row.text}-${index}`} className="flex items-center gap-2 py-1.5">
-            <RowSpeakButton text={row.text} />
-            {canOpen ? (
-              <button
-                type="button"
-                onClick={() => onWord(row.entry.id)}
-                className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
-              >
-                {body}
-              </button>
-            ) : (
-              <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
+        // 意味と解説は行のボタンの外に置く（中の英単語もリンクなので、ボタンの中に入れない）。
+        const notes = (row.meaning || row.note || row.usage) && (
+          <div className="pl-10">
+            {row.meaning && (
+              <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{row.meaning}</ExplainedText></p>
             )}
+            {/* 意味が広がった・ずれた形は、もとの語の意味からの筋道を添える。 */}
+            {row.note && (
+              <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-note><ExplainedText>{row.note}</ExplainedText></p>
+            )}
+            <UsageNote text={row.usage} />
+          </div>
+        )
+        return (
+          <li key={`${row.text}-${index}`} className="py-1.5">
+            <div className="flex items-center gap-2">
+              <RowSpeakButton text={row.text} />
+              {canOpen ? (
+                <button
+                  type="button"
+                  onClick={() => onWord(row.entry.id)}
+                  className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
+                >
+                  {body}
+                </button>
+              ) : (
+                <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
+              )}
+            </div>
+            {notes}
           </li>
         )
       })}
@@ -132,7 +140,7 @@ export function WordFormSection({ items, sameItems = [], onWord, showPhonetic, o
     <div data-word-forms>
       {/* この語自身が、もとの語から意味の離れた語のとき。並ぶ形はもとの語のものなので、つながりを先に示す。 */}
       {ownNote && (
-        <p className="mb-1 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-own-note>{ownNote}</p>
+        <p className="mb-1 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-own-note><ExplainedText>{ownNote}</ExplainedText></p>
       )}
       {items.length > 0 && (
         <>
@@ -209,8 +217,8 @@ export function CustomPhraseSection({ word }) {
           <li key={phrase.phrase} className="flex items-start gap-2">
             <RowSpeakButton text={phraseSpeechText({ phrase: phrase.phrase })} title="熟語" />
             <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
-              {phrase.meaning && <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>}
+              <p className="font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">{phrase.phrase}</p>
+              {phrase.meaning && <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>}
             </div>
           </li>
         ))}
@@ -230,8 +238,8 @@ export function IdiomEquivalentSection({ phrases }) {
           <li key={phrase.id} className="flex items-start gap-2">
             <RowSpeakButton text={phraseSpeechText(phrase)} title="熟語" />
             <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
-              <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+              <p className="font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">{phrase.phrase}</p>
+              <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
               <UsageNote text={phrase.usageNote} />
             </div>
           </li>
@@ -255,10 +263,10 @@ function PhraseList({ phrases }) {
             {phrase.kind === 'syntax' ? '構文' : '熟語'}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-display text-sm font-extrabold leading-snug text-ink">
+            <p className="font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">
               {phrase.phrase}
             </p>
-            <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+            <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
           </div>
         </li>
       ))}
@@ -333,7 +341,7 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
   return (
     <div data-word-confusables>
       <SectionTitle className="text-rose-500">つづりが似ていて間違えやすい語</SectionTitle>
-      <p className="-mt-1 text-[11px] font-bold text-ink/45">色つきの文字が {word.word} とちがう所</p>
+      <p className="-mt-1 text-[11px] font-bold text-ink/45">{'色つきの文字が '}<span data-explain-kind="self">{word.word}</span>{' とちがう所'}</p>
       <ul className="divide-y divide-rose-50" data-speech-group>
         {items.map((item) => {
           const level = item.word.level ? getLevel(item.word.level) : null
@@ -360,27 +368,36 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{item.word.meaning}</MeaningText></p>
-                <UsageNote text={item.usageNote} />
-                {/* 2語の語源がつながっているか（同じ語源・遠い親戚・別の語源・はっきりしない）。 */}
-                <OriginNote origin={item.origin} />
               </div>
               {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
             </>
           )
           return (
-            <li key={item.word.id ?? item.word.word} className="flex items-center gap-2 py-2">
-              <RowSpeakButton text={item.word.word} />
-              {canOpen ? (
-                <button
-                  type="button"
-                  onClick={() => onWord(item.word.id)}
-                  className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
-                >
-                  {body}
-                </button>
-              ) : (
-                <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
+            <li key={item.word.id ?? item.word.word} className="py-2">
+              <div className="flex items-center gap-2">
+                <RowSpeakButton text={item.word.word} />
+                {canOpen ? (
+                  <button
+                    type="button"
+                    onClick={() => onWord(item.word.id)}
+                    className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
+                  >
+                    {body}
+                  </button>
+                ) : (
+                  <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
+                )}
+              </div>
+              {/* 解説は行のボタンの外に置く（解説の中の語もリンクなので、ボタンの中に入れない）。 */}
+              {(item.word.meaning || item.usageNote || item.origin) && (
+                <div className="pl-10">
+                  {item.word.meaning && (
+                    <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{item.word.meaning}</ExplainedText></p>
+                  )}
+                  <UsageNote text={item.usageNote} />
+                  {/* 2語の語源がつながっているか（同じ語源・遠い親戚・別の語源・はっきりしない）。 */}
+                  <OriginNote origin={item.origin} />
+                </div>
               )}
             </li>
           )
@@ -399,7 +416,7 @@ export function LoanwordHint({ hint, className }) {
         <span className="text-xs font-extrabold text-amber-700">カタカナ語のヒント</span>
         <span className="font-display text-base font-extrabold text-ink">{hint.kana}</span>
       </div>
-      {hint.note && <p className="mt-1 text-xs font-bold leading-relaxed text-amber-900/80">{hint.note}</p>}
+      {hint.note && <p className="mt-1 text-xs font-bold leading-relaxed text-amber-900/80"><ExplainedText>{hint.note}</ExplainedText></p>}
     </div>
   )
 }

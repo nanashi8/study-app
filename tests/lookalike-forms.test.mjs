@@ -110,10 +110,11 @@ test('contemporary・contempt・contemplate：3語とその形の画面で、元
   for (const id of ['tempt', 'temptation', 'tempting', 'attempt']) {
     const html = blockHtml(id)
     assert.ok(html.includes('data-lookalike-form-section="tempt"'), id)
-    assert.ok(html.includes('con＋tempt ではない'), id)
+    // 解説の文の英単語はリンクの部品で描き、意味を添えることがあるので、タグを外した文で確かめる。
+    assert.match(html.replace(/<[^>]+>/gu, ''), /con＋tempt(?:（[^）]*）)? ではない/u, id)
     assert.ok(html.includes('>contempt<'), id)
   }
-  assert.ok(blockHtml('contempt').includes('con＋tempt ではない'))
+  assert.match(blockHtml('contempt').replace(/<[^>]+>/gu, ''), /con＋tempt(?:（[^）]*）)? ではない/u)
   // テストの答え合わせでは見出しだけにしておき、押すと開く。
   const folded = blockHtml('contempt', { lookalikeCollapsed: true })
   assert.ok(folded.includes('つづりが似た語は同じ語源？') && !folded.includes('data-lookalike-form-row='))

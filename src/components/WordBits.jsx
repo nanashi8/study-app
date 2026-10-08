@@ -11,6 +11,7 @@ import { ArrowRight, Check } from './Icons.jsx'
 import { Chip, cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
 import { LookalikeWordSection } from './LookalikeOrigins.jsx'
+import { ExplainedText } from './ExplainedText.jsx'
 
 const POS_COLORS = {
   動: '#6366f1', 名: '#0ea5e9', 形: '#f59e0b', 副: '#10b981',
@@ -48,11 +49,11 @@ function SenseList({ senses, baseRank }) {
                 <span className="text-[11px] font-bold text-ink/45">この先の級で出てくる</span>
               )}
             </div>
-            <p className="mt-1.5 font-bold text-ink"><MeaningText>{sense.meaning}</MeaningText></p>
+            <p className="mt-1.5 font-bold text-ink"><ExplainedText>{sense.meaning}</ExplainedText></p>
             {sense.example && (
               <>
-                <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
-                <p className="text-xs font-bold text-ink/45"><MeaningText>{sense.example.ja}</MeaningText></p>
+                <p className="mt-1 text-sm font-bold text-ink/70" data-explain-exempt="例文">{sense.example.en}</p>
+                <p className="text-xs font-bold text-ink/45" data-explain-exempt="例文"><MeaningText>{sense.example.ja}</MeaningText></p>
               </>
             )}
           </li>
@@ -220,7 +221,7 @@ export function EtymologyBlock({ word, onRoot, onPack, onWord, lookalikeCollapse
     <div className="space-y-2.5" data-reviewed-etymology-cards>
       {story && (
         <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-reviewed-word-story>
-          <p className="text-sm font-bold leading-relaxed text-ink"><MeaningText>{story.note}</MeaningText></p>
+          <p className="text-sm font-bold leading-relaxed text-ink"><ExplainedText>{story.note}</ExplainedText></p>
         </div>
       )}
       {cards.length > 0 && (

@@ -4,7 +4,8 @@
 import { useState } from 'react'
 import { lookalikeRowsForCard, lookalikeSectionsForWord } from '../lib/lookalikeOrigins.js'
 import { lookalikeFormSectionsForWord } from '../lib/lookalikeForms.js'
-import { MeaningText } from './MeaningText.jsx'
+import { ExplainedText, WordLink } from './ExplainedText.jsx'
+import { defaultMeaningOf } from '../lib/explanationWords.js'
 import { cx } from './ui.jsx'
 
 const KIND_STYLES = {
@@ -40,7 +41,7 @@ export function OriginNote({ origin }) {
     >
       <span className="mr-1 font-extrabold text-slate-600">語源</span>
       <LookalikeKindChip kind={origin.kind} label={origin.label} />{' '}
-      <MeaningText>{origin.note}</MeaningText>
+      <ExplainedText>{origin.note}</ExplainedText>
     </p>
   )
 }
@@ -78,11 +79,11 @@ function LookalikeRow({ row, onWord, rowAttr = 'data-lookalike-row' }) {
       {/* 形の似た語のまとまりでは、まとまりどうしのつながりの説明を、由来の説明の前に分けて出す。 */}
       {row.relationNote && (
         <p className="mt-1 text-xs font-extrabold leading-relaxed text-ink/70" data-lookalike-relation-note>
-          <MeaningText>{row.relationNote}</MeaningText>
+          <ExplainedText>{row.relationNote}</ExplainedText>
         </p>
       )}
       {row.note && (
-        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60"><MeaningText>{row.note}</MeaningText></p>
+        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60"><ExplainedText>{row.note}</ExplainedText></p>
       )}
     </li>
   )
@@ -136,6 +137,26 @@ function Foldable({ title, count, collapsible, children, dataAttrs }) {
   )
 }
 
+/** 語根の形と意味（vid / vis（見る））。形は英語の語ではないので、リンクにしない。 */
+function RootName({ card }) {
+  return (
+    <>
+      <span data-explain-kind="part">{card.rootForm}</span>
+      {'（'}{card.rootMeaning}{'）'}
+    </>
+  )
+}
+
+/** 同じ由来の語の並び。語はどれも辞書ページへのリンクで、意味を添える。区切りの「・」は前の語の後ろに付け、行の頭に来ないようにする。 */
+function SiblingLinks({ words }) {
+  return words.map((sibling, index) => (
+    <span key={sibling.id} className="whitespace-nowrap">
+      <WordLink wordId={sibling.id} meaning={defaultMeaningOf(sibling)} marks={{ 'data-explain-source': 'list' }}>{sibling.word}</WordLink>
+      {index < words.length - 1 && '・'}
+    </span>
+  ))
+}
+
 /**
  * 単語の画面の「つづりが似た語は同じ語源？」。その語が入る語源カードごとに1つ出す。
  * - カードの語: カードの形とつづりが似た語を、カードの語根とのつながりの近い順に並べる。
@@ -155,18 +176,21 @@ export function LookalikeWordSection({ word, onWord, collapsible = false, classN
     >
       <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50">{KIND_GUIDE}</p>
       {sections.map((section) => {
-        const cardName = `${section.card.rootForm}（${section.card.rootMeaning}）`
         const siblings = section.siblings ?? []
         return (
           <div key={`${section.card.rootId}:${section.role}`} className="mt-2" data-lookalike-section={section.role}>
+            {/* 語根の形（vid・port など）は英語の語ではないので、リンクにしない。 */}
             <p className="text-xs font-bold leading-relaxed text-ink/70">
-              {section.role === 'family'
-                ? `語根 ${cardName} とつづりが似た語。語根とのつながり:`
-                : `${word.word} は、語根 ${cardName} の語とつづりが似ている。`}
+              {section.role === 'family' ? (
+                <>{'語根 '}<RootName card={section.card} />{' とつづりが似た語。語根とのつながり:'}</>
+              ) : (
+                <><span data-explain-kind="self">{word.word}</span>{' は、語根 '}<RootName card={section.card} />{' の語とつづりが似ている。'}</>
+              )}
             </p>
             {siblings.length > 0 && (
-              <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50">
-                同じ由来の語: {siblings.map((sibling) => sibling.word).join('・')}
+              <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50" data-lookalike-family-siblings>
+                {'同じ由来の語: '}
+                <SiblingLinks words={siblings} />
               </p>
             )}
             <LookalikeRows rows={section.rows} onWord={onWord} />
@@ -187,27 +211,18 @@ export function LookalikeWordSection({ word, onWord, collapsible = false, classN
 function LookalikeFormSection({ word, section, onWord }) {
   return (
     <div className="mt-2" data-lookalike-form-section={section.form}>
+      {/* 見出しの形（contemp・vice など）は語の一部のつづりなので、リンクにしない。 */}
       <p className="text-xs font-bold leading-relaxed text-ink/70">
-        {`${section.heading}。${word.word} と形は似ていても、元の語がちがう語がある。`}
+        <span data-explain-kind="part">{section.form}</span>
+        {`${section.heading.slice(section.form.length)}。`}
+        <span data-explain-kind="self">{word.word}</span>
+        {' と形は似ていても、元の語がちがう語がある。'}
       </p>
       {section.siblings.length > 0 && (
         <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50" data-lookalike-siblings>
-          {`${word.word} と同じ由来の語: `}
-          {/* 区切りの「・」は前の語の後ろに付け、行の頭に来ないようにする。 */}
-          {section.siblings.map((sibling, index) => (
-            <span key={sibling.id} className="whitespace-nowrap">
-              {onWord ? (
-                <button
-                  type="button"
-                  onClick={() => onWord(sibling.id)}
-                  className="font-extrabold text-violet-700 underline decoration-dotted underline-offset-2 active:opacity-70"
-                >
-                  {sibling.word}
-                </button>
-              ) : sibling.word}
-              {index < section.siblings.length - 1 && '・'}
-            </span>
-          ))}
+          <span data-explain-kind="self">{word.word}</span>
+          {' と同じ由来の語: '}
+          <SiblingLinks words={section.siblings} />
         </p>
       )}
       <LookalikeRows rows={section.rows} onWord={onWord} rowAttr="data-lookalike-form-row" />
@@ -217,7 +232,7 @@ function LookalikeFormSection({ word, section, onWord }) {
           data-lookalike-tip
         >
           <span className="mr-1 font-extrabold text-amber-700">見分け方</span>
-          <MeaningText>{section.tip}</MeaningText>
+          <ExplainedText>{section.tip}</ExplainedText>
         </p>
       )}
     </div>

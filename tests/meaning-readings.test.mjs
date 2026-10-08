@@ -47,12 +47,14 @@ test('英単語の意味を出す画面は、読みを添える部品を通し�
     'src/components/LiteratureSentenceSheet.jsx',
     'src/components/WordBits.jsx',
     'src/components/WordRelations.jsx',
+    'src/components/ExplainedText.jsx',
     'src/components/ExtendedReader.jsx',
     'src/components/ReadingSentenceDetail.jsx',
     'src/components/VocabularyHistoryRow.jsx',
     'src/components/LearningContentCatalog.jsx',
   ]) {
-    assert.match(read(file), /<MeaningText>/, file)
+    // 解説の文を出す部品（ExplainedText）は、中で MeaningText を通す。
+    assert.match(read(file), /<MeaningText>|<ExplainedText>/, file)
   }
   // テストの選択肢も読みを添えて出す（正誤の判定は元の文字列のまま）。
   assert.match(read('src/screens/VocabQuiz.jsx'), /<MeaningText>\{quizMeaning\(option\)\}<\/MeaningText>/)

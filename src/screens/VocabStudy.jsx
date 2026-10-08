@@ -24,6 +24,7 @@ import { GrammarRoles } from '../components/GrammarRoles.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
+import { ExplainedText, ExplanationScope } from '../components/ExplainedText.jsx'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import {
   AntonymSection,
@@ -473,6 +474,7 @@ export function VocabStudyScreen() {
               <ArrowRight size={20} className="rotate-90" />
             </div>
           ) : (
+            <ExplanationScope selfId={word.id} onWord={openRelatedWord}>
             <div className="mt-5 space-y-4 animate-slide-up">
               {/* 意味 */}
               <div className="rounded-2xl bg-brand-50 p-4">
@@ -512,8 +514,8 @@ export function VocabStudyScreen() {
                       />
                     )}
                     <div className="flex-1">
-                      <p className="font-bold text-ink">{word.example.en}</p>
-                      <p className="mt-0.5 text-sm font-bold text-ink/55"><MeaningText>{word.example.ja}</MeaningText></p>
+                      <p className="font-bold text-ink" data-explain-exempt="例文">{word.example.en}</p>
+                      <p className="mt-0.5 text-sm font-bold text-ink/55" data-explain-exempt="例文"><MeaningText>{word.example.ja}</MeaningText></p>
                     </div>
                   </div>
                 </div>
@@ -549,7 +551,7 @@ export function VocabStudyScreen() {
                     <Lightbulb size={14} />
                     <span className="text-xs font-extrabold">使い方・使い分け</span>
                   </div>
-                  <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
+                  <p className="text-sm font-bold leading-relaxed text-amber-900/90"><ExplainedText>{word.usage}</ExplainedText></p>
                 </div>
               )}
               <UsageGuideCards guides={word.usageGuides} />
@@ -607,6 +609,7 @@ export function VocabStudyScreen() {
                 <ArrowRight size={16} />
               </button>
             </div>
+            </ExplanationScope>
           )}
         </div>
       </CardSwipeRegion>

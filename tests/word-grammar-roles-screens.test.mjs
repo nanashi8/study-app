@@ -25,7 +25,11 @@ after(async () => {
 const rolesOnScreen = () => ui.page.evaluate(() => {
   const box = document.querySelector('[data-word-grammar-roles]')
   if (!box) return null
+  // 解説の文の英単語に添えた意味（ExplainedText）は元の文にないので、隠してから文を読む。
+  const added = [...box.querySelectorAll('[data-explain-meaning]')]
+  for (const node of added) node.style.display = 'none'
   const items = [...box.querySelectorAll('[data-word-grammar-role]')].map((item) => item.innerText.replace(/\s+/gu, ' '))
+  for (const node of added) node.style.display = ''
   const links = [...box.querySelectorAll('[data-word-grammar-ref]')].map((button) => button.getAttribute('data-word-grammar-ref'))
   const main = document.querySelector('.study-app-content')
   return { items, links, top: box.getBoundingClientRect().top + main.scrollTop, otherSenses: main.innerText.includes('ほかの意味') }

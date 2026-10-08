@@ -770,7 +770,7 @@ export const ROOT_LOOKALIKES = Object.freeze({
   ],
   // hospit / host ＝ 客・もてなす（ラテン語 hospes）
   hospit: [
-    [S, 'hostile hostility host_2', 'ラテン語 hostis「よそ者→敵」から（host_2 は古フランス語 host「軍勢」を経た「大群」）。hospes「客・もてなす主人」は、hostis と同じ「よそ者」を表す語根に「主人」を表す語が合わさった語で、このカードと同じ語根から。よそ者をもてなせば客、戦えば敵。'],
+    [S, 'hostile hostility host_2', 'ラテン語 hostis「よそ者→敵」から（「大群」の host は、古フランス語 host「軍勢」を経た語）。hospes「客・もてなす主人」は、hostis と同じ「よそ者」を表す語根に「主人」を表す語が合わさった語で、このカードと同じ語根から。よそ者をもてなせば客、戦えば敵。'],
     [S, 'hostage', '古フランス語 hostage「宿を借りること・保証に預けられた人」（hoste「客・主人」、ラテン語 hospes から）→「人質」。このカードと同じ hospes から。'],
     [S, 'inhospitable', 'in-「〜でない」＋ hospitable「もてなしのよい」（ラテン語 hospes「客をもてなす人」から）→「無愛想な・住みにくい」。このカードと同じ hospes から。'],
   ],

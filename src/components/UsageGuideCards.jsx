@@ -1,6 +1,7 @@
 import { Card } from './ui.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { Check, Lightbulb } from './Icons.jsx'
+import { ExplainedText } from './ExplainedText.jsx'
 
 export function UsageGuideCards({ guides = [] }) {
   if (!guides.length) return null
@@ -20,7 +21,7 @@ export function UsageGuideCards({ guides = [] }) {
               {guide.title}
             </h2>
             <p className="mt-1 text-sm font-bold leading-relaxed text-amber-950/75">
-              {guide.summary}
+              <ExplainedText>{guide.summary}</ExplainedText>
             </p>
           </div>
 
@@ -32,14 +33,14 @@ export function UsageGuideCards({ guides = [] }) {
                     {choice.term}
                   </span>
                   <p className="pt-0.5 text-sm font-bold leading-relaxed text-ink/75">
-                    {choice.rule}
+                    <ExplainedText>{choice.rule}</ExplainedText>
                   </p>
                 </div>
                 <div className="mt-2 flex items-start gap-2 rounded-xl bg-ink/[0.025] p-2.5">
                   <SpeakButton text={choice.example} size="sm" />
                   <div className="min-w-0">
-                    <p className="font-bold text-ink">{choice.example}</p>
-                    <p className="mt-0.5 text-xs font-bold text-ink/50">{choice.ja}</p>
+                    <p className="font-bold text-ink" data-explain-exempt="例文">{choice.example}</p>
+                    <p className="mt-0.5 text-xs font-bold text-ink/50" data-explain-exempt="例文">{choice.ja}</p>
                   </div>
                 </div>
               </div>
@@ -55,17 +56,17 @@ export function UsageGuideCards({ guides = [] }) {
                 </span>
               </div>
               <div className="grid gap-1.5 text-sm font-bold">
-                <p className="text-rose-600">
+                <p className="text-rose-600" data-explain-exempt="用例">
                   <span className="mr-1.5 rounded bg-rose-100 px-1.5 py-0.5 text-[10px]">避ける</span>
                   {guide.preferred.avoid}
                 </p>
-                <p className="text-emerald-800">
+                <p className="text-emerald-800" data-explain-exempt="用例">
                   <span className="mr-1.5 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px]">使う</span>
                   {guide.preferred.use}
                 </p>
               </div>
               <p className="mt-2 text-xs font-bold leading-relaxed text-emerald-900/70">
-                {guide.preferred.reason}
+                <ExplainedText>{guide.preferred.reason}</ExplainedText>
               </p>
             </div>
           )}

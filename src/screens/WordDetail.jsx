@@ -17,6 +17,7 @@ import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
+import { ExplainedText, ExplanationScope } from '../components/ExplainedText.jsx'
 import {
   AntonymSection,
   ConfusableSection,
@@ -112,6 +113,7 @@ export function WordDetailScreen() {
   const openWord = (wordId) => navigate('wordDetail', { id: wordId })
 
   return (
+    <ExplanationScope selfId={word.id} onWord={openWord}>
     <div className="flex h-full flex-col">
       <div ref={screenRef} className="min-h-0 flex-1 overflow-y-auto pb-4" data-return-scroll="word-detail">
         <ScreenHeader
@@ -170,8 +172,8 @@ export function WordDetailScreen() {
               <div className="flex items-start gap-2">
                 {exampleSpeechAllowed(word) && <SpeakButton text={word.example.en} size="sm" />}
                 <div className="flex-1">
-                  <p className="font-bold text-ink">{word.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55"><MeaningText>{word.example.ja}</MeaningText></p>
+                  <p className="font-bold text-ink" data-explain-exempt="例文">{word.example.en}</p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55" data-explain-exempt="例文"><MeaningText>{word.example.ja}</MeaningText></p>
                 </div>
               </div>
             </Card>
@@ -186,7 +188,7 @@ export function WordDetailScreen() {
                     <Lightbulb size={16} />
                     <span className="text-[11px] font-extrabold uppercase tracking-wide">使い方・使い分け</span>
                   </div>
-                  <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
+                  <p className="text-sm font-bold leading-relaxed text-amber-900/90"><ExplainedText>{word.usage}</ExplainedText></p>
                 </div>
               )}
               {derivatives.length > 0 && (
@@ -298,5 +300,6 @@ export function WordDetailScreen() {
       </div>
 
     </div>
+    </ExplanationScope>
   )
 }

@@ -5,6 +5,7 @@ import { LEVELS, getLevel } from '../data/levels.js'
 import { GRAMMAR_ROLE_STYLES, GRAMMAR_ROLE_UNITS } from '../data/word-grammar-roles.js'
 import { ArrowRight, BookOpen } from './Icons.jsx'
 import { MeaningText } from './MeaningText.jsx'
+import { ExplainedText } from './ExplainedText.jsx'
 import { Chip, cx } from './ui.jsx'
 import { PosBadge } from './WordBits.jsx'
 
@@ -74,19 +75,19 @@ export function GrammarRoles({ word, onGrammarRef, className = '' }) {
                   <span className="text-[11px] font-bold text-ink/45">{'この先の級で出てくる'}</span>
                 )}
               </div>
-              <p className="mt-1.5 text-base font-extrabold text-ink"><MeaningText>{item.meaning}</MeaningText></p>
+              <p className="mt-1.5 text-base font-extrabold text-ink"><ExplainedText>{item.meaning}</ExplainedText></p>
               {/* 品詞の「形」（形容詞）と取り違えないよう、文の形は「語順」と呼ぶ。 */}
               {item.form && (
                 <p className="mt-1 text-xs font-bold leading-relaxed text-teal-900/80" data-word-grammar-role-form>
                   <span className="mr-1.5 rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-extrabold text-teal-800">{'語順'}</span>
-                  {item.form}
+                  <ExplainedText>{item.form}</ExplainedText>
                 </p>
               )}
-              <p className="mt-1.5 text-sm font-bold leading-relaxed text-ink/75"><MeaningText>{item.explain}</MeaningText></p>
+              <p className="mt-1.5 text-sm font-bold leading-relaxed text-ink/75"><ExplainedText>{item.explain}</ExplainedText></p>
               {item.example && (
                 <div className="mt-2 rounded-lg bg-white/80 p-2.5">
-                  <p className="text-sm font-bold text-ink">{item.example.en}</p>
-                  <p className="mt-0.5 text-xs font-bold text-ink/55"><MeaningText>{item.example.ja}</MeaningText></p>
+                  <p className="text-sm font-bold text-ink" data-explain-exempt="例文">{item.example.en}</p>
+                  <p className="mt-0.5 text-xs font-bold text-ink/55" data-explain-exempt="例文"><MeaningText>{item.example.ja}</MeaningText></p>
                 </div>
               )}
               <GrammarRefLinks ids={item.grammar ?? []} onGrammarRef={onGrammarRef} />

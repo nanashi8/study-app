@@ -39,6 +39,7 @@ before(async () => {
   vite = await createServer({ configFile: false, appType: 'custom', logLevel: 'silent', server: { middlewareMode: true } })
   components = {
     roles: await vite.ssrLoadModule('/src/components/GrammarRoles.jsx'),
+    explained: await vite.ssrLoadModule('/src/components/ExplainedText.jsx'),
     bits: await vite.ssrLoadModule('/src/components/WordBits.jsx'),
     vocab: await vite.ssrLoadModule('/src/data/vocab.js'),
   }
@@ -191,9 +192,13 @@ test('働きの欄は単語カードの裏と辞書ページの部品で出し�
   const { OtherSenses } = components.bits
   const word = components.vocab.getWord('who')
   const opened = []
-  const html = renderToStaticMarkup(React.createElement(GrammarRoles, { word, onGrammarRef: (unitId) => opened.push(unitId) }))
+  // 画面と同じく、いま見ている語を ExplanationScope で伝える（who 自身はリンクにせず意味も添えない）。
+  const html = renderToStaticMarkup(React.createElement(components.explained.ExplanationScope, { selfId: word.id },
+    React.createElement(GrammarRoles, { word, onGrammarRef: (unitId) => opened.push(unitId) })))
+  // 解説の文の中の英単語はリンクの部品（ExplainedText）で描くので、タグを外した文で確かめる。
+  const plain = html.replace(/<[^>]+>/gu, '')
   for (const text of ['文の中での働き', '疑問詞', '関係代名詞', '関係代名詞・継続用法', '〜する(人)', 'そしてその人は〜', '先行詞', '人 ＋ who ＋ 動詞 〜', 'The boy who is running over there is my brother.', '参考書「関係代名詞」', '参考書「関係代名詞(継続)」', '語順', 'この先の級で出てくる']) {
-    assert.ok(html.includes(text.replace(/&/gu, '&amp;')), text)
+    assert.ok(plain.includes(text.replace(/&/gu, '&amp;')), text)
   }
   assert.equal((html.match(/data-word-grammar-role="/gu) ?? []).length, 3)
   assert.equal((html.match(/data-word-grammar-ref="/gu) ?? []).length, 4)

@@ -17,6 +17,7 @@ import {
 } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { MeaningText } from '../components/MeaningText.jsx'
+import { ExplanationScope } from '../components/ExplainedText.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { CustomEtymology, EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
@@ -277,7 +278,8 @@ export function VocabQuizScreen() {
     }
   }
 
-  const saveBeforeDetail = () => {
+  // 解説の中の語のリンクからは、その語の辞書ページへ（targetId）。
+  const saveBeforeDetail = (targetId = word.id) => {
     // 単語の詳細を見て戻る間は続きを退避するので、ここでは記録しない。
     handOffSession()
     saveQuizSession({
@@ -299,7 +301,7 @@ export function VocabQuizScreen() {
         battleLog: [...results.current.answerLog],
       },
     })
-    navigate('wordDetail', { id: word.id })
+    navigate('wordDetail', { id: targetId })
   }
 
   const feedback = isCorrectPick
@@ -432,6 +434,7 @@ export function VocabQuizScreen() {
         </div>
 
         {answered && (
+          <ExplanationScope selfId={word.id} onWord={saveBeforeDetail}>
           <div className="mx-auto mt-4 w-full max-w-xl animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx(
               'font-display text-lg font-extrabold',
@@ -469,10 +472,11 @@ export function VocabQuizScreen() {
                 <CustomEtymology word={word} />
               </div>
             )}
-            <button onClick={saveBeforeDetail} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">
+            <button onClick={() => saveBeforeDetail()} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">
               辞書ページで関連語も見る <ArrowRight size={15} />
             </button>
           </div>
+          </ExplanationScope>
         )}
       </div>
 
