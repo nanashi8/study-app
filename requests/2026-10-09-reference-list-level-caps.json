@@ -8,7 +8,7 @@
   "sessions": [
     "81128d94-3d6e-4c08-8a1b-494f373d0ef5"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "一覧の中身は公開リポジトリに名前や語の並びとして書かない（外部資料への言及の決まり）。行ごとの照合は、行の文字列の SHA-256（先頭16桁）と、その行が指すアプリの見出しの id・上限の級だけを scripts/data/level-cap-lists.js に持つ。2026-10-09 の照合：高校の単語 1,900行・高校の熟語 1,000行・中学の単語 1,784行（番号1800のうち16行は空）・中学の熟語 400行。上限を超える見出しは、同じつづりの別の語を含めて延べ950件。",
   "criteria": [
     {
@@ -71,9 +71,9 @@
       "id": "all-screens-and-gates",
       "text": "変えた級が、単語・熟語の暗記カード・テスト・辞書ページ・一覧・級ごとの数・出題に同じく出る。級の検査・固定の数・監査台帳がすべて通る",
       "population": "級を読む全画面とデータ（ALL_WORDS・PHRASES を読むもの）と npm run audit:all-content",
-      "check": "npm run audit:all-content",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone での npm run audit:all-content と、公開版（GitHub Pages）での表示の確認"
+      "check": "node --test tests/reference-list-level-caps.test.mjs tests/exam-dictionary.test.mjs tests/content-audit-ledger.test.mjs && npm test && npm run check",
+      "status": "done",
+      "result": "クリーンな clone で npm run audit:all-content が通った（全テスト・全監査、24カテゴリ・教材20,492件・失敗0件）。commit b5b5554 を push し、GitHub Pages の公開が成功（run 37869339707）。開発版と公開版の画面で、熟語の級ごとの数（5級86・4級227・3級303・準2級319・2級655・準1級158・1級161、全1,909）、3級の熟語一覧の303項目に足した熟語と3級へ下げた熟語が並ぶこと、単語の級ごとの数（5級609・4級713・3級992・準2級1,330・2級1,902・準1級2,406・1級977）、辞書ページで appropriate が準2級・apt が2級と出ることを確かめた。級はどの画面も ALL_WORDS・PHRASES の level を読む。"
     }
   ]
 }
