@@ -414,6 +414,11 @@ export const WORD_SENSES = Object.freeze({
       pos: '動', level: 'pre1', meaning: '狭める・(narrow down で)絞り込む',
       example: Object.freeze({ en: 'We narrowed the list down to three candidates.', ja: '私たちは候補を3人に絞り込んだ。' }),
     }),
+    // 2026-10-09、長文（工場の博物館）の a narrow vote（わずかな票差）で使う意味。
+    Object.freeze({
+      pos: '形', level: '2', meaning: '(差が)わずかな・ぎりぎりの',
+      example: Object.freeze({ en: 'Our team won by a narrow margin.', ja: '私たちのチームはわずかな差で勝った。' }),
+    }),
   ]),
   long: Object.freeze([
     Object.freeze({
@@ -713,6 +718,79 @@ export const WORD_SENSES = Object.freeze({
     Object.freeze({
       pos: '副', level: '5', meaning: '家へ・家に・故郷へ',
       example: Object.freeze({ en: 'I went home early.', ja: '私は早く家に帰った。' }),
+    }),
+  ]),
+  // 2026-10-09、長文の読解の準備に出る語を本文の文と1組ずつ読み比べ、本文の意味がカードに無かった語に足した。
+  perform: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre1', meaning: '機能する・(うまく)働く',
+      example: Object.freeze({ en: 'The new engine performs well in cold weather.', ja: '新しいエンジンは寒い天候でもよく機能する。' }),
+    }),
+  ]),
+  moderation: Object.freeze([
+    Object.freeze({
+      pos: '名', level: '1', meaning: '(投稿などの)管理・監視',
+      example: Object.freeze({ en: 'The forum needs careful moderation of comments.', ja: 'その掲示板にはコメントの慎重な管理が必要だ。' }),
+    }),
+  ]),
+  circulation: Object.freeze([
+    Object.freeze({
+      pos: '名', level: '1', meaning: '(情報などの)流通・広まり',
+      example: Object.freeze({ en: 'The circulation of false news is hard to stop.', ja: '偽のニュースの広まりは止めにくい。' }),
+    }),
+  ]),
+  deliberate: Object.freeze([
+    Object.freeze({
+      pos: '動', level: '1', meaning: '熟議する・よく話し合って考える',
+      example: Object.freeze({ en: 'The committee deliberated for hours before the vote.', ja: '委員会は採決の前に何時間も熟議した。' }),
+    }),
+  ]),
+  population: Object.freeze([
+    Object.freeze({
+      pos: '名', level: '2', meaning: '(生き物の)個体数・数',
+      example: Object.freeze({ en: 'The bird population in the park has grown.', ja: '公園の鳥の個体数が増えた。' }),
+    }),
+  ]),
+  heavy: Object.freeze([
+    Object.freeze({
+      pos: '形', level: '4', meaning: '(雨・雪などが)激しい・大量の',
+      example: Object.freeze({ en: 'We had heavy rain last night.', ja: '昨夜は激しい雨が降った。' }),
+    }),
+  ]),
+  grow: Object.freeze([
+    Object.freeze({
+      pos: '動', level: '3', meaning: '(しだいに)〜になる',
+      example: Object.freeze({ en: 'The room grew quiet when the teacher came in.', ja: '先生が入ってくると、部屋はしだいに静かになった。' }),
+    }),
+  ]),
+  organize: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre2', meaning: '整理する・まとめる',
+      example: Object.freeze({ en: 'I need to organize my notes before the test.', ja: 'テストの前にノートを整理する必要がある。' }),
+    }),
+  ]),
+  judge: Object.freeze([
+    Object.freeze({
+      pos: '動', level: '3', meaning: '判断する・見きわめる',
+      example: Object.freeze({ en: 'You should not judge a book by its cover.', ja: '表紙で本を判断してはいけない。' }),
+    }),
+  ]),
+  track: Object.freeze([
+    Object.freeze({
+      pos: '名', level: '3', meaning: '(競技場の)トラック・陸上競技',
+      example: Object.freeze({ en: 'She runs on the track every morning.', ja: '彼女は毎朝トラックを走る。' }),
+    }),
+  ]),
+  script: Object.freeze([
+    Object.freeze({
+      pos: '名', level: '2', meaning: '文字・文字の体系',
+      example: Object.freeze({ en: 'Japanese is written in three kinds of script.', ja: '日本語は3種類の文字で書かれる。' }),
+    }),
+  ]),
+  plant: Object.freeze([
+    Object.freeze({
+      pos: '名', level: 'pre2', meaning: '工場・(power plant で)発電所',
+      example: Object.freeze({ en: 'The new power plant will open next year.', ja: '新しい発電所は来年動き始める。' }),
     }),
   ]),
 })

@@ -2,7 +2,7 @@
 //
 // 2026-10-02 まで、辞書の検索は見出し語・代表義・例文・類義語などを見ていたが、ほかの意味（word-senses.js と、
 // 代表義に入らない疑問詞・関係詞の働き。vocab.js が otherSenses に合流する）を見ていなかった（「権利」で right が出ない）。
-//   全件       … ほかの意味130件の訳語の全体と「・」で区切った1つずつで、その語が検索結果に出る
+//   全件       … ほかの意味143件の訳語の全体と「・」で区切った1つずつで、その語が検索結果に出る
 //   順位       … 代表義で当たった語（3）の次（3.5）、例文などで当たった語（4）より上。ほかの意味の例文は 4 で引ける
 //   別の語     … 同じつづりの別の語（homograph-words.js）は、自分の意味で当たるときだけ上位に出る
 //   自作カード … ほかの意味の欄の訳語から、辞書の検索に混ぜて出す自作カードの英単語が出る
@@ -30,17 +30,17 @@ const includesQuery = (texts, query) => texts.some((text) => normalizeVocabQuery
 const representativeTexts = (word) => [word.meaning, ...(word.meanings ?? [])]
 const ownMeaningTexts = (word) => [...representativeTexts(word), ...(word.otherSenses ?? []).map((sense) => sense.meaning)]
 
-test('ほかの意味は130件（word-senses.js の101語113件と、疑問詞・関係詞の働きの17件）で、どれも辞書の語にある', () => {
+test('ほかの意味は143件（word-senses.js の113語126件と、疑問詞・関係詞の働きの17件）で、どれも辞書の語にある', () => {
   const ids = Object.keys(WORD_SENSES)
-  assert.equal(ids.length, 101)
-  assert.equal(ids.reduce((sum, id) => sum + WORD_SENSES[id].length, 0), 113)
+  assert.equal(ids.length, 113)
+  assert.equal(ids.reduce((sum, id) => sum + WORD_SENSES[id].length, 0), 126)
   const wordIds = new Set(ALL_WORDS.map((word) => word.id))
   assert.deepEqual(ids.filter((id) => !wordIds.has(id)), [])
-  assert.equal(SENSES.length, 130, 'ほかの意味を足したら、ここの数を直す')
+  assert.equal(SENSES.length, 143, 'ほかの意味を足したら、ここの数を直す')
   assert.equal(SENSES.filter(({ sense }) => sense.role).length, 17)
 })
 
-test('ほかの意味130件の訳語の全体と「・」で区切った1つずつで検索すると、その語が出る', () => {
+test('ほかの意味143件の訳語の全体と「・」で区切った1つずつで検索すると、その語が出る', () => {
   let queries = 0
   for (const { word, sense } of SENSES) {
     for (const query of queriesOf(sense.meaning)) {
@@ -57,7 +57,7 @@ test('ほかの意味130件の訳語の全体と「・」で区切った1つず�
     // 検索画面と同じ入口（単語・熟語・構文をまとめた検索の、単語の分）でも出る。
     assert.ok(searchDictionary(sense.meaning, { type: 'word' }).some((entry) => entry.word.id === word.id), `${word.id}: 「${sense.meaning}」で出ない`)
   }
-  assert.equal(queries, 355)
+  assert.equal(queries, 393)
 })
 
 test('順位：ほかの意味で当たった語は、代表義で当たった語の次、例文などで当たった語より上に並ぶ', () => {
@@ -82,7 +82,7 @@ test('ほかの意味の例文（英文と和訳）は、代表義の例文と�
       assert.ok(rank >= 0 && rank <= 4, `${word.id}: 「${text}」で出ない`)
     }
   }
-  assert.equal(examples, 260)
+  assert.equal(examples, 286)
 })
 
 test('同じつづりの別の語は、ほかの意味と取り違えて上位に出ない（自分の意味で当たるときだけ上位に出る）', () => {
@@ -137,7 +137,7 @@ test('自作カードの英単語は、ほかの意味の欄の訳語から引�
   }
 })
 
-test('単語帳の画面のノートの検索でも、辞書の語のほかの意味130件の訳語から引ける', () => {
+test('単語帳の画面のノートの検索でも、辞書の語のほかの意味143件の訳語から引ける', () => {
   let queries = 0
   for (const { word, sense } of SENSES) {
     for (const query of queriesOf(sense.meaning)) {
@@ -145,6 +145,6 @@ test('単語帳の画面のノートの検索でも、辞書の語のほかの�
       assert.ok(searchNotebookItems('vocab', query).some((item) => item.id === word.id), `${word.id}: ノートで「${query}」から出ない`)
     }
   }
-  assert.equal(queries, 355)
+  assert.equal(queries, 393)
   assert.ok(searchNotebookItems('vocab', '権利').some((item) => item.id === 'right'))
 })

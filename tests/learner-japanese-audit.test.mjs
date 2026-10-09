@@ -99,11 +99,16 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2ファイルが増え、ソース全体が 829 から 831 ファイル・237094 から 237116 になった（requests/2026-10-09-reference-list-level-caps.json）。
   // 2026-10-09、長文の単語まとめの単語の一覧を共通のスワイプ一覧にし、詳細の案内・空のときの文の6表記（重複なし3）で、
   // 学習者画面の日本語が 18376 から 18382 に、ソース全体が 237116 から 237122 になった（requests/2026-10-09-reading-summary-swipe.json）。
-  assert.equal(result.learnerFiles, 353)
-  assert.equal(result.learnerJapaneseEntries, 18382)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13725)
-  assert.equal(result.sourceFiles, 831)
-  assert.equal(result.sourceJapaneseEntries, 237122)
+  // 2026-10-09、読解の準備を本文に合わせ、準備の読解ルールを読解画面から作る部品（src/lib/readingPrepRules.js）が学習者画面に、
+  // 本文に出る熟語を足す台帳（src/data/reading-prep-phrase-additions.js）がソース全体に増えた。読解ルールの段の見出し・
+  // 重点語ケースの入口と一覧・あらすじの書き直し・13語のほかの意味などで、学習者画面の日本語が 18382 から 18405
+  // （重複なし 13725 から 13736）に、ソース全体が 831 から 833 ファイル・237122 から 237197 になった
+  // （requests/2026-10-09-reading-prep-alignment.json）。
+  assert.equal(result.learnerFiles, 354)
+  assert.equal(result.learnerJapaneseEntries, 18405)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13736)
+  assert.equal(result.sourceFiles, 833)
+  assert.equal(result.sourceJapaneseEntries, 237197)
   assert.equal(result.issues.length, 0)
 })
 

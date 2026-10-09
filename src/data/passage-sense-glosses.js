@@ -41,7 +41,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     learned: sense('learn', '学んだ'),
     harming: sense('harm', '害を与える・傷つける'),
   }),
-  'The class planted those flowers around the garden, and the number of damaged leaves soon decreased.': words({ leaves: sense('leaf', '葉（複数）') }),
+  'The class planted those flowers around the garden, and the number of damaged leaves soon decreased.': words({
+    leaves: sense('leaf', '葉（複数）'),
+    decreased: sense('decrease', '減った'),
+  }),
   'Instead of simply giving the food away, the students visited the center and explained how they had grown it.': words({
     giving: sense('give', '（give 〜 away で）配ること'),
     away: sense('away', '（give 〜 away で）人に渡して・手放して'),
@@ -1081,6 +1084,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre2_crowded_town_tourism（写真が広まった町で）
+  'After the first season, complaints about noise decreased, but the streets were still crowded at noon.': words({ decreased: sense('decrease', '減った') }),
   'Photographs shared online showed a quiet street with old wooden houses and a view of the valley.': words({
     shared: sense('share', '共有された（share の過去分詞）'),
     view: sense('view', '眺め・景色'),
@@ -1091,6 +1095,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
   'Some visitors entered private gardens because the path to the shrine was not clearly marked.': words({ marked: sense('mark', '示された（mark の過去分詞。was marked で「示されていた」）') }),
   'Litter increased near the bus stop, and neighbors collected it themselves every Monday.': words({
+    increased: sense('increase', '増えた'),
     stop: sense('stop', '停留所（bus stop でバス停）'),
     collected: sense('collect', '集めた・拾い集めた'),
   }),
@@ -1116,6 +1121,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'The mayor said that tourism must serve the people who live there every day.': words({ serve: sense('serve', '（人々の）役に立つ') }),
 
   // p_pre2plus_rural_bus_future（村のバスは誰が動かすのか）
+  'Yet the number of passengers has decreased steadily as young people moved to cities.': words({ decreased: sense('decrease', '減ってきた（has decreased）') }),
   'In many rural areas, the local bus is the only way for people without cars to reach a hospital.': words({ reach: sense('reach', '（場所に）たどり着く・行く') }),
   'Some companies used to run several routes, but today they cannot fill even one bus.': words({
     used: sense('use', '（used to で）以前は〜していた'),

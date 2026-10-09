@@ -1,0 +1,4096 @@
+{
+  "about": "読解の準備に出る語（テーマ必須語彙・場面の束）が本文に出る文のうち、本文の和訳にカードの訳語（代表義・ほかの意味）が入っていない組を1組ずつ読んだ結果（requests/2026-10-09-reading-prep-alignment.json）。キーは「長文id#文の番号|見出し語id」、fp は本文の英文の指紋。verdict は same＝カードと同じ意味（和訳が言い換えている）、form＝派生・活用の形で意味はカードの語から分かる、pos＝品詞が変わるだけ、other＝カード裏のほかの意味で使う、phrase＝熟語の一部として使う。本文の意味がカードに無かった13語（perform・moderation・circulation・deliberate・population・heavy・grow・organize・judge・track・narrow・script・plant）は、src/data/word-senses.js にほかの意味を足して直した。",
+  "reviewed": {
+    "p_5_lost_notebook#0|high": {
+      "verdict": "phrase",
+      "note": "junior high school（中学校）の一部",
+      "fp": "9c80d9c27afb"
+    },
+    "p_5_lost_notebook#0|school": {
+      "verdict": "same",
+      "fp": "9c80d9c27afb"
+    },
+    "p_5_lost_notebook#2|has": {
+      "verdict": "same",
+      "fp": "fb32c3bf3008"
+    },
+    "p_5_lost_notebook#5|look": {
+      "verdict": "same",
+      "fp": "0282df01e6ea"
+    },
+    "p_5_lost_notebook#6|see": {
+      "verdict": "same",
+      "fp": "8348fdd428a1"
+    },
+    "p_4_library_event#0|event": {
+      "verdict": "same",
+      "fp": "7fa6e76db406"
+    },
+    "p_4_library_event#1|topic": {
+      "verdict": "same",
+      "fp": "bbc319a86ad0"
+    },
+    "p_4_library_event#2|topic": {
+      "verdict": "same",
+      "fp": "77209b989e80"
+    },
+    "p_4_library_event#2|local": {
+      "verdict": "same",
+      "fp": "77209b989e80"
+    },
+    "p_4_library_event#5|build": {
+      "verdict": "same",
+      "fp": "880d4b85ef27"
+    },
+    "p_4_library_event#6|provide": {
+      "verdict": "same",
+      "fp": "bced5c8d62cb"
+    },
+    "p_4_library_event#6|bring": {
+      "verdict": "same",
+      "fp": "bced5c8d62cb"
+    },
+    "p_4_library_event#6|craft": {
+      "verdict": "same",
+      "fp": "bced5c8d62cb"
+    },
+    "p_4_library_event#7|parent": {
+      "verdict": "same",
+      "fp": "c59defdf0cd7"
+    },
+    "p_4_library_event#7|home": {
+      "verdict": "same",
+      "fp": "c59defdf0cd7"
+    },
+    "p_4_library_event#8|event": {
+      "verdict": "same",
+      "fp": "c33a7ba021bb"
+    },
+    "p_4_library_event#8|start": {
+      "verdict": "same",
+      "fp": "c33a7ba021bb"
+    },
+    "p_4_library_event#11|message": {
+      "verdict": "same",
+      "fp": "180d5b269619"
+    },
+    "p_4_library_event#12|event": {
+      "verdict": "same",
+      "fp": "93aeb1f48e5a"
+    },
+    "p_4_library_event#12|way": {
+      "verdict": "same",
+      "fp": "93aeb1f48e5a"
+    },
+    "p_3_school_garden#0|garden": {
+      "verdict": "same",
+      "fp": "6dbe327c7bbf"
+    },
+    "p_3_school_garden#2|plant": {
+      "verdict": "same",
+      "fp": "17e4ac093682"
+    },
+    "p_3_school_garden#5|garden": {
+      "verdict": "same",
+      "fp": "4571f8f4b28a"
+    },
+    "p_3_school_garden#5|quickly": {
+      "verdict": "same",
+      "fp": "4571f8f4b28a"
+    },
+    "p_3_school_garden#8|chemical": {
+      "verdict": "same",
+      "fp": "fc3bcf293d44"
+    },
+    "p_3_school_garden#8|research": {
+      "verdict": "pos",
+      "note": "名詞の研究→動詞の research（調べる・研究する）",
+      "fp": "fc3bcf293d44"
+    },
+    "p_3_school_garden#9|attract": {
+      "verdict": "same",
+      "fp": "dc0a95d9b3ee"
+    },
+    "p_3_school_garden#9|garden": {
+      "verdict": "same",
+      "fp": "dc0a95d9b3ee"
+    },
+    "p_3_school_garden#10|garden": {
+      "verdict": "same",
+      "fp": "f6e2a0828af7"
+    },
+    "p_3_school_garden#11|community": {
+      "verdict": "same",
+      "fp": "f33a9d79086e"
+    },
+    "p_3_school_garden#12|instead": {
+      "verdict": "same",
+      "fp": "f73506490247"
+    },
+    "p_3_school_garden#12|simply": {
+      "verdict": "same",
+      "fp": "f73506490247"
+    },
+    "p_3_school_garden#13|share": {
+      "verdict": "same",
+      "fp": "6bce2dd8bfa2"
+    },
+    "p_3_school_garden#14|garden": {
+      "verdict": "same",
+      "fp": "b0ff774d6b21"
+    },
+    "p_3_school_garden#16|farm": {
+      "verdict": "form",
+      "note": "farming（農業）は farm の形",
+      "fp": "5984907a0199"
+    },
+    "p_3_school_garden#16|tip": {
+      "verdict": "same",
+      "fp": "5984907a0199"
+    },
+    "p_3_school_garden#17|project": {
+      "verdict": "other",
+      "note": "ほかの意味「計画・企画」",
+      "fp": "cd3211c31792"
+    },
+    "p_3_school_garden#17|garden": {
+      "verdict": "form",
+      "note": "gardening（園芸）は garden の形",
+      "fp": "cd3211c31792"
+    },
+    "p_pre2_museum_volunteers#1|program": {
+      "verdict": "same",
+      "fp": "401484552fbe"
+    },
+    "p_pre2_museum_volunteers#3|worksheet": {
+      "verdict": "same",
+      "fp": "6d8ad409f1d8"
+    },
+    "p_pre2_museum_volunteers#5|volunteer": {
+      "verdict": "same",
+      "fp": "4a1288a56fd1"
+    },
+    "p_pre2_museum_volunteers#5|communicate": {
+      "verdict": "same",
+      "fp": "4a1288a56fd1"
+    },
+    "p_pre2_museum_volunteers#5|crowded": {
+      "verdict": "same",
+      "fp": "4a1288a56fd1"
+    },
+    "p_pre2_museum_volunteers#6|uncertainty": {
+      "verdict": "same",
+      "fp": "0975470ed949"
+    },
+    "p_pre2_museum_volunteers#7|approach": {
+      "verdict": "same",
+      "fp": "5f2188ec92f6"
+    },
+    "p_pre2_museum_volunteers#7|incorrect": {
+      "verdict": "same",
+      "fp": "5f2188ec92f6"
+    },
+    "p_pre2_museum_volunteers#8|program": {
+      "verdict": "same",
+      "fp": "545c7e0e85dd"
+    },
+    "p_pre2_museum_volunteers#8|sense": {
+      "verdict": "same",
+      "fp": "545c7e0e85dd"
+    },
+    "p_pre2_museum_volunteers#9|discover": {
+      "verdict": "same",
+      "fp": "e54d4b8a9f3d"
+    },
+    "p_pre2_museum_volunteers#9|other": {
+      "verdict": "same",
+      "fp": "e54d4b8a9f3d"
+    },
+    "p_pre2_museum_volunteers#9|community": {
+      "verdict": "same",
+      "fp": "e54d4b8a9f3d"
+    },
+    "p_pre2_museum_volunteers#12|benefit": {
+      "verdict": "same",
+      "fp": "adb3bfd36043"
+    },
+    "p_pre2_museum_volunteers#14|label": {
+      "verdict": "same",
+      "fp": "455cdff0676b"
+    },
+    "p_pre2_museum_volunteers#15|label": {
+      "verdict": "same",
+      "fp": "cc6776a60c53"
+    },
+    "p_pre2_museum_volunteers#16|remove": {
+      "verdict": "same",
+      "fp": "cdf0459b567d"
+    },
+    "p_pre2_museum_volunteers#18|program": {
+      "verdict": "same",
+      "fp": "15ee8da1a9f9"
+    },
+    "p_pre2plus_repair_cafes#0|replace": {
+      "verdict": "same",
+      "fp": "68412a86e13d"
+    },
+    "p_pre2plus_repair_cafes#0|device": {
+      "verdict": "same",
+      "fp": "68412a86e13d"
+    },
+    "p_pre2plus_repair_cafes#1|damaged": {
+      "verdict": "same",
+      "fp": "c796494ef506"
+    },
+    "p_pre2plus_repair_cafes#2|waste": {
+      "verdict": "same",
+      "fp": "2525d12f86a2"
+    },
+    "p_pre2plus_repair_cafes#3|response": {
+      "verdict": "same",
+      "fp": "b053212d5ecb"
+    },
+    "p_pre2plus_repair_cafes#3|repair": {
+      "verdict": "pos",
+      "note": "repair cafe の repair は名詞（修理）",
+      "fp": "b053212d5ecb"
+    },
+    "p_pre2plus_repair_cafes#4|visitor": {
+      "verdict": "same",
+      "fp": "0fc4fffdb84f"
+    },
+    "p_pre2plus_repair_cafes#6|visitor": {
+      "verdict": "same",
+      "fp": "4d87fb739d17"
+    },
+    "p_pre2plus_repair_cafes#6|counter": {
+      "verdict": "same",
+      "fp": "4d87fb739d17"
+    },
+    "p_pre2plus_repair_cafes#7|replace": {
+      "verdict": "same",
+      "fp": "7a5685b3926f"
+    },
+    "p_pre2plus_repair_cafes#11|repair": {
+      "verdict": "pos",
+      "note": "repair cafe の repair は名詞（修理）",
+      "fp": "d21f5273ed09"
+    },
+    "p_pre2plus_repair_cafes#11|benefit": {
+      "verdict": "same",
+      "fp": "d21f5273ed09"
+    },
+    "p_pre2plus_repair_cafes#12|extend": {
+      "verdict": "same",
+      "fp": "c8af184be678"
+    },
+    "p_pre2plus_repair_cafes#12|waste": {
+      "verdict": "same",
+      "fp": "c8af184be678"
+    },
+    "p_pre2plus_repair_cafes#12|require": {
+      "verdict": "same",
+      "fp": "c8af184be678"
+    },
+    "p_pre2plus_repair_cafes#13|valuable": {
+      "verdict": "same",
+      "fp": "e5035ccfdd97"
+    },
+    "p_pre2plus_repair_cafes#15|device": {
+      "verdict": "same",
+      "fp": "282b23f6ad7f"
+    },
+    "p_pre2plus_repair_cafes#15|seem": {
+      "verdict": "same",
+      "fp": "282b23f6ad7f"
+    },
+    "p_pre2plus_repair_cafes#16|visitor": {
+      "verdict": "same",
+      "fp": "2f363ab054e3"
+    },
+    "p_pre2plus_repair_cafes#16|replacement": {
+      "verdict": "same",
+      "fp": "2f363ab054e3"
+    },
+    "p_pre2plus_repair_cafes#17|repair": {
+      "verdict": "pos",
+      "note": "repair cafe の repair は名詞（修理）",
+      "fp": "00fd0934a719"
+    },
+    "p_pre2plus_repair_cafes#20|critic": {
+      "verdict": "same",
+      "fp": "2fddbd61c7ef"
+    },
+    "p_pre2plus_repair_cafes#20|obtain": {
+      "verdict": "same",
+      "fp": "2fddbd61c7ef"
+    },
+    "p_pre2plus_repair_cafes#21|themselves": {
+      "verdict": "same",
+      "fp": "114243b15df5"
+    },
+    "p_pre2plus_repair_cafes#22|waste": {
+      "verdict": "same",
+      "fp": "319d977fd0e7"
+    },
+    "p_2_quiet_technology#1|recent": {
+      "verdict": "same",
+      "fp": "41aa1dd398e0"
+    },
+    "p_2_quiet_technology#1|technology": {
+      "verdict": "same",
+      "fp": "41aa1dd398e0"
+    },
+    "p_2_quiet_technology#1|invisible": {
+      "verdict": "same",
+      "fp": "41aa1dd398e0"
+    },
+    "p_2_quiet_technology#2|platform": {
+      "verdict": "same",
+      "fp": "13edeaac5304"
+    },
+    "p_2_quiet_technology#6|found": {
+      "verdict": "same",
+      "fp": "66a94bedca09"
+    },
+    "p_2_quiet_technology#7|control": {
+      "verdict": "same",
+      "fp": "7f763aa80d58"
+    },
+    "p_2_quiet_technology#9|case": {
+      "verdict": "same",
+      "fp": "fd0e9fb1d06e"
+    },
+    "p_2_quiet_technology#9|attract": {
+      "verdict": "same",
+      "fp": "fd0e9fb1d06e"
+    },
+    "p_2_quiet_technology#11|concern": {
+      "verdict": "same",
+      "fp": "e6eca7509b71"
+    },
+    "p_2_quiet_technology#12|official": {
+      "verdict": "same",
+      "fp": "cb7ac83a3b69"
+    },
+    "p_2_quiet_technology#17|trial": {
+      "verdict": "same",
+      "fp": "71d6b5a0b4ff"
+    },
+    "p_pre1_resilient_cities#0|extreme": {
+      "verdict": "same",
+      "fp": "169be5db45b4"
+    },
+    "p_pre1_resilient_cities#1|separate": {
+      "verdict": "pos",
+      "note": "形容詞 separate（別々の）",
+      "fp": "04fbf439b664"
+    },
+    "p_pre1_resilient_cities#2|planner": {
+      "verdict": "same",
+      "fp": "97a581722d42"
+    },
+    "p_pre1_resilient_cities#5|conditioner": {
+      "verdict": "same",
+      "fp": "ca88cd854045"
+    },
+    "p_pre1_resilient_cities#8|pleasant": {
+      "verdict": "same",
+      "fp": "946c10099ab8"
+    },
+    "p_pre1_resilient_cities#10|illustrate": {
+      "verdict": "same",
+      "fp": "c89790c09cd2"
+    },
+    "p_pre1_resilient_cities#11|force": {
+      "verdict": "same",
+      "fp": "6ceb4bca0c42"
+    },
+    "p_pre1_resilient_cities#12|planner": {
+      "verdict": "same",
+      "fp": "e272e7f5bb51"
+    },
+    "p_pre1_resilient_cities#13|copied": {
+      "verdict": "same",
+      "fp": "2c6706987ff1"
+    },
+    "p_pre1_resilient_cities#16|nevertheless": {
+      "verdict": "same",
+      "fp": "20e989a0b6ae"
+    },
+    "p_pre1_resilient_cities#17|failure": {
+      "verdict": "same",
+      "fp": "3fc91b92321d"
+    },
+    "p_pre1_resilient_cities#18|blocked": {
+      "verdict": "same",
+      "fp": "029aa728f370"
+    },
+    "p_pre1_resilient_cities#18|drain": {
+      "verdict": "same",
+      "fp": "029aa728f370"
+    },
+    "p_pre1_resilient_cities#23|tight": {
+      "verdict": "same",
+      "fp": "47f37416a757"
+    },
+    "p_pre1_resilient_cities#25|absence": {
+      "verdict": "same",
+      "fp": "34df1bcf608e"
+    },
+    "p_pre1_resilient_cities#27|migration": {
+      "verdict": "same",
+      "fp": "efafe3a1b80f"
+    },
+    "p_1_collective_memory#1|collective": {
+      "verdict": "same",
+      "fp": "7cf60d051b4c"
+    },
+    "p_1_collective_memory#6|enormous": {
+      "verdict": "same",
+      "fp": "6cd20324cf93"
+    },
+    "p_1_collective_memory#8|compete": {
+      "verdict": "same",
+      "fp": "705fdc312c1e"
+    },
+    "p_1_collective_memory#8|reflect": {
+      "verdict": "form",
+      "note": "reflection（熟考）は reflect（熟考する）の名詞形",
+      "fp": "705fdc312c1e"
+    },
+    "p_1_collective_memory#8|invisible": {
+      "verdict": "same",
+      "fp": "705fdc312c1e"
+    },
+    "p_1_collective_memory#9|integrity": {
+      "verdict": "same",
+      "fp": "a09d6d5fc69d"
+    },
+    "p_1_collective_memory#11|neglect": {
+      "verdict": "same",
+      "fp": "28a702eaa993"
+    },
+    "p_1_collective_memory#16|scrutiny": {
+      "verdict": "same",
+      "fp": "b8f7df72daa6"
+    },
+    "p_1_collective_memory#18|uncomfortable": {
+      "verdict": "same",
+      "fp": "aefd81d43b39"
+    },
+    "p_1_collective_memory#19|scarce": {
+      "verdict": "same",
+      "fp": "dfb794af5990"
+    },
+    "p_1_collective_memory#21|consultation": {
+      "verdict": "same",
+      "fp": "26f43120c077"
+    },
+    "p_1_collective_memory#21|reproduce": {
+      "verdict": "same",
+      "fp": "26f43120c077"
+    },
+    "p_1_collective_memory#22|consequently": {
+      "verdict": "same",
+      "fp": "92729ed7c19b"
+    },
+    "p_1_collective_memory#23|ambiguous": {
+      "verdict": "same",
+      "fp": "f370e964933e"
+    },
+    "p_1_collective_memory#24|achievement": {
+      "verdict": "same",
+      "fp": "4563561ba7a1"
+    },
+    "p_1_collective_memory#25|erase": {
+      "verdict": "same",
+      "fp": "a088a3890e46"
+    },
+    "p_1_collective_memory#26|perspective": {
+      "verdict": "same",
+      "fp": "bf3d47744402"
+    },
+    "p_1_collective_memory#27|sustain": {
+      "verdict": "same",
+      "fp": "fbf75132f7ae"
+    },
+    "p_1_collective_memory#28|construct": {
+      "verdict": "same",
+      "fp": "bebd29f9336d"
+    },
+    "p_1_collective_memory#30|assign": {
+      "verdict": "same",
+      "fp": "292c000f4a67"
+    },
+    "p_1_collective_memory#32|cynicism": {
+      "verdict": "same",
+      "fp": "df4393c2dc88"
+    },
+    "p_1_collective_memory#38|abandon": {
+      "verdict": "same",
+      "fp": "61ff52b997e3"
+    },
+    "p_1_collective_memory#39|reasoning": {
+      "verdict": "same",
+      "fp": "38a9646b76bd"
+    },
+    "p_1_collective_memory#42|collective": {
+      "verdict": "same",
+      "fp": "17f3fb3445c1"
+    },
+    "p_5_school_open_day#0|has": {
+      "verdict": "same",
+      "fp": "136a827d75eb"
+    },
+    "p_5_school_open_day#0|open": {
+      "verdict": "phrase",
+      "note": "open day（学校公開日）",
+      "fp": "136a827d75eb"
+    },
+    "p_5_school_open_day#1|student": {
+      "verdict": "same",
+      "fp": "9db493e645f5"
+    },
+    "p_5_school_open_day#1|parent": {
+      "verdict": "same",
+      "fp": "9db493e645f5"
+    },
+    "p_5_school_open_day#2|first": {
+      "verdict": "same",
+      "fp": "d056978ac712"
+    },
+    "p_5_school_open_day#3|hall": {
+      "verdict": "same",
+      "fp": "3ea8ea618949"
+    },
+    "p_5_school_open_day#5|please": {
+      "verdict": "same",
+      "fp": "9e6b300f93a5"
+    },
+    "p_5_school_open_day#5|bring": {
+      "verdict": "same",
+      "fp": "9e6b300f93a5"
+    },
+    "p_5_school_open_day#5|own": {
+      "verdict": "other",
+      "note": "ほかの意味「自分自身の」",
+      "fp": "9e6b300f93a5"
+    },
+    "p_5_school_open_day#6|one": {
+      "verdict": "same",
+      "fp": "75a201bea085"
+    },
+    "p_5_school_open_day#6|meet": {
+      "verdict": "same",
+      "fp": "75a201bea085"
+    },
+    "p_5_school_open_day#7|student": {
+      "verdict": "same",
+      "fp": "df4fc918cc8f"
+    },
+    "p_5_school_open_day#7|wear": {
+      "verdict": "same",
+      "fp": "df4fc918cc8f"
+    },
+    "p_5_school_open_day#7|indoor": {
+      "verdict": "same",
+      "fp": "df4fc918cc8f"
+    },
+    "p_5_school_open_day#7|shoe": {
+      "verdict": "same",
+      "fp": "df4fc918cc8f"
+    },
+    "p_5_school_open_day#7|join": {
+      "verdict": "same",
+      "fp": "df4fc918cc8f"
+    },
+    "p_5_school_open_day#8|please": {
+      "verdict": "same",
+      "fp": "f78918a8b0b8"
+    },
+    "p_5_school_open_day#8|door": {
+      "verdict": "same",
+      "fp": "f78918a8b0b8"
+    },
+    "p_5_school_open_day#9|open": {
+      "verdict": "phrase",
+      "note": "open day（学校公開日）",
+      "fp": "d0b1713860a5"
+    },
+    "p_4_bicycle_safety#0|hold": {
+      "verdict": "same",
+      "fp": "568021b88b21"
+    },
+    "p_4_bicycle_safety#1|program": {
+      "verdict": "same",
+      "fp": "373c0497e9cd"
+    },
+    "p_4_bicycle_safety#1|rule": {
+      "verdict": "same",
+      "fp": "373c0497e9cd"
+    },
+    "p_4_bicycle_safety#1|common": {
+      "verdict": "same",
+      "fp": "373c0497e9cd"
+    },
+    "p_4_bicycle_safety#2|community": {
+      "verdict": "same",
+      "fp": "f32401954844"
+    },
+    "p_4_bicycle_safety#3|officer": {
+      "verdict": "same",
+      "fp": "f642f6a02556"
+    },
+    "p_4_bicycle_safety#3|wear": {
+      "verdict": "same",
+      "fp": "f642f6a02556"
+    },
+    "p_4_bicycle_safety#4|stop": {
+      "verdict": "same",
+      "fp": "73aaadb4f5dd"
+    },
+    "p_4_bicycle_safety#5|light": {
+      "verdict": "same",
+      "fp": "007e73812e4c"
+    },
+    "p_4_bicycle_safety#7|light": {
+      "verdict": "same",
+      "fp": "bf499b725554"
+    },
+    "p_4_bicycle_safety#8|repair": {
+      "verdict": "same",
+      "fp": "0995caf502ff"
+    },
+    "p_4_bicycle_safety#8|problem": {
+      "verdict": "same",
+      "fp": "0995caf502ff"
+    },
+    "p_4_bicycle_safety#8|replace": {
+      "verdict": "same",
+      "fp": "0995caf502ff"
+    },
+    "p_4_bicycle_safety#9|ride": {
+      "verdict": "pos",
+      "note": "名詞の ride（走行）",
+      "fp": "d4e3ff2d0d8a"
+    },
+    "p_4_bicycle_safety#10|ride": {
+      "verdict": "same",
+      "fp": "33534e764c45"
+    },
+    "p_4_bicycle_safety#11|parent": {
+      "verdict": "same",
+      "fp": "de69990db77c"
+    },
+    "p_4_bicycle_safety#11|join": {
+      "verdict": "same",
+      "fp": "de69990db77c"
+    },
+    "p_4_bicycle_safety#11|ride": {
+      "verdict": "pos",
+      "note": "名詞の ride（走行）",
+      "fp": "de69990db77c"
+    },
+    "p_4_bicycle_safety#11|rule": {
+      "verdict": "same",
+      "fp": "de69990db77c"
+    },
+    "p_4_bicycle_safety#12|believe": {
+      "verdict": "same",
+      "fp": "e19086e9fdb6"
+    },
+    "p_4_bicycle_safety#12|ride": {
+      "verdict": "form",
+      "note": "riding（乗ること）は ride の形",
+      "fp": "e19086e9fdb6"
+    },
+    "p_3_lunch_food_waste#1|even": {
+      "verdict": "phrase",
+      "note": "even though（〜なのに）",
+      "fp": "295429020840"
+    },
+    "p_3_lunch_food_waste#1|though": {
+      "verdict": "same",
+      "fp": "295429020840"
+    },
+    "p_3_lunch_food_waste#2|decide": {
+      "verdict": "same",
+      "fp": "72eed420cc30"
+    },
+    "p_3_lunch_food_waste#2|instead": {
+      "verdict": "same",
+      "fp": "72eed420cc30"
+    },
+    "p_3_lunch_food_waste#2|simply": {
+      "verdict": "same",
+      "fp": "72eed420cc30"
+    },
+    "p_3_lunch_food_waste#3|survey": {
+      "verdict": "same",
+      "fp": "11d2f5e138a4"
+    },
+    "p_3_lunch_food_waste#4|portion": {
+      "verdict": "same",
+      "fp": "20ea858099a4"
+    },
+    "p_3_lunch_food_waste#6|waste": {
+      "verdict": "same",
+      "fp": "ea3c24ab5e39"
+    },
+    "p_3_lunch_food_waste#6|portion": {
+      "verdict": "same",
+      "fp": "ea3c24ab5e39"
+    },
+    "p_3_lunch_food_waste#7|offer": {
+      "verdict": "same",
+      "fp": "25ce9547dd5b"
+    },
+    "p_3_lunch_food_waste#8|anyone": {
+      "verdict": "same",
+      "fp": "7138405e6b2f"
+    },
+    "p_3_lunch_food_waste#9|portion": {
+      "verdict": "same",
+      "fp": "93f372a12ed0"
+    },
+    "p_3_lunch_food_waste#9|counter": {
+      "verdict": "same",
+      "fp": "93f372a12ed0"
+    },
+    "p_3_lunch_food_waste#10|waste": {
+      "verdict": "same",
+      "fp": "40331847fd5d"
+    },
+    "p_3_lunch_food_waste#10|almost": {
+      "verdict": "same",
+      "fp": "40331847fd5d"
+    },
+    "p_3_lunch_food_waste#11|nobody": {
+      "verdict": "same",
+      "fp": "320044e2a2b5"
+    },
+    "p_3_lunch_food_waste#13|project": {
+      "verdict": "other",
+      "note": "ほかの意味「計画・企画」",
+      "fp": "23ccde21e316"
+    },
+    "p_3_lunch_food_waste#13|waste": {
+      "verdict": "same",
+      "fp": "23ccde21e316"
+    },
+    "p_3_lunch_food_waste#15|encourage": {
+      "verdict": "same",
+      "fp": "969d6e20ba95"
+    },
+    "p_3_lunch_food_waste#15|waste": {
+      "verdict": "same",
+      "fp": "969d6e20ba95"
+    },
+    "p_3_lunch_food_waste#16|even": {
+      "verdict": "same",
+      "fp": "86d7b400e643"
+    },
+    "p_3_lunch_food_waste#16|valuable": {
+      "verdict": "same",
+      "fp": "86d7b400e643"
+    },
+    "p_pre2_later_school_start#0|teenager": {
+      "verdict": "same",
+      "fp": "4a9119dd1b88"
+    },
+    "p_pre2_later_school_start#0|reasonable": {
+      "verdict": "same",
+      "fp": "4a9119dd1b88"
+    },
+    "p_pre2_later_school_start#1|sleep": {
+      "verdict": "pos",
+      "note": "名詞の sleep（睡眠）",
+      "fp": "e21378058ab7"
+    },
+    "p_pre2_later_school_start#1|teenager": {
+      "verdict": "form",
+      "note": "teenage（10代の）は teenager と同じ語の形",
+      "fp": "e21378058ab7"
+    },
+    "p_pre2_later_school_start#4|ordinary": {
+      "verdict": "same",
+      "fp": "55f99567c836"
+    },
+    "p_pre2_later_school_start#5|few": {
+      "verdict": "form",
+      "note": "fewer は few の比較級",
+      "fp": "53ac0d20d85e"
+    },
+    "p_pre2_later_school_start#5|arrival": {
+      "verdict": "same",
+      "fp": "53ac0d20d85e"
+    },
+    "p_pre2_later_school_start#6|although": {
+      "verdict": "same",
+      "fp": "3394a344c424"
+    },
+    "p_pre2_later_school_start#6|score": {
+      "verdict": "same",
+      "fp": "3394a344c424"
+    },
+    "p_pre2_later_school_start#6|immediately": {
+      "verdict": "same",
+      "fp": "3394a344c424"
+    },
+    "p_pre2_later_school_start#7|community": {
+      "verdict": "same",
+      "fp": "10efb7979e3f"
+    },
+    "p_pre2_later_school_start#8|cost": {
+      "verdict": "same",
+      "fp": "f318bf16a85c"
+    },
+    "p_pre2_later_school_start#12|willing": {
+      "verdict": "same",
+      "fp": "504123c5e3d2"
+    },
+    "p_pre2_later_school_start#13|community": {
+      "verdict": "same",
+      "fp": "7a21f5962237"
+    },
+    "p_pre2_later_school_start#13|alone": {
+      "verdict": "same",
+      "fp": "7a21f5962237"
+    },
+    "p_pre2_later_school_start#14|route": {
+      "verdict": "same",
+      "fp": "1be648a6bad1"
+    },
+    "p_pre2_later_school_start#16|argument": {
+      "verdict": "same",
+      "fp": "62b9daa64048"
+    },
+    "p_pre2_later_school_start#16|demand": {
+      "verdict": "same",
+      "fp": "62b9daa64048"
+    },
+    "p_pre2_later_school_start#17|teenager": {
+      "verdict": "form",
+      "note": "teenage（10代の）は teenager と同じ語の形",
+      "fp": "4b0302f61167"
+    },
+    "p_pre2_later_school_start#18|community": {
+      "verdict": "same",
+      "fp": "dfa62c85f141"
+    },
+    "p_pre2_later_school_start#18|benefit": {
+      "verdict": "same",
+      "fp": "dfa62c85f141"
+    },
+    "p_pre2_later_school_start#18|whether": {
+      "verdict": "same",
+      "fp": "dfa62c85f141"
+    },
+    "p_pre2_later_school_start#19|familiar": {
+      "verdict": "same",
+      "fp": "8611ee3a13be"
+    },
+    "p_pre2plus_city_bird_count#0|professional": {
+      "verdict": "same",
+      "fp": "4a8cbf4ebaa8"
+    },
+    "p_pre2plus_city_bird_count#0|everywhere": {
+      "verdict": "same",
+      "fp": "4a8cbf4ebaa8"
+    },
+    "p_pre2plus_city_bird_count#1|ordinary": {
+      "verdict": "same",
+      "fp": "f149e95107c6"
+    },
+    "p_pre2plus_city_bird_count#5|disappear": {
+      "verdict": "same",
+      "fp": "ba284ea97b3f"
+    },
+    "p_pre2plus_city_bird_count#6|habitat": {
+      "verdict": "same",
+      "fp": "2e1d5e1e8e48"
+    },
+    "p_pre2plus_city_bird_count#6|condition": {
+      "verdict": "same",
+      "fp": "2e1d5e1e8e48"
+    },
+    "p_pre2plus_city_bird_count#8|experienced": {
+      "verdict": "same",
+      "fp": "b4faa3b68c56"
+    },
+    "p_pre2plus_city_bird_count#8|similar": {
+      "verdict": "same",
+      "fp": "b4faa3b68c56"
+    },
+    "p_pre2plus_city_bird_count#10|bias": {
+      "verdict": "same",
+      "fp": "840abf015328"
+    },
+    "p_pre2plus_city_bird_count#12|provide": {
+      "verdict": "same",
+      "fp": "ef6862902615"
+    },
+    "p_pre2plus_city_bird_count#14|record": {
+      "verdict": "same",
+      "fp": "ef2c9a485634"
+    },
+    "p_pre2plus_city_bird_count#16|compare": {
+      "verdict": "same",
+      "fp": "df5ff7ea2a96"
+    },
+    "p_pre2plus_city_bird_count#16|similar": {
+      "verdict": "same",
+      "fp": "df5ff7ea2a96"
+    },
+    "p_pre2plus_city_bird_count#17|valuable": {
+      "verdict": "same",
+      "fp": "c6b1fff0a075"
+    },
+    "p_pre2plus_city_bird_count#17|contribute": {
+      "verdict": "same",
+      "fp": "c6b1fff0a075"
+    },
+    "p_pre2plus_city_bird_count#17|strength": {
+      "verdict": "same",
+      "fp": "c6b1fff0a075"
+    },
+    "p_pre2plus_city_bird_count#18|contribute": {
+      "verdict": "same",
+      "fp": "51bfe56ecdc5"
+    },
+    "p_pre2plus_city_bird_count#19|contribute": {
+      "verdict": "same",
+      "fp": "433cade65480"
+    },
+    "p_pre2plus_city_bird_count#20|conservation": {
+      "verdict": "same",
+      "fp": "c74b2873c974"
+    },
+    "p_pre2plus_city_bird_count#21|uncertainty": {
+      "verdict": "same",
+      "fp": "53c0f7e8fdb7"
+    },
+    "p_2_online_health_claims#2|claim": {
+      "verdict": "same",
+      "fp": "5dbd9caec3ca"
+    },
+    "p_2_online_health_claims#8|apply": {
+      "verdict": "same",
+      "fp": "07bd9e287d1f"
+    },
+    "p_2_online_health_claims#9|compare": {
+      "verdict": "same",
+      "fp": "6e311fc609f7"
+    },
+    "p_2_online_health_claims#12|suppose": {
+      "verdict": "same",
+      "fp": "b61cd1c11c0a"
+    },
+    "p_2_online_health_claims#13|relaxed": {
+      "verdict": "same",
+      "fp": "e428124e6fb7"
+    },
+    "p_2_online_health_claims#15|consider": {
+      "verdict": "same",
+      "fp": "6bf1e0d1520e"
+    },
+    "p_2_online_health_claims#16|whereas": {
+      "verdict": "same",
+      "fp": "fc03cfed62dc"
+    },
+    "p_2_online_health_claims#17|financial": {
+      "verdict": "same",
+      "fp": "6b2d7382c917"
+    },
+    "p_2_online_health_claims#17|context": {
+      "verdict": "same",
+      "fp": "6b2d7382c917"
+    },
+    "p_2_online_health_claims#18|false": {
+      "verdict": "same",
+      "fp": "c1ae9407f26c"
+    },
+    "p_2_online_health_claims#19|statement": {
+      "verdict": "same",
+      "fp": "a2d6f2ac0aa8"
+    },
+    "p_2_online_health_claims#19|conflict": {
+      "verdict": "same",
+      "fp": "a2d6f2ac0aa8"
+    },
+    "p_2_online_health_claims#20|promise": {
+      "verdict": "same",
+      "fp": "1c8255dcc19e"
+    },
+    "p_2_online_health_claims#20|false": {
+      "verdict": "same",
+      "fp": "1c8255dcc19e"
+    },
+    "p_2_online_health_claims#21|reasonably": {
+      "verdict": "same",
+      "fp": "9b06f26ff2f0"
+    },
+    "p_2_online_health_claims#22|involve": {
+      "verdict": "same",
+      "fp": "22426272883b"
+    },
+    "p_2_online_health_claims#23|confidence": {
+      "verdict": "same",
+      "fp": "960ff0de8a3c"
+    },
+    "p_pre1_cashless_inclusion#1|handle": {
+      "verdict": "form",
+      "note": "handling（取り扱い）は handle の形",
+      "fp": "89a77ee372b3"
+    },
+    "p_pre1_cashless_inclusion#1|merchant": {
+      "verdict": "same",
+      "fp": "89a77ee372b3"
+    },
+    "p_pre1_cashless_inclusion#3|equally": {
+      "verdict": "same",
+      "fp": "9e87bd8ee3f3"
+    },
+    "p_pre1_cashless_inclusion#4|suitable": {
+      "verdict": "same",
+      "fp": "73763934a045"
+    },
+    "p_pre1_cashless_inclusion#4|access": {
+      "verdict": "same",
+      "fp": "73763934a045"
+    },
+    "p_pre1_cashless_inclusion#4|identity": {
+      "verdict": "same",
+      "fp": "73763934a045"
+    },
+    "p_pre1_cashless_inclusion#4|document": {
+      "verdict": "same",
+      "fp": "73763934a045"
+    },
+    "p_pre1_cashless_inclusion#5|struggle": {
+      "verdict": "same",
+      "fp": "381cae12686c"
+    },
+    "p_pre1_cashless_inclusion#5|fee": {
+      "verdict": "same",
+      "fp": "381cae12686c"
+    },
+    "p_pre1_cashless_inclusion#5|interface": {
+      "verdict": "same",
+      "fp": "381cae12686c"
+    },
+    "p_pre1_cashless_inclusion#6|access": {
+      "verdict": "same",
+      "fp": "87858af55e87"
+    },
+    "p_pre1_cashless_inclusion#8|link": {
+      "verdict": "same",
+      "fp": "144db3616c15"
+    },
+    "p_pre1_cashless_inclusion#8|payment": {
+      "verdict": "same",
+      "fp": "144db3616c15"
+    },
+    "p_pre1_cashless_inclusion#9|detect": {
+      "verdict": "same",
+      "fp": "064fe32caed9"
+    },
+    "p_pre1_cashless_inclusion#9|fraud": {
+      "verdict": "same",
+      "fp": "064fe32caed9"
+    },
+    "p_pre1_cashless_inclusion#10|alternative": {
+      "verdict": "same",
+      "fp": "3201d93fe358"
+    },
+    "p_pre1_cashless_inclusion#11|response": {
+      "verdict": "same",
+      "fp": "8db4e0c367e1"
+    },
+    "p_pre1_cashless_inclusion#13|payment": {
+      "verdict": "same",
+      "fp": "53be8aba64d6"
+    },
+    "p_pre1_cashless_inclusion#13|failure": {
+      "verdict": "same",
+      "fp": "53be8aba64d6"
+    },
+    "p_pre1_cashless_inclusion#14|nor": {
+      "verdict": "same",
+      "fp": "aa24e5b48df9"
+    },
+    "p_pre1_cashless_inclusion#14|inclusion": {
+      "verdict": "same",
+      "fp": "aa24e5b48df9"
+    },
+    "p_pre1_cashless_inclusion#17|prefer": {
+      "verdict": "form",
+      "note": "preferred（好ましい）は prefer の形",
+      "fp": "2a212239abec"
+    },
+    "p_pre1_cashless_inclusion#18|require": {
+      "verdict": "same",
+      "fp": "e2675eaec149"
+    },
+    "p_pre1_cashless_inclusion#19|critic": {
+      "verdict": "same",
+      "fp": "7244237a11ad"
+    },
+    "p_pre1_cashless_inclusion#19|merchant": {
+      "verdict": "same",
+      "fp": "7244237a11ad"
+    },
+    "p_pre1_cashless_inclusion#19|payment": {
+      "verdict": "same",
+      "fp": "7244237a11ad"
+    },
+    "p_pre1_cashless_inclusion#20|objection": {
+      "verdict": "same",
+      "fp": "dd4c8b0c4385"
+    },
+    "p_pre1_cashless_inclusion#20|margin": {
+      "verdict": "same",
+      "fp": "dd4c8b0c4385"
+    },
+    "p_pre1_cashless_inclusion#21|tax": {
+      "verdict": "same",
+      "fp": "3bc2c92f8ea5"
+    },
+    "p_pre1_cashless_inclusion#21|incentive": {
+      "verdict": "same",
+      "fp": "3bc2c92f8ea5"
+    },
+    "p_pre1_cashless_inclusion#23|payment": {
+      "verdict": "same",
+      "fp": "db0761f179ee"
+    },
+    "p_pre1_cashless_inclusion#24|wasteful": {
+      "verdict": "same",
+      "fp": "f75c756e0daf"
+    },
+    "p_pre1_cashless_inclusion#25|failure": {
+      "verdict": "same",
+      "fp": "2b6c7b6949cd"
+    },
+    "p_pre1_cashless_inclusion#26|payment": {
+      "verdict": "same",
+      "fp": "20178a1fe7b2"
+    },
+    "p_pre1_cashless_inclusion#27|meaningful": {
+      "verdict": "same",
+      "fp": "a14cd7c0e2fe"
+    },
+    "p_pre1_cashless_inclusion#28|eliminate": {
+      "verdict": "same",
+      "fp": "6e6bf45ec004"
+    },
+    "p_pre1_cashless_inclusion#28|convenience": {
+      "verdict": "same",
+      "fp": "6e6bf45ec004"
+    },
+    "p_pre1_cashless_inclusion#28|inclusion": {
+      "verdict": "same",
+      "fp": "6e6bf45ec004"
+    },
+    "p_1_metric_fixation#0|compete": {
+      "verdict": "same",
+      "fp": "28a7a147961c"
+    },
+    "p_1_metric_fixation#2|performance": {
+      "verdict": "same",
+      "fp": "9f320598de88"
+    },
+    "p_1_metric_fixation#3|expose": {
+      "verdict": "same",
+      "fp": "61ca26eddd19"
+    },
+    "p_1_metric_fixation#5|representation": {
+      "verdict": "same",
+      "fp": "8922d7c18236"
+    },
+    "p_1_metric_fixation#5|objective": {
+      "verdict": "same",
+      "fp": "8922d7c18236"
+    },
+    "p_1_metric_fixation#7|pursue": {
+      "verdict": "same",
+      "fp": "df41ae62dc7c"
+    },
+    "p_1_metric_fixation#7|underlying": {
+      "verdict": "same",
+      "fp": "df41ae62dc7c"
+    },
+    "p_1_metric_fixation#9|devote": {
+      "verdict": "same",
+      "fp": "5376b99ee879"
+    },
+    "p_1_metric_fixation#9|neglect": {
+      "verdict": "same",
+      "fp": "5376b99ee879"
+    },
+    "p_1_metric_fixation#9|rank": {
+      "verdict": "form",
+      "note": "ranking（順位）は rank の形",
+      "fp": "5376b99ee879"
+    },
+    "p_1_metric_fixation#10|transfer": {
+      "verdict": "same",
+      "fp": "e58b8bc32c62"
+    },
+    "p_1_metric_fixation#11|equivalent": {
+      "verdict": "same",
+      "fp": "d2aee76cad42"
+    },
+    "p_1_metric_fixation#13|genuine": {
+      "verdict": "same",
+      "fp": "795d1750009a"
+    },
+    "p_1_metric_fixation#17|celebrate": {
+      "verdict": "same",
+      "fp": "ca879c15f8e9"
+    },
+    "p_1_metric_fixation#17|intention": {
+      "verdict": "same",
+      "fp": "ca879c15f8e9"
+    },
+    "p_1_metric_fixation#18|wisdom": {
+      "verdict": "same",
+      "fp": "ee73ce794ed4"
+    },
+    "p_1_metric_fixation#21|multiple": {
+      "verdict": "same",
+      "fp": "a0781879bfd7"
+    },
+    "p_1_metric_fixation#21|illuminate": {
+      "verdict": "same",
+      "fp": "a0781879bfd7"
+    },
+    "p_1_metric_fixation#23|eliminate": {
+      "verdict": "same",
+      "fp": "bc4b9f3954c0"
+    },
+    "p_1_metric_fixation#24|metric": {
+      "verdict": "same",
+      "fp": "1d935ea9da34"
+    },
+    "p_1_metric_fixation#26|context": {
+      "verdict": "same",
+      "fp": "22b894fded4a"
+    },
+    "p_1_metric_fixation#26|excuse": {
+      "verdict": "same",
+      "fp": "22b894fded4a"
+    },
+    "p_1_metric_fixation#28|metric": {
+      "verdict": "same",
+      "fp": "166ce080bc91"
+    },
+    "p_1_metric_fixation#28|funding": {
+      "verdict": "same",
+      "fp": "166ce080bc91"
+    },
+    "p_1_metric_fixation#29|neglect": {
+      "verdict": "same",
+      "fp": "6c20e6417976"
+    },
+    "p_1_metric_fixation#29|displace": {
+      "verdict": "same",
+      "fp": "6c20e6417976"
+    },
+    "p_1_metric_fixation#32|dashboard": {
+      "verdict": "same",
+      "fp": "58f63eaa0197"
+    },
+    "p_1_metric_fixation#32|missing": {
+      "verdict": "same",
+      "fp": "58f63eaa0197"
+    },
+    "p_1_metric_fixation#32|threshold": {
+      "verdict": "same",
+      "fp": "58f63eaa0197"
+    },
+    "p_1_metric_fixation#33|omit": {
+      "verdict": "same",
+      "fp": "23f289995e72"
+    },
+    "p_1_metric_fixation#37|discretion": {
+      "verdict": "same",
+      "fp": "1391d218a5c5"
+    },
+    "p_1_metric_fixation#39|administrative": {
+      "verdict": "same",
+      "fp": "c47f7e121f1c"
+    },
+    "p_1_metric_fixation#39|labor": {
+      "verdict": "same",
+      "fp": "c47f7e121f1c"
+    },
+    "p_1_metric_fixation#42|inability": {
+      "verdict": "same",
+      "fp": "5ba04d79b379"
+    },
+    "p_1_metric_fixation#44|metric": {
+      "verdict": "same",
+      "fp": "c197876ff973"
+    },
+    "p_1_metric_fixation#45|feedback": {
+      "verdict": "same",
+      "fp": "5090def31a40"
+    },
+    "p_1_metric_fixation#46|substitute": {
+      "verdict": "same",
+      "fp": "708024ffd33c"
+    },
+    "p_1_metric_fixation#47|compete": {
+      "verdict": "same",
+      "fp": "9cc9e409dbfc"
+    },
+    "p_5_weather_field_trip#1|meet": {
+      "verdict": "same",
+      "fp": "2bde2e18f19f"
+    },
+    "p_5_weather_field_trip#2|bring": {
+      "verdict": "same",
+      "fp": "870df00067e1"
+    },
+    "p_5_weather_field_trip#3|first": {
+      "verdict": "same",
+      "fp": "4dc78121acd5"
+    },
+    "p_5_weather_field_trip#3|guide": {
+      "verdict": "same",
+      "fp": "4dc78121acd5"
+    },
+    "p_5_weather_field_trip#4|garden": {
+      "verdict": "same",
+      "fp": "b2e11d6966a2"
+    },
+    "p_5_weather_field_trip#5|one": {
+      "verdict": "same",
+      "fp": "ac6d172bc277"
+    },
+    "p_5_weather_field_trip#6|leave": {
+      "verdict": "same",
+      "fp": "a6a6f3722c93"
+    },
+    "p_5_weather_field_trip#8|train": {
+      "verdict": "same",
+      "fp": "13eaa5944041"
+    },
+    "p_5_weather_field_trip#9|plan": {
+      "verdict": "same",
+      "fp": "f1c76f89b0e9"
+    },
+    "p_4_emergency_map#0|heavy": {
+      "verdict": "other",
+      "note": "heavy rain の heavy（激しい）をカード裏のほかの意味に足した（カードは重い）",
+      "fp": "c442c7ddc6eb"
+    },
+    "p_4_emergency_map#0|street": {
+      "verdict": "same",
+      "fp": "c442c7ddc6eb"
+    },
+    "p_4_emergency_map#1|decide": {
+      "verdict": "same",
+      "fp": "3ef5ae3e7b03"
+    },
+    "p_4_emergency_map#2|interview": {
+      "verdict": "pos",
+      "note": "動詞の interview（話を聞く・インタビューする）",
+      "fp": "fec6fd8fe4dc"
+    },
+    "p_4_emergency_map#3|several": {
+      "verdict": "same",
+      "fp": "ed9047bdc149"
+    },
+    "p_4_emergency_map#4|quickly": {
+      "verdict": "same",
+      "fp": "8fd2ac32919d"
+    },
+    "p_4_emergency_map#4|student": {
+      "verdict": "same",
+      "fp": "8fd2ac32919d"
+    },
+    "p_4_emergency_map#4|route": {
+      "verdict": "same",
+      "fp": "8fd2ac32919d"
+    },
+    "p_4_emergency_map#4|community": {
+      "verdict": "same",
+      "fp": "8fd2ac32919d"
+    },
+    "p_4_emergency_map#4|center": {
+      "verdict": "same",
+      "fp": "8fd2ac32919d"
+    },
+    "p_4_emergency_map#5|street": {
+      "verdict": "same",
+      "fp": "d49db969f53a"
+    },
+    "p_4_emergency_map#5|light": {
+      "verdict": "same",
+      "fp": "d49db969f53a"
+    },
+    "p_4_emergency_map#6|street": {
+      "verdict": "same",
+      "fp": "83854f06132f"
+    },
+    "p_4_emergency_map#7|test": {
+      "verdict": "same",
+      "fp": "ddbd4253ae6a"
+    },
+    "p_4_emergency_map#10|grow": {
+      "verdict": "other",
+      "note": "grow stronger（強くなる）の「〜になる」をカード裏のほかの意味に足した",
+      "fp": "34900c65d746"
+    },
+    "p_4_emergency_map#11|student": {
+      "verdict": "same",
+      "fp": "b66962a74676"
+    },
+    "p_4_emergency_map#11|change": {
+      "verdict": "same",
+      "fp": "b66962a74676"
+    },
+    "p_4_emergency_map#11|copy": {
+      "verdict": "same",
+      "fp": "b66962a74676"
+    },
+    "p_4_emergency_map#13|street": {
+      "verdict": "same",
+      "fp": "64e47e3b4a1e"
+    },
+    "p_4_emergency_map#13|route": {
+      "verdict": "same",
+      "fp": "64e47e3b4a1e"
+    },
+    "p_3_multilingual_town_guide#0|visitor": {
+      "verdict": "same",
+      "fp": "4c06129ee512"
+    },
+    "p_3_multilingual_town_guide#1|student": {
+      "verdict": "same",
+      "fp": "76a670de808f"
+    },
+    "p_3_multilingual_town_guide#1|explore": {
+      "verdict": "same",
+      "fp": "76a670de808f"
+    },
+    "p_3_multilingual_town_guide#2|decide": {
+      "verdict": "same",
+      "fp": "cf6d67936efe"
+    },
+    "p_3_multilingual_town_guide#2|guide": {
+      "verdict": "same",
+      "fp": "cf6d67936efe"
+    },
+    "p_3_multilingual_town_guide#3|student": {
+      "verdict": "same",
+      "fp": "1f529fb2a996"
+    },
+    "p_3_multilingual_town_guide#3|survey": {
+      "verdict": "same",
+      "fp": "1f529fb2a996"
+    },
+    "p_3_multilingual_town_guide#5|other": {
+      "verdict": "form",
+      "note": "others（ほかの人々）は other の形",
+      "fp": "31dd217cb96e"
+    },
+    "p_3_multilingual_town_guide#5|refill": {
+      "verdict": "same",
+      "fp": "31dd217cb96e"
+    },
+    "p_3_multilingual_town_guide#5|bottle": {
+      "verdict": "same",
+      "fp": "31dd217cb96e"
+    },
+    "p_3_multilingual_town_guide#6|student": {
+      "verdict": "same",
+      "fp": "2afdc25e347b"
+    },
+    "p_3_multilingual_town_guide#6|visitor": {
+      "verdict": "same",
+      "fp": "2afdc25e347b"
+    },
+    "p_3_multilingual_town_guide#7|therefore": {
+      "verdict": "same",
+      "fp": "bda0880547b5"
+    },
+    "p_3_multilingual_town_guide#7|instead": {
+      "verdict": "same",
+      "fp": "bda0880547b5"
+    },
+    "p_3_multilingual_town_guide#8|route": {
+      "verdict": "same",
+      "fp": "0bebbf5d3370"
+    },
+    "p_3_multilingual_town_guide#9|test": {
+      "verdict": "same",
+      "fp": "4df589ef9bd0"
+    },
+    "p_3_multilingual_town_guide#10|such": {
+      "verdict": "same",
+      "fp": "7a4d69e9afd9"
+    },
+    "p_3_multilingual_town_guide#11|owner": {
+      "verdict": "same",
+      "fp": "c458950ce873"
+    },
+    "p_3_multilingual_town_guide#11|price": {
+      "verdict": "same",
+      "fp": "c458950ce873"
+    },
+    "p_3_multilingual_town_guide#11|business": {
+      "verdict": "phrase",
+      "note": "business hours（営業時間）",
+      "fp": "c458950ce873"
+    },
+    "p_3_multilingual_town_guide#14|student": {
+      "verdict": "same",
+      "fp": "d0ff0fcbe359"
+    },
+    "p_3_multilingual_town_guide#14|route": {
+      "verdict": "same",
+      "fp": "d0ff0fcbe359"
+    },
+    "p_3_multilingual_town_guide#14|many": {
+      "verdict": "same",
+      "fp": "d0ff0fcbe359"
+    },
+    "p_3_multilingual_town_guide#15|route": {
+      "verdict": "same",
+      "fp": "d0996fc4c375"
+    },
+    "p_3_multilingual_town_guide#16|guide": {
+      "verdict": "same",
+      "fp": "12581db0880e"
+    },
+    "p_3_multilingual_town_guide#17|include": {
+      "verdict": "same",
+      "fp": "76e9f596cdc2"
+    },
+    "p_3_multilingual_town_guide#18|note": {
+      "verdict": "same",
+      "fp": "c5fa3051611d"
+    },
+    "p_3_multilingual_town_guide#18|report": {
+      "verdict": "same",
+      "fp": "c5fa3051611d"
+    },
+    "p_3_multilingual_town_guide#19|student": {
+      "verdict": "same",
+      "fp": "ea26a68d87cb"
+    },
+    "p_3_multilingual_town_guide#19|replace": {
+      "verdict": "same",
+      "fp": "ea26a68d87cb"
+    },
+    "p_pre2_phone_free_focus#0|student": {
+      "verdict": "same",
+      "fp": "4250f8826560"
+    },
+    "p_pre2_phone_free_focus#0|phone": {
+      "verdict": "same",
+      "fp": "4250f8826560"
+    },
+    "p_pre2_phone_free_focus#1|phone": {
+      "verdict": "same",
+      "fp": "01d7f8e05438"
+    },
+    "p_pre2_phone_free_focus#2|school": {
+      "verdict": "same",
+      "fp": "192510ba77a3"
+    },
+    "p_pre2_phone_free_focus#2|phone": {
+      "verdict": "same",
+      "fp": "192510ba77a3"
+    },
+    "p_pre2_phone_free_focus#3|student": {
+      "verdict": "same",
+      "fp": "fb993ff0b08d"
+    },
+    "p_pre2_phone_free_focus#3|phone": {
+      "verdict": "same",
+      "fp": "fb993ff0b08d"
+    },
+    "p_pre2_phone_free_focus#4|emergency": {
+      "verdict": "same",
+      "fp": "840f93750a87"
+    },
+    "p_pre2_phone_free_focus#5|steady": {
+      "verdict": "same",
+      "fp": "ecb11426e0e2"
+    },
+    "p_pre2_phone_free_focus#5|attention": {
+      "verdict": "same",
+      "fp": "ecb11426e0e2"
+    },
+    "p_pre2_phone_free_focus#6|other": {
+      "verdict": "same",
+      "fp": "b038309e72c7"
+    },
+    "p_pre2_phone_free_focus#8|student": {
+      "verdict": "same",
+      "fp": "5e54a8b35bf7"
+    },
+    "p_pre2_phone_free_focus#9|trial": {
+      "verdict": "same",
+      "fp": "9d76e5f75bbd"
+    },
+    "p_pre2_phone_free_focus#10|alone": {
+      "verdict": "same",
+      "fp": "24b99683530b"
+    },
+    "p_pre2_phone_free_focus#10|student": {
+      "verdict": "same",
+      "fp": "24b99683530b"
+    },
+    "p_pre2_phone_free_focus#10|describe": {
+      "verdict": "same",
+      "fp": "24b99683530b"
+    },
+    "p_pre2_phone_free_focus#11|phone": {
+      "verdict": "same",
+      "fp": "fd55d6d1d83b"
+    },
+    "p_pre2_phone_free_focus#11|few": {
+      "verdict": "same",
+      "fp": "fd55d6d1d83b"
+    },
+    "p_pre2_phone_free_focus#12|completion": {
+      "verdict": "same",
+      "fp": "de1bdabad5bd"
+    },
+    "p_pre2_phone_free_focus#12|few": {
+      "verdict": "same",
+      "fp": "de1bdabad5bd"
+    },
+    "p_pre2_phone_free_focus#12|extra": {
+      "verdict": "same",
+      "fp": "de1bdabad5bd"
+    },
+    "p_pre2_phone_free_focus#12|prove": {
+      "verdict": "form",
+      "note": "proof（証拠）は prove の名詞形",
+      "fp": "de1bdabad5bd"
+    },
+    "p_pre2_phone_free_focus#12|learning": {
+      "verdict": "same",
+      "fp": "de1bdabad5bd"
+    },
+    "p_pre2_phone_free_focus#13|student": {
+      "verdict": "same",
+      "fp": "b9eda1caba08"
+    },
+    "p_pre2_phone_free_focus#14|anxious": {
+      "verdict": "same",
+      "fp": "a30672da92e9"
+    },
+    "p_pre2_phone_free_focus#14|message": {
+      "verdict": "same",
+      "fp": "a30672da92e9"
+    },
+    "p_pre2_phone_free_focus#15|other": {
+      "verdict": "form",
+      "note": "others（ほかの人々）は other の形",
+      "fp": "0d3e27c27453"
+    },
+    "p_pre2_phone_free_focus#15|available": {
+      "verdict": "same",
+      "fp": "0d3e27c27453"
+    },
+    "p_pre2_phone_free_focus#15|phone": {
+      "verdict": "same",
+      "fp": "0d3e27c27453"
+    },
+    "p_pre2_phone_free_focus#16|therefore": {
+      "verdict": "same",
+      "fp": "a111bc05fd5e"
+    },
+    "p_pre2_phone_free_focus#16|allow": {
+      "verdict": "same",
+      "fp": "a111bc05fd5e"
+    },
+    "p_pre2_phone_free_focus#16|approve": {
+      "verdict": "same",
+      "fp": "a111bc05fd5e"
+    },
+    "p_pre2_phone_free_focus#17|survey": {
+      "verdict": "same",
+      "fp": "c8fcf87ae1ce"
+    },
+    "p_pre2_phone_free_focus#18|unclear": {
+      "verdict": "same",
+      "fp": "bc29272fff4e"
+    },
+    "p_pre2_phone_free_focus#18|student": {
+      "verdict": "same",
+      "fp": "bc29272fff4e"
+    },
+    "p_pre2_phone_free_focus#18|distracted": {
+      "verdict": "same",
+      "fp": "bc29272fff4e"
+    },
+    "p_pre2_phone_free_focus#18|phone": {
+      "verdict": "same",
+      "fp": "bc29272fff4e"
+    },
+    "p_pre2_phone_free_focus#19|attention": {
+      "verdict": "same",
+      "fp": "2c3228fc225f"
+    },
+    "p_pre2_phone_free_focus#19|replace": {
+      "verdict": "same",
+      "fp": "2c3228fc225f"
+    },
+    "p_pre2_phone_free_focus#20|review": {
+      "verdict": "pos",
+      "note": "動詞の review（見直す）",
+      "fp": "699799ba3a2d"
+    },
+    "p_pre2_phone_free_focus#21|student": {
+      "verdict": "same",
+      "fp": "5b42efda97f6"
+    },
+    "p_pre2_phone_free_focus#21|device": {
+      "verdict": "same",
+      "fp": "5b42efda97f6"
+    },
+    "p_pre2_phone_free_focus#21|interrupt": {
+      "verdict": "same",
+      "fp": "5b42efda97f6"
+    },
+    "p_pre2_phone_free_focus#22|student": {
+      "verdict": "same",
+      "fp": "b9e2b470a308"
+    },
+    "p_pre2_phone_free_focus#22|silence": {
+      "verdict": "pos",
+      "note": "動詞の silence（静かにさせる・消す）",
+      "fp": "b9e2b470a308"
+    },
+    "p_pre2_phone_free_focus#22|alert": {
+      "verdict": "same",
+      "fp": "b9e2b470a308"
+    },
+    "p_pre2_phone_free_focus#22|device": {
+      "verdict": "same",
+      "fp": "b9e2b470a308"
+    },
+    "p_pre2_phone_free_focus#23|remove": {
+      "verdict": "same",
+      "fp": "5e6d1c0374d9"
+    },
+    "p_pre2_phone_free_focus#23|phone": {
+      "verdict": "same",
+      "fp": "5e6d1c0374d9"
+    },
+    "p_pre2_phone_free_focus#23|attention": {
+      "verdict": "same",
+      "fp": "5e6d1c0374d9"
+    },
+    "p_pre2plus_clothing_second_life#5|describe": {
+      "verdict": "same",
+      "fp": "07d8d53f4e3c"
+    },
+    "p_pre2plus_clothing_second_life#6|rather": {
+      "verdict": "same",
+      "fp": "8cbc43f863ae"
+    },
+    "p_pre2plus_clothing_second_life#7|visitor": {
+      "verdict": "same",
+      "fp": "2d6a752a6274"
+    },
+    "p_pre2plus_clothing_second_life#7|replace": {
+      "verdict": "same",
+      "fp": "2d6a752a6274"
+    },
+    "p_pre2plus_clothing_second_life#9|automatically": {
+      "verdict": "same",
+      "fp": "feb7761087dc"
+    },
+    "p_pre2plus_clothing_second_life#9|count": {
+      "verdict": "phrase",
+      "note": "be counted as（〜とみなされる）",
+      "fp": "feb7761087dc"
+    },
+    "p_pre2plus_clothing_second_life#10|colorful": {
+      "verdict": "same",
+      "fp": "2b83eaa35381"
+    },
+    "p_pre2plus_clothing_second_life#12|mixture": {
+      "verdict": "same",
+      "fp": "278c30163a3e"
+    },
+    "p_pre2plus_clothing_second_life#13|waste": {
+      "verdict": "same",
+      "fp": "abad9f7513ec"
+    },
+    "p_pre2plus_clothing_second_life#14|alone": {
+      "verdict": "same",
+      "fp": "54d50c2ce24b"
+    },
+    "p_pre2plus_clothing_second_life#15|benefit": {
+      "verdict": "same",
+      "fp": "efd9d051a74f"
+    },
+    "p_pre2plus_clothing_second_life#17|replace": {
+      "verdict": "same",
+      "fp": "2f3e4b7c797d"
+    },
+    "p_pre2plus_clothing_second_life#17|purchase": {
+      "verdict": "same",
+      "fp": "2f3e4b7c797d"
+    },
+    "p_pre2plus_clothing_second_life#18|consider": {
+      "verdict": "same",
+      "fp": "23fe67f57a55"
+    },
+    "p_pre2plus_clothing_second_life#19|nobody": {
+      "verdict": "same",
+      "fp": "3bd7c5770cb4"
+    },
+    "p_pre2plus_clothing_second_life#19|require": {
+      "verdict": "same",
+      "fp": "3bd7c5770cb4"
+    },
+    "p_pre2plus_clothing_second_life#19|clothing": {
+      "verdict": "same",
+      "fp": "3bd7c5770cb4"
+    },
+    "p_pre2plus_clothing_second_life#20|choice": {
+      "verdict": "same",
+      "fp": "50c80540e7d2"
+    },
+    "p_pre2plus_clothing_second_life#21|extend": {
+      "verdict": "same",
+      "fp": "275481fe6aef"
+    },
+    "p_pre2plus_clothing_second_life#22|alone": {
+      "verdict": "same",
+      "fp": "c27b14e51578"
+    },
+    "p_pre2plus_clothing_second_life#25|durable": {
+      "verdict": "same",
+      "fp": "e33bbd01f517"
+    },
+    "p_2_vertical_farming#1|nutrient": {
+      "verdict": "same",
+      "fp": "4243b5da9b2b"
+    },
+    "p_2_vertical_farming#2|food": {
+      "verdict": "same",
+      "fp": "9f378e716c6c"
+    },
+    "p_2_vertical_farming#2|throughout": {
+      "verdict": "same",
+      "fp": "9f378e716c6c"
+    },
+    "p_2_vertical_farming#3|system": {
+      "verdict": "same",
+      "fp": "0cfd9682302b"
+    },
+    "p_2_vertical_farming#3|farm": {
+      "verdict": "form",
+      "note": "farming（農業）は farm の形",
+      "fp": "0cfd9682302b"
+    },
+    "p_2_vertical_farming#4|indoor": {
+      "verdict": "same",
+      "fp": "20608b34bbd4"
+    },
+    "p_2_vertical_farming#5|food": {
+      "verdict": "same",
+      "fp": "d3a286cbe486"
+    },
+    "p_2_vertical_farming#7|light": {
+      "verdict": "same",
+      "fp": "18599e8691f9"
+    },
+    "p_2_vertical_farming#7|system": {
+      "verdict": "same",
+      "fp": "18599e8691f9"
+    },
+    "p_2_vertical_farming#7|electricity": {
+      "verdict": "same",
+      "fp": "18599e8691f9"
+    },
+    "p_2_vertical_farming#8|balance": {
+      "verdict": "pos",
+      "note": "動詞の balance（釣り合わせる・埋め合わせる）",
+      "fp": "22c818063a50"
+    },
+    "p_2_vertical_farming#9|produce": {
+      "verdict": "same",
+      "fp": "0b9046b0d08e"
+    },
+    "p_2_vertical_farming#9|balance": {
+      "verdict": "same",
+      "fp": "0b9046b0d08e"
+    },
+    "p_2_vertical_farming#13|indoor": {
+      "verdict": "same",
+      "fp": "6f8a85fd0804"
+    },
+    "p_2_vertical_farming#13|system": {
+      "verdict": "same",
+      "fp": "6f8a85fd0804"
+    },
+    "p_2_vertical_farming#14|cost": {
+      "verdict": "same",
+      "fp": "2c6ae3d6628b"
+    },
+    "p_2_vertical_farming#15|produce": {
+      "verdict": "same",
+      "fp": "8942db9f6ac5"
+    },
+    "p_2_vertical_farming#15|electricity": {
+      "verdict": "same",
+      "fp": "8942db9f6ac5"
+    },
+    "p_2_vertical_farming#15|cost": {
+      "verdict": "same",
+      "fp": "8942db9f6ac5"
+    },
+    "p_2_vertical_farming#16|operator": {
+      "verdict": "same",
+      "fp": "560e07bc9ce3"
+    },
+    "p_2_vertical_farming#17|transparent": {
+      "verdict": "same",
+      "fp": "91c423410e42"
+    },
+    "p_2_vertical_farming#17|image": {
+      "verdict": "same",
+      "fp": "91c423410e42"
+    },
+    "p_2_vertical_farming#18|system": {
+      "verdict": "same",
+      "fp": "9f2d34483075"
+    },
+    "p_2_vertical_farming#19|food": {
+      "verdict": "same",
+      "fp": "343ae82a03ca"
+    },
+    "p_2_vertical_farming#20|affordable": {
+      "verdict": "same",
+      "fp": "95c977418fad"
+    },
+    "p_2_vertical_farming#20|food": {
+      "verdict": "same",
+      "fp": "95c977418fad"
+    },
+    "p_2_vertical_farming#21|fair": {
+      "verdict": "same",
+      "fp": "af0ae2bbc55b"
+    },
+    "p_2_vertical_farming#21|distant": {
+      "verdict": "same",
+      "fp": "af0ae2bbc55b"
+    },
+    "p_2_vertical_farming#22|farm": {
+      "verdict": "same",
+      "fp": "d602f3cd33da"
+    },
+    "p_2_vertical_farming#22|unlikely": {
+      "verdict": "same",
+      "fp": "d602f3cd33da"
+    },
+    "p_2_vertical_farming#22|replacement": {
+      "verdict": "same",
+      "fp": "d602f3cd33da"
+    },
+    "p_2_vertical_farming#23|scarce": {
+      "verdict": "same",
+      "fp": "b08873e85195"
+    },
+    "p_2_vertical_farming#24|indoor": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#24|contribute": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#24|strength": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#24|resilient": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#24|food": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#24|system": {
+      "verdict": "same",
+      "fp": "8dc77ba178e9"
+    },
+    "p_2_vertical_farming#25|valuable": {
+      "verdict": "same",
+      "fp": "15dbbbcec8bb"
+    },
+    "p_pre1_dark_sky_policy#0|night": {
+      "verdict": "same",
+      "fp": "d7747470946a"
+    },
+    "p_pre1_dark_sky_policy#1|light": {
+      "verdict": "form",
+      "note": "lighting（照明）は light の形",
+      "fp": "ba4ae85f5611"
+    },
+    "p_pre1_dark_sky_policy#1|extend": {
+      "verdict": "same",
+      "fp": "ba4ae85f5611"
+    },
+    "p_pre1_dark_sky_policy#3|pollution": {
+      "verdict": "same",
+      "fp": "c8e50f3e432e"
+    },
+    "p_pre1_dark_sky_policy#5|glare": {
+      "verdict": "same",
+      "fp": "ea11545d07af"
+    },
+    "p_pre1_dark_sky_policy#5|aim": {
+      "verdict": "same",
+      "fp": "ea11545d07af"
+    },
+    "p_pre1_dark_sky_policy#5|visibility": {
+      "verdict": "same",
+      "fp": "ea11545d07af"
+    },
+    "p_pre1_dark_sky_policy#6|disturb": {
+      "verdict": "same",
+      "fp": "058f79e8375e"
+    },
+    "p_pre1_dark_sky_policy#7|exhausted": {
+      "verdict": "same",
+      "fp": "f738fe9ddab4"
+    },
+    "p_pre1_dark_sky_policy#8|light": {
+      "verdict": "form",
+      "note": "lighting（照明）は light の形",
+      "fp": "b760c5f14372"
+    },
+    "p_pre1_dark_sky_policy#8|objection": {
+      "verdict": "same",
+      "fp": "b760c5f14372"
+    },
+    "p_pre1_dark_sky_policy#9|reasonably": {
+      "verdict": "same",
+      "fp": "0926fd505fd0"
+    },
+    "p_pre1_dark_sky_policy#9|worker": {
+      "verdict": "same",
+      "fp": "0926fd505fd0"
+    },
+    "p_pre1_dark_sky_policy#9|visible": {
+      "verdict": "same",
+      "fp": "0926fd505fd0"
+    },
+    "p_pre1_dark_sky_policy#9|shift": {
+      "verdict": "same",
+      "fp": "0926fd505fd0"
+    },
+    "p_pre1_dark_sky_policy#10|business": {
+      "verdict": "same",
+      "fp": "f001ca74e023"
+    },
+    "p_pre1_dark_sky_policy#10|welcoming": {
+      "verdict": "same",
+      "fp": "f001ca74e023"
+    },
+    "p_pre1_dark_sky_policy#11|public": {
+      "verdict": "same",
+      "fp": "6656301a79f7"
+    },
+    "p_pre1_dark_sky_policy#12|relevant": {
+      "verdict": "same",
+      "fp": "ebde7b8e84ba"
+    },
+    "p_pre1_dark_sky_policy#12|community": {
+      "verdict": "same",
+      "fp": "ebde7b8e84ba"
+    },
+    "p_pre1_dark_sky_policy#14|shield": {
+      "verdict": "same",
+      "fp": "68f8706ecef0"
+    },
+    "p_pre1_dark_sky_policy#16|motion": {
+      "verdict": "same",
+      "fp": "57609e166d76"
+    },
+    "p_pre1_dark_sky_policy#16|maintain": {
+      "verdict": "same",
+      "fp": "57609e166d76"
+    },
+    "p_pre1_dark_sky_policy#16|night": {
+      "verdict": "same",
+      "fp": "57609e166d76"
+    },
+    "p_pre1_dark_sky_policy#17|equipment": {
+      "verdict": "same",
+      "fp": "69b789a70266"
+    },
+    "p_pre1_dark_sky_policy#21|community": {
+      "verdict": "same",
+      "fp": "1dd5e1267a38"
+    },
+    "p_pre1_dark_sky_policy#21|trial": {
+      "verdict": "same",
+      "fp": "1dd5e1267a38"
+    },
+    "p_pre1_dark_sky_policy#21|immediate": {
+      "verdict": "same",
+      "fp": "1dd5e1267a38"
+    },
+    "p_pre1_dark_sky_policy#22|shield": {
+      "verdict": "same",
+      "fp": "60ca89f7bd83"
+    },
+    "p_pre1_dark_sky_policy#22|crossing": {
+      "verdict": "same",
+      "fp": "60ca89f7bd83"
+    },
+    "p_pre1_dark_sky_policy#23|incident": {
+      "verdict": "same",
+      "fp": "a1f872151133"
+    },
+    "p_pre1_dark_sky_policy#23|comfort": {
+      "verdict": "same",
+      "fp": "a1f872151133"
+    },
+    "p_pre1_dark_sky_policy#25|trial": {
+      "verdict": "same",
+      "fp": "4ce67c56a317"
+    },
+    "p_pre1_dark_sky_policy#25|comfort": {
+      "verdict": "same",
+      "fp": "4ce67c56a317"
+    },
+    "p_pre1_dark_sky_policy#26|light": {
+      "verdict": "form",
+      "note": "lighting（照明）は light の形",
+      "fp": "a6c626dee81c"
+    },
+    "p_pre1_dark_sky_policy#26|distort": {
+      "verdict": "same",
+      "fp": "a6c626dee81c"
+    },
+    "p_pre1_dark_sky_policy#29|deserve": {
+      "verdict": "same",
+      "fp": "1199437bd667"
+    },
+    "p_pre1_dark_sky_policy#29|visible": {
+      "verdict": "same",
+      "fp": "1199437bd667"
+    },
+    "p_pre1_dark_sky_policy#31|specify": {
+      "verdict": "same",
+      "fp": "00bcf0c55ef1"
+    },
+    "p_pre1_dark_sky_policy#31|justify": {
+      "verdict": "same",
+      "fp": "00bcf0c55ef1"
+    },
+    "p_pre1_dark_sky_policy#32|alter": {
+      "verdict": "same",
+      "fp": "949cd49454c7"
+    },
+    "p_pre1_dark_sky_policy#33|public": {
+      "verdict": "same",
+      "fp": "dea7f56a4103"
+    },
+    "p_pre1_dark_sky_policy#33|occur": {
+      "verdict": "same",
+      "fp": "dea7f56a4103"
+    },
+    "p_pre1_dark_sky_policy#34|discipline": {
+      "verdict": "form",
+      "note": "disciplined（節度のある）は discipline の形",
+      "fp": "83be080120b7"
+    },
+    "p_1_choice_architecture#2|architecture": {
+      "verdict": "same",
+      "fp": "fcaa3adf0925"
+    },
+    "p_1_choice_architecture#3|architecture": {
+      "verdict": "same",
+      "fp": "4e850e34adf3"
+    },
+    "p_1_choice_architecture#3|metaphor": {
+      "verdict": "same",
+      "fp": "4e850e34adf3"
+    },
+    "p_1_choice_architecture#3|public": {
+      "verdict": "same",
+      "fp": "4e850e34adf3"
+    },
+    "p_1_choice_architecture#3|arrange": {
+      "verdict": "same",
+      "fp": "4e850e34adf3"
+    },
+    "p_1_choice_architecture#3|alternative": {
+      "verdict": "same",
+      "fp": "4e850e34adf3"
+    },
+    "p_1_choice_architecture#5|retirement": {
+      "verdict": "same",
+      "fp": "be9a3aad96d0"
+    },
+    "p_1_choice_architecture#6|choice": {
+      "verdict": "same",
+      "fp": "3948417d7e3b"
+    },
+    "p_1_choice_architecture#7|similar": {
+      "verdict": "same",
+      "fp": "acf42b77764d"
+    },
+    "p_1_choice_architecture#8|nudge": {
+      "verdict": "same",
+      "fp": "7ce761e639b9"
+    },
+    "p_1_choice_architecture#9|appeal": {
+      "verdict": "pos",
+      "note": "名詞の appeal（魅力・訴える力）",
+      "fp": "473fdc846920"
+    },
+    "p_1_choice_architecture#9|setting": {
+      "verdict": "same",
+      "fp": "473fdc846920"
+    },
+    "p_1_choice_architecture#10|postpone": {
+      "verdict": "same",
+      "fp": "98d33097734e"
+    },
+    "p_1_choice_architecture#11|assist": {
+      "verdict": "form",
+      "note": "assistance（援助）は assist の名詞形",
+      "fp": "38c99d83fe44"
+    },
+    "p_1_choice_architecture#11|navigate": {
+      "verdict": "same",
+      "fp": "38c99d83fe44"
+    },
+    "p_1_choice_architecture#12|feature": {
+      "verdict": "same",
+      "fp": "d2504efcc421"
+    },
+    "p_1_choice_architecture#12|assist": {
+      "verdict": "same",
+      "fp": "d2504efcc421"
+    },
+    "p_1_choice_architecture#12|obstacle": {
+      "verdict": "same",
+      "fp": "d2504efcc421"
+    },
+    "p_1_choice_architecture#13|assist": {
+      "verdict": "form",
+      "note": "assistance（援助）は assist の名詞形",
+      "fp": "ae87dba2c96f"
+    },
+    "p_1_choice_architecture#15|public": {
+      "verdict": "same",
+      "fp": "866e7198bc92"
+    },
+    "p_1_choice_architecture#16|cancel": {
+      "verdict": "form",
+      "note": "cancellation（解約）は cancel の名詞形",
+      "fp": "f6d39b929558"
+    },
+    "p_1_choice_architecture#17|friction": {
+      "verdict": "same",
+      "fp": "c631276750ee"
+    },
+    "p_1_choice_architecture#17|distribute": {
+      "verdict": "same",
+      "fp": "c631276750ee"
+    },
+    "p_1_choice_architecture#18|nudge": {
+      "verdict": "same",
+      "fp": "0c54af371026"
+    },
+    "p_1_choice_architecture#20|architecture": {
+      "verdict": "same",
+      "fp": "2d7794080907"
+    },
+    "p_1_choice_architecture#20|advance": {
+      "verdict": "same",
+      "fp": "2d7794080907"
+    },
+    "p_1_choice_architecture#21|settle": {
+      "verdict": "same",
+      "fp": "bb8b39f02481"
+    },
+    "p_1_choice_architecture#22|safeguard": {
+      "verdict": "same",
+      "fp": "4d764107644d"
+    },
+    "p_1_choice_architecture#23|deliberately": {
+      "verdict": "same",
+      "fp": "25bfefd125a3"
+    },
+    "p_1_choice_architecture#27|safeguard": {
+      "verdict": "same",
+      "fp": "8d4d6c15bf86"
+    },
+    "p_1_choice_architecture#28|alternative": {
+      "verdict": "same",
+      "fp": "9332ee705d01"
+    },
+    "p_1_choice_architecture#29|opt": {
+      "verdict": "phrase",
+      "note": "opt out（参加しない・抜ける）",
+      "fp": "f8dd13a54a4c"
+    },
+    "p_1_choice_architecture#30|purchase": {
+      "verdict": "same",
+      "fp": "b75724f58ced"
+    },
+    "p_1_choice_architecture#31|distribution": {
+      "verdict": "same",
+      "fp": "c8cace8d1ee1"
+    },
+    "p_1_choice_architecture#32|exclude": {
+      "verdict": "same",
+      "fp": "976e9b669117"
+    },
+    "p_1_choice_architecture#35|permanent": {
+      "verdict": "same",
+      "fp": "72fb7d5c7f57"
+    },
+    "p_1_choice_architecture#35|review": {
+      "verdict": "same",
+      "fp": "72fb7d5c7f57"
+    },
+    "p_1_choice_architecture#36|exploit": {
+      "verdict": "form",
+      "note": "exploitable（悪用できる）は exploit の形",
+      "fp": "e0eeb6399c12"
+    },
+    "p_1_choice_architecture#37|review": {
+      "verdict": "same",
+      "fp": "7a95bb102121"
+    },
+    "p_1_choice_architecture#38|review": {
+      "verdict": "same",
+      "fp": "41fa7f7c2b63"
+    },
+    "p_1_choice_architecture#38|exploit": {
+      "verdict": "same",
+      "fp": "41fa7f7c2b63"
+    },
+    "p_1_choice_architecture#39|schedule": {
+      "verdict": "form",
+      "note": "scheduled（予定された）は schedule の形",
+      "fp": "1a206a3228d9"
+    },
+    "p_1_choice_architecture#39|review": {
+      "verdict": "same",
+      "fp": "1a206a3228d9"
+    },
+    "p_1_choice_architecture#39|informative": {
+      "verdict": "same",
+      "fp": "1a206a3228d9"
+    },
+    "p_1_choice_architecture#39|survive": {
+      "verdict": "same",
+      "fp": "1a206a3228d9"
+    },
+    "p_1_choice_architecture#40|architecture": {
+      "verdict": "same",
+      "fp": "1fe04efc5ce1"
+    },
+    "p_1_choice_architecture#40|public": {
+      "verdict": "same",
+      "fp": "1fe04efc5ce1"
+    },
+    "p_1_choice_architecture#42|review": {
+      "verdict": "same",
+      "fp": "da059a2842f7"
+    },
+    "p_1_choice_architecture#43|public": {
+      "verdict": "same",
+      "fp": "5a45b43cd4d9"
+    },
+    "p_1_choice_architecture#43|system": {
+      "verdict": "same",
+      "fp": "5a45b43cd4d9"
+    },
+    "p_1_choice_architecture#43|architecture": {
+      "verdict": "same",
+      "fp": "5a45b43cd4d9"
+    },
+    "p_1_choice_architecture#43|plausible": {
+      "verdict": "same",
+      "fp": "5a45b43cd4d9"
+    },
+    "p_1_choice_architecture#44|nudge": {
+      "verdict": "same",
+      "fp": "2d5c2ef48357"
+    },
+    "p_1_choice_architecture#45|architecture": {
+      "verdict": "same",
+      "fp": "14805bbfd8e5"
+    },
+    "p_1_choice_architecture#46|distribution": {
+      "verdict": "same",
+      "fp": "6ccb05009e6f"
+    },
+    "p_1_choice_architecture#47|contest": {
+      "verdict": "same",
+      "fp": "8e505ba8706c"
+    },
+    "p_5_hot_summer_school#1|last": {
+      "verdict": "same",
+      "fp": "1bf70564ea7b"
+    },
+    "p_5_hot_summer_school#1|put": {
+      "verdict": "same",
+      "fp": "1bf70564ea7b"
+    },
+    "p_5_hot_summer_school#2|stop": {
+      "verdict": "same",
+      "fp": "8168d4ce2fd8"
+    },
+    "p_5_hot_summer_school#2|sun": {
+      "verdict": "form",
+      "note": "sunlight（日光）は sun を含む語",
+      "fp": "8168d4ce2fd8"
+    },
+    "p_5_hot_summer_school#3|also": {
+      "verdict": "same",
+      "fp": "d00b6ac4bd8b"
+    },
+    "p_5_hot_summer_school#3|keep": {
+      "verdict": "same",
+      "fp": "d00b6ac4bd8b"
+    },
+    "p_5_hot_summer_school#6|outside": {
+      "verdict": "same",
+      "fp": "8810070ab5fc"
+    },
+    "p_5_hot_summer_school#7|library": {
+      "verdict": "same",
+      "fp": "b0b8ff7bfdbe"
+    },
+    "p_5_hot_summer_school#8|student": {
+      "verdict": "same",
+      "fp": "dfad24783e2c"
+    },
+    "p_5_hot_summer_school#8|bottle": {
+      "verdict": "same",
+      "fp": "dfad24783e2c"
+    },
+    "p_5_hot_summer_school#9|like": {
+      "verdict": "same",
+      "fp": "d0f620c903f2"
+    },
+    "p_5_hot_summer_school#9|most": {
+      "verdict": "same",
+      "fp": "d0f620c903f2"
+    },
+    "p_4_school_solar_roof#0|put": {
+      "verdict": "same",
+      "fp": "89c8f976b833"
+    },
+    "p_4_school_solar_roof#2|office": {
+      "verdict": "same",
+      "fp": "e0290c817718"
+    },
+    "p_4_school_solar_roof#2|report": {
+      "verdict": "same",
+      "fp": "e0290c817718"
+    },
+    "p_4_school_solar_roof#4|learn": {
+      "verdict": "same",
+      "fp": "85af4caf0ca7"
+    },
+    "p_4_school_solar_roof#8|store": {
+      "verdict": "same",
+      "fp": "388ae3270381"
+    },
+    "p_4_school_solar_roof#8|light": {
+      "verdict": "same",
+      "fp": "388ae3270381"
+    },
+    "p_4_school_solar_roof#9|night": {
+      "verdict": "same",
+      "fp": "690e87a30ef3"
+    },
+    "p_4_school_solar_roof#10|light": {
+      "verdict": "same",
+      "fp": "96f756968c0d"
+    },
+    "p_3_ai_class_rules#0|student": {
+      "verdict": "same",
+      "fp": "390cdb18ea25"
+    },
+    "p_3_ai_class_rules#0|chat": {
+      "verdict": "same",
+      "fp": "390cdb18ea25"
+    },
+    "p_3_ai_class_rules#1|other": {
+      "verdict": "form",
+      "note": "others（ほかの人たち）は other の形",
+      "fp": "a493870e7943"
+    },
+    "p_3_ai_class_rules#2|few": {
+      "verdict": "same",
+      "fp": "7c501bb0960e"
+    },
+    "p_3_ai_class_rules#2|student": {
+      "verdict": "same",
+      "fp": "7c501bb0960e"
+    },
+    "p_3_ai_class_rules#2|copy": {
+      "verdict": "same",
+      "fp": "7c501bb0960e"
+    },
+    "p_3_ai_class_rules#2|carefully": {
+      "verdict": "same",
+      "fp": "7c501bb0960e"
+    },
+    "p_3_ai_class_rules#3|phrase": {
+      "verdict": "same",
+      "fp": "5e7940b06aa2"
+    },
+    "p_3_ai_class_rules#5|rule": {
+      "verdict": "same",
+      "fp": "7f0802924085"
+    },
+    "p_3_ai_class_rules#7|helpful": {
+      "verdict": "same",
+      "fp": "e5f67838e24c"
+    },
+    "p_3_ai_class_rules#8|copy": {
+      "verdict": "same",
+      "fp": "97f06423bbc5"
+    },
+    "p_3_ai_class_rules#8|honest": {
+      "verdict": "same",
+      "fp": "97f06423bbc5"
+    },
+    "p_3_ai_class_rules#9|student": {
+      "verdict": "same",
+      "fp": "92e0e2d52e9c"
+    },
+    "p_3_ai_class_rules#11|alone": {
+      "verdict": "same",
+      "fp": "d6557cfa0c6e"
+    },
+    "p_3_ai_class_rules#11|other": {
+      "verdict": "same",
+      "fp": "d6557cfa0c6e"
+    },
+    "p_3_ai_class_rules#12|general": {
+      "verdict": "same",
+      "fp": "dc73d057a940"
+    },
+    "p_3_ai_class_rules#13|even": {
+      "verdict": "same",
+      "fp": "f50aa1d42d9d"
+    },
+    "p_3_ai_class_rules#13|other": {
+      "verdict": "same",
+      "fp": "f50aa1d42d9d"
+    },
+    "p_3_ai_class_rules#13|source": {
+      "verdict": "same",
+      "fp": "f50aa1d42d9d"
+    },
+    "p_3_ai_class_rules#13|mention": {
+      "verdict": "same",
+      "fp": "f50aa1d42d9d"
+    },
+    "p_3_ai_class_rules#14|school": {
+      "verdict": "same",
+      "fp": "dd1543f71920"
+    },
+    "p_3_ai_class_rules#15|rule": {
+      "verdict": "same",
+      "fp": "af0a37e91139"
+    },
+    "p_3_ai_class_rules#15|therefore": {
+      "verdict": "same",
+      "fp": "af0a37e91139"
+    },
+    "p_3_ai_class_rules#15|include": {
+      "verdict": "same",
+      "fp": "af0a37e91139"
+    },
+    "p_3_ai_class_rules#15|step": {
+      "verdict": "same",
+      "fp": "af0a37e91139"
+    },
+    "p_3_ai_class_rules#16|list": {
+      "verdict": "same",
+      "fp": "6dbc7e45b92d"
+    },
+    "p_3_ai_class_rules#16|source": {
+      "verdict": "same",
+      "fp": "6dbc7e45b92d"
+    },
+    "p_3_ai_class_rules#17|note": {
+      "verdict": "same",
+      "fp": "5777f5a7a9dc"
+    },
+    "p_3_ai_class_rules#17|themselves": {
+      "verdict": "same",
+      "fp": "5777f5a7a9dc"
+    },
+    "p_3_ai_class_rules#18|rule": {
+      "verdict": "same",
+      "fp": "912772964b44"
+    },
+    "p_3_ai_class_rules#18|student": {
+      "verdict": "same",
+      "fp": "912772964b44"
+    },
+    "p_3_ai_class_rules#19|compare": {
+      "verdict": "same",
+      "fp": "1722aa6b6ece"
+    },
+    "p_3_ai_class_rules#20|rule": {
+      "verdict": "same",
+      "fp": "f3c4f0c95ca9"
+    },
+    "p_3_ai_class_rules#22|student": {
+      "verdict": "same",
+      "fp": "6e66414cd1e2"
+    },
+    "p_3_ai_class_rules#23|other": {
+      "verdict": "form",
+      "note": "others（ほかの人たち）は other の形",
+      "fp": "ce97b9949da0"
+    },
+    "p_3_ai_class_rules#24|skill": {
+      "verdict": "same",
+      "fp": "eacb60500555"
+    },
+    "p_pre2_crowded_town_tourism#0|visitor": {
+      "verdict": "same",
+      "fp": "cf84c4f76a2d"
+    },
+    "p_pre2_crowded_town_tourism#2|visitor": {
+      "verdict": "same",
+      "fp": "58f4a0ae085c"
+    },
+    "p_pre2_crowded_town_tourism#2|within": {
+      "verdict": "same",
+      "fp": "58f4a0ae085c"
+    },
+    "p_pre2_crowded_town_tourism#5|mention": {
+      "verdict": "same",
+      "fp": "cd07ba505e85"
+    },
+    "p_pre2_crowded_town_tourism#6|crowded": {
+      "verdict": "same",
+      "fp": "8c37fe489b16"
+    },
+    "p_pre2_crowded_town_tourism#7|visitor": {
+      "verdict": "same",
+      "fp": "f3d5ed550a1f"
+    },
+    "p_pre2_crowded_town_tourism#7|private": {
+      "verdict": "same",
+      "fp": "f3d5ed550a1f"
+    },
+    "p_pre2_crowded_town_tourism#8|neighbor": {
+      "verdict": "same",
+      "fp": "3145727468d2"
+    },
+    "p_pre2_crowded_town_tourism#8|collect": {
+      "verdict": "same",
+      "fp": "3145727468d2"
+    },
+    "p_pre2_crowded_town_tourism#8|themselves": {
+      "verdict": "same",
+      "fp": "3145727468d2"
+    },
+    "p_pre2_crowded_town_tourism#9|practical": {
+      "verdict": "same",
+      "fp": "e592159a4c50"
+    },
+    "p_pre2_crowded_town_tourism#10|official": {
+      "verdict": "same",
+      "fp": "ff7674f341a6"
+    },
+    "p_pre2_crowded_town_tourism#10|visitor": {
+      "verdict": "same",
+      "fp": "ff7674f341a6"
+    },
+    "p_pre2_crowded_town_tourism#14|tour": {
+      "verdict": "same",
+      "fp": "c9e4abc750cc"
+    },
+    "p_pre2_crowded_town_tourism#16|tour": {
+      "verdict": "same",
+      "fp": "77a009ffe993"
+    },
+    "p_pre2_crowded_town_tourism#16|put": {
+      "verdict": "phrase",
+      "note": "put pressure on（〜に負担をかける）",
+      "fp": "77a009ffe993"
+    },
+    "p_pre2_crowded_town_tourism#16|pressure": {
+      "verdict": "same",
+      "fp": "77a009ffe993"
+    },
+    "p_pre2_crowded_town_tourism#16|private": {
+      "verdict": "same",
+      "fp": "77a009ffe993"
+    },
+    "p_pre2_crowded_town_tourism#17|owner": {
+      "verdict": "same",
+      "fp": "d181bb3fda90"
+    },
+    "p_pre2_crowded_town_tourism#17|few": {
+      "verdict": "form",
+      "note": "fewer は few の比較級",
+      "fp": "d181bb3fda90"
+    },
+    "p_pre2_crowded_town_tourism#18|therefore": {
+      "verdict": "same",
+      "fp": "05b770105589"
+    },
+    "p_pre2_crowded_town_tourism#19|crowded": {
+      "verdict": "same",
+      "fp": "715a23f8f7a8"
+    },
+    "p_pre2_crowded_town_tourism#19|noon": {
+      "verdict": "same",
+      "fp": "715a23f8f7a8"
+    },
+    "p_pre2_crowded_town_tourism#21|visitor": {
+      "verdict": "same",
+      "fp": "c107548eceed"
+    },
+    "p_pre2plus_rural_bus_future#0|rural": {
+      "verdict": "same",
+      "fp": "de1d71245df1"
+    },
+    "p_pre2plus_rural_bus_future#0|local": {
+      "verdict": "same",
+      "fp": "de1d71245df1"
+    },
+    "p_pre2plus_rural_bus_future#2|several": {
+      "verdict": "same",
+      "fp": "1f2c6fd5c278"
+    },
+    "p_pre2plus_rural_bus_future#2|route": {
+      "verdict": "same",
+      "fp": "1f2c6fd5c278"
+    },
+    "p_pre2plus_rural_bus_future#3|further": {
+      "verdict": "same",
+      "fp": "8279c03d3198"
+    },
+    "p_pre2plus_rural_bus_future#3|retirement": {
+      "verdict": "same",
+      "fp": "8279c03d3198"
+    },
+    "p_pre2plus_rural_bus_future#4|service": {
+      "verdict": "same",
+      "fp": "3deaf1877834"
+    },
+    "p_pre2plus_rural_bus_future#6|kilometer": {
+      "verdict": "same",
+      "fp": "f78c9fd9477c"
+    },
+    "p_pre2plus_rural_bus_future#7|office": {
+      "verdict": "same",
+      "fp": "06f1d1b3e325"
+    },
+    "p_pre2plus_rural_bus_future#7|restore": {
+      "verdict": "same",
+      "fp": "06f1d1b3e325"
+    },
+    "p_pre2plus_rural_bus_future#7|expensive": {
+      "verdict": "same",
+      "fp": "06f1d1b3e325"
+    },
+    "p_pre2plus_rural_bus_future#8|official": {
+      "verdict": "same",
+      "fp": "a00f1da22897"
+    },
+    "p_pre2plus_rural_bus_future#9|trip": {
+      "verdict": "same",
+      "fp": "e5d3a103210b"
+    },
+    "p_pre2plus_rural_bus_future#10|route": {
+      "verdict": "same",
+      "fp": "0c0bf068fe3b"
+    },
+    "p_pre2plus_rural_bus_future#11|single": {
+      "verdict": "same",
+      "fp": "17caa19bfeeb"
+    },
+    "p_pre2plus_rural_bus_future#14|trip": {
+      "verdict": "same",
+      "fp": "75cd762fd5be"
+    },
+    "p_pre2plus_rural_bus_future#15|stress": {
+      "verdict": "form",
+      "note": "stressful（負担の大きい）は stress の形",
+      "fp": "14f8d2b8ff27"
+    },
+    "p_pre2plus_rural_bus_future#15|fixed": {
+      "verdict": "same",
+      "fp": "14f8d2b8ff27"
+    },
+    "p_pre2plus_rural_bus_future#16|system": {
+      "verdict": "same",
+      "fp": "46749f99f018"
+    },
+    "p_pre2plus_rural_bus_future#16|planner": {
+      "verdict": "same",
+      "fp": "46749f99f018"
+    },
+    "p_pre2plus_rural_bus_future#17|prefer": {
+      "verdict": "same",
+      "fp": "9be9d23699f5"
+    },
+    "p_pre2plus_rural_bus_future#18|signal": {
+      "verdict": "same",
+      "fp": "60b0a5b32e88"
+    },
+    "p_pre2plus_rural_bus_future#19|office": {
+      "verdict": "same",
+      "fp": "24bcaae05574"
+    },
+    "p_pre2plus_rural_bus_future#20|neighboring": {
+      "verdict": "same",
+      "fp": "e0c4de71bdd3"
+    },
+    "p_pre2plus_rural_bus_future#22|neither": {
+      "verdict": "same",
+      "fp": "181001a57a3d"
+    },
+    "p_pre2plus_rural_bus_future#22|approach": {
+      "verdict": "same",
+      "fp": "181001a57a3d"
+    },
+    "p_pre2plus_rural_bus_future#22|willing": {
+      "verdict": "same",
+      "fp": "181001a57a3d"
+    },
+    "p_pre2plus_rural_bus_future#23|training": {
+      "verdict": "same",
+      "fp": "19345b45250c"
+    },
+    "p_pre2plus_rural_bus_future#24|such": {
+      "verdict": "same",
+      "fp": "b9ddb730e182"
+    },
+    "p_pre2plus_rural_bus_future#24|support": {
+      "verdict": "pos",
+      "note": "名詞の support（支援）",
+      "fp": "b9ddb730e182"
+    },
+    "p_2_space_debris#1|weather": {
+      "verdict": "same",
+      "fp": "825a3ce2df1a"
+    },
+    "p_2_space_debris#1|navigation": {
+      "verdict": "same",
+      "fp": "825a3ce2df1a"
+    },
+    "p_2_space_debris#1|service": {
+      "verdict": "same",
+      "fp": "825a3ce2df1a"
+    },
+    "p_2_space_debris#1|remote": {
+      "verdict": "same",
+      "fp": "825a3ce2df1a"
+    },
+    "p_2_space_debris#1|community": {
+      "verdict": "same",
+      "fp": "825a3ce2df1a"
+    },
+    "p_2_space_debris#4|centimeter": {
+      "verdict": "same",
+      "fp": "8d3283f87380"
+    },
+    "p_2_space_debris#4|bullet": {
+      "verdict": "same",
+      "fp": "8d3283f87380"
+    },
+    "p_2_space_debris#6|operator": {
+      "verdict": "same",
+      "fp": "90e7fa5341c4"
+    },
+    "p_2_space_debris#8|continuous": {
+      "verdict": "form",
+      "note": "continuously（絶えず）は continuous の副詞形",
+      "fp": "3e02477b1b43"
+    },
+    "p_2_space_debris#9|single": {
+      "verdict": "same",
+      "fp": "3f17146aee22"
+    },
+    "p_2_space_debris#10|strike": {
+      "verdict": "same",
+      "fp": "4a93b5380c52"
+    },
+    "p_2_space_debris#11|certain": {
+      "verdict": "same",
+      "fp": "5e3fac635438"
+    },
+    "p_2_space_debris#13|emergency": {
+      "verdict": "same",
+      "fp": "98b8881642ae"
+    },
+    "p_2_space_debris#13|service": {
+      "verdict": "same",
+      "fp": "98b8881642ae"
+    },
+    "p_2_space_debris#15|engineer": {
+      "verdict": "same",
+      "fp": "343305533094"
+    },
+    "p_2_space_debris#16|capture": {
+      "verdict": "same",
+      "fp": "040417fd21cc"
+    },
+    "p_2_space_debris#18|remove": {
+      "verdict": "same",
+      "fp": "3876e6b26477"
+    },
+    "p_2_space_debris#20|belong": {
+      "verdict": "same",
+      "fp": "0c56313880cf"
+    },
+    "p_2_space_debris#20|single": {
+      "verdict": "same",
+      "fp": "0c56313880cf"
+    },
+    "p_2_space_debris#21|advantage": {
+      "verdict": "same",
+      "fp": "e4d833d5ac2c"
+    },
+    "p_2_space_debris#26|accept": {
+      "verdict": "same",
+      "fp": "59a3439c3282"
+    },
+    "p_2_space_debris#27|enforcement": {
+      "verdict": "same",
+      "fp": "543f13cd46d4"
+    },
+    "p_2_space_debris#27|authority": {
+      "verdict": "same",
+      "fp": "543f13cd46d4"
+    },
+    "p_2_space_debris#28|measure": {
+      "verdict": "same",
+      "fp": "4232aba855a8"
+    },
+    "p_pre1_ai_and_work#2|system": {
+      "verdict": "same",
+      "fp": "cf4658e3ed68"
+    },
+    "p_pre1_ai_and_work#2|generate": {
+      "verdict": "same",
+      "fp": "cf4658e3ed68"
+    },
+    "p_pre1_ai_and_work#2|code": {
+      "verdict": "same",
+      "fp": "cf4658e3ed68"
+    },
+    "p_pre1_ai_and_work#2|revive": {
+      "verdict": "same",
+      "fp": "cf4658e3ed68"
+    },
+    "p_pre1_ai_and_work#3|wealth": {
+      "verdict": "same",
+      "fp": "e11da0206618"
+    },
+    "p_pre1_ai_and_work#5|replace": {
+      "verdict": "same",
+      "fp": "f2a3103daddb"
+    },
+    "p_pre1_ai_and_work#5|physical": {
+      "verdict": "same",
+      "fp": "f2a3103daddb"
+    },
+    "p_pre1_ai_and_work#5|repetitive": {
+      "verdict": "same",
+      "fp": "f2a3103daddb"
+    },
+    "p_pre1_ai_and_work#6|system": {
+      "verdict": "same",
+      "fp": "fe37f8e9d04c"
+    },
+    "p_pre1_ai_and_work#6|resemble": {
+      "verdict": "same",
+      "fp": "fe37f8e9d04c"
+    },
+    "p_pre1_ai_and_work#7|task": {
+      "verdict": "same",
+      "fp": "019f66936e3a"
+    },
+    "p_pre1_ai_and_work#8|analyst": {
+      "verdict": "same",
+      "fp": "42e69fc8ecad"
+    },
+    "p_pre1_ai_and_work#9|task": {
+      "verdict": "same",
+      "fp": "380356f941d7"
+    },
+    "p_pre1_ai_and_work#10|task": {
+      "verdict": "same",
+      "fp": "a1be169c1b8e"
+    },
+    "p_pre1_ai_and_work#11|weigh": {
+      "verdict": "same",
+      "fp": "3354ef9c6e5a"
+    },
+    "p_pre1_ai_and_work#11|uncertainty": {
+      "verdict": "same",
+      "fp": "3354ef9c6e5a"
+    },
+    "p_pre1_ai_and_work#12|task": {
+      "verdict": "same",
+      "fp": "3cd8fe6a5c31"
+    },
+    "p_pre1_ai_and_work#13|attract": {
+      "verdict": "same",
+      "fp": "c38ee8c231a9"
+    },
+    "p_pre1_ai_and_work#15|machine": {
+      "verdict": "same",
+      "fp": "bd405a8eb9d1"
+    },
+    "p_pre1_ai_and_work#15|clerk": {
+      "verdict": "same",
+      "fp": "bd405a8eb9d1"
+    },
+    "p_pre1_ai_and_work#17|collapse": {
+      "verdict": "same",
+      "fp": "2c16aef5d9a8"
+    },
+    "p_pre1_ai_and_work#17|decade": {
+      "verdict": "same",
+      "fp": "2c16aef5d9a8"
+    },
+    "p_pre1_ai_and_work#18|caution": {
+      "verdict": "same",
+      "fp": "35dd6f366fe9"
+    },
+    "p_pre1_ai_and_work#20|aggregate": {
+      "verdict": "pos",
+      "note": "形容詞の aggregate（全体をまとめた）",
+      "fp": "8e203d883c13"
+    },
+    "p_pre1_ai_and_work#28|law": {
+      "verdict": "same",
+      "fp": "20c07f1f2a16"
+    },
+    "p_pre1_ai_and_work#31|remain": {
+      "verdict": "same",
+      "fp": "a9b1bd192e0b"
+    },
+    "p_pre1_ai_and_work#32|reward": {
+      "verdict": "same",
+      "fp": "fb955f4652a7"
+    },
+    "p_pre1_ai_and_work#33|currently": {
+      "verdict": "same",
+      "fp": "fc96bb69352e"
+    },
+    "p_pre1_ai_and_work#33|lack": {
+      "verdict": "same",
+      "fp": "fc96bb69352e"
+    },
+    "p_pre1_ai_and_work#35|emphasize": {
+      "verdict": "same",
+      "fp": "edc204b40870"
+    },
+    "p_pre1_ai_and_work#37|continuous": {
+      "verdict": "same",
+      "fp": "faa4a13b749b"
+    },
+    "p_pre1_ai_and_work#38|ambition": {
+      "verdict": "same",
+      "fp": "fa7cf7e76ce0"
+    },
+    "p_pre1_ai_and_work#38|consume": {
+      "verdict": "same",
+      "fp": "fa7cf7e76ce0"
+    },
+    "p_pre1_ai_and_work#41|system": {
+      "verdict": "same",
+      "fp": "1d6ac4e9c7f6"
+    },
+    "p_1_synthetic_media_trust#2|production": {
+      "verdict": "same",
+      "fp": "9ea07f1dc149"
+    },
+    "p_1_synthetic_media_trust#2|expensive": {
+      "verdict": "same",
+      "fp": "9ea07f1dc149"
+    },
+    "p_1_synthetic_media_trust#3|fabrication": {
+      "verdict": "same",
+      "fp": "cdb9d94ed0b0"
+    },
+    "p_1_synthetic_media_trust#3|equipment": {
+      "verdict": "same",
+      "fp": "cdb9d94ed0b0"
+    },
+    "p_1_synthetic_media_trust#3|possess": {
+      "verdict": "same",
+      "fp": "cdb9d94ed0b0"
+    },
+    "p_1_synthetic_media_trust#5|assumption": {
+      "verdict": "same",
+      "fp": "f16431665c79"
+    },
+    "p_1_synthetic_media_trust#9|concern": {
+      "verdict": "same",
+      "fp": "06ef98b298e4"
+    },
+    "p_1_synthetic_media_trust#10|fabricated": {
+      "verdict": "same",
+      "fp": "2eba804eac5d"
+    },
+    "p_1_synthetic_media_trust#11|audience": {
+      "verdict": "same",
+      "fp": "419b02b2ecfe"
+    },
+    "p_1_synthetic_media_trust#13|subtle": {
+      "verdict": "form",
+      "note": "subtler は subtle の比較級",
+      "fp": "2759f7ddcbd1"
+    },
+    "p_1_synthetic_media_trust#14|audience": {
+      "verdict": "same",
+      "fp": "2ea0cff50aa9"
+    },
+    "p_1_synthetic_media_trust#14|fake": {
+      "verdict": "pos",
+      "note": "動詞の fake（偽造する）の受け身",
+      "fp": "2ea0cff50aa9"
+    },
+    "p_1_synthetic_media_trust#16|dividend": {
+      "verdict": "same",
+      "fp": "40bbecacaba6"
+    },
+    "p_1_synthetic_media_trust#16|dishonest": {
+      "verdict": "same",
+      "fp": "40bbecacaba6"
+    },
+    "p_1_synthetic_media_trust#16|fabrication": {
+      "verdict": "same",
+      "fp": "40bbecacaba6"
+    },
+    "p_1_synthetic_media_trust#17|skill": {
+      "verdict": "same",
+      "fp": "935da55d8af3"
+    },
+    "p_1_synthetic_media_trust#17|manufacture": {
+      "verdict": "same",
+      "fp": "935da55d8af3"
+    },
+    "p_1_synthetic_media_trust#21|record": {
+      "verdict": "same",
+      "fp": "4699fe148e82"
+    },
+    "p_1_synthetic_media_trust#24|burden": {
+      "verdict": "same",
+      "fp": "0d31045402c0"
+    },
+    "p_1_synthetic_media_trust#25|originate": {
+      "verdict": "same",
+      "fp": "3a40b2d8e482"
+    },
+    "p_1_synthetic_media_trust#26|capture": {
+      "verdict": "pos",
+      "note": "名詞の capture（撮影・取りこむこと）",
+      "fp": "6ee7a01f3b98"
+    },
+    "p_1_synthetic_media_trust#27|custody": {
+      "verdict": "phrase",
+      "note": "chain of custody（証拠の保管の連鎖）",
+      "fp": "8b6e5180039d"
+    },
+    "p_1_synthetic_media_trust#29|standard": {
+      "verdict": "same",
+      "fp": "41984bac65e7"
+    },
+    "p_1_synthetic_media_trust#31|equipment": {
+      "verdict": "same",
+      "fp": "2b22cb7634a9"
+    },
+    "p_1_synthetic_media_trust#32|establish": {
+      "verdict": "same",
+      "fp": "fc9ec34ad17a"
+    },
+    "p_1_synthetic_media_trust#33|wrongdoing": {
+      "verdict": "same",
+      "fp": "a277b97448d4"
+    },
+    "p_1_synthetic_media_trust#34|selective": {
+      "verdict": "same",
+      "fp": "ad17cae35080"
+    },
+    "p_1_synthetic_media_trust#34|disclosure": {
+      "verdict": "same",
+      "fp": "ad17cae35080"
+    },
+    "p_1_synthetic_media_trust#36|dispute": {
+      "verdict": "pos",
+      "note": "動詞の dispute（争う）の過去分詞",
+      "fp": "58cdf31bded9"
+    },
+    "p_1_synthetic_media_trust#38|newsroom": {
+      "verdict": "same",
+      "fp": "ecc2080af96b"
+    },
+    "p_1_synthetic_media_trust#39|appearance": {
+      "verdict": "same",
+      "fp": "38f13366cc40"
+    },
+    "p_1_synthetic_media_trust#40|label": {
+      "verdict": "same",
+      "fp": "be20aaa0ef28"
+    },
+    "p_1_synthetic_media_trust#41|label": {
+      "verdict": "same",
+      "fp": "4529aa1816d8"
+    },
+    "p_1_synthetic_media_trust#41|default": {
+      "verdict": "phrase",
+      "note": "by default（特に何もしなければ）",
+      "fp": "4529aa1816d8"
+    },
+    "p_1_synthetic_media_trust#42|imply": {
+      "verdict": "same",
+      "fp": "c7140027bdf5"
+    },
+    "p_1_synthetic_media_trust#42|label": {
+      "verdict": "same",
+      "fp": "c7140027bdf5"
+    },
+    "p_1_synthetic_media_trust#42|expand": {
+      "verdict": "same",
+      "fp": "c7140027bdf5"
+    },
+    "p_1_synthetic_media_trust#43|label": {
+      "verdict": "same",
+      "fp": "75514c4e496e"
+    },
+    "p_1_synthetic_media_trust#44|recommend": {
+      "verdict": "same",
+      "fp": "158872c81bc3"
+    },
+    "p_1_synthetic_media_trust#45|universal": {
+      "verdict": "same",
+      "fp": "9fe3e162d065"
+    },
+    "p_1_synthetic_media_trust#45|suspicion": {
+      "verdict": "same",
+      "fp": "9fe3e162d065"
+    },
+    "p_1_synthetic_media_trust#49|newsroom": {
+      "verdict": "same",
+      "fp": "efc7e37b54b2"
+    },
+    "p_1_synthetic_media_trust#49|employ": {
+      "verdict": "same",
+      "fp": "efc7e37b54b2"
+    },
+    "p_1_synthetic_media_trust#49|rural": {
+      "verdict": "same",
+      "fp": "efc7e37b54b2"
+    },
+    "p_1_synthetic_media_trust#50|material": {
+      "verdict": "same",
+      "fp": "1c19aba349ac"
+    },
+    "p_1_synthetic_media_trust#51|manufacture": {
+      "verdict": "same",
+      "fp": "de5b59930a05"
+    },
+    "p_1_synthetic_media_trust#54|consistent": {
+      "verdict": "same",
+      "fp": "ab50355c4f68"
+    },
+    "p_1_synthetic_media_trust#54|weight": {
+      "verdict": "same",
+      "fp": "ab50355c4f68"
+    },
+    "p_1_synthetic_media_trust#55|arrangement": {
+      "verdict": "same",
+      "fp": "68cb377908b8"
+    },
+    "p_pre2_pond_comeback#4|student": {
+      "verdict": "same",
+      "fp": "1ae964d66637"
+    },
+    "p_pre2_pond_comeback#4|temperature": {
+      "verdict": "same",
+      "fp": "1ae964d66637"
+    },
+    "p_pre2_pond_comeback#5|self": {
+      "verdict": "form",
+      "note": "itself（それ自体）は self の形",
+      "fp": "9a3c584033e7"
+    },
+    "p_pre2_pond_comeback#8|destroy": {
+      "verdict": "same",
+      "fp": "fdced54e9e04"
+    },
+    "p_pre2_pond_comeback#8|plant": {
+      "verdict": "same",
+      "fp": "fdced54e9e04"
+    },
+    "p_pre2_pond_comeback#9|natural": {
+      "verdict": "same",
+      "fp": "9e1ebb3be6c1"
+    },
+    "p_pre2_pond_comeback#10|single": {
+      "verdict": "same",
+      "fp": "14188b2b1331"
+    },
+    "p_pre2_pond_comeback#14|student": {
+      "verdict": "same",
+      "fp": "8c0bc06a5b2c"
+    },
+    "p_pre2_pond_comeback#15|demand": {
+      "verdict": "same",
+      "fp": "0f1148f266ec"
+    },
+    "p_pre2_pond_comeback#16|remain": {
+      "verdict": "same",
+      "fp": "734dda3a5fe5"
+    },
+    "p_pre2_pond_comeback#18|therefore": {
+      "verdict": "same",
+      "fp": "316b16e01ea7"
+    },
+    "p_pre2_pond_comeback#19|project": {
+      "verdict": "other",
+      "note": "ほかの意味「計画・企画」",
+      "fp": "effc49adafac"
+    },
+    "p_pre2_pond_comeback#20|provide": {
+      "verdict": "same",
+      "fp": "0cdd5666eff4"
+    },
+    "p_pre2_pond_comeback#21|curiosity": {
+      "verdict": "same",
+      "fp": "d3be48153ad6"
+    },
+    "p_pre2_pond_comeback#22|community": {
+      "verdict": "same",
+      "fp": "4b79de004d79"
+    },
+    "p_pre2_pond_comeback#23|student": {
+      "verdict": "same",
+      "fp": "bd4cd934b83d"
+    },
+    "p_pre2_morning_market#2|few": {
+      "verdict": "same",
+      "fp": "a47c2b6033e8"
+    },
+    "p_pre2_morning_market#3|supplier": {
+      "verdict": "same",
+      "fp": "253ed2bc1d6c"
+    },
+    "p_pre2_morning_market#3|visitor": {
+      "verdict": "same",
+      "fp": "253ed2bc1d6c"
+    },
+    "p_pre2_morning_market#4|visitor": {
+      "verdict": "same",
+      "fp": "4ba2d2929888"
+    },
+    "p_pre2_morning_market#4|price": {
+      "verdict": "same",
+      "fp": "4ba2d2929888"
+    },
+    "p_pre2_morning_market#7|therefore": {
+      "verdict": "same",
+      "fp": "fb9580e75317"
+    },
+    "p_pre2_morning_market#8|contact": {
+      "verdict": "pos",
+      "note": "名詞の contact（接触・やりとり）",
+      "fp": "d2cae9695239"
+    },
+    "p_pre2_morning_market#8|lower": {
+      "verdict": "same",
+      "fp": "d2cae9695239"
+    },
+    "p_pre2_morning_market#9|visitor": {
+      "verdict": "same",
+      "fp": "b0468c2f4b8b"
+    },
+    "p_pre2_morning_market#9|contact": {
+      "verdict": "pos",
+      "note": "名詞の contact（接触・やりとり）",
+      "fp": "b0468c2f4b8b"
+    },
+    "p_pre2_morning_market#12|requirement": {
+      "verdict": "same",
+      "fp": "9eeee31407f4"
+    },
+    "p_pre2_morning_market#15|government": {
+      "verdict": "same",
+      "fp": "23c99f9342e4"
+    },
+    "p_pre2_morning_market#17|routine": {
+      "verdict": "same",
+      "fp": "9ef5588a097c"
+    },
+    "p_pre2_morning_market#19|few": {
+      "verdict": "same",
+      "fp": "d4c47ed088ac"
+    },
+    "p_pre2_morning_market#19|themselves": {
+      "verdict": "same",
+      "fp": "d4c47ed088ac"
+    },
+    "p_pre2_morning_market#20|spoil": {
+      "verdict": "same",
+      "fp": "dd681ae53a15"
+    },
+    "p_pre2_morning_market#21|therefore": {
+      "verdict": "same",
+      "fp": "fb71e3d0d84c"
+    },
+    "p_pre2_morning_market#22|nobody": {
+      "verdict": "same",
+      "fp": "caf6d85b2505"
+    },
+    "p_pre2_morning_market#23|stall": {
+      "verdict": "same",
+      "fp": "ffafd770c0a9"
+    },
+    "p_pre2_morning_market#24|stall": {
+      "verdict": "same",
+      "fp": "5db95d046d7a"
+    },
+    "p_pre2_morning_market#26|routine": {
+      "verdict": "same",
+      "fp": "8276e533d9eb"
+    },
+    "p_pre2_morning_market#26|meeting": {
+      "verdict": "same",
+      "fp": "8276e533d9eb"
+    },
+    "p_2_injury_free_practice#0|member": {
+      "verdict": "same",
+      "fp": "8053ccddb29b"
+    },
+    "p_2_injury_free_practice#0|injured": {
+      "verdict": "same",
+      "fp": "8053ccddb29b"
+    },
+    "p_2_injury_free_practice#0|single": {
+      "verdict": "same",
+      "fp": "8053ccddb29b"
+    },
+    "p_2_injury_free_practice#1|case": {
+      "verdict": "same",
+      "fp": "8195565a43fe"
+    },
+    "p_2_injury_free_practice#3|member": {
+      "verdict": "same",
+      "fp": "d15ff782df50"
+    },
+    "p_2_injury_free_practice#6|damage": {
+      "verdict": "same",
+      "fp": "f65ebcafb3f5"
+    },
+    "p_2_injury_free_practice#6|sudden": {
+      "verdict": "same",
+      "fp": "f65ebcafb3f5"
+    },
+    "p_2_injury_free_practice#8|raise": {
+      "verdict": "same",
+      "fp": "f3537374768d"
+    },
+    "p_2_injury_free_practice#11|stress": {
+      "verdict": "same",
+      "fp": "f669b3020683"
+    },
+    "p_2_injury_free_practice#13|member": {
+      "verdict": "same",
+      "fp": "d2ed3b4cdd95"
+    },
+    "p_2_injury_free_practice#16|leader": {
+      "verdict": "same",
+      "fp": "bd702f053f63"
+    },
+    "p_2_injury_free_practice#16|fixed": {
+      "verdict": "same",
+      "fp": "bd702f053f63"
+    },
+    "p_2_injury_free_practice#17|physical": {
+      "verdict": "same",
+      "fp": "41c15b8a5576"
+    },
+    "p_2_injury_free_practice#20|separate": {
+      "verdict": "same",
+      "fp": "785be2e7a32b"
+    },
+    "p_2_injury_free_practice#20|member": {
+      "verdict": "same",
+      "fp": "785be2e7a32b"
+    },
+    "p_2_injury_free_practice#22|pressure": {
+      "verdict": "same",
+      "fp": "7e6aaf88bb18"
+    },
+    "p_2_injury_free_practice#22|raise": {
+      "verdict": "same",
+      "fp": "7e6aaf88bb18"
+    },
+    "p_2_injury_free_practice#23|member": {
+      "verdict": "same",
+      "fp": "0adf9a62e4c5"
+    },
+    "p_2_injury_free_practice#24|ordinary": {
+      "verdict": "same",
+      "fp": "ee943ea781a9"
+    },
+    "p_2_injury_free_practice#25|member": {
+      "verdict": "same",
+      "fp": "eed87a16b0cd"
+    },
+    "p_2_injury_free_practice#27|improve": {
+      "verdict": "same",
+      "fp": "075e99cd55d5"
+    },
+    "p_2_injury_free_practice#27|although": {
+      "verdict": "same",
+      "fp": "075e99cd55d5"
+    },
+    "p_2_injury_free_practice#29|leader": {
+      "verdict": "same",
+      "fp": "f59b1776ac38"
+    },
+    "p_2_injury_free_practice#32|damage": {
+      "verdict": "same",
+      "fp": "7b758a53c985"
+    },
+    "p_2_injury_free_practice#33|range": {
+      "verdict": "same",
+      "fp": "1bcb6ef2d661"
+    },
+    "p_2_factory_museum#1|peak": {
+      "verdict": "same",
+      "fp": "cb99bff93c27"
+    },
+    "p_2_factory_museum#5|former": {
+      "verdict": "same",
+      "fp": "09b64d9e0d5f"
+    },
+    "p_2_factory_museum#5|delay": {
+      "verdict": "same",
+      "fp": "09b64d9e0d5f"
+    },
+    "p_2_factory_museum#7|material": {
+      "verdict": "same",
+      "fp": "1d2dcb7225f1"
+    },
+    "p_2_factory_museum#7|process": {
+      "verdict": "same",
+      "fp": "1d2dcb7225f1"
+    },
+    "p_2_factory_museum#7|detail": {
+      "verdict": "same",
+      "fp": "1d2dcb7225f1"
+    },
+    "p_2_factory_museum#10|encouraging": {
+      "verdict": "same",
+      "fp": "ef518ae5b1e3"
+    },
+    "p_2_factory_museum#11|demand": {
+      "verdict": "same",
+      "fp": "0050f61c1c24"
+    },
+    "p_2_factory_museum#13|private": {
+      "verdict": "same",
+      "fp": "7162de5b9e9a"
+    },
+    "p_2_factory_museum#17|workshop": {
+      "verdict": "same",
+      "fp": "d731d6004ad5"
+    },
+    "p_2_factory_museum#18|workshop": {
+      "verdict": "same",
+      "fp": "1eb116e97840"
+    },
+    "p_2_factory_museum#18|produce": {
+      "verdict": "same",
+      "fp": "1eb116e97840"
+    },
+    "p_2_factory_museum#18|revenue": {
+      "verdict": "same",
+      "fp": "1eb116e97840"
+    },
+    "p_2_factory_museum#26|former": {
+      "verdict": "same",
+      "fp": "fe196f3ea89c"
+    },
+    "p_2_factory_museum#28|ancestor": {
+      "verdict": "same",
+      "fp": "8c415b0d58f1"
+    },
+    "p_2_factory_museum#29|perception": {
+      "verdict": "same",
+      "fp": "f143e341d061"
+    },
+    "p_2_factory_museum#30|ordinary": {
+      "verdict": "same",
+      "fp": "7a4ad4023c70"
+    },
+    "p_2_factory_museum#33|public": {
+      "verdict": "same",
+      "fp": "ef3f30fc7ff5"
+    },
+    "p_pre2_school_radio#3|audience": {
+      "verdict": "same",
+      "fp": "045171867f3e"
+    },
+    "p_pre2_school_radio#8|council": {
+      "verdict": "phrase",
+      "note": "student council（生徒会）",
+      "fp": "2bea83d95402"
+    },
+    "p_pre2_school_radio#10|script": {
+      "verdict": "same",
+      "fp": "be87a93a7c9a"
+    },
+    "p_pre2_school_radio#13|summary": {
+      "verdict": "same",
+      "fp": "45397894c1e7"
+    },
+    "p_pre2_school_radio#15|reporter": {
+      "verdict": "same",
+      "fp": "23b78257f40e"
+    },
+    "p_pre2_school_radio#15|nurse": {
+      "verdict": "phrase",
+      "note": "school nurse（保健の先生）",
+      "fp": "23b78257f40e"
+    },
+    "p_pre2_school_radio#20|official": {
+      "verdict": "same",
+      "fp": "2db82239b448"
+    },
+    "p_pre2_school_radio#20|disaster": {
+      "verdict": "same",
+      "fp": "2db82239b448"
+    },
+    "p_pre2_school_radio#20|practice": {
+      "verdict": "same",
+      "fp": "2db82239b448"
+    },
+    "p_pre2_school_radio#21|audience": {
+      "verdict": "same",
+      "fp": "0b3cc92d4acf"
+    },
+    "p_pre2_school_radio#25|express": {
+      "verdict": "same",
+      "fp": "0c909a3df249"
+    },
+    "p_pre2_school_radio#25|briefly": {
+      "verdict": "same",
+      "fp": "0c909a3df249"
+    },
+    "p_pre2_school_radio#25|audience": {
+      "verdict": "same",
+      "fp": "0c909a3df249"
+    },
+    "p_pre2_school_radio#26|clear": {
+      "verdict": "same",
+      "fp": "c23eea21ea57"
+    },
+    "p_pre2_school_radio#27|announcement": {
+      "verdict": "same",
+      "fp": "699b883dfa69"
+    },
+    "p_pre2_school_radio#30|communication": {
+      "verdict": "same",
+      "fp": "22a35e8f3268"
+    },
+    "p_2_disaster_translators#0|coastal": {
+      "verdict": "same",
+      "fp": "e9cff18a06db"
+    },
+    "p_2_disaster_translators#1|warning": {
+      "verdict": "same",
+      "fp": "3ad888febfa2"
+    },
+    "p_2_disaster_translators#3|warning": {
+      "verdict": "same",
+      "fp": "d0776ff56431"
+    },
+    "p_2_disaster_translators#4|process": {
+      "verdict": "same",
+      "fp": "c7d50ad230d9"
+    },
+    "p_2_disaster_translators#6|polite": {
+      "verdict": "same",
+      "fp": "cd8e82140229"
+    },
+    "p_2_disaster_translators#6|invitation": {
+      "verdict": "same",
+      "fp": "cd8e82140229"
+    },
+    "p_2_disaster_translators#8|warning": {
+      "verdict": "same",
+      "fp": "e4ceea5205ce"
+    },
+    "p_2_disaster_translators#9|manual": {
+      "verdict": "same",
+      "fp": "fc3da9bc80fa"
+    },
+    "p_2_disaster_translators#11|common": {
+      "verdict": "same",
+      "fp": "e1e97f6bbed0"
+    },
+    "p_2_disaster_translators#11|notices": {
+      "verdict": "same",
+      "fp": "e1e97f6bbed0"
+    },
+    "p_2_disaster_translators#11|notice": {
+      "verdict": "same",
+      "fp": "e1e97f6bbed0"
+    },
+    "p_2_disaster_translators#12|notice": {
+      "verdict": "same",
+      "fp": "84599ec51216"
+    },
+    "p_2_disaster_translators#13|notice": {
+      "verdict": "same",
+      "fp": "1c48702dee85"
+    },
+    "p_2_disaster_translators#18|course": {
+      "verdict": "same",
+      "fp": "875bc8336cb2"
+    },
+    "p_2_disaster_translators#23|warning": {
+      "verdict": "same",
+      "fp": "3cf3f5f37291"
+    },
+    "p_2_disaster_translators#24|confirm": {
+      "verdict": "same",
+      "fp": "2683fb6b469e"
+    },
+    "p_2_disaster_translators#26|system": {
+      "verdict": "same",
+      "fp": "90c07aedc693"
+    },
+    "p_2_disaster_translators#28|notices": {
+      "verdict": "same",
+      "fp": "1b1c9839d74f"
+    },
+    "p_2_disaster_translators#28|notice": {
+      "verdict": "same",
+      "fp": "1b1c9839d74f"
+    },
+    "p_2_disaster_translators#29|wording": {
+      "verdict": "same",
+      "fp": "bfd4e64ddbaf"
+    },
+    "p_2_disaster_translators#33|interpreter": {
+      "verdict": "same",
+      "fp": "0dda791e3ea5"
+    },
+    "p_2_disaster_translators#34|power": {
+      "verdict": "same",
+      "fp": "694c61684d7d"
+    },
+    "p_2_disaster_translators#36|network": {
+      "verdict": "same",
+      "fp": "0d20c6c5a2f7"
+    },
+    "p_2_disaster_translators#36|neighbor": {
+      "verdict": "same",
+      "fp": "0d20c6c5a2f7"
+    },
+    "p_ext_1000_civic_decisions#1|publish": {
+      "verdict": "same",
+      "fp": "d10f21e9cafd"
+    },
+    "p_ext_1000_civic_decisions#3|mandate": {
+      "verdict": "same",
+      "fp": "e2d99b2591b0"
+    },
+    "p_ext_1000_civic_decisions#8|range": {
+      "verdict": "same",
+      "fp": "36431ad83971"
+    },
+    "p_ext_1000_civic_decisions#13|dispute": {
+      "verdict": "same",
+      "fp": "270603e31974"
+    },
+    "p_ext_1000_civic_decisions#17|prosecutor": {
+      "verdict": "same",
+      "fp": "b66f42662cda"
+    },
+    "p_ext_1000_civic_decisions#17|rely": {
+      "verdict": "same",
+      "fp": "b66f42662cda"
+    },
+    "p_ext_1000_civic_decisions#22|entitle": {
+      "verdict": "same",
+      "fp": "a0a6920022e1"
+    },
+    "p_ext_1000_civic_decisions#25|delayed": {
+      "verdict": "same",
+      "fp": "b7fbd75d9d8e"
+    },
+    "p_ext_1000_civic_decisions#26|openness": {
+      "verdict": "same",
+      "fp": "9ccc8e3353f3"
+    },
+    "p_ext_1000_civic_decisions#26|courtesy": {
+      "verdict": "same",
+      "fp": "9ccc8e3353f3"
+    },
+    "p_ext_1000_civic_decisions#31|accumulate": {
+      "verdict": "same",
+      "fp": "2f281dc36734"
+    },
+    "p_ext_1000_civic_decisions#32|literate": {
+      "verdict": "same",
+      "fp": "2a02937fca94"
+    },
+    "p_ext_1000_civic_decisions#33|credential": {
+      "verdict": "same",
+      "fp": "4ced33a52565"
+    },
+    "p_ext_1000_civic_decisions#33|decade": {
+      "verdict": "same",
+      "fp": "4ced33a52565"
+    },
+    "p_ext_1000_civic_decisions#38|account": {
+      "verdict": "form",
+      "note": "accounting（会計）は account の形",
+      "fp": "3d65f62c99c6"
+    },
+    "p_ext_1000_civic_decisions#43|austerity": {
+      "verdict": "same",
+      "fp": "5cf982e09047"
+    },
+    "p_ext_1000_civic_decisions#43|account": {
+      "verdict": "phrase",
+      "note": "balance the accounts（帳尻を合わせる）",
+      "fp": "5cf982e09047"
+    },
+    "p_ext_1000_civic_decisions#43|insure": {
+      "verdict": "same",
+      "fp": "5cf982e09047"
+    },
+    "p_ext_1000_civic_decisions#43|themselves": {
+      "verdict": "same",
+      "fp": "5cf982e09047"
+    },
+    "p_ext_1000_civic_decisions#44|security": {
+      "verdict": "same",
+      "fp": "9404d74a9e18"
+    },
+    "p_ext_1000_civic_decisions#46|struggle": {
+      "verdict": "same",
+      "fp": "59f0d08668cf"
+    },
+    "p_ext_2000_customs_across_borders#4|immediately": {
+      "verdict": "same",
+      "fp": "43516b83d8eb"
+    },
+    "p_ext_2000_customs_across_borders#11|setting": {
+      "verdict": "same",
+      "fp": "983a720bc03c"
+    },
+    "p_ext_2000_customs_across_borders#12|uproar": {
+      "verdict": "same",
+      "fp": "4077717f617f"
+    },
+    "p_ext_2000_customs_across_borders#15|deliberately": {
+      "verdict": "same",
+      "fp": "122bc41d3c00"
+    },
+    "p_ext_2000_customs_across_borders#22|meticulous": {
+      "verdict": "same",
+      "fp": "2c054e63164e"
+    },
+    "p_ext_2000_customs_across_borders#23|improvise": {
+      "verdict": "same",
+      "fp": "925b02d4666b"
+    },
+    "p_ext_2000_customs_across_borders#27|encode": {
+      "verdict": "same",
+      "fp": "0ab5d7240f23"
+    },
+    "p_ext_2000_customs_across_borders#41|assigned": {
+      "verdict": "same",
+      "fp": "b192040002d8"
+    },
+    "p_ext_2000_customs_across_borders#43|resonate": {
+      "verdict": "same",
+      "fp": "d907f15f8253"
+    },
+    "p_ext_2000_customs_across_borders#47|irrational": {
+      "verdict": "same",
+      "fp": "8010a762cd44"
+    },
+    "p_ext_2000_customs_across_borders#50|disagreement": {
+      "verdict": "same",
+      "fp": "261d8a5b2599"
+    },
+    "p_ext_2000_customs_across_borders#51|deliberately": {
+      "verdict": "same",
+      "fp": "a7bb27315811"
+    },
+    "p_ext_2000_customs_across_borders#54|outlive": {
+      "verdict": "same",
+      "fp": "ee055f49d416"
+    },
+    "p_ext_2000_customs_across_borders#60|copied": {
+      "verdict": "same",
+      "fp": "654fe128577c"
+    },
+    "p_ext_2000_customs_across_borders#61|pedagogy": {
+      "verdict": "same",
+      "fp": "cfa3ec144b15"
+    },
+    "p_ext_2000_customs_across_borders#61|inevitably": {
+      "verdict": "same",
+      "fp": "cfa3ec144b15"
+    },
+    "p_ext_2000_customs_across_borders#63|catastrophe": {
+      "verdict": "same",
+      "fp": "22aad1e74656"
+    },
+    "p_ext_2000_customs_across_borders#83|outlive": {
+      "verdict": "same",
+      "fp": "fc0228347de1"
+    },
+    "p_ext_2000_customs_across_borders#102|reluctance": {
+      "verdict": "same",
+      "fp": "a6599931eade"
+    },
+    "p_ext_2000_customs_across_borders#107|discomfort": {
+      "verdict": "same",
+      "fp": "e7e50da0f59b"
+    },
+    "p_ext_3000_shared_watershed#8|rainfall": {
+      "verdict": "same",
+      "fp": "129daced83a5"
+    },
+    "p_ext_3000_shared_watershed#9|rainfall": {
+      "verdict": "same",
+      "fp": "bb0ecda76a0d"
+    },
+    "p_ext_3000_shared_watershed#27|appearance": {
+      "verdict": "same",
+      "fp": "b4be7ffa18dc"
+    },
+    "p_ext_3000_shared_watershed#31|elsewhere": {
+      "verdict": "same",
+      "fp": "cc87ae36b3bc"
+    },
+    "p_ext_3000_shared_watershed#34|failure": {
+      "verdict": "same",
+      "fp": "8a00af4f8bf9"
+    },
+    "p_ext_3000_shared_watershed#56|rainfall": {
+      "verdict": "same",
+      "fp": "a06e0d05a7b6"
+    },
+    "p_ext_3000_shared_watershed#59|rainfall": {
+      "verdict": "same",
+      "fp": "5504fcefaeab"
+    },
+    "p_ext_3000_shared_watershed#75|consistently": {
+      "verdict": "same",
+      "fp": "3fe409a3f929"
+    },
+    "p_ext_3000_shared_watershed#75|underestimate": {
+      "verdict": "same",
+      "fp": "3fe409a3f929"
+    },
+    "p_ext_3000_shared_watershed#76|treatment": {
+      "verdict": "same",
+      "fp": "c1cf64bdee27"
+    },
+    "p_ext_3000_shared_watershed#81|failure": {
+      "verdict": "same",
+      "fp": "2fb6947701aa"
+    },
+    "p_ext_3000_shared_watershed#114|failure": {
+      "verdict": "same",
+      "fp": "ebd0e93009d0"
+    },
+    "p_ext_3000_shared_watershed#118|prototype": {
+      "verdict": "same",
+      "fp": "3835030744c1"
+    },
+    "p_ext_3000_shared_watershed#123|distribution": {
+      "verdict": "same",
+      "fp": "e9d0f618aea7"
+    },
+    "p_ext_3000_shared_watershed#124|rainfall": {
+      "verdict": "same",
+      "fp": "b314a2f0a0ff"
+    },
+    "p_ext_3000_shared_watershed#127|assumption": {
+      "verdict": "same",
+      "fp": "8148a3b6d65e"
+    },
+    "p_ext_3000_shared_watershed#131|series": {
+      "verdict": "same",
+      "fp": "16a15e256798"
+    },
+    "p_ext_3000_shared_watershed#132|causation": {
+      "verdict": "same",
+      "fp": "7d9fda50514b"
+    },
+    "p_ext_3000_shared_watershed#136|specialist": {
+      "verdict": "same",
+      "fp": "1b6aad33a6b5"
+    },
+    "p_ext_3000_shared_watershed#143|asymmetry": {
+      "verdict": "same",
+      "fp": "dd96d6a7b125"
+    },
+    "p_ext_3000_shared_watershed#148|enforcement": {
+      "verdict": "same",
+      "fp": "de15cce6fbe3"
+    },
+    "p_ext_3000_shared_watershed#152|continuous": {
+      "verdict": "same",
+      "fp": "618283894e65"
+    },
+    "p_ext_3000_shared_watershed#153|series": {
+      "verdict": "same",
+      "fp": "057c75aca6c4"
+    },
+    "p_ext_3000_shared_watershed#154|folklore": {
+      "verdict": "same",
+      "fp": "408c9b920d47"
+    },
+    "p_ext_3000_shared_watershed#155|consultation": {
+      "verdict": "same",
+      "fp": "c2bf70dfd24d"
+    },
+    "p_ext_3000_shared_watershed#158|readily": {
+      "verdict": "same",
+      "fp": "a02649ce3c3e"
+    },
+    "p_ext_4000_generational_city#89|purchase": {
+      "verdict": "same",
+      "fp": "862962cc0893"
+    }
+  }
+}

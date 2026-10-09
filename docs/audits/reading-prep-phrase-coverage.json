@@ -1,0 +1,369 @@
+{
+  "about": "本文に出る熟語・構文（熟語の全件と型で書いた構文。長文の級と同じか上の級）を照合器で拾い、準備の熟語・表現に無かったものを1件ずつ本文の文で読んだ結果（requests/2026-10-09-reading-prep-alignment.json）。熟語として使われていた47件は src/data/reading-prep-phrase-additions.js で準備に足したので、ここには残らない。decision は covered＝準備の別の項目（by）で同じ熟語を学べる、not-idiom＝語の並びが合うだけで熟語として使われていない（reason に理由）。照らせる部品が1つだけの熟語（do with・will do など）は語の並びでは見分けられないので候補にしていない。",
+  "reviewed": {
+    "p_5_lost_notebook|curr_idm_5_go_to_school": {
+      "phrase": "go to school",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_p5_go_to_school",
+      "fp": "6c1f56cc755e"
+    },
+    "p_5_lost_notebook|curr_idm_5_every_morning": {
+      "phrase": "every morning",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_p5_every_morning",
+      "fp": "6c1f56cc755e"
+    },
+    "p_5_lost_notebook|curr_idm_4_by_bus": {
+      "phrase": "by bus",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_p5_by_bus",
+      "fp": "6c1f56cc755e"
+    },
+    "p_5_lost_notebook|curr1900_idm_4_thank_you": {
+      "phrase": "Thank you.",
+      "sentence": 7,
+      "decision": "covered",
+      "by": "rdx_p5_say_thank_you",
+      "fp": "e6e358b456a2"
+    },
+    "p_4_library_event|curr_idm_3_talk_about": {
+      "phrase": "talk about",
+      "sentence": 4,
+      "decision": "covered",
+      "by": "rdx_p4_talk_about",
+      "fp": "30ae2acf85b2"
+    },
+    "p_4_library_event|curr1900_idm_3_have_to": {
+      "phrase": "have to",
+      "sentence": 9,
+      "decision": "covered",
+      "by": "rdx_p4_do_not_have_to",
+      "fp": "9cb8863a603a"
+    },
+    "p_4_library_event|jr_idm_not_a_but_b": {
+      "phrase": "not A but B",
+      "sentence": 9,
+      "decision": "not-idiom",
+      "reason": "do not have to pay, but ... の not と but は別々の節で、not A but B の対ではない",
+      "fp": "9cb8863a603a"
+    },
+    "p_3_school_garden|curr_idm_3_choose_a_from_b": {
+      "phrase": "choose A from B",
+      "sentence": 2,
+      "decision": "not-idiom",
+      "reason": "from the soil は remove にかかり、choose A from B ではない",
+      "fp": "17e4ac093682"
+    },
+    "p_3_school_garden|curr1900_idm_3_have_to": {
+      "phrase": "have to",
+      "sentence": 2,
+      "decision": "covered",
+      "by": "rdx_p3_have_to",
+      "fp": "17e4ac093682"
+    },
+    "p_3_school_garden|jr_idm_want_a_to_do": {
+      "phrase": "want A to do",
+      "sentence": 8,
+      "decision": "not-idiom",
+      "reason": "wanted to use は want to（準備の curr1900_idm_3_want_to）で、want A to do ではない",
+      "fp": "fc3bcf293d44"
+    },
+    "p_pre2plus_repair_cafes|curr1900_idm_pre1_blank_so_that_blank": {
+      "phrase": "..., so that ...",
+      "sentence": 19,
+      "decision": "covered",
+      "by": "rdx_pre2plus_be_designed_so_that",
+      "fp": "9676d14b1fe6"
+    },
+    "p_pre2plus_repair_cafes|curr1900_idm_pre1_something_of_a": {
+      "phrase": "something of a",
+      "sentence": 12,
+      "decision": "not-idiom",
+      "reason": "life of a product の of a で、something of a ではない",
+      "fp": "c8af184be678"
+    },
+    "p_2_quiet_technology|curr1900_idm_2_if_only": {
+      "phrase": "if only",
+      "sentence": 14,
+      "decision": "not-idiom",
+      "reason": "If only wealthy areas は「裕福な地域だけが〜なら」で、願望の if only ではない",
+      "fp": "5c7b6e3f64a4"
+    },
+    "p_2_quiet_technology|curr1900_idm_2_make_it": {
+      "phrase": "make it",
+      "sentence": 19,
+      "decision": "not-idiom",
+      "reason": "makes it easier to ... の it は後ろの to 不定詞を指す形式目的語で、make it（間に合う）ではない",
+      "fp": "910c4cd05765"
+    },
+    "p_2_quiet_technology|curr1900_idm_2_what_blank_is": {
+      "phrase": "what ... is",
+      "sentence": 12,
+      "decision": "not-idiom",
+      "reason": "what kind of data is collected は疑問詞節で、what ... is（本質）ではない",
+      "fp": "cb7ac83a3b69"
+    },
+    "p_4_bicycle_safety|curr_idm_3_show_a_to_b": {
+      "phrase": "show A to B",
+      "sentence": 1,
+      "decision": "not-idiom",
+      "reason": "show people how to ... は show A B（A に B を見せる）の形で、show A to B ではない",
+      "fp": "373c0497e9cd"
+    },
+    "p_3_lunch_food_waste|curr_idm_3_instead_of": {
+      "phrase": "instead of",
+      "sentence": 2,
+      "decision": "covered",
+      "by": "rdx_p3_instead_of",
+      "fp": "72eed420cc30"
+    },
+    "p_3_lunch_food_waste|jr_idm_even_though": {
+      "phrase": "even though",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_p3_even_though",
+      "fp": "295429020840"
+    },
+    "p_pre2_later_school_start|curr1900_idm_2_blank_to_go": {
+      "phrase": "... to go",
+      "sentence": 0,
+      "decision": "not-idiom",
+      "reason": "try to go to bed の to go で、... to go（残り〜）ではない",
+      "fp": "4a9119dd1b88"
+    },
+    "p_pre2plus_city_bird_count|curr_idm_2_compare_a_to_b": {
+      "phrase": "compare A to B",
+      "sentence": 15,
+      "decision": "not-idiom",
+      "reason": "compare their answers to estimate の to は不定詞で、compare A to B（たとえる）ではない",
+      "fp": "5f38ca554341"
+    },
+    "p_2_online_health_claims|curr_idm_pre1_result_from": {
+      "phrase": "result from",
+      "sentence": 8,
+      "decision": "not-idiom",
+      "reason": "A result from twelve volunteers の result は名詞で、result from（〜から生じる）ではない",
+      "fp": "07bd9e287d1f"
+    },
+    "p_2_online_health_claims|curr1900_idm_2_be_to_do": {
+      "phrase": "be to do",
+      "sentence": 11,
+      "decision": "not-idiom",
+      "reason": "mistake is to treat の to treat は補語の不定詞で、be to do（予定・義務）ではない",
+      "fp": "85c4401b1f88"
+    },
+    "p_2_online_health_claims|curr1900_idm_pre1_blank_so_that_blank": {
+      "phrase": "..., so that ...",
+      "sentence": 9,
+      "decision": "not-idiom",
+      "reason": "compares groups so that researchers can separate は目的の so that（〜できるように）で、結果の , so that ではない",
+      "fp": "6e311fc609f7"
+    },
+    "p_2_online_health_claims|curr1900_idm_2_what_blank_is": {
+      "phrase": "what ... is",
+      "sentence": 3,
+      "decision": "not-idiom",
+      "reason": "what evidence is actually available は疑問詞節で、what ... is（本質）ではない",
+      "fp": "e4c31dfe69da"
+    },
+    "p_5_weather_field_trip|exam_idm_next_to": {
+      "phrase": "next to",
+      "sentence": 8,
+      "decision": "covered",
+      "by": "rdx_weather_next_to",
+      "fp": "13eaa5944041"
+    },
+    "p_5_weather_field_trip|curr_idm_5_in_the_morning": {
+      "phrase": "in the morning",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_weather_in_the_morning",
+      "fp": "2bde2e18f19f"
+    },
+    "p_4_emergency_map|curr_idm_pre2_warn_a_about_b": {
+      "phrase": "warn A about B",
+      "sentence": 3,
+      "decision": "covered",
+      "by": "rdx_emergency_warn_about",
+      "fp": "ed9047bdc149"
+    },
+    "p_4_emergency_map|curr1900_idm_4_decide_to": {
+      "phrase": "decide to",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdx_emergency_decide_to",
+      "fp": "3ef5ae3e7b03"
+    },
+    "p_3_multilingual_town_guide|curr_idm_3_instead_of": {
+      "phrase": "instead of",
+      "sentence": 7,
+      "decision": "covered",
+      "by": "rdx_guide_instead_of",
+      "fp": "bda0880547b5"
+    },
+    "p_3_multilingual_town_guide|curr1900_idm_pre1_something_of_a": {
+      "phrase": "something of a",
+      "sentence": 20,
+      "decision": "not-idiom",
+      "reason": "moment of a journey の of a で、something of a ではない",
+      "fp": "58dc1326e84c"
+    },
+    "p_3_multilingual_town_guide|jr_idm_want_a_to_do": {
+      "phrase": "want A to do",
+      "sentence": 1,
+      "decision": "not-idiom",
+      "reason": "wanted to help は want to（準備の curr1900_idm_3_want_to）で、want A to do ではない",
+      "fp": "76a670de808f"
+    },
+    "p_pre2_phone_free_focus|curr_idm_2_call_in": {
+      "phrase": "call in",
+      "sentence": 4,
+      "decision": "not-idiom",
+      "reason": "could call in an emergency の in は an emergency にかかり、call in（呼び入れる）ではない",
+      "fp": "840f93750a87"
+    },
+    "p_2_vertical_farming|curr1900_idm_pre1_something_of_a": {
+      "phrase": "something of a",
+      "sentence": 18,
+      "decision": "not-idiom",
+      "reason": "life of a system の of a で、something of a ではない",
+      "fp": "9f2d34483075"
+    },
+    "p_5_hot_summer_school|idm_a_lot_of": {
+      "phrase": "a lot of",
+      "sentence": 7,
+      "decision": "covered",
+      "by": "rdc_hot_a_lot_of",
+      "fp": "b0b8ff7bfdbe"
+    },
+    "p_5_hot_summer_school|curr_idm_5_in_the_afternoon": {
+      "phrase": "in the afternoon",
+      "sentence": 2,
+      "decision": "covered",
+      "by": "rdc_hot_in_the_afternoon",
+      "fp": "8168d4ce2fd8"
+    },
+    "p_5_hot_summer_school|curr1900_idm_4_a_lot": {
+      "phrase": "a lot",
+      "sentence": 7,
+      "decision": "covered",
+      "by": "rdc_hot_a_lot_of",
+      "fp": "b0b8ff7bfdbe"
+    },
+    "p_4_school_solar_roof|curr1900_idm_2_come_to": {
+      "phrase": "come to",
+      "sentence": 10,
+      "decision": "not-idiom",
+      "reason": "came to the gym は「体育館に来た」で、come to（意識を取り戻す・合計〜になる）ではない",
+      "fp": "96f756968c0d"
+    },
+    "p_4_school_solar_roof|jr_idm_ask_a_to_do": {
+      "phrase": "ask A to do",
+      "sentence": 3,
+      "decision": "covered",
+      "by": "rdc_solar_ask_to_do",
+      "fp": "f54e2cc64240"
+    },
+    "p_4_school_solar_roof|jr_idm_change_a_into_b": {
+      "phrase": "change A into B",
+      "sentence": 1,
+      "decision": "covered",
+      "by": "rdc_solar_change_into",
+      "fp": "21077b50886a"
+    },
+    "p_4_school_solar_roof|jr_idm_come_to_do": {
+      "phrase": "come to do",
+      "sentence": 10,
+      "decision": "not-idiom",
+      "reason": "came to the gym は「体育館に来た」で、come to do（〜するようになる）ではない",
+      "fp": "96f756968c0d"
+    },
+    "p_3_ai_class_rules|curr_idm_pre2_point_out": {
+      "phrase": "point out",
+      "sentence": 9,
+      "decision": "covered",
+      "by": "rdc_ai_point_out_that",
+      "fp": "92e0e2d52e9c"
+    },
+    "p_3_ai_class_rules|jr_idm_tell_a_to_do": {
+      "phrase": "tell A to do",
+      "sentence": 24,
+      "decision": "not-idiom",
+      "reason": "told us that ... は tell A that 節で、tell A to do ではない",
+      "fp": "eacb60500555"
+    },
+    "p_3_ai_class_rules|jr_idm_want_a_to_do": {
+      "phrase": "want A to do",
+      "sentence": 4,
+      "decision": "not-idiom",
+      "reason": "did not want to ban は want to（準備の curr1900_idm_3_want_to）で、want A to do ではない",
+      "fp": "3140140bfe38"
+    },
+    "p_pre2_pond_comeback|syn_the_way": {
+      "phrase": "the way S V",
+      "sentence": 19,
+      "decision": "covered",
+      "by": "rdf_pond_the_way",
+      "fp": "effc49adafac"
+    },
+    "p_2_injury_free_practice|idm_result_in": {
+      "phrase": "result in",
+      "sentence": 27,
+      "decision": "not-idiom",
+      "reason": "Results in races の Results は名詞で、result in（〜という結果になる）ではない",
+      "fp": "075e99cd55d5"
+    },
+    "p_2_factory_museum|curr1900_idm_2_come_to": {
+      "phrase": "come to",
+      "sentence": 8,
+      "decision": "not-idiom",
+      "reason": "came to a talk は「講演に来た」で、come to（意識を取り戻す・合計〜になる）ではない",
+      "fp": "8695db9b5f6f"
+    },
+    "p_2_factory_museum|curr1900_idm_2_order_a_from_b": {
+      "phrase": "order A from B",
+      "sentence": 6,
+      "decision": "not-idiom",
+      "reason": "order books は「注文の帳簿」で、order A from B ではない",
+      "fp": "c2b9e1d3793d"
+    },
+    "p_pre2_school_radio|curr1900_idm_2_leave_a_to_b": {
+      "phrase": "leave A to B",
+      "sentence": 25,
+      "decision": "covered",
+      "by": "rdf_radio_leave_a_to_b",
+      "fp": "0c909a3df249"
+    },
+    "p_ext_1000_civic_decisions|curr1900_idm_2_as_good_as": {
+      "phrase": "as good as",
+      "sentence": 24,
+      "decision": "not-idiom",
+      "reason": "only as good as the information は「情報と同じ程度にしか良くない」という比較で、as good as（ほとんど〜も同然）ではない",
+      "fp": "843a25c3fe50"
+    },
+    "p_ext_1000_civic_decisions|curr1900_idm_2_make_it": {
+      "phrase": "make it",
+      "sentence": 54,
+      "decision": "not-idiom",
+      "reason": "has made it much harder to ... の it は形式目的語で、make it（間に合う）ではない",
+      "fp": "78d2e134f4e0"
+    },
+    "p_ext_1000_civic_decisions|curr1900_idm_pre1_something_of_a": {
+      "phrase": "something of a",
+      "sentence": 15,
+      "decision": "not-idiom",
+      "reason": "limits of a rule の of a で、something of a ではない",
+      "fp": "770e64b87f0c"
+    },
+    "p_ext_1000_civic_decisions|curr1900_idm_2_what_blank_is": {
+      "phrase": "what ... is",
+      "sentence": 35,
+      "decision": "not-idiom",
+      "reason": "What matters most is that ... は what 節が主語で、what ... is（本質）ではない",
+      "fp": "7eb4922c0181"
+    }
+  }
+}

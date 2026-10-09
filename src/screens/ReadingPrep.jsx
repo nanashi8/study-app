@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useScreenParam, useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
-import { readingApproachForPassage, readingRulesForPassage } from '../data/reading-rules.js'
+import { getReadingRulePhase, readingApproachForPassage } from '../data/reading-rules.js'
+import { readingPrepRulesForPassage } from '../lib/readingPrepRules.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -39,7 +40,7 @@ const phraseLabel = (item) =>
   item.category === 'expression' ? '表現' : item.kind === 'syntax' ? '構文' : '熟語'
 
 const readPrepView = (value) => (value === 'list' ? 'list' : 'prep')
-const readListTab = (value) => (value === 'phrases' ? 'phrases' : 'words')
+const readListTab = (value) => (['phrases', 'cases'].includes(value) ? value : 'words')
 
 export function ReadingPrepScreen() {
   const params = useStore((state) => state.params)
@@ -64,6 +65,11 @@ export function ReadingPrepScreen() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const passage = getPassage(passageId)
+  // 読解画面が文ごと・設問ごとに出すルールを全部集めるので、本文の解析は一度だけにする。
+  const passageRules = useMemo(
+    () => (passage ? readingPrepRulesForPassage(passage).map((entry) => entry.rule) : []),
+    [passage],
+  )
   // 必須語彙は、画面下部の「単語帳」で選んだ登録先にまとめて入れる（全部入っていれば外す）。
   const prepWordIds = passage ? getReadingStudy(passage).words.map((word) => word.id) : []
   const wordsBook = useWordBookSlot(prepWordIds.map(wordBookRef), {
@@ -80,12 +86,19 @@ export function ReadingPrepScreen() {
   }
 
   const level = getLevel(passage.level)
-  const { words, phrases } = getReadingStudy(passage)
+  const { words, caseWords, phrases } = getReadingStudy(passage)
   const sceneBundles = sceneBundlesForPassage(passage.id)
   const passageApproach = readingApproachForPassage(passage)
-  const passageRules = readingRulesForPassage(passage)
+  const passageRuleGroups = passageRules.reduce((groups, rule) => {
+    const last = groups.at(-1)
+    if (last?.phase.id === rule.phase) last.rules.push(rule)
+    else groups.push({ phase: getReadingRulePhase(rule.phase), rules: [rule] })
+    return groups
+  }, [])
   const wordIds = words.map((word) => word.id)
   const wordStatus = summarizeSrsItems(wordIds, srs)
+  const caseWordIds = caseWords.map((word) => word.id)
+  const caseWordStatus = summarizeSrsItems(caseWordIds, srs)
   const phraseStatus = summarizeSrsItems(phrases, srs)
   // どの語も、登録先の単語帳に入っているか。
   const allSaved = wordsBook.inBook
@@ -96,11 +109,11 @@ export function ReadingPrepScreen() {
     label: '読解の準備に戻る',
   }
 
-  const studyWords = (asQuiz = false) =>
+  const studyWords = (asQuiz = false, ids = wordIds, label = '必須語彙') =>
     navigate(asQuiz ? 'vocabQuiz' : 'vocabStudy', {
-      source: { type: 'deck', ids: wordIds },
-      size: wordIds.length,
-      title: `${passage.titleJa}・必須語彙`,
+      source: { type: 'deck', ids },
+      size: ids.length,
+      title: `${passage.titleJa}・${label}`,
       ...(asQuiz ? {} : { mode: 'study' }),
       continueTo,
       returnTo: { screen: 'readingPrep', params: { passageId } },
@@ -164,6 +177,7 @@ export function ReadingPrepScreen() {
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs font-extrabold text-ink/45">
           <span>本文 {passageWordCount(passage)}語</span>
           <span>テーマ必須語彙 {words.length}語</span>
+          {caseWords.length > 0 && <span>重点語ケース {caseWords.length}語</span>}
           <span>熟語・表現 {phrases.length}項目</span>
         </div>
       </section>
@@ -223,11 +237,20 @@ export function ReadingPrepScreen() {
           </button>
         </div>
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-          必要なルールだけ開いて確認できます。
+          {'本文の文と設問で出てくるルールです。必要なものだけ開いて確認できます。'}
         </p>
-        <div className="mt-3 space-y-2">
-          {passageRules.map((rule) => (
-            <ReadingRuleCard key={rule.id} rule={rule} compact />
+        <div className="mt-3 space-y-3">
+          {passageRuleGroups.map(({ phase, rules }) => (
+            <section key={phase.id} data-reading-prep-rule-phase={phase.id}>
+              <h3 className="px-1 text-[11px] font-extrabold" style={{ color: phase.color }}>
+                {phase.step}. {phase.label}
+              </h3>
+              <div className="mt-1.5 space-y-2">
+                {rules.map((rule) => (
+                  <ReadingRuleCard key={rule.id} rule={rule} compact />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       </Card>
@@ -296,6 +319,26 @@ export function ReadingPrepScreen() {
           onCatalog={() => openList('words')}
         />
 
+        {caseWords.length > 0 && (
+          <LearningEntryCard
+            data-reading-prep-entry="cases"
+            icon={<Cards size={22} />}
+            accentColor="#d97706"
+            title="重点語ケースの語"
+            countLabel={`全${caseWords.length}語`}
+            subtitle="各節の下の重点語ケースに出る語を、先に暗記する"
+            status={caseWordStatus}
+            units={{ learning: '語', quiz: '問' }}
+            studyAriaLabel={`${passage.titleJa}の重点語ケースの語を暗記`}
+            onStudy={() => studyWords(false, caseWordIds, '重点語ケース')}
+            quizAriaLabel={`${passage.titleJa}の重点語ケースの語をテスト`}
+            onQuiz={() => studyWords(true, caseWordIds, '重点語ケース')}
+            catalogLabel="一覧を確認"
+            catalogAriaLabel={`${passage.titleJa}の重点語ケースの語を一覧で確認する`}
+            onCatalog={() => openList('cases')}
+          />
+        )}
+
         <LearningEntryCard
           data-reading-prep-entry="phrases"
           icon={<BookOpen size={22} />}
@@ -331,9 +374,14 @@ export function ReadingPrepScreen() {
         label="読解の準備の見方"
       />
 
-      <div className="grid grid-cols-2 rounded-2xl bg-brand-100 p-1" role="tablist" aria-label="一覧で確認する教材">
+      <div
+        className={cx('grid rounded-2xl bg-brand-100 p-1', caseWords.length ? 'grid-cols-3' : 'grid-cols-2')}
+        role="tablist"
+        aria-label="一覧で確認する教材"
+      >
         {[
           { id: 'words', label: `必須語彙 ${words.length}` },
+          ...(caseWords.length ? [{ id: 'cases', label: `重点語 ${caseWords.length}` }] : []),
           { id: 'phrases', label: `熟語・表現 ${phrases.length}` },
         ].map((item) => (
           <button
@@ -381,6 +429,17 @@ export function ReadingPrepScreen() {
             emptyMessage="この長文の必須語彙はまだありません。"
           />
         </>
+      ) : tab === 'cases' && caseWords.length ? (
+        <NormalLearningRecordList
+          entryId="reading-prep-cases"
+          contentId="vocab"
+          items={caseWords}
+          unit="語"
+          onOpen={(item) => navigate('wordDetail', { id: item.id })}
+          openLabel="この単語の詳細を見る"
+          openHint="詳細"
+          emptyMessage="この長文の重点語ケースはありません。"
+        />
       ) : (
         <NormalLearningRecordList
           entryId="reading-prep-phrases"

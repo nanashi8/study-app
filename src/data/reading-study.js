@@ -1,12 +1,14 @@
 import { getPhrase } from './phrases.js'
+import { READING_PREP_PHRASE_ADDITIONS } from './reading-prep-phrase-additions.js'
 import { resolvePassageWord } from './passage-gloss.js'
-import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
 import { EXAM_READING_STUDY } from './reading-study-exam.js'
 import { EXPANDED_READING_STUDY } from './reading-expansion-study.js'
 import { CURRENT_AFFAIRS_READING_STUDY } from './reading-current-affairs-study.js'
 import { FIELD_READING_STUDY } from './reading-fields-study.js'
 import { EXTENDED_READING_STUDY } from './reading-extended-study.js'
 import { getWord } from './vocab.js'
+import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
+import { READING_LEVELS } from './levels.js'
 
 // 本文固有の表現。kind は既存の熟語カードエンジンと共通で、
 // category は読解準備画面で「熟語／表現」を表示し分けるために使う。
@@ -124,8 +126,18 @@ export const READING_STUDY = {
   },
 
   p_3_school_garden: {
-    phraseIds: ['syn_enough_to', 'idm_proud_of'],
+    phraseIds: ['idm_proud_of'],
     expressions: [
+      expression(
+        'p3_enough_to_share',
+        '3',
+        'enough + 名詞 + to do',
+        '〜するのに十分な…',
+        'In July, they picked enough cucumbers and tomatoes to share with people at a nearby community center.',
+        '7月には、近くのコミュニティセンターの人々と分け合うのに十分なきゅうりとトマトを収穫しました。',
+        'enough を名詞の前に置き、to do で「何をするのに足りるか」を後ろから示す。old enough to drive のように形容詞の後ろに置く形とは語順が逆。',
+        'syntax',
+      ),
       expression(
         'p3_at_first',
         '3',
@@ -465,6 +477,59 @@ export const READING_STUDY = {
   },
 }
 
+// 本文を読むのに要る語として準備に必ず入れる語の範囲。長文の級と同じか上の級の語のうち、
+// 文法で学ぶ基本の機能語（冠詞・限定詞・代名詞・前置詞・接続詞・be／助動詞）を除いた内容語。
+// 準2級プラスの長文は、準2級の語を学び終えた学習者向けなので、2級以上の語が対象になる。
+const LEVEL_RANK = new Map(READING_LEVELS.map((level, index) => [level.id, index]))
+const BASIC_FUNCTION_POS = new Set(['代', '前', '接'])
+const BASIC_FUNCTION_LEVELS = new Set(['5', '4'])
+const FUNCTION_WORD_IDS = new Set([
+  'the', 'a', 'an', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their',
+  'some', 'any', 'every', 'each', 'be', 'am', 'is', 'are', 'was', 'were', 'do', 'have',
+  'will', 'would', 'can', 'could', 'shall', 'should', 'may_2', 'might', 'must',
+  'not', 'no', 'yes', 'there', 'here',
+])
+
+export const isPassageFunctionWord = (word) =>
+  FUNCTION_WORD_IDS.has(word.id) ||
+  (BASIC_FUNCTION_POS.has(word.pos) && BASIC_FUNCTION_LEVELS.has(word.level))
+
+// 本文の語（タップしたときに引く見出し語）を、出てくる順に1回ずつ。
+export function passageBodyWordIds(passage) {
+  const ids = []
+  const seen = new Set()
+  for (const sentence of passage?.sentences ?? []) {
+    const tokens = sentence.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []
+    for (const token of tokens) {
+      const id = resolvePassageWord(token.toLowerCase(), sentence.gloss)?.id
+      if (!id || seen.has(id)) continue
+      seen.add(id)
+      ids.push(id)
+    }
+  }
+  return ids
+}
+
+// 本文の語のうち、長文の級と同じか上の級の内容語。
+export function passageNeededWordIds(passage) {
+  const rank = LEVEL_RANK.get(passage?.level) ?? 0
+  return passageBodyWordIds(passage).filter((id) => {
+    const word = getWord(id)
+    return word && (LEVEL_RANK.get(word.level) ?? 0) >= rank && !isPassageFunctionWord(word)
+  })
+}
+
+// 長文向けに辞書へ足した語（reading-words.js）のうち、テーマの語として準備に入れるもの。
+// 機能語と、長文の級より3段以上下の語（1級の長文の than・many など）は入れない。
+const SUPPLEMENTAL_LEVEL_SPAN = 2
+const isPrepSupplementalWord = (word, passage) =>
+  word &&
+  !isPassageFunctionWord(word) &&
+  (LEVEL_RANK.get(word.level) ?? 0) >= (LEVEL_RANK.get(passage?.level) ?? 0) - SUPPLEMENTAL_LEVEL_SPAN
+
+// テーマ必須語彙＝本文に出る語。手で選んだテーマの語（vocab）を先に、長文向けに辞書へ足したテーマの語、
+// 本文を読むのに要る語（長文の級と同じか上の級の内容語）を本文に出る順で続ける。
+// 語彙強化長文の vocab は節ごとの重点語ケースの語なので、ここには入れず getReadingCaseWords で別に出す。
 export function getReadingWords(passage) {
   const ids = []
   const seen = new Set()
@@ -473,24 +538,27 @@ export function getReadingWords(passage) {
     seen.add(id)
     ids.push(id)
   }
-  for (const id of passage?.vocab ?? []) add(id)
+  if (!passage?.extended) for (const id of passage?.vocab ?? []) add(id)
 
   const supplementalIds = new Set(PASSAGE_DICTIONARY_WORD_IDS)
-  for (const sentence of passage?.sentences ?? []) {
-    const tokens = sentence.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []
-    for (const token of tokens) {
-      const id = resolvePassageWord(token.toLowerCase(), sentence.gloss)?.id
-      if (supplementalIds.has(id)) add(id)
-    }
+  const neededIds = new Set(passageNeededWordIds(passage))
+  for (const id of passageBodyWordIds(passage)) {
+    if (neededIds.has(id) || (supplementalIds.has(id) && isPrepSupplementalWord(getWord(id), passage))) add(id)
   }
   return ids.map(getWord).filter(Boolean)
+}
+
+// 語彙強化長文の、節ごとの重点語ケースの語（本文とは別に、各節の下に例文つきで出る）。
+export function getReadingCaseWords(passage) {
+  if (!passage?.extended) return []
+  return [...new Set(passage.vocab ?? [])].map(getWord).filter(Boolean)
 }
 
 export function getReadingPhrases(passageId) {
   const study = READING_STUDY[passageId]
   if (!study) return []
   return [
-    ...(study.phraseIds ?? []).map(getPhrase).filter(Boolean),
+    ...[...(study.phraseIds ?? []), ...(READING_PREP_PHRASE_ADDITIONS[passageId] ?? [])].map(getPhrase).filter(Boolean),
     ...(study.expressions ?? []),
   ]
 }
@@ -498,6 +566,7 @@ export function getReadingPhrases(passageId) {
 export function getReadingStudy(passage) {
   return {
     words: getReadingWords(passage),
+    caseWords: getReadingCaseWords(passage),
     phrases: getReadingPhrases(passage?.id),
   }
 }

@@ -42,7 +42,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
   ],
   p_3_school_garden: [
     scene('菜園を始める', ['vegetable', 'plant', 'careful', 'attention', 'choose', 'remove', 'stone', 'soil', 'schedule', 'note']),
-    scene('虫から野菜を守る', ['temperature', 'insect', 'affect', 'chemical', 'spray', 'research', 'attract', 'pest', 'damage', 'decrease']),
+    scene('虫から野菜を守る', ['temperature', 'insect', 'affect', 'chemical', 'spray', 'research', 'attract', 'pest', 'damaged', 'decrease']),
     scene('地域の人から学ぶ', ['share', 'nearby', 'community', 'resident', 'recipe', 'suggest', 'advice', 'experience', 'environment', 'tip']),
   ],
   p_3_lunch_food_waste: [
@@ -56,7 +56,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('だれでも使える案内', ['exchange', 'version', 'wheelchair', 'step', 'crossing', 'available', 'online', 'translation', 'imagine', 'journey']),
   ],
   p_3_ai_class_rules: [
-    scene('宿題とAI', ['ai', 'chat', 'tool', 'homework', 'copy', 'carefully', 'unusual', 'phrase', 'worry', 'ban']),
+    scene('宿題とAI', ['ai', 'chat', 'tool', 'homework', 'copy', 'carefully', 'unusual', 'phrase', 'worried', 'ban']),
     scene('使い方を試して比べる', ['collect', 'example', 'helpful', 'honest', 'confident', 'experiment', 'summary', 'general', 'fact', 'mention']),
     scene('クラスで決めたルール', ['report', 'include', 'source', 'step', 'draft', 'compare', 'perfect', 'unfair', 'future', 'skill']),
   ],
@@ -74,7 +74,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
   p_pre2_phone_free_focus: [
     scene('スマホを預ける1時間', ['organize', 'contact', 'interrupt', 'urgent', 'ban', 'locker', 'emergency', 'require', 'steady', 'attention']),
     scene('くらべて確かめる', ['task', 'reveal', 'comparison', 'trial', 'expectation', 'describe', 'focus', 'slightly', 'completion', 'extra']),
-    scene('合わなかった生徒', ['anxious', 'regularly', 'available', 'allow', 'approve', 'necessary', 'limit', 'assignment', 'unclear', 'distract']),
+    scene('合わなかった生徒', ['anxious', 'regularly', 'available', 'allow', 'approve', 'necessary', 'limit', 'assignment', 'unclear', 'distracted']),
     scene('自分で決める習慣', ['support', 'replace', 'review', 'term', 'device', 'alert', 'remove', 'habit', 'protect']),
   ],
   p_pre2_crowded_town_tourism: [
@@ -103,7 +103,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('非常時の放送', ['disaster', 'practice', 'role', 'emergency', 'announcement', 'battery', 'device', 'speaker', 'once', 'communication']),
   ],
   p_pre2plus_repair_cafes: [
-    scene('捨てられる製品', ['replace', 'household', 'device', 'product', 'damage', 'case', 'waste', 'response', 'repair', 'examine']),
+    scene('捨てられる製品', ['replace', 'household', 'device', 'product', 'damaged', 'case', 'waste', 'response', 'repair', 'examine']),
     scene('いっしょに直す場所', ['counter', 'wire', 'search', 'instruction', 'process', 'participant', 'practical', 'confidence', 'conversation', 'digital']),
     scene('環境と家計への利点', ['supporter', 'social', 'benefit', 'extend', 'demand', 'resource', 'valuable', 'encourage', 'ownership', 'manufacturer']),
     scene('修理を妨げるもの', ['replacement', 'solution', 'refuse', 'design', 'critic', 'obtain', 'consumer', 'prevent', 'value', 'responsibility']),
@@ -159,7 +159,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('けがが続いた陸上部', ['injured', 'single', 'case', 'graduate', 'distance', 'pain', 'reveal', 'pattern', 'damage', 'sudden']),
     scene('暑さと疲れのしくみ', ['factor', 'heat', 'humidity', 'raise', 'mentor', 'mechanism', 'muscle', 'joint', 'stress', 'vulnerable']),
     scene('練習の決まりを変える', ['habit', 'increase', 'percentage', 'cheap', 'device', 'temperature', 'leader', 'fixed']),
-    scene('痛みを言い出せる部に', ['physical', 'hidden', 'anxiety', 'separate', 'policy', 'lower', 'pressure', 'accuracy', 'fear', 'awareness']),
+    scene('痛みを言い出せる部に', ['physical', 'hide', 'anxiety', 'separate', 'policy', 'lower', 'pressure', 'accuracy', 'fear', 'awareness']),
     scene('広がった方法とその限界', ['improve', 'although', 'council', 'budget', 'benefit', 'warn', 'predict', 'wound', 'range', 'beginner']),
   ],
   p_2_factory_museum: [
@@ -242,7 +242,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('だれのための初期設定か', ['ethical', 'outcome', 'legitimate', 'designer', 'subscription', 'retain', 'friction', 'distribute']),
     scene('中立な設計はありえない', ['neutral', 'advance', 'welfare', 'commercial', 'persuasive', 'settle']),
     scene('知らせるだけでは足りない', ['transparency', 'propose', 'safeguard', 'deliberately', 'disclosure', 'awareness', 'impose']),
-    scene('断りやすさと負担の偏り', ['refusal', 'unrelated', 'opt', 'majority', 'minority', 'secure', 'confusing', 'exclude', 'disability', 'privacy']),
+    scene('断りやすさと負担の偏り', ['refusal', 'unrelated', 'opt', 'majority', 'minority', 'secure', 'confuse', 'exclude', 'disability', 'privacy']),
     scene('決めたあとも見直す', ['permanent', 'irrelevant', 'exploit', 'schedule', 'informative', 'ineffective', 'survive']),
     scene('市民が問い直せるように', ['democratic', 'oversight', 'plausible', 'harmless', 'manipulation', 'exit', 'contest']),
   ],

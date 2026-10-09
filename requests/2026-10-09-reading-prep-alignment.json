@@ -1,0 +1,78 @@
+{
+  "id": "2026-10-09-reading-prep-alignment",
+  "title": "英語の長文の「準備して読む」（読解の準備）の中身が、これから読む長文と合っていて、準備で学んだことが読解で生き、読解に要ることを準備で学べるかを全42本で検査し、ずれを直す",
+  "asked": [
+    "英語の長文の準備して読むの内容は、これから読む長文の内容と合致していて、読解の準備で学んだ内容が読解で活かせるか？読解に必要な内容を、読解の準備で学べるか？検査して必要があれば修正しなさい。"
+  ],
+  "sessions": [
+    "b6a3ddaf-2fce-4661-ac9d-9216f854ab5c"
+  ],
+  "status": "open",
+  "notes": "読解の準備（ReadingPrep.jsx）に出るもの：あらすじ・テーマ・読解ポイント・このテーマの読み方（題・要約・手順）・この本文で使う読解ルール・場面の束・テーマ必須語彙・熟語と表現。読解（Reader.jsx／ExtendedReader.jsx）に出るもの：本文（語をタップすると文脈の語義）・文ごとの読解ルール（上位3件）・語彙強化長文の重点語ケース・読解チェックの設問ごとのルール。2026-10-09 の測定：必須語彙のうち本文に出ない語 1,288件（語彙強化長文4本の重点語ケースの語が1,278件、ふつうの長文6件）、準備の読解ルール333件のうち読解画面に一度も出ないもの94件、読解画面に出るのに準備に無いルール518件、準備の熟語・表現204件のうち照合器が本文に見つけられないもの47件。",
+  "criteria": [
+    {
+      "id": "prep-words-appear",
+      "text": "準備に出る語（テーマ必須語彙・場面の束）は、すべてその長文の本文に出る。語彙強化長文の重点語ケースの語は、本文の語と分けて「重点語ケース」として示し、テーマ必須語彙（本文に出る語）に混ぜない",
+      "population": "全42本の準備に出る語（長文×語の組。必須語彙・場面の束の全部）",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=prep-words-appear",
+      "status": "done",
+      "result": "42本の準備に出る語 2,427組（長文×語）中 2,427組が本文に出る（本文のタップが引く見出し語か、場面の束と同じ語形の照らし方）。語彙強化長文4本の重点語ケースの語 1,484語は「重点語ケースの語」として別の入口と一覧（重点語）に分け、テーマ必須語彙に混ぜない。直す前は本文に出ない語が 1,288件（重点語ケース 1,278・ふつうの長文の手入れの語 6件：damage・researcher×2・monitor・decrease・hidden）。"
+    },
+    {
+      "id": "prep-words-sense",
+      "text": "準備に出る語は、本文で使われる意味をカード（代表義か、カード裏のほかの意味）で学べる。1組ずつ本文の文と読み比べ、合わない語は意味を足すか、準備から外して本文の意味で学べる形にする",
+      "population": "全42本の準備に出る語のうち本文に出るもの（長文×語の組の全部。和訳にカードの訳語が無い出現は台帳 docs/audits/reading-prep-sense-review.json に1か所1行）",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=prep-words-sense",
+      "status": "done",
+      "result": "本文に出る準備の語の出現 3,281か所（長文×語 2,427組）のうち、和訳にカードの訳語が入らない 1,005か所を1か所ずつ読んだ（台帳 docs/audits/reading-prep-sense-review.json：同じ意味 934・派生活用の形 32・品詞ちがい 20・熟語の一部 13・カード裏のほかの意味 6、未解決 0）。本文の意味がカードに無かった13語（perform・moderation・circulation・deliberate・population・heavy・grow・organize・judge・track・narrow・script・plant）は word-senses.js にほかの意味を足した。引き先がずれていた語（Litter increased・decreased×3 を動詞の increase・decrease に、investments を investment に、hidden を hide の過去分詞に）と、束の語の形（damage→damaged×2・worry→worried・distract→distracted・confusing→confuse・hidden→hide）を直した。"
+    },
+    {
+      "id": "passage-words-covered",
+      "text": "本文に出る語のうち、その長文の級と同じか上の級の内容語（機能語＝冠詞・代名詞・前置詞・接続詞の基本語・be／助動詞を除く）は、すべて準備（必須語彙か場面の束）で学べる",
+      "population": "全42本の本文に出る見出し語のうち、長文の級以上の内容語（長文×語の組の全部）",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=passage-words-covered",
+      "status": "done",
+      "result": "本文に出る、長文の級以上の内容語 1,018組（長文×語）中 1,018組を準備（テーマ必須語彙）に入れた（直す前は上の級の語だけで 61組・同じ級の語 336組が準備に無かった）。長文向けに辞書へ足した語のうち長文の級より3段以上下の語（1級の長文の than・many など）は準備から外した。"
+    },
+    {
+      "id": "prep-phrases-match",
+      "text": "準備の熟語・表現は、すべて本文に出て、本文での使われ方と意味・形が合う（1件ずつ本文の文と読み比べた台帳）",
+      "population": "全42本の準備の熟語・表現の全件（直す前204件、熟語を足した後251件）",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=prep-phrases-match",
+      "status": "done",
+      "result": "準備の熟語・表現 251件（直す前204件＋足した47件）中 251件が本文のどの文で使われるかを読んで台帳にした（docs/audits/reading-prep-phrase-review.json）。本文の形と合わなかった5件を直した：enough to（形容詞＋enough to → 本文の enough＋名詞＋to do）、If you have a question → if you have any questions、Neither A nor B → neither＋名詞、not A but B の例文（rather than の文 → 本文の not … but の文）、rather than doing の例文（名詞の文 → 本文の -ing の文）。"
+    },
+    {
+      "id": "passage-phrases-covered",
+      "text": "本文に出る熟語・構文（熟語辞書の熟語と型の構文）のうち、長文の級と同じか上の級のものは、準備の熟語・表現で学べる。照合器の候補を1件ずつ読み、本当に熟語として使われているかを台帳に書く",
+      "population": "全42本の本文に、熟語辞書の熟語1,909件と型の構文が出る組（照合器の候補の全部を読んで決める）",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=passage-phrases-covered",
+      "status": "done",
+      "result": "熟語辞書の熟語と型の構文を本文の全文と照らし、長文の級以上で準備に無かった候補を全部読んだ：熟語として使われていた47件を準備に足し（src/data/reading-prep-phrase-additions.js）、残る 52件は準備の別の項目で学べる（23件）か熟語として使われていない（29件）と理由つきで台帳にした（docs/audits/reading-prep-phrase-coverage.json）。照らせる部品が1つだけの熟語（do with・will do など）は語の並びでは見分けられないので候補にしていない。"
+    },
+    {
+      "id": "prep-rules-match-reader",
+      "text": "準備の「この本文で使う読解ルール」は、読解画面（文ごとのルール・設問のルール）に出るルールをすべて含み、読解画面で使われないルールを載せない（読む前に使う「全体を見通す」段のルールは除く）",
+      "population": "全42本の、読解画面に出るルールと準備に出るルールの全部",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=prep-rules-match-reader",
+      "status": "done",
+      "result": "準備の読解ルールを、読解画面が文ごと（上位3件）と設問ごとに出すルールから作るようにした（src/lib/readingPrepRules.js、段ごとに見出しで分けて表示）。42本で読解画面のルール 757（長文×ルール）中 757が準備に入り、準備の 818のうち読解画面に出ないものは「全体を見通す」段（読む前に使う）だけ。直す前は準備 333のうち 94が読解画面に出ず、読解画面の 518が準備に無かった。"
+    },
+    {
+      "id": "prep-overview-matches-text",
+      "text": "あらすじ・テーマ・読解ポイント・このテーマの読み方（題・要約・手順）が本文の中身と合い、手順が挙げる手がかり（語・段落・話の運び）が本文にある（1本ずつ本文を読んで確かめた台帳）",
+      "population": "全42本のあらすじ・テーマ・読解ポイント・読み方",
+      "check": "node --test tests/reading-prep-alignment.test.mjs --test-name-pattern=prep-overview-matches-text",
+      "status": "done",
+      "result": "42本中42本のあらすじ・テーマ・読解ポイント・読み方を本文と読み比べ、手順の手がかりが本文のどの英文にあるかを台帳にした（docs/audits/reading-prep-overview-review.json）。合わなかった8本を直した：会話文の無い物語を「会話文」と書いていた（リナのノート）、4,000語版のあらすじ・テーマの「文化」に当たる節が無い、職業体験→ボランティア活動、試験の種類の食い違い5本（中学入試・大学入試基礎・大学入試標準・難関大入試・最難関大入試）。"
+    },
+    {
+      "id": "deployed",
+      "text": "直した中身を main に入れ、公開版で読解の準備の画面が直った中身を出すことを確かめる",
+      "population": "この依頼の変更の全部",
+      "check": "node scripts/check-requests.mjs --report",
+      "status": "waiting",
+      "waitingFor": "クリーンな複製（scratchpad/clean）での npm run audit:all-content（全テスト・全監査・台帳の作り直し。バックグラウンド bqd1jwlye）の完了。通ればコミット・push・デプロイと公開版の確認へ進む"
+    }
+  ]
+}

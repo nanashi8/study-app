@@ -30,7 +30,7 @@ const CORE_PASSAGES = [
     emoji: '📘',
     title: 'A Notebook for Rina',
     titleJa: 'リナのノート',
-    blurb: '5級の短文・会話文をつないで読む読解入門。',
+    blurb: '中学生の一日の出来事を、時間の順に読む5級の物語文。',
     vocab: [
       'junior', 'student', 'school', 'bus', 'class', 'teacher',
       'picture', 'notebook', 'friend', 'story', 'happy',
@@ -91,7 +91,7 @@ const CORE_PASSAGES = [
       'vegetable', 'garden', 'simple', 'careful', 'attention', 'choose',
       'remove', 'soil', 'schedule', 'temperature', 'affect', 'community',
       'experience', 'protect', 'environment', 'action', 'result',
-      'research', 'chemical', 'attract', 'damage', 'insect',
+      'research', 'chemical', 'attract', 'damaged', 'insect',
     ],
     sentences: [
       p('Last spring, the students at Maple Junior High started a vegetable garden behind their school.', '昨年の春、メープル中学校の生徒たちは学校の裏に野菜畑を作り始めました。'),
@@ -121,7 +121,7 @@ const CORE_PASSAGES = [
     emoji: '🏛️',
     title: 'Young Volunteers at the Museum',
     titleJa: '博物館の若いボランティア',
-    blurb: '地域社会と職業体験を扱う、英検準2級本試験程度の説明文。',
+    blurb: '地域社会とボランティア活動を扱う、英検準2級本試験程度の説明文。',
     vocab: [
       'museum', 'volunteer', 'object', 'culture', 'exhibition', 'prepare',
       'practice', 'explain', 'display', 'communicate', 'responsibility',

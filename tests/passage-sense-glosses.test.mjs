@@ -161,8 +161,9 @@ test('語義台帳の英文はすべて本文にあり、本文のタップが�
       assert.notDeepEqual(resolvePassageWord(key), { id: sense.id, ja: sense.ja }, `${place.at} ${key}: つづりから引いても同じ`)
     }
   }
-  assert.equal(Object.keys(PASSAGE_SENSE_GLOSSES).length, 818)
-  assert.equal(words, 1302)
+  // 2026-10-09：decreased・increased を動詞の decrease・increase と決めた文を足した（requests/2026-10-09-reading-prep-alignment.json）。
+  assert.equal(Object.keys(PASSAGE_SENSE_GLOSSES).length, 820)
+  assert.equal(words, 1306)
 })
 
 test('語尾を落とすと別の語（ad・rid・suite・us）に当たる活用形は、元の語へつなぐ', () => {

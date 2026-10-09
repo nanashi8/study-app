@@ -16,15 +16,17 @@ test('長文42本の準備は、必須語彙も熟語・表現も既存SRSへ記
   assert.equal(ALL_PASSAGES.length, 42)
 
   let words = 0
+  let caseWords = 0
   let phrases = 0
   for (const passage of ALL_PASSAGES) {
     const study = getReadingStudy(passage)
     assert.ok(study.words.length > 0, `${passage.id}: 必須語彙`)
     assert.ok(study.phrases.length > 0, `${passage.id}: 熟語・表現`)
     words += study.words.length
+    caseWords += study.caseWords.length
     phrases += study.phrases.length
 
-    for (const [contentId, items] of [['vocab', study.words], ['usage', study.phrases]]) {
+    for (const [contentId, items] of [['vocab', study.words], ['vocab', study.caseWords], ['usage', study.phrases]]) {
       const ids = items.map((item) => item.id)
       assert.equal(new Set(ids).size, ids.length, `${passage.id}:${contentId}: ID重複`)
       for (const id of ids) {
@@ -37,8 +39,11 @@ test('長文42本の準備は、必須語彙も熟語・表現も既存SRSへ記
       }
     }
   }
-  assert.equal(words, 3_043)
-  assert.equal(phrases, 204)
+  // 2026-10-09：テーマ必須語彙を本文に出る語にそろえ（本文を読むのに要る語を足し、語彙強化長文の重点語ケースの語は別に出す）、
+  // 本文に出る熟語47件を足し、本文の形と合わない熟語を入れ替えた（requests/2026-10-09-reading-prep-alignment.json）。
+  assert.equal(words, 1_724)
+  assert.equal(caseWords, 1_484)
+  assert.equal(phrases, 251)
 })
 
 test('長文ごとの固有表現も、教材母集団になくても一覧の行になる', () => {

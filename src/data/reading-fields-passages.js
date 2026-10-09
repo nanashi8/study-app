@@ -148,7 +148,7 @@ export const FIELD_PASSAGES = [
       'policy', 'council',
       'weather', 'humidity',
       'member', 'leader',
-      'sudden', 'hidden', 'ordinary',
+      'sudden', 'hide', 'ordinary',
       'predict', 'measure', 'separate',
       'factor', 'pattern', 'method', 'pressure', 'range',
     ],

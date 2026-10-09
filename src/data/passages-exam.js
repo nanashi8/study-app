@@ -18,7 +18,7 @@ export const EXAM_PASSAGES = [
     emoji: '🏫',
     title: 'Our School Open Day',
     titleJa: '学校公開日の案内',
-    blurb: '時刻・場所・持ち物を読み取る、英検5級と中学入試の案内文対策。',
+    blurb: '時刻・場所・持ち物を読み取る、英検5級の案内文。',
     theme: '学校生活・行事案内',
     examFocus: ['時刻と順序', '場所と持ち物', '目的'],
     vocab: [
@@ -114,7 +114,7 @@ export const EXAM_PASSAGES = [
     emoji: '⏰',
     title: 'Should School Start Later?',
     titleJa: '学校の始業時刻を遅らせるべきか',
-    blurb: '根拠と反対意見を整理する、英検準2級と大学入試基礎の論説文。',
+    blurb: '根拠と反対意見を整理する、英検準2級と高校受験上位の論説文。',
     theme: '睡眠・教育制度',
     examFocus: ['主張と根拠', '利点と課題', '筆者の結論'],
     vocab: [
@@ -153,7 +153,7 @@ export const EXAM_PASSAGES = [
     emoji: '🐦',
     title: 'Counting Birds, Improving Science',
     titleJa: '鳥を数えて科学を支える',
-    blurb: 'データの価値と限界を読む、英検準2級プラスと大学入試標準の科学記事。',
+    blurb: 'データの価値と限界を読む、英検準2級プラスと大学受験基礎の科学記事。',
     theme: '市民科学・生物多様性',
     examFocus: ['方法と目的', 'データの信頼性', '限界からの推論'],
     vocab: [
@@ -238,7 +238,7 @@ export const EXAM_PASSAGES = [
     emoji: '💳',
     title: 'When Cashless Convenience Excludes',
     titleJa: 'キャッシュレスの便利さが排除を生むとき',
-    blurb: '効率性と公平性のトレードオフを読む、英検準1級と難関大入試の論説文。',
+    blurb: '効率性と公平性のトレードオフを読む、英検準1級と大学受験の論説文。',
     theme: '金融技術・社会的包摂',
     examFocus: ['対立意見の比較', '具体例からの推論', '条件付き結論'],
     vocab: [
@@ -287,7 +287,7 @@ export const EXAM_PASSAGES = [
     emoji: '📊',
     title: 'The Measure and the Mission',
     titleJa: '測定値と本来の目的',
-    blurb: '評価指標の効用・副作用・制度設計を論じる、英検1級と最難関大入試の評論文。',
+    blurb: '評価指標の効用・副作用・制度設計を論じる、英検1級と難関大入試の評論文。',
     theme: '評価指標・公共政策',
     examFocus: ['抽象概念の具体化', '反論への応答', '筆者の限定的主張'],
     vocab: [

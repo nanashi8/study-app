@@ -1,0 +1,1527 @@
+{
+  "about": "読解の準備の「熟語・表現」が、本文のどの文で使われるかを1件ずつ読んだ結果（requests/2026-10-09-reading-prep-alignment.json）。キーは「長文id|熟語id」、sentence は本文の文の番号、fp はその英文の指紋、match は熟語の書き方（find + O + C など）が照合に使えないときに文と照らす語の並び。本文の形と合わなかった4件（school_garden の enough to・school_open_day の if you have any questions・customs の neither・generational_city の not A but B の例文）は直した。",
+  "reviewed": {
+    "p_5_lost_notebook|rdx_p5_go_to_school": {
+      "phrase": "go to school",
+      "sentence": 1,
+      "fp": "6c1f56cc755e",
+      "en": "She goes to school by bus every morning."
+    },
+    "p_5_lost_notebook|rdx_p5_by_bus": {
+      "phrase": "by bus",
+      "sentence": 1,
+      "fp": "6c1f56cc755e",
+      "en": "She goes to school by bus every morning."
+    },
+    "p_5_lost_notebook|rdx_p5_every_morning": {
+      "phrase": "every morning",
+      "sentence": 1,
+      "fp": "6c1f56cc755e",
+      "en": "She goes to school by bus every morning."
+    },
+    "p_5_lost_notebook|rdx_p5_after_lunch": {
+      "phrase": "after lunch",
+      "sentence": 4,
+      "fp": "3ce400923122",
+      "en": "After lunch, Rina cannot find her blue notebook."
+    },
+    "p_5_lost_notebook|rdx_p5_say_thank_you": {
+      "phrase": "say thank you",
+      "sentence": 7,
+      "fp": "e6e358b456a2",
+      "en": "Rina says thank you and writes a short story in it."
+    },
+    "p_4_library_event|idm_listen_to": {
+      "phrase": "listen to",
+      "sentence": 1,
+      "fp": "bbc319a86ad0",
+      "en": "Children can listen to stories, make small cards, and borrow books about the month's topic."
+    },
+    "p_4_library_event|curr_idm_4_one_of": {
+      "phrase": "one of",
+      "sentence": 3,
+      "fp": "95df5c3d9a49",
+      "en": "Ms. Brown, one of the librarians, will show old pictures of the town."
+    },
+    "p_4_library_event|jr_idm_need_to_do": {
+      "phrase": "need to do",
+      "sentence": 6,
+      "fp": "bced5c8d62cb",
+      "en": "The library will provide paper and glue, so families do not need to bring craft materials."
+    },
+    "p_4_library_event|jr_idm_not_very": {
+      "phrase": "not very",
+      "sentence": 10,
+      "fp": "695ba19b5fc0",
+      "en": "Many families come early because the room is not very large."
+    },
+    "p_4_library_event|exam_idm_learn_about": {
+      "phrase": "learn about",
+      "sentence": 12,
+      "fp": "93aeb1f48e5a",
+      "en": "The event is popular because children can learn about their town in a fun way."
+    },
+    "p_4_library_event|rdx_p4_first_day_every_month": {
+      "phrase": "on the first ... of every month",
+      "sentence": 0,
+      "fp": "7fa6e76db406",
+      "en": "Green Town Library has a special event on the first Saturday of every month."
+    },
+    "p_4_library_event|rdx_p4_talk_about": {
+      "phrase": "talk about",
+      "sentence": 4,
+      "fp": "30ae2acf85b2",
+      "en": "She will also talk about the old station that stood near the river fifty years ago."
+    },
+    "p_4_library_event|rdx_p4_do_not_have_to": {
+      "phrase": "do not have to do",
+      "sentence": 9,
+      "fp": "9cb8863a603a",
+      "en": "People do not have to pay, but they should bring a pencil."
+    },
+    "p_4_library_event|rdx_p4_in_a_way": {
+      "phrase": "in a ... way",
+      "sentence": 12,
+      "fp": "93aeb1f48e5a",
+      "en": "The event is popular because children can learn about their town in a fun way."
+    },
+    "p_3_school_garden|idm_proud_of": {
+      "phrase": "be proud of",
+      "sentence": 17,
+      "fp": "cd3211c31792",
+      "en": "By the end of the project, even the students who had disliked gardening were proud of the result."
+    },
+    "p_3_school_garden|jr_idm_ask_a_to_do": {
+      "phrase": "ask A to do",
+      "sentence": 4,
+      "fp": "eadae161d3bc",
+      "en": "Their science teacher asked each group to make a schedule and write short notes about the weather."
+    },
+    "p_3_school_garden|curr1900_idm_3_want_to": {
+      "phrase": "want to",
+      "sentence": 8,
+      "fp": "fc3bcf293d44",
+      "en": "Some wanted to use a strong chemical spray, but the teacher asked them to research safer choices first."
+    },
+    "p_3_school_garden|curr_idm_3_the_number_of": {
+      "phrase": "the number of",
+      "sentence": 10,
+      "fp": "f6e2a0828af7",
+      "en": "The class planted those flowers around the garden, and the number of damaged leaves soon decreased."
+    },
+    "p_3_school_garden|jr_idm_share_a_with_b": {
+      "phrase": "share A with B",
+      "sentence": 11,
+      "fp": "f33a9d79086e",
+      "en": "In July, they picked enough cucumbers and tomatoes to share with people at a nearby community center."
+    },
+    "p_3_school_garden|curr_idm_3_instead_of": {
+      "phrase": "instead of",
+      "sentence": 12,
+      "fp": "f73506490247",
+      "en": "Instead of simply giving the food away, the students visited the center and explained how they had grown it."
+    },
+    "p_3_school_garden|curr_idm_3_talk_with": {
+      "phrase": "talk with",
+      "sentence": 16,
+      "fp": "5984907a0199",
+      "en": "It also gave them a chance to talk with older people who knew many useful farming tips."
+    },
+    "p_3_school_garden|rdx_p3_enough_to_share": {
+      "phrase": "enough + 名詞 + to do",
+      "sentence": 11,
+      "fp": "f33a9d79086e",
+      "en": "In July, they picked enough cucumbers and tomatoes to share with people at a nearby community center."
+    },
+    "p_3_school_garden|rdx_p3_at_first": {
+      "phrase": "at first",
+      "sentence": 1,
+      "fp": "c7157eac4c88",
+      "en": "At first, many students thought the work would be simple, but they soon learned that plants need careful attention."
+    },
+    "p_3_school_garden|rdx_p3_have_to": {
+      "phrase": "have to do",
+      "sentence": 2,
+      "fp": "17e4ac093682",
+      "en": "They had to choose a sunny place, remove stones from the soil, and water the young plants every day."
+    },
+    "p_3_school_garden|rdx_p3_after_that": {
+      "phrase": "after that",
+      "sentence": 5,
+      "fp": "4571f8f4b28a",
+      "en": "After that, the garden changed quickly."
+    },
+    "p_3_school_garden|rdx_p3_by_the_end_of": {
+      "phrase": "by the end of",
+      "sentence": 17,
+      "fp": "cd3211c31792",
+      "en": "By the end of the project, even the students who had disliked gardening were proud of the result."
+    },
+    "p_pre2_museum_volunteers|idm_interested_in": {
+      "phrase": "be interested in",
+      "sentence": 1,
+      "fp": "401484552fbe",
+      "en": "One city museum recently began a volunteer program for high school students who are interested in local culture."
+    },
+    "p_pre2_museum_volunteers|syn_the_way": {
+      "phrase": "the way S V",
+      "sentence": 14,
+      "fp": "455cdff0676b",
+      "en": "The museum has also changed the way it prepares labels for new displays."
+    },
+    "p_pre2_museum_volunteers|rdx_pre2_take_part": {
+      "phrase": "take part",
+      "sentence": 13,
+      "fp": "f32aee600d57",
+      "en": "When young people take part, exhibitions feel more open, and visitors are more willing to ask questions."
+    },
+    "p_pre2_museum_volunteers|rdx_pre2_be_used_to": {
+      "phrase": "be used to ...",
+      "sentence": 4,
+      "match": "be ~ used to",
+      "fp": "ca47fb67d08a",
+      "en": "During the afternoon, they help families who have small children or visitors who are not used to museums."
+    },
+    "p_pre2_museum_volunteers|rdx_pre2_as_well": {
+      "phrase": "as well",
+      "sentence": 12,
+      "fp": "adb3bfd36043",
+      "en": "For the museum, the benefit is clear as well."
+    },
+    "p_pre2_museum_volunteers|rdx_pre2_be_willing_to": {
+      "phrase": "be willing to do",
+      "sentence": 13,
+      "match": "be ~ willing to",
+      "fp": "f32aee600d57",
+      "en": "When young people take part, exhibitions feel more open, and visitors are more willing to ask questions."
+    },
+    "p_pre2_museum_volunteers|rdx_pre2_without_doing": {
+      "phrase": "without doing",
+      "sentence": 16,
+      "fp": "cdf0459b567d",
+      "en": "If the students cannot understand an important point, the staff try to make the language clearer without removing the main idea."
+    },
+    "p_pre2plus_repair_cafes|curr_idm_pre1_in_addition": {
+      "phrase": "in addition",
+      "sentence": 14,
+      "fp": "ea9952ea9467",
+      "en": "In addition, the events encourage people to think differently about ownership."
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_in_response": {
+      "phrase": "in response",
+      "sentence": 3,
+      "fp": "b053212d5ecb",
+      "en": "In response, communities in several countries have started events called repair cafes."
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_take_part_in": {
+      "phrase": "take part in",
+      "sentence": 6,
+      "fp": "4d87fb739d17",
+      "en": "Visitors are expected to sit with volunteers and take part in the work instead of simply leaving an item at a counter."
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_instead_of_doing": {
+      "phrase": "instead of doing",
+      "sentence": 6,
+      "fp": "4d87fb739d17",
+      "en": "Visitors are expected to sit with volunteers and take part in the work instead of simply leaving an item at a counter.",
+      "match": "instead of ~ leaving"
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_allow_a_to": {
+      "phrase": "allow A to do",
+      "sentence": 8,
+      "fp": "bf17ed72bca4",
+      "en": "This process allows participants to gain practical skills and confidence."
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_be_designed_so_that": {
+      "phrase": "be designed so that ...",
+      "sentence": 19,
+      "match": "be ~ designed so that",
+      "fp": "9676d14b1fe6",
+      "en": "Some modern products are also designed so that they are difficult to open without special tools."
+    },
+    "p_pre2plus_repair_cafes|rdx_pre2plus_by_themselves": {
+      "phrase": "by themselves",
+      "sentence": 21,
+      "fp": "114243b15df5",
+      "en": "Repair cafes cannot change product design by themselves, but they can show consumers what prevents repairs."
+    },
+    "p_2_quiet_technology|idm_for_example": {
+      "phrase": "for example",
+      "sentence": 2,
+      "fp": "13edeaac5304",
+      "en": "For example, several train stations have introduced sensors that measure how crowded each platform is."
+    },
+    "p_2_quiet_technology|syn_not_at_all": {
+      "phrase": "not ... at all",
+      "sentence": 8,
+      "fp": "1fe14fedc32e",
+      "en": "Visitors may not notice the system at all, yet it affects how long they can read or study without becoming tired."
+    },
+    "p_2_quiet_technology|rdx_p2_in_recent_years": {
+      "phrase": "in recent years",
+      "sentence": 1,
+      "fp": "41aa1dd398e0",
+      "en": "In recent years, however, some of the most useful technologies have been designed to be almost invisible."
+    },
+    "p_2_quiet_technology|rdx_p2_can_be_found_in": {
+      "phrase": "can be found in",
+      "sentence": 6,
+      "fp": "66a94bedca09",
+      "en": "Another example can be found in public libraries."
+    },
+    "p_2_quiet_technology|rdx_p2_instead_of": {
+      "phrase": "instead of",
+      "sentence": 14,
+      "fp": "5c7b6e3f64a4",
+      "en": "If only wealthy areas receive the newest systems, technology may make public services more unequal instead of more convenient."
+    },
+    "p_2_quiet_technology|rdx_p2_be_judged_by": {
+      "phrase": "be judged by",
+      "sentence": 20,
+      "match": "judged ~ by",
+      "fp": "fe44dd3daa24",
+      "en": "Technology should be judged not by how modern it appears, but by whether it solves a real problem for the people who use the space."
+    },
+    "p_2_quiet_technology|rdx_p2_be_left_out": {
+      "phrase": "be left out",
+      "sentence": 15,
+      "fp": "4668b91255b0",
+      "en": "City leaders therefore need to ask where a new system will have the greatest effect and who might be left out."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_respond_to": {
+      "phrase": "respond to",
+      "sentence": 0,
+      "fp": "169be5db45b4",
+      "en": "Cities have always had to respond to weather, but the challenge has become more complicated as extreme heat and sudden storms occur more frequently."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_for_instance": {
+      "phrase": "for instance",
+      "sentence": 4,
+      "fp": "8d1ae299a6fe",
+      "en": "For instance, building higher concrete walls along a river may reduce flooding in one district while pushing water toward a poorer neighborhood downstream."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_at_once": {
+      "phrase": "at once",
+      "sentence": 6,
+      "fp": "7b4e8f51b368",
+      "en": "A more resilient city therefore begins by assessing who is most vulnerable and which resources can serve several needs at once."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_be_based_on": {
+      "phrase": "be based on",
+      "sentence": 13,
+      "fp": "2c6706987ff1",
+      "en": "Good policy must be based on evidence from the actual community rather than on attractive ideas copied from other cities."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_rather_than": {
+      "phrase": "rather than",
+      "sentence": 13,
+      "fp": "2c6706987ff1",
+      "en": "Good policy must be based on evidence from the actual community rather than on attractive ideas copied from other cities."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_come_first": {
+      "phrase": "come first",
+      "sentence": 15,
+      "fp": "ede0ca6a3f96",
+      "en": "This process takes time, and it may reveal disagreements about which projects should come first."
+    },
+    "p_pre1_resilient_cities|rdx_pre1_over_a_long_period": {
+      "phrase": "over a long period",
+      "sentence": 24,
+      "fp": "f0c9b0fbd9b4",
+      "en": "A city that takes resilience seriously must therefore evaluate projects over a long period rather than only during the year in which they are introduced."
+    },
+    "p_1_collective_memory|idm_depend_on": {
+      "phrase": "depend on",
+      "sentence": 10,
+      "fp": "7da22e6f4a5b",
+      "en": "Digital records also depend on technical systems whose apparent permanence can be misleading."
+    },
+    "p_1_collective_memory|syn_not_only": {
+      "phrase": "not only A but also B",
+      "sentence": 3,
+      "fp": "2bf2a5a611c9",
+      "en": "The reason is that memory depends not only on preservation but also on repeated interpretation within families, schools, media, and political institutions."
+    },
+    "p_1_collective_memory|rdx_p1_in_practice": {
+      "phrase": "in practice",
+      "sentence": 7,
+      "fp": "54f2a43fefab",
+      "en": "In practice, however, abundance can produce a different kind of loss."
+    },
+    "p_1_collective_memory|rdx_p1_rather_than": {
+      "phrase": "rather than",
+      "sentence": 4,
+      "fp": "f2bfffce1f9a",
+      "en": "When these mechanisms weaken, the past becomes a collection of isolated facts rather than a resource for judgment."
+    },
+    "p_1_collective_memory|rdx_p1_at_the_same_time": {
+      "phrase": "at the same time",
+      "sentence": 32,
+      "fp": "df4393c2dc88",
+      "en": "At the same time, they need intellectual habits that prevent skepticism from turning into cynicism."
+    },
+    "p_1_collective_memory|rdx_p1_turn_into": {
+      "phrase": "turn into",
+      "sentence": 32,
+      "fp": "df4393c2dc88",
+      "en": "At the same time, they need intellectual habits that prevent skepticism from turning into cynicism."
+    },
+    "p_1_collective_memory|rdx_p1_beyond": {
+      "phrase": "beyond ...",
+      "sentence": 41,
+      "fp": "b43eff0b3c01",
+      "en": "It also requires citizens who are willing to read beyond headlines, tolerate uncertainty, and revise their views when stronger evidence appears."
+    },
+    "p_1_collective_memory|rdx_p1_in_this_sense": {
+      "phrase": "in this sense",
+      "sentence": 44,
+      "fp": "cd1bf3c3d9ad",
+      "en": "Remembering, in this sense, is not a passive act of storage but an active practice of civic discipline."
+    },
+    "p_5_school_open_day|rdx_p5_open_day": {
+      "phrase": "open day",
+      "sentence": 0,
+      "fp": "136a827d75eb",
+      "en": "Our school has an open day next Saturday."
+    },
+    "p_5_school_open_day|rdx_p5_at_nine": {
+      "phrase": "at nine",
+      "sentence": 1,
+      "fp": "9db493e645f5",
+      "en": "Students come at nine with a parent."
+    },
+    "p_5_school_open_day|rdx_p5_after_that": {
+      "phrase": "after that",
+      "sentence": 4,
+      "fp": "d3bb0290b687",
+      "en": "After that, families eat lunch in the garden."
+    },
+    "p_5_school_open_day|rdx_p5_your_own": {
+      "phrase": "your own ...",
+      "sentence": 5,
+      "fp": "9e6b300f93a5",
+      "en": "Please bring your own drinks."
+    },
+    "p_5_school_open_day|rdx_p5_if_question": {
+      "phrase": "if you have any questions",
+      "sentence": 8,
+      "fp": "f78918a8b0b8",
+      "en": "Please ask a teacher near the front door if you have any questions."
+    },
+    "p_4_bicycle_safety|jr_idm_how_to_do": {
+      "phrase": "how to do",
+      "sentence": 1,
+      "fp": "373c0497e9cd",
+      "en": "The program will teach simple traffic rules and show people how to prevent common bicycle accidents."
+    },
+    "p_4_bicycle_safety|rdx_p4_prevent_accidents": {
+      "phrase": "prevent accidents",
+      "sentence": 1,
+      "match": "prevent ~ accidents",
+      "fp": "373c0497e9cd",
+      "en": "The program will teach simple traffic rules and show people how to prevent common bicycle accidents."
+    },
+    "p_4_bicycle_safety|rdx_p4_after_dark": {
+      "phrase": "after dark",
+      "sentence": 5,
+      "fp": "007e73812e4c",
+      "en": "They must use bicycle lights because drivers may not notice them after dark."
+    },
+    "p_4_bicycle_safety|rdx_p4_for_free": {
+      "phrase": "for free",
+      "sentence": 7,
+      "fp": "bf499b725554",
+      "en": "Local shop workers will check the brakes, seats, and lights for free."
+    },
+    "p_4_bicycle_safety|rdx_p4_end_with": {
+      "phrase": "end with ...",
+      "sentence": 9,
+      "fp": "d4e3ff2d0d8a",
+      "en": "The week ends with a practice ride on Saturday morning."
+    },
+    "p_4_bicycle_safety|rdx_p4_so_can": {
+      "phrase": "so ... can ...",
+      "sentence": 11,
+      "fp": "de69990db77c",
+      "en": "Parents should join the ride too, so they can practice the rules with their children."
+    },
+    "p_3_lunch_food_waste|curr1900_idm_3_have_to": {
+      "phrase": "have to",
+      "sentence": 1,
+      "fp": "295429020840",
+      "en": "The cooking staff had to throw the leftovers away, even though most of the food was still fresh."
+    },
+    "p_3_lunch_food_waste|jr_idm_ask_a_to_do": {
+      "phrase": "ask A to do",
+      "sentence": 2,
+      "fp": "72eed420cc30",
+      "en": "A science class decided to study the problem instead of simply asking everyone to eat more."
+    },
+    "p_3_lunch_food_waste|jr_idm_share_a_with_b": {
+      "phrase": "share A with B",
+      "sentence": 15,
+      "fp": "969d6e20ba95",
+      "en": "The students now share their results with nearby schools and encourage them to measure their own waste."
+    },
+    "p_3_lunch_food_waste|curr1900_idm_3_encourage_a_to_b": {
+      "phrase": "encourage A to B",
+      "sentence": 15,
+      "fp": "969d6e20ba95",
+      "en": "The students now share their results with nearby schools and encourage them to measure their own waste."
+    },
+    "p_3_lunch_food_waste|rdx_p3_even_though": {
+      "phrase": "even though ...",
+      "sentence": 1,
+      "fp": "295429020840",
+      "en": "The cooking staff had to throw the leftovers away, even though most of the food was still fresh."
+    },
+    "p_3_lunch_food_waste|rdx_p3_instead_of": {
+      "phrase": "instead of ...",
+      "sentence": 2,
+      "fp": "72eed420cc30",
+      "en": "A science class decided to study the problem instead of simply asking everyone to eat more."
+    },
+    "p_3_lunch_food_waste|rdx_p3_while_some": {
+      "phrase": "..., while ...",
+      "sentence": 4,
+      "fp": "20ea858099a4",
+      "en": "Many younger students said the usual portions were too large, while some older students wanted more food after sports practice."
+    },
+    "p_3_lunch_food_waste|rdx_p3_half_of": {
+      "phrase": "half of ...",
+      "sentence": 10,
+      "fp": "40331847fd5d",
+      "en": "After one month, food waste was almost half of the earlier amount."
+    },
+    "p_3_lunch_food_waste|rdx_p3_require_rule": {
+      "phrase": "require ...",
+      "sentence": 13,
+      "fp": "23ccde21e316",
+      "en": "The project taught them that reducing food waste does not require one perfect rule for everyone."
+    },
+    "p_3_lunch_food_waste|rdx_p3_before_reaches": {
+      "phrase": "before it reaches ...",
+      "sentence": 16,
+      "fp": "86d7b400e643",
+      "en": "They explain that every meal uses water, energy, and work before it reaches a plate, so even a small improvement can protect valuable resources."
+    },
+    "p_pre2_later_school_start|curr_idm_pre2_care_for": {
+      "phrase": "care for",
+      "sentence": 10,
+      "fp": "9cdb4e6f3cb7",
+      "en": "Some parents also depend on older children to care for younger family members after school."
+    },
+    "p_pre2_later_school_start|rdx_pre2_reasonable_time": {
+      "phrase": "at a reasonable time",
+      "sentence": 0,
+      "fp": "4a9119dd1b88",
+      "en": "Many teenagers arrive at school feeling tired, even when they try to go to bed at a reasonable time."
+    },
+    "p_pre2_later_school_start|rdx_pre2_for_this_reason": {
+      "phrase": "for this reason",
+      "sentence": 3,
+      "fp": "37a1eca899e7",
+      "en": "For this reason, some schools have moved their starting time from eight o’clock to a later hour."
+    },
+    "p_pre2_later_school_start|rdx_pre2_move_from_to": {
+      "phrase": "move A from X to Y",
+      "sentence": 3,
+      "fp": "37a1eca899e7",
+      "en": "For this reason, some schools have moved their starting time from eight o’clock to a later hour."
+    },
+    "p_pre2_later_school_start|rdx_pre2_depend_on": {
+      "phrase": "depend on ...",
+      "sentence": 10,
+      "fp": "9cdb4e6f3cb7",
+      "en": "Some parents also depend on older children to care for younger family members after school."
+    },
+    "p_pre2_later_school_start|rdx_pre2_take_seriously": {
+      "phrase": "take ... seriously",
+      "sentence": 17,
+      "fp": "4b0302f61167",
+      "en": "It is that school policies should take evidence about teenage sleep seriously."
+    },
+    "p_pre2_later_school_start|rdx_pre2_more_than_familiar": {
+      "phrase": "simply because ...",
+      "sentence": 19,
+      "fp": "8611ee3a13be",
+      "en": "Careful changes are more useful than keeping an old schedule simply because it is familiar, especially when schools review them regularly."
+    },
+    "p_pre2plus_city_bird_count|curr_idm_2_in_practice": {
+      "phrase": "in practice",
+      "sentence": 7,
+      "fp": "554583fa1572",
+      "en": "However, large numbers of reports cannot automatically ensure reliable data in practice."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_at_once": {
+      "phrase": "at once",
+      "sentence": 0,
+      "fp": "4a8cbf4ebaa8",
+      "en": "Professional scientists cannot be everywhere at once, especially when they study animals that move across wide areas."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_known_as": {
+      "phrase": "known as ...",
+      "sentence": 1,
+      "fp": "f149e95107c6",
+      "en": "Many research groups need more information, so they invite ordinary people to join projects known as citizen science."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_for_example": {
+      "phrase": "for example",
+      "sentence": 5,
+      "fp": "ba284ea97b3f",
+      "en": "For example, the records may show that a species is arriving earlier in spring or disappearing from certain neighborhoods."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_automatically": {
+      "phrase": "not automatically ...",
+      "sentence": 7,
+      "match": "cannot automatically",
+      "fp": "554583fa1572",
+      "en": "However, large numbers of reports cannot automatically ensure reliable data in practice."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_compare_answers": {
+      "phrase": "compare ...",
+      "sentence": 15,
+      "fp": "5f38ca554341",
+      "en": "Some projects also send several volunteers the same observation task and compare their answers to estimate how often mistakes occur."
+    },
+    "p_pre2plus_city_bird_count|rdx_pre2plus_not_because_but": {
+      "phrase": "not because A, but because B",
+      "sentence": 17,
+      "fp": "c6b1fff0a075",
+      "en": "Citizen science is valuable not because volunteers replace professionals, but because the two groups contribute different strengths."
+    },
+    "p_2_online_health_claims|rdx_p2_within_a_day": {
+      "phrase": "within a day",
+      "sentence": 0,
+      "fp": "6603c2ce0c21",
+      "en": "A short video claims that a certain drink improves memory, and thousands of users share it within a day."
+    },
+    "p_2_online_health_claims|rdx_p2_details_alone": {
+      "phrase": "... alone",
+      "sentence": 2,
+      "fp": "5dbd9caec3ca",
+      "en": "Yet these details alone do not show whether the health claim is reliable."
+    },
+    "p_2_online_health_claims|rdx_p2_apply_to": {
+      "phrase": "apply to ...",
+      "sentence": 8,
+      "fp": "07bd9e287d1f",
+      "en": "A result from twelve volunteers may be interesting, but it may not apply to people of different ages or health conditions."
+    },
+    "p_2_online_health_claims|rdx_p2_separate_from": {
+      "phrase": "separate A from B",
+      "sentence": 9,
+      "fp": "6e311fc609f7",
+      "en": "A useful study also compares groups so that researchers can separate the treatment from other possible factors."
+    },
+    "p_2_online_health_claims|rdx_p2_treat_as": {
+      "phrase": "treat A as B",
+      "sentence": 11,
+      "fp": "85c4401b1f88",
+      "en": "Another common mistake is to treat correlation as proof of cause."
+    },
+    "p_2_online_health_claims|rdx_p2_paid_for": {
+      "phrase": "company funding",
+      "sentence": 18,
+      "fp": "c1ae9407f26c",
+      "en": "Company funding does not automatically make research false, but readers should check whether the company sells the product being tested."
+    },
+    "p_2_online_health_claims|rdx_p2_match_to": {
+      "phrase": "match A to B",
+      "sentence": 23,
+      "fp": "960ff0de8a3c",
+      "en": "Responsible readers are not people who doubt everything; they are people who match their confidence to the quality of the evidence."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_point_to": {
+      "phrase": "cite ...",
+      "sentence": 1,
+      "fp": "89a77ee372b3",
+      "en": "Supporters cite faster transactions, lower handling costs, and reduced risk of theft for merchants."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_lack": {
+      "phrase": "required to ...",
+      "sentence": 4,
+      "fp": "73763934a045",
+      "en": "Some people do not have a bank account, a suitable phone, reliable internet access, or the identity documents required to open a digital account."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_more_than_remove": {
+      "phrase": "do more than ...",
+      "sentence": 6,
+      "fp": "87858af55e87",
+      "en": "For these users, refusing cash does more than remove a familiar habit; it can limit access to food, transport, and public life."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_whereas": {
+      "phrase": "..., whereas ...",
+      "sentence": 8,
+      "fp": "144db3616c15",
+      "en": "Cash usually leaves no detailed record linking a person to a particular purchase, whereas digital payment creates data that may be stored, combined, or sold."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_limited_use": {
+      "phrase": "provide limited value",
+      "sentence": 13,
+      "match": "provide ~ limited value",
+      "fp": "53be8aba64d6",
+      "en": "Training provides only limited value in rural areas with weak mobile service or during payment system failures after serious natural disasters and emergencies."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_not_only_by": {
+      "phrase": "not only by A",
+      "sentence": 22,
+      "fp": "27106bd8189e",
+      "en": "The broader lesson is that innovation should be judged by the range of people who can use it, not only by the speed of its average transaction."
+    },
+    "p_pre1_cashless_inclusion|rdx_pre1_rather_than_alone": {
+      "phrase": "rather than ... alone",
+      "sentence": 17,
+      "fp": "2a212239abec",
+      "en": "This does not make cash universally superior, but it shows why a preferred tool can depend on a person’s circumstances rather than technical knowledge alone."
+    },
+    "p_1_metric_fixation|rdx_p1_across_over_time": {
+      "phrase": "across places and over time",
+      "sentence": 2,
+      "fp": "9f320598de88",
+      "en": "Such indicators give institutions a common language for judging performance across places and over time."
+    },
+    "p_1_metric_fixation|rdx_p1_hidden_behind": {
+      "phrase": "remain hidden behind ...",
+      "sentence": 3,
+      "fp": "61ca26eddd19",
+      "en": "They can expose failure that would otherwise remain hidden behind confident speeches or professional authority."
+    },
+    "p_1_metric_fixation|rdx_p1_rather_than_pursue": {
+      "phrase": "rather than pursue ...",
+      "sentence": 7,
+      "fp": "df41ae62dc7c",
+      "en": "Once rewards or penalties depend heavily on the score, people have an incentive to optimize the proxy rather than pursue the underlying mission."
+    },
+    "p_1_metric_fixation|rdx_p1_in_first_place": {
+      "phrase": "in the first place",
+      "sentence": 15,
+      "fp": "5b2f6ea451e1",
+      "en": "That position underestimates why measurement became attractive in the first place."
+    },
+    "p_1_metric_fixation|rdx_p1_alongside": {
+      "phrase": "be considered alongside ...",
+      "sentence": 22,
+      "fp": "f793ac23025c",
+      "en": "Graduation rates may be considered alongside student surveys, samples of actual work, and information about what graduates can do later."
+    },
+    "p_1_metric_fixation|rdx_p1_not_only_but_also": {
+      "phrase": "not only A but also B",
+      "sentence": 29,
+      "fp": "6c20e6417976",
+      "en": "Regular audits should look not only for false reports but also for neglected tasks, displaced risks, and groups that disappear from the data."
+    },
+    "p_1_metric_fixation|rdx_p1_depend_heavily": {
+      "phrase": "depend heavily on ...",
+      "sentence": 7,
+      "fp": "df41ae62dc7c",
+      "en": "Once rewards or penalties depend heavily on the score, people have an incentive to optimize the proxy rather than pursue the underlying mission."
+    },
+    "p_1_metric_fixation|rdx_p1_substitute_for": {
+      "phrase": "a substitute for ...",
+      "sentence": 46,
+      "fp": "708024ffd33c",
+      "en": "When a measure becomes a substitute for that mission, apparent precision can conceal institutional drift."
+    },
+    "p_5_weather_field_trip|curr_idm_5_at_school": {
+      "phrase": "at school",
+      "sentence": 1,
+      "fp": "2bde2e18f19f",
+      "en": "We meet at school at eight in the morning."
+    },
+    "p_5_weather_field_trip|curr_idm_5_in_the_afternoon": {
+      "phrase": "in the afternoon",
+      "sentence": 5,
+      "fp": "ac6d172bc277",
+      "en": "In the afternoon, we watch the penguins and draw one animal."
+    },
+    "p_5_weather_field_trip|rdx_weather_on_friday": {
+      "phrase": "on Friday",
+      "sentence": 0,
+      "fp": "ae9b0fbace56",
+      "en": "Our class will visit the city zoo on Friday."
+    },
+    "p_5_weather_field_trip|rdx_weather_in_the_morning": {
+      "phrase": "in the morning",
+      "sentence": 1,
+      "fp": "2bde2e18f19f",
+      "en": "We meet at school at eight in the morning."
+    },
+    "p_5_weather_field_trip|rdx_weather_next_to": {
+      "phrase": "next to ...",
+      "sentence": 8,
+      "fp": "13eaa5944041",
+      "en": "The museum is next to the train station."
+    },
+    "p_5_weather_field_trip|rdx_weather_if_it_rains": {
+      "phrase": "if it rains",
+      "sentence": 7,
+      "fp": "65869198bbbd",
+      "en": "If it rains, we visit the science museum instead."
+    },
+    "p_4_emergency_map|jr_idm_tell_a_to_do": {
+      "phrase": "tell A to do",
+      "sentence": 6,
+      "fp": "83854f06132f",
+      "en": "The map tells walkers to avoid that street after dark."
+    },
+    "p_4_emergency_map|exam_idm_ask_for": {
+      "phrase": "ask for",
+      "sentence": 9,
+      "fp": "8739bae82d6d",
+      "en": "They also asked for larger letters and simple pictures."
+    },
+    "p_4_emergency_map|curr_idm_3_cover_a_with_b": {
+      "phrase": "cover A with B",
+      "sentence": 0,
+      "fp": "c442c7ddc6eb",
+      "en": "Heavy rain sometimes covers streets in our town with water."
+    },
+    "p_4_emergency_map|rdx_emergency_decide_to": {
+      "phrase": "decide to do",
+      "sentence": 1,
+      "fp": "3ef5ae3e7b03",
+      "en": "Last year, junior high school students decided to make a safer walking map."
+    },
+    "p_4_emergency_map|rdx_emergency_warn_about": {
+      "phrase": "warn A about B",
+      "sentence": 3,
+      "fp": "ed9047bdc149",
+      "en": "Several people warned them about a low bridge near the river."
+    },
+    "p_4_emergency_map|rdx_emergency_after_dark": {
+      "phrase": "after dark",
+      "sentence": 6,
+      "fp": "83854f06132f",
+      "en": "The map tells walkers to avoid that street after dark."
+    },
+    "p_4_emergency_map|rdx_emergency_each_spring": {
+      "phrase": "each spring",
+      "sentence": 13,
+      "fp": "64e47e3b4a1e",
+      "en": "Because streets and buildings change, the class will check every route again each spring."
+    },
+    "p_3_multilingual_town_guide|curr1900_idm_3_want_to": {
+      "phrase": "want to",
+      "sentence": 1,
+      "fp": "76a670de808f",
+      "en": "Local students wanted to help them explore the town without getting lost."
+    },
+    "p_3_multilingual_town_guide|curr_idm_3_such_as": {
+      "phrase": "such as",
+      "sentence": 10,
+      "fp": "7a4d69e9afd9",
+      "en": "They photographed clear landmarks, such as a red bridge and a stone tower."
+    },
+    "p_3_multilingual_town_guide|jr_idm_ask_a_to_do": {
+      "phrase": "ask A to do",
+      "sentence": 18,
+      "fp": "c5fa3051611d",
+      "en": "A small note asks users to report information that is no longer correct."
+    },
+    "p_3_multilingual_town_guide|curr_idm_pre2_no_longer": {
+      "phrase": "no longer",
+      "sentence": 18,
+      "fp": "c5fa3051611d",
+      "en": "A small note asks users to report information that is no longer correct."
+    },
+    "p_3_multilingual_town_guide|rdx_guide_without_getting_lost": {
+      "phrase": "without doing",
+      "sentence": 1,
+      "fp": "76a670de808f",
+      "en": "Local students wanted to help them explore the town without getting lost."
+    },
+    "p_3_multilingual_town_guide|rdx_guide_instead_of": {
+      "phrase": "instead of doing",
+      "sentence": 7,
+      "fp": "bda0880547b5",
+      "en": "The class therefore chose practical information instead of listing every famous place."
+    },
+    "p_3_multilingual_town_guide|rdx_guide_how_long": {
+      "phrase": "how long ...",
+      "sentence": 8,
+      "fp": "0bebbf5d3370",
+      "en": "Teams walked each route and measured how long it took."
+    },
+    "p_3_multilingual_town_guide|rdx_guide_more_than": {
+      "phrase": "more than doing",
+      "sentence": 19,
+      "fp": "ea26a68d87cb",
+      "en": "The students learned that good translation requires more than replacing words."
+    },
+    "p_pre2_phone_free_focus|rdx_phone_instead_of_banning": {
+      "phrase": "instead of doing",
+      "sentence": 2,
+      "fp": "192510ba77a3",
+      "en": "One high school tested a daily phone-free hour instead of banning phones all day."
+    },
+    "p_pre2_phone_free_focus|rdx_phone_while_other": {
+      "phrase": "while S + V",
+      "sentence": 6,
+      "fp": "b038309e72c7",
+      "en": "For four weeks, two classes followed the plan while two other classes kept their usual rules."
+    },
+    "p_pre2_phone_free_focus|rdx_phone_did_not_mean": {
+      "phrase": "do not mean that ...",
+      "sentence": 13,
+      "fp": "b9eda1caba08",
+      "en": "The result did not mean that every student liked the plan."
+    },
+    "p_pre2_phone_free_focus|rdx_phone_out_of_reach": {
+      "phrase": "out of reach",
+      "sentence": 22,
+      "fp": "b9e2b470a308",
+      "en": "At home, students can silence alerts or place a device out of reach while studying."
+    },
+    "p_pre2plus_clothing_second_life|rdx_clothing_not_every": {
+      "phrase": "not every ...",
+      "sentence": 2,
+      "fp": "020d7160fecb",
+      "en": "Donation can help, but not every donated item finds a new owner."
+    },
+    "p_pre2plus_clothing_second_life|rdx_clothing_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 6,
+      "fp": "8cbc43f863ae",
+      "en": "Volunteers sorted the clothes by size and condition rather than by price."
+    },
+    "p_pre2plus_clothing_second_life|rdx_clothing_whether": {
+      "phrase": "whether S + V",
+      "sentence": 17,
+      "fp": "2f3e4b7c797d",
+      "en": "The survey asked whether an exchanged item replaced a planned purchase, since that choice could reduce new production."
+    },
+    "p_pre2plus_clothing_second_life|rdx_clothing_depend_on": {
+      "phrase": "depend on ...",
+      "sentence": 25,
+      "fp": "e33bbd01f517",
+      "en": "A useful second life begins with exchange and repair, but it also depends on durable design and fewer unnecessary purchases."
+    },
+    "p_2_vertical_farming|rdx_vertical_rather_than": {
+      "phrase": "rather than ...",
+      "sentence": 0,
+      "fp": "6f8e2fe236d3",
+      "en": "Vertical farms grow crops on stacked shelves inside buildings rather than across wide fields."
+    },
+    "p_2_vertical_farming|rdx_vertical_be_suited_to": {
+      "phrase": "be suited to ...",
+      "sentence": 11,
+      "match": "be ~ suited to",
+      "fp": "7189ba24d2da",
+      "en": "Vertical farms are currently best suited to leafy vegetables and herbs that grow quickly."
+    },
+    "p_2_vertical_farming|rdx_vertical_depend_on": {
+      "phrase": "depend on ...",
+      "sentence": 10,
+      "fp": "0e65e781b6ec",
+      "en": "The answer depends on the local climate, power supply, building, and crop."
+    },
+    "p_2_vertical_farming|rdx_vertical_unlikely_to": {
+      "phrase": "be unlikely to do",
+      "sentence": 22,
+      "fp": "d602f3cd33da",
+      "en": "Vertical farming is unlikely to replace ordinary farming, and replacement is the wrong goal."
+    },
+    "p_pre1_dark_sky_policy|rdx_dark_be_known_as": {
+      "phrase": "be known as ...",
+      "sentence": 3,
+      "fp": "c8e50f3e432e",
+      "en": "This excess is known as light pollution, though the phrase describes several different problems."
+    },
+    "p_pre1_dark_sky_policy|rdx_dark_instead_of_allowing": {
+      "phrase": "instead of doing",
+      "sentence": 14,
+      "fp": "68f8706ecef0",
+      "en": "A shield can direct light toward the ground instead of allowing it to escape into the sky or nearby windows."
+    },
+    "p_pre1_dark_sky_policy|rdx_dark_rather_than": {
+      "phrase": "rather than doing",
+      "sentence": 30,
+      "fp": "16a6c1ccd7a2",
+      "en": "The strongest standards set goals for useful light rather than demanding darkness for its own sake."
+    },
+    "p_pre1_dark_sky_policy|rdx_dark_for_its_own_sake": {
+      "phrase": "for its own sake",
+      "sentence": 30,
+      "fp": "16a6c1ccd7a2",
+      "en": "The strongest standards set goals for useful light rather than demanding darkness for its own sake."
+    },
+    "p_1_choice_architecture|rdx_choice_as_if": {
+      "phrase": "as if S + V",
+      "sentence": 0,
+      "fp": "c48348fce4b9",
+      "en": "People often describe choice as if it begins only when a person consciously compares several options."
+    },
+    "p_1_choice_architecture|rdx_choice_as_far_as": {
+      "phrase": "as far as it goes",
+      "sentence": 21,
+      "fp": "bb8b39f02481",
+      "en": "This response is persuasive as far as it goes, yet inevitability does not settle who may design, for whom, or toward what end."
+    },
+    "p_1_choice_architecture|rdx_choice_opt_out": {
+      "phrase": "opt out",
+      "sentence": 29,
+      "fp": "f8dd13a54a4c",
+      "en": "The burden of opting out should be compared with the burden that the default removes."
+    },
+    "p_1_choice_architecture|rdx_choice_neither_nor": {
+      "phrase": "neither A nor B",
+      "sentence": 44,
+      "fp": "2d5c2ef48357",
+      "en": "The lesson is neither that nudges are harmless nor that all influence is manipulation."
+    },
+    "p_5_hot_summer_school|jr_idm_than_before": {
+      "phrase": "than before",
+      "sentence": 0,
+      "fp": "3ea9ef0f7d5f",
+      "en": "Summers in our town are hotter than before."
+    },
+    "p_5_hot_summer_school|jr_idm_last_year": {
+      "phrase": "last year",
+      "sentence": 1,
+      "fp": "1bf70564ea7b",
+      "en": "Last year, the school put new curtains in every classroom."
+    },
+    "p_5_hot_summer_school|jr_idm_put_a_in_b": {
+      "phrase": "put A in B",
+      "sentence": 1,
+      "fp": "1bf70564ea7b",
+      "en": "Last year, the school put new curtains in every classroom."
+    },
+    "p_5_hot_summer_school|curr_idm_5_every_morning": {
+      "phrase": "every morning",
+      "sentence": 5,
+      "fp": "972f6dc016a5",
+      "en": "Every morning, a teacher checks the temperature in the gym."
+    },
+    "p_5_hot_summer_school|curr_idm_5_every_day": {
+      "phrase": "every day",
+      "sentence": 8,
+      "fp": "dfad24783e2c",
+      "en": "Students carry a bottle and a small towel every day."
+    },
+    "p_5_hot_summer_school|rdc_hot_hotter_than": {
+      "phrase": "... -er than ~",
+      "sentence": 0,
+      "fp": "3ea9ef0f7d5f",
+      "en": "Summers in our town are hotter than before."
+    },
+    "p_5_hot_summer_school|rdc_hot_in_the_afternoon": {
+      "phrase": "in the afternoon",
+      "sentence": 2,
+      "fp": "8168d4ce2fd8",
+      "en": "The curtains stop strong sunlight in the afternoon."
+    },
+    "p_5_hot_summer_school|rdc_hot_if_clause": {
+      "phrase": "if ..., we ~",
+      "sentence": 6,
+      "fp": "8810070ab5fc",
+      "en": "If the number is too high, we do not run outside."
+    },
+    "p_5_hot_summer_school|rdc_hot_a_lot_of": {
+      "phrase": "a lot of ...",
+      "sentence": 7,
+      "fp": "b0b8ff7bfdbe",
+      "en": "On hot days, we study in the library and drink a lot of water."
+    },
+    "p_4_school_solar_roof|curr_idm_3_talk_about": {
+      "phrase": "talk about",
+      "sentence": 14,
+      "fp": "dab9dea02aae",
+      "en": "Now students talk about energy at home, and some families check their own use."
+    },
+    "p_4_school_solar_roof|rdc_solar_change_into": {
+      "phrase": "change A into B",
+      "sentence": 1,
+      "fp": "21077b50886a",
+      "en": "The panels change sunlight into electricity for the classrooms."
+    },
+    "p_4_school_solar_roof|rdc_solar_ask_to_do": {
+      "phrase": "ask 人 to do",
+      "sentence": 3,
+      "fp": "f54e2cc64240",
+      "en": "Our science teacher asked students to check the numbers every Monday."
+    },
+    "p_4_school_solar_roof|rdc_solar_the_most": {
+      "phrase": "the most ...",
+      "sentence": 4,
+      "fp": "85af4caf0ca7",
+      "en": "We learned that the panels made the most electricity in May."
+    },
+    "p_4_school_solar_roof|rdc_solar_in_an_emergency": {
+      "phrase": "in an emergency",
+      "sentence": 7,
+      "fp": "43370fbeeaa7",
+      "en": "The school also uses the panels in an emergency."
+    },
+    "p_3_ai_class_rules|curr1900_idm_3_want_to": {
+      "phrase": "want to",
+      "sentence": 4,
+      "fp": "3140140bfe38",
+      "en": "Teachers were worried, but they did not want to ban the tools completely."
+    },
+    "p_3_ai_class_rules|jr_idm_ask_a_to_do": {
+      "phrase": "ask A to do",
+      "sentence": 5,
+      "fp": "7f0802924085",
+      "en": "Instead, the school asked each class to write its own rules."
+    },
+    "p_3_ai_class_rules|curr_idm_3_compare_a_with_b": {
+      "phrase": "compare A with B",
+      "sentence": 19,
+      "fp": "1722aa6b6ece",
+      "en": "Teachers can then compare the draft with the finished report."
+    },
+    "p_3_ai_class_rules|curr_idm_3_in_the_future": {
+      "phrase": "in the future",
+      "sentence": 23,
+      "fp": "ce97b9949da0",
+      "en": "Others say that people will use these tools at work in the future."
+    },
+    "p_3_ai_class_rules|curr1900_idm_2_at_work": {
+      "phrase": "at work",
+      "sentence": 23,
+      "fp": "ce97b9949da0",
+      "en": "Others say that people will use these tools at work in the future."
+    },
+    "p_3_ai_class_rules|jr_idm_learn_to_do": {
+      "phrase": "learn to do",
+      "sentence": 24,
+      "fp": "eacb60500555",
+      "en": "Our teacher told us that learning to judge information is the real skill."
+    },
+    "p_3_ai_class_rules|rdc_ai_begin_doing": {
+      "phrase": "begin doing",
+      "sentence": 0,
+      "fp": "390cdb18ea25",
+      "en": "Last year, many students at our school began using AI chat tools for homework."
+    },
+    "p_3_ai_class_rules|rdc_ai_instead": {
+      "phrase": "instead",
+      "sentence": 5,
+      "fp": "7f0802924085",
+      "en": "Instead, the school asked each class to write its own rules."
+    },
+    "p_3_ai_class_rules|rdc_ai_point_out_that": {
+      "phrase": "point out that ...",
+      "sentence": 9,
+      "fp": "92e0e2d52e9c",
+      "en": "A student pointed out that the tools sometimes give confident but wrong answers."
+    },
+    "p_3_ai_class_rules|rdc_ai_because_of": {
+      "phrase": "half of ...",
+      "sentence": 11,
+      "fp": "d6557cfa0c6e",
+      "en": "Half of the class wrote a summary alone, and the other half used AI first."
+    },
+    "p_pre2_crowded_town_tourism|rdc_tourism_become_popular_with": {
+      "phrase": "become popular with ...",
+      "sentence": 0,
+      "fp": "cf84c4f76a2d",
+      "en": "A small mountain town near a famous shrine has become popular with foreign visitors."
+    },
+    "p_pre2_crowded_town_tourism|rdc_tourism_too_full_for": {
+      "phrase": "too ... for ~",
+      "sentence": 6,
+      "fp": "8c37fe489b16",
+      "en": "Narrow streets were crowded, and buses were often too full for people going to the hospital."
+    },
+    "p_pre2_crowded_town_tourism|rdc_tourism_ask_to_add": {
+      "phrase": "ask 組織 to do",
+      "sentence": 12,
+      "fp": "cf8776236265",
+      "en": "The town then asked the bus company to add two morning buses for residents only."
+    },
+    "p_pre2_crowded_town_tourism|rdc_tourism_decide_to_and": {
+      "phrase": "decide to A and B",
+      "sentence": 18,
+      "match": "decide to charge ~ and publish",
+      "fp": "05b770105589",
+      "en": "The council therefore decided to charge the fee for one year and publish the results."
+    },
+    "p_pre2plus_rural_bus_future|rdc_bus_the_only_way_to": {
+      "phrase": "the only way to do",
+      "sentence": 0,
+      "match": "the only way ~ to",
+      "fp": "de1d71245df1",
+      "en": "In many rural areas, the local bus is the only way for people without cars to reach a hospital."
+    },
+    "p_pre2plus_rural_bus_future|rdc_bus_used_to_do": {
+      "phrase": "used to do",
+      "sentence": 2,
+      "fp": "1f2c6fd5c278",
+      "en": "Some companies used to run several routes, but today they cannot fill even one bus."
+    },
+    "p_pre2plus_rural_bus_future|rdc_bus_have_to_change": {
+      "phrase": "have to do",
+      "sentence": 5,
+      "fp": "c0264a10e6d8",
+      "en": "An elderly resident had to change three appointments because no bus reached the clinic."
+    },
+    "p_pre2plus_rural_bus_future|rdc_bus_neither_can": {
+      "phrase": "Neither A can ...",
+      "sentence": 22,
+      "fp": "181001a57a3d",
+      "en": "Neither approach can succeed if no one is willing to drive."
+    },
+    "p_2_space_debris|rdc_debris_more_than": {
+      "phrase": "more than ...",
+      "sentence": 0,
+      "fp": "6d5283aaea54",
+      "en": "More than ten thousand satellites now travel around the Earth, and thousands more are planned."
+    },
+    "p_2_space_debris|rdc_debris_too_to": {
+      "phrase": "too ... to do",
+      "sentence": 11,
+      "fp": "5e3fac635438",
+      "en": "If this process continues, certain orbits could become too dangerous to use."
+    },
+    "p_2_space_debris|rdc_debris_none_of_them": {
+      "phrase": "none of them",
+      "sentence": 14,
+      "fp": "025b3c3d0be2",
+      "en": "Several solutions have been proposed, and none of them is simple."
+    },
+    "p_2_space_debris|rdc_debris_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 19,
+      "fp": "173baf44acec",
+      "en": "The deeper difficulty is political rather than technical."
+    },
+    "p_pre1_ai_and_work|rdc_work_differ_from": {
+      "phrase": "differ from ...",
+      "sentence": 4,
+      "fp": "5ef338c149a9",
+      "en": "The current technology differs from earlier automation in one important respect."
+    },
+    "p_pre1_ai_and_work|rdc_work_consist_of": {
+      "phrase": "consist of ...",
+      "sentence": 10,
+      "fp": "a1be169c1b8e",
+      "en": "Most jobs consist of many tasks, and only some of them can be automated well."
+    },
+    "p_pre1_ai_and_work|rdc_work_benefit_from": {
+      "phrase": "benefit from ...",
+      "sentence": 21,
+      "fp": "b94783db1803",
+      "en": "A worker of fifty-five rarely benefits from jobs created ten years later in another city."
+    },
+    "p_pre1_ai_and_work|rdc_work_depend_on": {
+      "phrase": "depend on ...",
+      "sentence": 27,
+      "fp": "36d5ba195b43",
+      "en": "The result depends on institutions rather than on the technology alone."
+    },
+    "p_1_synthetic_media_trust|rdc_trust_depend_on_process": {
+      "phrase": "depend on ...",
+      "sentence": 2,
+      "fp": "9ea07f1dc149",
+      "en": "It depended on a production process that was expensive, slow, and difficult to conceal."
+    },
+    "p_1_synthetic_media_trust|rdc_trust_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 5,
+      "fp": "f16431665c79",
+      "en": "Synthetic media has weakened this assumption rather than destroyed it outright."
+    },
+    "p_1_synthetic_media_trust|rdc_trust_at_will": {
+      "phrase": "at will",
+      "sentence": 14,
+      "fp": "2ea0cff50aa9",
+      "en": "Once audiences know that anything can be faked, genuine evidence can be dismissed at will."
+    },
+    "p_1_synthetic_media_trust|rdc_trust_as_easy_as": {
+      "phrase": "as ... as ~",
+      "sentence": 46,
+      "fp": "610fe5539b65",
+      "en": "A public that doubts everything is as easy to manipulate as a public that believes everything."
+    },
+    "p_pre2_pond_comeback|rdf_pond_decide_to": {
+      "phrase": "decide to ...",
+      "sentence": 2,
+      "fp": "1d96abb5bddc",
+      "en": "Last spring, the science club and a local wildlife group decided to restore the habitat."
+    },
+    "p_pre2_pond_comeback|rdf_pond_so_result": {
+      "phrase": "..., so ~",
+      "sentence": 9,
+      "fp": "9e1ebb3be6c1",
+      "en": "The fish had no natural enemy here, so its numbers had grown rapidly."
+    },
+    "p_pre2_pond_comeback|rdf_pond_the_way": {
+      "phrase": "the way + S + V",
+      "sentence": 19,
+      "fp": "effc49adafac",
+      "en": "The project changed the way the town sees the land behind the school."
+    },
+    "p_pre2_pond_comeback|rdf_pond_it_is_to": {
+      "phrase": "it is ... to do",
+      "sentence": 23,
+      "fp": "bd4cd934b83d",
+      "en": "The students say that it is much harder to protect a habitat than to damage one."
+    },
+    "p_pre2_morning_market|curr1900_idm_pre2_turn_a_into_b": {
+      "phrase": "turn A into B",
+      "sentence": 24,
+      "fp": "5db95d046d7a",
+      "en": "The club studies the stalls and turns each visit into an assignment."
+    },
+    "p_pre2_morning_market|rdf_market_in_front_of": {
+      "phrase": "in front of ...",
+      "sentence": 0,
+      "fp": "29c029961c78",
+      "en": "On Sunday mornings, a small market opens in front of our town station."
+    },
+    "p_pre2_morning_market|rdf_market_find_o_c": {
+      "phrase": "find + O + C",
+      "sentence": 5,
+      "fp": "c9f4b5b18baf",
+      "en": "They find the quality reliable and return every week."
+    },
+    "p_pre2_morning_market|rdf_market_percentage_of": {
+      "phrase": "a high percentage of ...",
+      "sentence": 9,
+      "fp": "b0468c2f4b8b",
+      "en": "A survey last year showed that a high percentage of visitors welcomed this contact."
+    },
+    "p_pre2_morning_market|rdf_market_in_ways": {
+      "phrase": "in ways (that) S V",
+      "sentence": 22,
+      "fp": "caf6d85b2505",
+      "en": "The market has changed the town in ways nobody planned."
+    },
+    "p_2_injury_free_practice|rdf_injury_ask_o_to": {
+      "phrase": "ask + O + to do",
+      "sentence": 3,
+      "fp": "d15ff782df50",
+      "en": "She asked every member to keep a simple record after practice."
+    },
+    "p_2_injury_free_practice|rdf_injury_call_o_c": {
+      "phrase": "call + O + C",
+      "sentence": 1,
+      "fp": "8195565a43fe",
+      "en": "The teacher called each case bad luck."
+    },
+    "p_2_injury_free_practice|rdf_injury_separate_from": {
+      "phrase": "separate A from B",
+      "sentence": 20,
+      "fp": "785be2e7a32b",
+      "en": "The mentor therefore separated the report of pain from the choice of members."
+    },
+    "p_2_injury_free_practice|rdf_injury_not_every": {
+      "phrase": "not ... every ...",
+      "sentence": 32,
+      "match": "cannot ~ every",
+      "fp": "7b758a53c985",
+      "en": "Records cannot predict every accident, and some damage comes from old wounds."
+    },
+    "p_2_factory_museum|rdf_factory_pull_down": {
+      "phrase": "pull ... down",
+      "sentence": 4,
+      "fp": "210941b81e14",
+      "en": "The town council first planned to pull the building down."
+    },
+    "p_2_factory_museum|rdf_factory_would_have_pp": {
+      "phrase": "would have + 過去分詞",
+      "sentence": 14,
+      "fp": "f8ca9a4c3c9c",
+      "en": "The offer would have removed the debt of the town in one step."
+    },
+    "p_2_factory_museum|rdf_factory_turn_into": {
+      "phrase": "turn A into B",
+      "sentence": 27,
+      "fp": "b1c595cb573d",
+      "en": "Their memory turns a quiet room into a place of real work."
+    },
+    "p_2_factory_museum|rdf_factory_depend_on": {
+      "phrase": "depend on ...",
+      "sentence": 33,
+      "fp": "ef3f30fc7ff5",
+      "en": "The museum depends on public money for a part of its costs."
+    },
+    "p_pre2_school_radio|rdf_radio_pay_attention_to": {
+      "phrase": "pay attention to ...",
+      "sentence": 2,
+      "match": "pay ~ attention to",
+      "fp": "0c163d8f8a9b",
+      "en": "Most students paid no attention to the sound in the halls."
+    },
+    "p_pre2_school_radio|rdf_radio_ask_o_to": {
+      "phrase": "ask + O + to do",
+      "sentence": 3,
+      "fp": "045171867f3e",
+      "en": "A new adviser asked the club to study its own audience."
+    },
+    "p_pre2_school_radio|rdf_radio_keep_o_c": {
+      "phrase": "keep + O + -ing",
+      "sentence": 28,
+      "fp": "1f1c0fb6f57f",
+      "en": "A battery and a simple device keep the speakers working for two hours."
+    },
+    "p_pre2_school_radio|rdf_radio_leave_a_to_b": {
+      "phrase": "leave A to B",
+      "sentence": 25,
+      "fp": "0c909a3df249",
+      "en": "They express their own opinions briefly and leave the rest to the audience."
+    },
+    "p_2_disaster_translators|curr_idm_2_in_practice": {
+      "phrase": "in practice",
+      "sentence": 8,
+      "fp": "e4ceea5205ce",
+      "en": "The warning was accurate in Japanese and useless in practice."
+    },
+    "p_2_disaster_translators|curr_idm_2_keep_to": {
+      "phrase": "keep to",
+      "sentence": 12,
+      "fp": "84599ec51216",
+      "en": "Each notice keeps to one idea, one action and a short sentence."
+    },
+    "p_2_disaster_translators|rdf_translators_turn_into": {
+      "phrase": "turn A into B",
+      "sentence": 6,
+      "fp": "cd8e82140229",
+      "en": "Machine translation turned one urgent sentence into a polite invitation."
+    },
+    "p_2_disaster_translators|rdf_translators_alone": {
+      "phrase": "名詞 + alone",
+      "sentence": 16,
+      "fp": "6e94033cfc6c",
+      "en": "Translation alone did not solve the problem."
+    },
+    "p_2_disaster_translators|rdf_translators_rely_on": {
+      "phrase": "rely on ...",
+      "sentence": 36,
+      "fp": "0d20c6c5a2f7",
+      "en": "The group therefore relies on the network of neighbors in the end."
+    },
+    "p_2_disaster_translators|rdf_translators_at_all": {
+      "phrase": "not ... at all",
+      "sentence": 33,
+      "match": "no ~ at all",
+      "fp": "0dda791e3ea5",
+      "en": "A rare language has no interpreter in the town at all."
+    },
+    "p_ext_1000_civic_decisions|curr_idm_2_accuse_a_of_b": {
+      "phrase": "accuse A of B",
+      "sentence": 16,
+      "fp": "71a2a338ee7d",
+      "en": "A fair system treats a person who is accused of a crime as innocent until the evidence has been tested."
+    },
+    "p_ext_1000_civic_decisions|curr1900_idm_2_in_place": {
+      "phrase": "in place",
+      "sentence": 49,
+      "fp": "7b2a45e704e2",
+      "en": "Treating every revision as a failure is the surest way to keep a mistake in place for years."
+    },
+    "p_ext_1000_civic_decisions|rdx_ext_civic_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 2,
+      "fp": "b9f9f1f8952d",
+      "en": "Representation is therefore a practice rather than a title."
+    },
+    "p_ext_1000_civic_decisions|rdx_ext_civic_not_but": {
+      "phrase": "not A but B",
+      "sentence": 23,
+      "fp": "1f9760142a98",
+      "en": "When a legislature enacts a rule, the useful question is not only what it forbids but who must act."
+    },
+    "p_ext_1000_civic_decisions|rdx_ext_civic_instead_of": {
+      "phrase": "instead of A",
+      "sentence": 10,
+      "fp": "378da7de1f00",
+      "en": "If a council treats every objection as an attack, it will soon receive silence instead of assent."
+    },
+    "p_ext_1000_civic_decisions|rdx_ext_civic_enough_to": {
+      "phrase": "enough to do",
+      "sentence": 48,
+      "fp": "d06cf0a18312",
+      "en": "A good decision is firm enough to guide action and open enough to be revised when the evidence changes."
+    },
+    "p_ext_2000_customs_across_borders|curr_idm_pre1_build_on": {
+      "phrase": "build on",
+      "sentence": 61,
+      "fp": "cfa3ec144b15",
+      "en": "A pedagogy built on watching and repeating transmits the kind of judgment that verbal rules would inevitably flatten."
+    },
+    "p_ext_2000_customs_across_borders|rdx_ext_customs_neither_nor": {
+      "phrase": "neither + 名詞",
+      "sentence": 5,
+      "fp": "4f7f86b0f2b8",
+      "en": "Neither habit is more polite than the other, because each simply answers a different question about where a person belongs."
+    },
+    "p_ext_2000_customs_across_borders|rdx_ext_customs_not_so_much_as": {
+      "phrase": "not A so much as B",
+      "sentence": 9,
+      "fp": "417c394b6bdf",
+      "en": "Their ease is not a talent so much as long practice with the small rules that surround any introduction."
+    },
+    "p_ext_2000_customs_across_borders|rdx_ext_customs_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 24,
+      "fp": "389d91f3f9d1",
+      "en": "The effort rather than the expense is what a guest is generally expected to notice and to acknowledge."
+    },
+    "p_ext_2000_customs_across_borders|rdx_ext_customs_the_way": {
+      "phrase": "the way it is done",
+      "sentence": 16,
+      "match": "the way it is",
+      "fp": "20be9919cea7",
+      "en": "Hospitality toward strangers is common everywhere, yet the way it is offered follows local rules that nobody writes down."
+    },
+    "p_ext_3000_shared_watershed|curr_idm_pre1_leave_behind": {
+      "phrase": "leave behind",
+      "sentence": 52,
+      "fp": "5a8ab2198d3b",
+      "en": "Every drop of water that evaporates leaves behind any minerals that it happened to be carrying."
+    },
+    "p_ext_3000_shared_watershed|rdx_ext_watershed_less_like_than": {
+      "phrase": "less like A than like B",
+      "sentence": 6,
+      "fp": "b189b28402de",
+      "en": "A basin therefore behaves far less like a simple pipe than like a sponge with a very uneven surface."
+    },
+    "p_ext_3000_shared_watershed|rdx_ext_watershed_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 63,
+      "fp": "17e1a4acf5d1",
+      "en": "Every later advance in medicine rests on that basic separation rather than replacing it in any way."
+    },
+    "p_ext_3000_shared_watershed|rdx_ext_watershed_neither_nor": {
+      "phrase": "neither A nor B",
+      "sentence": 57,
+      "fp": "0333b07e6803",
+      "en": "That arrangement is neither dishonest nor unstable, but it does depend on a market that stays open."
+    },
+    "p_ext_3000_shared_watershed|rdx_ext_watershed_so_that": {
+      "phrase": "so ... that ...",
+      "sentence": 100,
+      "fp": "9df79802d446",
+      "en": "Water and energy are so closely linked together that neither of them can be planned on its own."
+    },
+    "p_ext_4000_generational_city|rdx_ext_city_rather_than": {
+      "phrase": "A rather than B",
+      "sentence": 101,
+      "fp": "f98b3ac06292",
+      "en": "Its value comes from being consistently predictable rather than from being clever in any one particular case."
+    },
+    "p_ext_4000_generational_city|rdx_ext_city_far_more_than": {
+      "phrase": "far more ... than ...",
+      "sentence": 15,
+      "fp": "a150bf13bb8d",
+      "en": "Recognizing the pattern is far more useful than blaming the particular individuals who happen to hold public office at the time."
+    },
+    "p_ext_4000_generational_city|rdx_ext_city_the_reason_that": {
+      "phrase": "the reason that ...",
+      "sentence": 14,
+      "match": "the ~ reason that",
+      "fp": "511d84b44352",
+      "en": "Public bodies repeat all of these habits quite faithfully, for the simple reason that they are made of the very same people."
+    },
+    "p_ext_4000_generational_city|rdx_ext_city_not_but": {
+      "phrase": "not A but B",
+      "sentence": 175,
+      "fp": "b75bd23aa9db",
+      "en": "Testing at full scale before any wide deployment is therefore not simple caution but a matter of ordinary arithmetic."
+    }
+  }
+}

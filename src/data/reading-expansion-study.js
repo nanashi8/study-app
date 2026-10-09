@@ -288,9 +288,9 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       'pre1',
       'rather than doing',
       '〜するのではなく',
-      'Communities began with trials rather than immediate town-wide rules.',
-      '地域は町全体の規則をすぐ導入するのではなく試行から始めました。',
-      '段階的な政策と一括導入を比較する論点になる。',
+      'The strongest standards set goals for useful light rather than demanding darkness for its own sake.',
+      '最もしっかりした基準は、暗さそのものを求めるのではなく、役に立つ光のための目標を定めます。',
+      'rather than の後ろに動詞の -ing 形を置き、退ける行動を示す。前の set goals と後ろの demanding を比べて読む。',
     ),
     expression(
       'dark_for_its_own_sake',

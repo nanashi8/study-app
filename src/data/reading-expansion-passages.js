@@ -270,7 +270,7 @@ export const EXPANDED_PASSAGES = [
       'artificial', 'light', 'pollution', 'night', 'wildlife', 'migrate',
       'insect', 'disturb', 'glare', 'safety', 'evidence', 'shield',
       'brightness', 'resident', 'worker', 'business', 'tourism', 'standard',
-      'monitor', 'policy', 'alter', 'community', 'public', 'ecosystem', 'energy',
+      'monitoring', 'policy', 'alter', 'community', 'public', 'ecosystem', 'energy',
     ],
     sentences: [
       p('For most of human history, darkness was a predictable part of every night.', '人類の歴史の大半で、暗闇は毎晩予測できるものでした。'),

@@ -61,8 +61,8 @@ export const EXTENDED_READING_STUDY = Object.freeze({
     expression(
       'customs_neither_nor',
       'pre1',
-      'Neither A nor B / Neither X is …',
-      'AもBも〜ない',
+      'neither + 名詞',
+      'どちらの〜も…ない',
       'Neither habit is more polite than the other, because each simply answers a different question about where a person belongs.',
       'どちらの習慣も他方より礼儀正しいわけではありません。それぞれが、人がどこに属するかについての別の問いに答えているだけだからです。',
       'neither は二つのうちどちらも否定する。後ろの比較 than the other と対にして読む。',
@@ -175,9 +175,9 @@ export const EXTENDED_READING_STUDY = Object.freeze({
       '1',
       'not A but B',
       'AではなくB',
-      'A policy that shifts care from an institution to a family has merely moved a cost rather than removed it.',
-      'ケアを施設から家庭へ移す政策は、費用を取り除いたのではなく移しただけです。',
-      'merely ... rather than ... は not A but B と同じ働きで、実際に起きたほうを前に置く。',
+      'Testing at full scale before any wide deployment is therefore not simple caution but a matter of ordinary arithmetic.',
+      'したがって広く導入する前に実規模で試験することは、単なる慎重さではなく普通の算術です。',
+      'not で A を打ち消し、but の後ろの B が筆者の答え。A rather than B と違い、打ち消すほうを前に置く。',
     ),
   ]),
 })

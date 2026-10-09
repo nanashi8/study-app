@@ -53,9 +53,11 @@ test('各長文が読み方、辞書・SRSの準備語彙、内容・並び替�
     const questions = getReadingQuestions(passage.id)
     const practice = getReadingPracticeQuestions(passage.id)
     const approach = readingApproachForPassage(passage)
-    assert.ok(study.words.length >= passage.vocab.length)
-    assert.ok(passage.vocab.every((id) => study.words.some((word) => word.id === id)))
-    assert.equal(study.phrases.length, 4)
+    // 重点語ケースの語は、本文の語（テーマ必須語彙）と分けて準備に出す（requests/2026-10-09-reading-prep-alignment.json）。
+    assert.deepEqual(study.caseWords.map((word) => word.id), [...new Set(passage.vocab)])
+    assert.ok(study.words.length > 0)
+    // 本文に出る熟語を足した長文は4件より多い（src/data/reading-prep-phrase-additions.js）。
+    assert.ok(study.phrases.length >= 4)
     assert.equal(questions.length, 4)
     assert.deepEqual(practice.map((item) => item.questionType).sort(), ['grammar', 'usage', 'word-order'])
     assert.equal(approach.steps.length, 3)

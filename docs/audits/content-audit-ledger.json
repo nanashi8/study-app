@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-09T04:31:51.784Z",
+  "auditedAt": "2026-10-09T04:49:20.062Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20863,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "3870c579bfc2d9002faef678a4f21ad9de3ed9e946955071b1619c8b8c9ae4ba"
+    "overallContentSha256": "5992b602d0e45fae49bd8bb0e9fcf28ad731ef01c9ec31aed6f0a8dac84ae5de"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "7d22f6fe0c6dd13b28e7777fc6ddf404ef0233b7c4a32f0fbf1fc1162ee3f3fa",
+    "sha256": "006bbe87af8b18b01523957a476a2df99052f18e937a798651e11f641e18e0d9",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -316,6 +316,7 @@
       "tests/reading-layout-contract.test.mjs",
       "tests/reading-parallel-layout.test.mjs",
       "tests/reading-phrase-explanations.test.mjs",
+      "tests/reading-prep-alignment.test.mjs",
       "tests/reading-prep-record-list.test.mjs",
       "tests/reading-punctuation-notes.test.mjs",
       "tests/reading-question-translations.test.mjs",
@@ -392,7 +393,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "3addda42684d4460fd649865fa1fc97a751388aa80a8c8858ce5e2c4a0c3b3c2",
+      "contentSha256": "ece5e3496500e54c72db2e7ebe62f2b346f245b9df150d264dc2bc05a8eea777",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -537,7 +538,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "75f0a833b342b7892206d5a441e9d0cae25c595ace2ff8a235a0084697429868",
+      "contentSha256": "69210977cdb312c19d6d1ca603a795b79d08cbeac185b00b2b54fc6e7e846a08",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1191,11 +1192,11 @@
     "totalWords": 9860,
     "sentenceCount": 528,
     "targetVocabularyCount": 1484,
-    "baselineCoveredVocabulary": 1942,
-    "baselineCoveragePercent": 21.75,
+    "baselineCoveredVocabulary": 1940,
+    "baselineCoveragePercent": 21.73,
     "combinedCoveredVocabulary": 3944,
     "combinedCoveragePercent": 44.17,
-    "coverageGain": 2002,
+    "coverageGain": 2004,
     "dictionarySize": 8929,
     "extendedTokenCount": 18914,
     "resolvedExtendedTokenCount": 18914,
@@ -1218,18 +1219,18 @@
       },
       "2": {
         "total": 1902,
-        "before": 292,
-        "beforePercent": 15.35,
-        "after": 844,
-        "afterPercent": 44.37,
-        "gain": 552
+        "before": 290,
+        "beforePercent": 15.25,
+        "after": 843,
+        "afterPercent": 44.32,
+        "gain": 553
       },
       "3": {
         "total": 992,
-        "before": 402,
-        "beforePercent": 40.52,
-        "after": 678,
-        "afterPercent": 68.35,
+        "before": 403,
+        "beforePercent": 40.63,
+        "after": 679,
+        "afterPercent": 68.45,
         "gain": 276
       },
       "4": {
@@ -1250,11 +1251,11 @@
       },
       "pre2": {
         "total": 1330,
-        "before": 368,
-        "beforePercent": 27.67,
+        "before": 367,
+        "beforePercent": 27.59,
         "after": 741,
         "afterPercent": 55.71,
-        "gain": 373
+        "gain": 374
       },
       "pre1": {
         "total": 2406,
@@ -1271,7 +1272,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "3c4769cbd56fb7dd1fb44911ff68c14a931d3d87918ad8d0461f364cf6849e95"
+    "contentSha256": "87d601d4fcacbb9158b4cc114e5c12025b74f7fadbde1ead8a8cba8f4976b038"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,

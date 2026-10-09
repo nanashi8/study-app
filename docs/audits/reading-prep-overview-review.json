@@ -1,0 +1,373 @@
+{
+  "about": "読解の準備のあらすじ・テーマ・読解ポイント・このテーマの読み方（題・要約・手順）を、1本ずつ本文と読み比べた結果（requests/2026-10-09-reading-prep-alignment.json）。cues は、読み方の手順が指す手がかりが本文のどこにあるかを本文の英文の一部で記録したもの。fp はあらすじ・テーマ・読解ポイント・読み方・本文をまとめた指紋で、どれかを変えると読み直すまで検査が止まる。fixed は本文と合わずに直したもの。",
+  "reviewed": {
+    "p_5_lost_notebook": {
+      "fp": "3445713ac2c4",
+      "cues": [
+        "On Monday",
+        "After lunch",
+        "Then Ken sees the notebook",
+        "because she can use the story"
+      ],
+      "fixed": "あらすじの「会話文」が本文に無い（物語文）ので書き直した"
+    },
+    "p_4_library_event": {
+      "fp": "d8e68dec19ee",
+      "cues": [
+        "first Saturday of every month",
+        "ten in the morning",
+        "bring a pencil",
+        "learn about their town"
+      ]
+    },
+    "p_3_school_garden": {
+      "fp": "1450483ccd72",
+      "cues": [
+        "plants need careful attention",
+        "asked each group to make a schedule",
+        "the number of damaged leaves soon decreased",
+        "protecting the environment"
+      ]
+    },
+    "p_pre2_museum_volunteers": {
+      "fp": "e4ecdc0f2faf",
+      "cues": [
+        "help families who have small children",
+        "sense of responsibility",
+        "For the museum, the benefit is clear as well"
+      ],
+      "fixed": "あらすじの「職業体験」を本文の中身（博物館のボランティア）に合わせた"
+    },
+    "p_pre2plus_repair_cafes": {
+      "fp": "00036f17f70c",
+      "cues": [
+        "take part in the work",
+        "Supporters say repair cafes offer",
+        "However, repair cafes are not a complete solution"
+      ]
+    },
+    "p_2_quiet_technology": {
+      "fp": "b1a64f9ca562",
+      "cues": [
+        "For example, several train stations",
+        "Privacy is another concern",
+        "Technology should be judged"
+      ]
+    },
+    "p_pre1_resilient_cities": {
+      "fp": "d17d8b480c02",
+      "cues": [
+        "For instance, building higher concrete walls",
+        "who is most vulnerable",
+        "how its costs and benefits are distributed",
+        "evaluate projects over a long period"
+      ]
+    },
+    "p_1_collective_memory": {
+      "fp": "b6a9b09a645d",
+      "cues": [
+        "collective memory is a far more fragile phenomenon",
+        "Some observers respond",
+        "Remembering, in this sense"
+      ]
+    },
+    "p_5_school_open_day": {
+      "fp": "5a6e70ee37df",
+      "cues": [
+        "come at nine",
+        "At ten, the music club",
+        "bring your own drinks",
+        "will end at three"
+      ],
+      "fixed": "あらすじの「中学入試」が試験の種類（英検）と食い違うので外した"
+    },
+    "p_4_bicycle_safety": {
+      "fp": "45293253e6b1",
+      "cues": [
+        "should wear a helmet",
+        "must use bicycle lights because drivers may not notice them",
+        "so they can practice the rules"
+      ]
+    },
+    "p_3_lunch_food_waste": {
+      "fp": "eb715ce31233",
+      "cues": [
+        "a lot of food was left",
+        "two plate sizes",
+        "almost half of the earlier amount"
+      ]
+    },
+    "p_pre2_later_school_start": {
+      "fp": "1a2f6d5caab3",
+      "cues": [
+        "For this reason, some schools have moved",
+        "A later start, however",
+        "The strongest argument for change"
+      ],
+      "fixed": "あらすじの「大学入試基礎」を試験の種類（高校受験上位）に合わせた"
+    },
+    "p_pre2plus_city_bird_count": {
+      "fp": "f9df2c459a01",
+      "cues": [
+        "Volunteers record each species",
+        "However, large numbers of reports",
+        "Good projects reduce these problems"
+      ],
+      "fixed": "あらすじの「大学入試標準」を試験の種類（大学受験基礎）に合わせた"
+    },
+    "p_2_online_health_claims": {
+      "fp": "7876d05cf400",
+      "cues": [
+        "who produced the message",
+        "treat correlation as proof of cause",
+        "may not apply"
+      ]
+    },
+    "p_pre1_cashless_inclusion": {
+      "fp": "bf01c03fad3d",
+      "cues": [
+        "Supporters cite",
+        "they are not shared equally",
+        "preserve meaningful alternatives"
+      ],
+      "fixed": "あらすじの「難関大入試」を試験の種類（大学受験）に合わせた"
+    },
+    "p_1_metric_fixation": {
+      "fp": "d98897c46641",
+      "cues": [
+        "a simplified representation of a broader objective",
+        "This response need not involve obvious cheating",
+        "Critics sometimes conclude"
+      ],
+      "fixed": "あらすじの「最難関大入試」を試験の種類（大学受験難関）に合わせた"
+    },
+    "p_5_weather_field_trip": {
+      "fp": "7d37be7b8f15",
+      "cues": [
+        "at eight in the morning",
+        "Everyone brings",
+        "If it rains, we visit the science museum instead"
+      ]
+    },
+    "p_4_emergency_map": {
+      "fp": "3ff586adff1e",
+      "cues": [
+        "a low bridge near the river",
+        "marked another route",
+        "larger letters and simple pictures"
+      ]
+    },
+    "p_3_multilingual_town_guide": {
+      "fp": "372dbaae3bde",
+      "cues": [
+        "gave tourists a short survey",
+        "exchange students used the first version",
+        "good translation requires more than replacing words"
+      ]
+    },
+    "p_pre2_phone_free_focus": {
+      "fp": "1e46e1f28115",
+      "cues": [
+        "two classes followed the plan while two other classes",
+        "did not treat a few extra answers as proof",
+        "allowed teachers to approve"
+      ]
+    },
+    "p_pre2plus_clothing_second_life": {
+      "fp": "c1e9c3e8886a",
+      "cues": [
+        "created a clothing exchange with a repair station",
+        "Counting exchanged items alone would give an incomplete answer",
+        "Manufacturers influence waste"
+      ]
+    },
+    "p_2_vertical_farming": {
+      "fp": "eeba78e65465",
+      "cues": [
+        "These advantages, however",
+        "The answer depends on the local climate",
+        "unlikely to replace ordinary farming"
+      ]
+    },
+    "p_pre1_dark_sky_policy": {
+      "fp": "01ae89a4a617",
+      "cues": [
+        "meet an immediate objection about safety",
+        "small trials rather than immediate town-wide rules",
+        "Economic arguments"
+      ]
+    },
+    "p_1_choice_architecture": {
+      "fp": "aabf91b29af9",
+      "cues": [
+        "choice architecture",
+        "Defenders of nudging respond",
+        "A responsible design pursues a legitimate goal"
+      ]
+    },
+    "p_5_hot_summer_school": {
+      "fp": "db82b89fe96c",
+      "cues": [
+        "hotter than before",
+        "The curtains stop strong sunlight",
+        "If the number is too high",
+        "Everyone likes the green wall the most"
+      ]
+    },
+    "p_4_school_solar_roof": {
+      "fp": "42aafc023824",
+      "cues": [
+        "In June, clouds and rain lowered the number",
+        "the weather was the real reason",
+        "The panels do not solve every problem"
+      ]
+    },
+    "p_3_ai_class_rules": {
+      "fp": "4d98bbd27ade",
+      "cues": [
+        "Teachers were worried",
+        "Then we ran a short experiment",
+        "Each report must list the source"
+      ]
+    },
+    "p_pre2_crowded_town_tourism": {
+      "fp": "92f0fcfa9a27",
+      "cues": [
+        "Shops and restaurants welcomed the change",
+        "The data showed that most people arrived",
+        "younger residents wanted more evening events"
+      ]
+    },
+    "p_pre2plus_rural_bus_future": {
+      "fp": "b5c11209a6dd",
+      "cues": [
+        "A further problem is that many drivers",
+        "most trips were short",
+        "A neighboring town chose a different answer"
+      ]
+    },
+    "p_2_space_debris": {
+      "fp": "548956e8dcff",
+      "cues": [
+        "a single collision can create thousands of new fragments",
+        "none of them is simple",
+        "The deeper difficulty is political rather than technical"
+      ]
+    },
+    "p_pre1_ai_and_work": {
+      "fp": "9cfc517244f2",
+      "cues": [
+        "at the level of tasks rather than whole occupations",
+        "Cash machines reduced the routine work",
+        "The distribution of gains is therefore a central question"
+      ]
+    },
+    "p_1_synthetic_media_trust": {
+      "fp": "ed4d2dba1ff9",
+      "cues": [
+        "Synthetic media has weakened this assumption",
+        "Detection software is usually proposed",
+        "The burden of this new work is distributed very unevenly"
+      ]
+    },
+    "p_pre2_pond_comeback": {
+      "fp": "f60e9e8318e8",
+      "cues": [
+        "the pond itself was not badly polluted",
+        "Residents had released a foreign fish",
+        "a steady decline in the foreign population"
+      ]
+    },
+    "p_pre2_morning_market": {
+      "fp": "6842d16eb691",
+      "cues": [
+        "They find the quality reliable",
+        "Local rules regulate the handling of fresh food",
+        "Each producer pays a small fee"
+      ]
+    },
+    "p_2_injury_free_practice": {
+      "fp": "b271cdff42e4",
+      "cues": [
+        "The records revealed a clear pattern",
+        "The hardest change was not physical",
+        "In the second year, the club counted one hurt member"
+      ]
+    },
+    "p_2_factory_museum": {
+      "fp": "105d553806ba",
+      "cues": [
+        "The town council first planned to pull the building down",
+        "A private company offered to buy the land",
+        "Rent from those workshops would produce a steady revenue",
+        "The result is not a complete success"
+      ]
+    },
+    "p_pre2_school_radio": {
+      "fp": "e3aa12723c5d",
+      "cues": [
+        "Students said that the voices were too fast",
+        "reads it slowly before lunch",
+        "The club now has a clear role in an emergency"
+      ]
+    },
+    "p_2_disaster_translators": {
+      "fp": "751764e938cd",
+      "cues": [
+        "The message reached every phone",
+        "Foreign residents read the warning but did not move",
+        "The group still reports serious limits"
+      ]
+    },
+    "p_ext_1000_civic_decisions": {
+      "fp": "08df902cf795",
+      "cues": [
+        "whose voice actually reaches the room",
+        "Rules become real only when everyone can find out",
+        "An argument about a public choice is only as good as the information",
+        "A budget is the clearest statement",
+        "A good decision is firm enough to guide action"
+      ]
+    },
+    "p_ext_2000_customs_across_borders": {
+      "fp": "444d9be27a41",
+      "cues": [
+        "A greeting is the shortest conversation",
+        "A shared meal is one of the oldest ways",
+        "Festivals look like exceptions to daily life",
+        "Objects outlive the people who made them",
+        "Languages move together with people",
+        "Words such as always and every"
+      ]
+    },
+    "p_ext_3000_shared_watershed": {
+      "fp": "eb195125c92f",
+      "cues": [
+        "A river basin is the whole area of land",
+        "a corridor along which living things travel",
+        "Agriculture takes more water",
+        "an infection carried by water",
+        "Most of the equipment that delivers water",
+        "Water and energy are so closely linked",
+        "Every claim about a river finally rests on a measurement",
+        "Anything that happens above arrives below"
+      ]
+    },
+    "p_ext_4000_generational_city": {
+      "fp": "f218e520ebf1",
+      "cues": [
+        "moving costs and benefits across time",
+        "Public argument is shaped by the direction of public attention",
+        "Work is the place where most people actually meet the economy",
+        "The difference usually lies in the conditions",
+        "A price is a message about scarcity",
+        "An institution is essentially a promise",
+        "A city passes on a great deal more knowledge outside its schools",
+        "Health is produced for the most part outside hospitals",
+        "Every new tool that a city adopts",
+        "No plan survives an entire generation"
+      ],
+      "fixed": "あらすじとテーマの「文化」に当たる節が本文に無いので、10節の題に合わせて書き直した"
+    }
+  }
+}
