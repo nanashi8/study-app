@@ -7,7 +7,7 @@
   "sessions": [
     "81128d94-3d6e-4c08-8a1b-494f373d0ef5"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "このセッション（81128d94）の依頼は requests/2026-10-09-reference-list-level-caps.json の1つで、閉じてある。2026-10-09 に調べると、共有の作業ツリーは origin/main の d0622f41 と同じで未コミット 0・stash 0・未 push 0・worktree はこの1つだけ（比較用に一時作った worktree は消した）。このセッションのコミットは2件（b5b55540・d0622f41。セッションを始めたときの main は 3b9b8bc0）で、どちらも main に入り、デプロイ（b5b55540 の run 37869339707・d0622f41 の 37869799947）はどちらも success。scratchpad のクリーンな複製は監査のあと消し、残る git リポジトリは 0個。",
   "criteria": [
     {
@@ -23,16 +23,16 @@
       "text": "このセッションの変更で main に入っていないものが残っていない。共有の作業ツリーは未コミット 0・stash 0・未 push 0、このセッションの scratchpad に study-app の複製が残っていない",
       "population": "共有の作業ツリー（~/projects/study-app）と、このセッションの作業場所（scratchpad）",
       "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/81128d94-3d6e-4c08-8a1b-494f373d0ef5 && node --test tests/leftover-changes.test.mjs && git fetch -q origin main && test -z \"$(git status --porcelain)\" && test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test -z \"$(git log origin/main..HEAD --oneline)\"",
-      "status": "waiting",
-      "waitingFor": "この台帳のコミットを push したあとの作業ツリーの確認"
+      "status": "done",
+      "result": "台帳のコミット 2a7fce13 を push したあと、共有の作業ツリーは origin/main と同じで未コミット 0・stash 0・未 push 0。このセッションの scratchpad に git リポジトリは 0個。"
     },
     {
       "id": "deployed",
       "text": "この依頼の台帳のコミットを push し、そのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
       "population": "main と公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
-      "status": "waiting",
-      "waitingFor": "この台帳のコミットのデプロイ"
+      "status": "done",
+      "result": "台帳のコミット 2a7fce13 のデプロイ run 37877451866 は success（deployed-matches-head で確認）。依頼を閉じるコミットのデプロイも成功を確かめてから報告する。"
     }
   ]
 }
