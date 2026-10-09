@@ -7,7 +7,7 @@
   "sessions": [
     "b6a3ddaf-2fce-4661-ac9d-9216f854ab5c"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "読解の準備（ReadingPrep.jsx）に出るもの：あらすじ・テーマ・読解ポイント・このテーマの読み方（題・要約・手順）・この本文で使う読解ルール・場面の束・テーマ必須語彙・熟語と表現。読解（Reader.jsx／ExtendedReader.jsx）に出るもの：本文（語をタップすると文脈の語義）・文ごとの読解ルール（上位3件）・語彙強化長文の重点語ケース・読解チェックの設問ごとのルール。2026-10-09 の測定：必須語彙のうち本文に出ない語 1,288件（語彙強化長文4本の重点語ケースの語が1,278件、ふつうの長文6件）、準備の読解ルール333件のうち読解画面に一度も出ないもの94件、読解画面に出るのに準備に無いルール518件、準備の熟語・表現204件のうち照合器が本文に見つけられないもの47件。",
   "criteria": [
     {
@@ -70,9 +70,9 @@
       "id": "deployed",
       "text": "直した中身を main に入れ、公開版で読解の準備の画面が直った中身を出すことを確かめる",
       "population": "この依頼の変更の全部",
-      "check": "node scripts/check-requests.mjs --report",
-      "status": "waiting",
-      "waitingFor": "クリーンな複製（scratchpad/clean）での npm run audit:all-content（全テスト・全監査・台帳の作り直し。バックグラウンド bqd1jwlye）の完了。通ればコミット・push・デプロイと公開版の確認へ進む"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 8bca277a origin/main && test \"$(gh run view 37885921674 --repo nanashi8/study-app --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs tests/reading-prep-alignment.test.mjs",
+      "status": "done",
+      "result": "8bca277a を main へ push（ほかのセッションの da641d84・d4866d5d の上へ載せ直し、クリーンな複製で全テスト1,353件・全監査・台帳の作り直しを通した）。Deploy to GitHub Pages の run 37885921674 が success。公開版で、リナのノートの読解の準備が新しいあらすじ・段ごとの読解ルール12件・テーマ必須語彙36語を出し、4,000語版が新しいあらすじとテーマ・重点語ケース604語の別の入口を出すことを開いて確かめた。"
     }
   ]
 }
