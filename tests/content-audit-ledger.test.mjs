@@ -12,8 +12,8 @@ test('全教材監査台帳は24カテゴリの母数・ゲート・ハッシュ
   // 2026-09-30、中学の社会・理科（重要語句・演習の4カテゴリ、2,069件）で24カテゴリになった。
   assert.equal(ledger.scope.categoryCount, 24)
   assert.equal(ledger.categories.length, 24)
-  assert.equal(ledger.scope.learningItemCount, 20_337)
-  assert.equal(ledger.scope.quizItemCount, 20_708)
+  assert.equal(ledger.scope.learningItemCount, 20_492)
+  assert.equal(ledger.scope.quizItemCount, 20_863)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {

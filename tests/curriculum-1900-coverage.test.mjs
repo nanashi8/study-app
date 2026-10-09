@@ -51,7 +51,7 @@ test('照合用ハッシュの見出し語をすべて収録する', () => {
 
 test('補完した単語420件・熟語604件は級、用例、語源・成り立ちを持つ', () => {
   assert.equal(ALL_WORDS.length, 8929)
-  assert.equal(PHRASES.length, 2104)
+  assert.equal(PHRASES.length, 2259)
   assert.equal(CURRICULUM_1900_WORDS.length, 420)
   assert.equal(CURRICULUM_1900_IDIOMS.length, 604)
   assert.equal(new Set(CURRICULUM_1900_WORDS.map((item) => item.id)).size, 420)
@@ -107,7 +107,7 @@ test('誤記・省略・表記揺れは正規形へ解決し、元表記でも�
 
 test('全熟語を同形ファミリーへ結び、同じ形だけの暗記・テストを組める', () => {
   const idioms = PHRASES.filter((item) => item.kind === 'idiom')
-  assert.equal(idioms.length, 1754)
+  assert.equal(idioms.length, 1909)
   assert.ok(IDIOM_FORM_FAMILIES.length >= 60)
   assert.ok(idioms.every((item) => idiomFormFamilyFor(item)), '未分類の熟語がある')
   assert.ok(idioms.every((item) => relatedIdiomForms(item).length > 0), '比較相手のない熟語がある')

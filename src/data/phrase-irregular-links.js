@@ -241,6 +241,17 @@ export const IRREGULAR_PHRASE_LINKS = Object.freeze({
   'good|curr1900_idm_pre1_it_couldn_t_be_better': true, // It couldn't be better.（better）
   'good|curr1900_idm_pre1_know_better_than_to_do': true, // know better than to do（better）
   'good|exam_idm_do_ones_best': true, // do one's best（best）
+  'good|jr_idm_better_than': true, // better than（better）
+  'good|jr_idm_get_better': true, // get better（better）
+  'good|jr_idm_like_blank_the_best': 'like ... the best の best は well（よく）の最上級で、good（よい）の最上級として使っていない', // like ... the best（best）
+  'well|jr_idm_better_than': true, // better than（better：より上手に）
+  'well|jr_idm_get_better': true, // get better（better：体の具合がよりよい）
+  'well|jr_idm_like_blank_the_best': true, // like ... the best（best：いちばんよく）
+  'make|jr_idm_be_made_in': true, // be made in（made）
+  'know|jr_idm_be_known_as': true, // be known as（known）
+  'leave|jr_idm_on_ones_left': 'left は「左」の意味で、leave の過去形ではない', // on one's left（left）
+  'many|jr_idm_not_blank_any_more': 'not ... any more の more は「もう（〜ない）」という時の意味で、many の数の比較として使っていない', // not ... any more（more）
+  'much|jr_idm_not_blank_any_more': 'not ... any more の more は「もう（〜ない）」という時の意味で、much の量の比較として使っていない', // not ... any more（more）
   'good|curr_idm_pre1_at_best': true, // at best（best）
   'good|curr1900_idm_2_make_the_best_of': true, // make the best of（best）
   'good|curr1900_idm_pre1_to_the_best_of_ones_knowledge': true, // to the best of one's knowledge（best）

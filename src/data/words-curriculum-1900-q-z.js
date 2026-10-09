@@ -30,16 +30,16 @@ seafood	名	3	魚介類	The market sells fresh local seafood.	その市場は新
 seasonal	形	2	季節の・季節ごとの	The cafe uses seasonal fruit in its desserts.	そのカフェはデザートに旬の果物を使う。	season（季節）＋-al（〜に関する）。	時間・数量
 semester	名	3	学期（主に2学期制の）	The spring semester begins next week.	春学期は来週始まる。	ラテン語 sex（6）＋mensis（月）から「6か月」を表し、学期の意味になった。	教育
 sensation	名	pre2	感覚・大評判	The cold water caused a sharp sensation in my hand.	冷たい水で手に鋭い感覚が走った。	ラテン語 sentire（感じる）をもとに、感覚や強い反響を表す名詞になった。	心理
-sensory	形	pre1	感覚の・知覚の	The exhibit offers a rich sensory experience.	その展示は豊かな感覚体験を提供する。	ラテン語 sentire（感じる）につながる sense に、形容詞を作る -ory が付いた語。	心理
+sensory	形	2	感覚の・知覚の	The exhibit offers a rich sensory experience.	その展示は豊かな感覚体験を提供する。	ラテン語 sentire（感じる）につながる sense に、形容詞を作る -ory が付いた語。	心理
 session	名	pre2	会合・授業時間・期間	The afternoon session starts at two.	午後の部は2時に始まる。	ラテン語 sedere（座る）から、座って行う会議や一定の活動時間を表すようになった。	社会
 seventeen	形	5	17の・17個の	Seventeen students submitted the form.	17人の生徒がその用紙を提出した。	seven（7）＋-teen（10を加えた数）の複合語。	時間・数量
 seventh	形	3	7番目の	The seventh chapter introduces the main character.	第7章で主人公が登場する。	seven（7）＋序数を作る -th。	時間・数量
 seventy	形	5	70の・70個の	The tree is about seventy years old.	その木は樹齢約70年だ。	seven（7）＋-ty（十のまとまり）から「7つの十」を表す。	時間・数量
-sewage	名	pre1	下水・汚水	The new plant treats sewage before it reaches the river.	新しい施設は下水が川へ流れ込む前に処理する。	sewer（下水管）をもとに、そこを流れる廃水を表す語として作られた。	環境
-shoot	動	pre2	撃つ・撮影する・芽を出す	They will shoot the final scene tomorrow.	彼らは明日最後の場面を撮影する。	古英語 sceotan（放つ）から、矢を放つことや映像を撮ることへ意味が広がった。	動作・行為
+sewage	名	2	下水・汚水	The new plant treats sewage before it reaches the river.	新しい施設は下水が川へ流れ込む前に処理する。	sewer（下水管）をもとに、そこを流れる廃水を表す語として作られた。	環境
+shoot	動	3	撃つ・撮影する・芽を出す	They will shoot the final scene tomorrow.	彼らは明日最後の場面を撮影する。	古英語 sceotan（放つ）から、矢を放つことや映像を撮ることへ意味が広がった。	動作・行為
 shopping	名	4	買い物	We did the weekly shopping after lunch.	私たちは昼食後に週の買い物をした。	shop（買い物をする）＋-ing から、買い物という活動を表す。	食・生活
 shorts	名	3	半ズボン	He wore shorts for the summer hike.	彼は夏のハイキングに半ズボンをはいた。	short（短い）から作られ、左右二つの脚部を持つ衣服なので複数形で使う。	食・生活
-shut	動	pre2	閉める・閉まる	Please shut the gate after you enter.	入った後で門を閉めてください。	古英語 scyttan（閉じる・締める）にさかのぼる動詞。	動作・行為
+shut	動	3	閉める・閉まる	Please shut the gate after you enter.	入った後で門を閉めてください。	古英語 scyttan（閉じる・締める）にさかのぼる動詞。	動作・行為
 sight	名	3	視力・光景・見ること	The mountain was an impressive sight at sunrise.	日の出の山は印象的な光景だった。	see と同じゲルマン系の語族に属し、見る能力や見えるものを表す。	一般
 signature	名	2	署名・特徴的なしるし	Please add your signature at the bottom of the form.	用紙の下部に署名を加えてください。	ラテン語 signare（印を付ける）をもとに、本人を示す署名を表す。	コミュニケーション
 silver	名	3	銀・銀色	The old coin is made of silver.	その古い硬貨は銀でできている。	古英語 seolfor にさかのぼるゲルマン系の語。	自然
@@ -53,7 +53,7 @@ ski	動	5	スキーをする	They ski in the mountains every winter.	彼らは�
 smartphone	名	3	スマートフォン	My smartphone can translate the sign.	私のスマートフォンはその標識を翻訳できる。	smart（高機能な）＋phone（電話）の複合語。	情報
 smoke	名	3	煙	Smoke rose from the kitchen window.	台所の窓から煙が上がった。	古英語 smoca にさかのぼるゲルマン系の基本語。	自然
 social studies	名	4	社会科	We learned about local government in social studies.	社会科で地方自治について学んだ。	social（社会の）＋studies（学習分野）の複合的な教科名。	教育	/ˌsoʊʃəl ˈstʌdiz/
-sociology	名	pre1	社会学	Sociology examines how groups and institutions work.	社会学は集団や制度の働きを研究する。	ラテン語 socius（仲間・社会）＋ギリシャ語 -logy（学問）からできた語。	学問
+sociology	名	2	社会学	Sociology examines how groups and institutions work.	社会学は集団や制度の働きを研究する。	ラテン語 socius（仲間・社会）＋ギリシャ語 -logy（学問）からできた語。	学問
 socks	名	4	靴下	These socks are warm enough for winter.	この靴下は冬にも十分暖かい。	sock（靴下）の複数形。語源はラテン語 soccus（軽い履物）にさかのぼる。	食・生活
 sofa	名	4	ソファー	The cat is sleeping on the sofa.	猫はソファーの上で眠っている。	アラビア語 suffa（長い座席）をトルコ語・フランス語を経て取り入れた語。	食・生活
 softball	名	5	ソフトボール	Our school has a girls' softball team.	私たちの学校には女子ソフトボールチームがある。	soft（柔らかい）＋ball（球）の複合語で、野球から発達した競技名。	スポーツ
@@ -62,7 +62,7 @@ sore	形	pre2	痛い・ひりひりする	My legs were sore after the long climb
 spaghetti	名	5	スパゲッティ	We cooked spaghetti with tomato sauce.	私たちはトマトソースのスパゲッティを作った。	イタリア語 spaghetto（細いひも）の複数形 spaghetti を英語が取り入れた。	料理
 speaker	名	3	話し手・スピーカー	The first speaker described the problem clearly.	最初の話し手は問題を明確に説明した。	speak（話す）＋人・装置を表す -er。	コミュニケーション
 specialize	動	pre2	専門にする・特化する	The clinic specializes in sports injuries.	その診療所はスポーツ外傷を専門にしている。	special（特別な・専門の）＋動詞を作る -ize。	ビジネス
-specimen	名	pre1	標本・検体・見本	The scientist examined the specimen under a microscope.	科学者は顕微鏡でその標本を調べた。	ラテン語 specere（見る）に関係し、「観察のために示された見本」を表す。	科学
+specimen	名	2	標本・検体・見本	The scientist examined the specimen under a microscope.	科学者は顕微鏡でその標本を調べた。	ラテン語 specere（見る）に関係し、「観察のために示された見本」を表す。	科学
 spin	動	pre2	回転する・紡ぐ	The wheel began to spin faster.	車輪はさらに速く回り始めた。	古英語 spinnan（糸を紡ぐ）から、回転する動作全般へ意味が広がった。	動作・行為
 stake	名	2	利害関係・掛け金・杭	Local residents have a stake in the decision.	地域住民はその決定に利害関係を持つ。	杭を表す古英語 staca から、賭けで置く物や危険にさらす価値へ意味が広がった。	経済
 stationery	名	4	文房具	The shop sells notebooks and other stationery.	その店はノートなどの文房具を売っている。	stationer（定まった店を持つ書籍商）から発達した語。stationary（動かない）と綴りを区別する。	教育
@@ -74,20 +74,20 @@ sum	名	pre2	合計・総和	The sum of these three numbers is twenty.	この三
 sunrise	名	4	日の出	We reached the beach before sunrise.	私たちは日の出前に海岸へ着いた。	sun（太陽）＋rise（昇ること）の複合語。	自然
 sunshine	名	4	日光・晴天	Warm sunshine filled the room.	暖かな日光が部屋を満たした。	sun（太陽）＋shine（輝き）の複合語。	自然
 super	形	3	すばらしい・非常に優れた	You did a super job on the model.	その模型で本当にすばらしい仕事をしたね。	ラテン語 super（上に・超えて）から、口語で「並外れてよい」を表すようになった。	様子・程度
-surf	動	pre2	波乗りをする・ウェブを見て回る	They surf near the south beach in summer.	彼らは夏に南の海岸近くでサーフィンをする。	surf（砕ける波）から波に乗る動詞ができ、情報の波を渡る比喩でウェブ閲覧にも広がった。	スポーツ
+surf	動	3	波乗りをする・ウェブを見て回る	They surf near the south beach in summer.	彼らは夏に南の海岸近くでサーフィンをする。	surf（砕ける波）から波に乗る動詞ができ、情報の波を渡る比喩でウェブ閲覧にも広がった。	スポーツ
 surprised	形	5	驚いた	I was surprised by the sudden announcement.	私は突然の発表に驚いた。	surprise（驚かせる）の過去分詞が形容詞化し、驚きを感じる人の状態を表す。	心理
 surprising	形	4	驚くべき・意外な	The experiment produced a surprising result.	その実験は意外な結果を生んだ。	surprise（驚かせる）＋-ing から、驚きを起こす物事の性質を表す。	性質・状態
 surprisingly	副	3	驚いたことに・意外にも	Surprisingly, the simple method worked best.	意外にも、単純な方法が最もよく働いた。	surprising（驚くべき）＋副詞を作る -ly。	副詞
-sweatshop	名	pre1	劣悪な労働条件の工場	The report exposed unsafe conditions in a sweatshop.	その報告書は劣悪な工場の危険な状態を明らかにした。	sweat（過酷に働くこと）＋shop（作業場）から、低賃金で劣悪な職場を表す。	社会
+sweatshop	名	2	劣悪な労働条件の工場	The report exposed unsafe conditions in a sweatshop.	その報告書は劣悪な工場の危険な状態を明らかにした。	sweat（過酷に働くこと）＋shop（作業場）から、低賃金で劣悪な職場を表す。	社会
 swimming	名	4	水泳	Swimming is part of our summer program.	水泳は私たちの夏季プログラムの一部だ。	swim（泳ぐ）＋-ing から、泳ぐ活動や競技を表す。	スポーツ
-symbol	名	pre2	象徴・記号	The dove is often used as a symbol of peace.	ハトはしばしば平和の象徴として使われる。	ギリシャ語 symbolon（合わせて確認するしるし）から、意味を表す記号を指すようになった。	コミュニケーション
+symbol	名	3	象徴・記号	The dove is often used as a symbol of peace.	ハトはしばしば平和の象徴として使われる。	ギリシャ語 symbolon（合わせて確認するしるし）から、意味を表す記号を指すようになった。	コミュニケーション
 symmetry	名	2	対称・釣り合い	The building's symmetry gives it a calm appearance.	その建物の対称性が落ち着いた外観を与えている。	ギリシャ語 syn-（一緒に）＋metron（尺度）から、「同じ尺度で釣り合うこと」を表す。	数学
 syndrome	名	pre2	症候群・一連の兆候	The syndrome can affect sleep and memory.	その症候群は睡眠と記憶に影響することがある。	ギリシャ語 syn-（一緒に）＋dromos（走ること）から、共に現れる症状の組を表す。	医学
 table tennis	名	5	卓球	We play table tennis after school.	私たちは放課後に卓球をする。	table（台）＋tennis（テニス）の複合競技名。	スポーツ	/ˈteɪbəl ˌtenɪs/
 technique	名	pre2	技法・技術	The coach taught us a safer climbing technique.	コーチは私たちにより安全な登り方を教えた。	ギリシャ語 tekhne（技術・技）をフランス語 technique を経て取り入れた。	技術
 telephone	名	4	電話	The telephone rang during dinner.	夕食中に電話が鳴った。	ギリシャ語 tele-（遠く）＋phone（音・声）から、「遠くへ声を伝えるもの」を表す。	技術
 tenth	形	3	10番目の	The tenth page contains the answer key.	10ページ目に解答が載っている。	ten（10）＋序数を作る -th。	時間・数量
-textile	名	pre1	織物・繊維製品	The region is known for its textile industry.	その地域は繊維産業で知られている。	ラテン語 texere（織る）から、織って作る布やその産業を表す。	ビジネス
+textile	名	2	織物・繊維製品	The region is known for its textile industry.	その地域は繊維産業で知られている。	ラテン語 texere（織る）から、織って作る布やその産業を表す。	ビジネス
 texture	名	2	手触り・質感・構造	The bread has a soft, light texture.	そのパンは柔らかく軽い食感だ。	ラテン語 texere（織る）から、織り目のような表面や構造を表すようになった。	性質・状態
 Thailand	名	4	タイ	Thailand is located in Southeast Asia.	タイは東南アジアに位置する。	Thai（タイ人・自由な人を表す民族名）＋land（土地）の英語形。	地理
 the U.K.	名	4	イギリス・英国	The U.K. consists of four constituent countries.	英国は四つの構成国から成る。	United Kingdom（連合王国）の頭文字を取った略称で、定冠詞 the を伴う。	地理	/ðə ˌjuː ˈkeɪ/
@@ -109,7 +109,7 @@ topping	名	4	上に載せる具・トッピング	Fresh fruit makes a good yogu
 transplant	動	2	移植する・移し植える	Doctors transplanted healthy tissue to the damaged area.	医師たちは損傷部へ健康な組織を移植した。	trans-（越えて）＋plant（植える）から、別の場所へ植え替えることを表す。	医学
 trap	名	pre2	わな・苦境	The animal escaped from the trap.	その動物はわなから逃げた。	古英語系または古ノルド語系の「踏む仕掛け」に関係し、逃げにくい状況へ意味が広がった。	一般
 trouble	名	4	問題・困難・心配	We had trouble finding the correct entrance.	私たちは正しい入口を見つけるのに苦労した。	ラテン語 turbidus（濁った）につながる古フランス語 troubler（かき乱す）から。	心理
-tumor	名	pre1	腫瘍・腫れ	The scan revealed a small benign tumor.	検査画像で小さな良性腫瘍が見つかった。	ラテン語 tumere（腫れる）から、組織の異常な腫れを表す医学語になった。	医学
+tumor	名	2	腫瘍・腫れ	The scan revealed a small benign tumor.	検査画像で小さな良性腫瘍が見つかった。	ラテン語 tumere（腫れる）から、組織の異常な腫れを表す医学語になった。	医学
 tweet	名	2	短い投稿・鳥のさえずり	Her tweet linked to the full research report.	彼女の短い投稿には研究報告全文へのリンクがあった。	小鳥の鳴き声をまねた語から、短文投稿サービス上の投稿名へ転用された。	メディア
 twelfth	形	3	12番目の	The twelfth lesson reviews the whole unit.	第12課は単元全体を復習する。	twelve（12）の ve が f に変化し、序数を作る -th が付いた形。	時間・数量
 twentieth	形	3	20番目の	The bridge was built in the twentieth century.	その橋は20世紀に建てられた。	twenty（20）の y を ie に変えて序数を作る -th を付けた形。	時間・数量
@@ -117,7 +117,7 @@ undergraduate	名	pre2	大学学部生	Each undergraduate chooses a research sem
 unexpected	形	pre2	予期しない・意外な	An unexpected delay changed our schedule.	予期しない遅れで予定が変わった。	un-（否定）＋expected（予期された）から、「予期されていない」を表す。	性質・状態
 unicycle	名	5	一輪車	She can ride the unicycle across the playground.	彼女は校庭を一輪車で走れる。	uni-（一つ）＋cycle（車輪を持つ乗り物）から、「車輪が一つの乗り物」を表す。	交通
 unify	動	2	統一する・一つにする	The new signs unify the design of the station.	新しい標識が駅のデザインを統一している。	ラテン語 unus（一つ）をもとにした uni-＋-fy（〜にする）から、「一つにする」を表す。	動作・行為
-unprecedented	形	pre1	前例のない	The region experienced unprecedented rainfall.	その地域は前例のない降雨を経験した。	un-（否定）＋precedent（前例）＋-ed から、「先に例がない」を表す。	性質・状態
+unprecedented	形	2	前例のない	The region experienced unprecedented rainfall.	その地域は前例のない降雨を経験した。	un-（否定）＋precedent（前例）＋-ed から、「先に例がない」を表す。	性質・状態
 used	形	3	中古の・使われた・慣れている	We bought a used bicycle in good condition.	私たちは状態のよい中古自転車を買った。	use（使う）の過去分詞から、「すでに使われた」や be used to の「慣れた」を表す。	性質・状態
 versus	前	2	〜対〜・〜と比較して	The debate examined cost versus safety.	その討論は費用と安全性を比較検討した。	ラテン語 versus（〜の方へ）から、法廷の「〜に対して」を経て対立・比較を表す。	機能語
 vet	名	4	獣医	The vet examined our dog this morning.	獣医は今朝私たちの犬を診察した。	veterinarian を短くした口語形。	医学

@@ -81,7 +81,7 @@ test('既存語源パック・語源補完・補完語・同じつづりの別�
   const completion = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
   const curriculum1900 = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
   const homograph = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('homograph:'))
-  assert.equal(legacy.length, 2712)
+  assert.equal(legacy.length, 2700)
   assert.ok(completion.length > 0)
   assert.ok(curriculum1900.length > 0)
   assert.ok(homograph.length > 0)

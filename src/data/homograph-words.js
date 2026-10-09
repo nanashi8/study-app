@@ -40,7 +40,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
     pos: '動', level: '5', field: '機能語',
     meaning: '〜してよい・〜かもしれない',
     example: Object.freeze({ en: 'May I use your pen?', ja: 'ペンを使ってもいいですか。' }),
-    phraseIds: Object.freeze(['curr1900_idm_2_may_well_do', 'curr_idm_1_be_that_as_it_may', 'curr_idm_1_come_what_may']),
+    phraseIds: Object.freeze(['curr1900_idm_2_may_well_do', 'curr_idm_1_be_that_as_it_may', 'curr_idm_1_come_what_may', 'jr_idm_may_i_blank']),
     etymology: Object.freeze({ note: '古英語 magan(〜できる)から。月名の May(ローマ女神 Maia)とは別の語で、つづりが同じになっただけ。can・must と同じ助動詞の仲間。' }),
   }),
   Object.freeze({
@@ -225,7 +225,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
   }),
   Object.freeze({
     id: 'shed_2', word: 'shed', homographOf: 'shed',
-    pos: '動', level: 'pre1', field: '動作・行為',
+    pos: '動', level: '2', field: '動作・行為',
     meaning: '脱ぎ捨てる・(涙を)流す・(光を)当てる',
     example: Object.freeze({ en: 'The snake sheds its skin every year.', ja: 'そのヘビは毎年皮を脱ぎ捨てる。' }),
     phraseIds: Object.freeze(['exam_idm_shed_light_on']),
@@ -503,7 +503,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
   }),
   Object.freeze({
     id: 'peer_2', word: 'peer', homographOf: 'peer',
-    pos: '名', level: 'pre1', field: '社会',
+    pos: '名', level: '2', field: '社会',
     meaning: '仲間・同等の人・同僚',
     example: Object.freeze({ en: 'Teenagers are often influenced by their peers.', ja: '十代の若者はよく仲間の影響を受ける。' }),
     usage: '年齢・立場・能力が同じくらいの人を指す。peer pressure（仲間からの圧力）の形でもよく使う。「目を凝らして見る」の peer とは同じつづりの別の語。',
@@ -511,7 +511,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
   }),
   Object.freeze({
     id: 'utter_2', word: 'utter', homographOf: 'utter',
-    pos: '形', level: 'pre1', field: '性質・状態',
+    pos: '形', level: '2', field: '性質・状態',
     meaning: '全くの・完全な',
     example: Object.freeze({ en: 'The party was an utter failure.', ja: 'そのパーティーは完全な失敗だった。' }),
     usage: '名詞の前だけで使い、失敗・混乱などよくないことを強めることが多い。「口に出す」の utter とは同じつづりの別の語。',

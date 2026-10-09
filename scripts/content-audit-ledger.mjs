@@ -97,7 +97,7 @@ const GATE_CATALOG = Object.freeze({
   },
   idiomForms: {
     command: 'npm run audit:idiom-forms',
-    coverage: '全1,754熟語の同形分類、比較相手、〜 up・〜 at・〜 with・be 〜 at の全件抽出',
+    coverage: '全1,909熟語の同形分類、比較相手、〜 up・〜 at・〜 with・be 〜 at の全件抽出',
   },
   curriculum1900: {
     command: 'npm run audit:curriculum-1900',

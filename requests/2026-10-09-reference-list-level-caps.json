@@ -1,0 +1,79 @@
+{
+  "id": "2026-10-09-reference-list-level-caps",
+  "title": "4つの語彙の一覧の単語・熟語の級を、高校の一覧は2級以下・中学の一覧は3級以下の適切な級に見直す",
+  "asked": [
+    "（添付：Excel ファイル1件）添付ファイルは、このプロジェクトのコンテンツを作成する時に参考にしたが、級が高く設定されて学習できない懸念があるため、次のとおり該当単語や熟語を見直してください。\n添付ファイルの高校英単語1900シートの単語は、2級以下の適切な級に見直してください。\n添付ファイルの高校英熟語1000シートの熟語は、2級以下の適切な級に見直してください。\n添付ファイルの中学英単語1800シートの単語は、3級以下の適切な級に見直してください。\n添付ファイルの中学英熟語400シートの熟語は、3級以下の適切な級に見直してください。",
+    "（質問「中学英熟語400シートのうち156行はアプリに熟語カードがありません。どうしますか？」への答え）全156件を熟語として足す（3級以下の適切な級で、意味・例文・成り立ち・注意書きをそろえた熟語カードを1件ずつ作って足す）"
+  ],
+  "sessions": [
+    "81128d94-3d6e-4c08-8a1b-494f373d0ef5"
+  ],
+  "status": "open",
+  "notes": "一覧の中身は公開リポジトリに名前や語の並びとして書かない（外部資料への言及の決まり）。行ごとの照合は、行の文字列の SHA-256（先頭16桁）と、その行が指すアプリの見出しの id・上限の級だけを scripts/data/level-cap-lists.js に持つ。2026-10-09 の照合：高校の単語 1,900行・高校の熟語 1,000行・中学の単語 1,784行（番号1800のうち16行は空）・中学の熟語 400行。上限を超える見出しは、同じつづりの別の語を含めて延べ950件。",
+  "criteria": [
+    {
+      "id": "rows-resolved",
+      "text": "4つの一覧の全行を、アプリの見出し（単語・熟語）のどれを指すかに1件ずつ結び付ける。同じつづりの別の語があるときは、一覧が指す意味の見出しを読んで選ぶ。アプリに無い行は「無い」と書く",
+      "population": "4つの一覧の全行（高校の単語1,900・高校の熟語1,000・中学の単語1,784・中学の熟語400、計5,084行）",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "5,084行中5,084行を結び付けた（高校の単語1,900・高校の熟語1,000・中学の単語1,784・中学の熟語400）。同じつづりの別の語がある行は意味で選んだ（高校の tend・found・host・peer・shed・sole・utter・refrain・converse・toll・stern・mold・row・file、中学の bear・mean・sound・tear・host など）。照合の取り違え（enjoy ~ing→enjoy oneself、take A to B→take to、put A in B→put in、中学の come to→上級義の come to）は外し、つづり誤り（mil・stat・repot・sever→severe・look forwartd to・millionsof）は正しい語に結んだ。アプリに見出しが無い行は中学の熟語の156行だけで、missing-rows で足した。"
+    },
+    {
+      "id": "high-school-words-cap-2",
+      "text": "高校の単語の一覧の単語は、すべて2級以下（2級・準2級・3級・4級・5級）",
+      "population": "高校の単語の一覧の全1,900行が指すアプリの見出し語",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,900行が指す見出し語のうち2級より上は0件（直す前は384語：準1級382・1級2）。"
+    },
+    {
+      "id": "high-school-phrases-cap-2",
+      "text": "高校の熟語の一覧の熟語は、すべて2級以下",
+      "population": "高校の熟語の一覧の全1,000行が指すアプリの熟語・構文",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,000行が指す熟語・構文のうち2級より上は0件（直す前は285件：準1級227・1級58）。"
+    },
+    {
+      "id": "junior-words-cap-3",
+      "text": "中学の単語の一覧の単語（熟語の行を含む）は、すべて3級以下（3級・4級・5級）",
+      "population": "中学の単語の一覧の全1,784行が指すアプリの見出し語・熟語",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,784行が指す見出し語・熟語のうち3級より上は0件（直す前は224件：単語196〈準2級152・2級33・準1級11〉、熟語の行28〈準2級17・2級9・準1級2〉）。"
+    },
+    {
+      "id": "junior-phrases-cap-3",
+      "text": "中学の熟語の一覧の熟語は、すべて3級以下",
+      "population": "中学の熟語の一覧の全400行（アプリに無い行は missing-rows で扱う）",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "400行が指す熟語のうち3級より上は0件（もとからあった熟語で直す前に3級より上だったのは46件：準2級37・2級7・準1級2）。足した155件もすべて3級以下。"
+    },
+    {
+      "id": "missing-rows",
+      "text": "一覧の行のうちアプリに見出しが無いもの（中学の熟語の156行）を、すべて熟語カードとして足す。級は3級以下で1件ずつ決め、意味・例文（英・和）・成り立ち・注意書きを行ごとに書く",
+      "population": "4つの一覧の全行のうち、アプリのどの見出しにも結び付かなかった行（中学の熟語 156行）",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "156行中156行を熟語カード155件にした（What to ~ ? と what to は同じ what to do）。級は5級13・4級70・3級72。全件に意味・例文（英・和）・成り立ち・注意書き。日本語の見直し・例文の意味・熟語のつながり・品詞・重複の台帳も読んで記録した。"
+    },
+    {
+      "id": "levels-chosen-per-item",
+      "text": "級を下げた見出しは、上限に一律にそろえず、1件ずつ読んで適切な級を決め、決めた級を台帳に残す",
+      "population": "上限を超えていた見出しのすべて",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "上限を超えていた921件（単語578・熟語343）を1件ずつ決めた。上限の級にしたもの835件、上限より下に置いたもの86件（高校の単語28語・熟語44件は準2級、中学の単語12語・熟語2件は4級）。決めた級は scripts/data/level-cap-review.js に元の級と並べて残した。"
+    },
+    {
+      "id": "all-screens-and-gates",
+      "text": "変えた級が、単語・熟語の暗記カード・テスト・辞書ページ・一覧・級ごとの数・出題に同じく出る。級の検査・固定の数・監査台帳がすべて通る",
+      "population": "級を読む全画面とデータ（ALL_WORDS・PHRASES を読むもの）と npm run audit:all-content",
+      "check": "npm run audit:all-content",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone での npm run audit:all-content と、公開版（GitHub Pages）での表示の確認"
+    }
+  ]
+}

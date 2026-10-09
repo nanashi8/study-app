@@ -8,10 +8,12 @@
 //   origin           … 成り立ち（動詞＋前置詞/副詞 などの部品の意味から意味を導く＝単語の語源にあたる）
 //   note             … 使い方・文法上の注意
 import { EXAM_PHRASES } from './phrases-exam.js'
-import { PHRASE_LEVEL_TARGETS } from './phrase-curriculum.js'
+import { GRAMMAR_SYNTAX_GENERATION_TARGETS } from './phrase-curriculum.js'
 import { CURRICULUM_IDIOMS } from './phrases-bank.js'
 import { CURRICULUM_1900_IDIOMS } from './phrases-curriculum-1900.js'
+import { JUNIOR_CORE_PHRASES } from './phrases-junior-core.js'
 import { buildGrammarSyntaxPhrases } from './phrases-grammar.js'
+import { PHRASE_LEVEL_OVERRIDE } from './phrase-levels-override.js'
 
 const CORE_PHRASES = [
   // ═══════════ 熟語 idiom ═══════════
@@ -391,12 +393,13 @@ const PHRASES_BEFORE_GRAMMAR = [
   ...EXAM_PHRASES,
   ...CURRICULUM_IDIOMS,
   ...CURRICULUM_1900_IDIOMS,
+  ...JUNIOR_CORE_PHRASES,
 ]
 
 const syntaxNeedsByLevel = Object.fromEntries(
-  Object.entries(PHRASE_LEVEL_TARGETS).map(([level, target]) => [
+  Object.entries(GRAMMAR_SYNTAX_GENERATION_TARGETS).map(([level, target]) => [
     level,
-    target.syntax -
+    target -
       PHRASES_BEFORE_GRAMMAR.filter(
         (phrase) => phrase.level === level && phrase.kind === 'syntax',
       ).length,
@@ -408,7 +411,13 @@ const GRAMMAR_SYNTAX_PHRASES = buildGrammarSyntaxPhrases({
   excludedHeads: PHRASES_BEFORE_GRAMMAR.map((phrase) => phrase.phrase),
 })
 
-export const PHRASES = [...PHRASES_BEFORE_GRAMMAR, ...GRAMMAR_SYNTAX_PHRASES]
+// 級の上書き（phrase-levels-override.js）は、構文カードの組を元の級で決めたあとに当てる。
+const withLevelOverride = (phrase) => {
+  const level = PHRASE_LEVEL_OVERRIDE[phrase.id]
+  return level && level !== phrase.level ? { ...phrase, level } : phrase
+}
+
+export const PHRASES = [...PHRASES_BEFORE_GRAMMAR, ...GRAMMAR_SYNTAX_PHRASES].map(withLevelOverride)
 
 export const PHRASES_BY_ID = Object.fromEntries(PHRASES.map((p) => [p.id, p]))
 export const getPhrase = (id) => PHRASES_BY_ID[id]

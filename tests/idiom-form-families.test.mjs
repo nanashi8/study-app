@@ -24,9 +24,9 @@ const tokensFor = (item) => String(item?.phrase ?? '')
   .match(/[a-z]+(?:'[a-z]+)?/gi)
   ?.map((token) => token.toLowerCase()) ?? []
 
-test('全1,754熟語を同形グループへ分類し、選択欄の7区分から全組を選べる', () => {
-  assert.equal(idioms.length, 1754)
-  assert.equal(IDIOM_FORM_FAMILIES.length, 136)
+test('全1,909熟語を同形グループへ分類し、選択欄の7区分から全組を選べる', () => {
+  assert.equal(idioms.length, 1909)
+  assert.equal(IDIOM_FORM_FAMILIES.length, 137)
   assert.equal(IDIOM_FORM_FAMILY_SECTIONS.length, 7)
 
   assert.equal(
@@ -57,9 +57,9 @@ test('全1,754熟語を同形グループへ分類し、選択欄の7区分か�
 
 test('〜 up・〜 at・〜 with・be 〜 at は全熟語から末尾の形を漏れなく抽出する', () => {
   const expected = [
-    ['ending-up', '〜 up', 47, (tokens) => tokens.at(-1) === 'up'],
-    ['ending-at', '〜 at', 13, (tokens) => tokens.at(-1) === 'at'],
-    ['ending-with', '〜 with', 88, (tokens) => tokens.at(-1) === 'with'],
+    ['ending-up', '〜 up', 48, (tokens) => tokens.at(-1) === 'up'],
+    ['ending-at', '〜 at', 15, (tokens) => tokens.at(-1) === 'at'],
+    ['ending-with', '〜 with', 91, (tokens) => tokens.at(-1) === 'with'],
     ['be-prep-at', 'be 〜 at', 3, (tokens) => tokens[0] === 'be' && tokens.at(-1) === 'at'],
   ]
   assert.deepEqual(FEATURED_IDIOM_FORM_FAMILY_IDS, expected.map(([id]) => id))

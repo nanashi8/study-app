@@ -3,7 +3,7 @@
 //   英単語を1回のカード数を100で10問中10問未習からの出題で英検準1級を暗記していたところ、途中から自動で次の単語に
 //   進まなくなる不具合が発生したので、原因を究明して、同様の不具合が発生しないようにしなさい。
 //
-// ・capacity-all-content：全教材20,337項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ。
+// ・capacity-all-content：全教材20,492項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ。
 // ・migrate-local-storage：前の版が localStorage に残した記録を、読み直したときにそのまま引き継ぐ（前の版の読み戻しと全欄が一致）。
 // ・user-scenario：localStorage がいっぱいの端末で、準1級・100枚・未修だけの暗記を100枚とも進め、記録が読み直しても残る。
 // ・save-failure-notice：保存できない端末（IndexedDB なし・localStorage いっぱい）で知らせが出て、カードは進み、空いたら消える。
@@ -125,10 +125,10 @@ const FILL_LOCAL_STORAGE = () => {
   return used
 }
 
-test('全教材20,337項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ記録が戻る', async () => {
+test('全教材20,492項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ記録が戻る', async () => {
   const { state, itemCount, counts } = buildFullLearningState()
   assert.equal(LEARNING_CONTENTS.length, 24)
-  assert.equal(itemCount, 20337)
+  assert.equal(itemCount, 20492)
   const text = JSON.stringify({ state, version: 11 })
 
   const { context, page, errors } = await openPhone()

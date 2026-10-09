@@ -26,13 +26,13 @@ test('リスニングは160問を保持し、音声選択肢を番号で区別�
   assert.match(quiz, /playsUsed === 0[\s\S]*'問題を再生する'/)
 })
 
-test('熟語・構文は全2,104項目を級別内訳まで表示する', () => {
+test('熟語・構文は全2,259項目を級別内訳まで表示する', () => {
   const phrases = read('../src/screens/Phrases.jsx')
   const idioms = PHRASES.filter((item) => item.kind === 'idiom')
   const syntax = PHRASES.filter((item) => item.kind === 'syntax')
 
-  assert.equal(PHRASES.length, 2104)
-  assert.equal(idioms.length, 1754)
+  assert.equal(PHRASES.length, 2259)
+  assert.equal(idioms.length, 1909)
   assert.equal(syntax.length, 350)
   assert.match(phrases, /data-phrase-corpus-summary/)
   assert.match(phrases, /data-phrase-level-table/)

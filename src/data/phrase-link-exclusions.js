@@ -7,6 +7,7 @@ export const PHRASE_LINK_EXCLUDED = Object.freeze({
   'bee|curr_idm_2_come_into_being': 'being は bee（ハチ）の変化形ではなく be の -ing 形',
   'bee|curr_idm_pre1_for_the_time_being': 'being は bee（ハチ）の変化形ではなく be の -ing 形',
   'be|curr_idm_5_go_to_bed': 'bed（ベッド）は be の変化形ではなく別の語',
+  'be|jr_idm_in_bed': 'bed（ベッド）は be の変化形ではなく別の語',
   'even|curr_idm_5_in_the_evening': 'evening（夕方）は even の変化形ではない別の語',
   'fee|curr1900_idm_2_feed_on': 'feed（食べさせる）は fee（料金）の変化形ではない別の語',
   'mean|curr_idm_2_by_all_means': 'means（手段）は mean（意味する）の変化形ではなく別の語で、means のカードに出る',

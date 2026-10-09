@@ -361,6 +361,11 @@ export const OTHER_PAIRS = {
   'usage:curr1900_idm_pre2_remember_doing|curr1900_idm_pre2_remember_to_do': diff('pattern', '「remember doing（～したことを覚えている）」と「remember to do（忘れずに～する）」'),
   'usage:curr_idm_5_after_school|curr_syn_gr_auto_5_wh_001': diff('pattern', '疑問詞の構文の例文の中に after school が出るだけ'),
   'usage:curr_idm_2_in_practice|curr_syn_gr_auto_2_partial_negation_001': diff('pattern', '部分否定の構文の例文の中に in practice が出るだけ'),
+  'usage:curr_idm_2_take_to|jr_idm_take_a_to_b': diff('pattern', '「take to（～を好きになる）」と「take A to B（AをBに連れて行く）」で意味が違う'),
+  'usage:curr1900_idm_3_enjoy_oneself|jr_idm_enjoy_doing': diff('pattern', '「enjoy oneself（楽しく過ごす）」と「enjoy doing（～して楽しむ）」'),
+  'usage:curr1900_idm_2_put_in|jr_idm_put_a_in_b': diff('pattern', '「put in（提出する・注ぎ込む）」と「put A in B（AをBに入れる）」で意味が違う'),
+  'usage:jr_idm_try_doing|jr_idm_try_to_do': diff('pattern', '「try doing（試しに～してみる）」と「try to do（～しようとする）」'),
+  'usage:jr_idm_what_a_blank|jr_idm_what_to_do': diff('pattern', '感嘆文の「What a ～!（なんて～なのだろう）」と「what to do（何を～すればよいか）」'),
   // ── 英文法 ──
   'grammar:gr_pre2_pron_3|gr_unit_us_pre2_pronoun_02': dup('同じ問題（「;」と「.」だけ違う）を2つ登録。どちらも準2級・代名詞で、選択肢も答え（the other）も同じ。一方は文法の参考書の単元の問題'),
   'grammar:gr_unit_wo_4_pronoun_02|gr_unit_wo_pre2_pronoun_01': dup('同じ並べ替えの問題（One is white and the other is black.、読点だけ違う）を4級と準2級の代名詞の単元に登録。解説も同じ'),

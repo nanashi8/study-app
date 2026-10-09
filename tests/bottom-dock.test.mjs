@@ -304,9 +304,9 @@ test('例文を読み上げない：単語を発音しないカードと辞書�
     }
   }
   assert.equal(ALL_WORDS.length, 8929)
-  assert.equal(PHRASES.length, 2104)
+  assert.equal(PHRASES.length, 2259)
   assert.equal(silentHeads, 103)
-  assert.equal(checked, (8929 + 2104) * 12)
+  assert.equal(checked, (8929 + 2259) * 12)
   // 使い方で発音が変わる語は、台帳の全語で例文も読まない。
   for (const word of ALL_WORDS.filter((item) => heteronymFor(item))) assert.equal(exampleSpeechAllowed(word), false, word.id)
 

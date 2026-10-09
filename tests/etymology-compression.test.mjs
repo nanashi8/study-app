@@ -174,7 +174,7 @@ test('複合語を経由した別の構成語を、同じ学習カードへ連�
     ['family:work:work', 'art'],
     ['family:out:out', 'line'],
     ['family:ship:ship', 'war'],
-    ['family:like:likewise', 'war'],
+    ['family:like:liken', 'war'],
   ]
   for (const [packId, excludedId] of cases) {
     const pack = getEtymologyPack(packId)
@@ -265,7 +265,7 @@ test('既存語源パックを固定し、2種の補完語と同じつづりの�
   const homographPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('homograph:'))
 
   assert.equal(legacyWords.length, 8216)
-  assert.equal(legacyPacks.length, 2712)
+  assert.equal(legacyPacks.length, 2700)
   assert.equal(completionWords.length, 215)
   assert.equal(curriculum1900Words.length, 420)
   assert.equal(homographWords.length, 78)

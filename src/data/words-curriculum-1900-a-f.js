@@ -22,9 +22,9 @@ antibiotic	名	pre2	抗生物質	The doctor prescribed an antibiotic for the inf
 anymore	副	3	もはや・今では	We do not use that old machine anymore.	私たちはもうその古い機械を使っていない。	any（少しでも）＋more（さらに）の結び付きで、否定文では「これ以上は」を表す。	副詞
 anyway	副	3	とにかく・それでも	The road was long, but we continued anyway.	道のりは長かったが、それでも私たちは進み続けた。	any（どのような）＋way（道・方法）から、「どの道にしても」の意味になった。	副詞
 anywhere	副	3	どこかに・どこへでも	You can sit anywhere in this room.	この部屋ではどこに座ってもかまいません。	any（どの〜でも）＋where（場所）の複合語。	副詞
-apologize	動	pre2	謝る	You should apologize for the mistake.	その間違いについて謝るべきです。	ギリシャ語 apologia（弁明）をもとにした apology に、動詞を作る -ize が付いた語。	コミュニケーション
+apologize	動	3	謝る	You should apologize for the mistake.	その間違いについて謝るべきです。	ギリシャ語 apologia（弁明）をもとにした apology に、動詞を作る -ize が付いた語。	コミュニケーション
 April	名	5	4月	The new school year begins in April.	新しい学年は4月に始まる。	ラテン語の月名 Aprilis に由来するが、そのさらに古い語源には複数の説がある。	時間・数量
-archaeology	名	pre1	考古学	Archaeology reveals how ancient people lived.	考古学は古代の人々の暮らしを明らかにする。	ギリシャ語 archaios（古代の）＋-logy（学問）から、「古代を研究する学問」を表す。	学問
+archaeology	名	2	考古学	Archaeology reveals how ancient people lived.	考古学は古代の人々の暮らしを明らかにする。	ギリシャ語 archaios（古代の）＋-logy（学問）から、「古代を研究する学問」を表す。	学問
 arithmetic	名	2	算数・算術	Mental arithmetic helps students calculate quickly.	暗算は生徒が素早く計算するのに役立つ。	ギリシャ語 arithmos（数）からできた語で、数を扱う計算を表す。	数学
 arouse	動	2	呼び起こす・刺激する	The discovery aroused public interest.	その発見は世間の関心を呼び起こした。	a-（〜へ）＋rouse（目覚めさせる）から、感情や反応を起こす意味へ広がった。	心理
 arts and crafts	名	5	図画工作・美術工芸	We made paper animals in arts and crafts class.	図画工作の授業で紙の動物を作った。	arts（芸術活動）と crafts（手で作る工芸）を and で結んだ教科名の定型表現。	教育	/ˌɑːrts ən ˈkræfts/
@@ -53,7 +53,7 @@ biological	形	pre2	生物学の・生物由来の	The team studied biological c
 bit	名	4	少し・小片	Add a bit of salt to the sauce.	ソースに塩を少し加えてください。	bite（かむ）と同系で、もともと「かみ取った小片」を表した。情報単位は binary digit の短縮。	時間・数量
 blossom	動	2	花が咲く・発展する	Cherry trees blossom in early spring.	桜の木は春の初めに花を咲かせる。	古英語 blostm（花）に由来し、名詞から「花が開く」という動詞にもなった。	自然
 blur	動	2	ぼやけさせる・曖昧にする	Rain blurred the view through the window.	雨で窓越しの景色がぼやけた。	起源が確定していない語だが、輪郭が不鮮明になる意味で近世英語から使われる。	性質・状態
-board	名	pre2	板・掲示板・委員会	The schedule is written on the board.	予定は掲示板に書かれている。	古英語 bord（板）から、板状の物や、同じ食卓を囲む人々の会議体へ意味が広がった。	一般
+board	名	3	板・掲示板・委員会	The schedule is written on the board.	予定は掲示板に書かれている。	古英語 bord（板）から、板状の物や、同じ食卓を囲む人々の会議体へ意味が広がった。	一般
 bob	動	pre2	上下にひょいと動く	The small boat bobbed on the waves.	小舟が波の上で上下に揺れた。	短く素早い上下運動をまねた音感を持つ語と考えられている。	動作・行為
 bomb	名	3	爆弾	The police safely removed the old bomb.	警察は古い爆弾を安全に撤去した。	ギリシャ語 bombos（低く響く音）を経てイタリア語 bomba となり、爆発物を指すようになった。	軍事
 bookstore	名	4	書店	I found the dictionary at a small bookstore.	私は小さな書店でその辞書を見つけた。	book（本）＋store（店）の複合語。	ビジネス
@@ -62,7 +62,7 @@ born	形	3	生まれた	She was born in a coastal town.	彼女は海辺の町で
 bowl	名	4	ボウル・鉢	Mix the flour and eggs in a bowl.	ボウルの中で小麦粉と卵を混ぜなさい。	古英語 bolla（丸い容器）に由来する語。	食・生活
 Brazil	名	5	ブラジル	Brazil is the largest country in South America.	ブラジルは南アメリカ最大の国だ。	赤い染料を採る pau-brasil（ブラジルボク）の名から国名になった。	地理
 breathe	動	pre2	呼吸する	Breathe slowly before you begin the speech.	スピーチを始める前にゆっくり呼吸しなさい。	breath（息）から作られた動詞で、語末の e により発音も変わる。	医学
-bureau	名	pre1	事務局・案内所・たんす	The travel bureau helped us change the booking.	旅行案内所が予約変更を手伝ってくれた。	フランス語 bureau（机・事務所）から、机のある職場や行政部局を表すようになった。	社会
+bureau	名	2	事務局・案内所・たんす	The travel bureau helped us change the booking.	旅行案内所が予約変更を手伝ってくれた。	フランス語 bureau（机・事務所）から、机のある職場や行政部局を表すようになった。	社会
 burn	動	3	燃える・燃やす	Dry leaves burn quickly in strong wind.	乾いた葉は強風の中ですぐ燃える。	古英語 byrnan などにさかのぼるゲルマン系の基本動詞。	動作・行為
 bye	名	4	さようならという挨拶	She waved and said bye at the gate.	彼女は門で手を振って「さようなら」と言った。	goodbye を短くした形。goodbye は古い表現 God be with ye が変化したもの。	コミュニケーション	/ˈbaɪ/
 cabbage	名	5	キャベツ	We added cabbage to the soup.	私たちはスープにキャベツを加えた。	古フランス語 caboche（頭）と関係し、丸い頭状の野菜を指すようになった。	食・生活
@@ -83,8 +83,8 @@ click	動	pre2	クリックする・かちりと鳴る	Click the blue button to 
 clip	動	3	切り取る・切り抜く	She clipped the article from the newspaper.	彼女は新聞からその記事を切り抜いた。	古ノルド語 klippa（切る）につながる語で、切り取る意味と留め具の名詞用法を持つ。	動作・行為
 colorful	形	3	色彩豊かな・多彩な	Colorful flags decorated the street.	色鮮やかな旗が通りを飾った。	color（色）＋-ful（〜に満ちた）から、「色に満ちた」を表す。	性質・状態
 comedy	名	3	喜劇・コメディー	The comedy made the whole audience laugh.	その喜劇は観客全員を笑わせた。	ギリシャ語 komoidia（祝祭の歌・喜劇）を経て、笑いを中心とする作品を表す。	芸術
-congestion	名	pre1	混雑・うっ血	The city introduced buses to reduce traffic congestion.	その市は交通渋滞を減らすためバスを導入した。	ラテン語 con-（一緒に）＋gerere（運ぶ・集める）から、物が一か所に詰まる状態を表す。	交通
-cortex	名	pre1	皮質・外皮	The cerebral cortex processes complex information.	大脳皮質は複雑な情報を処理する。	ラテン語 cortex（樹皮・外側の層）から、器官の外層を指す専門語になった。	医学
+congestion	名	2	混雑・うっ血	The city introduced buses to reduce traffic congestion.	その市は交通渋滞を減らすためバスを導入した。	ラテン語 con-（一緒に）＋gerere（運ぶ・集める）から、物が一か所に詰まる状態を表す。	交通
+cortex	名	2	皮質・外皮	The cerebral cortex processes complex information.	大脳皮質は複雑な情報を処理する。	ラテン語 cortex（樹皮・外側の層）から、器官の外層を指す専門語になった。	医学
 counterpart	名	pre2	対応する人・物	The minister met her French counterpart.	その大臣はフランスの同職者と会談した。	counter-（対応する）＋part（役割・部分）から、別の組織で同じ役割を持つものを表す。	社会
 county	名	2	郡・州に相当する行政区	The county opened a new public library.	その郡は新しい公共図書館を開設した。	古フランス語 conte（伯爵）の領地を表す語から、行政区画の名になった。	政治
 cue	名	2	合図・きっかけ	The lights were her cue to enter the stage.	照明が彼女の舞台登場の合図だった。	舞台台本の合図を示した文字 Q と結び付ける説が有力で、演技開始の合図を表すようになった。	コミュニケーション
@@ -93,17 +93,17 @@ dad	名	4	お父さん	My dad cooks breakfast on Sundays.	私のお父さんは�
 dancing	名	4	ダンス・踊ること	Dancing is part of the school festival.	ダンスは学校祭の演目の一つだ。	dance（踊る）＋-ing から、踊る活動そのものを表す。	芸術
 dead	形	3	死んでいる・機能していない	The battery is dead, so the clock has stopped.	電池が切れて時計が止まっている。	古英語 dead にさかのぼる語で、「生命がない」から機械が動かない意味へ広がった。	性質・状態
 death	名	3	死・死亡	The story deals with life and death.	その物語は生と死を扱っている。	古英語 death にさかのぼり、dead と同じゲルマン系の語族に属する。	一般
-dementia	名	pre1	認知症	Early support can help people living with dementia.	早期支援は認知症と共に暮らす人々を助けられる。	ラテン語 de-（離れて）＋mens（心・精神）をもとにした医学語。	医学
+dementia	名	2	認知症	Early support can help people living with dementia.	早期支援は認知症と共に暮らす人々を助けられる。	ラテン語 de-（離れて）＋mens（心・精神）をもとにした医学語。	医学
 diabetes	名	pre2	糖尿病	Regular exercise can lower the risk of diabetes.	定期的な運動は糖尿病の危険を下げられる。	ギリシャ語 diabetes（通り抜けるもの）から、多量の尿が出る症状に着目して付いた医学名。	医学
 dialogue	名	pre2	対話・せりふ	The two groups began a peaceful dialogue.	二つの集団は平和的な対話を始めた。	ギリシャ語 dia-（〜を通して）＋logos（ことば）から、ことばを交わすことを表す。	コミュニケーション
-discourse	名	pre1	談話・論述	The course examines political discourse in the media.	その講座はメディアの政治的言説を分析する。	ラテン語 discurrere（あちこち走る）から、考えを展開する話や論述の意味になった。	言語
+discourse	名	2	談話・論述	The course examines political discourse in the media.	その講座はメディアの政治的言説を分析する。	ラテン語 discurrere（あちこち走る）から、考えを展開する話や論述の意味になった。	言語
 discussion	名	3	話し合い・討論	Our discussion produced three practical ideas.	私たちの話し合いから三つの実用的な案が生まれた。	discuss（話し合う）＋-ion。discuss はラテン語の「振り分けて調べる」に由来する。	コミュニケーション
 disguise	動	2	変装させる・隠す	He disguised his voice during the play.	彼は劇の中で声を変えて正体を隠した。	古フランス語 desguiser（外見を変える）から、正体を分からなくする意味になった。	動作・行為
 dish	名	5	皿・料理	This dish is made with local vegetables.	この料理は地元の野菜で作られている。	古英語 disc を経てラテン語 discus（円盤）にさかのぼり、円い皿を表した。	食・生活
 disregard	動	pre2	無視する・軽視する	Do not disregard the safety warning.	安全上の警告を無視してはいけません。	dis-（否定・離れて）＋regard（注意を向ける）から、「注意を向けない」を表す。	動作・行為
 due	形	pre2	期限が来て・予定されて・〜が原因で	The report is due on Friday.	その報告書は金曜日が提出期限だ。	ラテン語 debere（負っている）を経た語で、「支払うべき」から期限・予定の意味へ広がった。	時間・数量
 e-mail	名	4	電子メール	I sent the teacher an e-mail yesterday.	私は昨日先生に電子メールを送った。	electronic（電子の）＋mail（郵便）を短く組み合わせた語。	情報	/ˈiːmeɪl/
-eclipse	名	pre1	食・覆い隠すこと	We watched the lunar eclipse through a telescope.	私たちは望遠鏡で月食を観察した。	ギリシャ語 ekleipsis（姿を消すこと）から、天体が隠れる現象を表す。	科学
+eclipse	名	2	食・覆い隠すこと	We watched the lunar eclipse through a telescope.	私たちは望遠鏡で月食を観察した。	ギリシャ語 ekleipsis（姿を消すこと）から、天体が隠れる現象を表す。	科学
 edible	形	2	食べられる・食用の	Only the soft inner part of the plant is edible.	その植物では柔らかい内側の部分だけが食べられる。	ラテン語 edere（食べる）＋可能を表す -ible から、「食べることができる」を表す。	食・生活
 editor	名	pre2	編集者	The editor checked every fact in the article.	編集者は記事のすべての事実を確認した。	edit（編集する）＋人を表す -or。edit はラテン語 edere（世に出す）につながる。	メディア
 eighteen	形	5	18の・18個の	There are eighteen students in the room.	部屋には18人の生徒がいる。	eight（8）＋-teen（10を加えた数）の複合語。	時間・数量
@@ -114,30 +114,30 @@ electronic	形	3	電子の・電子機器による	Students submitted the form i
 eleventh	形	3	11番目の	Our classroom is on the eleventh floor.	私たちの教室は11階にある。	eleven（11）＋序数を作る -th。	時間・数量
 elite	名	2	精鋭・社会の上層集団	The program trains an elite group of athletes.	そのプログラムは精鋭の運動選手集団を育成する。	フランス語 elite（選ばれたもの）から、特に優れた少数を表すようになった。	社会
 else	副	4	ほかに・そうでなければ	Is there anything else you need?	ほかに必要なものはありますか。	古英語 elles（ほかに・別の仕方で）にさかのぼる語。	副詞
-embark	動	pre1	乗船する・着手する	The team embarked on a three-year research project.	チームは3年間の研究計画に着手した。	em-（中へ）＋barque（船）から「船に乗る」を表し、新しい事業を始める意味へ広がった。	動作・行為
+embark	動	2	乗船する・着手する	The team embarked on a three-year research project.	チームは3年間の研究計画に着手した。	em-（中へ）＋barque（船）から「船に乗る」を表し、新しい事業を始める意味へ広がった。	動作・行為
 encyclopedia	名	pre2	百科事典	The encyclopedia explains the topic with maps.	その百科事典は地図を使ってその話題を説明している。	ギリシャ語 enkyklios paideia（幅広い教育）をもとに、知識を体系的に集めた書物を表す。	教育
 entrepreneur	名	2	起業家	The young entrepreneur opened a repair service.	その若い起業家は修理サービスを始めた。	フランス語 entreprendre（引き受ける・企てる）から、事業を起こす人を表す。	ビジネス
-erect	動	pre1	建てる・直立させる	Workers erected a temporary bridge.	作業員は仮設の橋を建てた。	ラテン語 e-（外へ）＋regere（まっすぐにする）から、「立てる」を表す。	建築
+erect	動	2	建てる・直立させる	Workers erected a temporary bridge.	作業員は仮設の橋を建てた。	ラテン語 e-（外へ）＋regere（まっすぐにする）から、「立てる」を表す。	建築
 ethic	名	2	倫理・道徳原則	A strong work ethic helped the team succeed.	強い勤労倫理がチームの成功を支えた。	ギリシャ語 ethos（慣習・性格）から、人の行動を導く原則を表す。	社会
 European	形	4	ヨーロッパの・ヨーロッパ人(名)	The museum displays European paintings.	その博物館はヨーロッパの絵画を展示している。	Europe に「〜の人・〜の」を表す -an が付いた語。	地理
 ever	副	3	これまでに・いつでも	Have you ever seen the northern lights?	これまでにオーロラを見たことがありますか。	古英語 aefre（いつでも）にさかのぼる副詞。	副詞
 everybody	代	4	みんな・だれもが	Everybody received a copy of the guide.	全員が案内書を一部ずつ受け取った。	every（すべての）＋body（人）の複合語。	機能語
 exciting	形	5	わくわくさせる・刺激的な	The final match was exciting until the end.	決勝戦は最後までわくわくする展開だった。	excite（興奮させる）＋-ing から、感情を起こす物事の性質を表す。	心理
-extrovert	名	pre1	外向的な人	As an extrovert, he enjoys meeting new people.	外向的な人なので、彼は新しい人に会うのを楽しむ。	ラテン語 extra（外へ）＋vertere（向ける）をもとに心理学で作られた語。	心理
+extrovert	名	2	外向的な人	As an extrovert, he enjoys meeting new people.	外向的な人なので、彼は新しい人に会うのを楽しむ。	ラテン語 extra（外へ）＋vertere（向ける）をもとに心理学で作られた語。	心理
 fairy	名	2	妖精	A fairy appears near the forest in the tale.	その物語では森の近くに妖精が現れる。	古フランス語 faerie（妖精の世界・魔法）を経た語。	文学
-feat	名	pre1	偉業・離れ業	Finishing the climb in one day was a remarkable feat.	1日で登頂を終えたことは驚くべき偉業だった。	古フランス語 fait（行われたこと）を経てラテン語 facere（行う）にさかのぼる。	動作・行為
+feat	名	2	偉業・離れ業	Finishing the climb in one day was a remarkable feat.	1日で登頂を終えたことは驚くべき偉業だった。	古フランス語 fait（行われたこと）を経てラテン語 facere（行う）にさかのぼる。	動作・行為
 February	名	5	2月	The festival takes place in February.	その祭りは2月に行われる。	ラテン語 Februarius に由来し、古代ローマの清めの儀式 februa と結び付く月名。	時間・数量
-feminine	形	pre1	女性の・女性的な・文法上の女性形の	This noun has a feminine form in French.	この名詞はフランス語で女性形を持つ。	ラテン語 femina（女性）をもとに、「女性に関する」を表す形容詞になった。	言語
+feminine	形	2	女性の・女性的な・文法上の女性形の	This noun has a feminine form in French.	この名詞はフランス語で女性形を持つ。	ラテン語 femina（女性）をもとに、「女性に関する」を表す形容詞になった。	言語
 fifteen	形	5	15の・15個の	The bus arrives in fifteen minutes.	バスは15分後に到着する。	five（5）＋-teen（10を加えた数）からできた語。	時間・数量
 fifth	形	3	5番目の	Her office is on the fifth floor.	彼女の事務所は5階にある。	five（5）に序数を作る -th が付き、発音と綴りが調整された形。	時間・数量
 fingerprint	名	pre2	指紋	The scanner recognizes each user's fingerprint.	その読み取り装置は利用者ごとの指紋を認識する。	finger（指）＋print（押して残る跡）の複合語。	科学
 fire station	名	3	消防署	The fire station is across from the park.	消防署は公園の向かいにある。	fire（火災）＋station（拠点）の複合語。	社会	/ˈfaɪər ˌsteɪʃən/
 fishing	名	4	釣り・漁業	We went fishing early in the morning.	私たちは朝早く釣りに出かけた。	fish（魚を捕る）＋-ing から、魚を捕る活動を表す。	食・生活
-flesh	名	pre1	肉・果肉	The peach has soft yellow flesh.	その桃は柔らかい黄色の果肉を持つ。	古英語 flaesc にさかのぼり、皮や骨に対する柔らかい肉の部分を表す。	医学
+flesh	名	2	肉・果肉	The peach has soft yellow flesh.	その桃は柔らかい黄色の果肉を持つ。	古英語 flaesc にさかのぼり、皮や骨に対する柔らかい肉の部分を表す。	医学
 flock	名	2	鳥や羊の群れ	A flock of birds crossed the evening sky.	鳥の群れが夕空を横切った。	古英語 flocc（群れ）に由来する集合名詞。	自然
 flush	動	2	水で流す・赤くなる	Flush the pipe with clean water.	その管をきれいな水で洗い流してください。	「水を勢いよく流す」と「顔が赤くなる」には異なる語史が重なっており、現在は同じ綴りで使われる。	動作・行為
 folk	名	pre2	人々・民間の(形)	Local folk shared stories about the mountain.	地元の人々はその山についての話を語った。	古英語 folc（人々・民衆）にさかのぼる語。	社会
-forever	副	pre2	永遠に・ずっと	The decision changed the town forever.	その決定は町を永遠に変えた。	for（〜の間）＋ever（いつまでも）の結び付きからできた語。	副詞
+forever	副	3	永遠に・ずっと	The decision changed the town forever.	その決定は町を永遠に変えた。	for（〜の間）＋ever（いつまでも）の結び付きからできた語。	副詞
 format	名	pre2	形式・書式	Save the image in a common file format.	画像を一般的なファイル形式で保存してください。	ラテン語 forma（形）をもとにしたフランス語 format から、寸法や形式を表すようになった。	情報
 formation	名	pre2	形成・編成・構造	Cloud formation depends on temperature and moisture.	雲の形成は気温と水分に左右される。	form（形作る）＋-ation（過程・結果）から、「形ができること」を表す。	科学
 forth	副	pre2	前へ・外へ	The runners stepped forth when their names were called.	名前を呼ばれると、走者たちは前へ進み出た。	古英語 forth（前方へ・外へ）にさかのぼる副詞。	副詞

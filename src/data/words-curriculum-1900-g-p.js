@@ -24,7 +24,7 @@ hers	代	5	彼女のもの	The red umbrella is hers.	その赤い傘は彼女の
 herself	代	3	彼女自身を・彼女自身で	She repaired the bicycle herself.	彼女は自分でその自転車を修理した。	her（彼女を・彼女の）＋self（自身）の複合語。	機能語
 hi	名	5	やあという挨拶	I said hi to Ken in the hallway.	私は廊下でケンに「やあ」と声をかけた。	注意を引く呼び掛け hey などと関係する短い挨拶語として定着した。	コミュニケーション	/ˈhaɪ/
 himself	代	3	彼自身を・彼自身で	He painted the room himself.	彼は自分でその部屋を塗った。	him（彼を）＋self（自身）の複合語。	機能語
-holistic	形	pre1	全体論的な・総合的な	The clinic takes a holistic approach to health.	その診療所は健康を総合的に捉える。	ギリシャ語 holos（全体）をもとにした holism に、形容詞を作る -ic が付いた語。	医学
+holistic	形	2	全体論的な・総合的な	The clinic takes a holistic approach to health.	その診療所は健康を総合的に捉える。	ギリシャ語 holos（全体）をもとにした holism に、形容詞を作る -ic が付いた語。	医学
 hug	動	3	抱きしめる	She hugged her friend at the airport.	彼女は空港で友人を抱きしめた。	古ノルド語 hugga（慰める）との関連が考えられる語。	動作・行為
 hunt	動	3	狩る・探し求める	The fox hunts mainly at night.	そのキツネは主に夜に狩りをする。	古英語 huntian にさかのぼるゲルマン系の動詞。	動作・行為
 hybrid	名	2	雑種・異なるものの組み合わせ	The new bus is a diesel-electric hybrid.	その新しいバスはディーゼルと電気のハイブリッドだ。	ラテン語 hybrida（異なる系統の間に生まれたもの）から、二方式の組み合わせへ意味が広がった。	技術
@@ -39,7 +39,7 @@ internal	形	pre2	内部の・国内の	The company began an internal review.	�
 interviewer	名	3	面接官・インタビューする人	The interviewer asked about my school project.	面接官は私の学校での企画について質問した。	interview（面接する）＋人を表す -er。	コミュニケーション
 Italy	名	4	イタリア	Italy has a long Mediterranean coastline.	イタリアには長い地中海の海岸線がある。	ラテン語 Italia から英語の国名になったが、さらに古い由来には複数の説がある。	地理
 Japan	名	5	日本	Japan consists of thousands of islands.	日本は数千の島々から成る。	中国語の「日本」を表す名称がマレー語・ポルトガル語などを経て英語に入った。	地理
-juvenile	形	pre1	若年の・少年少女の	The program supports juvenile readers.	その事業は若年の読者を支援する。	ラテン語 juvenis（若い）から、「若者に関する」を表す。	家族・人
+juvenile	形	2	若年の・少年少女の	The program supports juvenile readers.	その事業は若年の読者を支援する。	ラテン語 juvenis（若い）から、「若者に関する」を表す。	家族・人
 kilogram	名	3	キログラム	The package weighs two kilograms.	その荷物は2キログラムの重さだ。	kilo-（1000）＋gram（グラム）から、「1000グラム」を表す単位名。	測定
 koala	名	4	コアラ	The koala slept high in the tree.	そのコアラは木の高い所で眠っていた。	オーストラリア先住民諸語の名称を英語が取り入れた語。	自然
 Korea	名	5	韓国・朝鮮半島の地域名	Korea has a rich tradition of printed books.	朝鮮半島には印刷書籍の豊かな伝統がある。	高麗 Goryeo の国名が欧州語に伝わって Korea になった。	地理
@@ -50,20 +50,20 @@ left	形	5	左の	Turn left at the second traffic light.	2番目の信号で左�
 let	動	4	〜させる・許す	Let me carry that bag for you.	そのかばんを私に運ばせてください。	古英語 laetan（許す・残す）にさかのぼる基本動詞。	動作・行為
 literal	形	2	文字どおりの・逐語的な	The literal meaning is different from the metaphor.	文字どおりの意味はその比喩とは異なる。	ラテン語 littera（文字）から、「文字に即した」を表すようになった。	言語
 living	形	4	生きている・生活の	The forest is a living system.	その森は生きた仕組みだ。	live（生きる）＋-ing から、現在生命を持つものの性質を表す。	自然
-lock	動	pre2	鍵を掛ける・固定する	Remember to lock the door when you leave.	出るときは忘れずにドアに鍵を掛けてください。	古英語 loc（締める仕掛け）から名詞と動詞の両方が発達した。	動作・行為
+lock	動	4	鍵を掛ける・固定する	Remember to lock the door when you leave.	出るときは忘れずにドアに鍵を掛けてください。	古英語 loc（締める仕掛け）から名詞と動詞の両方が発達した。	動作・行為
 mainstream	名	2	主流・多数派の考え	The idea gradually entered the mainstream.	その考えは次第に主流に入った。	main（主要な）＋stream（流れ）から、社会の大きな流れを比喩的に表す。	社会
 makeup	名	pre2	化粧・構成	The course examines the chemical makeup of soil.	その講座は土壌の化学的構成を調べる。	make up（組み立てる・化粧する）が一語の名詞になった形。	一般
 mall	名	pre2	ショッピングモール	The new mall includes a public library.	その新しいショッピングモールには公共図書館が入っている。	pall-mall という球技の遊歩道名を経て、並木道や歩行者向け商業施設を表すようになった。	社会
 marker	名	4	印・目印・マーカー	Use a marker to label each box.	それぞれの箱にマーカーで表示を書いてください。	mark（印を付ける）＋道具・人を表す -er。	一般
-masculine	形	pre1	男性の・男性的な・文法上の男性形の	The adjective has a masculine ending in Spanish.	その形容詞はスペイン語で男性形の語尾を持つ。	ラテン語 masculus（男性）をもとにした形容詞。	言語
-maternal	形	pre1	母親の・母方の	The child receives support from her maternal grandparents.	その子は母方の祖父母から支援を受けている。	ラテン語 mater（母）＋-nal から、「母に関する」を表す。	家族・人
+masculine	形	2	男性の・男性的な・文法上の男性形の	The adjective has a masculine ending in Spanish.	その形容詞はスペイン語で男性形の語尾を持つ。	ラテン語 masculus（男性）をもとにした形容詞。	言語
+maternal	形	2	母親の・母方の	The child receives support from her maternal grandparents.	その子は母方の祖父母から支援を受けている。	ラテン語 mater（母）＋-nal から、「母に関する」を表す。	家族・人
 maze	名	2	迷路・複雑に入り組んだもの	The children found the exit from the hedge maze.	子どもたちは生け垣の迷路から出口を見つけた。	中英語の「惑わせる」を表す語と関係し、迷わせる複雑な通路を指すようになった。	一般
 meaningful	形	pre2	意味のある・有意義な	The survey led to a meaningful change in policy.	その調査は政策の意味ある変更につながった。	meaning（意味）＋-ful（〜に満ちた）から、「意味・価値を持つ」を表す。	性質・状態
 medium	名	4	媒体・中間・中くらいのもの	Radio remains an important medium for local news.	ラジオは地域ニュースの重要な媒体であり続けている。	ラテン語 medium（真ん中）から、中間の大きさや情報を仲介する媒体を表すようになった。	メディア
 melon	名	5	メロン	We shared a ripe melon after dinner.	私たちは夕食後に熟したメロンを分け合った。	ギリシャ語 melon（果物）をラテン語・フランス語を経て取り入れた語。	食・生活
-metabolism	名	pre1	新陳代謝	Exercise can influence the body's metabolism.	運動は体の代謝に影響を与え得る。	ギリシャ語 metabole（変化）＋-ism から、体内で物質が変化する働きを表す。	医学
+metabolism	名	2	新陳代謝	Exercise can influence the body's metabolism.	運動は体の代謝に影響を与え得る。	ギリシャ語 metabole（変化）＋-ism から、体内で物質が変化する働きを表す。	医学
 meter	名	4	メートル・計器	The wall is two meters high.	その壁は高さ2メートルだ。	測定単位はギリシャ語 metron（尺度）から。計器の meter も「測るもの」という同じ考えにつながる。	測定
-metropolitan	形	pre1	大都市の・首都圏の	The metropolitan area has an extensive rail network.	その大都市圏には広い鉄道網がある。	ギリシャ語 metropolis（母なる都市・中心都市）＋-an から、「大都市に関する」を表す。	社会
+metropolitan	形	2	大都市の・首都圏の	The metropolitan area has an extensive rail network.	その大都市圏には広い鉄道網がある。	ギリシャ語 metropolis（母なる都市・中心都市）＋-an から、「大都市に関する」を表す。	社会
 microbe	名	pre2	微生物	Some microbes help plants absorb nutrients.	一部の微生物は植物が栄養を吸収するのを助ける。	micro-（小さい）＋ギリシャ語 bios（生命）から、「微小な生物」を表す。	科学
 mill	名	pre2	製粉所・工場・粉ひき機	The old mill now generates electricity from the river.	その古い製粉所は今では川の水で発電している。	ラテン語 molere（ひく）につながる古英語 mylen から、粉をひく設備や製造工場を表す。	ビジネス
 millennium	名	pre2	千年間・千年紀	The bridge was completed at the start of the new millennium.	その橋は新しい千年紀の初めに完成した。	ラテン語 mille（1000）＋annus（年）から、「1000年間」を表す。	時間・数量
@@ -113,9 +113,9 @@ pill	名	pre2	錠剤・丸薬	Take one pill after each meal.	毎食後に錠剤�
 pin	動	2	ピンで留める・固定する	Pin the notice to the board.	そのお知らせを掲示板にピンで留めてください。	ラテン語 pinna（羽・先端）につながる古英語 pinn から、細い留め具とその動作を表す。	動作・行為
 pineapple	名	5	パイナップル	We added fresh pineapple to the salad.	私たちはサラダに生のパイナップルを加えた。	pine（松）＋apple（果実）から、松かさに似た形の果物を表した。	食・生活
 pitch	名	pre2	音の高さ・投球・売り込み	The singer adjusted the pitch of the final note.	歌手は最後の音の高さを調整した。	同じ綴りに複数の語史が重なり、投げる動作・音の高さ・売り込みなどの意味を持つ。	音楽
-placebo	名	pre1	偽薬・プラセボ	Half of the participants received a placebo.	参加者の半数は偽薬を受け取った。	ラテン語 placebo（私は喜ばせるだろう）から、薬効成分のない処置を表す医学語になった。	医学
+placebo	名	2	偽薬・プラセボ	Half of the participants received a placebo.	参加者の半数は偽薬を受け取った。	ラテン語 placebo（私は喜ばせるだろう）から、薬効成分のない処置を表す医学語になった。	医学
 plane	名	3	飛行機・平面	The plane flew above the clouds.	その飛行機は雲の上を飛んだ。	飛行機の意味は airplane の短縮。平面の plane はラテン語 planus（平らな）に由来する。	交通
-plight	名	pre1	苦境・窮状	The documentary drew attention to the refugees' plight.	そのドキュメンタリーは難民の苦境に注意を向けた。	古フランス語 plit（状態）を経た語で、現在は特に困難な状態を表す。	社会
+plight	名	2	苦境・窮状	The documentary drew attention to the refugees' plight.	そのドキュメンタリーは難民の苦境に注意を向けた。	古フランス語 plit（状態）を経た語で、現在は特に困難な状態を表す。	社会
 polar	形	pre2	極地の・正反対の	Polar ice reflects much of the sun's energy.	極地の氷は太陽エネルギーの多くを反射する。	pole（極）＋-ar（〜に関する）から、「地球の極に関する」を表す。	地理
 police officer	名	4	警察官	A police officer directed traffic near the school.	警察官が学校の近くで交通整理をした。	police（警察）＋officer（職務を担う人）の複合語。	社会	/pəˈliːs ˌɔːfɪsər/
 police station	名	3	警察署	We reported the lost bag at the police station.	私たちは警察署で紛失したかばんを届け出た。	police（警察）＋station（拠点）の複合語。	社会	/pəˈliːs ˌsteɪʃən/
@@ -131,13 +131,13 @@ prairie	名	pre2	大草原	Tall grasses cover much of the prairie.	背の高い�
 pray	動	3	祈る・懇願する	They prayed for peace at the ceremony.	彼らは式典で平和を祈った。	ラテン語 precari（願う）を古フランス語を経て取り入れた語。	宗教
 precious	形	2	貴重な・大切な	Clean water is a precious resource.	きれいな水は貴重な資源だ。	ラテン語 pretium（価値・価格）から、「高い価値を持つ」を表す。	性質・状態
 prehistoric	形	2	先史時代の	Researchers found prehistoric tools in the cave.	研究者たちは洞窟で先史時代の道具を見つけた。	pre-（前の）＋historic（歴史時代の）から、文字記録以前の時代を表す。	歴史
-preoccupy	動	pre1	心を奪う・先に占有する	Concerns about safety preoccupied the organizers.	安全への懸念が主催者たちの心を占めていた。	pre-（前もって）＋occupy（占める）から、考えが心を先に占領する意味になった。	心理
+preoccupy	動	2	心を奪う・先に占有する	Concerns about safety preoccupied the organizers.	安全への懸念が主催者たちの心を占めていた。	pre-（前もって）＋occupy（占める）から、考えが心を先に占領する意味になった。	心理
 presentation	名	4	発表・提示	Her presentation included three clear examples.	彼女の発表には明確な例が三つ含まれていた。	present（提示する）＋-ation（行為・結果）から、「人前に示すこと」を表す。	コミュニケーション
-primate	名	pre1	霊長類	Humans and chimpanzees are primates.	人間とチンパンジーは霊長類である。	ラテン語 primas（第一位のもの）から、分類学で高等と考えられた哺乳類群の名になった。	科学
+primate	名	2	霊長類	Humans and chimpanzees are primates.	人間とチンパンジーは霊長類である。	ラテン語 primas（第一位のもの）から、分類学で高等と考えられた哺乳類群の名になった。	科学
 prime	形	pre2	最も重要な・主要な・最盛期の	Cost was the prime concern in the decision.	その決定では費用が最大の懸念だった。	ラテン語 primus（第一の）から、「第一級の・主要な」を表す。	様子・程度
 prize	名	4	賞・賞品	The winner received a book as a prize.	優勝者は賞品として本を受け取った。	古フランス語 prise（取ったもの・価値）から、勝者に与える物を表すようになった。	社会
 profile	名	2	人物紹介・横顔・特徴のまとまり	The article gives a profile of the young scientist.	その記事は若い科学者の人物紹介を載せている。	イタリア語 profilo（輪郭）を経て、横から見た形や特徴の概要を表すようになった。	メディア
 proverb	名	2	ことわざ	The proverb warns us not to judge too quickly.	そのことわざは早まって判断しないよう戒めている。	ラテン語 proverbium（広く使われる言い回し）をフランス語を経て取り入れた語。	言語
-psychiatrist	名	pre1	精神科医	The psychiatrist listened carefully to the patient.	精神科医は患者の話を注意深く聞いた。	ギリシャ語 psyche（心）＋iatros（医師）＋人を表す -ist からできた語。	医学
+psychiatrist	名	2	精神科医	The psychiatrist listened carefully to the patient.	精神科医は患者の話を注意深く聞いた。	ギリシャ語 psyche（心）＋iatros（医師）＋人を表す -ist からできた語。	医学
 purple	形	5	紫色の	She chose a purple scarf.	彼女は紫色のスカーフを選んだ。	ラテン語 purpura（紫の染料）を古英語・フランス語を経て取り入れた語。	性質・状態
 `, { sourceId: 'curriculum-1900' })

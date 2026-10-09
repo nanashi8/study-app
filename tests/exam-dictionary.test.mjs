@@ -82,7 +82,7 @@ test('辞書検索は見出し語・意味に加えて語法と推奨表現も�
   assert.equal(vocabMatchRank(getWord('say'), '検索不能な文字列'), -1)
 })
 
-test('熟語1,754・構文350の全2,104項目を級別目標どおり収録する', () => {
+test('熟語1,909・構文350の全2,259項目を級別目標どおり収録する', () => {
   assert.equal(EXAM_PHRASES.length, 144)
   assert.equal(CURRICULUM_IDIOMS.length, 978)
   assert.equal(PHRASES.length, PHRASE_TARGET_TOTALS.all)
