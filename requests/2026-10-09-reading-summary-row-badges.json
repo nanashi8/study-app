@@ -7,8 +7,8 @@
   "sessions": [
     "b704aeb7-5b52-46bb-9f20-d671349b9563"
   ],
-  "status": "open",
-  "notes": "前の依頼（2026-10-09-reading-summary-swipe）で、行（スワイプする button）の中に button を入れられないため、級の印・発音・単語帳のボタンを行の下（renderAfter）へ出していた。級の印はボタンではないので行の見出しの行（品詞の隣）へ入れる。発音と単語帳のボタンは、行のカードの右下へ重ねて置き、行と一緒に横へ動かす（button の入れ子にしない）。単語帳ボタンだけ行の下に残すと形がそろわないので、いっしょにカードへ入れる。 全監査の途中で、main（8bca277a、読解の準備の整合）の時点で tests/content-audit-ledger.test.mjs が落ちていた（語彙強化長文の本文に出る辞書の語 1,942→1,940・21.75%→21.73%・増えた語 2,002→2,004。台帳はすでに 1,940）。全監査を通すため、台帳と同じ値へ固定値を直してこの依頼のコミットに入れた。",
+  "status": "done",
+  "notes": "前の依頼（2026-10-09-reading-summary-swipe）で、行（スワイプする button）の中に button を入れられないため、級の印・発音・単語帳のボタンを行の下（renderAfter）へ出していた。級の印はボタンではないので行の見出しの行（品詞の隣）へ入れる。発音と単語帳のボタンは、行のカードの右下へ重ねて置き、行と一緒に横へ動かす（button の入れ子にしない）。単語帳ボタンだけ行の下に残すと形がそろわないので、いっしょにカードへ入れる。 全監査の途中で、main（8bca277a、読解の準備の整合）の時点で tests/content-audit-ledger.test.mjs が落ちていた（語彙強化長文の本文に出る辞書の語 1,942→1,940・21.75%→21.73%・増えた語 2,002→2,004。台帳はすでに 1,940）。全監査を通すため、台帳と同じ値へ固定値を直してこの依頼のコミットに入れた。 2026-10-09 に 80e0e709 を main へ push、deploy.yml の run 37895989678 が success。公開版の単語まとめの部品に級の印（data-reading-summary-word-level）とカードの中のボタン（actionsFor）が入っていることを確かめた。",
   "criteria": [
     {
       "id": "badges-in-card",
@@ -28,8 +28,8 @@
       "id": "row-badges-deployed",
       "text": "main へ push し公開版へ出す",
       "population": "この依頼の変更 全部",
-      "check": "git fetch -q origin main && test -z \"$(git log origin/main..HEAD --oneline)\"",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 80e0e709 origin/main && test \"$(gh run view 37895989678 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
