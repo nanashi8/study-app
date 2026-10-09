@@ -40,7 +40,6 @@ test('英単語の意味を出す画面は、読みを添える部品を通し�
     'src/screens/VocabQuiz.jsx',
     'src/screens/VocabSearch.jsx',
     'src/screens/EtymologyStudy.jsx',
-    'src/screens/ReadingSummary.jsx',
     'src/screens/WritingPlay.jsx',
     // 名作は全文表示の段落ごとの和訳と、文を押した解説（英語は ReadingSentenceDetail）で出す。
     'src/components/LiteratureFullText.jsx',
@@ -56,6 +55,10 @@ test('英単語の意味を出す画面は、読みを添える部品を通し�
     // 解説の文を出す部品（ExplainedText）は、中で MeaningText を通す。
     assert.match(read(file), /<MeaningText>|<ExplainedText>/, file)
   }
+  // 長文の単語まとめは、共通のスワイプ一覧（行は VocabularyHistoryRow.jsx の LearningRecordRow）へ英語の教材として渡し、
+  // 行が意味に読みを添える。
+  assert.match(read('src/screens/ReadingSummary.jsx'), /<NormalLearningRecordList[\s\S]*?titleLanguage="en"/)
+  assert.match(read('src/components/NormalLearningRecordList.jsx'), /titleLanguage=\{titleLanguage\}/)
   // テストの選択肢も読みを添えて出す（正誤の判定は元の文字列のまま）。
   assert.match(read('src/screens/VocabQuiz.jsx'), /<MeaningText>\{quizMeaning\(option\)\}<\/MeaningText>/)
 })

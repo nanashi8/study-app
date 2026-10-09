@@ -4,12 +4,11 @@ import { getWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
-import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
-import { MeaningText } from '../components/MeaningText.jsx'
+import { Book, Cards, Bookmark, BookmarkFilled, Check } from '../components/Icons.jsx'
 
 export function ReadingSummaryScreen() {
   const params = useStore((s) => s.params)
@@ -67,28 +66,20 @@ export function ReadingSummaryScreen() {
           </Button>
         </Card>
 
-        <div className="space-y-2">
-          {words.map((w) => {
-            const level = getLevel(w.level)
-            return (
-              <div key={w.id} className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
-                <SpeakButton text={w.word} size="sm" />
-                <button onClick={() => navigate('wordDetail', { id: w.id })} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <PosBadge pos={w.pos} />
-                      <span className="font-display font-extrabold text-ink">{w.word}</span>
-                      <Chip color={level.color}>{level.label}</Chip>
-                    </div>
-                    <div className="truncate text-xs font-bold text-ink/55"><MeaningText>{w.meaning}</MeaningText></div>
-                  </div>
-                  <span className="text-brand-300"><ArrowRight size={16} /></span>
-                </button>
-                <WordRowBookButton word={w} />
-              </div>
-            )
-          })}
-        </div>
+        {/* 単語の一覧の確認と同じ共通の一覧。左で覚えた（正解）、右でまだ（不正解）を単語の記録へ書き、その行を隠す。 */}
+        <NormalLearningRecordList
+          entryId={`reading-summary:${passageId}`}
+          contentId="vocab"
+          items={words}
+          unit="語"
+          pageSize={Math.max(words.length, 1)}
+          titleLanguage="en"
+          onOpen={(item) => navigate('wordDetail', { id: item.id })}
+          openLabel="この単語の詳細を見る"
+          openHint="詳細"
+          renderAfter={(item) => <WordRowActions word={item} />}
+          emptyMessage="この長文に出てきた単語はありません。"
+        />
 
         <Button full variant="ghost" onClick={() => navigate('reader', { passageId, returnTo: params.returnTo })}>
           もう一度読む
@@ -103,6 +94,18 @@ export function ReadingSummaryScreen() {
           </Button>
         )}
       </div>
+    </div>
+  )
+}
+
+// 行の下に置く、級の印・読み上げ・単語帳ボタン。スワイプする行の外に置き、押しても行は動かない。
+function WordRowActions({ word }) {
+  const level = getLevel(word.level)
+  return (
+    <div className="mt-1 flex items-center justify-end gap-1 px-1" data-reading-summary-word-actions={word.id}>
+      <Chip color={level.color}>{level.label}</Chip>
+      <SpeakButton text={word.word} size="sm" />
+      <WordRowBookButton word={word} />
     </div>
   )
 }

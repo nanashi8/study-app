@@ -1,0 +1,42 @@
+{
+  "id": "2026-10-09-reading-summary-swipe",
+  "title": "長文の単語まとめの単語一覧を、単語の一覧の確認と同じく左右スワイプで記録できるようにする",
+  "asked": [
+    "長文の単語まとめは、単語の一覧の確認のようにスワイプ処理をできるように改修しなさい。"
+  ],
+  "sessions": [
+    "b704aeb7-5b52-46bb-9f20-d671349b9563"
+  ],
+  "status": "open",
+  "notes": "単語まとめ画面は src/screens/ReadingSummary.jsx の1つだけ（ふつうの長文の読解・語彙強化長文の両方から開く）。単語の一覧の確認（VocabDecks）・語源カードの紐づく単語（RootDetail）と同じ共通部品 NormalLearningRecordList（contentId 'vocab'）を使い、学習／テストの切替・左で覚えた（正解）・右でまだ（不正解）・隠した行の再表示を同じにする。今の行にある読み上げボタン・1語ずつの単語帳ボタン・級の印・単語の詳細へのリンクは消さずに残す。",
+  "criteria": [
+    {
+      "id": "summary-rows-swipe",
+      "text": "全42本の単語まとめの単語一覧が共通スワイプ一覧で描かれ、どの語も左右のスワイプで単語の記録（vocab の SRS）へ覚えた・まだ・正解・不正解を書ける",
+      "population": "全42本の長文の単語まとめに出る語（長文×語の組 2,431組）",
+      "check": "node --test tests/reading-summary-swipe.test.mjs --test-name-pattern=summary-rows-swipe",
+      "status": "done"
+    },
+    {
+      "id": "summary-keeps-controls",
+      "text": "今の行にある操作（読み上げ・1語ずつの単語帳・級の印・単語の詳細へ）と、上のカード（暗記・テスト・全語を単語帳へ）・下のボタン（もう一度読む・教材一覧へ戻る）を残す",
+      "population": "単語まとめ画面の操作 全部（行の4つ・上の3つ・下の2つ）",
+      "check": "node --test tests/reading-summary-swipe.test.mjs --test-name-pattern=summary-keeps-controls",
+      "status": "done"
+    },
+    {
+      "id": "summary-swipe-in-browser",
+      "text": "開発版の画面で、単語まとめの行を指（タッチ）で左右にスワイプすると記録され行が隠れ、再表示で戻る。読み上げ・単語帳のボタンを押してもスワイプにならない",
+      "population": "単語まとめ画面（ふつうの長文1本・語彙強化長文1本で確かめる）",
+      "check": "node --test tests/reading-summary-swipe.test.mjs --test-name-pattern=summary-swipe-in-browser",
+      "status": "done"
+    },
+    {
+      "id": "summary-deployed",
+      "text": "main へ push し公開版へ出す",
+      "population": "この依頼の変更 全部",
+      "check": "git fetch -q origin && test -z \"$(git log origin/main..HEAD --oneline)\" && git merge-base --is-ancestor $(git log -1 --format=%H -- src/screens/ReadingSummary.jsx) origin/main",
+      "status": "todo"
+    }
+  ]
+}

@@ -97,11 +97,13 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （重複なし 13713 から 13722）に、ソース全体が 235557 から 237094 になった（requests/2026-10-08-explanation-word-links.json）。
   // 2026-10-09、熟語の級の上書き（src/data/phrase-levels-override.js）と中学の基本熟語155件（src/data/phrases-junior-core.js）の
   // 2ファイルが増え、ソース全体が 829 から 831 ファイル・237094 から 237116 になった（requests/2026-10-09-reference-list-level-caps.json）。
+  // 2026-10-09、長文の単語まとめの単語の一覧を共通のスワイプ一覧にし、詳細の案内・空のときの文の6表記（重複なし3）で、
+  // 学習者画面の日本語が 18376 から 18382 に、ソース全体が 237116 から 237122 になった（requests/2026-10-09-reading-summary-swipe.json）。
   assert.equal(result.learnerFiles, 353)
-  assert.equal(result.learnerJapaneseEntries, 18376)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13722)
+  assert.equal(result.learnerJapaneseEntries, 18382)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13725)
   assert.equal(result.sourceFiles, 831)
-  assert.equal(result.sourceJapaneseEntries, 237116)
+  assert.equal(result.sourceJapaneseEntries, 237122)
   assert.equal(result.issues.length, 0)
 })
 
