@@ -3,7 +3,9 @@
 //
 // 単語まとめ（src/screens/ReadingSummary.jsx）の単語の一覧を、単語の一覧の確認・語源カードの紐づく単語と同じ
 // 共通の一覧 NormalLearningRecordList（contentId 'vocab'）で描く。左で覚えた（正解）、右でまだ（不正解）を
-// 単語の記録へ書き、その行を隠す。前の行にあった級の印・読み上げ・1語ずつの単語帳は、行の下へ残す。
+// 単語の記録へ書き、その行を隠す。前の行にあった級の印・読み上げ・1語ずつの単語帳は残す。
+// 2026-10-09 利用者（requests/2026-10-09-reading-summary-row-badges.json）: 級の印と発音ボタンは、一覧のカード中にあったほうがいいんじゃないの？
+//   → 級の印は見出しの行（品詞の隣）、発音と単語帳のボタンはカードの右下に置き、行と一緒に横へ動かす。行の下には何も出さない。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -18,6 +20,7 @@ import {
   learningContentCatalogSupportsReview,
 } from '../src/lib/learningContentCatalogReview.js'
 import { vocabularyCatalogResultForDirection } from '../src/lib/vocabCatalog.js'
+import { isAmbiguousSpeechText } from '../src/lib/speechGuard.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const source = readFileSync(new URL('../src/screens/ReadingSummary.jsx', import.meta.url), 'utf8')
@@ -65,9 +68,12 @@ test('summary-rows-swipe: 全42本の単語まとめの語がすべて共通ス�
 test('summary-keeps-controls: 行の4つ・上の3つ・下の2つの操作を残す', () => {
   // 行：単語の詳細へ・級の印・読み上げ・1語ずつの単語帳
   assert.match(source, /onOpen=\{\(item\) => navigate\('wordDetail', \{ id: item\.id \}\)\}/)
-  assert.match(source, /renderAfter=\{\(item\) => <WordRowActions word=\{item\} \/>\}/)
+  assert.match(source, /badgeFor=\{\(item\) => <WordLevelBadge word=\{item\} \/>\}/)
+  assert.match(source, /actionsFor=\{\(item\) => <WordRowActions word=\{item\} \/>\}/)
+  assert.doesNotMatch(source, /renderAfter=/)
+  const badge = source.slice(source.indexOf('function WordLevelBadge'), source.indexOf('function WordRowActions'))
+  assert.match(badge, /\{level\.label\}/)
   const actions = source.slice(source.indexOf('function WordRowActions'), source.indexOf('function WordRowBookButton'))
-  assert.match(actions, /<Chip color=\{level\.color\}>\{level\.label\}<\/Chip>/)
   assert.match(actions, /<SpeakButton text=\{word\.word\}/)
   assert.match(actions, /<WordRowBookButton word=\{word\} \/>/)
   // 上：暗記・テスト・全語を単語帳へ
@@ -109,7 +115,8 @@ async function openDevBrowser() {
 
 // 指で行を横へなでる（touchstart → touchmove を数回 → touchend）。dx が負なら左へ。
 async function swipeRow(page, cdp, selector, dx) {
-  await page.locator(selector).scrollIntoViewIfNeeded()
+  // 画面の上の見出し（固定の header）に隠れない、画面の中ほどまで送ってから触る。
+  await page.locator(selector).evaluate((element) => element.scrollIntoView({ block: 'center' }))
   await page.waitForTimeout(50)
   const box = await page.locator(selector).boundingBox()
   const y = Math.round(box.y + box.height / 2)
@@ -124,7 +131,7 @@ async function swipeRow(page, cdp, selector, dx) {
   await page.waitForTimeout(80)
 }
 
-test('summary-swipe-in-browser: 開発版の画面で、行を左右にスワイプすると記録して隠し、再表示で戻る。行の下のボタンではスワイプにならない', { timeout: 180_000 }, async () => {
+test('summary-swipe-in-browser: 開発版の画面で、行を左右にスワイプすると記録して隠し、再表示で戻る。カードの中のボタンではスワイプにならない', { timeout: 180_000 }, async () => {
   // ふつうの長文1本と、語の最も多い長文（語彙強化長文）1本。
   const longest = ALL_PASSAGES.reduce((best, passage) => (passage.vocab.length > best.vocab.length ? passage : best))
   const passages = [ALL_PASSAGES[0], longest]
@@ -159,12 +166,66 @@ test('summary-swipe-in-browser: 開発版の画面で、行を左右にスワイ
     const shownIds = await page.$$eval(`${list} [data-learning-record-item]`, (rows) => rows.map((row) => row.getAttribute('data-learning-record-item')))
     const expectedIds = passage.vocab.map(getWord).map((word) => word.id)
     assert.deepEqual(shownIds, expectedIds, `${passage.id}: 全語を元の順に並べる`)
-    assert.equal(await page.locator(`${list} [data-reading-summary-word-actions]`).count(), expectedIds.length, `${passage.id}: 全行に級・読み上げ・単語帳`)
+    // 全行で、級の印は行（button）の中、発音・単語帳のボタンはカードの枠の中にあり、行の下には何も出さない。
+    const placement = await page.$$eval(`${list} [data-normal-learning-record-row-container]`, (containers) => containers.map((container) => {
+      const id = container.getAttribute('data-normal-learning-record-row-container')
+      const card = container.querySelector('[data-learning-record-swipe-row]')
+      const row = card.querySelector('[data-learning-record-item]')
+      const badge = row.querySelector(`[data-reading-summary-word-level="${id}"]`)
+      const actions = card.querySelector(`[data-learning-record-actions="${id}"] [data-reading-summary-word-actions="${id}"]`)
+      const cardBox = card.getBoundingClientRect()
+      const actionsBox = actions?.getBoundingClientRect()
+      return {
+        id,
+        badge: Boolean(badge?.textContent.trim()),
+        actionsInside: Boolean(actionsBox) && actionsBox.left >= cardBox.left && actionsBox.right <= cardBox.right
+          && actionsBox.top >= cardBox.top && actionsBox.bottom <= cardBox.bottom,
+        buttons: actions ? actions.querySelectorAll('button').length : 0,
+        below: [...container.children].filter((child) => child !== card).length,
+      }
+    }))
+    assert.equal(placement.length, expectedIds.length)
+    // 使い方で発音が変わる語（heteronyms.js）は読み上げボタンを出さないので、単語帳ボタンだけ。
+    const wordById = new Map(passage.vocab.map(getWord).map((word) => [word.id, word]))
+    for (const row of placement) {
+      const buttons = isAmbiguousSpeechText(wordById.get(row.id).word) ? 1 : 2
+      assert.deepEqual(row, { id: row.id, badge: true, actionsInside: true, buttons, below: 0 }, `${passage.id}:${row.id}`)
+    }
 
     const [first, second, third] = expectedIds
     const rowOf = (id) => `${list} [data-learning-record-item="${id}"]`
 
-    // 行の下の単語帳ボタン・読み上げを押しても、行は隠れず、押したボタンだけが動く。
+    // 指で横へ引いている間、カードの右下のボタンも行と同じだけ動く。離す前に元へ戻すと記録しない。
+    {
+      await page.locator(rowOf(first)).evaluate((element) => element.scrollIntoView({ block: 'center' }))
+      await page.waitForTimeout(50)
+      const box = await page.locator(rowOf(first)).boundingBox()
+      const y = Math.round(box.y + box.height / 2)
+      const x0 = Math.round(box.x + box.width / 2)
+      const point = (x) => [{ x, y, id: 1, radiusX: 4, radiusY: 4, force: 1 }]
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: point(x0) })
+      for (const dx of [-15, -30, -45, -60]) {
+        await page.waitForTimeout(16)
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: point(x0 + dx) })
+      }
+      await page.waitForTimeout(50)
+      const moved = await page.evaluate((id) => ({
+        row: document.querySelector(`[data-learning-record-item="${id}"]`).style.transform,
+        actions: document.querySelector(`[data-learning-record-actions="${id}"]`).style.transform,
+      }), first)
+      assert.match(moved.row, /translate3d\(-\d+px/, `${passage.id}: 行が指について動く`)
+      assert.equal(moved.actions, moved.row, `${passage.id}: ボタンが行と一緒に動く`)
+      for (const dx of [-40, -20, 0]) {
+        await page.waitForTimeout(16)
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: point(x0 + dx) })
+      }
+      await page.waitForTimeout(400)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await page.waitForTimeout(80)
+      assert.equal(await page.locator(rowOf(first)).count(), 1, `${passage.id}: 戻した行は隠れない`)
+    }
+
+    // カードの中の単語帳ボタン・読み上げを押しても、行は隠れず、押したボタンだけが動く。
     const bookButton = page.locator(`${list} [data-reading-summary-word-actions="${third}"] button[aria-pressed]`)
     const before = await bookButton.getAttribute('aria-pressed')
     await bookButton.tap()

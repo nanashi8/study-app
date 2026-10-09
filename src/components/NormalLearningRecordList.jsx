@@ -53,6 +53,9 @@ export function NormalLearningRecordList({
   titleLanguage = 'ja',
   // 行の中へ一行だけ足す補足。語源のように、一覧のまま確かめたい情報を返す。
   noteFor,
+  // 行の見出しの行に足す印（押せないもの）と、カードの右下に置くボタンを返す。
+  badgeFor,
+  actionsFor,
   renderAfter,
   emptyMessage,
   className = '',
@@ -191,6 +194,8 @@ export function NormalLearningRecordList({
               titleLanguage={titleLanguage}
               textSource={contentId}
               note={typeof noteFor === 'function' ? noteFor(row.item, row) : ''}
+              badge={typeof badgeFor === 'function' ? badgeFor(row.item, row) : null}
+              actions={typeof actionsFor === 'function' ? actionsFor(row.item, row) : null}
             />
             {typeof renderAfter === 'function' && renderAfter(row.item, row)}
           </div>

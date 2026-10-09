@@ -5,7 +5,7 @@ import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
-import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
+import { Card, Button, cx } from '../components/ui.jsx'
 import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Book, Cards, Bookmark, BookmarkFilled, Check } from '../components/Icons.jsx'
@@ -77,7 +77,8 @@ export function ReadingSummaryScreen() {
           onOpen={(item) => navigate('wordDetail', { id: item.id })}
           openLabel="この単語の詳細を見る"
           openHint="詳細"
-          renderAfter={(item) => <WordRowActions word={item} />}
+          badgeFor={(item) => <WordLevelBadge word={item} />}
+          actionsFor={(item) => <WordRowActions word={item} />}
           emptyMessage="この長文に出てきた単語はありません。"
         />
 
@@ -98,15 +99,27 @@ export function ReadingSummaryScreen() {
   )
 }
 
-// 行の下に置く、級の印・読み上げ・単語帳ボタン。スワイプする行の外に置き、押しても行は動かない。
-function WordRowActions({ word }) {
+// 行の見出しの行（品詞の隣）に置く級の印。行そのものが button なので、押せない span で出す。
+function WordLevelBadge({ word }) {
   const level = getLevel(word.level)
   return (
-    <div className="mt-1 flex items-center justify-end gap-1 px-1" data-reading-summary-word-actions={word.id}>
-      <Chip color={level.color}>{level.label}</Chip>
+    <span
+      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold"
+      style={{ backgroundColor: `${level.color}1a`, color: level.color }}
+      data-reading-summary-word-level={word.id}
+    >
+      {level.label}
+    </span>
+  )
+}
+
+// 行のカードの右下に置く、発音と単語帳のボタン。行と一緒に横へ動く。
+function WordRowActions({ word }) {
+  return (
+    <span className="flex items-center gap-0.5" data-reading-summary-word-actions={word.id}>
       <SpeakButton text={word.word} size="sm" />
       <WordRowBookButton word={word} />
-    </div>
+    </span>
   )
 }
 
@@ -114,13 +127,17 @@ function WordRowActions({ word }) {
 function WordRowBookButton({ word }) {
   const wordBook = useWordBookSlot([wordBookRef(word.id)], { label: word.word })
   return (
-    <IconButton
+    <button
+      type="button"
       onClick={wordBook.press}
-      className={wordBook.inBook ? 'text-hint' : 'text-ink/30'}
+      className={cx(
+        'inline-flex h-8 w-8 items-center justify-center rounded-full transition-transform active:scale-90 active:bg-brand-100',
+        wordBook.inBook ? 'text-hint' : 'text-ink/30',
+      )}
       aria-pressed={wordBook.inBook}
       aria-label={wordBookSlotLabel({ itemLabel: word.word, bookTitle: wordBook.bookTitle, inBook: wordBook.inBook })}
     >
-      {wordBook.inBook ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-    </IconButton>
+      {wordBook.inBook ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
+    </button>
   )
 }

@@ -66,6 +66,10 @@ export function LearningRecordRow({
   // 行の中に一行だけ足せる補足。語源や今回の答えのように、
   // 一覧のまま「一目で確認」したい情報をここへ入れる。
   note = '',
+  // 見出しの行（品詞の隣）に足す印。行そのものが button なので、押せないもの（級の印など）だけを渡す。
+  badge = null,
+  // カードの右下に重ねて置くボタン（発音・単語帳など）。button の入れ子にしないよう行の外に置き、行と一緒に横へ動かす。
+  actions = null,
 }) {
   const word = rowWord(row)
   const id = word.id ?? row.id
@@ -151,6 +155,7 @@ export function LearningRecordRow({
                 {pos}
               </span>
             )}
+            {badge}
             <span className={cx('rounded-full px-2 py-0.5 text-[10px] font-extrabold', resultMeta.className)}>
               {resultMeta.label}
             </span>
@@ -174,13 +179,25 @@ export function LearningRecordRow({
               <SubjectSourceText source={textSource}>{note}</SubjectSourceText>
             </span>
           )}
-          <span className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45">
+          <span className={cx('mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45', actions && 'pr-16')}>
             <span>分野 {row.field}</span>
             <span>学習 {activityDate(row.memoryAt, row.memoryStatus !== 'unlearned')}</span>
             <span>テスト {activityDate(row.testAt, row.testStatus !== 'unanswered')}</span>
           </span>
         </span>
       </button>
+      {actions && (
+        <div
+          className={cx(
+            'absolute bottom-1 right-1.5 flex items-center gap-0.5 transition-transform',
+            swipeOffset ? 'duration-0' : 'duration-200',
+          )}
+          style={{ transform: `translate3d(${swipeOffset}px, 0, 0)` }}
+          data-learning-record-actions={id}
+        >
+          {actions}
+        </div>
+      )}
     </div>
   )
 }

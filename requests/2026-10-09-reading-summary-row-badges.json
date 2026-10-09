@@ -1,0 +1,35 @@
+{
+  "id": "2026-10-09-reading-summary-row-badges",
+  "title": "長文の単語まとめの一覧で、級の印と発音ボタンを行の下ではなく一覧のカードの中に置く",
+  "asked": [
+    "級の印と発音ボタンは、一覧のカード中にあったほうがいいんじゃないの？"
+  ],
+  "sessions": [
+    "b704aeb7-5b52-46bb-9f20-d671349b9563"
+  ],
+  "status": "open",
+  "notes": "前の依頼（2026-10-09-reading-summary-swipe）で、行（スワイプする button）の中に button を入れられないため、級の印・発音・単語帳のボタンを行の下（renderAfter）へ出していた。級の印はボタンではないので行の見出しの行（品詞の隣）へ入れる。発音と単語帳のボタンは、行のカードの右下へ重ねて置き、行と一緒に横へ動かす（button の入れ子にしない）。単語帳ボタンだけ行の下に残すと形がそろわないので、いっしょにカードへ入れる。 全監査の途中で、main（8bca277a、読解の準備の整合）の時点で tests/content-audit-ledger.test.mjs が落ちていた（語彙強化長文の本文に出る辞書の語 1,942→1,940・21.75%→21.73%・増えた語 2,002→2,004。台帳はすでに 1,940）。全監査を通すため、台帳と同じ値へ固定値を直してこの依頼のコミットに入れた。",
+  "criteria": [
+    {
+      "id": "badges-in-card",
+      "text": "全42本の単語まとめの全行で、級の印・発音ボタン・単語帳ボタンが行のカードの中にあり、行の下には何も出さない。スワイプで行が動くとき、ボタンもカードと一緒に動く",
+      "population": "全42本の長文の単語まとめに出る語（長文×語の組 2,431組）。画面ではふつうの長文1本・語の最も多い長文1本の全行",
+      "check": "node --test tests/reading-summary-swipe.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "other-lists-unchanged",
+      "text": "共通の行（LearningRecordRow）を使うほかの一覧（単語の一覧の確認・教材の一覧・語源・古典・漢文・社会・理科の通常一覧）は、渡さなければ今と同じ見た目と動きのまま",
+      "population": "LearningRecordRow を描く全画面（共通一覧・単語の一覧・教材の一覧）",
+      "check": "node --test tests/normal-learning-record-lists.test.mjs tests/vocab-catalog.test.mjs tests/learning-content-catalog.test.mjs tests/meaning-readings.test.mjs && node scripts/check-normal-learning-record-lists.mjs",
+      "status": "done"
+    },
+    {
+      "id": "row-badges-deployed",
+      "text": "main へ push し公開版へ出す",
+      "population": "この依頼の変更 全部",
+      "check": "git fetch -q origin main && test -z \"$(git log origin/main..HEAD --oneline)\"",
+      "status": "todo"
+    }
+  ]
+}

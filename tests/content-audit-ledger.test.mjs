@@ -74,11 +74,13 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(ledger.extendedReadingDetail.totalWords, 9_860)
   assert.equal(ledger.extendedReadingDetail.sentenceCount, 528)
   assert.equal(ledger.extendedReadingDetail.targetVocabularyCount, 1_484)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_942)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.75)
+  // 2026-10-09、読解の準備の整合（requests/2026-10-09-reading-prep-alignment.json、8bca277a）で語彙強化長文の本文を直し、
+  // 本文に出る辞書の語が 1,942 から 1,940（21.75% から 21.73%）に、増えた語が 2,002 から 2,004 になった（合わせた数 3,944 は同じ）。台帳はそのとき作り直したが、ここが残っていた。
+  assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_940)
+  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.73)
   assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_944)
   assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.17)
-  assert.equal(ledger.extendedReadingDetail.coverageGain, 2_002)
+  assert.equal(ledger.extendedReadingDetail.coverageGain, 2_004)
   assert.equal(ledger.extendedReadingDetail.unresolvedExtendedTokenCount, 0)
   assert.deepEqual(ledger.extendedReadingDetail.practiceTypeCounts, {
     'word-order': 4,
