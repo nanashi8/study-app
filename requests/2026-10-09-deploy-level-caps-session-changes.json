@@ -1,0 +1,38 @@
+{
+  "id": "2026-10-09-deploy-level-caps-session-changes",
+  "title": "このセッションの変更をデプロイまで完了させる（4つの語彙の一覧の級の見直しと中学の基本熟語155件の追加）",
+  "asked": [
+    "このセッションの変更をデプロイまで完了させなさい。"
+  ],
+  "sessions": [
+    "81128d94-3d6e-4c08-8a1b-494f373d0ef5"
+  ],
+  "status": "open",
+  "notes": "このセッション（81128d94）の依頼は requests/2026-10-09-reference-list-level-caps.json の1つで、閉じてある。2026-10-09 に調べると、共有の作業ツリーは origin/main の d0622f41 と同じで未コミット 0・stash 0・未 push 0・worktree はこの1つだけ（比較用に一時作った worktree は消した）。このセッションのコミットは2件（b5b55540・d0622f41。セッションを始めたときの main は 3b9b8bc0）で、どちらも main に入り、デプロイ（b5b55540 の run 37869339707・d0622f41 の 37869799947）はどちらも success。scratchpad のクリーンな複製は監査のあと消し、残る git リポジトリは 0個。",
+  "criteria": [
+    {
+      "id": "session-commits-deployed",
+      "text": "このセッションのコミット2件が main に入り、それぞれのデプロイ2回がどちらも成功している。公開版で、熟語の級ごとの数（全1,909・3級303）と単語の級ごとの数（3級992・準2級1,330・2級1,902）が出ることを確かめる",
+      "population": "このセッションのコミット2件（b5b55540・d0622f41）と、そのデプロイ2回、公開版 https://nanashi8.github.io/study-app/",
+      "check": "git fetch -q origin main && for c in b5b55540 d0622f41; do git merge-base --is-ancestor $c origin/main || exit 1; done && for r in 37869339707 37869799947; do test \"$(gh run view $r --json conclusion -q .conclusion)\" = success || exit 1; done && node --test tests/deploy-workflow.test.mjs tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "2件中2件が origin/main に入り、デプロイ 37869339707・37869799947 はどちらも success。公開版で熟語の級ごとの数（5級86・4級227・3級303・準2級319・2級655・準1級158・1級161、全1,909）と単語の級ごとの数（5級609・4級713・3級992・準2級1,330・2級1,902・準1級2,406・1級977）が出ることを 2026-10-09 に確かめた。"
+    },
+    {
+      "id": "nothing-left-behind",
+      "text": "このセッションの変更で main に入っていないものが残っていない。共有の作業ツリーは未コミット 0・stash 0・未 push 0、このセッションの scratchpad に study-app の複製が残っていない",
+      "population": "共有の作業ツリー（~/projects/study-app）と、このセッションの作業場所（scratchpad）",
+      "check": "node scripts/checks/leftover-changes.mjs --clones --roots /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/81128d94-3d6e-4c08-8a1b-494f373d0ef5 && node --test tests/leftover-changes.test.mjs && git fetch -q origin main && test -z \"$(git status --porcelain)\" && test \"$(git stash list | wc -l | tr -d ' ')\" = 0 && test -z \"$(git log origin/main..HEAD --oneline)\"",
+      "status": "waiting",
+      "waitingFor": "この台帳のコミットを push したあとの作業ツリーの確認"
+    },
+    {
+      "id": "deployed",
+      "text": "この依頼の台帳のコミットを push し、そのデプロイ（deploy.yml）が成功したことを GitHub の記録で確かめる。依頼を閉じるコミットのデプロイも成功を確かめてから報告する",
+      "population": "main と公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs && node --test tests/deploy-workflow.test.mjs",
+      "status": "waiting",
+      "waitingFor": "この台帳のコミットのデプロイ"
+    }
+  ]
+}
