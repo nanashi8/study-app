@@ -7,8 +7,8 @@
   "sessions": [
     "b704aeb7-5b52-46bb-9f20-d671349b9563"
   ],
-  "status": "open",
-  "notes": "単語まとめ画面は src/screens/ReadingSummary.jsx の1つだけ（ふつうの長文の読解・語彙強化長文の両方から開く）。単語の一覧の確認（VocabDecks）・語源カードの紐づく単語（RootDetail）と同じ共通部品 NormalLearningRecordList（contentId 'vocab'）を使い、学習／テストの切替・左で覚えた（正解）・右でまだ（不正解）・隠した行の再表示を同じにする。今の行にある読み上げボタン・1語ずつの単語帳ボタン・級の印・単語の詳細へのリンクは消さずに残す。",
+  "status": "done",
+  "notes": "単語まとめ画面は src/screens/ReadingSummary.jsx の1つだけ（ふつうの長文の読解・語彙強化長文の両方から開く）。単語の一覧の確認（VocabDecks）・語源カードの紐づく単語（RootDetail）と同じ共通部品 NormalLearningRecordList（contentId 'vocab'）を使い、学習／テストの切替・左で覚えた（正解）・右でまだ（不正解）・隠した行の再表示を同じにする。今の行にある読み上げボタン・1語ずつの単語帳ボタン・級の印・単語の詳細へのリンクは消さずに残す。 2026-10-09 に da641d84 を main へ push、deploy.yml の run 37884439815 が success。公開版の単語まとめの部品（ReadingSummary-*.js）に共通一覧の id「reading-summary:」・行の下のボタンの印・新しい文言が入っていることを確かめた。実機の iPhone での指の操作は確かめていない（Chromium に CDP でタッチを送って確かめた）。",
   "criteria": [
     {
       "id": "summary-rows-swipe",
@@ -35,8 +35,8 @@
       "id": "summary-deployed",
       "text": "main へ push し公開版へ出す",
       "population": "この依頼の変更 全部",
-      "check": "git fetch -q origin && test -z \"$(git log origin/main..HEAD --oneline)\" && git merge-base --is-ancestor $(git log -1 --format=%H -- src/screens/ReadingSummary.jsx) origin/main",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor da641d84 origin/main && test \"$(gh run view 37884439815 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
   ]
 }
