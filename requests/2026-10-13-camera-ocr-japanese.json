@@ -8,7 +8,7 @@
   "sessions": [
     "924c970a-6d04-4389-88ad-93dbdce169e3"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "japanese-read-as-japanese",
@@ -82,10 +82,11 @@
     },
     {
       "id": "camera-ocr-deployed",
-      "text": "全監査を通して main へ push し公開版へ出す",
+      "text": "全監査を通して main へ push し公開版へ出す。結果：クリーンな clone で npm run audit:all-content が通り（テスト 1,405件すべて成功・全教材監査台帳を書き直し）、1904bae9 を main へ push、deploy.yml の run 38473657013 が success。公開版の実際の画面で、本物のエンジンに写真2枚（p09・p07）と試料1枚（inline-mixed）を読ませ、開発版と同じ候補・リクエスト・確かめられなかった文字になり、コンソールの知らせは0行だった（送信は押していない）",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 1904bae9 origin/main && test \"$(gh run view 38473657013 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
-  ]
+  ],
+  "notes": "10-14 の追加の指示で作り直した。読めないまま残したもの：赤地・緑地に白い字の標識、大きく傾いた写真、曲がった紙面の接写、縦書きの日本語、遠景の小さい字（実写真28枚のうち9枚）。写真にない語を最初から選ぶ誤りが1件（p21 の PLEASE を lease）、リクエストの誤りが1件（p23 の boa）残る。1枚を読む時間はパソコンで約2〜6秒（2つのエンジンを並べて動かす）。スマホでは数倍かかる見込みで、スマホの実機では測っていない。品詞の道具 compromise（MIT）は、ほかのライブラリと同じく出典ページには載せていない。"
 }
