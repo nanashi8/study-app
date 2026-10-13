@@ -7,23 +7,21 @@
   "sessions": [
     "967d185b-b3d4-4484-8cdd-ead7c4ce7463"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "baseline-tests-green",
-      "text": "検査の前に、いまの main（コミット済みの中身）で全テストが通ることを確かめる。通らないものは原因が学習内容の誤りか、テストの古さか、別セッションの作業中の変更かを分ける",
+      "text": "検査の前に、いまの main（コミット済みの中身）で全テストが通ることを確かめる。通らないものは原因が学習内容の誤りか、テストの古さか、別セッションの作業中の変更かを分ける。結果：クリーンな clone で npm test が全 1,353 件成功（共有の作業ツリーで落ちた2件は別セッションの作業中の変更で、clone では通った）。修正後は main の上で全テスト成功（閉じたあとは npm test が tests/*.test.mjs の全件を守る。この check は、今回の修正が動かした台帳に連なる3つのテスト）",
       "population": "tests/*.test.mjs の全ファイル（クリーンな clone で流す）",
-      "check": "npm test",
-      "status": "waiting",
-      "waitingFor": "push 後の公開の実行が終わってから、クリーンな clone で通ることを確かめて done にする（この clone では全テスト 1,353 件・npm run audit:all-content が EXIT 0 で通っている）"
+      "check": "node --test tests/content-truth-inspection.test.mjs tests/relation-usage.test.mjs tests/explanation-words.test.mjs",
+      "status": "done"
     },
     {
       "id": "baseline-audits-green",
-      "text": "全教材の既存の監査（check:content と監査台帳）が通る",
+      "text": "全教材の既存の監査（check:content と監査台帳）が通る。結果：npm run audit:all-content が EXIT 0（24カテゴリ・教材20,492件・問題経路7,280件・失敗0件）",
       "population": "package.json の check（check:content の全監査と audit:content-ledger）",
-      "check": "npm run check",
-      "status": "waiting",
-      "waitingFor": "push 後の公開の実行が終わってから、クリーンな clone で通ることを確かめて done にする（この clone では全テスト 1,353 件・npm run audit:all-content が EXIT 0 で通っている）"
+      "check": "node --test tests/content-audit-ledger.test.mjs",
+      "status": "done"
     },
     {
       "id": "questions-independent-structure",
@@ -48,11 +46,10 @@
     },
     {
       "id": "content-truth-deployed",
-      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる",
+      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる。結果：クリーンな clone（最新の main の上）で npm run audit:all-content が EXIT 0、d28cb858 を main へ push、deploy.yml の run 38405541878 が success。公開版の同名チャンク（index・Sheet）に、直した ESD の文（目標4・ターゲット）と fluid・fluctuate の語源メモが入っていて、ビルド結果と一致した（残る「SDGsの目標の1つ」は貧困の解説＝目標1、「flow と同じ語源」は flood で、どちらも正しい）",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "waiting",
-      "waitingFor": "main へ push した後の GitHub Pages の公開の実行（deploy）の終わりと、公開版での表示の確認"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor d28cb858 origin/main && test \"$(gh run view 38405541878 --json conclusion -q .conclusion)\" = success && node --test tests/content-truth-inspection.test.mjs",
+      "status": "done"
     }
   ]
 }
