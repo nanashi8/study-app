@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ALL_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
-import { matchOcrTextToWords, normalizeOcrToken } from '../lib/vocabOcr.js'
+import {
+  matchOcrTextToWords,
+  normalizeOcrToken,
+  OCR_LANGUAGES,
+  OCR_REREAD_LANGUAGES,
+  ocrTokenConfidences,
+  recognizeOcrPage,
+} from '../lib/vocabOcr.js'
+import { loadEnglishWordSet } from '../lib/englishWordList.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -19,8 +27,8 @@ const MAX_OCR_DIMENSION = 2200
 const STATUS_LABELS = {
   'loading tesseract core': '文字認識エンジンを準備中…',
   'initializing tesseract': '文字認識エンジンを起動中…',
-  'loading language traineddata': '英語の認識データを読み込み中…',
-  'initializing api': '英単語の読み取りを準備中…',
+  'loading language traineddata': '英語と日本語の認識データを読み込み中…',
+  'initializing api': '文字の読み取りを準備中…',
   'recognizing text': '教科書の文字を読み取り中…',
 }
 
@@ -66,8 +74,9 @@ async function prepareImageForOcr(file) {
     context.fillRect(0, 0, width, height)
     context.drawImage(bitmap, 0, 0, width, height)
 
+    // 読み取りに渡す画像は PNG にする（JPEG に変えると文字の輪郭がにじみ、日本語の行を英字に読み違えることがある）。
     return await new Promise((resolve) => {
-      canvas.toBlob((blob) => resolve(blob ?? file), 'image/jpeg', 0.92)
+      canvas.toBlob((blob) => resolve(blob ?? file), 'image/png')
     })
   } finally {
     bitmap.close?.()
@@ -84,7 +93,12 @@ export function VocabCameraScreen() {
   const photoInput = useRef(null)
   const previewUrlRef = useRef('')
   const workerRef = useRef(null)
+  // 英字に化けた行を日本語だけで読み直すエンジン（化けた行があったときだけ作る）。
+  const rereadWorkerRef = useRef(null)
   const mountedRef = useRef(true)
+  // 読み取りのたびに作る、候補の判定に使うもの（文字を直して候補を更新するときも使う）。
+  const englishWordsRef = useRef(null)
+  const confidencesRef = useRef(new Map())
 
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
@@ -118,14 +132,21 @@ export function VocabCameraScreen() {
     return () => {
       mountedRef.current = false
       workerRef.current?.terminate()
+      rereadWorkerRef.current?.terminate()
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
     }
   }, [])
 
+  // 読み取りが不確かな語と、読み違いを直した語は、最初は選ばない（写真で確かめてから選ぶ）。
   const applyMatches = (text) => {
-    const next = matchOcrTextToWords(text, ALL_WORDS)
+    const next = matchOcrTextToWords(text, ALL_WORDS, {
+      englishWords: englishWordsRef.current,
+      confidences: confidencesRef.current,
+    })
     setSummary(next)
-    setSelected(new Set(next.candidates.filter((item) => !inWordBook(item.id)).map((item) => item.id)))
+    setSelected(new Set(next.candidates
+      .filter((item) => !inWordBook(item.id) && !item.uncertain && !item.corrected)
+      .map((item) => item.id)))
     setSelectedRequests(new Set(next.unmatched.map((item) => item.token)))
     setRequestedWords(new Set())
     setRequestedCount(0)
@@ -176,16 +197,20 @@ export function VocabCameraScreen() {
     setAddedCount(0)
 
     let worker
+    let rereadWorker
+    // 実在する英単語かを確かめる単語表は、読み取りと並べて読み込む。
+    const englishWordsLoading = loadEnglishWordSet()
+    englishWordsLoading.catch(() => {})
     try {
       const image = await prepareImageForOcr(file)
       if (!mountedRef.current) return
 
       setStatus('文字認識エンジンを準備中…')
       const { createWorker, OEM, PSM } = await import('tesseract.js')
-      worker = await createWorker('eng', OEM.LSTM_ONLY, {
+      worker = await createWorker([...OCR_LANGUAGES], OEM.LSTM_ONLY, {
         logger: (message) => {
           if (!mountedRef.current) return
-          setStatus(STATUS_LABELS[message.status] ?? '英単語を読み取り中…')
+          setStatus(STATUS_LABELS[message.status] ?? '文字を読み取り中…')
           setProgress((current) => Math.max(current, ocrProgress(message)))
         },
       })
@@ -196,10 +221,27 @@ export function VocabCameraScreen() {
         tessedit_pageseg_mode: PSM.AUTO,
         preserve_interword_spaces: '1',
       })
-      const result = await worker.recognize(image)
+      const page = await recognizeOcrPage(worker, image, {
+        getRereadWorker: async () => {
+          if (!mountedRef.current) return null
+          if (!rereadWorker) {
+            setStatus('日本語の行を読み直し中…')
+            rereadWorker = await createWorker([...OCR_REREAD_LANGUAGES], OEM.LSTM_ONLY)
+            rereadWorkerRef.current = rereadWorker
+            await rereadWorker.setParameters({
+              tessedit_pageseg_mode: PSM.SINGLE_LINE,
+              preserve_interword_spaces: '1',
+            })
+          }
+          return mountedRef.current ? rereadWorker : null
+        },
+      })
+      const englishWords = await englishWordsLoading
       if (!mountedRef.current) return
 
-      const text = result.data.text.trim()
+      const text = page.text.trim()
+      englishWordsRef.current = englishWords
+      confidencesRef.current = ocrTokenConfidences(page.words)
       setProgress(1)
       setStatus('読み取りが完了しました')
       setOcrText(text)
@@ -215,6 +257,10 @@ export function VocabCameraScreen() {
       if (worker) {
         await worker.terminate().catch(() => {})
         if (workerRef.current === worker) workerRef.current = null
+      }
+      if (rereadWorker) {
+        await rereadWorker.terminate().catch(() => {})
+        if (rereadWorkerRef.current === rereadWorker) rereadWorkerRef.current = null
       }
       if (mountedRef.current) setScanning(false)
     }
@@ -306,7 +352,7 @@ export function VocabCameraScreen() {
             <div>
               <h2 className="font-display font-extrabold text-ink">教科書をまっすぐ撮影</h2>
               <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                ページの英語部分を画面いっぱいに入れると、読み取りやすくなります。
+                {'日本語の訳や説明がまざったページも、そのまま撮れます。英語の部分を大きく写すと、読み取りやすくなります。'}
               </p>
             </div>
           </div>
@@ -390,7 +436,7 @@ export function VocabCameraScreen() {
               </div>
               <ProgressBar value={progress} />
               <p className="mt-2 text-[11px] font-bold text-brand-700/60">
-                初回は英語の認識データを準備するため、少し時間がかかります。
+                初回は英語と日本語の認識データを準備するため、少し時間がかかります。
               </p>
             </div>
           )}
@@ -414,7 +460,7 @@ export function VocabCameraScreen() {
                     {summary.candidates.length}語が辞書と一致
                   </h2>
                   <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                    {`読み取った ${summary.tokenCount} 語のうち、辞書にある単語を候補にしました。`}
+                    {`読み取った英語 ${summary.tokenCount} 語のうち、辞書にある単語を候補にしました。`}
                     {'意味を確認して追加する語を選んでください。'}
                   </p>
                 </div>
@@ -431,7 +477,7 @@ export function VocabCameraScreen() {
                   setTextChanged(true)
                 }}
                 className="mt-1.5 h-28 w-full resize-y rounded-2xl bg-paper p-3 text-sm font-bold leading-relaxed text-ink ring-1 ring-ink/10 focus:outline-none focus:ring-2 focus:ring-brand-300"
-                placeholder="読み取った英文がここに表示されます"
+                placeholder="読み取った文字がここに表示されます"
               />
               {textChanged && (
                 <Button
@@ -519,6 +565,12 @@ export function VocabCameraScreen() {
                           {observed && (
                             <span className="mt-0.5 block text-[11px] font-bold text-brand-600">
                               {observed} → {item.headword}
+                              {item.corrected ? '（読み違いを直しました）' : item.split ? '（続けて読まれた語を分けました）' : ''}
+                            </span>
+                          )}
+                          {item.uncertain && !saved && (
+                            <span className="mt-0.5 block text-[11px] font-bold text-amber-700" data-ocr-uncertain>
+                              {'読み取りが不確かです。写真で確かめてから選んでください。'}
                             </span>
                           )}
                         </span>
@@ -560,8 +612,9 @@ export function VocabCameraScreen() {
                         辞書にない単語
                       </h2>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
+                        {'辞書にまだない英単語です。'}
                         {'選んだ語だけを辞書登録リクエストへ送ります。'}
-                        {'写真や教科書の本文、メールアドレスは送信しません。誤読や人名は選択から外してください。'}
+                        {'写真や教科書の本文、メールアドレスは送信しません。'}
                       </p>
                     </div>
                   </div>
@@ -652,6 +705,33 @@ export function VocabCameraScreen() {
                       ? '送信中…'
                       : `選んだ ${selectedRequests.size}語を送る`}
                   </Button>
+                </Card>
+              </section>
+            )}
+
+            {summary.rejected.length > 0 && (
+              <section aria-labelledby="ocr-rejected-title">
+                <Card className="p-4">
+                  <h2 id="ocr-rejected-title" className="font-display font-extrabold text-ink">
+                    英単語として確かめられなかった文字
+                  </h2>
+                  <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
+                    {'人名・地名や、読み違えた文字です。単語帳にもリクエストにも入れません。'}
+                    {'英単語の読み違いなら、写真と見比べて上の文字を直すと候補に入ります。'}
+                  </p>
+                  <ul className="mt-2 flex flex-wrap gap-1.5" data-ocr-rejected>
+                    {summary.rejected.map((item) => (
+                      <li
+                        key={item.token}
+                        className="rounded-lg bg-ink/5 px-2 py-1 text-xs font-extrabold text-ink/60"
+                      >
+                        {item.q}
+                        {item.occurrences > 1 && (
+                          <span className="ml-1 text-[10px] text-ink/35">{item.occurrences}回</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </Card>
               </section>
             )}

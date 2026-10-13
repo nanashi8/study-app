@@ -1,0 +1,186 @@
+{
+  "samples": [
+    {
+      "id": "textbook-translation",
+      "note": "教科書の本文と日本語訳",
+      "lines": [
+        {
+          "text": "Lesson 3　図書館で"
+        },
+        {
+          "text": "Emi went to the library after school. She wanted to borrow a book about animals."
+        },
+        {
+          "text": "恵美は放課後、図書館へ行きました。彼女は動物についての本を借りたかったのです。"
+        },
+        {
+          "text": "The librarian showed her some interesting books."
+        },
+        {
+          "text": "司書は彼女におもしろい本を何冊か見せました。"
+        }
+      ]
+    },
+    {
+      "id": "word-list",
+      "note": "新出単語の表（英単語・品詞・日本語の意味）",
+      "lines": [
+        {
+          "text": "新出単語"
+        },
+        {
+          "cells": [
+            "library",
+            "名 図書館"
+          ]
+        },
+        {
+          "cells": [
+            "borrow",
+            "動 借りる"
+          ]
+        },
+        {
+          "cells": [
+            "animal",
+            "名 動物"
+          ]
+        },
+        {
+          "cells": [
+            "interesting",
+            "形 おもしろい"
+          ]
+        },
+        {
+          "cells": [
+            "librarian",
+            "名 司書"
+          ]
+        },
+        {
+          "cells": [
+            "wanted",
+            "動 want の過去形"
+          ]
+        },
+        {
+          "cells": [
+            "showed",
+            "動 show の過去形"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise",
+      "note": "日本語の指示文と英語の選択肢がまざる問題",
+      "lines": [
+        {
+          "text": "次の（　）に入る最も適切な語を選び、記号で答えなさい。"
+        },
+        {
+          "text": "(1) I (　) to school every day.　ア go　イ goes　ウ going"
+        },
+        {
+          "text": "(2) She is good (　) playing the piano.　ア in　イ at　ウ on"
+        },
+        {
+          "text": "日本文に合うように英文を完成させなさい。"
+        },
+        {
+          "text": "(3) 私は昨日、友だちと公園で野球をしました。"
+        },
+        {
+          "text": "I played baseball with my friends in the park yesterday."
+        }
+      ]
+    },
+    {
+      "id": "japanese-only",
+      "note": "英語のない日本語だけのページ（英単語を1語も出さない）",
+      "lines": [
+        {
+          "text": "第2章　人の体のつくりとはたらき"
+        },
+        {
+          "text": "消化された養分は、小腸の柔毛から吸収され、血液によって全身の細胞へ運ばれる。"
+        },
+        {
+          "text": "肺では酸素と二酸化炭素の交換が行われる。"
+        },
+        {
+          "text": "心臓は筋肉でできていて、血液を全身に送り出すポンプのはたらきをしている。"
+        }
+      ]
+    },
+    {
+      "id": "english-only",
+      "note": "英語だけのページ（日本語を足しても英語の読み取りが落ちない）",
+      "lines": [
+        {
+          "text": "Many people around the world enjoy watching soccer."
+        },
+        {
+          "text": "Some students practice every morning before class,"
+        },
+        {
+          "text": "and they often talk about famous players with their friends."
+        },
+        {
+          "text": "Playing sports is a good way to stay healthy and make new friends."
+        }
+      ]
+    },
+    {
+      "id": "inline-mixed",
+      "note": "日本語の文の中に英単語がまじるページ",
+      "lines": [
+        {
+          "text": "「study」は「勉強する」という意味の動詞です。"
+        },
+        {
+          "text": "三人称単数のときは studies になります。"
+        },
+        {
+          "text": "例：My brother studies science at university."
+        },
+        {
+          "text": "「decide to ～」は「～することに決める」という意味です。"
+        },
+        {
+          "text": "例：We decided to visit Kyoto next summer."
+        }
+      ]
+    },
+    {
+      "id": "photo-gothic",
+      "note": "写真ふう（ゴシック体・小さめ・少し傾いて・灰色の紙・ぼけ）",
+      "style": {
+        "font": "'Hiragino Sans', sans-serif",
+        "size": 24,
+        "rotate": 1.2,
+        "blur": 0.6,
+        "background": "#e9e6dc",
+        "color": "#333"
+      },
+      "lines": [
+        {
+          "text": "Part 2　環境を守るために"
+        },
+        {
+          "text": "We should reduce plastic waste to protect the ocean."
+        },
+        {
+          "text": "私たちは海を守るためにプラスチックごみを減らすべきです。"
+        },
+        {
+          "text": "Recycling bottles and cans is one simple thing we can do."
+        },
+        {
+          "text": "びんや缶をリサイクルすることは、私たちにできる簡単なことの一つです。"
+        }
+      ]
+    }
+  ]
+}

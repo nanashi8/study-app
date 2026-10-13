@@ -27,6 +27,19 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'english-words',
+    title: '英単語の確かめ',
+    note: 'Copyright 2000-2016 by Kevin Atkinson. Permission to use, copy, modify, distribute and sell these word lists, the associated scripts, the output created from the scripts, and its documentation for any purpose is hereby granted without fee, provided that the above copyright notice appears in all copies and that both that copyright notice and this permission notice appear in supporting documentation. Kevin Atkinson makes no representations about the suitability of this array for any purpose. It is provided "as is" without express or implied warranty.',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'scowl-wordlist',
+        name: 'SCOWL（Spell Checker Oriented Word Lists）の英単語の一覧（10〜70段、アメリカとイギリスのつづり）',
+        url: 'http://wordlist.aspell.net/',
+        use: '「教科書から単語追加」で、写真から読み取った語が実在する英単語かを確かめるのに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'maps',
     title: '地図',
     items: Object.freeze([

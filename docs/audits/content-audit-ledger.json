@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-09T06:53:16.202Z",
+  "auditedAt": "2026-10-13T13:14:50.205Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "211533802259badbaf26165e186d63af5636c18bb0db8140991e64de143584fb",
+    "sha256": "ce2b28641cf1e405e4e8e731e9817986510a346b5cb943a3f03a4830a8973926",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -361,6 +361,7 @@
       "tests/vocab-history.test.mjs",
       "tests/vocab-meanings.test.mjs",
       "tests/vocab-mix-and-word-lists.test.mjs",
+      "tests/vocab-ocr-real-engine.test.mjs",
       "tests/vocab-ocr.test.mjs",
       "tests/vocab-repeat-study.test.mjs",
       "tests/vocab-result-navigation.test.mjs",

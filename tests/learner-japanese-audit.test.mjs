@@ -104,11 +104,15 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 重点語ケースの入口と一覧・あらすじの書き直し・13語のほかの意味などで、学習者画面の日本語が 18382 から 18405
   // （重複なし 13725 から 13736）に、ソース全体が 831 から 833 ファイル・237122 から 237197 になった
   // （requests/2026-10-09-reading-prep-alignment.json）。
-  assert.equal(result.learnerFiles, 354)
-  assert.equal(result.learnerJapaneseEntries, 18405)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13736)
-  assert.equal(result.sourceFiles, 833)
-  assert.equal(result.sourceJapaneseEntries, 237197)
+  // 2026-10-13、教科書から単語追加の読み取りで日本語も読み、実在しない英単語を出さないようにした。英語の単語表を読む部品
+  // （src/lib/englishWordList.js）が増え、確かめられなかった文字の欄・不確かの印・読み違いを直した印・日本語の行の
+  // 読み直しの知らせ・出典の1件（英単語の確かめ）などで、学習者画面の日本語が 18405 から 18417（重複なし 13736 から 13747）に、
+  // ソース全体が 833 から 834 ファイル・237197 から 237212 になった（requests/2026-10-13-camera-ocr-japanese.json）。
+  assert.equal(result.learnerFiles, 355)
+  assert.equal(result.learnerJapaneseEntries, 18417)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13747)
+  assert.equal(result.sourceFiles, 834)
+  assert.equal(result.sourceJapaneseEntries, 237212)
   assert.equal(result.issues.length, 0)
 })
 
