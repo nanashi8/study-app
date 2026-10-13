@@ -7,43 +7,42 @@
   "sessions": [
     "967d185b-b3d4-4484-8cdd-ead7c4ce7463"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "phonetic-single-primary",
-      "text": "発音記号に主強勢（ˈ）が2つ以上ある表記を、辞書の書き方に合わせて主強勢1つ（残りは副強勢 ˌ）にする。見出し語の発音記号・ほかの品詞の形・つづり注意の語・熟語などの固定文字列と、それを照合するテストまで全部そろえる",
+      "text": "発音記号に主強勢（ˈ）が2つ以上ある表記を、辞書の書き方に合わせて主強勢1つ（残りは副強勢 ˌ）にする。見出し語の発音記号・ほかの品詞の形・つづり注意の語・熟語などの固定文字列と、それを照合するテストまで全部そろえる。結果：CMU 辞書の全語で主強勢が2つ以上の出力が0件（tests/phonetic-stress.test.mjs）。見出し語60語（主強勢46語・s+f の境目12語・alongside・svelte）と、ほかの品詞の形の固定文字列19件・heteronyms 1件を直した",
       "population": "公開する全見出し語（ALL_WORDS）の発音記号と、CMU 辞書から作る発音記号を持つ全データ（word-forms.js・spelling-confusables.js など）で、単語1つの表記に ˈ が2つ以上ある全件（見出し語46語＋ほかの品詞の形・つづり注意の派生形）",
       "check": "node --test tests/phonetic-stress.test.mjs",
       "status": "done"
     },
     {
       "id": "phonetic-syllable-boundary",
-      "text": "s と f が形態素の境目をまたぐ語（satisfy・transfer・disfavor・ceasefire・misfortune・henceforth など）で、強勢記号を f の前（s の後）に置く。sphere 系（atmosphere・hemisphere・biosphere・sphere）は s+f を語頭の連続子音として残す",
+      "text": "s と f が形態素の境目をまたぐ語（satisfy・transfer・disfavor・ceasefire・misfortune・henceforth など）で、強勢記号を f の前（s の後）に置く。sphere 系（atmosphere・hemisphere・biosphere・sphere）は s+f を語頭の連続子音として残す。結果：s+f が語幹の境目をまたぐ12語（satisfy・satisfied・satisfaction・satisfactory・dissatisfied・dissatisfaction・disfavor・misfortune・transfer・transform・henceforth・ceasefire）の強勢記号を f の前へ。sphere 系4語（sphere・atmosphere・hemisphere・biosphere）は変えていない",
       "population": "発音記号に ˈsf または ˌsf を持つ全見出し語（16語）とその派生形。そのうち境目がずれていた12語を直し、sphere 系4語は変えない",
       "check": "node --test tests/phonetic-stress.test.mjs",
       "status": "done"
     },
     {
       "id": "suffix-al-card-split",
-      "text": "語根カード「-al ＝ 〜の・〜に関する」に並ぶ語を、形容詞をつくる -al と名詞をつくる -al（動詞＋-al「〜すること」）に分け、名詞をつくる語は別のカードにする。見出し・意味・由来がカードの語と食い違わない。カードを足したときに連動する監査台帳・固定カウンタ・画面（語根の一覧・カード詳細・暗記・テスト・単語の語源の欄）もそろえる",
+      "text": "語根カード「-al ＝ 〜の・〜に関する」に並ぶ語を、形容詞をつくる -al と名詞をつくる -al（動詞＋-al「〜すること」）に分け、名詞をつくる語は別のカードにする。見出し・意味・由来がカードの語と食い違わない。カードを足したときに連動する監査台帳・固定カウンタ・画面（語根の一覧・カード詳細・暗記・テスト・単語の語源の欄）もそろえる。結果：sf-al の150語を1語ずつ読み、動詞＋-al「〜すること」の17語を新カード sf-al-n「-al（名詞）＝ 〜すること」へ（形容詞の -al は133語）。公開カード339→340、連動する固定値（接辞カード62→63・系統 latin 251→252・全教材20,492→20,493・問題20,863→20,864 など）と台帳をそろえた",
       "population": "接尾辞カード sf-al に紐づく全語（現在 約165語）を1語ずつ読み、形容詞の -al と名詞の -al に分けた全件",
       "check": "node --test tests/etymology-suffix-al.test.mjs",
       "status": "done"
     },
     {
       "id": "listening-speaker-gender",
-      "text": "「the man / the woman / the boy / the girl」で話者を指す設問が、聞こえる音声と食い違わないようにする。設問ごとに、その人物が話者A・Bのどちらかを台本から決めて持たせ、音声は性別に合わせて声の高さ・声の種類を変え、本文の表示にも誰かが分かる欄を付ける。絵の設問（Which sentence matches the picture?）の man/woman は話者ではないので対象外",
+      "text": "「the man / the woman / the boy / the girl」で話者を指す設問が、聞こえる音声と食い違わないようにする。設問ごとに、その人物が話者A・Bのどちらかを台本から決めて持たせ、音声は性別に合わせて声の高さ・声の種類を変え、本文の表示にも誰かが分かる欄を付ける。絵の設問（Which sentence matches the picture?）の man/woman は話者ではないので対象外。結果：22問を1問ずつ読み、人物を話者A・Bに決めた台帳 src/data/listening-speaker-roles.js（話者Aだけ11問・話者Bだけ10問・両方1問）。音声は性別に合う声と声の高さ（女性1.1・男性0.9）、本文の話者名に（女性）などを添えた",
       "population": "リスニング全 160問のうち、設問・選択肢が man/woman/boy/girl で話者を指す 22問（絵の設問4問を除く）。話者と台本の対応は1問ずつ読んで決める",
       "check": "node --test tests/listening-speaker-roles.test.mjs",
       "status": "done"
     },
     {
       "id": "observations-fix-deployed",
-      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる",
+      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる。結果：最新の main の上で npm run audit:all-content が EXIT 0（24カテゴリ・教材20,493件・問題経路7,280件・失敗0件）、152023c3 を main へ push、deploy.yml の run 38461698526 が success。公開版の Sheet・ListeningQuiz のチャンクがビルド結果と一致し、新しい発音記号・-al（名詞）・話者名が入っている（古い /ˈθɝˈtin/ は0件）",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "waiting",
-      "waitingFor": "main へ push した後の GitHub Pages の公開の実行（deploy）の終わりと、公開版で直した表示（発音記号・-al カード・リスニングの話者名）が入っていることの確認"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 152023c3 origin/main && test \"$(gh run view 38461698526 --json conclusion -q .conclusion)\" = success && node --test tests/phonetic-stress.test.mjs tests/etymology-suffix-al.test.mjs tests/listening-speaker-roles.test.mjs",
+      "status": "done"
     }
   ]
 }
