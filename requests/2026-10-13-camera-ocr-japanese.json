@@ -7,7 +7,7 @@
   "sessions": [
     "924c970a-6d04-4389-88ad-93dbdce169e3"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "japanese-read-as-japanese",
@@ -39,11 +39,11 @@
     },
     {
       "id": "camera-ocr-deployed",
-      "text": "全監査を通して main へ push し公開版へ出す",
+      "text": "全監査を通して main へ push し公開版へ出す。結果：クリーンな clone で npm run audit:all-content が通り（テスト 1,372件すべて成功・全教材監査台帳を書き直し）、0d8b60e2 を main へ push、deploy.yml の run 38403621768 が success。公開版の画面の部品に日本語の言語・読み直し・確かめられなかった文字の欄・単語表の読み込みが入り、公開版で本物のエンジンに試料2枚（inline-mixed・japanese-only）を読ませて開発版と同じ結果になった（送信は押していない）",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（scratchpad/clean-verify、4407433）で流している npm run audit:all-content（裏の処理 bct9z7357）の終わり。終わったら台帳を取り込んで push し、公開の実行を確かめる"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 0d8b60e2 origin/main && test \"$(gh run view 38403621768 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs",
+      "status": "done"
     }
-  ]
+  ],
+  "notes": "全監査の1回目で、ほかの依頼のテスト（tests/hide-login-save.test.mjs）が画面の文「選んだ語だけを辞書登録リクエストへ送ります。」をそのまま探していて落ちた。リクエスト欄の説明の頭に「辞書にまだない英単語です。」をつなげたためで、文を2つに分けて元の文を残した。直していないこと：辞書に見出し語 saw（のこぎり）があるので、文の中の saw は see の過去形ではなく saw の候補になる（前からの動き）。本物のエンジンのテストは、認識データを初回だけ外から読み込む（通信が要る）。"
 }
