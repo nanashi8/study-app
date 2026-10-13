@@ -3,14 +3,16 @@ import { useStore } from '../store/useStore.js'
 import { ALL_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import {
+  createOcrWordTest,
   matchOcrTextToWords,
   normalizeOcrToken,
-  OCR_LANGUAGES,
-  OCR_REREAD_LANGUAGES,
+  OCR_ENGINES,
   ocrTokenConfidences,
-  recognizeOcrPage,
 } from '../lib/vocabOcr.js'
+import { ocrBrowserWorkerOptions, readOcrPage } from '../lib/ocrEngine.js'
+import { createContextReading, loadEnglishTagger } from '../lib/ocrContext.js'
 import { loadEnglishWordSet } from '../lib/englishWordList.js'
+import { prepareImageForOcr } from '../lib/ocrImage.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -22,7 +24,6 @@ import { Check, Close, Refresh, Sparkles, Upload } from '../components/Icons.jsx
 const NO_REFS = Object.freeze([])
 
 const MAX_FILE_BYTES = 20 * 1024 * 1024
-const MAX_OCR_DIMENSION = 2200
 
 const STATUS_LABELS = {
   'loading tesseract core': '文字認識エンジンを準備中…',
@@ -37,50 +38,20 @@ const STATUS_PROGRESS = {
   'initializing tesseract': [0.16, 0.24],
   'loading language traineddata': [0.24, 0.48],
   'initializing api': [0.48, 0.56],
-  'recognizing text': [0.56, 0.98],
 }
+const RECOGNIZE_PROGRESS = [0.56, 0.98]
 
-function ocrProgress(message) {
+// エンジンごとの進み具合。読み取り（recognizing text）は1つのエンジンで白黒の決め方の数だけくり返すので、終えた数も数える。
+function engineProgress(state, message) {
+  if (message.status === 'recognizing text') {
+    const passes = OCR_ENGINES.find((engine) => engine.id === message.engine)?.thresholdings.length ?? 1
+    const value = Number(message.progress) || 0
+    if (value >= 1) state.done = Math.min(passes, (state.done ?? 0) + 1)
+    const fraction = Math.min(1, ((state.done ?? 0) + (value >= 1 ? 0 : value)) / passes)
+    return RECOGNIZE_PROGRESS[0] + (RECOGNIZE_PROGRESS[1] - RECOGNIZE_PROGRESS[0]) * fraction
+  }
   const [start, end] = STATUS_PROGRESS[message.status] ?? [0.02, 0.08]
   return start + (end - start) * (Number(message.progress) || 0)
-}
-
-async function prepareImageForOcr(file) {
-  if (typeof createImageBitmap !== 'function') return file
-
-  let bitmap
-  try {
-    bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
-  } catch {
-    bitmap = await createImageBitmap(file)
-  }
-
-  try {
-    const largestSide = Math.max(bitmap.width, bitmap.height)
-    const scale =
-      largestSide > MAX_OCR_DIMENSION
-        ? MAX_OCR_DIMENSION / largestSide
-        : largestSide < 1200
-          ? Math.min(2, 1600 / largestSide)
-          : 1
-    const width = Math.max(1, Math.round(bitmap.width * scale))
-    const height = Math.max(1, Math.round(bitmap.height * scale))
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
-    const context = canvas.getContext('2d', { alpha: false })
-    if (!context) return file
-    context.fillStyle = '#fff'
-    context.fillRect(0, 0, width, height)
-    context.drawImage(bitmap, 0, 0, width, height)
-
-    // 読み取りに渡す画像は PNG にする（JPEG に変えると文字の輪郭がにじみ、日本語の行を英字に読み違えることがある）。
-    return await new Promise((resolve) => {
-      canvas.toBlob((blob) => resolve(blob ?? file), 'image/png')
-    })
-  } finally {
-    bitmap.close?.()
-  }
 }
 
 export function VocabCameraScreen() {
@@ -92,12 +63,13 @@ export function VocabCameraScreen() {
   const cameraInput = useRef(null)
   const photoInput = useRef(null)
   const previewUrlRef = useRef('')
-  const workerRef = useRef(null)
-  // 英字に化けた行を日本語だけで読み直すエンジン（化けた行があったときだけ作る）。
-  const rereadWorkerRef = useRef(null)
+  // 動いている読み取りエンジン（2つを並べて動かす）。画面を離れたら止める。
+  const workersRef = useRef(new Set())
   const mountedRef = useRef(true)
   // 読み取りのたびに作る、候補の判定に使うもの（文字を直して候補を更新するときも使う）。
   const englishWordsRef = useRef(null)
+  // 英文の品詞を決める道具（saw ＝ see の過去形／のこぎり などを、前後の語から読み分ける）。
+  const taggerRef = useRef(null)
   const confidencesRef = useRef(new Map())
 
   const [file, setFile] = useState(null)
@@ -131,8 +103,8 @@ export function VocabCameraScreen() {
     mountedRef.current = true
     return () => {
       mountedRef.current = false
-      workerRef.current?.terminate()
-      rereadWorkerRef.current?.terminate()
+      for (const worker of workersRef.current) worker.terminate().catch(() => {})
+      workersRef.current.clear()
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
     }
   }, [])
@@ -142,6 +114,7 @@ export function VocabCameraScreen() {
     const next = matchOcrTextToWords(text, ALL_WORDS, {
       englishWords: englishWordsRef.current,
       confidences: confidencesRef.current,
+      contextReading: taggerRef.current ? createContextReading(taggerRef.current, text, ALL_WORDS) : null,
     })
     setSummary(next)
     setSelected(new Set(next.candidates
@@ -196,51 +169,47 @@ export function VocabCameraScreen() {
     setSummary(null)
     setAddedCount(0)
 
-    let worker
-    let rereadWorker
-    // 実在する英単語かを確かめる単語表は、読み取りと並べて読み込む。
+    // 実在する英単語かを確かめる単語表は、写真の下ごしらえと並べて読み込む（行の選び方にも使う）。
     const englishWordsLoading = loadEnglishWordSet()
     englishWordsLoading.catch(() => {})
+    const taggerLoading = loadEnglishTagger()
+    taggerLoading.catch(() => {})
+    const progressByEngine = new Map()
     try {
       const image = await prepareImageForOcr(file)
       if (!mountedRef.current) return
 
       setStatus('文字認識エンジンを準備中…')
-      const { createWorker, OEM, PSM } = await import('tesseract.js')
-      worker = await createWorker([...OCR_LANGUAGES], OEM.LSTM_ONLY, {
-        logger: (message) => {
-          if (!mountedRef.current) return
-          setStatus(STATUS_LABELS[message.status] ?? '文字を読み取り中…')
-          setProgress((current) => Math.max(current, ocrProgress(message)))
-        },
-      })
-      workerRef.current = worker
+      const [tesseract, workerOptions, englishWords, tagger] = await Promise.all([
+        import('tesseract.js'),
+        ocrBrowserWorkerOptions(),
+        englishWordsLoading,
+        taggerLoading,
+      ])
       if (!mountedRef.current) return
 
-      await worker.setParameters({
-        tessedit_pageseg_mode: PSM.AUTO,
-        preserve_interword_spaces: '1',
-      })
-      const page = await recognizeOcrPage(worker, image, {
-        getRereadWorker: async () => {
-          if (!mountedRef.current) return null
-          if (!rereadWorker) {
-            setStatus('日本語の行を読み直し中…')
-            rereadWorker = await createWorker([...OCR_REREAD_LANGUAGES], OEM.LSTM_ONLY)
-            rereadWorkerRef.current = rereadWorker
-            await rereadWorker.setParameters({
-              tessedit_pageseg_mode: PSM.SINGLE_LINE,
-              preserve_interword_spaces: '1',
-            })
-          }
-          return mountedRef.current ? rereadWorker : null
+      const page = await readOcrPage(tesseract, image, {
+        isEnglishWord: createOcrWordTest(ALL_WORDS, englishWords),
+        workerOptions,
+        isAlive: () => mountedRef.current,
+        onWorker: (worker) => {
+          workersRef.current.add(worker)
+        },
+        onProgress: (message) => {
+          if (!mountedRef.current) return
+          const state = progressByEngine.get(message.engine) ?? {}
+          state.value = engineProgress(state, message)
+          progressByEngine.set(message.engine, state)
+          const values = OCR_ENGINES.map((engine) => progressByEngine.get(engine.id)?.value ?? 0)
+          setStatus(STATUS_LABELS[message.status] ?? '文字を読み取り中…')
+          setProgress((current) => Math.max(current, values.reduce((sum, value) => sum + value, 0) / values.length))
         },
       })
-      const englishWords = await englishWordsLoading
       if (!mountedRef.current) return
 
       const text = page.text.trim()
       englishWordsRef.current = englishWords
+      taggerRef.current = tagger
       confidencesRef.current = ocrTokenConfidences(page.words)
       setProgress(1)
       setStatus('読み取りが完了しました')
@@ -254,14 +223,7 @@ export function VocabCameraScreen() {
         setProgress(0)
       }
     } finally {
-      if (worker) {
-        await worker.terminate().catch(() => {})
-        if (workerRef.current === worker) workerRef.current = null
-      }
-      if (rereadWorker) {
-        await rereadWorker.terminate().catch(() => {})
-        if (rereadWorkerRef.current === rereadWorker) rereadWorkerRef.current = null
-      }
+      workersRef.current.clear()
       if (mountedRef.current) setScanning(false)
     }
   }

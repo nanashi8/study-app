@@ -6,13 +6,19 @@ import { CREDIT_SECTIONS } from '../src/data/credits.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import { ENGLISH_WORD_LIST_FILES } from '../src/lib/englishWordList.js'
 import { englishWordSetForTests, screenLoaderFiles } from './english-word-set.mjs'
+import { OCR_CORE_VERSION, ocrCoreUrl } from '../src/lib/ocrEngine.js'
+import { OCR_IMAGE_MARGIN } from '../src/lib/ocrImage.js'
 import {
+  createOcrWordTest,
   extractEnglishTokens,
   matchOcrTextToWords,
+  mergeOcrPasses,
   normalizeOcrToken,
+  OCR_CONFIRM_PASSES,
   OCR_LOW_CONFIDENCE,
+  OCR_SURE_CONFIDENCE,
+  ocrLinesFromResult,
   ocrTokenConfidences,
-  ocrWordsFromResult,
 } from '../src/lib/vocabOcr.js'
 
 test('OCR文字列から合字・アポストロフィ・ハイフンを含む英語トークンを抽出する', () => {
@@ -127,15 +133,100 @@ test('確からしさが低い辞書の語は「不確か」の印を付け（�
   assert.deepEqual(result.rejected.map((item) => item.token), ['walrus'])
 })
 
-test('読み取りエンジンの結果から、語と確からしさを順に取り出す', () => {
+test('読み取りエンジンの結果から、行（文字・位置・語）を順に取り出す', () => {
+  const box = { x0: 0, y0: 0, x1: 10, y1: 10 }
   const data = {
     blocks: [{ paragraphs: [{ lines: [
-      { words: [{ text: '図書館', confidence: 93 }, { text: 'library', confidence: 91 }] },
-      { words: [{ text: 'borrow', confidence: 87 }] },
+      { text: '図書館 library\n', bbox: box, words: [{ text: '図書館', confidence: 93, bbox: box }, { text: 'library', confidence: 91, bbox: box }] },
+      { text: 'borrow', bbox: box, words: [{ text: 'borrow', confidence: 87, bbox: box }] },
     ] }] }],
   }
-  assert.deepEqual(ocrWordsFromResult(data).map((word) => word.text), ['図書館', 'library', 'borrow'])
-  assert.deepEqual(ocrWordsFromResult({}), [])
+  assert.deepEqual(ocrLinesFromResult(data).map((line) => [line.text, line.words.map((word) => word.text)]), [
+    ['図書館 library', ['図書館', 'library']],
+    ['borrow', ['borrow']],
+  ])
+  assert.deepEqual(ocrLinesFromResult({}), [])
+})
+
+// まとめ方の確かめに使う、読み方ごとの行。
+const lineAt = (y, text, words) => ({
+  text,
+  bbox: { x0: 0, y0: y, x1: 400, y1: y + 20 },
+  words: words.map(([wordText, confidence], i) => ({ text: wordText, confidence, bbox: { x0: i * 60, y0: y, x1: i * 60 + 50, y1: y + 20 } })),
+})
+
+test('複数の読み方をまとめる：日本語の行は日本語＋英語の読み方から、英語の行は英単語の多い読み方から選ぶ', () => {
+  const isEnglishWord = createOcrWordTest(ALL_WORDS, englishWordSetForTests())
+  const passes = [
+    // 日本語＋英語：日本語の行は読めるが、英語の段落の行が崩れる（7is 7S）。
+    { key: 'ja0', kind: 'ja', lines: [
+      lineAt(0, '恵美は図書館へ行きました。', [['恵美は図書館へ行きました。', 90]]),
+      lineAt(40, '7is 7S a reconstruction', [['7is', 30], ['7S', 20], ['a', 80], ['reconstruction', 70]]),
+    ] },
+    // 英語だけ：日本語の行が英字に化ける（HEISE BASIC）が、英語の行は読める。
+    { key: 'en0', kind: 'en', lines: [
+      lineAt(0, 'HEISE BASIC', [['HEISE', 20], ['BASIC', 30]]),
+      lineAt(40, 'This is a reconstruction', [['This', 92], ['is', 93], ['a', 93], ['reconstruction', 91]]),
+    ] },
+    { key: 'en2', kind: 'en', lines: [lineAt(40, 'This is a reconstruction', [['This', 90], ['is', 90], ['a', 90], ['reconstruction', 88]])] },
+  ]
+  const page = mergeOcrPasses(passes, isEnglishWord)
+  assert.deepEqual(page.lines.map((line) => [line.pass, line.text]), [
+    ['ja0', '恵美は図書館へ行きました。'],
+    ['en0', 'This is a reconstruction'],
+  ])
+  assert.equal(page.text, '恵美は図書館へ行きました。\nThis is a reconstruction')
+  assert.doesNotMatch(page.text, /HEISE|BASIC|7is/)
+  // reconstruction は en0・en2・ja0 の3つの読み方で同じ場所に読めた。
+  const reconstruction = page.words.find((word) => word.text === 'reconstruction')
+  assert.equal(reconstruction.support, 3)
+  assert.equal(reconstruction.confidence, 91)
+})
+
+test('長音記号「ー」や中黒だけの行（写真の模様の読み違い）は、日本語の行として出さない', () => {
+  const isEnglishWord = createOcrWordTest(ALL_WORDS, englishWordSetForTests())
+  const page = mergeOcrPasses([
+    { key: 'ja0', kind: 'ja', lines: [
+      lineAt(0, 'ーーーー ーー', [['ーーーー', 90], ['ーー', 88]]),
+      lineAt(40, '100メートルに達する', [['100メートルに達する', 90]]),
+    ] },
+  ], isEnglishWord)
+  assert.equal(page.text, '100メートルに達する')
+})
+
+test('複数の読み方で一致せず、確からしさも高くない語は「不確か」にする', () => {
+  assert.equal(OCR_CONFIRM_PASSES, 3)
+  assert.equal(OCR_SURE_CONFIDENCE, 85)
+  const isEnglishWord = createOcrWordTest(ALL_WORDS, englishWordSetForTests())
+  const page = mergeOcrPasses([
+    { key: 'en0', kind: 'en', lines: [lineAt(0, 'lease get off', [['lease', 70], ['get', 90], ['off', 88]])] },
+  ], isEnglishWord)
+  const byText = Object.fromEntries(page.words.map((word) => [word.text, word]))
+  assert.equal(byText.lease.support, 1)
+  assert.ok(byText.lease.confidence < OCR_LOW_CONFIDENCE)
+  assert.equal(byText.lease.rawConfidence, 70)
+  // 1つの読み方でも、確からしさが 85 以上なら確か。
+  assert.equal(byText.get.confidence, 90)
+  const match = matchOcrTextToWords(page.text, ALL_WORDS, { confidences: ocrTokenConfidences(page.words) })
+  const flags = Object.fromEntries(match.candidates.map((item) => [item.headword, item.uncertain]))
+  assert.deepEqual(flags, { lease: true, get: false, off: false })
+})
+
+test('ブラウザは旧エンジン入りの SIMD 版（なければ SIMD なし）を、入れた tesseract.js-core と同じ版で読む', () => {
+  const lock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'))
+  assert.equal(OCR_CORE_VERSION, lock.packages['node_modules/tesseract.js-core'].version)
+  assert.equal(ocrCoreUrl(true), `https://cdn.jsdelivr.net/npm/tesseract.js-core@${OCR_CORE_VERSION}/tesseract-core-simd.wasm.js`)
+  assert.equal(ocrCoreUrl(false), `https://cdn.jsdelivr.net/npm/tesseract.js-core@${OCR_CORE_VERSION}/tesseract-core.wasm.js`)
+  assert.doesNotMatch(ocrCoreUrl(true), /lstm|relaxed/)
+})
+
+test('写真は PNG にし、まわりに 4px の白い余白をつけてエンジンへ渡す', () => {
+  assert.equal(OCR_IMAGE_MARGIN, 4)
+  const source = readFileSync(new URL('../src/lib/ocrImage.js', import.meta.url), 'utf8')
+  assert.match(source, /type = 'image\/png'/)
+  assert.match(source, /context\.drawImage\(bitmap, OCR_IMAGE_MARGIN, OCR_IMAGE_MARGIN, width, height\)/)
+  const screen = readFileSync(new URL('../src/screens/VocabCamera.jsx', import.meta.url), 'utf8')
+  assert.match(screen, /await prepareImageForOcr\(file\)/)
 })
 
 test('英語の単語表は、小文字の英字の語だけを持ち、語形変化を含む。画面は 24 のファイルを全部読む', () => {

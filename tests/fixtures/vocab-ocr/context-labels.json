@@ -1,0 +1,2861 @@
+{
+ "note": "写真の文字の読み取りで、不規則な変化形が別の見出し語と同じつづりになる16語を前後の語から読み分けるときの正解（2026-10-14）。dictionary＝辞書の全例文に出る所、hand＝両方の読みを確かめる手作りの文、heldout＝決まりを作るのに使わず一度だけ流した文（最初は40文中38文が当たり、外れた2つの型を決まりに足した）、passage＝アプリの長文に出る所（読んで確かめた）。正解の付け方は src/lib/ocrContext.js の先頭に書く。",
+ "labels": [
+  {
+   "source": "dictionary",
+   "en": "I left a message for her.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "We saw wild animals.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "She has already left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The sun rose above the hills.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Turn left at the corner.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "They rescued the lost dog.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "I lost my house key.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "I found my lost key.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "I found my lost key.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Prices rose over the past decade.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The ball hit the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "The court found him innocent.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The police found a clue.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "He left a lasting legacy.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "They found a dinosaur fossil.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The jury found him guilty.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "He lost consciousness.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "I saw the advertisement on TV.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "She left, and he did likewise.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Prices inevitably rose.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "She shuddered at the thought.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "thought"
+  },
+  {
+   "source": "dictionary",
+   "en": "The wound left a scar.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "He is a bit eccentric.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bit"
+  },
+  {
+   "source": "dictionary",
+   "en": "He cut the board with a saw.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "saw"
+  },
+  {
+   "source": "dictionary",
+   "en": "I surmise that he left early.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "He found a permanent job.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "When the big dog growled, the puppy lay down in a submissive posture.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "dictionary",
+   "en": "The police found the culprit.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The town saw a sudden influx of tourists after the movie became popular.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "We saw a rare bird in the forest.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "He rose to fame quickly.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "When the teacher left, the classroom quickly fell into disorder.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "We found a hidden door behind the old bookshelf.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "We found a hidden door behind the old bookshelf.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "The inspector found a small flaw in the glass.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The school trip to Kyoto left a lasting impression on us.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The treasure hunters dreamed of the riches hidden in the old ship.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "Similarly, costs rose.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Scientists found a harmful substance in the river water.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "His reason for being late was unconvincing, so the teacher didn't accept it.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Many people lost their homes in the war.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The doctor found nothing unusual in my test results.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "I saw an ad for a new cafe in the newspaper.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The coach's analysis of the game video showed why we lost.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Researchers found an association between lack of sleep and poor grades.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The waiter was very attentive and refilled our glasses without being asked.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Visitors left an appalling amount of trash on the beach after the fireworks.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Someone left flowers at the base of the statue in the park.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "His excuse for being late was not very believable.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "They bound his hands.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bind"
+  },
+  {
+   "source": "dictionary",
+   "en": "My sister did a quick calculation and found that we had enough money.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Luckily, the doctor found that the lump was not cancerous.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Staying silent while a friend was being teased felt like cowardice to Mai.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The students left the building in an orderly line during the fire drill.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "My brother finally found a steady job at a bank.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The manager's callous remarks upset the workers who had lost their jobs.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Many soldiers who saw combat later suffered from stress.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Prices rose considerably.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Snow covered the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "The scientist lost credibility after his data turned out to be false.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The road curves left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "The shop lost many customers after its dishonest pricing was exposed online.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Oscar found it puzzling that his cat's bowl was empty every morning.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "After the accident, she saw a physical therapist twice a week.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "I couldn't use the bent key to open the door.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bent"
+  },
+  {
+   "source": "dictionary",
+   "en": "The police have found no conclusive evidence against him.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Daniel could not hide his disappointment when his favorite team lost.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "From the wet ground, we made the inference that it had rained at night.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "I got a nasty shock when I saw the phone bill.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The food at that restaurant is delicious but a bit pricey.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bit"
+  },
+  {
+   "source": "dictionary",
+   "en": "In the legend, the villagers finally rose up against their tyrannical king.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Align the text left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "To her dismay, Rina found that her phone battery was dead.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "A distressed whale was found stuck on the beach this morning.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "A diver found an old anchor at the bottom of the bay.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The delivery driver left the package on our doorstep.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sales rose dramatically.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The wolf lay on its back in submission to the pack leader.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "dictionary",
+   "en": "After months of searching, Ben finally found employment at a hotel.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "From the top of the tower, we saw endless fields of sunflowers.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The farmer was enraged when he found deer eating his vegetables.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Please leave the theater through the exit on the left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "The detective found an intriguing clue under the carpet.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being left out of the trip filled Nate with resentment.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being left out of the trip filled Nate with resentment.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The parents waited in anguish while rescuers searched for their lost son.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Some visitors thought the painting of angels in jeans was blasphemous.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "dictionary",
+   "en": "The price of crude oil rose sharply last month.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Darwin's theory of evolution changed how people saw the natural world.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sam gave an exclamation of surprise when he saw the huge fish on his line.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The man with the broken leg lay in agony on the side of the road.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "dictionary",
+   "en": "Years of civil war left the capital in a state of devastation.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "At the museum, Leah saw a model of a bird that became extinct long ago.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The island's fauna includes many birds found nowhere else in the world.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sara thought the violent movie was inappropriate for her little brother.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "dictionary",
+   "en": "Lost in an unfamiliar city, Emi asked a police officer for directions.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being tall is advantageous in volleyball, but skill matters more.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The shop owner found a counterfeit bill in the cash register.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Winning first prize in the art contest left Yui in ecstasy.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The students found a fragment of old pottery near the river.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being stuck in the elevator for an hour was a frightening experience.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The children skated on the frozen lake.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "dictionary",
+   "en": "Mr. Sato shouted in fury when he found a deep scratch on his new car.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Mom sighed with exasperation when she saw the messy room again.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The editor found a glaring mistake in the headline just before printing.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "In his haste to catch the train, Tom left his wallet on the table.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The merchant's avarice made him rich but left him without a single friend.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Her heart was filled with joy when she saw her family at the airport.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "In hindsight, we should have left home earlier to avoid the traffic.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "To her horror, Sakura realized she had left her passport at home.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Scientists found no evidence to support the claims about the new diet.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The investigation found the bus company culpable for the accident.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Experts found that the famous painting in the museum was a forgery.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The old map was inaccurate, so we got lost in the hills.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Many people have the mistaken belief that goldfish forget things in seconds.",
+   "form": "mistaken",
+   "nth": 0,
+   "expected": "mistaken"
+  },
+  {
+   "source": "dictionary",
+   "en": "The strict father thought that too much indulgence would spoil his children.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "dictionary",
+   "en": "The scandal left the famous chef with a tainted reputation.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Political instability has driven many investors away from the country.",
+   "form": "driven",
+   "nth": 0,
+   "expected": "drive"
+  },
+  {
+   "source": "dictionary",
+   "en": "The intrepid explorers crossed the frozen sea on foot.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "dictionary",
+   "en": "The judges found the design unimaginative and gave it a low score.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being tired is no justification for being rude to customers.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Being tired is no justification for being rude to customers.",
+   "form": "being",
+   "nth": 1,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The last bus bound for the airport leaves at ten.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound"
+  },
+  {
+   "source": "dictionary",
+   "en": "Constant criticism left the workers demoralized.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Years of working near loud machines left his hearing impaired.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "He just left the room.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The factory's cessation of production left 300 workers without jobs.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The children shouted with glee when they saw the first snow.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The police found a note that incriminated the store manager in the theft.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The injured player left the field with help from two teammates.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The water level rose after the rain.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ken is a driven student who practices the piano three hours a day.",
+   "form": "driven",
+   "nth": 0,
+   "expected": "driven"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sailors once found it hard to measure longitude at sea.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ken looked glum after his team lost the final.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The police quickly located the owner of the lost dog.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sara's excuse for being late sounded completely illogical to her teacher.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The mechanic found the problem with our car's engine in minutes.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The old map showed the way to a lost city.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "The older boys taunted him for being slow, but he kept running.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "The artist makes sculptures from found objects like old keys and bottle caps.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "Mom finally found her mislaid glasses in the refrigerator.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sales rose ten percent compared with the corresponding period last year.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Sara found the misplaced report in the wrong folder on her desk.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The farm was closed after inspectors found that it mistreated its animals.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The dog let out a mournful howl when its owner left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The thieves bungled the robbery and left their car keys behind.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The puppy looked up at me with doleful eyes when I left for school.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The dragon is a mythical creature found in many old stories.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "Many viewers found the TV ad offensive and complained.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The lake they saw in the desert turned out to be a mirage.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The singer rose from obscurity after one of her videos went viral.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Scientists found tiny organisms living in the deep sea.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "A baggage handler at the airport found Omar's missing suitcase within an hour.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The stray cat was starving when we found it in the snow.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Years of economic stagnation left many young people in the town without jobs.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Out of sheer stubbornness, Marco refused to ask for directions and got lost.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "He rose to the rank of captain in the navy.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "What was your mother's reaction when she saw your test score?",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Even a seasoned traveler like Mr. Brown got lost in the narrow streets.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "During the storm, the hikers found shelter in a small cave.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Two witnesses testified that they saw the man leave the store.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Grandma's bedtime stories always ended with wickedness being punished.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "I had an uneasy feeling when I saw the dark clouds.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "When the factory closed, unemployment in the town rose sharply.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The knight was accused of being unfaithful to his king.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Lily left her unfinished homework on the desk and ran out to play.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The indiscriminate cutting of trees has left the hillside bare.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Our teacher made an insightful comment about the poem's hidden meaning.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "My usually cheerful cousin has been moody since he lost his phone.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The report begins with an enumeration of all the problems found at the factory.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "The lost suitcase was easily identifiable by its bright yellow ribbon.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ken sincerely thanked the woman who found his lost wallet.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ken sincerely thanked the woman who found his lost wallet.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "The reporter covertly recorded the conversation with a hidden microphone.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "The village was so clannish that newcomers found it hard to make friends.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "We felt powerless as the flood water rose around our house.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The answer to this question can be found in the preceding chapter.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The puppy was skinny when we found it, but now it's healthy.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The builder's sloppy work left cracks in the new kitchen wall.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Someone left a spiteful comment under Hana's dance video.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Vegetable prices rose steeply after the typhoon.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The movie's bad guy was so stereotypical that nobody found him scary.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Caffeine is a mild stimulant found in coffee and tea.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "Yuto's teacher found the sudden drop in his grades troubling.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The restaurant was closed because its kitchen was found to be unsanitary.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The company quickly updated its app after experts found a security vulnerability.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The grapes left in the sun shriveled into raisins.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The airline offered us compensation after it lost our luggage.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ken felt a moral duty to return the wallet he found.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The Browns offered a reward for finding their lost cat.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Emi combed her hair before she left for school.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Kate's conscience would not let her keep the wallet she found.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Scientists studied the frozen corpse of a mammoth found in Siberia.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "dictionary",
+   "en": "Scientists studied the frozen corpse of a mammoth found in Siberia.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found"
+  },
+  {
+   "source": "dictionary",
+   "en": "The waves left white foam on the sand.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "We saw paintings by young artists at the gallery.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "He gambled his savings on a horse race and lost it all.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "My leg itches where a bug bit me last night.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bite"
+  },
+  {
+   "source": "dictionary",
+   "en": "Mr. Hill was kneeling on the ground to plant flowers.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "The hikers almost fell into a deep pit hidden under the leaves.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "Under the microscope, Kai saw that the beach sand was mostly quartz.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The manager decided to resign after the team lost ten games in a row.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Every autumn, salmon swim up this river to lay their eggs.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lay"
+  },
+  {
+   "source": "dictionary",
+   "en": "The dog followed the scent of the lost hiker through the forest.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "We saw an old samurai sword at the city museum.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Researchers found gold jewelry inside an ancient tomb in Egypt.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "At the fish market, we saw a huge tuna on the ice.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "Twist the lid to the left to open the jar.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "Paul wears a watch on his left wrist.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "Squirrels bury acorns in the ground to eat in winter.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "The storm bent the TV antenna on our roof.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bend"
+  },
+  {
+   "source": "dictionary",
+   "en": "Someone left a big dent in my car door in the parking lot.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Noah left his gym shoes in his locker.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The farmer used a tractor to pull the old tree stump out of the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "Heavy snow bent the boughs of the old pine tree in the park.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bend"
+  },
+  {
+   "source": "dictionary",
+   "en": "Many residents deplore the litter left on the beach after summer festivals.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "After a frantic search, Mei found her passport under the bed.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Kaito still vividly remembers the day he first saw the ocean.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The old painting was allegedly found in a farmer's barn.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "I thought it would rain today.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "dictionary",
+   "en": "We saw a group of dolphins jumping near our boat.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "A police officer helped the lost child.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "The children looked for hidden treasure on the beach.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "Can you help me lay the injured dog on the blanket?",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lay"
+  },
+  {
+   "source": "dictionary",
+   "en": "I left my umbrella somewhere in the school.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The building plan has been held in abeyance until funds are found.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The company's new app was a debacle that lost millions of dollars.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The chef eschews frozen food and uses only fresh ingredients.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "dictionary",
+   "en": "The writer found a felicitous phrase to describe the quiet morning.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "A fetid smell rose from the garbage left in the summer heat.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "A fetid smell rose from the garbage left in the summer heat.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The child's ingenuous question about death left the adults silent.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Tourists often get lost in the labyrinthine streets of the old town.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "The lithe gymnast bent backward until her hands touched the floor.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bend"
+  },
+  {
+   "source": "dictionary",
+   "en": "Critics found the movie's ending mawkish and unrealistic.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "A perspicacious reader will notice the clues hidden in the first chapter.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "The dog has a proclivity for chewing shoes when left alone.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "After winning three games, the team became complacent and lost the next one.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The hapless tourist lost his passport and his wallet on the same day.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The reclusive painter lived alone in the mountains and rarely saw visitors.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "After his dog died, Tom found solace in long walks by the sea.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The judges found the story's ending trite and predictable.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Mom was aghast when she saw the mess in the kitchen.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The minister's equivocal statement left reporters unsure of his real position.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The lost kitten gave a plaintive cry from under the car.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "The company's sales saw a precipitous decline after the scandal.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The bilious old critic found fault with every young writer.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The former champion suffered the ignominy of being sent home in the first week.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "Kenji was loath to admit that he had lost the tickets.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The afternoon heat left the whole village in a state of torpor.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "The morning fog dissipated as the sun rose.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "The hotel's service was execrable, so we left a day early.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ancient people saw a comet as a portent of disaster.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "After the team lost, the meeting turned into bitter recrimination.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "The mayor resigned after an investigation found evidence of malfeasance.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The government's profligacy left the country deep in debt.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "After he left the church, the villagers treated him as an apostate.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Friends called to commiserate with her after she lost the election.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "dictionary",
+   "en": "Students at one junior high school noticed that a lot of food was left in the cafeteria after lunch.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left_2"
+  },
+  {
+   "source": "dictionary",
+   "en": "They can expose failure that would otherwise remain hidden behind confident speeches or professional authority.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "dictionary",
+   "en": "Company funding does not automatically make research false, but readers should check whether the company sells the product being tested.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "dictionary",
+   "en": "One student in a wheelchair also found that a short route had many steps.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Ground teams must also track objects continuously, which requires expensive radar and staff.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "dictionary",
+   "en": "Costs rose, and prices increased correspondingly.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "Microplastics have been found in rivers and oceans.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Everyone felt relief when the missing child was found.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "He left early under the pretense of illness.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "dictionary",
+   "en": "Add a bit of salt to the sauce.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bit"
+  },
+  {
+   "source": "dictionary",
+   "en": "I found the dictionary at a small bookstore.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "The team marked the area where a landmine was found.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Turn left at the second traffic light.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "dictionary",
+   "en": "The children found the exit from the hedge maze.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "We reported the lost bag at the police station.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "dictionary",
+   "en": "Researchers found prehistoric tools in the cave.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "dictionary",
+   "en": "Smoke rose from the kitchen window.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "dictionary",
+   "en": "That thought changed the direction of our discussion.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "thought"
+  },
+  {
+   "source": "dictionary",
+   "en": "Only two tickets are left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left_2"
+  },
+  {
+   "source": "dictionary",
+   "en": "It is bound to rain tomorrow.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound_2"
+  },
+  {
+   "source": "dictionary",
+   "en": "The thief took flight when he saw the police.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "dictionary",
+   "en": "The boat left a long wake behind it.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "hand",
+   "en": "She gave me a red rose.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rose"
+  },
+  {
+   "source": "hand",
+   "en": "The rose in the vase smells sweet.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rose"
+  },
+  {
+   "source": "hand",
+   "en": "He rose from his chair and opened the window.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "hand",
+   "en": "I need a saw to cut this branch.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "saw"
+  },
+  {
+   "source": "hand",
+   "en": "My father's saw is in the garage.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "saw"
+  },
+  {
+   "source": "hand",
+   "en": "Yesterday I saw a famous singer at the station.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "hand",
+   "en": "Emi saw a walrus at the zoo.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "hand",
+   "en": "She ground the coffee beans this morning.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "grind"
+  },
+  {
+   "source": "hand",
+   "en": "The children played on the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "hand",
+   "en": "The dog bit the mailman.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bite"
+  },
+  {
+   "source": "hand",
+   "en": "Wait a bit, please.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bit"
+  },
+  {
+   "source": "hand",
+   "en": "I had a good thought.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "thought"
+  },
+  {
+   "source": "hand",
+   "en": "We thought it was a good idea.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "hand",
+   "en": "A dog is a living being.",
+   "form": "being",
+   "nth": 0,
+   "expected": "being"
+  },
+  {
+   "source": "hand",
+   "en": "Thank you for being so kind.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "hand",
+   "en": "They decided to found a new school in the village.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found_2"
+  },
+  {
+   "source": "hand",
+   "en": "I found my glasses under the sofa.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "hand",
+   "en": "The ship was bound for Hawaii.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound"
+  },
+  {
+   "source": "hand",
+   "en": "He is bound to win the race.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound_2"
+  },
+  {
+   "source": "hand",
+   "en": "They bound the boxes with rope.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bind"
+  },
+  {
+   "source": "hand",
+   "en": "The lake has frozen over.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "freeze"
+  },
+  {
+   "source": "hand",
+   "en": "We bought frozen vegetables.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "hand",
+   "en": "The cat had hidden under the bed.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hide"
+  },
+  {
+   "source": "hand",
+   "en": "There is a hidden message in the song.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "hand",
+   "en": "You are mistaken about the date.",
+   "form": "mistaken",
+   "nth": 0,
+   "expected": "mistaken"
+  },
+  {
+   "source": "hand",
+   "en": "He had mistaken her for her sister.",
+   "form": "mistaken",
+   "nth": 0,
+   "expected": "mistake"
+  },
+  {
+   "source": "hand",
+   "en": "She has driven to Osaka many times.",
+   "form": "driven",
+   "nth": 0,
+   "expected": "drive"
+  },
+  {
+   "source": "hand",
+   "en": "He is a driven young man.",
+   "form": "driven",
+   "nth": 0,
+   "expected": "driven"
+  },
+  {
+   "source": "hand",
+   "en": "The old nail was bent.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bent"
+  },
+  {
+   "source": "hand",
+   "en": "He bent down to pick up the coin.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bend"
+  },
+  {
+   "source": "hand",
+   "en": "I lay in bed all morning because I had a cold.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "hand",
+   "en": "Please lay the book on the desk.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lay"
+  },
+  {
+   "source": "hand",
+   "en": "Only a few seats were left.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left_2"
+  },
+  {
+   "source": "hand",
+   "en": "Turn to the left at the bank.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "hand",
+   "en": "She writes with her left hand.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "hand",
+   "en": "My brother left for London last week.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "hand",
+   "en": "We got lost in the forest.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "hand",
+   "en": "We lost the game by one point.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "hand",
+   "en": "She found the lost ring in the garden.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "heldout",
+   "en": "When I opened the door, I saw my old friend.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "heldout",
+   "en": "The carpenter sharpened his saw before work.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "saw"
+  },
+  {
+   "source": "heldout",
+   "en": "Have you ever seen a saw like this one?",
+   "form": "saw",
+   "nth": 0,
+   "expected": "saw"
+  },
+  {
+   "source": "heldout",
+   "en": "Nobody saw the accident.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "heldout",
+   "en": "The temperature rose quickly in the afternoon.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rise"
+  },
+  {
+   "source": "heldout",
+   "en": "This rose has a strong smell.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rose"
+  },
+  {
+   "source": "heldout",
+   "en": "Each rose was a different color.",
+   "form": "rose",
+   "nth": 0,
+   "expected": "rose"
+  },
+  {
+   "source": "heldout",
+   "en": "The mosquito bit my arm.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bite"
+  },
+  {
+   "source": "heldout",
+   "en": "It was a bit cold this morning.",
+   "form": "bit",
+   "nth": 0,
+   "expected": "bit"
+  },
+  {
+   "source": "heldout",
+   "en": "Everyone thought the test was easy.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "heldout",
+   "en": "The thought of summer vacation made me happy.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "thought"
+  },
+  {
+   "source": "heldout",
+   "en": "The ground was wet after the storm.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "heldout",
+   "en": "The miller ground the wheat into flour.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "grind"
+  },
+  {
+   "source": "heldout",
+   "en": "He apologized for being rude.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "heldout",
+   "en": "Every human being needs water.",
+   "form": "being",
+   "nth": 0,
+   "expected": "being"
+  },
+  {
+   "source": "heldout",
+   "en": "The baby lay quietly in her bed.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "heldout",
+   "en": "Hens lay eggs almost every day.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lay"
+  },
+  {
+   "source": "heldout",
+   "en": "He lay on the grass and looked at the sky.",
+   "form": "lay",
+   "nth": 0,
+   "expected": "lie"
+  },
+  {
+   "source": "heldout",
+   "en": "She left her bag on the train.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "heldout",
+   "en": "There is no milk left in the fridge.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left_2"
+  },
+  {
+   "source": "heldout",
+   "en": "Go straight and turn left at the post office.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "heldout",
+   "en": "The bus left ten minutes ago.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "heldout",
+   "en": "He raised his left arm.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left"
+  },
+  {
+   "source": "heldout",
+   "en": "I lost my way in the city.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "heldout",
+   "en": "The boy looked lost and scared.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "heldout",
+   "en": "Our team has lost three games.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "heldout",
+   "en": "They searched for the lost treasure.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "heldout",
+   "en": "We found the answer in the textbook.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "heldout",
+   "en": "The key was found under the mat.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "heldout",
+   "en": "She wants to found her own company someday.",
+   "form": "found",
+   "nth": 0,
+   "expected": "found_2"
+  },
+  {
+   "source": "heldout",
+   "en": "The cat had hidden the toy under the bed.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hide"
+  },
+  {
+   "source": "heldout",
+   "en": "The hidden camera recorded everything.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "heldout",
+   "en": "The river has frozen solid.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "freeze"
+  },
+  {
+   "source": "heldout",
+   "en": "My fingers were frozen after the walk.",
+   "form": "frozen",
+   "nth": 0,
+   "expected": "frozen"
+  },
+  {
+   "source": "heldout",
+   "en": "He bent the wire into a circle.",
+   "form": "bent",
+   "nth": 0,
+   "expected": "bend"
+  },
+  {
+   "source": "heldout",
+   "en": "This train is bound for Tokyo.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound"
+  },
+  {
+   "source": "heldout",
+   "en": "You are bound to make mistakes when you learn.",
+   "form": "bound",
+   "nth": 0,
+   "expected": "bound_2"
+  },
+  {
+   "source": "heldout",
+   "en": "She has driven this car for ten years.",
+   "form": "driven",
+   "nth": 0,
+   "expected": "drive"
+  },
+  {
+   "source": "heldout",
+   "en": "I was mistaken about the time.",
+   "form": "mistaken",
+   "nth": 0,
+   "expected": "mistaken"
+  },
+  {
+   "source": "heldout",
+   "en": "The police found him guilty.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "The class then measured the amount of rice, vegetables, and bread left each day for two weeks.",
+   "form": "left",
+   "nth": 0,
+   "expected": "left_2"
+  },
+  {
+   "source": "passage",
+   "en": "Readers still need to examine how the study was designed and whether other researchers found similar results.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "There is also a political question about who bears the burden of being measured.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "At first, many students thought the work would be simple, but they soon learned that plants need careful attention.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "passage",
+   "en": "Another example can be found in public libraries.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "City leaders therefore need to ask where a new system will have the greatest effect and who might be left out.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "passage",
+   "en": "They found that one sign was hidden behind a large tree.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "Local students wanted to help them explore the town without getting lost.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "passage",
+   "en": "Items made from one clearly labeled material were easier to sort than items with hidden mixtures.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "passage",
+   "en": "A shield can direct light toward the ground instead of allowing it to escape into the sky or nearby windows.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "Disclosure matters, but a sentence hidden in a long policy does not create meaningful awareness.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "passage",
+   "en": "Some students thought the panels were broken, but the weather was the real reason.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "passage",
+   "en": "The class found that a list of ideas was often helpful.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "The class also found that copying a finished report was not honest work.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "Shops and restaurants welcomed the change because many young families had left the town.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "passage",
+   "en": "The adjustment was slow, and individual workers still lost income during it.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "passage",
+   "en": "Signing equipment is expensive, so the poorest witnesses are least able to prove what they saw.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "passage",
+   "en": "Many students had hidden small pains from the teacher.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hide"
+  },
+  {
+   "source": "passage",
+   "en": "They practice the phrases for medical help, food and lost family members.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "passage",
+   "en": "Most of the foreign residents left their homes on time.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "passage",
+   "en": "Humanitarian and environmental arguments therefore enter debates once thought purely local.",
+   "form": "thought",
+   "nth": 0,
+   "expected": "think"
+  },
+  {
+   "source": "passage",
+   "en": "Apologies carry much the same hidden structure, and they are misread even more often than greetings are.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "passage",
+   "en": "A rhythm learned at an early age can resonate long after the theology that once explained it has been lost.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "passage",
+   "en": "Reading a festival well therefore means asking who keeps it, who pays for it, and who is left out.",
+   "form": "left",
+   "nth": 0,
+   "expected": "leave"
+  },
+  {
+   "source": "passage",
+   "en": "Trade has always carried words along with the commodities that were being bought and sold across long distances.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Bilingual communities are frequently described as being trapped somewhere awkwardly between two different worlds.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "A stereotype is a compressed observation that has quietly stopped being tested against any new evidence at all.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "It usually begins with something a traveller genuinely saw and ends as a claim about millions of people.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "passage",
+   "en": "Words such as always and every are among the clearest signals that a description has stopped being precise.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Leaves, roots, and the loose floor of a forest all slow the water down and let a large part of it sink into the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "Bare ground between two harvests is the moment at which a field is most likely to wash away.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "Irrigation raises yields surely and steadily, and yet it also concentrates salt in the very ground that it waters.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "Families that have lost a house carry a strain that lasts long after the water itself has disappeared.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lose"
+  },
+  {
+   "source": "passage",
+   "en": "A hard paved surface sends rain straight to the nearest drain instead of letting it soak into the ground.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "A ground floor that is used for storage recovers from a flood far more easily than one used for sleeping.",
+   "form": "ground",
+   "nth": 0,
+   "expected": "ground"
+  },
+  {
+   "source": "passage",
+   "en": "Rules that require the second of these uses to sit higher are cheap while a district is still being built.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Parts stop being made, the engineers who understand it retire, and the records that explain it go missing.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Any policy that ignores this asymmetry will end by describing the second of those households as being simply careless.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Its value comes from being consistently predictable rather than from being clever in any one particular case.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Records are lost, formats become unreadable, and the people who once understood an old system quietly retire.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "passage",
+   "en": "A health budget that is used entirely on treatment is therefore being used at the very last stage of the process.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Pretending that no such choice is being made merely hides the choice rather than actually avoiding it in any way.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "Land that has been built on cannot easily be cleared again, and a species that is once lost does not come back.",
+   "form": "lost",
+   "nth": 0,
+   "expected": "lost"
+  },
+  {
+   "source": "passage",
+   "en": "What it does guarantee is that a mistake will be found at a time when there is still time to put it right.",
+   "form": "found",
+   "nth": 0,
+   "expected": "find"
+  },
+  {
+   "source": "passage",
+   "en": "What happens when important information is hidden or hard to verify?",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "passage",
+   "en": "It stops being a festival once money is involved.",
+   "form": "being",
+   "nth": 0,
+   "expected": "be"
+  },
+  {
+   "source": "passage",
+   "en": "The fact that the traveller saw anything at all.",
+   "form": "saw",
+   "nth": 0,
+   "expected": "see"
+  },
+  {
+   "source": "passage",
+   "en": "Citizens cannot compare proposals when important information is hidden or difficult to verify.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  },
+  {
+   "source": "passage",
+   "en": "Understanding the whole system requires attention to both visible events and slow hidden change.",
+   "form": "hidden",
+   "nth": 0,
+   "expected": "hidden"
+  }
+ ]
+}
