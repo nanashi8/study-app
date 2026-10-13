@@ -29,6 +29,10 @@ const reviewedStem = reviewedOn('2026-09-07')
 // つづりが似た語の語源の見直し（requests/2026-09-26-lookalike-origins.json）で、紐づけ語を直して確かめ直したカード。
 // isolate は sōlus「ひとりの」ではなくイタリア語 isola「島」（ラテン語 īnsula）から来た語なので、solus から insul へ移した。
 const reviewedLookalike = reviewedOn('2026-09-26')
+// -al の接尾辞カードを、形容詞をつくる -al（sf-al）と動詞＋-al「〜すること」の名詞（sf-al-n）に分けた
+// （requests/2026-10-14-content-observations-fix.json）。arrival・refusal など17語は個別の語源メモが
+// 「-al「〜すること」」と書いていて、カードの「〜の・〜に関する」と食い違っていた。両方のカードを1語ずつ読み直した。
+const reviewedSplitAl = reviewedOn('2026-10-14')
 
 export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   port: reviewed(['important', 'report'], 'f27669c208461d2f4021f890b0c5ed9fb0aa684a45af54248bc1be5e3f46b458'),
@@ -308,7 +312,8 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   'sf-able': reviewedSuffix(['capable', 'visible'], '4cac2882374965c9c1875198140b462c69de6b510d18e8193496913ddc54b6d0'),
   'sf-ity': reviewedSuffix(['activity', 'equality'], '36b229ca9198d8a61e21c27025c5cc2aa019afecb32ffc0bada6c7c1ff3bb8eb'),
   'sf-ous': reviewedSuffix(['famous', 'curious'], '856e31ae472d4403d7af33f51e7f18b7f1122cca3ed946d548ee242460a50b06'),
-  'sf-al': reviewedSuffix(['equal', 'national'], '06fbcaa2aeef1ec93c179d228a2ecf5b5f27b36181bf60efbd2c69918dc6817c'),
+  'sf-al': reviewedSplitAl(['equal', 'national'], 'a208b0368daffc8316db85e49c9857ae05ccf80051875e801e4d782e157edad8'),
+  'sf-al-n': reviewedSplitAl(['arrival', 'refusal'], 'e26a57b203909847343bbd844ce10d80003dbee7e1960f351d35f1f69227ca50'),
   'sf-ive': reviewedSuffix(['native', 'creative'], 'd72837ec60c5c7184e82590995c0b0d96d958937022a6703b4a9c83c45e82b7d'),
   'sf-ance': reviewedSuffix(['distance', 'science'], 'a3fad48db3e578df23efc9ccf82a132100f65020c8ed0ef9cac497dc8b8777f9'),
   'sf-ant': reviewedSuffix(['important', 'patient'], '0eca9a0f99aaded52719f9cfa0ba102645a49145dd579512e4a25e5c2e443bb7'),

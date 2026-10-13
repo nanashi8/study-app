@@ -11,7 +11,7 @@
 | 英文法 | `GRAMMAR_PRACTICE` | 3,555 |
 | リスニング | `LISTENING_ITEMS` | 160 |
 | ディクテーション | `DICTATION_ITEMS` | 140 |
-| 語源 | `ETYMOLOGY_PACKS` | 339 |
+| 語源 | `ETYMOLOGY_PACKS` | 340 |
 | 古典単語 | `KOTEN_WORDS` | 300 |
 | 古典文法 | `KOTEN_GRAMMAR` | 74 |
 | 古典常識 | `KOTEN_CULTURE` | 56 |

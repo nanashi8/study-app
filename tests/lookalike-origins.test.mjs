@@ -104,9 +104,9 @@ test('humiliate と human：どちらの語の画面でも「遠い親戚」と�
 
 test('語根カードの似た語：母集団（語根カード 277枚の形に似た全見出し語）の全件に判定と説明があり、古い行・書き方の誤りがない', () => {
   // 接頭辞・接尾辞のカード（語の一部の形を教えるカード）は母集団から外す。
-  assert.equal(ETYMOLOGY_PACKS.length, 339)
+  assert.equal(ETYMOLOGY_PACKS.length, 340)
   assert.equal(LOOKALIKE_ROOT_CARDS.length, 277)
-  assert.equal(ETYMOLOGY_PACKS.filter(isAffixCard).length, 62)
+  assert.equal(ETYMOLOGY_PACKS.filter(isAffixCard).length, 63)
   const gaps = lookalikeOriginGaps()
   // 母集団は全見出し語 8,929語（Monday・post office のような大文字・空白・記号を含む語も小文字にして比べる）。
   assert.equal(gaps.cards, 162, '似た語を持つ語根カード')

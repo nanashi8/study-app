@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-13T13:29:17.984Z",
+  "auditedAt": "2026-10-13T20:16:05.690Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 24,
-    "learningItemCount": 20492,
-    "quizItemCount": 20863,
+    "learningItemCount": 20493,
+    "quizItemCount": 20864,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "cc1f7c2578ef8989216188b115962f4a702860daa1f4b411198e9c2b936fa622"
+    "overallContentSha256": "9ba7474ad797dca4b867e2f628b671aad1080f8b8ee5630e35fca4361f43074f"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "d112fad9b796e82a2d4009e28d0ab0cbeeb9ed2a47f193de83adbee564a5919f",
+    "sha256": "52173dd62ae1c080edb8dbdfe9cede96c0248c9117f46415f6072c79d4555c1d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -233,6 +233,7 @@
       "tests/etymology-heading-once.test.mjs",
       "tests/etymology-progress.test.mjs",
       "tests/etymology-source-completion.test.mjs",
+      "tests/etymology-suffix-al.test.mjs",
       "tests/exam-dictionary.test.mjs",
       "tests/example-learned-sense.test.mjs",
       "tests/explanation-words.test.mjs",
@@ -282,6 +283,7 @@
       "tests/learning-notebook.test.mjs",
       "tests/learning-power.test.mjs",
       "tests/leftover-changes.test.mjs",
+      "tests/listening-speaker-roles.test.mjs",
       "tests/listening-speaker-voices.test.mjs",
       "tests/literature-classics-notes.test.mjs",
       "tests/literature-full-text-reader.test.mjs",
@@ -304,6 +306,7 @@
       "tests/no-background-music.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
       "tests/passage-sense-glosses.test.mjs",
+      "tests/phonetic-stress.test.mjs",
       "tests/phrase-dictionary-search.test.mjs",
       "tests/phrase-explanation-audit.test.mjs",
       "tests/phrase-session-progression.test.mjs",
@@ -395,7 +398,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "ece5e3496500e54c72db2e7ebe62f2b346f245b9df150d264dc2bc05a8eea777",
+      "contentSha256": "defb82a1ac2f28fca1c7b32fe24e15aee2a57426219fbc9ba2d978f490854d90",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -513,11 +516,11 @@
       "label": "語源",
       "learningUnit": "カード",
       "quizUnit": "問",
-      "learningItemCount": 339,
-      "quizItemCount": 339,
-      "learningIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
-      "quizIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
-      "contentSha256": "6f02ddd566bbbe740bf41171716f214c1d2085d7fbf9653b9117ca1078cdd3f1",
+      "learningItemCount": 340,
+      "quizItemCount": 340,
+      "learningIdOrderSha256": "2696e6bc1369026135ca0cc743e8a8e8d5bcd0064a294906f847c3b628168a1e",
+      "quizIdOrderSha256": "2696e6bc1369026135ca0cc743e8a8e8d5bcd0064a294906f847c3b628168a1e",
+      "contentSha256": "77184a946724554ca5498a725361f7a7a487a8c5ed9df3a7190f7f853054ce38",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -9,7 +9,7 @@ import {
   shuffledListeningChoices,
 } from '../data/listening.js'
 import { isTTSSupported } from '../lib/tts.js'
-import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
+import { listeningSpeakerLabel, playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
@@ -423,8 +423,8 @@ export function ListeningQuizScreen() {
               <div className="space-y-2">
                 {spokenSegments.map((segment, index) => (
                   <div key={`${segment.speaker}-${index}`} className="flex items-start gap-2">
-                    <span className="mt-0.5 min-w-[4.5rem] rounded-lg bg-white px-2 py-1 text-center text-[10px] font-extrabold text-slate-600">
-                      {SPEAKER_LABELS[segment.speaker] ?? segment.speaker}
+                    <span className="mt-0.5 min-w-[6.5rem] shrink-0 rounded-lg bg-white px-2 py-1 text-center text-[10px] font-extrabold text-slate-600">
+                      {listeningSpeakerLabel(item, segment.speaker, SPEAKER_LABELS)}
                     </span>
                     <p className="text-sm font-bold leading-relaxed text-ink/75">
                       {segment.text}

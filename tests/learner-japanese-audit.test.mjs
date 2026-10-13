@@ -109,10 +109,13 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 読み直しの知らせ・出典の1件（英単語の確かめ）などで、学習者画面の日本語が 18405 から 18417（重複なし 13736 から 13747）に、
   // ソース全体が 833 から 834 ファイル・237197 から 237212 になった（requests/2026-10-13-camera-ocr-japanese.json）。
   assert.equal(result.learnerFiles, 355)
-  assert.equal(result.learnerJapaneseEntries, 18417)
+  // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
+  // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
+  // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
+  assert.equal(result.learnerJapaneseEntries, 18421)
   assert.equal(result.learnerUniqueJapaneseEntries, 13747)
-  assert.equal(result.sourceFiles, 834)
-  assert.equal(result.sourceJapaneseEntries, 237212)
+  assert.equal(result.sourceFiles, 835)
+  assert.equal(result.sourceJapaneseEntries, 237223)
   assert.equal(result.issues.length, 0)
 })
 

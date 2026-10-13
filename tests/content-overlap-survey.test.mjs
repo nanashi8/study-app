@@ -1,7 +1,7 @@
 // 古典・漢文以外の16教材で、段・コースの重なりと項目の重複を調べた結果を守るテスト
 // （requests/2026-10-02-koten-level-merge.json の other-level-structure・other-item-duplicates。「同様の重複が他のコンテンツにないか確認しなさい。」）。
 //
-// ① 段の作り：16教材の19,099件は、どの軸（級・単元・段など）でもちょうど1つの決まった値を持ち、id の重なりもない。
+// ① 段の作り：16教材の19,100件は、どの軸（級・単元・段など）でもちょうど1つの決まった値を持ち、id の重なりもない。
 //    1つ下を含む積み上げのコースは古典の学年・目標別コースだけだったので、ほかの教材に難関・最難関のような重なりはない。
 // ② 項目の重複：物差しを広げて拾った候補257組を1組ずつ読んで分けた（scripts/checks/content-overlap-survey.mjs の OTHER_PAIRS）。
 //    同じ項目の二重登録は3組（熟語の keep on と keep on ~ing、英文法の the other の穴埋め2問と並べ替え2問）、
@@ -13,10 +13,10 @@ import { surveyContentOverlaps } from '../scripts/checks/content-overlap-survey.
 
 const result = surveyContentOverlaps()
 
-test('段の作り：16教材19,099件が、どの軸でもちょうど1つの決まった値を持ち、id の重なりがない', () => {
+test('段の作り：16教材19,100件が、どの軸でもちょうど1つの決まった値を持ち、id の重なりがない', () => {
   assert.deepEqual(result.problems, [])
   assert.equal(result.structure.length, 16)
-  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 19_099)
+  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 19_100)
   for (const content of result.structure) {
     assert.deepEqual(content.duplicateIds, [], `${content.label}: id の重なり`)
     for (const axis of content.axes) assert.deepEqual(axis.bad, [], `${content.label}: ${axis.name}`)
@@ -29,7 +29,7 @@ test('段の作り：16教材19,099件が、どの軸でもちょうど1つの�
       英文法: '級7・単元101',
       リスニング: '級8',
       ディクテーション: '級7',
-      語源: '語根339',
+      語源: '語根340',
       英語長文: '級8',
       英作文: '級7',
       名作に親しむ: '種類3・難しさの目安10',

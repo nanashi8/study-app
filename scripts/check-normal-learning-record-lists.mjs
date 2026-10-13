@@ -20,7 +20,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const EXPECTED_COUNTS = Object.freeze({
   'usage-idiom': 1_909,
   'usage-syntax': 350,
-  etymology: 339,
+  etymology: 340,
   'koten-vocab': 612,
   'koten-grammar': 130,
   'koten-culture': 56,
@@ -38,7 +38,7 @@ assert.deepEqual(
   Object.keys(EXPECTED_COUNTS),
   '通常入口の11一覧が監査台帳と一致しません',
 )
-assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_066, '通常入口の監査母数が変わりました')
+assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_067, '通常入口の監査母数が変わりました')
 
 for (const entry of NORMAL_LEARNING_RECORD_ENTRIES) {
   assert.equal(entry.items.length, EXPECTED_COUNTS[entry.id], `${entry.label}: 項目数`)
@@ -161,7 +161,7 @@ for (const passage of ALL_PASSAGES) {
 
 console.log('✅ 通常入口の学習・テスト一覧監査に合格しました')
 console.log(`- 入口: ${NORMAL_LEARNING_RECORD_ENTRIES.length}/${Object.keys(EXPECTED_COUNTS).length}`)
-console.log(`- 項目: ${NORMAL_LEARNING_RECORD_TOTAL.toLocaleString('ja-JP')}/5,066`)
+console.log(`- 項目: ${NORMAL_LEARNING_RECORD_TOTAL.toLocaleString('ja-JP')}/5,067`)
 console.log(`- 読解の準備: 長文${ALL_PASSAGES.length}本・必須語彙${prepWordCount.toLocaleString('ja-JP')}語・重点語ケース${prepCaseWordCount.toLocaleString('ja-JP')}語・熟語表現${prepPhraseCount.toLocaleString('ja-JP')}項目`)
 for (const entry of NORMAL_LEARNING_RECORD_ENTRIES) {
   console.log(`- ${entry.label}: ${entry.items.length.toLocaleString('ja-JP')}項目 (${entry.screen})`)

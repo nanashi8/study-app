@@ -1,0 +1,49 @@
+{
+  "id": "2026-10-14-content-observations-fix",
+  "title": "内容検査で見つかり直していなかった3つの観察（発音記号の強勢と音節境界・-al の語根カード・リスニングの性別）を適切に直す",
+  "asked": [
+    "直していない観察を適切に直しなさい。\n発音記号：音は正しいが、主強勢が2つ付く語が47語、音節境界が形態素の境目とずれた語が約12語ある。直すと語形の固定文字列に響きます。\n語根カード「-al ＝ 〜の・〜に関する」：arrival など、名詞をつくる -al の語も並んでいます。個別の語源メモは正しく書いてあるので、カードの見出しとだけ食い違います。\nリスニングの設問22問：「the man / the woman」と性別で話者を指しますが、音声は端末の声A・Bで性別を指定できません。内容だけで答えは決まるので、答えられない問題はありません。"
+  ],
+  "sessions": [
+    "967d185b-b3d4-4484-8cdd-ead7c4ce7463"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "phonetic-single-primary",
+      "text": "発音記号に主強勢（ˈ）が2つ以上ある表記を、辞書の書き方に合わせて主強勢1つ（残りは副強勢 ˌ）にする。見出し語の発音記号・ほかの品詞の形・つづり注意の語・熟語などの固定文字列と、それを照合するテストまで全部そろえる",
+      "population": "公開する全見出し語（ALL_WORDS）の発音記号と、CMU 辞書から作る発音記号を持つ全データ（word-forms.js・spelling-confusables.js など）で、単語1つの表記に ˈ が2つ以上ある全件（見出し語46語＋ほかの品詞の形・つづり注意の派生形）",
+      "check": "node --test tests/phonetic-stress.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phonetic-syllable-boundary",
+      "text": "s と f が形態素の境目をまたぐ語（satisfy・transfer・disfavor・ceasefire・misfortune・henceforth など）で、強勢記号を f の前（s の後）に置く。sphere 系（atmosphere・hemisphere・biosphere・sphere）は s+f を語頭の連続子音として残す",
+      "population": "発音記号に ˈsf または ˌsf を持つ全見出し語（16語）とその派生形。そのうち境目がずれていた12語を直し、sphere 系4語は変えない",
+      "check": "node --test tests/phonetic-stress.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "suffix-al-card-split",
+      "text": "語根カード「-al ＝ 〜の・〜に関する」に並ぶ語を、形容詞をつくる -al と名詞をつくる -al（動詞＋-al「〜すること」）に分け、名詞をつくる語は別のカードにする。見出し・意味・由来がカードの語と食い違わない。カードを足したときに連動する監査台帳・固定カウンタ・画面（語根の一覧・カード詳細・暗記・テスト・単語の語源の欄）もそろえる",
+      "population": "接尾辞カード sf-al に紐づく全語（現在 約165語）を1語ずつ読み、形容詞の -al と名詞の -al に分けた全件",
+      "check": "node --test tests/etymology-suffix-al.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "listening-speaker-gender",
+      "text": "「the man / the woman / the boy / the girl」で話者を指す設問が、聞こえる音声と食い違わないようにする。設問ごとに、その人物が話者A・Bのどちらかを台本から決めて持たせ、音声は性別に合わせて声の高さ・声の種類を変え、本文の表示にも誰かが分かる欄を付ける。絵の設問（Which sentence matches the picture?）の man/woman は話者ではないので対象外",
+      "population": "リスニング全 160問のうち、設問・選択肢が man/woman/boy/girl で話者を指す 22問（絵の設問4問を除く）。話者と台本の対応は1問ずつ読んで決める",
+      "check": "node --test tests/listening-speaker-roles.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "observations-fix-deployed",
+      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる",
+      "population": "この依頼の変更 全部",
+      "check": "false",
+      "status": "waiting",
+      "waitingFor": "main へ push した後の GitHub Pages の公開の実行（deploy）の終わりと、公開版で直した表示（発音記号・-al カード・リスニングの話者名）が入っていることの確認"
+    }
+  ]
+}

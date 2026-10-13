@@ -38,7 +38,7 @@ const EXPECTED_COUNTS = Object.freeze({
   grammar: 4430,
   listening: 160,
   dictation: 140,
-  etymology: 339,
+  etymology: 340,
   reading: 42,
   writing: 14,
   'koten-vocab': 612,
@@ -103,9 +103,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全24教材・20,492項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全24教材・20,493項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 24)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 20_492)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 20_493)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
@@ -320,12 +320,12 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   )
 })
 
-test('英単語と指定11カテゴリの全13,995項目を学習・テストの連続スワイプ対象にする', () => {
+test('英単語と指定11カテゴリの全13,996項目を学習・テストの連続スワイプ対象にする', () => {
   assert.deepEqual(LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS, EXPECTED_REVIEWABLE_CONTENT_IDS)
   const contents = EXPECTED_REVIEWABLE_CONTENT_IDS.map(contentById)
   assert.ok(contents.every(Boolean))
-  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 13_995)
-  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 5_066)
+  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 13_996)
+  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 5_067)
 
   const usageKinds = Object.fromEntries(
     [...new Set(contentById('usage').items.map((item) => item.kind))]

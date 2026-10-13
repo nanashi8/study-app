@@ -571,7 +571,7 @@ test('語源カードの系統は由来文の最初の言語で決まる', () =>
     ...totals,
     [card.originFamily]: (totals[card.originFamily] ?? 0) + 1,
   }), {})
-  assert.deepEqual(counts, { latin: 251, greek: 40, germanic: 48 })
+  assert.deepEqual(counts, { latin: 252, greek: 40, germanic: 48 })
   for (const rootId of Object.keys(GERMANIC_ROOT_WORDS)) {
     const card = ETYMOLOGY_PUBLIC_PACKS.find((item) => item.rootId === rootId)
     assert.ok(card, rootId)

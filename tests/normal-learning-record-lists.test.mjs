@@ -15,7 +15,7 @@ import {
 const EXPECTED_COUNTS = Object.freeze({
   'usage-idiom': 1_909,
   'usage-syntax': 350,
-  etymology: 339,
+  etymology: 340,
   'koten-vocab': 612,
   'koten-grammar': 130,
   'koten-culture': 56,
@@ -26,9 +26,9 @@ const EXPECTED_COUNTS = Object.freeze({
   'science-terms': 502,
 })
 
-test('指定11カテゴリの通常入口5,066項目を欠落なくスワイプ記録へ接続する', () => {
+test('指定11カテゴリの通常入口5,067項目を欠落なくスワイプ記録へ接続する', () => {
   assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 11)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_066)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_067)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import {
   createListeningSpeechItems,
+  listeningSpeakerGenders,
   listeningSpeakerVoiceURIs,
 } from '../src/lib/listening.js'
 
@@ -61,8 +62,17 @@ test('全66件の複数話者リスニングで話者A・Bを別音声にする'
         .map((speechItem) => [speechItem.meta.speaker, speechItem.voiceURI]),
     )
 
-    assert.equal(characterVoices.A, alex.voiceURI, `${item.id}: 話者A`)
-    assert.equal(characterVoices.B, samantha.voiceURI, `${item.id}: 話者B`)
+    // 設問が「the woman」などで話者を指す問題（src/data/listening-speaker-roles.js）は、人物の性別に合う声を割り当てる。
+    // そのほかの問題は、設定音声が話者A・別の音声が話者B。どちらも A と B は別の声。
+    const genders = listeningSpeakerGenders(item)
+    if (genders.A) {
+      assert.equal(characterVoices.A, genders.A === 'female' ? samantha.voiceURI : alex.voiceURI, `${item.id}: 話者A`)
+      assert.equal(characterVoices.B, genders.A === 'female' ? alex.voiceURI : samantha.voiceURI, `${item.id}: 話者B`)
+    } else {
+      assert.equal(characterVoices.A, alex.voiceURI, `${item.id}: 話者A`)
+      assert.equal(characterVoices.B, samantha.voiceURI, `${item.id}: 話者B`)
+    }
+    assert.notEqual(characterVoices.A, characterVoices.B, `${item.id}: 話者A・Bが同じ声`)
   }
 })
 

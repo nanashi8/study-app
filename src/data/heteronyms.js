@@ -107,7 +107,7 @@ export const HETERONYMS = Object.freeze({
   suspect: heteronym([['動詞', '/səˈspɛkt/'], ['名詞「容疑者」', '/ˈsʌˌspɛkt/']]),
   tear: heteronym([['「裂く・裂け目」', '/ˈtɛɹ/'], ['「涙」', '/ˈtɪɹ/']]),
   torment: heteronym([['動詞', '/tɔɹˈmɛnt/'], ['名詞「苦痛」', '/ˈtɔɹˌmɛnt/']]),
-  transfer: heteronym([['動詞', '/tɹænˈsfɝ/'], ['名詞「移動・乗り換え」', '/ˈtɹænsfɚ/']]),
+  transfer: heteronym([['動詞', '/tɹænsˈfɝ/'], ['名詞「移動・乗り換え」', '/ˈtɹænsfɚ/']]),
   transport: heteronym([['動詞', '/tɹænˈspɔɹt/'], ['名詞「輸送（機関）」', '/ˈtɹænspɔɹt/']]),
   update: heteronym([['動詞', '/əpˈdeɪt/'], ['名詞「最新情報」', '/ˈʌpˌdeɪt/']]),
   upgrade: heteronym([['動詞', '/əpˈɡɹeɪd/'], ['名詞「格上げ」', '/ˈʌpˌɡɹeɪd/']]),
