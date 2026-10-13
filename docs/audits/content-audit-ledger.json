@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-13T13:14:50.205Z",
+  "auditedAt": "2026-10-13T13:29:17.984Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 20863,
     "storedAndGeneratedQuestionPathCount": 7280,
     "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "5992b602d0e45fae49bd8bb0e9fcf28ad731ef01c9ec31aed6f0a8dac84ae5de"
+    "overallContentSha256": "cc1f7c2578ef8989216188b115962f4a702860daa1f4b411198e9c2b936fa622"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "ce2b28641cf1e405e4e8e731e9817986510a346b5cb943a3f03a4830a8973926",
+    "sha256": "d112fad9b796e82a2d4009e28d0ab0cbeeb9ed2a47f193de83adbee564a5919f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -201,6 +201,7 @@
       "tests/content-progress.test.mjs",
       "tests/content-settings.test.mjs",
       "tests/content-top-layout.test.mjs",
+      "tests/content-truth-inspection.test.mjs",
       "tests/curriculum-1900-coverage.test.mjs",
       "tests/custom-cards-continue.test.mjs",
       "tests/custom-cards-csv.test.mjs",
@@ -864,7 +865,7 @@
       "quizItemCount": 649,
       "learningIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
       "quizIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
-      "contentSha256": "c979f1f292cb7db816787109edf699cf5f646458e70170aa43d71716e02e1a09",
+      "contentSha256": "64a19c0e470332689e2b910c3fecbdb85203ca9cc4a872d9f211abf8d77485d5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1135,7 +1136,7 @@
       "choiceCount": 4604,
       "generalRationaleCount": 1151,
       "choiceSpecificRationaleCount": 4604,
-      "questionSetSha256": "590f397490c3df6a66d8033c5df5198a128853edf7b3744ddcacd9c9142ca33f",
+      "questionSetSha256": "0c0b7784b18f83e561df45f5aed301742b160d682235dc4e483fbf0cdd642173",
       "result": "pass",
       "failureCount": 0,
       "failures": []

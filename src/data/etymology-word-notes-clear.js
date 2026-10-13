@@ -77,6 +77,16 @@ const whrole = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-10-13 の点検: 「X と同じ語源」と書かれた1,739件の主張を全件読み、つづりや意味が近いだけで同じ語根とは確かめられない組
+// （fluid・fluctuate の flow、fervent の fever、bullet の ball）と、接頭辞の意味の取り違え（dimension の di-）を直したもの
+// （requests/2026-10-13-content-truth-inspection.json。由来は Online Etymology Dictionary と Wiktionary で確かめた）。
+const truth = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-10-13',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'a': clear('古英語 ān「1つの」が弱く発音されて n が落ちた形→「1つの・ある（不定冠詞）」。', '1d0443e4e1da47ac'),
   'a.m.': clear('ラテン語 ante meridiem「正午の前」の頭文字を取った時刻表現→「午前・午前の時刻」。', 'c63d182d0eba657a'),
@@ -995,7 +1005,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'bulb': clear('ラテン語 bulbus「タマネギ・球根」から。球根の形に似たガラス球→「電球」。', '3491af93897cac01'),
   'bulk': clear('古ノルド語 bulki「船の積み荷」から。積み荷の量→「かさ・大きさ」、荷の大部分→「大部分」。', '53cfec492e11c3ac'),
   'bulky': recheck('bulk「かさ」＋ -y「〜の多い・〜のような」→「かさばる・大きくて扱いにくい」。bulk は古ノルド語 bulki「船の積み荷」から。', 'df2cac1f7b71f8f0'),
-  'bullet': clear('フランス語 boulette「小さな球」→「弾丸・箇条書きの点」。ball と同じ語源。', '100d66badcb64608'),
+  'bullet': truth('フランス語 boulette「小さな球」（boule「球」の縮小形で、boule はラテン語 bulla「泡・丸いもの」から）→「弾丸・箇条書きの点」。ball（ボール）はゲルマン語系の語で、つながりははっきりしない。', 'c1302768e40675c8'),
   'bully': clear('オランダ語 boel「恋人・兄弟」から。もとは「いとしい人」の意味だったが、「いばる人・ならず者」を経て「いじめっ子・いじめる」になった。', '64de8721cd8cf6e7'),
   'bullying': recheck('bully「いじめる」＋ -ing「〜すること・〜したもの」→「いじめ・弱い者いじめ」。bully はオランダ語 boel「恋人・兄弟」から。', '9531d0b81a517ba6'),
   'bulwark': clear('中世オランダ語 bolwerc「城壁」から。丸太で組んだ守りの壁→「防壁・とりで」。', '3b423804fe7caed9'),
@@ -2189,7 +2199,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'diluted': recheck('dilute「薄める」＋ -d「〜された・〜した」→「希釈された・薄められた」。dilute はラテン語 dī-「離れて」＋ luere「洗う」から。', '76028101ee5fedae'),
   'dilution': recheck('dilute「薄める」＋ -tion「〜すること・〜したもの」→「希釈・薄めること」。dilute はラテン語 dī-「離れて」＋ luere「洗う」から。', '4ea834368113b233'),
   'dim': clear('古英語 dimm「暗い・ぼんやりした」から。「薄暗い・薄暗くする」の意味。', '04b23da562f9858b'),
-  'dimension': clear('ラテン語 di「完全に」＋ metiri「測る」→測った広がり→「次元」。', 'eb8833355e79b2f1'),
+  'dimension': truth('ラテン語 di-「離して・分けて」＋ metiri「測る」→測り分けた広がり→「次元」。', '7a539ce3af725830'),
   'diminish': clear('ラテン語 minuere「小さくする」（minor と同じ語源）→「減らす」。', '47483527943b9243'),
   'diminished': recheck('diminish「減らす」＋ -ed「〜された・〜した」→「減少した・衰えた」。diminish はラテン語 minuere「小さくする」（minor と同じ語源）から。', 'e843bc92e5998ae1'),
   'din': clear('古英語 dyne「大きな音」から。やかましく響く音→「騒音」。', '1bb626750c9d73b3'),
@@ -3072,7 +3082,7 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'fence': recheck('defense「防御」の頭が落ちた形。defense はラテン語 dēfēnsa「防御」（dēfendere「払いのける」、dē-「離れて」＋ -fendere「打つ」から）に由来する。身を守るもの→「柵・塀」、剣で身を守る技→「フェンシングをする」。', '42d09640368b9792'),
   'ferociously': recheck('ferocious「どう猛な」＋ -ly「〜に・〜く（様子を表す）」→「猛烈に・どう猛に」。ferocious はラテン語 ferōx「猛々しい」（ferus「野生の」から）に由来する。', 'd9de1ee68b1f458a'),
   'fertilize': recheck('fertile「肥沃な」＋ -ize「〜にする・〜化する」→「肥料をやる・受精させる」。fertile はラテン語 fertilis「実りの多い」（ferre「運ぶ・実を結ぶ」から）に由来する。', '969f69d2ff51ec43'),
-  'fervent': clear('ラテン語 fervere「沸騰する」→「熱烈な・熱心な」。fever と同じ語源。', 'eff1d0355cb34a80'),
+  'fervent': truth('ラテン語 fervere「沸騰する」→「熱烈な・熱心な」。fever（熱）は形も意味も近いが、ラテン語 febris から来た別の語で、つながりははっきりしない。', 'ce238b43d775335b'),
   'fervently': recheck('fervent「熱烈な」＋ -ly「〜に・〜く（様子を表す）」→「熱烈に・熱心に」。fervent はラテン語 fervere「沸騰する」から。', 'ef560cf1c6e0ee5e'),
   'fervid': clear('ラテン語 fervēre「沸き立つ」から。気持ちが沸き立つ→「熱烈な・燃えるような」。fervent（熱烈な）と同じ語源。', '037e3eef86b81039'),
   'fervor': clear('ラテン語 fervere「沸く」→「熱情・熱烈さ」。fervent と同じ語源。', 'd228ebeefc5aef1b'),
@@ -3172,10 +3182,10 @@ export const ETYMOLOGY_CLEAR_WORD_NOTES = Object.freeze({
   'flow': clear('古英語 flōwan「流れる」から。「流れる・流れ」。', 'e662b730747d768c'),
   'flower': clear('ラテン語 flos「花」→「花」。flora と同じ語源。', 'e984e126ef80435b'),
   'flowing': recheck('flow「流れる」＋ -ing「〜させる・〜している」→「流れる・なめらかな」。flow は古英語 flōwan「流れる」から。', '79dd6090cf1c09fb'),
-  'fluctuate': clear('ラテン語 fluctus「波」→「変動する・上下する」。flow と同じ語源。', 'e03ab4ad52adf8e9'),
+  'fluctuate': truth('ラテン語 fluctus「波」（fluere「流れる」から）→「変動する・上下する」。fluent・fluid と同じ語源。flow（流れる）は形も意味も近いが、古英語 flōwan から来た別の語で、つながりははっきりしない。', 'b14cef12e87cd27d'),
   'fluctuation': recheck('fluctuate「変動する」＋ -ation「〜すること・〜したもの」→「変動・上下」。fluctuate はラテン語 fluctus「波」から。', '455be2e5c6685e14'),
   'fluent': clear('ラテン語 fluere「流れる」→「流暢な」。fluid と同じ語源。', 'bedbf04a8a0e1da1'),
-  'fluid': clear('ラテン語 fluere「流れる」→「流体・液体・流動的な」。flow と同じ語源。', '3f692265944b275a'),
+  'fluid': truth('ラテン語 fluere「流れる」→「流体・液体・流動的な」。fluent と同じ語源。flow（流れる）は形も意味も近いが、古英語 flōwan から来た別の語で、つながりははっきりしない。', '6bba41dfd019c0fc'),
   'flummox': clear('19世紀から使われている語。由来ははっきりしない→「面くらわせる・困惑させる」。', 'f820535487ab41a7'),
   'flush': relink('中英語 flusshen「（鳥が）ぱっと飛び立つ・勢いよく飛び出す」から（羽ばたく音をまねた語とされる）。どっと勢いよく流れ出す→水をどっと流す→「水で流す」。顔が「赤くなる」のも、血がさっと顔にのぼることからとされる。', 'c89b794f9d4391ee'),
   'fluster': clear('16世紀から使われている語。由来ははっきりしない→「うろたえさせる・あわてさせる」。', '4f49c103cd681e35'),

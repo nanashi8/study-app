@@ -1,0 +1,58 @@
+{
+  "id": "2026-10-13-content-truth-inspection",
+  "title": "全教材の内容・問題の選択肢・解説の誤りを検査し、既存の構造と表示を壊さずに直す",
+  "asked": [
+    "コンテンツの内容や問題の選択肢や解説に誤りがないか、既存のコンテンツの構造を尊重して表示等を壊さないように細心の注意を払って検査しなさい。必要に応じてトークンの大量消費に気をつけてOpusやFableのサブエージェントを活用しなさい。"
+  ],
+  "sessions": [
+    "967d185b-b3d4-4484-8cdd-ead7c4ce7463"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "baseline-tests-green",
+      "text": "検査の前に、いまの main（コミット済みの中身）で全テストが通ることを確かめる。通らないものは原因が学習内容の誤りか、テストの古さか、別セッションの作業中の変更かを分ける",
+      "population": "tests/*.test.mjs の全ファイル（クリーンな clone で流す）",
+      "check": "npm test",
+      "status": "waiting",
+      "waitingFor": "push 後の公開の実行が終わってから、クリーンな clone で通ることを確かめて done にする（この clone では全テスト 1,353 件・npm run audit:all-content が EXIT 0 で通っている）"
+    },
+    {
+      "id": "baseline-audits-green",
+      "text": "全教材の既存の監査（check:content と監査台帳）が通る",
+      "population": "package.json の check（check:content の全監査と audit:content-ledger）",
+      "check": "npm run check",
+      "status": "waiting",
+      "waitingFor": "push 後の公開の実行が終わってから、クリーンな clone で通ることを確かめて done にする（この clone では全テスト 1,353 件・npm run audit:all-content が EXIT 0 で通っている）"
+    },
+    {
+      "id": "questions-independent-structure",
+      "text": "出題する全問題（全教材の選択問題）を、既存の監査とは別の物差しで確かめる：正解の注釈が否定で始まらず誤答の注釈が肯定で始まらない／正解が選択肢にある／誤答を空所に入れた文が別の問題の正しい文と一致しない／完成文と問題文の空所が食い違わない",
+      "population": "文法3,450・長文167+語彙強化16・リスニング160・古典文法264・古典常識112・古典短文36・名作18・診断28・数学選択299・数学の歴史252・数学入試選択27・社会理科の選ぶ問題776・語句1,151（計 6,756 問）",
+      "check": "node --test tests/content-truth-inspection.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "etymology-claims-truth",
+      "text": "語の成り立ち（8,929 語）の「X と同じ語源」の主張1,739件を全件読み、根拠のない主張と元の語の取り違えを直す。直したものは再発しないよう固定する",
+      "population": "公開語源メモの全 8,929 語のうち「と同じ語源」などの主張を持つ 1,739 件（つづりが離れた 1,150 件を全件読み、系統の異なる 56 組を原文で確かめた）",
+      "check": "node --test tests/content-truth-inspection.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "subject-figure-wording",
+      "text": "社会・理科の語句 1,151 件の説明と補足文を全件読み、事実と食い違う言い方を直す（ESD は SDGs の「目標」ではなく目標4のターゲット）",
+      "population": "社会・理科の重要語句 1,151 件（説明・補足文を全件）",
+      "check": "node --test tests/content-truth-inspection.test.mjs tests/junior-social-science.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "content-truth-deployed",
+      "text": "直した内容を全監査（npm run audit:all-content）に通し、クリーンな clone で確かめて main へ push し、公開版へ出して表示を確かめる",
+      "population": "この依頼の変更 全部",
+      "check": "false",
+      "status": "waiting",
+      "waitingFor": "main へ push した後の GitHub Pages の公開の実行（deploy）の終わりと、公開版での表示の確認"
+    }
+  ]
+}

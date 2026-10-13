@@ -1,6 +1,6 @@
 {
   "readMe": "社会・理科の重要語句の解説を、中学生向けの用語集の程度（意味に、背景・特徴・関連する語句・まちがえやすい語との見分け方を添える）に書き、1語ずつ読み直した記録。値は語句・意味・解説の指紋。確認は node scripts/checks/junior-social-science-glossary.mjs、押し直しは --stamp <単元ID>。",
-  "reviewedOn": "2026-09-30",
+  "reviewedOn": "2026-10-13",
   "terms": {
     "civ-01-t01": "93124de02abe9d5d8562b6ab8773ec64c9e4c1aff9beff4c5baa5b53561d7f50",
     "civ-01-t02": "85f1958ea525fa4c51509c802181f57f620452410c62741c122343ebf308a52b",
@@ -197,7 +197,7 @@
     "civ-17-t07": "5f24ea45dba40c9f8f9cb9392d68d3249396153e59dbbd5fec7b410b9e32b040",
     "civ-17-t08": "95dfe37846ed8057a6139e5db1d912eb82b56e49543b0353cacc0f8a5fe9a3cd",
     "civ-17-t09": "d68767e9550606930ce5728b50263b672ffda3c291138ae27f2138d73560f7cf",
-    "civ-17-t10": "2c42fe73381dc8d2e9568b6d846aa9becdc6aabfe2bf15e1703487dbe80a50a0",
+    "civ-17-t10": "45fee8de531f7739684c3cbd4df517ca9e05fe1960cf26a75837b9677142a953",
     "civ-18-t01": "a1b9a54b1641ec37cdd895b5c11ba64bf9ab15c0d3deffdfb01abc745fe4c44d",
     "civ-18-t02": "1c4a09241fd02e8320c072c4c6001c165d715fc6d0b6b8ddd49dd3f92c145127",
     "civ-18-t03": "45e12abc02097d35fb25f07ff391f831897de40b3fb66b662a615ced4a89b463",
