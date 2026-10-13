@@ -111,13 +111,17 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-14、教科書から単語追加の読み取りを、写真の下ごしらえ（src/lib/ocrImage.js）・2つのエンジンで読んでまとめる手順
   // （src/lib/ocrEngine.js）・文脈で読み分ける部品（src/lib/ocrContext.js）に分けたので、学習者画面とソース全体のファイルが3つずつ
   // 増えた（日本語の表記の数は、日本語の行の読み直しの知らせを外して変わらない。requests/2026-10-13-camera-ocr-japanese.json）。
-  assert.equal(result.learnerFiles, 358)
+  // 2026-10-14、教科書から単語追加の読み取りエンジンを Tesseract から PaddleOCR に置きかえ、モデルの表（src/lib/ocrModels.js）が
+  // 増えた。Tesseract の進み具合の知らせ（エンジンの起動・準備など）をまとめて、学習者画面の日本語が 18421 から 18418（重複なし
+  // 13747 から 13745）に、ソース全体が 838 から 839 ファイルになった。出典ページにモデルの1件（写真の文字の読み取り）を足して、ソース全体の
+  // 日本語は 237223 のまま（requests/2026-10-14-camera-ocr-hard-photos.json）。
+  assert.equal(result.learnerFiles, 359)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
-  assert.equal(result.learnerJapaneseEntries, 18421)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13747)
-  assert.equal(result.sourceFiles, 838)
+  assert.equal(result.learnerJapaneseEntries, 18418)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13745)
+  assert.equal(result.sourceFiles, 839)
   assert.equal(result.sourceJapaneseEntries, 237223)
   assert.equal(result.issues.length, 0)
 })

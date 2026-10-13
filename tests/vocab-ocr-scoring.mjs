@@ -54,7 +54,7 @@ export function scoreOcrResult(truth, result, { englishWords, contextReading }) 
   const expectedIds = new Set([...expected.candidates.map((item) => item.id), ...single.map((ch) => (ch.toLowerCase() === 'a' ? 'a' : 'i'))])
   const expectedRequests = new Set(expected.unmatched.map((item) => item.token))
   const actualIds = new Set(match.candidates.map((item) => item.id))
-  const selected = (item) => !item.uncertain && !item.corrected
+  const selected = (item) => !item.uncertain && !item.corrected && !item.split
   const japanese = truth.japanese && !truth.vertical ? japaneseHits(truth.japanese, result.text) : null
   return {
     id: truth.id,

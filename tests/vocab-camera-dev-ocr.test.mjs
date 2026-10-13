@@ -6,7 +6,7 @@
 // 残っていた。本番ビルドは effect を2回走らせないので、公開版では起きていなかった。
 //
 // 開発サーバー（StrictMode のまま）を立て、実ブラウザ（Playwright の Chromium・スマホの大きさ）で画面を動かす。
-// 文字認識エンジン（tesseract.js）は、英語の認識データを外から読み込むので、決まった文を返す代わりのものに差し替える。
+// 文字認識エンジン（PaddleOCR）は、モデルと ONNX Runtime を読み込むので、決まった文を返す代わりのものに差し替える。
 // 外への通信は止める（開発版の Firebase は本番のデータベースにつながっている）。辞書にない語の送信ボタンは押さない。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
@@ -18,67 +18,53 @@ import { chromium } from 'playwright'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const SENTENCE = 'The student reads zorblax books.'
-// 代わりのエンジンが返す読み取りの結果（日本語まじり・語ごとの確からしさと位置つき）。
-// 依頼 requests/2026-10-13-camera-ocr-japanese.json：画面は「日本語＋英語」と「英語だけ」の2つのエンジンを、白黒の決め方2通り
-// （'0'・'2'）で読み、行ごとにまとめる。日本語＋英語のエンジンは日本語の行を読み、英語だけのエンジンは日本語の行を英字に化けて
-// 読む（EKTT Licikd BZ）。まとめた結果では、日本語は日本語のまま、化けた英字は出さず、辞書の語（saw は文脈で see、at・the・zoo・
-// we・like・tea）は候補、実在するが辞書にない語（walrus）はリクエストの候補、確からしさの低い hot は「不確か」で選ばず、
-// 実在しない並び（xqzrt）と人名（Emi）は「英単語として確かめられなかった文字」に分ける。
-const lineOf = (y, words) => ({
-  text: words.map(([text]) => text).join(/[a-z]/i.test(words[0][0]) ? ' ' : ''),
-  bbox: { x0: 10, y0: y, x1: 10 + words.length * 70, y1: y + 30 },
-  words: words.map(([text, confidence], i) => ({ text, confidence, bbox: { x0: 10 + i * 70, y0: y, x1: 70 + i * 70, y1: y + 30 } })),
-})
-const JAPANESE_LINE = lineOf(0, [['動物園', 95], ['で', 95], ['セイウチ', 94], ['を', 95], ['見', 95], ['まし', 95], ['た', 95], ['。', 95]])
-const GARBLED_LINE = lineOf(0, [['EKTT', 5], ['Licikd', 0], ['BZ', 21]])
-const ENGLISH_LINES = [
-  lineOf(50, [['Emi', 93], ['saw', 93], ['a', 93], ['walrus', 92], ['at', 92], ['the', 92], ['zoo.', 92], ['xqzrt', 20]]),
-  lineOf(100, [['We', 92], ['like', 92], ['hot', 30], ['tea', 92]]),
-]
-const OCR_LINES = { ja: [JAPANESE_LINE, ...ENGLISH_LINES], en: [GARBLED_LINE, ...ENGLISH_LINES] }
-const OCR_TEXT = [JAPANESE_LINE, ...ENGLISH_LINES].map((line) => line.text).join('\n')
+// 代わりのエンジン（PaddleOCR の代わり）が返す読み取りの結果。行ごとの文字と確からしさ（score 0〜1）。
+// 依頼 requests/2026-10-13-camera-ocr-japanese.json・2026-10-14-camera-ocr-hard-photos.json：日本語は日本語のまま、辞書の語
+// （saw は文脈で see、at・the・zoo・we・like・tea）は候補、実在するが辞書にない語（walrus）はリクエストの候補、確からしさの低い行の
+// hot は「不確か」で選ばず、実在しない並び（xqzrt）と人名（Emi）は「英単語として確かめられなかった文字」に分ける。
+const OCR_ITEMS = [
+  { text: '動物園でセイウチを見ました。', score: 0.95 },
+  { text: 'Emi saw a walrus at the zoo. xqzrt', score: 0.93 },
+  { text: 'We like tea', score: 0.92 },
+  { text: 'hot', score: 0.3 },
+].map((item, i) => ({ ...item, poly: [[10, i * 50], [400, i * 50], [400, i * 50 + 30], [10, i * 50 + 30]] }))
+const OCR_TEXT = OCR_ITEMS.map((item) => item.text).join('\n')
 
-// 文字認識エンジンの代わり。画面が渡す進み具合の知らせを本物と同じ順に返し、呼ばれた回数・言語・設定を window に残す。
+// 読み取りエンジンの代わり。作ったときの設定と、読んだ回数・片付けた回数を window に残す。
 // window.__cameraOcrHold に Promise を置くと、読み取りをそこで待たせる（途中で画面を離れる確かめに使う）。
-const TESSERACT_STUB = `
-const state = () => (window.__cameraOcr ??= { created: 0, recognized: 0, terminated: 0, languages: [], thresholdings: [], configs: [], corePaths: [] })
-export const OEM = { LSTM_ONLY: 1 }
-export const PSM = { AUTO: 3 }
-const LINES = ${JSON.stringify(OCR_LINES)}
-export async function createWorker(language, oem, options = {}, config) {
-  const languages = Array.isArray(language) ? language : [language]
-  const engine = languages.includes('jpn') ? 'ja' : 'en'
-  state().created += 1
-  state().languages.push(languages)
-  state().configs.push(config)
-  state().corePaths.push(options.corePath)
-  const log = options.logger ?? (() => {})
-  log({ status: 'loading tesseract core', progress: 1 })
-  log({ status: 'initializing api', progress: 1 })
-  return {
-    async setParameters(parameters) {
-      state().thresholdings.push(engine + parameters.thresholding_method)
-    },
-    async recognize() {
-      log({ status: 'recognizing text', progress: 0.5 })
-      if (window.__cameraOcrHold) await window.__cameraOcrHold
-      state().recognized += 1
-      log({ status: 'recognizing text', progress: 1 })
-      const lines = LINES[engine]
-      return { data: { text: lines.map((line) => line.text).join('\\n'), blocks: [{ paragraphs: [{ lines }] }] } }
-    },
-    async terminate() {
-      state().terminated += 1
-    },
-  }
+const PADDLE_STUB = `
+const state = () => (window.__cameraOcr ??= { created: 0, predicted: 0, disposed: 0, options: [] })
+const ITEMS = ${JSON.stringify(OCR_ITEMS)}
+export const PaddleOCR = {
+  async create(options) {
+    state().created += 1
+    state().options.push({
+      det: options.textDetectionModelName,
+      rec: options.textRecognitionModelName,
+      detUrl: options.textDetectionModelAsset?.url,
+      recUrl: options.textRecognitionModelAsset?.url,
+      ortOptions: options.ortOptions,
+      hasFetch: typeof options.fetch === 'function',
+    })
+    return {
+      async predict() {
+        if (window.__cameraOcrHold) await window.__cameraOcrHold
+        state().predicted += 1
+        return [{ items: ITEMS, metrics: {}, runtime: { requestedBackend: 'auto' } }]
+      },
+      async dispose() {
+        state().disposed += 1
+      },
+    }
+  },
 }
 `
 
-const tesseractStub = () => ({
-  name: 'tesseract-stub',
+const paddleStub = () => ({
+  name: 'paddle-stub',
   enforce: 'pre',
-  resolveId: (id) => (id === 'tesseract.js' ? '\0tesseract-stub' : null),
-  load: (id) => (id === '\0tesseract-stub' ? TESSERACT_STUB : null),
+  resolveId: (id) => (id === '@paddleocr/paddleocr-js' ? '\0paddle-stub' : null),
+  load: (id) => (id === '\0paddle-stub' ? PADDLE_STUB : null),
 })
 
 let vite
@@ -165,11 +151,11 @@ before(async () => {
   vite = await createServer({
     root: ROOT,
     logLevel: 'silent',
-    plugins: [tesseractStub()],
+    plugins: [paddleStub()],
     // 動かしている開発サーバーの依存の置き場を書き換えない。
     cacheDir: 'node_modules/.vite-camera-test',
     // 依存を最初に見つけておく（途中で見つけるとページを読み直し、開いた画面が入口へ戻る）。
-    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], exclude: ['tesseract.js'] },
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], exclude: ['@paddleocr/paddleocr-js'] },
     // ファイルの変更を見張らない。ほかの作業でファイルが変わっても、ページを読み直さない。
     server: { port, host: '127.0.0.1', strictPort: true, hmr: false, watch: null },
   })
@@ -208,7 +194,7 @@ test('直す前の作りでは、開発版の読み取りが「写真を読み�
   }
 })
 
-test('開発版（StrictMode）でも、2つのエンジン×2通りで読み、辞書と一致した語・辞書にない語・確かめられなかった文字の結果まで進む', async () => {
+test('開発版（StrictMode）でも、PaddleOCR で読み、辞書と一致した語・辞書にない語・確かめられなかった文字の結果まで進む', async () => {
   const { context, page, errors, revert } = await openCamera()
   try {
     assert.equal(revert.replaced, 0)
@@ -218,9 +204,8 @@ test('開発版（StrictMode）でも、2つのエンジン×2通りで読み、
     assert.match(main, /8語が辞書と一致/)
     assert.match(main, /読み取った英語 11 語のうち、辞書にある単語を候補にしました。/)
     assert.doesNotMatch(main, /写真を読み込んでいます…/)
-    // 読み取った文字の欄には、日本語は日本語のまま出て、英語だけのエンジンが化けさせた英字は出ない。
+    // 読み取った文字の欄には、日本語は日本語のまま出る。
     assert.equal(await page.locator('#ocr-text').inputValue(), OCR_TEXT)
-    assert.doesNotMatch(main, /EKTT|Licikd/)
     // 候補：確かな辞書の語は選んだ状態、確からしさの低い hot は「不確か」と示して選ばない。saw は文脈から see。
     const candidates = page.locator('section', { has: page.locator('#ocr-candidates-title') })
     const row = (headword) => candidates.locator('label', { hasText: new RegExp(`^${headword}(?![a-z])`) })
@@ -236,13 +221,15 @@ test('開発版（StrictMode）でも、2つのエンジン×2通りで読み、
     // 実在しない並びと人名は、リクエストに出さず、確かめられなかった文字として示す。
     const rejected = await page.locator('[data-ocr-rejected] li').allInnerTexts()
     assert.deepEqual(rejected, ['Emi', 'xqzrt'])
-    // エンジンは「日本語＋英語」と「英語だけ」の2つ。どちらも白黒の決め方2通りで読み、知らせを止める設定で作り、終えたら止める。
+    // エンジンは PaddleOCR を1つ作り（検出 PP-OCRv6_tiny・認識 PP-OCRv6_small、モデルは同じサイトの ocr-models/）、1回読む。
     const state = await page.evaluate(() => window.__cameraOcr)
-    assert.deepEqual([state.created, state.recognized, state.terminated], [2, 4, 2])
-    assert.deepEqual(state.languages, [['jpn', 'eng'], ['eng']])
-    assert.deepEqual([...state.thresholdings].sort(), ['en0', 'en2', 'ja0', 'ja2'])
-    assert.deepEqual(state.configs, [{ debug_file: '/dev/null' }, { debug_file: '/dev/null' }])
-    for (const corePath of state.corePaths) assert.match(corePath, /^https:\/\/cdn\.jsdelivr\.net\/npm\/tesseract\.js-core@7\.0\.0\/tesseract-core(-simd)?\.wasm\.js$/)
+    assert.deepEqual([state.created, state.predicted], [1, 1])
+    assert.equal(state.options[0].det, 'PP-OCRv6_tiny_det')
+    assert.equal(state.options[0].rec, 'PP-OCRv6_small_rec')
+    assert.match(state.options[0].detUrl, /\/ocr-models\/PP-OCRv6_tiny_det_onnx_infer\.tar$/)
+    assert.match(state.options[0].recUrl, /\/ocr-models\/PP-OCRv6_small_rec_onnx_infer\.tar$/)
+    assert.deepEqual(state.options[0].ortOptions, { backend: 'auto', proxy: true })
+    assert.equal(state.options[0].hasFetch, true)
     // 送信ボタンは押さない（開発版の Firebase は本番）。外への通信も止めてある。
     assert.deepEqual(errors, [])
   } finally {
@@ -263,15 +250,14 @@ test('読み取りの途中で画面を離れると、エンジンを止めて�
     await page.locator('[data-global-back-button]').click()
     await page.getByText('撮影した写真から英単語を読み取る').waitFor({ state: 'detached' })
     const afterLeaving = await page.evaluate(() => ({ ...window.__cameraOcr, revoked: window.__revokedUrls }))
-    assert.equal(afterLeaving.created, 2)
-    assert.ok(afterLeaving.terminated >= 2, '画面を離れても2つのエンジンを止めていない')
-    assert.equal(afterLeaving.recognized, 0)
+    assert.equal(afterLeaving.created, 1)
+    assert.equal(afterLeaving.disposed, 1, '画面を離れてもエンジンを片付けていない')
+    assert.equal(afterLeaving.predicted, 0)
     assert.ok(afterLeaving.revoked.includes(previewUrl), '画面を離れても写真のプレビューの URL を消していない')
     // 待たせていた読み取りを終わらせても、離れた画面の結果は出さず、エラーも出ない。
     await page.evaluate(() => window.__cameraOcrRelease())
     await page.waitForTimeout(500)
-    // 待っていた2つのエンジンの1回目の読み取りだけが終わり、2回目（白黒の決め方の2通り目）へは進まない。
-    assert.equal(await page.evaluate(() => window.__cameraOcr.recognized), 2)
+    assert.equal(await page.evaluate(() => window.__cameraOcr.predicted), 1)
     assert.equal(await page.locator('#ocr-candidates-title').count(), 0)
     assert.deepEqual(errors, [])
   } finally {

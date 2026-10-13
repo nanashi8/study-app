@@ -40,6 +40,19 @@ export const CREDIT_SECTIONS = Object.freeze([
     ]),
   }),
   Object.freeze({
+    id: 'ocr-models',
+    title: '写真の文字の読み取り',
+    note: 'PP-OCRv6 models: Copyright (c) PaddlePaddle Authors. Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).',
+    items: Object.freeze([
+      Object.freeze({
+        id: 'paddleocr-models',
+        name: 'PaddleOCR の PP-OCRv6 のモデル（PP-OCRv6_tiny_det・PP-OCRv6_small_rec）',
+        url: 'https://github.com/PaddlePaddle/PaddleOCR',
+        use: '「教科書から単語追加」で、写真の英語と日本語を読み取るのに使いました。',
+      }),
+    ]),
+  }),
+  Object.freeze({
     id: 'maps',
     title: '地図',
     items: Object.freeze([

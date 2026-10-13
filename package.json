@@ -55,16 +55,16 @@
   },
   "dependencies": {
     "@fontsource-variable/source-serif-4": "5.3.0",
+    "@paddleocr/paddleocr-js": "^0.4.2",
     "compromise": "^14.18.0",
     "firebase": "^12.14.0",
     "jsqr": "^1.4.0",
     "katex": "^0.17.0",
     "lz-string": "^1.5.0",
+    "onnxruntime-web": "^1.30.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "tesseract.js": "^7.0.0",
-    "wasm-feature-detect": "^1.8.0",
     "wordlist-english": "^1.2.1",
     "zustand": "^5.0.14"
   },

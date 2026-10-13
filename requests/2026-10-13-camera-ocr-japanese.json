@@ -14,14 +14,14 @@
       "id": "japanese-read-as-japanese",
       "text": "読み取りエンジンを英語と日本語の両方で動かし、写真の日本語は日本語の文字として読み取る（読み取った文字の欄に日本語が出る）。2026-10-14 の作り直し：「日本語＋英語」と「英語だけ」の2つのエンジンを白黒の決め方2通りで読み、行ごとに確かな読み方を選んでまとめる（化けた行を日本語だけで読み直す作りは、LSTM だけの版の弱さを補うものだったので外した）。結果：試料7枚の日本語 376字を全部読み、直す前の英語だけの読み取りでは0字だった。実際の写真28枚の横書きの日本語は 1,029/1,794字（57.4%。直す前の公開版は 882字・49.2%）",
       "population": "試料の画像の全7枚（tests/fixtures/vocab-ocr/。日本語と英語がまざった教科書の本文と訳・単語表・問題・英語の混じる日本語の説明・写真ふう（ゴシック体・傾き・ぼけ・灰色の紙）、日本語だけのページ、英語だけのページ）",
-      "check": "node --test tests/vocab-ocr-real-engine.test.mjs",
+      "check": "node --test tests/vocab-ocr-photos.test.mjs",
       "status": "done"
     },
     {
       "id": "no-nonexistent-words",
       "text": "画面が出す語（辞書と一致した候補・辞書登録リクエストの候補）は全部、実在する英単語（アプリの辞書の見出し語とその変化形、または英語の単語表 SCOWL 10〜70段 115,258語にある語）。英単語として確かめられない文字の並び（日本語や図の読み違い・人名・地名）は候補にもリクエストにも出さず、「英単語として確かめられなかった文字」の欄に示す。続けて読まれた語（schoolevery）は実在する語に分け、読み違えやすい文字（rn→m・0→o・端のかっこの f など）は辞書の見出し語へ1つに戻せるときだけ直す（直した印つきで最初は選ばない）。エンジンの確からしさが45未満の辞書の語は「不確か」の印をつけて最初は選ばず、辞書にない語ならリクエストに出さない。結果：本物のエンジンで全7枚を読み、画面が出した語は全部、写真に実際にある実在の英単語で（写真にない語・存在しない語 0件）、写真の辞書の語は全部候補になった（取りこぼし 0件）。日本語だけのページは候補0・リクエスト0。直す前の英語だけの読み取り結果でも、存在しない語をリクエストに出さない（化けた並び30以上を外した）",
       "population": "試料の全7枚を本物のエンジンで読んだ結果（画面の手順と、直す前の英語だけの手順の両方）から画面が出す語の全件と、誤読の型（存在しない並び・続けて読まれた語・読み違えやすい文字・端のかっこ・確からしさの低い語・日本語・数字）の単体試験",
-      "check": "node --test tests/vocab-ocr.test.mjs tests/vocab-ocr-real-engine.test.mjs",
+      "check": "node --test tests/vocab-ocr.test.mjs tests/vocab-ocr-photos.test.mjs",
       "status": "done"
     },
     {
@@ -49,7 +49,7 @@
       "id": "node-browser-same",
       "text": "node とブラウザで同じ画像の読み取りが食い違った原因は、エンジン本体の版の違いだった。tesseract.js 7.0.0 の node 版は、本体を選ぶ関数に lstmOnly を oem として渡す誤りで旧エンジン入りの版を読み、ブラウザは既定で LSTM だけの版を読む。LSTM だけの版は日本語の認識データの設定の一部を受け付けず（Parameter not found）、「「decide to ～」は…」の行を「Tdecide to ~; 1& T~F2Z…」と化けさせ、選択肢の記号ア・イ・ウを 7・A・* と読んだ。直し方：ブラウザも旧エンジン入りの SIMD 版（版を 7.0.0 に固定、SIMD がなければ SIMD なしの版）を読み、node のテストは同じ版を入口（tests/tesseract-node-worker.cjs）で選ぶ。relaxed SIMD かどうかは結果に関係しないことも確かめた。結果：写真28枚と試料7枚の全35枚で、node とブラウザの読み取りは1字も違わない",
       "population": "試料7枚と実際の写真28枚の全35枚を、画面と同じ下ごしらえの画像で、node とブラウザの両方で",
-      "check": "node --test tests/vocab-ocr-photos.test.mjs tests/vocab-ocr-real-engine.test.mjs",
+      "check": "node --test tests/vocab-ocr-photos.test.mjs",
       "status": "done"
     },
     {
@@ -63,7 +63,7 @@
       "id": "no-engine-warnings",
       "text": "警告の原因を確かめ、出さないようにする。「Parameter not found」は LSTM だけの版が日本語の認識データの設定（旧エンジン用の項目）を受け付けない知らせで、旧エンジン入りの版にすると出ない。「Failed loading language ''」は、日本語の認識データが縦書きのデータ jpn_vert を一緒に読もうとして、置いていないので出る知らせ。jpn_vert を置くと横書きの日本語まじりの行が英字に化け、縦書きの写真も読めず、読みにいかない設定にすると写真の日本語が 59.2%→51.0% に下がったので、読みにいく設定のまま、エンジンの知らせの書き出し先（debug_file）を捨てる所にした（Tesseract の決まった止め方。35枚×4通りの読み取りで結果は1字も変わらない）。画像処理の部品（leptonica）の「Error in boxClipToRectangle」は字が画像の端に近いと出るので、写真のまわりに 4px の白い余白をつけて原因から消した。結果：35枚を読むあいだ、ブラウザのコンソールの知らせは0行",
       "population": "読み取りエンジンを作るすべての所（画面の2つのエンジン・ブラウザのテスト・node のテスト）と、試料7枚・写真28枚を読むあいだのコンソールの全行",
-      "check": "node --test tests/vocab-ocr-photos.test.mjs tests/vocab-ocr-real-engine.test.mjs tests/vocab-camera-dev-ocr.test.mjs",
+      "check": "node --test tests/vocab-ocr-photos.test.mjs tests/vocab-camera-dev-ocr.test.mjs",
       "status": "done"
     },
     {
@@ -88,5 +88,5 @@
       "status": "done"
     }
   ],
-  "notes": "10-14 の追加の指示で作り直した。読めないまま残したもの：赤地・緑地に白い字の標識、大きく傾いた写真、曲がった紙面の接写、縦書きの日本語、遠景の小さい字（実写真28枚のうち9枚）。写真にない語を最初から選ぶ誤りが1件（p21 の PLEASE を lease）、リクエストの誤りが1件（p23 の boa）残る。1枚を読む時間はパソコンで約2〜6秒（2つのエンジンを並べて動かす）。スマホでは数倍かかる見込みで、スマホの実機では測っていない。品詞の道具 compromise（MIT）は、ほかのライブラリと同じく出典ページには載せていない。"
+  "notes": "10-14 の追加の指示で作り直した。読めないまま残したもの：赤地・緑地に白い字の標識、大きく傾いた写真、曲がった紙面の接写、縦書きの日本語、遠景の小さい字（実写真28枚のうち9枚）。写真にない語を最初から選ぶ誤りが1件（p21 の PLEASE を lease）、リクエストの誤りが1件（p23 の boa）残る。1枚を読む時間はパソコンで約2〜6秒（2つのエンジンを並べて動かす）。スマホでは数倍かかる見込みで、スマホの実機では測っていない。品詞の道具 compromise（MIT）は、ほかのライブラリと同じく出典ページには載せていない。 2026-10-14 の次の依頼（requests/2026-10-14-camera-ocr-hard-photos.json）で、読み取りエンジンを Tesseract から PaddleOCR（PP-OCRv6）に置きかえた。この台帳の条件の文は Tesseract のときの記録として残し、Tesseract を動かすテスト（tests/vocab-ocr-real-engine.test.mjs・tests/tesseract-node-worker.cjs）を消したので、それを使っていた条件（japanese-read-as-japanese・no-nonexistent-words・node-browser-same・no-engine-warnings）の確認コマンドを、置きかえ後の同じ働きを確かめるテスト（tests/vocab-ocr-photos.test.mjs：日本語を読む・実在しない語を出さない・コンソールの知らせ）に付け替えた。node とブラウザの一致（node-browser-same）は、PaddleOCR をブラウザでだけ動かすので、ブラウザ（Chromium）と Safari のエンジン（WebKit）の一致に置きかわった。"
 }

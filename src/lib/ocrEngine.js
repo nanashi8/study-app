@@ -1,63 +1,105 @@
-// 「教科書から単語追加」で、写真1枚を読み取りエンジン（tesseract.js）で読む手順。画面（VocabCamera.jsx）とテストが同じ手順で読む。
-// vocabOcr.js の OCR_ENGINES の2つのエンジンを並べて動かし、それぞれ白黒の決め方2通りで読んで、mergeOcrPasses でまとめる。
-import { mergeOcrPasses, ocrLinesFromResult, OCR_ENGINES } from './vocabOcr.js'
+// 「教科書から単語追加」で、写真1枚を読み取りエンジン（PaddleOCR の PP-OCRv6、ONNX Runtime Web で動かす）で読む手順。
+// 画面（VocabCamera.jsx）とテストが同じ手順で読む。
+//
+// 2026-10-14 に Tesseract から置きかえた。ウェブで集めた実写真28枚（tests/fixtures/vocab-ocr/photos.json）の正解と照らして、
+// 写真の英単語 394→547/582 語、横書きの日本語 1,029→1,618/1,794 字。Tesseract は文書向けで、色地に白い字の標識・傾いた写真・
+// 曲がった紙面・縦書き・遠くの字では「どこに字があるか」を見つけられなかった。PaddleOCR は字のある所を先に探す（検出）ので、
+// これらも読める。
+// モデルは、検出が PP-OCRv6_tiny（1.8MB）、認識が PP-OCRv6_small（21MB。日本語・英語・中国語を1つで読む）。認識の tiny は
+// ひらがなを漢字に読み違え（「は」→「注」）、PP-OCRv5_mobile の認識は英単語が少し落ちた。検出は tiny でも small とほぼ同じだった。
+// 端末に WebGPU があれば GPU で、なければ wasm で動かす（パソコンで1枚平均 0.46 秒と約 2.6 秒）。
+import { OCR_MODEL_BYTES, OCR_MODEL_FILES, OCR_MODEL_NAMES } from './ocrModels.js'
 
-// エンジン本体（tesseract.js-core）の版。package-lock.json の tesseract.js-core と同じ版にする（テストが確かめる）。
-export const OCR_CORE_VERSION = '7.0.0'
+// ONNX Runtime Web の本体（wasm）は、ビルドが同じサイトの assets/ に入れたものを読む（外のサイトに頼らない）。
 
-// エンジンを作るときだけ効く設定。debug_file は、エンジンの知らせ（日本語の認識データの設定のうちこの版にない項目の
-// 「Parameter not found」、縦書きの日本語のデータ jpn_vert を置いていないことの「Failed loading language」、
-// 「Estimating resolution」など）を、画面のコンソールへ出さずに捨てる。2026-10-14 に写真28枚と試料7枚を4通りで読み、
-// 読み取りの結果は1字も変わらないことを確かめた。
-// jpn_vert は置かない（置くと、横書きの日本語の文の行が英字に化けた。縦書きの写真も読めるようにはならなかった）。
-export const OCR_INIT_CONFIG = Object.freeze({ debug_file: '/dev/null' })
-
-// ブラウザで使うエンジン本体。LSTM だけの版（tesseract.js の既定）ではなく旧エンジン入りの版を使う。
-// 旧エンジン入りの版は、日本語の認識データの設定を全部受け付け、日本語と英語のまざった行を正しく読む
-// （LSTM だけの版は「「decide to ～」は…」の行を「Tdecide to ~; 1& T~F2Z…」と読み、選択肢の記号ア・イ・ウを
-// 7・A・* と読んだ）。relaxed SIMD の版は使わない（計算の丸めが端末ごとに変わってよい命令で、結果が端末でずれうる）。
-export function ocrCoreUrl(simdSupported) {
-  const file = simdSupported ? 'tesseract-core-simd.wasm.js' : 'tesseract-core.wasm.js'
-  return `https://cdn.jsdelivr.net/npm/tesseract.js-core@${OCR_CORE_VERSION}/${file}`
+// モデルは同じサイトの ocr-models/ に置く（vite.config.js がビルドに入れる）。
+export function ocrModelUrl(file, base = import.meta.env?.BASE_URL ?? './') {
+  return new URL(`${base}ocr-models/${file}`, globalThis.location?.href ?? 'http://localhost/').href
 }
 
-export async function ocrBrowserWorkerOptions() {
-  const { simd } = await import('wasm-feature-detect')
-  return { corePath: ocrCoreUrl(await simd().catch(() => false)) }
+export function ocrCreateOptions({ base } = {}) {
+  return {
+    textDetectionModelName: OCR_MODEL_NAMES.det,
+    textDetectionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.det, base) },
+    textRecognitionModelName: OCR_MODEL_NAMES.rec,
+    textRecognitionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.rec, base) },
+    // WebGPU があれば GPU で動かす。wasm で動かすときは、計算を別スレッドに移して画面が固まらないようにする（proxy）。
+    ortOptions: { backend: 'auto', proxy: true },
+  }
 }
 
-// 写真1枚を読む。
-//   tesseract      import('tesseract.js') の中身（createWorker・OEM・PSM）
-//   image          エンジンへ渡す画像（ocrImage.js の prepareImageForOcr の結果、node ではファイルのパス）
-//   isEnglishWord  vocabOcr.js の createOcrWordTest の結果
-//   workerOptions  createWorker の3つ目の引数（ブラウザは corePath、node のテストは cachePath・workerPath）
-//   onWorker       エンジンを作るたびに呼ぶ（画面を離れたときに止めるため）
-//   onProgress     ({ engine, status, progress }) を知らせる
-//   isAlive        false になったら、次の読み方へ進まない
-export async function readOcrPage(tesseract, image, { isEnglishWord, workerOptions = {}, onWorker, onProgress, isAlive = () => true }) {
-  const { createWorker, OEM, PSM } = tesseract
-  const passes = await Promise.all(OCR_ENGINES.map(async (engine) => {
-    const worker = await createWorker([...engine.languages], OEM.LSTM_ONLY, {
-      ...workerOptions,
-      logger: (message) => onProgress?.({ engine: engine.id, ...message }),
-    }, OCR_INIT_CONFIG)
-    onWorker?.(worker)
-    const read = []
-    try {
-      for (const thresholding of engine.thresholdings) {
-        if (!isAlive()) break
-        await worker.setParameters({
-          tessedit_pageseg_mode: PSM.AUTO,
-          preserve_interword_spaces: '1',
-          thresholding_method: thresholding,
-        })
-        const { data } = await worker.recognize(image, {}, { text: true, blocks: true })
-        read.push({ key: `${engine.id}${thresholding}`, kind: engine.id, lines: ocrLinesFromResult(data) })
-      }
-    } finally {
-      await worker.terminate().catch(() => {})
+// 読み取りの結果（items: [{ text, score, poly }]）を、行と語（{ text, confidence }）にする。
+// PaddleOCR は行ごとの確からしさ（score 0〜1）だけを返すので、行の語はみな同じ確からしさ（0〜100）にする。
+export function ocrPageFromItems(items) {
+  const lines = (items ?? [])
+    .map((item) => ({ text: String(item.text ?? '').trim(), confidence: Math.round(Number(item.score ?? 0) * 100), poly: item.poly }))
+    .filter((line) => line.text)
+  return {
+    text: lines.map((line) => line.text).join('\n'),
+    words: lines.flatMap((line) => line.text.split(/\s+/).filter(Boolean).map((text) => ({ text, confidence: line.confidence }))),
+    lines,
+  }
+}
+
+let ortQuiet = null
+// ONNX Runtime の知らせ（WebGPU で一部の計算を CPU に回したときの「Some nodes were not assigned…」など）を、
+// エラーのときだけにする。セッションごとの知らせの度合いは作るときの設定（logSeverityLevel、指定がなければ警告）で決まり、
+// SDK はそれを渡さないので、セッションを作る関数を包んで渡す（3 ＝ エラー）。
+async function quietOrt() {
+  ortQuiet ??= import('onnxruntime-web').then((ort) => {
+    ort.env.logLevel = 'error'
+    const create = ort.InferenceSession.create
+    if (!create.quiet) {
+      const quiet = (model, options) => create.call(ort.InferenceSession, model, { logSeverityLevel: 3, ...(options ?? {}) })
+      quiet.quiet = true
+      ort.InferenceSession.create = quiet
     }
-    return read
-  }))
-  return mergeOcrPasses(passes.flat(), isEnglishWord)
+    return ort
+  })
+  return ortQuiet
+}
+
+// モデルを読み込む fetch。読み込んだ量（0〜1）を onDownload に知らせる。
+function progressFetch(onDownload) {
+  if (!onDownload) return undefined
+  const total = OCR_MODEL_BYTES.det + OCR_MODEL_BYTES.rec
+  const loaded = new Map()
+  return async (input, init) => {
+    const response = await fetch(input, init)
+    const url = String(input?.url ?? input)
+    if (!/\/ocr-models\//.test(url) || !response.ok || !response.body) return response
+    const reader = response.body.getReader()
+    const chunks = []
+    let received = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      chunks.push(value)
+      received += value.length
+      loaded.set(url, received)
+      onDownload(Math.min(1, [...loaded.values()].reduce((sum, bytes) => sum + bytes, 0) / total))
+    }
+    return new Response(new Blob(chunks), { status: response.status, statusText: response.statusText, headers: response.headers })
+  }
+}
+
+// 読み取りエンジンを作る（モデルと ONNX Runtime を読み込む）。paddle は import('@paddleocr/paddleocr-js') の中身。
+//   options.onDownload  初回のモデルの読み込みの進み具合（0〜1）
+export async function createOcrReader(paddle, options = {}) {
+  await quietOrt()
+  const fetchWithProgress = progressFetch(options.onDownload)
+  const ocr = await paddle.PaddleOCR.create({
+    ...ocrCreateOptions(options),
+    ...(fetchWithProgress ? { fetch: fetchWithProgress } : {}),
+    ...(options.createOptions ?? {}),
+  })
+  return {
+    async read(image) {
+      const [result] = await ocr.predict(image)
+      return { ...ocrPageFromItems(result?.items), metrics: result?.metrics ?? null, runtime: result?.runtime ?? null }
+    },
+    async dispose() {
+      await ocr.dispose?.()
+    },
+  }
 }

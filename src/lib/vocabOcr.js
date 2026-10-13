@@ -84,155 +84,10 @@ const IRREGULAR_BASES = {
   worst: 'bad',
 }
 
-// 写真1枚の読み方（2026-10-14、ウェブで集めた実際の写真28枚と試料7枚の正解と照らして決めた）。
-// 2つのエンジンを並べて動かす。「日本語＋英語」（日本語を先に）は日本語の行を、「英語だけ」は英語の行を読む。
-// 日本語＋英語で読むと、太い英字の段落が崩れたり抜けたりする（説明板の英文で「7is 7S a reconstruction…」）。
-// 英語だけで読むと、日本語の行が英字の並び（basic・hot などの実在の語を含む）に化ける。そこで両方で読み、行ごとに確かな
-// 読み方を選ぶ。どちらも白黒の決め方を2通り（'0'＝画像全体で1つのしきい値、'2'＝場所ごとに決める Sauvola）で読む。
-// 背景のある写真は場所ごとのほうが読めることが多く、紙の文書は全体のほうが読めることが多い。
-export const OCR_ENGINES = Object.freeze([
-  Object.freeze({ id: 'ja', languages: Object.freeze(['jpn', 'eng']), thresholdings: Object.freeze(['0', '2']) }),
-  Object.freeze({ id: 'en', languages: Object.freeze(['eng']), thresholdings: Object.freeze(['0', '2']) }),
-])
-
-// 語を最初から選ぶ確かさ：ほかの読み方でも同じ場所に同じ語が読めた数（自分を含む）か、エンジンの確からしさ。
-// どちらにも届かない語は「読み取りが不確か」にする（候補には出すが最初は選ばない）。
-export const OCR_CONFIRM_PASSES = 3
-export const OCR_SURE_CONFIDENCE = 85
-
-const JAPANESE_CHAR = /[\u3040-\u30ff\u3400-\u9fff]/u
-// 長音記号・中黒だけの並び（写真の模様を「ーーーー」と読んだもの）は、日本語の字として数えない。
-const JAPANESE_SYMBOLS = /^[ー・ｰ]+$/u
-// 行の選び方で、日本語の字を確かと数える確からしさ。
-const JAPANESE_LINE_CONFIDENCE = 45
-// 2つの行が同じ所を読んだとみなす重なり（短いほうの幅・高さに対する割合の積）。
-const SAME_LINE_OVERLAP = 0.5
-const SAME_WORD_OVERLAP = 0.3
-
-// 読み取りエンジンの結果（blocks → paragraphs → lines → words）から、行（文字・位置・語）を並べる。
-export function ocrLinesFromResult(data) {
-  return (data?.blocks ?? []).flatMap((block) => (block.paragraphs ?? []).flatMap((paragraph) => (
-    (paragraph.lines ?? []).map((line) => ({
-      text: String(line.text ?? '').trim(),
-      bbox: line.bbox ?? null,
-      words: (line.words ?? []).map((word) => ({ text: word.text, confidence: word.confidence, bbox: word.bbox ?? null })),
-    }))
-  )))
-}
-
-function boxOverlap(a, b) {
-  if (!a || !b) return 0
-  const y = Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0)
-  const x = Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)
-  if (y <= 0 || x <= 0) return 0
-  return (y / Math.max(1, Math.min(a.y1 - a.y0, b.y1 - b.y0))) * (x / Math.max(1, Math.min(a.x1 - a.x0, b.x1 - b.x0)))
-}
-
-// 行の確かさ：英単語として確かめられた語の字数（確からしさが低くない語だけ）、確からしい日本語の字数、
-// 確かめられない英字の並びと確からしさの低い日本語の字数（悪いほう）。
-function ocrLineQuality(line, isEnglishWord) {
-  let english = 0
-  let japanese = 0
-  let bad = 0
-  const tokens = []
-  for (const word of line.words) {
-    const confidence = Number(word.confidence)
-    const japaneseText = String(word.text ?? '').replace(/[^\u3040-\u30ff\u3400-\u9fffｰ]/gu, '')
-    if (JAPANESE_SYMBOLS.test(japaneseText)) {
-      bad += japaneseText.length
-    } else {
-      for (const ch of japaneseText) {
-        if (!JAPANESE_CHAR.test(ch)) continue
-        if (confidence >= JAPANESE_LINE_CONFIDENCE) japanese += 1
-        else bad += 1
-      }
-    }
-    for (const surface of extractEnglishTokens(word.text)) {
-      const token = normalizeOcrToken(surface)
-      if (token.length < 2) continue
-      if (isEnglishWord(token) && confidence >= OCR_LOW_CONFIDENCE) {
-        english += token.length
-        tokens.push(token)
-      } else {
-        bad += token.length
-      }
-    }
-  }
-  return { english, japanese, bad, tokens }
-}
-
-function pickLines(lines, score) {
-  const chosen = []
-  for (const line of [...lines].sort((a, b) => score(b) - score(a))) {
-    if (score(line) <= 0) continue
-    if (chosen.some((other) => boxOverlap(other.bbox, line.bbox) > SAME_LINE_OVERLAP)) continue
-    chosen.push(line)
-  }
-  return chosen
-}
-
-// いくつかの読み方（passes: [{ key, kind: 'ja' | 'en', lines }]）を、行ごとに選んで1つの文字と語にまとめる。
-//   日本語の行：日本語＋英語の読み方の行から、日本語と英単語が多く、確かめられない字が少ない行を選ぶ。
-//   英語の行：すべての読み方の行から、英単語として確かめられた字が多い行を選ぶ。同じ所を読んだ日本語の行が
-//             同じ英単語を全部持っていれば重ねて出さない。
-//   語ごとに、ほかの読み方でも同じ場所に同じ語が読めた数（support）を数え、確かさが足りない語の確からしさを
-//   OCR_LOW_CONFIDENCE 未満に下げる（matchOcrTextToWords が「不確か」にする）。元の値は rawConfidence に残す。
-// isEnglishWord(token) は、その並びが英単語として確かめられるか（createOcrWordTest の結果）。
-export function mergeOcrPasses(passes, isEnglishWord) {
-  const japaneseLines = []
-  const englishLines = []
-  for (const pass of passes) {
-    for (const line of pass.lines ?? []) {
-      if (!line.bbox || !line.text) continue
-      const item = { ...line, pass: pass.key, quality: ocrLineQuality(line, isEnglishWord) }
-      if (pass.kind === 'ja' && item.quality.japanese > 0) japaneseLines.push(item)
-      else if (item.quality.english > 0) englishLines.push(item)
-    }
-  }
-  const japanese = pickLines(japaneseLines, (line) => line.quality.japanese + line.quality.english - line.quality.bad)
-  const english = pickLines(englishLines, (line) => line.quality.english - line.quality.bad).filter((line) => {
-    const host = japanese.find((other) => boxOverlap(other.bbox, line.bbox) > SAME_LINE_OVERLAP)
-    if (!host) return true
-    const have = new Set(host.quality.tokens)
-    return line.quality.tokens.some((token) => !have.has(token))
-  })
-
-  const seen = []
-  for (const pass of passes) {
-    for (const line of pass.lines ?? []) {
-      for (const word of line.words) {
-        for (const surface of extractEnglishTokens(word.text)) seen.push({ pass: pass.key, token: normalizeOcrToken(surface), bbox: word.bbox })
-      }
-    }
-  }
-  const supportOf = (word, pass) => {
-    const tokens = extractEnglishTokens(word.text).map(normalizeOcrToken)
-    if (!tokens.length || !word.bbox) return 1
-    const passesSeen = new Set([pass])
-    for (const other of seen) {
-      if (other.pass !== pass && tokens.includes(other.token) && boxOverlap(other.bbox, word.bbox) > SAME_WORD_OVERLAP) passesSeen.add(other.pass)
-    }
-    return passesSeen.size
-  }
-
-  const lines = [...japanese, ...english]
-    .sort((a, b) => (a.bbox.y0 + a.bbox.y1) / 2 - (b.bbox.y0 + b.bbox.y1) / 2 || a.bbox.x0 - b.bbox.x0)
-    .map((line) => ({
-      text: line.text,
-      bbox: line.bbox,
-      pass: line.pass,
-      words: line.words.map((word) => {
-        const support = supportOf(word, line.pass)
-        const raw = Number(word.confidence)
-        const sure = support >= OCR_CONFIRM_PASSES || raw >= OCR_SURE_CONFIDENCE
-        return { ...word, support, rawConfidence: raw, confidence: sure ? raw : Math.min(raw, OCR_LOW_CONFIDENCE - 1) }
-      }),
-    }))
-  return { text: lines.map((line) => line.text).join('\n'), words: lines.flatMap((line) => line.words), lines }
-}
-
 // 読み取りエンジンが付けた確からしさ（0〜100）がこれより低い語は「読み取りが不確か」として、候補に出しても最初は選ばない。
-export const OCR_LOW_CONFIDENCE = 45
+// PaddleOCR は行ごとの確からしさを返し、正しく読めた行はほぼ 90 以上になる。実写真28枚で 85・90 は最初から選ぶ正しい語を
+// 減らさずに写真にない語（手書きの hot を読み違えた hat）を不確かにし、93 以上は正しい語まで選ばなくなった（2026-10-14）。
+export const OCR_LOW_CONFIDENCE = 90
 
 // 読み違えやすい文字の組（読み取った形 → 正しい形）。実在しない並びを辞書の見出し語へ戻すときだけ使う。
 const CONFUSIONS = [
@@ -405,7 +260,7 @@ function edgeTrimmedVariants(token) {
 //   dictionary  アプリの辞書の見出し語（そのまま・変化形）
 //   listed      アプリの辞書にはないが、英語の単語表にある実在の語（辞書登録をリクエストできる。読み取りが不確かなら rejected へ）
 //   corrected   実在しない並びを、読み違えやすい文字の組を入れ替えるか、端のかっこの読み違いを外して、辞書の見出し語へ1つに戻せたもの
-//   split       実在しない並びを、続けて読まれた2〜3語（辞書の語か単語表の語）に分けられたもの
+//   split       実在しない並びを、続けて読まれた2〜3語（辞書の語）に分けられたもの（最初は選ばない）
 //   rejected    英単語として確かめられない並び（日本語や図の読み違い・人名・地名など）
 function createClassifier(words, englishWords) {
   const index = buildHeadwordIndex(words)
@@ -450,8 +305,9 @@ function createClassifier(words, englishWords) {
       consider([token.slice(0, i), token.slice(i)])
     }
     if (!best) {
-      for (let i = 1; i < token.length - 1; i += 1) {
-        for (let j = i + 1; j < token.length; j += 1) {
+      // 3つに分けるときは、1文字の語（a・i）を使わない（Themistress を them・i・stress に分けない）。
+      for (let i = 2; i < token.length - 3; i += 1) {
+        for (let j = i + 2; j < token.length - 1; j += 1) {
           consider([token.slice(0, i), token.slice(i, j), token.slice(j)])
         }
       }
@@ -500,13 +356,6 @@ function createClassifier(words, englishWords) {
   }
 
   return { classify }
-}
-
-// 読み取った並びが英単語として確かめられるか（辞書の語・単語表の語・読み違いを直した語・分けた語）を返す関数を作る。
-// mergeOcrPasses の行の選び方に使う。
-export function createOcrWordTest(words, englishWords) {
-  const { classify } = createClassifier(words, englishWords)
-  return (token) => classify(token).kind !== 'rejected'
 }
 
 function compareScores(a, b) {
@@ -599,7 +448,18 @@ export function matchOcrTextToWords(text, words, options = {}) {
     }
   }
 
+  // 大文字が語の途中から始まる並び（ToriMeshi・SmileyMenu・cArms）は、写真で2語がくっついて読まれたもの。大文字の所で分け、
+  // 1つずつ読む（語の途中では分けない）。
+  const pieces = []
   for (const { surface, index } of tokens) {
+    const parts = surface.split(/(?<=[a-z])(?=[A-Z])/)
+    let offset = index
+    for (const part of parts) {
+      pieces.push({ surface: part, index: offset })
+      offset += part.length
+    }
+  }
+  for (const { surface, index } of pieces) {
     const normalized = normalizeOcrToken(surface)
     if (normalized.length < 2) continue
     tokenCount += 1
