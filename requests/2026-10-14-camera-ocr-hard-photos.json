@@ -26,11 +26,11 @@
     },
     {
       "id": "phone-timing",
-      "text": "スマホで1枚を読む時間を測り、遅すぎるなら速くする。速くしたこと：端末に WebGPU があれば GPU で読む（パソコンで1枚平均 0.46秒、wasm の約 2.6秒の約6分の1。iPhone は iOS 26 の Safari、Android は Chrome に WebGPU がある）。wasm のときは計算を別スレッドに移して画面を固めない。モデル（約 23MB）は初回だけ読み込み、進み具合を出す。スマホの代わりの見積もり（Chrome の CPU を4分の1・6分の1に落とし、wasm で読んだ場合）：写真1枚 14〜40秒・21〜65秒。実機（スマホ）での時間は、この環境にスマホも Xcode（iOS シミュレーター）もないため測れていない",
+      "text": "スマホで1枚を読む時間を測り、遅すぎるなら速くする。速くしたこと：端末に WebGPU があれば GPU で読む（パソコンで1枚平均 0.46秒、wasm の約 2.6秒の約6分の1。iPhone は iOS 26 の Safari、Android は Chrome に WebGPU がある）。wasm のときは計算を別スレッドに移して画面を固めない。モデル（約 23MB）は初回だけ読み込み、進み具合を出す。スマホの代わりの見積もり（Chrome の CPU を4分の1・6分の1に落とし、wasm で読んだ場合）：写真1枚 14〜40秒・21〜65秒。実機（スマホ）での時間は、この環境にスマホも Xcode（iOS シミュレーター）もないため測れていない。公開版（本番ビルド）をパソコンで開いて測った時間：画面を開いてから1枚目の結果まで（エンジンの準備とモデルの読み込みを含む）Chromium 14〜47秒・WebKit 31〜40秒。手元で配った本番ビルドでは、同じ流れで3〜4秒（通信の時間がほとんどない）",
       "population": "読み取りの全段（エンジンの準備・読み取り・まとめ）を、スマホの端末（実機、実機で測れないところは CPU を遅くしたブラウザ）で",
       "check": "false",
-      "status": "waiting",
-      "waitingFor": "本番ビルドで読めない不具合を直して公開したあと、利用者のスマホで時間を測ってもらう"
+      "status": "needs-user",
+      "question": "公開版を、お手もとのスマホ（iPhone の Safari か Android の Chrome）で開き、メニューの「教科書から単語追加」で教科書の写真を1枚読ませて、「英単語を読み取る」を押してから結果が出るまでの秒数を教えてください。1回目（モデル約23MBの初回の読み込みを含む）と、続けてもう1枚読んだ2回目の両方を測ってもらえると、遅いのが読み込みか読み取りかを切り分けられます。"
     },
     {
       "id": "production-build-reads",
@@ -41,11 +41,10 @@
     },
     {
       "id": "hard-photos-deployed",
-      "text": "全監査を通して main へ push し公開版へ出し、公開版の画面で写真を読めることを確かめる",
+      "text": "全監査を通して main へ push し公開版へ出し、公開版の画面で写真を読めることを確かめる。結果：はじめに 059749bc を公開したが、公開版では本番ビルドの不具合で写真を1枚も読めなかった（production-build-reads で直した）。直したあと、クリーンな clone（dc395871）で npm run audit:all-content が通り（テスト 1,405件すべて成功・全教材監査台帳を書き直し）、292bf030 を main へ push、deploy.yml の run 38503694520 が success。公開版の実際の画面（スマホの大きさ）で本物のエンジンに読ませ、Chromium で赤地の標識 p05（英単語14語）・傾いた p03（4語）・縦書き p12（6語）・試料 inline-mixed（12語）、WebKit で p05（14語）・inline-mixed（12語）を候補にした。モデル2つと ONNX Runtime の本体は公開版の同じサイトから読んだ。読み取りのコンソールの知らせは0行（出たのはアプリを開いたときのフォントの先読み・Firebase の知らせと、GPU のないブラウザの No available adapters だけ）。送信は押していない",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（dc395871）の全監査は 1,405件すべて通った。監査台帳を取り込んで push し、公開の処理と公開版の画面での読み取りを確かめる"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 292bf030 origin/main && test \"$(gh run view 38503694520 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs tests/vocab-ocr-build.test.mjs",
+      "status": "done"
     }
   ]
 }
