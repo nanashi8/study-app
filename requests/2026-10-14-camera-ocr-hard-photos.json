@@ -30,15 +30,22 @@
       "population": "読み取りの全段（エンジンの準備・読み取り・まとめ）を、スマホの端末（実機、実機で測れないところは CPU を遅くしたブラウザ）で",
       "check": "false",
       "status": "waiting",
-      "waitingFor": "コミット a16908f4 に、クリーンな clone の全監査（1,399件すべて通過）の台帳を入れ直して push し、公開版で確かめる。phone-timing は公開したあと、利用者のスマホで時間を測ってもらう"
+      "waitingFor": "本番ビルドで読めない不具合を直して公開したあと、利用者のスマホで時間を測ってもらう"
+    },
+    {
+      "id": "production-build-reads",
+      "text": "本番のビルドでも読み取りエンジンが動き、写真を読む。059749bc を公開したところ、公開版では「文字を読み取れませんでした」になった（コンソールに no available backend found. ERR: [wasm]・document is not defined）。原因：vite が ONNX Runtime の中の import() を先読みの関数で包み、その関数をアプリ本体の塊（index）から借りるので、ONNX Runtime が別スレッド（proxy）で自分の塊を読み込むと、別スレッドでアプリ本体まで動いて止まる。開発版にはこの包みがなく、テストは開発版だけで確かめていた。直したこと：vite.config.js で先読みの関数を別の小さな塊（preload-helper）にし、ONNX Runtime の塊が読み込むのを rolldown の下回りと先読みの関数だけにした。tests/vocab-ocr-build.test.mjs がビルドを作って配り、スマホの大きさの実際の画面で写真を読む：Chromium で試料 inline-mixed・赤地の標識 p05（英単語14/14）・傾いた p03（4/4）・縦書き p12（6/6）、WebKit で inline-mixed を、どれも3〜4秒で読み、読み取りの間の外への通信0・コンソール0。直す前の設定では、このテストが4件落ちる（ort.bundle.min が index を読み込む・文字を読み取れませんでした）ことを確かめた",
+      "population": "本番ビルド（npm run build と同じ設定）の、エンジンを読み込む塊すべてと、画面で読む写真（試料 inline-mixed と、前は読めなかった実写真）",
+      "check": "node --test tests/vocab-ocr-build.test.mjs",
+      "status": "done"
     },
     {
       "id": "hard-photos-deployed",
-      "text": "全監査を通して main へ push し公開版へ出す",
+      "text": "全監査を通して main へ push し公開版へ出し、公開版の画面で写真を読めることを確かめる",
       "population": "この依頼の変更 全部",
       "check": "false",
       "status": "waiting",
-      "waitingFor": "コミット a16908f4 に、クリーンな clone の全監査（1,399件すべて通過）の台帳を入れ直して push し、公開版で確かめる。phone-timing は公開したあと、利用者のスマホで時間を測ってもらう"
+      "waitingFor": "クリーンな clone（dc395871）の全監査は 1,405件すべて通った。監査台帳を取り込んで push し、公開の処理と公開版の画面での読み取りを確かめる"
     }
   ]
 }

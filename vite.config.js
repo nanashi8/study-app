@@ -36,4 +36,16 @@ function ocrModels() {
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss(), ocrModels()],
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          // vite は import() を先読みの関数（\0vite/preload-helper.js）で包む。この関数がアプリ本体の塊に入ると、
+          // ONNX Runtime（教科書から単語追加の読み取り）が別スレッドで自分の塊を読み込むときにアプリ本体まで動き、
+          // document がなくて止まる（2026-10-14 の公開版）。先読みの関数は別の小さな塊にする。
+          groups: [{ name: 'preload-helper', test: /vite\/preload-helper/, priority: 100 }],
+        },
+      },
+    },
+  },
 })
