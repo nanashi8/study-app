@@ -11,6 +11,7 @@ import { VOCAB_MIX_DEFAULT, normalizeVocabMix } from '../lib/vocabMix.js'
 import { SPEECH_RANGE_DEFAULT, normalizeSpeechRange } from '../lib/speechRange.js'
 import {
   customStudyWords,
+  isCustomWordId,
   removeCustomWord,
   upsertCustomWord,
 } from '../lib/customWords.js'
@@ -1202,26 +1203,44 @@ export const useStore = create(
         return receipt
       },
 
-      // JSONファイルから読んだ英単語・カード・カテゴリーを、足す（同じ ID は書き換え）か、まるごと入れ替える。
-      importCustomLibrary: (library, mode = 'merge') => {
-        let result = { addedCount: 0, updatedCount: 0, skippedCount: 0, categoryCount: 0 }
+      // JSON・CSVから読んだ英単語・カード・カテゴリーを、足す（同じ ID は書き換え）か、まるごと入れ替える。
+      // replaces（{ from, to }）は、テンプレートを英単語とほかの間で変えた行：元のカードを消し、単語帳・メモを新しいカードへ付け替える。
+      importCustomLibrary: (library, mode = 'merge', { replaces = [] } = {}) => {
+        let result = { addedCount: 0, updatedCount: 0, skippedCount: 0, categoryCount: 0, replacedCount: 0 }
         set((st) => {
           const merged = mergeCustomLibrary(
             { words: st.customWords, cards: st.customCards, categories: st.customCategories },
             library,
-            { mode },
+            { mode, replaces: mode === 'replace' ? [] : replaces },
           )
           result = {
             addedCount: merged.addedCount,
             updatedCount: merged.updatedCount,
             skippedCount: merged.skippedCount,
             categoryCount: merged.categoryCount,
+            replacedCount: 0,
           }
-          return {
+          const patch = {
             customWords: merged.library.words,
             customCards: merged.library.cards,
             customCategories: merged.library.categories,
           }
+          if (mode === 'replace' || !replaces.length) return patch
+          let notebook = st.learningNotebook
+          let history = st.vocabHistory
+          for (const { from, to } of replaces) {
+            if (!st.customWords.some((word) => word.id === from) && !st.customCards.some((card) => card.id === from)) continue
+            const fromWord = isCustomWordId(from)
+            const toWord = isCustomWordId(to)
+            notebook = replaceNotebookItemRef(
+              notebook,
+              notebookRef(fromWord ? 'vocab' : 'customCards', from),
+              notebookRef(toWord ? 'vocab' : 'customCards', to),
+            )
+            if (fromWord) history = history.filter((wordId) => wordId !== from)
+            result.replacedCount += 1
+          }
+          return { ...patch, learningNotebook: notebook, vocabHistory: history }
         })
         return result
       },

@@ -396,7 +396,7 @@ test('編集の画面：一覧の「編集」、選んだカードの操作の�
   assert.match(screen, /moveCustomEntries\(\{ \.\.\.splitEntryKeys\(selectedVisible\), category: target \}\)/)
   assert.match(screen, /deleteCustomEntries\(splitEntryKeys\(selectedVisible\)\)/)
   // 操作は、しぼり込みで見えているカードにだけ行う。
-  assert.match(screen, /const selectedVisible = selectedKeys\.filter\(\(key\) => visibleKeys\.includes\(key\)\)/)
+  assert.match(screen, /const selectedVisible = selectedKeys\.filter\(\(key\) => visibleKeySet\.has\(key\)\)/)
   for (const action of ['edit', 'move', 'merge', 'delete']) assert.match(edit, new RegExp(`data-custom-edit-action="${action}"`))
   assert.match(edit, /data-custom-merge-preview/)
   assert.match(edit, /data-custom-merge-blocked/)

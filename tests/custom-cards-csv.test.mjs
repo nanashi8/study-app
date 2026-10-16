@@ -76,7 +76,8 @@ const cardFields = (card) => ({ id: card.id, template: card.template, category: 
 test('列は、分類・テンプレートと、5つのテンプレートの全欄（英単語は16欄）・ID', () => {
   assert.deepEqual(CUSTOM_CARD_TABLE_COLUMNS.map((column) => column.name), [
     '分類', 'テンプレート', '表', '裏', '読み', '漢字', '品詞', '例文', '例文の訳', '解説・メモ',
-    '級', '分野', '発音記号', 'ほかの意味', '派生語', '類義語', '反意語', 'つづりが似た語', '熟語・構文', '語の成り立ち', 'ID',
+    '級', '分野', '発音記号', 'ほかの意味', '派生語', '類義語', '反意語', 'つづりが似た語', '熟語・構文', '語の成り立ち',
+    'カテゴリーの教科', 'カテゴリーの最初のテンプレート', 'ID',
   ])
   // 英単語以外の4つのテンプレートの欄は、どれも列にある。
   const keys = new Set(CUSTOM_CARD_TABLE_COLUMNS.map((column) => column.key))

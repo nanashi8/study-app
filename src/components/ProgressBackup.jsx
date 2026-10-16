@@ -29,6 +29,7 @@ export function ProgressBackupPanel({
   const qrWrap = useRef(null)
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [fileSaved, setFileSaved] = useState(false)
   const [error, setError] = useState('')
 
   const saveQr = async () => {
@@ -75,6 +76,22 @@ export function ProgressBackupPanel({
     }
   }
 
+  // 進捗コードをテキストファイルに保存する（端末のダウンロード先・共有先に残せる。学習の記録ぜんぶ）。
+  const saveCodeFile = () => {
+    setError('')
+    const blob = new Blob([`${code}\n`], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    const date = new Date()
+    const pad = (value) => String(value).padStart(2, '0')
+    anchor.href = url
+    anchor.download = `study-app-progress-${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}.txt`
+    anchor.click()
+    URL.revokeObjectURL(url)
+    setFileSaved(true)
+    setTimeout(() => setFileSaved(false), 1800)
+  }
+
   return (
     <section data-progress-backup-output>
       <div className="mb-1 flex items-center gap-2 text-brand-600">
@@ -118,6 +135,9 @@ export function ProgressBackupPanel({
       />
       <Button full className="mt-2" variant={copied ? 'success' : 'primary'} onClick={copyCode}>
         {copied ? <><Check size={18} /> コピーしました</> : 'コードをコピー'}
+      </Button>
+      <Button full className="mt-2" variant={fileSaved ? 'success' : 'secondary'} onClick={saveCodeFile} data-progress-code-file-save>
+        {fileSaved ? <><Check size={18} /> 保存しました</> : <><Download size={18} /> {'ファイルに保存（学習の記録ぜんぶ）'}</>}
       </Button>
       {error && <p className="mt-2 text-xs font-bold text-rose-500">{error}</p>}
 

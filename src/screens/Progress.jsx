@@ -130,6 +130,7 @@ export function ProgressScreen() {
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null) // {summary} 確認シート
   const fileInput = useRef(null)
+  const codeFileInput = useRef(null)
   const summarize = (payload) => summarizePayload(payload, (id) => !!getWord(id))
 
   // 保存したQR画像を選んで読み込む。画像をcanvasに描いてjsQRでデコード→
@@ -165,6 +166,26 @@ export function ProgressScreen() {
       setPreview({ summary: summarize(payload) })
     } catch {
       setError('画像の読み込みに失敗しました。')
+    }
+  }
+
+  // 保存したコードのテキストファイルを選んで読み込む。中の EQ1- から始まる文字を取り出し、貼り付けたときと同じ確認に乗せる。
+  const onPickCodeFile = async (e) => {
+    setError('')
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const match = (await file.text()).match(/EQ1-[^\s&"']+/u)
+      if (!match) {
+        setError('このファイルにはえいごクエストの進捗コードが見つかりませんでした。')
+        return
+      }
+      const payload = decodeProgress(match[0])
+      setInput(match[0])
+      setPreview({ summary: summarize(payload) })
+    } catch (err) {
+      setError(err.message || 'ファイルを読み込めませんでした。')
     }
   }
 
@@ -296,6 +317,19 @@ export function ProgressScreen() {
           />
           <Button full variant="secondary" onClick={() => fileInput.current?.click()}>
             <Upload size={18} /> QR画像から読み込む
+          </Button>
+
+          {/* 保存したコードのファイル（学習の記録ぜんぶ）を選んで読み込む */}
+          <input
+            ref={codeFileInput}
+            type="file"
+            accept=".txt,text/plain"
+            className="hidden"
+            onChange={onPickCodeFile}
+            data-progress-code-file-input
+          />
+          <Button full className="mt-2" variant="secondary" onClick={() => codeFileInput.current?.click()} data-progress-code-file-open>
+            <Upload size={18} /> コードのファイルから読み込む
           </Button>
 
           <div className="my-3 flex items-center gap-2 text-[11px] font-bold text-ink/30">

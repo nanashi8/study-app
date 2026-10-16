@@ -14,7 +14,7 @@ import { DEFAULT_CATEGORY_ID, isCategoryKey } from './customCards.js'
 export const CUSTOM_WORD_PREFIX = 'u-'
 
 export const CUSTOM_WORD_LIMITS = Object.freeze({
-  words: 300,
+  words: 5000,
   word: 64,
   meaning: 60,
   meanings: 4,

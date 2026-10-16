@@ -18,7 +18,7 @@ export const SUBJECT_CATEGORY_PREFIX = 'subject:'
 export const CUSTOM_CARD_QUIZ_DOMAIN = 'custom-cards'
 
 export const CUSTOM_CARD_LIMITS = Object.freeze({
-  cards: 500,
+  cards: 5000,
   front: 120,
   back: 300,
   reading: 80,
@@ -27,7 +27,7 @@ export const CUSTOM_CARD_LIMITS = Object.freeze({
   example: 300,
   exampleTranslation: 300,
   note: 600,
-  categories: 40,
+  categories: 100,
   categoryTitle: 40,
 })
 

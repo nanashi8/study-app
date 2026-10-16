@@ -82,7 +82,10 @@ export function parseCustomLibraryFile(rawText, { now = Date.now() } = {}) {
   }, { now })
   const counts = customLibraryCounts(library)
   if (!counts.words && !counts.cards && !counts.categories) return { status: 'empty', library: null }
-  return { status: 'ok', library }
+  // 上限を超えた・欄が欠けていて読めなかった件数（黙って落とさず、画面で知らせる）。
+  const listed = (key) => (Array.isArray(source[key]) ? source[key].length : 0)
+  const skipped = Math.max(0, listed('words') - counts.words) + Math.max(0, listed('cards') - counts.cards)
+  return { status: 'ok', library, skipped }
 }
 
 // 同じ ID は書き換え、ほかは上限まで足す。
@@ -110,23 +113,37 @@ function mergeById(current, incoming, limit) {
  * mode='merge' は同じ ID を書き換えて残りを足す。mode='replace' はまるごと入れ替える。
  * 数は英単語・カード・カテゴリーを合わせたもの（画面の「◯件を足し」に使う）。
  */
-export function mergeCustomLibrary(current, incoming, { mode = 'merge', now = Date.now() } = {}) {
+export function mergeCustomLibrary(current, incoming, { mode = 'merge', replaces = [], now = Date.now() } = {}) {
   const existing = normalizeCustomLibrary(current, { now })
   const added = normalizeCustomLibrary(incoming, { now })
   if (mode === 'replace') {
     const counts = customLibraryCounts(added)
+    // 入れ替えでも、上限を超えて入らなかった枚数を数える（黙って落とさない）。
+    const sent = {
+      words: Array.isArray(incoming?.words) ? incoming.words.length : 0,
+      cards: Array.isArray(incoming?.cards) ? incoming.cards.length : 0,
+    }
     return {
       library: added,
       addedCount: counts.words + counts.cards,
       updatedCount: 0,
-      skippedCount: 0,
+      skippedCount: Math.max(0, sent.words - counts.words) + Math.max(0, sent.cards - counts.cards),
       categoryCount: counts.categories,
     }
   }
+  // テンプレートを英単語とほかの間で変えた行は、元のカードを先に外す（新しいカードは足す側に入っている）。
+  const replacedIds = new Set((Array.isArray(replaces) ? replaces : []).map((item) => item?.from).filter(Boolean))
+  const base = replacedIds.size
+    ? {
+        ...existing,
+        words: existing.words.filter((word) => !replacedIds.has(word.id)),
+        cards: existing.cards.filter((card) => !replacedIds.has(card.id)),
+      }
+    : existing
   // カテゴリーを先に合わせ、カードがそのカテゴリーを指せるようにする。
-  const categories = mergeById(existing.categories, added.categories, CUSTOM_CARD_LIMITS.categories)
-  const words = mergeById(existing.words, added.words, CUSTOM_WORD_LIMITS.words)
-  const cards = mergeById(existing.cards, added.cards, CUSTOM_CARD_LIMITS.cards)
+  const categories = mergeById(base.categories, added.categories, CUSTOM_CARD_LIMITS.categories)
+  const words = mergeById(base.words, added.words, CUSTOM_WORD_LIMITS.words)
+  const cards = mergeById(base.cards, added.cards, CUSTOM_CARD_LIMITS.cards)
   const library = normalizeCustomLibrary({ words: words.items, cards: cards.items, categories: categories.items }, { now })
   return {
     library,

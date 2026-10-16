@@ -115,14 +115,18 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 増えた。Tesseract の進み具合の知らせ（エンジンの起動・準備など）をまとめて、学習者画面の日本語が 18421 から 18418（重複なし
   // 13747 から 13745）に、ソース全体が 838 から 839 ファイルになった。出典ページにモデルの1件（写真の文字の読み取り）を足して、ソース全体の
   // 日本語は 237223 のまま（requests/2026-10-14-camera-ocr-hard-photos.json）。
+  // 2026-10-16、自作カードの Excel 入出力の漏れを直したので（CSV のカテゴリーの設定の列・上限5,000件・切り捨ての知らせ・
+  // 区切りと括弧の書き方・テンプレート変更の置き換え、一覧の100枚ずつの表示、学習の記録のファイル保存と読み込み）、
+  // 学習者画面の日本語が 18418 から 18445（重複なし 13745 から 13769）に、ソース全体の日本語が 237223 から 237250 になった
+  // （requests/2026-10-16-custom-cards-excel-io-audit.json）。
   assert.equal(result.learnerFiles, 359)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
-  assert.equal(result.learnerJapaneseEntries, 18418)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13745)
+  assert.equal(result.learnerJapaneseEntries, 18445)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13769)
   assert.equal(result.sourceFiles, 839)
-  assert.equal(result.sourceJapaneseEntries, 237223)
+  assert.equal(result.sourceJapaneseEntries, 237250)
   assert.equal(result.issues.length, 0)
 })
 

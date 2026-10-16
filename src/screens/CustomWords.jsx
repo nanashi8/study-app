@@ -231,6 +231,8 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
   const moveCustomEntries = useStore((state) => state.moveCustomEntries)
   const [sheet, setSheet] = useState(false)
   const [query, setQuery] = useState('')
+  // 数千枚あっても画面が重くならないよう、一覧は100枚ずつ出す（しぼり込み・全選択は全件が対象）。
+  const [shownCount, setShownCount] = useState(ENTRY_PAGE_SIZE)
   // 編集：選んだカードの鍵（entryKey）を選んだ順に持つ。操作は、しぼり込みで見えているカードにだけ行う。
   const [editing, setEditing] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState([])
@@ -277,7 +279,9 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
   const categoryIndex = library.categories.findIndex((item) => item.id === category.id)
 
   const visibleKeys = entries.map(({ kind, entry }) => entryKey(kind, entry.id))
-  const selectedVisible = selectedKeys.filter((key) => visibleKeys.includes(key))
+  const visibleKeySet = new Set(visibleKeys)
+  const selectedVisible = selectedKeys.filter((key) => visibleKeySet.has(key))
+  const selectedVisibleSet = new Set(selectedVisible)
   const selectedItems = selectedVisible
     .map((key) => {
       const parsed = parseEntryKey(key)
@@ -287,7 +291,7 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
       return entry ? { kind: parsed.kind, entry } : null
     })
     .filter(Boolean)
-  const allSelected = visibleKeys.length > 0 && visibleKeys.every((key) => selectedVisible.includes(key))
+  const allSelected = visibleKeys.length > 0 && visibleKeys.every((key) => selectedVisibleSet.has(key))
   const finishEditing = () => {
     setEditing(false)
     setSelectedKeys([])
@@ -349,7 +353,10 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
               <Search size={18} className="shrink-0 text-ink/35" />
               <input
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value)
+                  setShownCount(ENTRY_PAGE_SIZE)
+                }}
                 placeholder="用語・意味・解説で探す"
                 aria-label={`${category.title}のカードを探す`}
                 className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:text-ink/30"
@@ -389,14 +396,14 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
           <p className="rounded-2xl bg-white p-5 text-center text-sm font-bold text-ink/45 shadow-card">一致するカードがありません。</p>
         )}
         <ul className="space-y-2" data-custom-entry-list>
-          {entries.map(({ kind, entry }) => (
+          {entries.slice(0, shownCount).map(({ kind, entry }) => (
             <li key={entry.id} data-return-row={entry.id}>
               <CustomEntryCard
                 kind={kind}
                 entry={entry}
                 srsEntry={kind === 'word' ? srs[entry.id] : cardSrs[entry.id]}
                 mode={editing ? 'select' : 'list'}
-                selected={selectedVisible.includes(entryKey(kind, entry.id))}
+                selected={selectedVisibleSet.has(entryKey(kind, entry.id))}
                 onToggleSelect={toggleSelect}
                 onEdit={(editKind, target) => navigate('customWords', { ...base, form: { kind: editKind, id: target.id } })}
                 onDelete={(deleteKind, id) => (deleteKind === 'word' ? deleteCustomWord(id) : deleteCustomCard(id))}
@@ -405,6 +412,11 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
             </li>
           ))}
         </ul>
+        {entries.length > shownCount && (
+          <Button full size="sm" variant="secondary" onClick={() => setShownCount((count) => count + ENTRY_PAGE_SIZE)} data-custom-entry-more>
+            {`さらに${Math.min(ENTRY_PAGE_SIZE, entries.length - shownCount)}枚を表示（${shownCount}/${entries.length}枚）`}
+          </Button>
+        )}
       </div>
 
       {editing && (
@@ -629,6 +641,8 @@ function EntryFormView({ subject, form, draftWord }) {
   )
 }
 
+const ENTRY_PAGE_SIZE = 100
+
 // ── ファイルで編集する（CSV：Excel・テキストエディタ）・まるごと保存する（JSON） ─────────────
 
 // 端末へファイルを保存する（ダウンロード先のフォルダ）。
@@ -651,7 +665,10 @@ const TABLE_GUIDE = [
   ['級・分野（英単語）', '級は「準2級」のように書きます。分野は登録の画面の分野の名前'],
   ['派生語・類義語など（英単語）', '「famous（有名な）；well-known（よく知られた）」のように、語（意味）を「；」で区切ります'],
   ['ほかの意味（英単語）', '「名詞：人気者」のように、品詞：意味を「；」で区切ります'],
-  ['ID', '書き出したカードの ID。消さずに読み込むと同じカードを書き換えます（暗記・テストの記録が残ります）。新しい行は空のまま'],
+  ['カテゴリーの設定', 'カテゴリーの教科・最初のテンプレートは、専用の2列に書きます。カードのないカテゴリーは、分類（とこの2列）だけの行になります'],
+  ['区切りと括弧', '語の区切りは「；」。括弧の中の「；」は区切りになりません。区切りや括弧を文字として使うときは前に「\\」を付けます'],
+  ['上限', `英単語のカードは${CUSTOM_WORD_LIMITS.words}語、カードは${CUSTOM_CARD_LIMITS.cards}枚、カテゴリーは${CUSTOM_CARD_LIMITS.categories}個まで。欄の長さや個数の上限を超えた中身は読まず、行の番号つきで知らせます`],
+  ['ID', '書き出したカードの ID。消さずに読み込むと同じカードを書き換えます（暗記・テストの記録が残ります）。テンプレートを英単語とほかの間で変えると、元のカードは新しいカードに置き換わります。新しい行は空のまま'],
 ]
 
 function FileView({ subject }) {
@@ -694,18 +711,20 @@ function FileView({ subject }) {
       return
     }
     setFileNotice('')
-    setPending({ kind: 'json', name: file.name, library: parsed.library, errors: [], warnings: [], newCategories: [] })
+    setPending({ kind: 'json', name: file.name, library: parsed.library, errors: [], warnings: [], newCategories: [], skipped: parsed.skipped ?? 0 })
   }
 
   const applyImport = (mode) => {
-    const result = importCustomLibrary(pending.library, mode)
+    const result = importCustomLibrary(pending.library, mode, { replaces: pending.replaces ?? [] })
     setPending(null)
     setPasted('')
     setPasteOpen(false)
     setFileNotice(
       mode === 'replace'
         ? `${result.addedCount}枚のカードに入れ替えました。`
+          + (result.skippedCount ? `${result.skippedCount}枚は上限を超えるため入りませんでした。` : '')
         : `${result.addedCount}枚を足し、${result.updatedCount}枚を書き換えました。`
+          + (result.replacedCount ? `テンプレートが変わった${result.replacedCount}枚を置き換えました。` : '')
           + (result.categoryCount ? `カテゴリーを${result.categoryCount}個作りました。` : '')
           + (result.skippedCount ? `${result.skippedCount}枚は上限を超えるため見送りました。` : ''),
     )
@@ -837,10 +856,16 @@ function FileView({ subject }) {
           <Card className="p-4" data-custom-words-import-choice>
             <p className="text-sm font-extrabold text-ink">
               {`${pending.name}から、英単語のカード${pendingCounts.words}語・カード${pendingCounts.cards}枚を読み込みました。`}
+              {pending.kind === 'table' && pending.rowCount ? `（表は${pending.rowCount}行）` : ''}
             </p>
             {pending.newCategories.length > 0 && (
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60" data-custom-cards-import-new-categories>
                 {`新しく作るカテゴリー：${pending.newCategories.join('・')}`}
+              </p>
+            )}
+            {pending.skipped > 0 && (
+              <p className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-rose-700" data-custom-cards-import-skipped>
+                {`ファイルの${pending.skipped}件は、単語や意味が空・上限（英単語${CUSTOM_WORD_LIMITS.words}語・カード${CUSTOM_CARD_LIMITS.cards}枚）を超えるため読めませんでした。`}
               </p>
             )}
             {pending.errors.length > 0 && (
@@ -850,6 +875,9 @@ function FileView({ subject }) {
                   {pending.errors.slice(0, 20).map((error) => (
                     <li key={`${error.line}-${error.message}`} className="text-[11px] font-bold leading-relaxed text-rose-800">{`${error.line}行目：${error.message}`}</li>
                   ))}
+                  {pending.errors.length > 20 && (
+                    <li className="text-[11px] font-bold leading-relaxed text-rose-800">{`ほか${pending.errors.length - 20}行`}</li>
+                  )}
                 </ul>
               </div>
             )}
@@ -860,6 +888,9 @@ function FileView({ subject }) {
                   {pending.warnings.slice(0, 20).map((warning) => (
                     <li key={`${warning.line}-${warning.message}`} className="text-[11px] font-bold leading-relaxed text-amber-900">{`${warning.line}行目：${warning.message}`}</li>
                   ))}
+                  {pending.warnings.length > 20 && (
+                    <li className="text-[11px] font-bold leading-relaxed text-amber-900">{`ほか${pending.warnings.length - 20}件`}</li>
+                  )}
                 </ul>
               </div>
             )}

@@ -1,0 +1,127 @@
+{
+  "id": "2026-10-16-custom-cards-excel-io-audit",
+  "title": "自作カード・マイ単語の Excel 入出力に漏れがないか仕様と機能を入念に確認する",
+  "asked": [
+    "マイ単語登録や学習状況はIndexDBに保存されるようになったはずだが、ユーザーがブラウザの履歴等を全消去すると一緒に消えてしまうのか？",
+    "ユーザーが保存場所をiphone、android、PCで任意の場所にフォルダとしてIndexDBの代わりに保存方法を選択作成できるようにすることは可能か？どこかに保存できなければユーザーがマイ単語を数千と登録したとしたら全て無駄になってしまうではないか。",
+    "出力ボタンを設けて任意に読み込み書き出し、エクセルで編集できる形式というのはできるか？",
+    "漏れなくエクセルで入出力ができるようになっているか入念に仕様や機能を確認しなさい。",
+    "見つかった漏れを全部直して。上限は数千語まで広げて、UTF-16・セミコロンも読めるようにして。"
+  ],
+  "sessions": [
+    "be8e6e1b-55bd-4519-ad2b-4062b265779d"
+  ],
+  "status": "done",
+  "criteria": [
+    {
+      "id": "csv-spec-read",
+      "text": "CSV の書き出し・読み込みの仕様（列・上限・文字コード・区切り・ID の扱い）を実装から全部読み、一覧にする",
+      "population": "src/lib/customCardsCsv.js 全体と、それが使う customCards.js・customWords.js の入出力に関わる定義",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "csv-roundtrip-all-fields",
+      "text": "自作カードの全テンプレート（5つ）・全教科（6つ）・全欄で、書き出し→読み戻しが欠落なく一致するかを実測する。欠落した欄は台帳に書く",
+      "population": "テンプレート5つ × 教科6つ × 各テンプレートの全欄、および上限件数のカード",
+      "check": "node --test tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "csv-scale",
+      "text": "数千件（上限件数）を書き出して読み戻し、件数・中身・所要時間を実測する",
+      "population": "自作カードの上限件数（CUSTOM_CARD_LIMITS）",
+      "check": "node --test tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "excel-quirks",
+      "text": "Excel 固有の落とし穴（先頭ゼロ・数式に見える先頭文字 = + - @・改行・引用符・全角空白・Shift_JIS・BOM・タブ区切り）で壊れないかを実測する",
+      "population": "上記の落とし穴の型すべて",
+      "check": "node --test tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "records-outside-csv",
+      "text": "CSV に入らないデータ（学習の記録・単語帳・カテゴリー・設定・辞書の暗記記録）を洗い出し、それぞれ別の書き出しで守られているかを確かめる",
+      "population": "store の永続化対象すべて（学習記録・単語帳 sets・自作カード・カテゴリー・設定）",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "ui-entrances",
+      "text": "書き出し・読み込みの入口が、マイ単語・自作カードの画面すべてから見つかるか確かめる",
+      "population": "自作カードを扱う画面（CustomWords・各教材ホーム・メニュー）",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "limit-raised",
+      "text": "英単語・カードの上限を数千（5,000）まで広げる。CSV・JSON・暗記・テストが数千件で動く",
+      "population": "英単語5,000語・カード5,000枚の書き出し→読み戻し",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "no-silent-cut",
+      "text": "上限・欄の長さ・個数で切られる中身は、行番号と理由を必ず知らせる（CSV 読み込み・まるごと入れ替え）",
+      "population": "意味・例文・解説・成り立ち・熟語・表・裏・行数の全上限",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "roundtrip-exact",
+      "text": "意味なしの熟語・コロン・入れ子の括弧・；・意味の区切り文字・先頭のアポストロフィが、書き出し→読み戻しで一致する",
+      "population": "英単語の全欄と並びの欄（意味・ほかの意味・派生語・類義語・反意語・つづり注意・熟語）",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "category-settings",
+      "text": "カテゴリーの表示する教科・最初のテンプレートを CSV に書き、カードのないカテゴリーも消さない",
+      "population": "作ったカテゴリー全部",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "encoding-delimiter",
+      "text": "UTF-16（BOM あり・なし、LE・BE）とセミコロン区切りを読む",
+      "population": "Excel の保存形式（UTF-8・Shift_JIS・UTF-16 のテキスト・CSV）と区切り（カンマ・タブ・セミコロン）",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "template-change",
+      "text": "テンプレートを英単語とほかの間で変えて ID を残した行は、元のカードを新しいカードへ置き換える（単語帳・メモも付け替える）",
+      "population": "英単語⇄ほかの4テンプレート",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-csv.test.mjs tests/custom-words.test.mjs tests/custom-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "records-file",
+      "text": "学習の記録ぜんぶを進捗コードのファイルで保存・読み込みできる",
+      "population": "進捗コードの全項目",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "audit-pass",
+      "text": "全テスト・全監査が通る",
+      "population": "npm run audit:all-content",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/learner-japanese-audit.test.mjs tests/custom-cards-edit.test.mjs",
+      "status": "done"
+    }
+  ],
+  "findings": [
+    "上限：英単語300語・カード500枚・カテゴリー40個（customWords.js / customCards.js）。450行→300語、800行→500枚が、読み込み時に知らせなしで切られる（parseCustomCardsTable の slice、まるごと入れ替えは skippedCount も0）",
+    "欄の上限超過が知らせなしで切られる：意味5つ目以降（4まで）・意味60字・例文200字・解説300字（カードは600字）・語の成り立ち400字・熟語9個目以降（8まで）・表120字・裏300字。warnings は0件",
+    "往復で別物になる型：熟語「be fond of (doing)」(意味なし)→句「be fond of」+意味「doing」、「Note: this」→句「Note」+意味「this」、意味に（）の入れ子や；を含む類義語・熟語、意味の「、」「・」が複数の意味に分かれる",
+    "カテゴリーの「表示する教科」「最初のテンプレート」は CSV に入らず、名前だけで作り直すので null になる。1枚もカードがないカテゴリーは書き出されず消える",
+    "Excel の「Unicode テキスト」(UTF-16LE) は文字化けして読めない。セミコロン区切りは読めない（行が全部エラー）",
+    "テンプレートを英単語→その他へ変えて ID を残すと、元の英単語カードは残り、新しいカードが増える（警告は出る）",
+    "学習の記録（まだ・覚えた・点数・単語帳）は CSV にも JSON にも入らない。全部入るのは進捗コード/QR（クリップボードコピーとQR画像）だけ",
+    "保存場所の選択（フォルダ指定）は未実装",
+    "書き出した ID が合わないときの扱い・CSV 見出しの別名・BOM・Shift_JIS・タブ区切り・先頭 = + - @ の保護・引用符と改行は往復で一致（実測）"
+  ],
+  "result": "全1,414テスト成功（npm test）・npm run audit:all-content 成功（24カテゴリ・教材20,493件・問題経路7,280件・失敗0）。上限は英単語5,000語・カード5,000枚・カテゴリー100。実機の Excel での自動変換（1-2→日付など）と、UTF-16 の実ファイルは未確認（BOM つきテキストの形は検査）。"
+}
