@@ -6,12 +6,13 @@
     "ユーザーが保存場所をiphone、android、PCで任意の場所にフォルダとしてIndexDBの代わりに保存方法を選択作成できるようにすることは可能か？どこかに保存できなければユーザーがマイ単語を数千と登録したとしたら全て無駄になってしまうではないか。",
     "出力ボタンを設けて任意に読み込み書き出し、エクセルで編集できる形式というのはできるか？",
     "漏れなくエクセルで入出力ができるようになっているか入念に仕様や機能を確認しなさい。",
-    "見つかった漏れを全部直して。上限は数千語まで広げて、UTF-16・セミコロンも読めるようにして。"
+    "見つかった漏れを全部直して。上限は数千語まで広げて、UTF-16・セミコロンも読めるようにして。",
+    "未確認を確認しなさい。"
   ],
   "sessions": [
     "be8e6e1b-55bd-4519-ad2b-4062b265779d"
   ],
-  "status": "done",
+  "status": "open",
   "criteria": [
     {
       "id": "csv-spec-read",
@@ -110,6 +111,41 @@
       "population": "npm run audit:all-content",
       "check": "node --test tests/custom-cards-excel-io.test.mjs tests/learner-japanese-audit.test.mjs tests/custom-cards-edit.test.mjs",
       "status": "done"
+    },
+    {
+      "id": "excel-real-roundtrip",
+      "text": "本物の Excel（この Mac の Microsoft Excel）で、書き出した CSV を開いて保存し直し、読み戻して一致するかを確かめる。Excel が書き換える値（日付・数・先頭ゼロ・指数・数式）があれば書き出しで防ぐ",
+      "population": "書き出しの全列と、Excel が自動で変える型（1-2・3/4・007・1E5・20桁の数・= + - @ で始まる・時刻・％・分数・通貨）を全部入れた表",
+      "check": "node --test tests/custom-cards-excel-real.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "excel-real-encodings",
+      "text": "Excel が保存する形（CSV UTF-8・CSV（Shift_JIS）・タブ区切りテキスト・Unicode テキスト（UTF-16））の実ファイルを読み戻し、文字が欠ける形は読み込むときに知らせる",
+      "population": "Excel の保存形式のうちテキストの全形式",
+      "check": "node --test tests/custom-cards-excel-real.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "list-return-beyond-page",
+      "text": "100枚より先の行から詳細・編集へ行って戻ったとき、その行まで一覧を広げて元の位置に戻る",
+      "population": "一覧の全行（100枚目より先を含む）",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "list-browser-check",
+      "text": "数千枚のカードを入れた一覧画面とファイルの画面を、実際のブラウザで操作して確かめる（さらに表示・全選択・読み込みの知らせ）",
+      "population": "自作カードの一覧画面・ファイルの画面",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-excel-real.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "recheck-deploy",
+      "text": "全テスト・全監査をクリーンな clone で通し、main へ push して公開版を確かめる",
+      "population": "npm run audit:all-content とデプロイ",
+      "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-excel-real.test.mjs",
+      "status": "todo"
     }
   ],
   "findings": [
@@ -121,7 +157,11 @@
     "テンプレートを英単語→その他へ変えて ID を残すと、元の英単語カードは残り、新しいカードが増える（警告は出る）",
     "学習の記録（まだ・覚えた・点数・単語帳）は CSV にも JSON にも入らない。全部入るのは進捗コード/QR（クリップボードコピーとQR画像）だけ",
     "保存場所の選択（フォルダ指定）は未実装",
-    "書き出した ID が合わないときの扱い・CSV 見出しの別名・BOM・Shift_JIS・タブ区切り・先頭 = + - @ の保護・引用符と改行は往復で一致（実測）"
+    "書き出した ID が合わないときの扱い・CSV 見出しの別名・BOM・Shift_JIS・タブ区切り・先頭 = + - @ の保護・引用符と改行は往復で一致（実測）",
+    "2026-10-18 本物の Excel（Mac 16.114）で確かめた：開いた時点で 1-2→1月2日・007→7・1E5→1.00E+05・12345678901234567890→1.23457E+19・$100→¥100・(100)→-100・false→FALSE・1.50→1.5 など19値を書きかえる（UTF-8 の CSV・Unicode テキストでも）→ =\"…\" の形で書き出して53/53が一致",
+    "「CSV」「タブ区切りテキスト」は Mac の日本語で保存し、発音記号・é・①・絵文字・髙などが「_」になる（10枚）→ 同じ ID の行は元のカードから戻し（53/53）、知らせを出す。元のカードのない端末では戻せない",
+    "数千枚で一覧を開くのに約15秒、テストの組み立てに約5秒かかっていた（全カードどうしを比べる O(n²)）→ 1ms・12ms に（旧版と結果が同じことを1,201枚・4通りの出題で確かめた）",
+    "101枚目より先の行から戻ると行が描かれていなかった → 表示枚数を params に持ち、戻ると同じ行・同じ高さ（ブラウザで2,749番の行で確かめた）"
   ],
   "result": "全1,414テスト成功（npm test）・npm run audit:all-content 成功（24カテゴリ・教材20,493件・問題経路7,280件・失敗0）。上限は英単語5,000語・カード5,000枚・カテゴリー100。実機の Excel での自動変換（1-2→日付など）と、UTF-16 の実ファイルは未確認（BOM つきテキストの形は検査）。"
 }

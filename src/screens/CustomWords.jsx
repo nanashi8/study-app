@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { CustomCardForm, NEW_CATEGORY_OPTION } from '../components/CustomCardForm.jsx'
 import {
@@ -48,7 +48,7 @@ import {
   customCardsCsvFileName,
   customCardsCsvSample,
   customCardsCsvText,
-  decodeTableBytes,
+  decodeTableFile,
   parseCustomCardsTable,
 } from '../lib/customCardsCsv.js'
 
@@ -232,7 +232,8 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
   const [sheet, setSheet] = useState(false)
   const [query, setQuery] = useState('')
   // 数千枚あっても画面が重くならないよう、一覧は100枚ずつ出す（しぼり込み・全選択は全件が対象）。
-  const [shownCount, setShownCount] = useState(ENTRY_PAGE_SIZE)
+  // 出した枚数は画面の見え方（params）に持つので、101枚目より先の行から詳細・編集へ行って戻っても、その行まで描いて元の位置に戻る。
+  const [shownCount, setShownCount] = useScreenParam('shown', readShownCount)
   // 編集：選んだカードの鍵（entryKey）を選んだ順に持つ。操作は、しぼり込みで見えているカードにだけ行う。
   const [editing, setEditing] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState([])
@@ -642,6 +643,9 @@ function EntryFormView({ subject, form, draftWord }) {
 }
 
 const ENTRY_PAGE_SIZE = 100
+function readShownCount(value) {
+  return Number.isInteger(value) && value > ENTRY_PAGE_SIZE ? value : ENTRY_PAGE_SIZE
+}
 
 // ── ファイルで編集する（CSV：Excel・テキストエディタ）・まるごと保存する（JSON） ─────────────
 
@@ -665,6 +669,8 @@ const TABLE_GUIDE = [
   ['級・分野（英単語）', '級は「準2級」のように書きます。分野は登録の画面の分野の名前'],
   ['派生語・類義語など（英単語）', '「famous（有名な）；well-known（よく知られた）」のように、語（意味）を「；」で区切ります'],
   ['ほかの意味（英単語）', '「名詞：人気者」のように、品詞：意味を「；」で区切ります'],
+  ['Excel で保存するとき', '「ファイル形式」は「CSV UTF-8（コンマ区切り）」を選びます。「CSV」だと、発音記号・①などの記号・絵文字・一部の漢字が「_」に変わります'],
+  ['数字や日付に見える欄', '「1-2」「007」のような欄は ="1-2" の形で書き出すので、Excel で開いてもそのままの文字です。Excel で新しく打つときは、先頭に「\'」を付けると日付や数になりません'],
   ['カテゴリーの設定', 'カテゴリーの教科・最初のテンプレートは、専用の2列に書きます。カードのないカテゴリーは、分類（とこの2列）だけの行になります'],
   ['区切りと括弧', '語の区切りは「；」。括弧の中の「；」は区切りになりません。区切りや括弧を文字として使うときは前に「\\」を付けます'],
   ['上限', `英単語のカードは${CUSTOM_WORD_LIMITS.words}語、カードは${CUSTOM_CARD_LIMITS.cards}枚、カテゴリーは${CUSTOM_CARD_LIMITS.categories}個まで。欄の長さや個数の上限を超えた中身は読まず、行の番号つきで知らせます`],
@@ -683,8 +689,8 @@ function FileView({ subject }) {
   const counts = customLibraryCounts(library)
   const hasCards = Boolean(counts.words || counts.cards)
 
-  const readTable = (text, name) => {
-    const parsed = parseCustomCardsTable(text, { categories: library.categories, subject })
+  const readTable = (text, name, encoding = 'utf-8') => {
+    const parsed = parseCustomCardsTable(text, { categories: library.categories, subject, encoding, library })
     if (parsed.status !== 'ok') {
       setPending(null)
       setFileNotice(parsed.errors.length
@@ -699,7 +705,8 @@ function FileView({ subject }) {
   const openTableFile = async (file) => {
     setPending(null)
     if (!file) return
-    readTable(decodeTableBytes(await file.arrayBuffer()), file.name)
+    const decoded = decodeTableFile(await file.arrayBuffer())
+    readTable(decoded.text, file.name, decoded.encoding)
   }
 
   const openJsonFile = async (file) => {
@@ -863,6 +870,11 @@ function FileView({ subject }) {
                 {`新しく作るカテゴリー：${pending.newCategories.join('・')}`}
               </p>
             )}
+            {(pending.notices ?? []).map((notice) => (
+              <p key={notice} className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-amber-800" data-custom-cards-import-notice>
+                {notice}
+              </p>
+            ))}
             {pending.skipped > 0 && (
               <p className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-rose-700" data-custom-cards-import-skipped>
                 {`ファイルの${pending.skipped}件は、単語や意味が空・上限（英単語${CUSTOM_WORD_LIMITS.words}語・カード${CUSTOM_CARD_LIMITS.cards}枚）を超えるため読めませんでした。`}
@@ -883,7 +895,7 @@ function FileView({ subject }) {
             )}
             {pending.warnings.length > 0 && (
               <div className="mt-2 rounded-lg bg-amber-50 px-3 py-2" data-custom-cards-import-warnings>
-                <p className="text-xs font-extrabold text-amber-800">{`読んだけれど、一部の欄を読まなかった行（${pending.warnings.length}件）`}</p>
+                <p className="text-xs font-extrabold text-amber-800">{`読み込みで変えた・読まなかった所（${pending.warnings.length}件）`}</p>
                 <ul className="mt-1 space-y-0.5">
                   {pending.warnings.slice(0, 20).map((warning) => (
                     <li key={`${warning.line}-${warning.message}`} className="text-[11px] font-bold leading-relaxed text-amber-900">{`${warning.line}行目：${warning.message}`}</li>

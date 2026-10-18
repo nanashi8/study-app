@@ -240,3 +240,32 @@ test('学習の記録ぜんぶを進捗コードのファイルで保存・読�
     useStore.setState(original, true)
   }
 })
+
+test('一覧は100枚ずつ出し、出した枚数は画面の見え方（params）に持つので、101枚目より先の行から戻ってもその行まで描く', () => {
+  const screen = read('../src/screens/CustomWords.jsx')
+  assert.match(screen, /const \[shownCount, setShownCount\] = useScreenParam\('shown', readShownCount\)/u)
+  assert.match(screen, /entries\.slice\(0, shownCount\)\.map/u)
+  assert.match(screen, /data-custom-entry-more/u)
+  assert.match(screen, /const ENTRY_PAGE_SIZE = 100/u)
+  // 全選択・しぼり込みは、描いた行ではなく全件が対象。
+  assert.match(screen, /const visibleKeys = entries\.map/u)
+})
+
+test('数千枚でも、テストに出せるかの判定とテストの組み立てがすぐ終わる（全カードどうしを比べない）', async () => {
+  const { registerCustomCards, quizzableCustomCardIds, pickCustomCardQuestions } = await import('../src/lib/customCards.js')
+  const cards = Array.from({ length: 5000 }, (_, index) => ({ id: `c-p${index}`, template: index % 2 ? 'other' : 'qa', category: 'subject:social', front: `用語${index}`, back: `意味${index % 900}`, createdAt: index }))
+  try {
+    registerCustomCards(cards, [])
+    const ids = cards.map((card) => card.id)
+    let started = Date.now()
+    assert.equal(quizzableCustomCardIds(ids).length, 5000)
+    assert.ok(Date.now() - started < 500, `判定 ${Date.now() - started}ms`)
+    started = Date.now()
+    const questions = pickCustomCardQuestions(ids, { size: 20 })
+    assert.equal(questions.length, 20)
+    assert.ok(questions.every((question) => question.choices.length === 4 && new Set(question.choices).size === 4))
+    assert.ok(Date.now() - started < 1000, `組み立て ${Date.now() - started}ms`)
+  } finally {
+    registerCustomCards([], [])
+  }
+})

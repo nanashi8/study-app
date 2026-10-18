@@ -104,14 +104,75 @@ function columnForHeader(value) {
 
 // ── 表の文字（CSV・タブ区切り） ─────────────────────────────────
 
+// Shift_JIS のうち、JIS X 0208 の字（どの Excel でも同じバイトになる字）。Mac の Excel の「CSV」は、
+// 丸数字・ローマ数字・髙などの機種ごとの字や、日本語以外の字（発音記号・é・絵文字など）を「_」などに置きかえて保存する。
+let SHIFT_JIS_SAFE = null
+function shiftJisSafe() {
+  if (SHIFT_JIS_SAFE) return SHIFT_JIS_SAFE
+  const safe = new Set()
+  for (let code = 0x20; code < 0x7f; code += 1) safe.add(String.fromCharCode(code))
+  const decoder = new TextDecoder('shift_jis')
+  for (let byte = 0xa1; byte <= 0xdf; byte += 1) safe.add(decoder.decode(new Uint8Array([byte])))
+  const leads = [[0x81, 0x84], [0x88, 0x9f], [0xe0, 0xea]]
+  for (const [from, to] of leads) {
+    for (let lead = from; lead <= to; lead += 1) {
+      for (let trail = 0x40; trail <= 0xfc; trail += 1) {
+        if (trail === 0x7f) continue
+        const ch = decoder.decode(new Uint8Array([lead, trail]))
+        if (ch.length === 1 && ch !== '�') safe.add(ch)
+      }
+    }
+  }
+  // Mac と Windows でバイトが入れかわる字は、確かではない字として扱う。
+  for (const ch of ['\\', '~', '¥', '‾', '〜', '～', '—', '―', '‖', '∥', '－', '−', '¢', '￠', '£', '￡', '¬', '￢']) safe.delete(ch)
+  SHIFT_JIS_SAFE = safe
+  return safe
+}
+
+// Shift_JIS を1字ずつ読む。2バイトの字は2バイトで1字にし、読めない組は「�」1字にする
+// （ブラウザの読み方だと、読めない組が「�」と英数字の2字に分かれ、元のカードと字数が合わなくなる）。
+// mac は Mac の Excel の「CSV」（Mac の日本語）：1バイトの 0x80 が「\」、0x5C が「¥」になる。
+const isLeadByte = (byte) => (byte >= 0x81 && byte <= 0x9f) || (byte >= 0xe0 && byte <= 0xfc)
+const MAC_SINGLE_BYTES = Object.freeze({ 0x80: '\\', 0x5c: '¥', 0xa0: ' ', 0xfd: '©', 0xfe: '™', 0xff: '…' })
+function decodeShiftJis(view, { mac = false } = {}) {
+  const decoder = new TextDecoder('shift_jis')
+  const pairs = new Map()
+  const parts = []
+  for (let index = 0; index < view.length; index += 1) {
+    const byte = view[index]
+    if (isLeadByte(byte) && index + 1 < view.length) {
+      const key = byte * 256 + view[index + 1]
+      let ch = pairs.get(key)
+      if (ch === undefined) {
+        ch = decoder.decode(view.subarray(index, index + 2))
+        if (ch.length !== 1) ch = '�'
+        pairs.set(key, ch)
+      }
+      parts.push(ch)
+      index += 1
+    } else if (mac && MAC_SINGLE_BYTES[byte]) {
+      parts.push(MAC_SINGLE_BYTES[byte])
+    } else if (byte < 0x80) {
+      parts.push(String.fromCharCode(byte))
+    } else if (byte >= 0xa1 && byte <= 0xdf) {
+      parts.push(String.fromCharCode(0xff61 + byte - 0xa1))
+    } else {
+      parts.push('�')
+    }
+  }
+  return parts.join('')
+}
+
 /**
- * ファイルの中身（バイト列）を文字にする。UTF-8（BOM あり・なし）、UTF-16（BOM あり・なし。Excel の「Unicode テキスト」）、
- * どれでも読めなければ Shift_JIS（日本語の Excel が「CSV」で保存する形）で読む。
+ * ファイルの中身（バイト列）を文字にし、どの文字の形だったかも返す。
+ * UTF-8（BOM あり・なし）、UTF-16（BOM あり・なし。Excel の「Unicode テキスト」）、
+ * どれでもなければ Shift_JIS（Windows の Excel の「CSV」）か、Mac の日本語（Mac の Excel の「CSV」。0x80 の「\」があるとき）。
+ * encoding は utf-8 / utf-16le / utf-16be / shift_jis / mac-japanese。
  */
-export function decodeTableBytes(bytes) {
+export function decodeTableFile(bytes) {
   const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
-  if (view.length >= 2 && view[0] === 0xff && view[1] === 0xfe) return new TextDecoder('utf-16le').decode(view.subarray(2))
-  if (view.length >= 2 && view[0] === 0xfe && view[1] === 0xff) return new TextDecoder('utf-16be').decode(view.subarray(2))
+  if (view.length >= 2 && view[0] === 0xff && view[1] === 0xfe) return { text: new TextDecoder('utf-16le').decode(view.subarray(2)), encoding: 'utf-16le' }
+  if (view.length >= 2 && view[0] === 0xfe && view[1] === 0xff) return { text: new TextDecoder('utf-16be').decode(view.subarray(2)), encoding: 'utf-16be' }
   // BOM のない UTF-16：英数字の相手側のバイトが 0 になる。
   const sample = view.subarray(0, Math.min(view.length, 400))
   if (sample.length >= 4) {
@@ -124,15 +185,30 @@ export function decodeTableBytes(bytes) {
       }
     }
     const pairs = Math.floor(sample.length / 2)
-    if (odd > pairs * 0.3 && even === 0) return new TextDecoder('utf-16le').decode(view)
-    if (even > pairs * 0.3 && odd === 0) return new TextDecoder('utf-16be').decode(view)
+    if (odd > pairs * 0.3 && even === 0) return { text: new TextDecoder('utf-16le').decode(view), encoding: 'utf-16le' }
+    if (even > pairs * 0.3 && odd === 0) return { text: new TextDecoder('utf-16be').decode(view), encoding: 'utf-16be' }
   }
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(view).replace(/^\uFEFF/u, '')
+    return { text: new TextDecoder('utf-8', { fatal: true }).decode(view).replace(/^﻿/u, ''), encoding: 'utf-8' }
   } catch {
-    return new TextDecoder('shift_jis').decode(view)
+    // 0x80 は Shift_JIS では使わない（1バイトの字にも、2バイトの字の1バイト目にもならない）。あれば Mac の日本語。
+    let mac = false
+    for (let index = 0; index < view.length; index += 1) {
+      const byte = view[index]
+      if ((byte >= 0x81 && byte <= 0x9f) || (byte >= 0xe0 && byte <= 0xfc)) index += 1
+      else if (byte === 0x80) {
+        mac = true
+        break
+      }
+    }
+    return mac
+      ? { text: decodeShiftJis(view, { mac: true }), encoding: 'mac-japanese' }
+      : { text: decodeShiftJis(view), encoding: 'shift_jis' }
   }
 }
+
+/** ファイルの中身を文字にする（文字の形は decodeTableFile）。 */
+export const decodeTableBytes = (bytes) => decodeTableFile(bytes).text
 
 /**
  * 表の区切り。最初の行にタブがあればタブ。なければカンマとセミコロンのうち、見出しの名前をより多く読めるほう
@@ -212,9 +288,37 @@ const FORMULA_START = /^(?:[=+\-@\t\r]|'['=+\-@\t\r])/u
 const guardCell = (value) => (FORMULA_START.test(value) ? `'${value}` : value)
 const unguardCell = (value) => (/^'['=+\-@\t\r]/u.test(value) ? value.slice(1) : value)
 
+// Excel は CSV を開いた時点で、数・日付・時刻・通貨・真偽に見える欄を書きかえる（本物の Excel で確かめた：
+// 1-2→1月2日、007→7、1E5→1.00E+05、12345678901234567890→1.23457E+19、$100→¥100、(100)→-100、false→FALSE、1.50→1.5）。
+// そう見える欄と = + - @ で始まる欄は ="…" の形で書き出す。Excel はそのままの文字を見せ、保存するとそのままの文字に戻る。
+// Excel の式の文字は255字までなので、それより長い欄・改行のある欄・「'」で始まる欄は、これまでどおり「'」を付ける。
+const MONTH = '(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?'
+const MONTH_DATE = new RegExp(`^(?:${MONTH}[\\s\\-/,]*\\d{1,4}(?:[\\s\\-/,]+\\d{1,4})?|\\d{1,4}[\\s\\-/]*${MONTH}(?:[\\s\\-/,]*\\d{1,4})?)$`, 'iu')
+export function excelWouldConvert(value) {
+  const text = String(value ?? '').trim()
+  if (!text) return false
+  if (/^(?:true|false)$/iu.test(text)) return true
+  if (/\d/u.test(text) && /^[\s\d\-+.,:/()$¥€£%eE]+$/u.test(text)) return true
+  if (/^(?:\d{1,4}\s*[年/.-]\s*)?\d{1,2}\s*月\s*\d{1,2}\s*日?$/u.test(text)) return true
+  if (/^\d{1,4}\s*年\s*\d{1,2}\s*月$/u.test(text)) return true
+  if (/^\d{1,2}(?::\d{2}){0,2}\s*(?:am|pm|a|p)$/iu.test(text)) return true
+  return MONTH_DATE.test(text)
+}
+const EXCEL_TEXT_FORMULA_LIMIT = 250
+const asExcelText = (value) => `="${value.replace(/"/gu, '""')}"`
+
 const csvCell = (value) => {
-  const text = guardCell(String(value ?? ''))
+  const raw = String(value ?? '')
+  const formulaLike = /^[=+\-@]/u.test(raw)
+  const text = (formulaLike || excelWouldConvert(raw)) && raw.length <= EXCEL_TEXT_FORMULA_LIMIT && !/[\r\n\t]/u.test(raw)
+    ? asExcelText(raw)
+    : guardCell(raw)
   return /[",;\r\n\t]|^\s|\s$/u.test(text) ? `"${text.replace(/"/gu, '""')}"` : text
+}
+// ="…" の形（書き出したまま Excel 以外で直した表）は、中の文字にする。
+const unwrapExcelText = (value) => {
+  const match = /^="((?:[^"]|"")*)"$/u.exec(value)
+  return match ? match[1].replace(/""/gu, '"') : value
 }
 
 // ── 欄の中身の書き方 ─────────────────────────────────────────
@@ -513,18 +617,48 @@ const multiLineLength = (value) => String(value ?? '').normalize('NFC')
   .trim().length
 const SUBJECT_BY_TEXT = new Map(CUSTOM_SUBJECTS.flatMap((item) => [[item.id, item.id], [categoryKeyOf(item.label), item.id]]))
 
+// Shift_JIS で保存したときに変わった欄が、元の欄と同じか（変わったのは、Shift_JIS にない字が「_」「?」などになった所だけか）。
+const REPLACED_MARKS = new Set(['_', '?', '�'])
+const SAME_IN_SHIFT_JIS = [['\\', '¥'], ['~', '‾'], ['〜', '～'], ['—', '―'], ['‖', '∥'], ['－', '−'], ['¢', '￠'], ['£', '￡'], ['¬', '￢']]
+function savedFromOriginal(original, saved) {
+  if (original === saved || original.length !== saved.length) return false
+  const safe = shiftJisSafe()
+  for (let index = 0; index < original.length; index += 1) {
+    const before = original[index]
+    const after = saved[index]
+    if (before === after) continue
+    if (SAME_IN_SHIFT_JIS.some((pair) => pair.includes(before) && pair.includes(after))) continue
+    if (!safe.has(before) && REPLACED_MARKS.has(after)) continue
+    return false
+  }
+  return true
+}
+const LEGACY_ENCODINGS = new Set(['shift_jis', 'mac-japanese'])
+
 /**
  * 表（CSV・タブ区切りの文字）を読んで、足す・入れ替えるためのまとまりにする。
  * categories は今あるカテゴリー（同じ名前のカテゴリーへ入れる）、subject は教科から開いたときの教科（分類が空の行の入れ先）。
  * status は ok（読めたカードがある）/ empty（カードになる行がない）。
  * errors は読めなかった行（行の番号と理由。上限を超えた行も）、warnings は読んだが一部を読まなかった行（切り捨てた中身も）。
  * replaces は、テンプレートを英単語とほかの間で変えた行の { from（元の ID）, to（新しい ID）}。
+ * encoding は decodeTableFile の文字の形。Shift_JIS（Excel の「CSV」）なら notices で知らせ、library（いまのカード）と
+ * 同じ ID の行は、保存で「_」などに変わった字を元のカードの字に戻す。
  */
-export function parseCustomCardsTable(text, { categories = [], subject = null, now = Date.now() } = {}) {
+export function parseCustomCardsTable(text, { categories = [], subject = null, now = Date.now(), encoding = 'utf-8', library: current = null } = {}) {
   const rows = parseDelimitedText(text)
   const errors = []
   const warnings = []
-  const empty = { status: 'empty', library: { words: [], cards: [], categories: [] }, errors, warnings, newCategories: [], rowCount: 0, replaces: [] }
+  const notices = []
+  const legacy = LEGACY_ENCODINGS.has(encoding)
+  if (legacy) {
+    notices.push('Excel の「CSV」か「タブ区切りテキスト」（Shift_JIS）で保存されたファイルです。この形では、発音記号・é・①などの記号・絵文字・一部の漢字が「_」などに変わります。'
+      + 'もとのカードと同じ ID の行は、変わった字を元のカードの字に戻して読みます。新しく書いた行は確かめてください。次からは「CSV UTF-8（コンマ区切り）」で保存してください。')
+  }
+  const currentById = new Map([
+    ...(current?.words ?? []).map((entry) => [entry.id, { kind: 'word', entry }]),
+    ...(current?.cards ?? []).map((entry) => [entry.id, { kind: 'card', entry }]),
+  ])
+  const empty = { status: 'empty', library: { words: [], cards: [], categories: [] }, errors, warnings, notices, newCategories: [], rowCount: 0, replaces: [] }
   if (!rows.length) return empty
 
   // 見出しの行：知っている列の名前が2つ以上あれば見出しとして読む。なければ「表・裏・解説」の3列。
@@ -568,10 +702,25 @@ export function parseCustomCardsTable(text, { categories = [], subject = null, n
     const values = {}
     keys.forEach((key, index) => {
       if (!key) return
-      const cell = unguardCell(String(cells[index] ?? '').trim())
+      const cell = unguardCell(unwrapExcelText(String(cells[index] ?? '').trim()))
       if (cell) values[key] = cell
     })
     if (!Object.keys(values).length) return
+
+    // Shift_JIS で保存したファイル：同じ ID のカードがあれば、保存で変わった字を元のカードの字に戻す。
+    if (legacy && values.id && currentById.has(values.id)) {
+      const { kind, entry } = currentById.get(values.id)
+      const before = kind === 'word' ? wordRow(entry, categories) : cardRow(entry, categories)
+      const restored = []
+      for (const [key, value] of Object.entries(values)) {
+        const original = String(before[key] ?? '')
+        if (key !== 'id' && savedFromOriginal(original, value)) {
+          values[key] = original
+          restored.push(CUSTOM_CARD_TABLE_COLUMNS.find((item) => item.key === key)?.name ?? key)
+        }
+      }
+      if (restored.length) warnings.push({ line, message: `「${restored.join('」「')}」は、Excel の保存で「_」などに変わった字を、元のカードの字に戻しました` })
+    }
 
     // 分類：教科の名前か、今あるカテゴリーの名前。ない名前はカテゴリーを作る。
     let category = defaultCategory
@@ -782,6 +931,7 @@ export function parseCustomCardsTable(text, { categories = [], subject = null, n
     library,
     errors,
     warnings,
+    notices,
     newCategories: created.filter((item) => usedCategories.has(item.id)).map((item) => item.title),
     rowCount: body.length,
     replaces,

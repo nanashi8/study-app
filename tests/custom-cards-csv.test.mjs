@@ -92,8 +92,8 @@ test('書き出し：Excel で文字化けしない UTF-8（BOM つき）の CSV
   assert.ok(text.startsWith('﻿'), 'BOM')
   assert.ok(text.includes('\r\n'), 'CRLF')
   assert.equal(customCardsCsvFileName(new Date(2026, 8, 30).getTime()), 'study-app-custom-cards-20260930.csv')
-  // - で始まる欄は、Excel が数式として読まないよう ' を付けて書き出し、読み込むときに外す。
-  assert.ok(text.includes("'-er がついた形。"))
+  // - で始まる欄は、Excel が数式として読まないよう ="…" の形で書き出し（CSV では "" を重ねる）、読み込むときに外す。
+  assert.ok(text.includes('"=""-er がついた形。'))
   const parsed = parseCustomCardsTable(text, { categories: [CATEGORY] })
   assert.equal(parsed.status, 'ok')
   assert.deepEqual(parsed.errors, [])
@@ -257,10 +257,10 @@ test('ファイルの画面：CSV で書き出す・見本を保存・CSV やテ
   assert.match(screen, /saveFile\(customCardsCsvText\(library\), customCardsCsvFileName\(\), 'text\/csv;charset=utf-8'\)/)
   assert.match(screen, /data-custom-cards-csv-sample/)
   assert.match(screen, /accept="\.csv,\.tsv,\.txt,text\/csv,text\/tab-separated-values,text\/plain"/)
-  assert.match(screen, /readTable\(decodeTableBytes\(await file\.arrayBuffer\(\)\), file\.name\)/)
+  assert.match(screen, /const decoded = decodeTableFile\(await file\.arrayBuffer\(\)\)\n    readTable\(decoded\.text, file\.name, decoded\.encoding\)/u)
   assert.match(screen, /data-custom-cards-paste-input/)
   assert.match(screen, /readTable\(pasted, '貼り付けた表'\)/)
-  assert.match(screen, /parseCustomCardsTable\(text, \{ categories: library\.categories, subject \}\)/)
+  assert.match(screen, /parseCustomCardsTable\(text, \{ categories: library\.categories, subject, encoding, library \}\)/)
   assert.match(screen, /data-custom-cards-import-errors/)
   assert.match(screen, /data-custom-cards-import-warnings/)
   assert.match(screen, /data-custom-cards-import-new-categories/)

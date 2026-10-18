@@ -523,10 +523,20 @@ function hashSeed(value) {
   return hash >>> 0
 }
 
-const seededShuffle = (list, seed) => [...list]
-  .map((item, index) => ({ item, key: hashSeed(`${seed}:${index}:${item.id}`) }))
-  .sort((a, b) => a.key - b.key)
-  .map(({ item }) => item)
+// 種で決まる並び（鍵の小さい順。同じ鍵は元の順）を、前から1つずつ取り出す。
+// 誤答に要るのは先頭の数枚だけなので、全部を並べずに、残りから一番小さいものを選んでいく（数千枚でも1問がすぐ作れる）。
+function* seededOrder(list, seed) {
+  const keyed = list.map((item, index) => ({ item, index, key: hashSeed(`${seed}:${index}:${item.id}`) }))
+  const before = (a, b) => a.key < b.key || (a.key === b.key && a.index < b.index)
+  for (let slot = 0; slot < keyed.length; slot += 1) {
+    let best = slot
+    for (let index = slot + 1; index < keyed.length; index += 1) {
+      if (before(keyed[index], keyed[best])) best = index
+    }
+    if (best !== slot) [keyed[slot], keyed[best]] = [keyed[best], keyed[slot]]
+    yield keyed[slot].item
+  }
+}
 
 const quizOf = (card) => templateFor(card.template).quiz
 const answerOf = (card) => card[quizOf(card).answer]
@@ -549,7 +559,8 @@ export function customCardDistractors(card, pool = customCardList(), count = 3) 
   const picked = []
   const seen = new Set([answer])
   for (const tier of tiers) {
-    for (const other of seededShuffle(tier, card.id)) {
+    if (picked.length >= count) break
+    for (const other of seededOrder(tier, card.id)) {
       if (picked.length >= count) break
       const text = answerOf(other)
       if (seen.has(text)) continue
@@ -586,24 +597,45 @@ export function customCardQuestion(card, pool = customCardList()) {
   })
 }
 
-/** テストに出せるカード（誤答が1つ以上作れるカード）。 */
+/**
+ * テストに出せるカード（誤答が1つ以上作れるカード）。誤答は、答えの文がちがうカードなので、
+ * 答えの文ごとの枚数から数える（問題を1つずつ作ると、数千枚では全カードどうしを比べて数秒かかる）。
+ */
 export function quizzableCustomCardIds(ids, pool = customCardList()) {
-  return [...new Set(ids ?? [])].filter((id) => customCardQuestion(getCustomCard(id), pool))
+  const sameAnswer = new Map()
+  let answered = 0
+  for (const other of pool) {
+    if (!quizOf(other)) continue
+    const text = answerOf(other)
+    if (!text) continue
+    answered += 1
+    sameAnswer.set(text, (sameAnswer.get(text) ?? 0) + 1)
+  }
+  return [...new Set(ids ?? [])].filter((id) => {
+    const card = getCustomCard(id)
+    if (!card || !quizOf(card)) return false
+    const answer = answerOf(card)
+    return answered - (answer ? sameAnswer.get(answer) ?? 0 : 0) > 0
+  })
 }
 
-/** テストの問題。問題ごとの結果（contentQuizResults）とカードの記録から出題順を決める。 */
+/**
+ * テストの問題。問題ごとの結果（contentQuizResults）とカードの記録から出題順を決める。
+ * 出題順はカードの ID と記録だけで決まるので、先に ID で並べて選び、選んだカードだけ問題（選択肢）を作る。
+ */
 export function pickCustomCardQuestions(ids, { srs = {}, quizResults = {}, size = 20, freshShare = null, preserveOrder = false, now = Date.now() } = {}) {
   const pool = customCardList()
-  const questions = [...new Set(ids ?? [])]
-    .map((id) => customCardQuestion(getCustomCard(id), pool))
-    .filter(Boolean)
-  if (preserveOrder) return size > 0 ? questions.slice(0, size) : questions
-  const ranked = mixRankedForStudy(rankQuestionsForStudy(questions, {
+  const quizzable = quizzableCustomCardIds(ids, pool)
+  const build = (id) => customCardQuestion(getCustomCard(id), pool)
+  if (preserveOrder) return (size > 0 ? quizzable.slice(0, size) : quizzable).map(build)
+  const ranked = mixRankedForStudy(rankQuestionsForStudy(quizzable.map((id) => ({ id, cardId: id })), {
     quizResults,
     quizDomain: CUSTOM_CARD_QUIZ_DOMAIN,
     srs,
     itemIdOf: (question) => question.cardId,
     now,
   }), { freshShare, stockOf: questionMixStockOf })
-  return pickInStudyOrder(ranked, size > 0 ? size : ranked.length).slice(0, size > 0 ? size : undefined)
+  return pickInStudyOrder(ranked, size > 0 ? size : ranked.length)
+    .slice(0, size > 0 ? size : undefined)
+    .map((question) => build(question.id))
 }
