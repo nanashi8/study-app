@@ -12,7 +12,7 @@
   "sessions": [
     "be8e6e1b-55bd-4519-ad2b-4062b265779d"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "csv-spec-read",
@@ -145,7 +145,7 @@
       "text": "全テスト・全監査をクリーンな clone で通し、main へ push して公開版を確かめる",
       "population": "npm run audit:all-content とデプロイ",
       "check": "node --test tests/custom-cards-excel-io.test.mjs tests/custom-cards-excel-real.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ],
   "findings": [
@@ -163,5 +163,5 @@
     "数千枚で一覧を開くのに約15秒、テストの組み立てに約5秒かかっていた（全カードどうしを比べる O(n²)）→ 1ms・12ms に（旧版と結果が同じことを1,201枚・4通りの出題で確かめた）",
     "101枚目より先の行から戻ると行が描かれていなかった → 表示枚数を params に持ち、戻ると同じ行・同じ高さ（ブラウザで2,749番の行で確かめた）"
   ],
-  "result": "全1,414テスト成功（npm test）・npm run audit:all-content 成功（24カテゴリ・教材20,493件・問題経路7,280件・失敗0）。上限は英単語5,000語・カード5,000枚・カテゴリー100。実機の Excel での自動変換（1-2→日付など）と、UTF-16 の実ファイルは未確認（BOM つきテキストの形は検査）。"
+  "result": "2026-10-19：クリーンな clone（f49080c）で npm run audit:all-content 成功（1,422テスト・教材20,493件・問題経路7,280件・失敗0）、main へ push、Deploy run 39138618617 success、公開版の CustomWords の塊に新しい知らせ・列の書き方・字を戻す処理・さらに表示が入っていることを確かめた。本物の Excel（Mac 16.114）で4つの保存形式を読み戻し、UTF-8・UTF-16 は53/53、Mac の日本語の2形式は同じ端末なら53/53（元のカードのない端末では10枚の字が「_」のまま、知らせで伝える）。Windows の Excel は手元になく、Shift_JIS のバイトを組み立てて確かめた。iPhone・Android の実機の Excel（スマホ版）は確かめていない。"
 }
