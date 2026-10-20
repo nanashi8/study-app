@@ -8,7 +8,7 @@
   "sessions": [
     "64d92122-3f20-4841-8813-28abbc681ca8"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "最初の調べ（報告のみ）で、使われていないものを3段に分けた。1段目＝どこからも使われていない、2段目＝公開を終えたゲームの部品（画像102MB・画面のコード。テストや固定カウンタが名指しする）、3段目＝テスト・監査・手で使う道具。今回消すのは1段目（消しても何も問題を起こさないもの）だけ。2段目は消すとテストの書き直しが要り、ゲームを戻さない判断になるので消さない。",
   "criteria": [
     {
@@ -40,7 +40,8 @@
       "text": "クリーンな clone で確かめてコミット・push し、公開版が動くことを確かめる",
       "population": "main へ push するコミットと GitHub Pages の公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "result": "クリーンな clone（npm install で依存を入れ直したもの）で台帳の確認（書き直さない）・全テスト・npm run build（check:content の全監査と台帳の確認つき）・dist の監査が通り、作業ツリーとの差分なし。clone のテストでは、手元の Playwright のブラウザ置き場（~/Library/Caches/ms-playwright）が途中で消えていたため画面テスト15件が落ちた。Chromium と WebKit を同じ版（1.61.0）で入れ直し、読み取りの写真の置き場を clone へ写して読み取りのテスト5本（36件）を流し直して全部通った（変更とは関係のない環境の不足）。commit 9105011f を push。GitHub Pages の公開は1回目が GitHub 側の 502 で失敗し、失敗した段だけ流し直して成功（run 39438376567 の2回目）。scripts/checks/deployed-matches-head.mjs で公開版が HEAD と同じことを確かめ、公開版で消した画像（scenes/park.webp・pixel/art-stage.webp）が 404、残した画像（classroom-v3.webp・standing/rivals/math-takagi.png）が 200。公開版でホーム・英語アプリ・語源の画面が開き、コンソールのエラーは0件。"
     }
   ]
 }
