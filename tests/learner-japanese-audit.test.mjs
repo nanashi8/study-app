@@ -122,14 +122,18 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-18、本物の Excel で確かめた結果に合わせ、Excel の「CSV」（Shift_JIS）で保存したファイルの知らせ・
   // 列の書き方の2項目（保存の形・数字や日付に見える欄）・知らせの見出しの言い換えで、学習者画面の日本語が 18445 から 18450
   // （重複なし 13769 から 13774）に、ソース全体の日本語が 237250 から 237255 になった（同じ依頼台帳）。
-  assert.equal(result.learnerFiles, 359)
+  // 2026-10-20、どこからも読み込まれていなかった部品3つ（BattleOpponentStandingActor・BattleStageBackdrop・HeroPortrait）と
+  // src/lib のモジュール3つ（etymologyCompanions・etymologyMeaning・reading-phrase-review）を消したので、学習者画面が 359 から 353、
+  // ソース全体が 839 から 833 ファイルになり、学習者画面の日本語が 18450 から 18359（重複なし 13774 から 13687）に、
+  // ソース全体の日本語が 237255 から 237164 になった（画面には出ていなかった文字列。requests/2026-10-20-remove-unused-files.json）。
+  assert.equal(result.learnerFiles, 353)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
-  assert.equal(result.learnerJapaneseEntries, 18450)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13774)
-  assert.equal(result.sourceFiles, 839)
-  assert.equal(result.sourceJapaneseEntries, 237255)
+  assert.equal(result.learnerJapaneseEntries, 18359)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13687)
+  assert.equal(result.sourceFiles, 833)
+  assert.equal(result.sourceJapaneseEntries, 237164)
   assert.equal(result.issues.length, 0)
 })
 
