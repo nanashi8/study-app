@@ -154,3 +154,18 @@ test('熟語の一覧の行が指す熟語・構文は、熟語・構文の級�
   }
   assert.equal(checked, 1400)
 })
+
+// 一覧には同じ語が2回出る行もある（高校の単語の一覧に3組）ので、指紋の重なりは止めない。
+test('一覧ごとの行は指紋の順に並ぶ（Excel を読み直したときに比べられる形）', () => {
+  for (const { key, rows } of LEVEL_CAP_LISTS) {
+    const hashes = rows.map(([hash]) => hash)
+    assert.deepEqual(hashes, [...hashes].sort(), `${key} の行が指紋の順でない`)
+  }
+})
+
+// 手元に Excel があるときは LEVEL_CAP_SHEET にパスを渡すと、全行を読み直して台帳と比べる。
+test('Excel を読み直すと、4つの一覧の全行が台帳の行と一致する', { skip: !process.env.LEVEL_CAP_SHEET }, async () => {
+  const { spawnSync } = await import('node:child_process')
+  const result = spawnSync(process.execPath, ['scripts/check-level-cap-sheet.mjs', process.env.LEVEL_CAP_SHEET], { encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+})

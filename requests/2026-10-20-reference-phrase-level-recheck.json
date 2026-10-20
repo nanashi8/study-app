@@ -7,16 +7,16 @@
   "sessions": [
     "568f7ac3-7de4-4be5-8f8a-8039a6181ea6"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "2026-10-09 の依頼（2026-10-09-reference-list-level-caps）で同じ一覧の級を見直した。今回は Excel を読み直し、今のアプリと全行を照合し直す。一覧の名前・語の並びはリポジトリに書かない（行は SHA-256 先頭16桁だけ）。",
   "criteria": [
     {
       "id": "sheet-rows-match-ledger",
       "text": "Excel の高校の熟語の一覧・中学の熟語の一覧を読み直し、全行が照合の台帳（scripts/data/level-cap-review.js）の行と一致する（行が増えた・変わった・消えたものがない）",
       "population": "Excel の高校の熟語の一覧の全1,000行と中学の熟語の一覧の全400行（計1,400行）",
-      "check": "node scripts/check-level-cap-sheet.mjs ~/Documents/物置/教材コンテンツ.xlsx",
+      "check": "LEVEL_CAP_SHEET=~/Documents/物置/教材コンテンツ.xlsx node --test tests/reference-list-level-caps.test.mjs",
       "status": "done",
-      "result": "Excel を読み直し、高校の熟語の一覧1,000行・中学の熟語の一覧400行（ほかの2つの一覧の単語1,900行・1,784行も）が台帳の行と全行一致した。照合の途中で、台帳の3行（高校の熟語の一覧の all the 比較級・that much 比較級・the 比較級 ~, the 比較級 ~）の指紋が、セルのふりがな（ヒカクキュウ）まで含めて取られていたのを見つけ、ふりがなを除いた文字の指紋に直した（結ぶ熟語は変えていない）。"
+      "result": "Excel を読み直し、高校の熟語の一覧1,000行・中学の熟語の一覧400行（ほかの2つの一覧の単語1,900行・1,784行も）が台帳の行と全行一致した。照合の途中で、台帳の3行（高校の熟語の一覧の all the 比較級・that much 比較級・the 比較級 ~, the 比較級 ~）の指紋が、セルのふりがな（ヒカクキュウ）まで含めて取られていたのを見つけ、ふりがなを除いた文字の指紋に直した（結ぶ熟語は変えていない）。 テストは、台帳の行が指紋の順に並ぶことを毎回確かめ、LEVEL_CAP_SHEET に Excel のパスを渡すと全行を読み直して比べる（手元に Excel がないと読み直しは飛ばす）。高校の単語の一覧には同じ語が2回出る行が3組ある。"
     },
     {
       "id": "high-school-phrases-cap-2",
@@ -48,14 +48,15 @@
       "population": "1,400行が指す熟語・構文のすべてと、それを級で並べる熟語・構文の画面・辞書の見出し（PHRASES の level を読む全画面）",
       "check": "node --test tests/reference-list-level-caps.test.mjs",
       "status": "done",
-      "result": "1,400行が指す熟語・構文の全件が、熟語・構文の級ごとの一覧（暗記・テストの入口の数のもと）と辞書の見出しに同じ級で出ることをテストで確かめた。開発版の熟語・構文の一覧で、all the 比較級・a handful of・that much 比較級が2級、the 比較級, the 比較級が準2級、look forward to・millions of・so that ~ can do・so ... that ~が3級に出ることを見た。"
+      "result": "1,400行が指す熟語・構文の全件が、熟語・構文の級ごとの一覧（暗記・テストの入口の数のもと）と辞書の見出しに同じ級で出ることをテストで確かめた。開発版の熟語・構文の一覧で、all the 比較級・a handful of・that much 比較級が2級、the 比較級, the 比較級が準2級、look forward to・millions of・so that ~ can do・so ... that ~が3級に出ることを見た。 公開版（run 39369389055 のあと）でも熟語の級ごとの数が5級86・4級227・3級303・準2級319・2級655・準1級158・1級161（全1,909）で、2級の一覧に a handful of、3級の一覧に millions of が出ることを見た。"
     },
     {
       "id": "audit-and-deploy",
       "text": "全テスト・全監査（npm run audit:all-content）を通してコミット・push し、公開版に出ていることを確かめる",
       "population": "npm run audit:all-content の全項目と公開版",
-      "check": "npm test",
-      "status": "todo"
+      "check": "node --test tests/content-audit-ledger.test.mjs",
+      "status": "done",
+      "result": "作業ツリーとクリーンな clone の両方で npm run audit:all-content が通った（24カテゴリ・教材20,493件・失敗0件）。commit 4c7a67cf を push し、GitHub Pages の公開が成功（run 39369389055）。"
     }
   ]
 }
