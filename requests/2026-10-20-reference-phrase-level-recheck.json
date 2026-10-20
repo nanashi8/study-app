@@ -1,0 +1,61 @@
+{
+  "id": "2026-10-20-reference-phrase-level-recheck",
+  "title": "参考にした Excel の高校の熟語の一覧が2級以下、中学の熟語の一覧が3級以下でアプリに入っているかを確かめ、違えば直す",
+  "asked": [
+    "（添付：Excel ファイル1件）スタディアプリのコンテンツの参考にしている添付ファイルのエクセルシートにある、高校英熟語のコンテンツが2級以下で実装されているか、中学英熟語のコンテンツが3級以下で実装されているか確認修正しなさい。"
+  ],
+  "sessions": [
+    "568f7ac3-7de4-4be5-8f8a-8039a6181ea6"
+  ],
+  "status": "open",
+  "notes": "2026-10-09 の依頼（2026-10-09-reference-list-level-caps）で同じ一覧の級を見直した。今回は Excel を読み直し、今のアプリと全行を照合し直す。一覧の名前・語の並びはリポジトリに書かない（行は SHA-256 先頭16桁だけ）。",
+  "criteria": [
+    {
+      "id": "sheet-rows-match-ledger",
+      "text": "Excel の高校の熟語の一覧・中学の熟語の一覧を読み直し、全行が照合の台帳（scripts/data/level-cap-review.js）の行と一致する（行が増えた・変わった・消えたものがない）",
+      "population": "Excel の高校の熟語の一覧の全1,000行と中学の熟語の一覧の全400行（計1,400行）",
+      "check": "node scripts/check-level-cap-sheet.mjs ~/Documents/物置/教材コンテンツ.xlsx",
+      "status": "done",
+      "result": "Excel を読み直し、高校の熟語の一覧1,000行・中学の熟語の一覧400行（ほかの2つの一覧の単語1,900行・1,784行も）が台帳の行と全行一致した。照合の途中で、台帳の3行（高校の熟語の一覧の all the 比較級・that much 比較級・the 比較級 ~, the 比較級 ~）の指紋が、セルのふりがな（ヒカクキュウ）まで含めて取られていたのを見つけ、ふりがなを除いた文字の指紋に直した（結ぶ熟語は変えていない）。"
+    },
+    {
+      "id": "high-school-phrases-cap-2",
+      "text": "高校の熟語の一覧の全行が、アプリの熟語・構文のどれかに結び付き、その級が2級以下",
+      "population": "高校の熟語の一覧の全1,000行が指すアプリの熟語・構文",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,000行中1,000行が熟語・構文に結び付き、2級より上は0件（2級・準2級・3級などに置かれている）。直す必要のある級はなかった。"
+    },
+    {
+      "id": "junior-phrases-cap-3",
+      "text": "中学の熟語の一覧の全行が、アプリの熟語・構文のどれかに結び付き、その級が3級以下",
+      "population": "中学の熟語の一覧の全400行が指すアプリの熟語・構文",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "400行中400行が熟語・構文に結び付き、3級より上は0件。直す必要のある級はなかった。"
+    },
+    {
+      "id": "same-form-entries",
+      "text": "一覧の行が指す熟語と同じ形（~・A/B・do/doing・one's を落とした形）のほかの熟語・構文・複数語の単語が上限より上にあるときは、1件ずつ読み、同じ表現の重複なら級を直し、意味の違う別の表現なら理由をテストの台帳に書く",
+      "population": "1,400行が指す熟語・構文と同じ形の、アプリのすべての熟語・構文・複数語の単語",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,400行が指す熟語と同じ形の項目のうち上限より上にあるのは7件で、すべて意味の違う別の表現（derive A from B「AをBから得る」、refer A to B「照会する」、do without「なしで済ませる」、come to「意識を取り戻す」、..., so that ...「その結果」、take to「好きになる」、put in「提出する」）。同じ表現の重複はなく、級は変えていない。7件は理由つきでテストに書いた。"
+    },
+    {
+      "id": "screens-show-level",
+      "text": "決めた級が、熟語・構文の級ごとの一覧（暗記・テストの入口）と辞書の見出しに同じ級で出る。開発版と公開版の画面でも確かめる",
+      "population": "1,400行が指す熟語・構文のすべてと、それを級で並べる熟語・構文の画面・辞書の見出し（PHRASES の level を読む全画面）",
+      "check": "node --test tests/reference-list-level-caps.test.mjs",
+      "status": "done",
+      "result": "1,400行が指す熟語・構文の全件が、熟語・構文の級ごとの一覧（暗記・テストの入口の数のもと）と辞書の見出しに同じ級で出ることをテストで確かめた。開発版の熟語・構文の一覧で、all the 比較級・a handful of・that much 比較級が2級、the 比較級, the 比較級が準2級、look forward to・millions of・so that ~ can do・so ... that ~が3級に出ることを見た。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "全テスト・全監査（npm run audit:all-content）を通してコミット・push し、公開版に出ていることを確かめる",
+      "population": "npm run audit:all-content の全項目と公開版",
+      "check": "npm test",
+      "status": "todo"
+    }
+  ]
+}

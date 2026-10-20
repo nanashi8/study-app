@@ -85,3 +85,72 @@ test('アプリに無かった中学の熟語156行は、足した熟語155件�
     .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
   assert.deepEqual(JUNIOR_CORE_PHRASES.map((phrase) => phrase.phrase), sorted)
 })
+
+// 2026-10-20 の確かめ直し。一覧の行が指す熟語と同じ形（~・A/B・do/doing・one's を落とした形）の
+// ほかの熟語・構文・複数語の単語が上限より上にあるのは、意味の違う別の表現だと読んで決めたものだけ。
+const SAME_FORM_DIFFERENT_MEANING = Object.freeze({
+  // 一覧の行が指す熟語 → 上限より上にある同じ形の項目: 別の表現と決めた理由
+  'curr1900_idm_2_derive_from>exam_syn_derive_a_from_b': '「〜に由来する」と「AをBから得る・導く」（他動詞の使い方）',
+  'exam_idm_refer_to>curr_idm_pre1_refer_a_to_b': '「〜を指す・言及する」と「AをBに照会・紹介する」',
+  'exam_syn_without_doing>curr_idm_2_do_without': '「〜せずに」と「〜なしで済ませる」',
+  'jr_idm_come_to_do>curr1900_idm_2_come_to': '「〜するようになる」と「意識を取り戻す・合計〜になる」',
+  'syn_so_that>curr1900_idm_pre1_blank_so_that_blank': '「とても…なので〜」と「〜、その結果…」',
+  'jr_idm_take_a_to_b>curr_idm_2_take_to': '「AをBに連れて行く」と「〜を好きになる・〜を始める」',
+  'jr_idm_put_a_in_b>curr1900_idm_2_put_in': '「AをBに入れる」と「〜を提出する・注ぎ込む」',
+})
+const sameForm = (text) => String(text).normalize('NFKC').toLowerCase()
+  .replace(/[~〜…—]|\.\.\./g, ' ')
+  .replace(/\(([^)]*)\)/g, '$1')
+  .replace(/\b(a|b|c|d)\b/g, ' ')
+  .replace(/\b(one's|oneself|someone's|someone|something|sb|sth|doing|do)\b/g, ' ')
+  .replace(/[?!.,/]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+const PHRASE_LIST_KEYS = ['high-school-phrases', 'junior-phrases']
+
+test('熟語の一覧の行が指す熟語と同じ形の項目は、上限以下か、意味の違う別の表現と決めたものだけ', () => {
+  const heads = [
+    ...PHRASES.map((phrase) => [phrase, phrase.phrase]),
+    ...ALL_WORDS.filter((word) => /\s/.test(word.word)).map((word) => [word, word.word]),
+  ]
+  const byForm = new Map()
+  for (const [entry, head] of heads) {
+    const form = sameForm(head)
+    if (!byForm.has(form)) byForm.set(form, [])
+    byForm.get(form).push(entry)
+  }
+  const found = new Set()
+  for (const key of PHRASE_LIST_KEYS) {
+    const { cap, rows } = list(key)
+    for (const [, ids] of rows) {
+      for (const id of ids) {
+        const entry = entries.get(id)
+        for (const other of byForm.get(sameForm(entry.phrase ?? entry.word)) ?? []) {
+          if (other.id !== id && rank(other.level) > rank(cap)) found.add(`${id}>${other.id}`)
+        }
+      }
+    }
+  }
+  assert.deepEqual([...found].sort(), Object.keys(SAME_FORM_DIFFERENT_MEANING).sort())
+})
+
+test('熟語の一覧の行が指す熟語・構文は、熟語・構文の級ごとの一覧と辞書の見出しに、上限以下の同じ級で出る', async () => {
+  const { phrasesByLevel } = await import('../src/data/phrases.js')
+  const { DICTIONARY_ENTRIES } = await import('../src/lib/dictionary.js')
+  const dictionary = new Map(DICTIONARY_ENTRIES.map((entry) => [entry.id, entry]))
+  let checked = 0
+  for (const key of PHRASE_LIST_KEYS) {
+    const { cap, rows } = list(key)
+    for (const [, ids] of rows) {
+      for (const id of ids) {
+        const entry = entries.get(id)
+        assert.ok(rank(entry.level) <= rank(cap), `${key}: ${id}=${entry.level}`)
+        assert.ok(entry.kind, `${id} は熟語・構文ではない`)
+        assert.ok(phrasesByLevel(entry.kind, entry.level).some((phrase) => phrase.id === id), `${id} が級の一覧にない`)
+        assert.equal(dictionary.get(`${entry.kind}:${id}`)?.level, entry.level, `${id} の辞書の級`)
+        checked += 1
+      }
+    }
+  }
+  assert.equal(checked, 1400)
+})
