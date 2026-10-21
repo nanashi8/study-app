@@ -7,7 +7,7 @@
   "sessions": [
     "316ab766-fc23-40ac-be01-c3613b2e98a9"
   ],
-  "status": "open",
+  "status": "done",
   "notes": "git の履歴では、この欄（WordPhraseSection の PhraseList、2026-08-18 fe6c45b4 で暗記カードの裏に作り、09-21 f7f5b8f1 で辞書ページへ共有）は作ったときから行の並びで、級もカードもなかった。消した版は見つからない。熟語の画面（Phrases.jsx）の一覧と詳細シートには級がある。",
   "criteria": [
     {
@@ -39,7 +39,8 @@
       "text": "開発版の両画面でカードを押して詳細が開くのを確かめ、全監査を通し、クリーンな clone で確かめて push し、公開版で確かめる",
       "population": "辞書ページ・暗記カードの裏・公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "result": "開発版（375px）で辞書ページ（decide：4枚、級つき）と暗記カードの裏（decide on）のカードを押して詳細が開き、同じ形の仲間の「この形を暗記」から暗記の記録を残して移り、戻り先が暗記カードになることを確かめた。熟語・構文の一覧の詳細も同じシートで開く。コンソールのエラー0件。全監査（npm run audit:all-content）は1回目に、詳細シートを部品へ移したことで文字列・固定値を見る検査が npm test で6件・check:content で1件落ちたので直し、3回目で npm test 1,431件・失敗0、24カテゴリ・教材20,493件・失敗0。クリーンな clone で台帳の確認・npm test（1,431件・失敗0）・npm run build が通り差分なし。commit 4bdf6054 を push、GitHub Pages のデプロイ成功（run 39612197881）、deployed-matches-head.mjs で公開版が HEAD と同じ。公開版の辞書ページ decide で4枚（make up one's mind 2級・decide to 4級・decide on 2級・make a decision 準2級）が級つきカードで、make a decision を押して詳細（級・意味・例文・成り立ち・注意・同じ形の仲間）が開いた。公開版の暗記カードの裏は、利用者の学習記録を変えないよう開かなかった（同じ部品で、開発版とテストで確かめた）。"
     }
   ]
 }
