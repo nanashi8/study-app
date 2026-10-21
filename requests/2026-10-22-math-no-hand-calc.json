@@ -12,7 +12,7 @@
   "sessions": [
     "26ae3038-f159-4245-8cb0-d176903ede55"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "exam-approach-all",
@@ -115,8 +115,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通してから main へ push し、公開版のデプロイ成功と、公開版で入試演習・誘導問題・歴史コースのテストを計算せずに方針を選ぶだけで解けることを確かめる",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "waiting",
-      "waitingFor": "npm run audit:all-content（実行中）とクリーンな clone での確認、push 後の GitHub Actions のデプロイ"
+      "status": "done",
+      "verifiedBy": "クリーンな clone で audit:all-content（1,447テスト・失敗0）を通して ae4d3e01 を push、Deploy to GitHub Pages 成功。公開版（375px）で入試演習（今日の演習の1問）・誘導問題（正負の数 pn-1）・歴史コース（数えることのはじまり）を計算せずに方針を選ぶだけで解き、ヒントは押したときだけ開くことを確認。公開版で見つけた数学マップの古い説明（紙に解いて解答欄に…）を直し、同じ手順で再公開"
     }
   ]
 }

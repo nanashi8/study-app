@@ -122,7 +122,7 @@ export function MathMapScreen() {
             <span className="block text-[10px] font-extrabold text-violet-700">高校入試・大学入試</span>
             <span className="block font-display text-base font-extrabold text-ink">入試演習</span>
             <span className="mt-0.5 block text-xs font-bold leading-relaxed text-ink/55">
-              {`全${MATH_UNITS.length}単元の基礎〜標準問題${MATH_EXAM_PROBLEMS.length}問。紙に解いて、解答欄に答えを入れて確かめる`}
+              {`全${MATH_UNITS.length}単元の基礎〜標準問題${MATH_EXAM_PROBLEMS.length}問。計算はせずに、どこから手をつけてどう解くかを選んで確かめる`}
             </span>
             <span className="mt-1 block text-[11px] font-extrabold text-emerald-700">
               {`自力で正解 ${examCounts.solved}/${MATH_EXAM_PROBLEMS.length}問`}

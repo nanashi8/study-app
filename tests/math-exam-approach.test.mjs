@@ -169,4 +169,8 @@ test('演習画面は方針を選ぶだけで進み、数字キー・解答欄�
   assert.match(component, /disabled=\{open \|\| picked\}/)
   assert.match(component, /title=\{`選択肢解説（\$\{step\.options\.length\}択すべて）`\}/)
   assert.ok(!component.includes('solution'), '計算（解答の筋道）を見せていない')
+  // 入口の説明にも、紙に解く・解答欄に入れるといった手で解く案内を残さない。
+  for (const file of ['src/screens/MathMap.jsx', 'src/screens/MathExam.jsx', 'src/screens/MathExamUnit.jsx', 'src/screens/MathIntro.jsx']) {
+    assert.doesNotMatch(read(file), /解答欄|紙に解|手で解|数字キー|目安時間/, `${file} に手で解く案内が残っている`)
+  }
 })
