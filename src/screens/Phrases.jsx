@@ -17,15 +17,9 @@ import {
   idiomFormSearchText,
 } from '../data/idiom-form-families.js'
 import { curriculum1900PhraseAliasesFor } from '../data/curriculum-1900-resolutions.js'
-import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { LEVELS, getLevel } from '../data/levels.js'
-import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Sheet } from '../components/Sheet.jsx'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
-import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
-import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
+import { PhraseDetailSheet } from '../components/PhraseDetailSheet.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
@@ -35,7 +29,7 @@ import { NormalLearningRecordList } from '../components/NormalLearningRecordList
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { readChoice, readListView, readOpen, readText } from '../lib/screenParams.js'
-import { Book, Cards, Lightbulb, Link, Refresh, Search, Sparkles } from '../components/Icons.jsx'
+import { Book, Cards, Refresh, Search, Sparkles } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
@@ -133,7 +127,6 @@ export function PhrasesScreen() {
     selectedFamily?.title,
     meta.label,
   ].filter(Boolean).join(' ')
-  const detailTranslation = longSentenceTranslationFor(detail)
   const status = summarizeSrsItems(items, srs)
   const dueItems = items.filter((item) => srs[item.id]?.due <= todayIndex())
   const due = dueItems.length
@@ -593,58 +586,12 @@ export function PhrasesScreen() {
       {view === 'list' ? listView : homeView}
 
       {/* 詳細シート */}
-      <Sheet open={!!detail} onClose={() => setDetail(null)} title="くわしく">
-        {detail && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <SpeakButton text={phraseSpeechText(detail)} size="md" />
-              <div>
-                <div className="font-display text-2xl font-extrabold text-ink">{detail.phrase}</div>
-                <Chip color={getLevel(detail.level).color}>英検{getLevel(detail.level).label}</Chip>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-brand-50 p-3">
-              <div className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">意味</div>
-              <div className="font-display text-lg font-extrabold text-ink">{detail.meanings.join('・')}</div>
-            </div>
-            <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
-              <div className="flex items-start gap-2">
-                <SpeakButton text={detail.example.en} size="sm" />
-                <div>
-                  <p className="font-bold text-ink">{detail.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55">
-                    {detailTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
-                    {detail.example.ja}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <LongSentenceTranslation guide={detailTranslation} />
-            {detail.origin && (
-              <div className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100">
-                <div className="mb-1 flex items-center gap-1.5 text-violet-600">
-                  <Link size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                    {detail.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
-                  </span>
-                </div>
-                <p className="text-sm font-bold leading-relaxed text-violet-900/90">{detail.origin}</p>
-              </div>
-            )}
-            {detail.note && (
-              <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
-                <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>
-                <p className="text-sm font-bold leading-relaxed text-amber-900/90">{detail.note}</p>
-              </div>
-            )}
-            <SyntaxFamilyGuide item={detail} />
-            <IdiomFormGuide item={detail}
-              familyId={kind === 'idiom' && familyFilter !== 'all' ? familyFilter : null}
-              returnTo={returnTarget}
-            />
-          </div>
-        )}
-      </Sheet>
+      <PhraseDetailSheet
+        phrase={detail}
+        onClose={() => setDetail(null)}
+        familyId={kind === 'idiom' && familyFilter !== 'all' ? familyFilter : null}
+        returnTo={returnTarget}
+      />
     </div>
   )
 }

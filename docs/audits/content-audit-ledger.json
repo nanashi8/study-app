@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-20T13:07:15.589Z",
+  "auditedAt": "2026-10-21T13:13:21.254Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "af0552b49542b625a1f7bb1f1fd36790b0357114e6b7e810f09f2f1abcb24c28",
+    "sha256": "4d81a0636715c9e4eeeb1370892ee635f95dfe4df53c3bbe0256dda54eaf4565",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -381,6 +381,7 @@
       "tests/word-forms.test.mjs",
       "tests/word-grammar-roles-screens.test.mjs",
       "tests/word-grammar-roles.test.mjs",
+      "tests/word-phrase-cards.test.mjs",
       "tests/word-phrase-links.test.mjs",
       "tests/word-phrases.test.mjs",
       "tests/word-relations-remaining.test.mjs",

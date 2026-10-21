@@ -132,7 +132,9 @@ test('一覧・暗記・テストの実画面に同形比較と専用開始ボ�
   const guide = read('../src/components/IdiomFormGuide.jsx')
 
   assert.match(list, /data-idiom-form-filter/)
-  assert.match(list, /<IdiomFormGuide item=\{detail\}/)
+  // 一覧の詳細は単語の熟語・構文カードと共有のシート（PhraseDetailSheet）で出す。
+  assert.match(list, /<PhraseDetailSheet\s+phrase=\{detail\}/)
+  assert.match(read('../src/components/PhraseDetailSheet.jsx'), /<IdiomFormGuide item=\{phrase\}/)
   assert.match(study, /<IdiomFormGuide item=\{item\}/)
   assert.match(quiz, /<IdiomFormGuide item=\{item\}/)
   assert.match(guide, /同じ形で比べる/)

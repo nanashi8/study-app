@@ -144,7 +144,8 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・暗�
   assert.match(component, /読み方：/)
 
   for (const path of [
-    '../src/screens/Phrases.jsx',
+    // 熟語・構文の一覧の詳細は、単語の熟語・構文カードと共有のシート（PhraseDetailSheet）。
+    '../src/components/PhraseDetailSheet.jsx',
     '../src/screens/PhraseStudy.jsx',
     '../src/screens/GrammarQuiz.jsx',
   ]) {

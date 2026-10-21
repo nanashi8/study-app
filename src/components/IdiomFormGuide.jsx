@@ -7,8 +7,9 @@ import {
 } from '../data/idiom-form-families.js'
 import { Button, cx } from './ui.jsx'
 
-export function IdiomFormGuide({ item, familyId = null, returnTo = null, className = '' }) {
-  const navigate = useStore((state) => state.navigate)
+export function IdiomFormGuide({ item, familyId = null, returnTo = null, navigateTo = null, className = '' }) {
+  const storeNavigate = useStore((state) => state.navigate)
+  const navigate = navigateTo ?? storeNavigate
   const selectedFamily = idiomFormFamilyById(familyId)
   const family = selectedFamily && idiomBelongsToFormFamily(item, selectedFamily.id)
     ? selectedFamily

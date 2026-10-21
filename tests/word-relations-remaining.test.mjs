@@ -43,10 +43,11 @@ test('辞書ページの派生語欄は、形の欄に出す語を重ねない',
 test('熟語・構文の欄と同じ意味の熟語の欄は、全行に発音ボタンをつける', () => {
   const component = read('src/components/WordRelations.jsx')
   // 熟語は見出しを、構文は記号の入った見出しでなく例文を読む（phraseSpeechText）。
-  const phraseRows = component.slice(component.indexOf('function PhraseList'), component.indexOf('function PhraseListHeading'))
+  const phraseRows = component.slice(component.indexOf('export function PhraseCardList'), component.indexOf('function PhraseListHeading'))
   assert.match(phraseRows, /<RowSpeakButton text=\{phraseSpeechText\(phrase\)\}/)
-  const idiomRows = component.slice(component.indexOf('export function IdiomEquivalentSection'), component.indexOf('function PhraseList'))
-  assert.match(idiomRows, /<RowSpeakButton text=\{phraseSpeechText\(phrase\)\}/)
+  // 同じ意味の熟語も同じカードの並び（PhraseCardList）で出す。
+  const idiomRows = component.slice(component.indexOf('export function IdiomEquivalentSection'), component.indexOf('export function PhraseCardList'))
+  assert.match(idiomRows, /<PhraseCardList phrases=\{phrases\}/)
 })
 
 test('同じ品詞の派生語を、ほかの品詞の形と分けて暗記カードの裏と辞書ページに出す', () => {

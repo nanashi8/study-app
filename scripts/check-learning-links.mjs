@@ -81,10 +81,10 @@ if (wordsWithPhrases < 700) {
 const studySource = read('src/screens/VocabStudy.jsx')
 const phraseSectionSource = read('src/components/WordRelations.jsx')
 if (
-  !studySource.includes('<WordPhraseSection word={word} groups={relatedPhrases} />')
-  || !read('src/screens/WordDetail.jsx').includes('<WordPhraseSection word={word} groups={relatedPhrases} />')
+  !studySource.includes('<WordPhraseSection word={word} groups={relatedPhrases} ')
+  || !read('src/screens/WordDetail.jsx').includes('<WordPhraseSection word={word} groups={relatedPhrases} ')
   || !phraseSectionSource.includes('data-word-phrases')
-  || !phraseSectionSource.includes('<PhraseList phrases={groups.all} />')
+  || !phraseSectionSource.includes('<PhraseCardList phrases={groups.all} ')
 ) {
   errors.push('単語カード・辞書ページが、その語を含む熟語を全部並べていない')
 }

@@ -7,6 +7,7 @@ import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { FORM_POS_LABELS } from '../lib/wordRelations.js'
 import { ExplainedText } from './ExplainedText.jsx'
 import { OriginNote } from './LookalikeOrigins.jsx'
+import { PhraseDetailSheet } from './PhraseDetailSheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { Chip, cx } from './ui.jsx'
 
@@ -228,49 +229,78 @@ export function CustomPhraseSection({ word }) {
 }
 
 /** 1語と同じ意味で言いかえられる熟語。熟語ごとに発音ボタンと、1語との使い分けをつける。 */
-export function IdiomEquivalentSection({ phrases }) {
+export function IdiomEquivalentSection({ phrases, navigateTo = null, returnTo = null }) {
   if (!phrases.length) return null
   return (
     <div data-word-idiom-equivalents>
       <SectionTitle className="text-sky-700">同じ意味の熟語</SectionTitle>
-      <ul className="space-y-1.5" data-speech-group>
-        {phrases.map((phrase) => (
-          <li key={phrase.id} className="flex items-start gap-2">
-            <RowSpeakButton text={phraseSpeechText(phrase)} title="熟語" />
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">{phrase.phrase}</p>
-              <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
-              <UsageNote text={phrase.usageNote} />
-            </div>
-          </li>
-        ))}
-      </ul>
+      <PhraseCardList phrases={phrases} navigateTo={navigateTo} returnTo={returnTo} className="space-y-2" />
     </div>
   )
 }
 
-/** 熟語・構文の一覧（発音ボタン・種類・見出し・意味）。構文は見出しの記号でなく例文を読む。 */
-function PhraseList({ phrases }) {
+/**
+ * 熟語・構文のカードの並び。1枚に発音ボタン・種類・見出し・級・意味（と使い分けの説明）を出し、押すと
+ * 熟語・構文の一覧と同じ詳細（PhraseDetailSheet）を開く。構文は見出しの記号でなく例文を読む。
+ * 意味の解説の中の語もリンクなので、押す所（見出しの行）の外に置く。
+ */
+export function PhraseCardList({ phrases, navigateTo = null, returnTo = null, className = 'mt-2 space-y-2' }) {
+  const [detail, setDetail] = useState(null)
   return (
-    <ul className="mt-2 space-y-1.5" data-speech-group>
-      {phrases.map((phrase) => (
-        <li key={phrase.id} className="flex items-start gap-2">
-          <RowSpeakButton text={phraseSpeechText(phrase)} title={phrase.kind === 'syntax' ? '構文' : '熟語'} />
-          <span
-            className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
-            style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
-          >
-            {phrase.kind === 'syntax' ? '構文' : '熟語'}
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">
-              {phrase.phrase}
-            </p>
-            <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className={className} data-speech-group>
+        {phrases.map((phrase) => {
+          const kindLabel = phrase.kind === 'syntax' ? '構文' : '熟語'
+          const level = getLevel(phrase.level)
+          return (
+            <li
+              key={phrase.id}
+              className="rounded-xl bg-white px-2.5 py-2 ring-1 ring-sky-100"
+              data-word-phrase-card={phrase.id}
+            >
+              <div className="flex items-start gap-2">
+                <RowSpeakButton text={phraseSpeechText(phrase)} title={kindLabel} />
+                <button
+                  type="button"
+                  onClick={() => setDetail(phrase)}
+                  aria-label={`${phrase.phrase}の説明を見る`}
+                  className="flex min-w-0 flex-1 items-start gap-2 text-left active:opacity-70"
+                >
+                  <span
+                    className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
+                    style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
+                  >
+                    {kindLabel}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">
+                      {phrase.phrase}
+                    </span>
+                    <span className="mt-0.5 inline-block" data-word-phrase-level={phrase.level}>
+                      <Chip color={level.color}>英検{level.label}</Chip>
+                    </span>
+                  </span>
+                  <span className="mt-0.5 flex shrink-0 items-center gap-0.5 text-[11px] font-extrabold text-sky-600">
+                    説明
+                    <ArrowRight size={14} />
+                  </span>
+                </button>
+              </div>
+              <div className="pl-10">
+                <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
+                <UsageNote text={phrase.usageNote} />
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+      <PhraseDetailSheet
+        phrase={detail}
+        onClose={() => setDetail(null)}
+        navigateTo={navigateTo}
+        returnTo={returnTo}
+      />
+    </>
   )
 }
 
@@ -286,7 +316,7 @@ function PhraseListHeading({ label, count }) {
 }
 
 /** ほかの品詞の形を使う熟語・構文。項目が多い形（being に対する be など）は畳んでおき、押すと開く。 */
-function FormPhraseGroup({ group }) {
+function FormPhraseGroup({ group, navigateTo, returnTo }) {
   const { form, phrases, collapsed } = group
   const [open, setOpen] = useState(!collapsed)
   const label = `${form.word}（${FORM_POS_LABELS[form.pos]}）を含む熟語・構文`
@@ -309,7 +339,7 @@ function FormPhraseGroup({ group }) {
       ) : (
         <PhraseListHeading label={label} count={phrases.length} />
       )}
-      {open && <PhraseList phrases={phrases} />}
+      {open && <PhraseCardList phrases={phrases} navigateTo={navigateTo} returnTo={returnTo} />}
     </div>
   )
 }
@@ -318,18 +348,18 @@ function FormPhraseGroup({ group }) {
  * その語を含む熟語・構文を省略せず全部と、ほかの品詞の形を使う熟語・構文（decide に対する make a decision）。
  * 暗記カードの裏と辞書ページで同じ中身を出す。groups は lib/wordPhrases.js の phraseGroupsForWord。
  */
-export function WordPhraseSection({ word, groups }) {
+export function WordPhraseSection({ word, groups, navigateTo = null, returnTo = null }) {
   if (!groups.all.length && !groups.viaForms.length) return null
   return (
     <div className="space-y-4">
       {groups.all.length > 0 && (
         <div data-word-phrases>
           <PhraseListHeading label={`${word.word} を含む熟語・構文`} count={groups.all.length} />
-          <PhraseList phrases={groups.all} />
+          <PhraseCardList phrases={groups.all} navigateTo={navigateTo} returnTo={returnTo} />
         </div>
       )}
       {groups.viaForms.map((group) => (
-        <FormPhraseGroup key={group.form.word} group={group} />
+        <FormPhraseGroup key={group.form.word} group={group} navigateTo={navigateTo} returnTo={returnTo} />
       ))}
     </div>
   )

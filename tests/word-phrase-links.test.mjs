@@ -22,7 +22,7 @@ test('辞書ページにも、暗記カードの裏と同じ熟語・構文の�
   for (const screen of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx']) {
     const source = read(screen)
     assert.match(source, /phraseGroupsForWord\(word\)/, screen)
-    assert.match(source, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\} \/>/, screen)
+    assert.match(source, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\}[ />]/, screen)
   }
   const component = read('src/components/WordRelations.jsx')
   assert.match(component, /export function WordPhraseSection/)

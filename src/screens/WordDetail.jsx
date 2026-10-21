@@ -220,7 +220,7 @@ export function WordDetailScreen() {
           {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0 || relations.usagePartners.length > 0) && (
             <Card className="space-y-3 p-4">
               <SynonymSection items={relations.synonyms} onWord={openWord} />
-              <IdiomEquivalentSection phrases={relations.idioms} />
+              <IdiomEquivalentSection phrases={relations.idioms} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
               <AntonymSection items={relations.antonyms} onWord={openWord} />
               <UsagePartnerSection items={relations.usagePartners} onWord={openWord} />
             </Card>
@@ -236,7 +236,7 @@ export function WordDetailScreen() {
           {/* その語を含む熟語・構文と、ほかの品詞の形を使う熟語・構文。暗記カードの裏と同じ中身。 */}
           {(relatedPhrases.all.length > 0 || relatedPhrases.viaForms.length > 0) && (
             <Card className="p-4">
-              <WordPhraseSection word={word} groups={relatedPhrases} />
+              <WordPhraseSection word={word} groups={relatedPhrases} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
             </Card>
           )}
 

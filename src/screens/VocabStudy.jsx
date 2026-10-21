@@ -574,7 +574,7 @@ export function VocabStudyScreen() {
               {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0 || relations.usagePartners.length > 0) && (
                 <div className="space-y-3 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
                   <SynonymSection items={relations.synonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
-                  <IdiomEquivalentSection phrases={relations.idioms} />
+                  <IdiomEquivalentSection phrases={relations.idioms} navigateTo={saveBeforeReference} returnTo={{ screen: 'vocabStudy', params }} />
                   <AntonymSection items={relations.antonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                   <UsagePartnerSection items={relations.usagePartners} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
@@ -597,7 +597,7 @@ export function VocabStudyScreen() {
               {/* その語を含む熟語・構文と、ほかの品詞の形を使う熟語・構文。辞書ページと同じ中身。 */}
               {(relatedPhrases.all.length > 0 || relatedPhrases.viaForms.length > 0) && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-sky-100">
-                  <WordPhraseSection word={word} groups={relatedPhrases} />
+                  <WordPhraseSection word={word} groups={relatedPhrases} navigateTo={saveBeforeReference} returnTo={{ screen: 'vocabStudy', params }} />
                 </div>
               )}
 

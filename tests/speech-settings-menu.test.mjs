@@ -520,8 +520,10 @@ test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由
 
   // 2026-09-29、名作の文を押したときの一文の解説（components/LiteratureSentenceSheet.jsx）で1つ増えた。
   // 2026-09-30、自作カードの一覧のカード（英単語の発音ボタン）は画面から部品（components/CustomCardItems.jsx）へ移った。
+  // 2026-10-21、熟語・構文の一覧の詳細シートを部品（components/PhraseDetailSheet.jsx）へ移し、単語の熟語・構文カードと共有したので画面は 20 から 19。
   assert.equal(speechUi.length, 32)
-  assert.equal(screenCount, 20)
+  assert.equal(screenCount, 19)
+  assert.ok(speechUi.some(({ path }) => path === 'components/PhraseDetailSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/CustomCardItems.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureSentenceSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))

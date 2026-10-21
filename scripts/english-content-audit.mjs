@@ -522,7 +522,9 @@ const sourceChecks = [
   ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /grammarRuleExplanationFor\(item\)/, /patternExamples/]],
   ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<ChoiceExplanations/, /\{item\.origin\}/, /SyntaxFamilyGuide/]],
   ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
-  ['Phrases.jsx', [/SyntaxFamilyGuide/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],
+  // 熟語・構文の一覧の詳細は、単語の熟語・構文カードと共有のシート（components/PhraseDetailSheet.jsx）で出す。
+  ['Phrases.jsx', [/<PhraseDetailSheet/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],
+  ['components/PhraseDetailSheet.jsx', [/<SyntaxFamilyGuide item=\{phrase\}/, /<IdiomFormGuide item=\{phrase\}/]],
   ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
   ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /listeningChoiceNoteFor/]],
   ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /dictationExplanationFor/]],

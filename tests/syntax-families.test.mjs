@@ -113,7 +113,7 @@ test('haveの使役カードからmake・let・get・help・知覚・受動・�
 
 test('一覧・暗記・テストの全構文導線でファミリー解説を直接表示する', () => {
   const files = [
-    ['Phrases.jsx', [/SyntaxFamilyGuide/, /data-syntax-family-filter/, /syntaxFamilySearchText/]],
+    ['Phrases.jsx', [/PhraseDetailSheet/, /data-syntax-family-filter/, /syntaxFamilySearchText/]],
     ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
     ['PhraseQuiz.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
     ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
@@ -123,6 +123,9 @@ test('一覧・暗記・テストの全構文導線でファミリー解説を�
     const source = readFileSync(new URL(`../src/screens/${filename}`, import.meta.url), 'utf8')
     for (const pattern of patterns) assert.match(source, pattern, filename)
   }
+
+  // 一覧の詳細は共有のシートが出す。
+  assert.match(readFileSync(new URL('../src/components/PhraseDetailSheet.jsx', import.meta.url), 'utf8'), /<SyntaxFamilyGuide item=\{phrase\}/)
 
   const component = readFileSync(
     new URL('../src/components/SyntaxFamilyGuide.jsx', import.meta.url),
