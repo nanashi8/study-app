@@ -129,14 +129,21 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-21、熟語・構文の詳細シートを部品（components/PhraseDetailSheet.jsx）に切り出し、単語の熟語・構文カードに級と「説明」を足したので、
   // 学習者画面が 353 から 354、ソース全体が 833 から 834 ファイルになり、学習者画面の日本語が 18359 から 18358（重複なし 13687 から 13688）に、
   // ソース全体の日本語が 237164 から 237163 になった（requests/2026-10-21-word-phrase-cards.json）。
+  // 2026-10-22、数学を手で計算せずに方針を選んで解く形にした。画面・部品・lib は、穴埋めと数字キーの部品
+  // （src/components/MathFillIn.jsx・MathAnswerPad.jsx）を外し、方針の段の部品（src/components/MathExamApproach.jsx・
+  // src/lib/mathExamApproach.js）を足して 354 のまま。ソース全体は、方針の段のデータ（src/data/math-exam-approach.js と
+  // その9ファイル・src/data/math-guided-approach.js とその5ファイル）を足し、穴埋め・3択の説明の台帳
+  // （src/data/math-fill-notes.js・math-choice-notes.js）を外して 834 から 848 ファイルになった。学習者画面の日本語は
+  // 解答欄・目安時間・答え方の決まりの文を消し、誘導問題の「わからない」を共通の部品にして 18358 から 18343（重複なし 13688 から 13685）に、ソース全体の日本語は
+  // 方針の段・考え方・手がかり・選択肢の説明を足して 237163 から 244924 になった（requests/2026-10-22-math-no-hand-calc.json）。
   assert.equal(result.learnerFiles, 354)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
-  assert.equal(result.learnerJapaneseEntries, 18358)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13688)
-  assert.equal(result.sourceFiles, 834)
-  assert.equal(result.sourceJapaneseEntries, 237163)
+  assert.equal(result.learnerJapaneseEntries, 18343)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13685)
+  assert.equal(result.sourceFiles, 848)
+  assert.equal(result.sourceJapaneseEntries, 244924)
   assert.equal(result.issues.length, 0)
 })
 

@@ -54,15 +54,11 @@ export const MATH_EXAM_JUNIOR1 = {
   problems: [
     // ── 正負の数 ──
     {
-      id: 'mx-pn-01', unit: 'pn', level: 'basic', pattern: 'calc', minutes: 2,
+      id: 'mx-pn-01', unit: 'pn', level: 'basic', pattern: 'calc',
       text: '次の計算をしなさい。',
       math: '7-(-4)\\times(-3)',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: -5 },
-      hints: [
-        'かけ算を、たし算・ひき算より先に計算する。',
-        '$(-4)\\times(-3)$ は負の数どうしのかけ算なので、符号は $+$。',
-      ],
       solution: [
         { text: 'かけ算を先に計算する。', math: '(-4)\\times(-3)=12' },
         { text: 'ひき算をする。', math: '7-12=-5' },
@@ -71,15 +67,11 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$7-(-4)$ を先に計算して $11\\times(-3)$ としない。かけ算が先。',
     },
     {
-      id: 'mx-pn-02', unit: 'pn', level: 'basic', pattern: 'power', minutes: 2,
+      id: 'mx-pn-02', unit: 'pn', level: 'basic', pattern: 'power',
       text: '次の計算をしなさい。',
       math: '-3^2+(-2)^3',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: -17 },
-      hints: [
-        '$-3^2$ は「$3^2$ に $-$ をつけたもの」、$(-2)^3$ は「$-2$ を3回かけたもの」。',
-        'それぞれの値を出してから足す。',
-      ],
       solution: [
         { text: '$-3^2$ は $3$ だけを2乗して $-$ をつける。', math: '-3^2=-(3\\times3)=-9' },
         { text: '$(-2)^3$ は $-2$ を3回かける。負の数を奇数回かけるので負。', math: '(-2)^3=-8' },
@@ -89,15 +81,11 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$-3^2=9$ としない。かっこがないので $3$ だけが2乗され、$-9$ になる。',
     },
     {
-      id: 'mx-pn-03', unit: 'pn', level: 'basic', pattern: 'calc', minutes: 3,
+      id: 'mx-pn-03', unit: 'pn', level: 'basic', pattern: 'calc',
       text: '次の計算をしなさい。',
       math: '\\dfrac{2}{3}-\\dfrac{5}{6}\\div\\left(-\\dfrac{5}{2}\\right)',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 1 },
-      hints: [
-        'わり算を先に計算する。わり算は、わる数の逆数をかけるかけ算に直す。',
-        '$-\\dfrac{5}{2}$ の逆数は $-\\dfrac{2}{5}$。',
-      ],
       solution: [
         { text: 'わり算を逆数のかけ算に直す。', math: '\\dfrac{5}{6}\\div\\left(-\\dfrac{5}{2}\\right)=\\dfrac{5}{6}\\times\\left(-\\dfrac{2}{5}\\right)=-\\dfrac{1}{3}' },
         { text: 'ひき算をする。$-\\left(-\\dfrac13\\right)$ は $+\\dfrac13$。', math: '\\dfrac{2}{3}-\\left(-\\dfrac{1}{3}\\right)=\\dfrac{2}{3}+\\dfrac{1}{3}=1' },
@@ -106,14 +94,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '左から順に $\\dfrac23-\\dfrac56$ を先に計算しない。わり算が先。',
     },
     {
-      id: 'mx-pn-04', unit: 'pn', level: 'basic', pattern: 'prime', minutes: 2,
+      id: 'mx-pn-04', unit: 'pn', level: 'basic', pattern: 'prime',
       text: '$252$ を素因数分解しなさい。',
       parts: [{ answer: '252=2^{[ア]}\\times3^{[イ]}\\times[ウ]' }],
       boxes: { ア: 2, イ: 2, ウ: 7 },
-      hints: [
-        '小さい素数 $2,3,5,7,\\ldots$ で、わり切れなくなるまで順にわっていく。',
-        '$252$ を $2$ でわれるだけわると、残りは奇数になる。',
-      ],
       solution: [
         { text: '$2$ でわれるだけわる。', math: '252=2\\times126=2\\times2\\times63' },
         { text: '$63$ を $3$ でわれるだけわる。', math: '63=3\\times21=3\\times3\\times7' },
@@ -123,7 +107,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$9$ や $21$ で止めない。$9=3^2$、$21=3\\times7$ のように素数になるまで分ける。',
     },
     {
-      id: 'mx-pn-05', unit: 'pn', level: 'standard', pattern: 'apply', minutes: 4,
+      id: 'mx-pn-05', unit: 'pn', level: 'standard', pattern: 'apply',
       text: 'A〜Eの5人の数学のテストの得点を、$70$ 点を基準として、基準より高い場合を正の数、低い場合を負の数で表すと、次の表のようになった。',
       math: '\\begin{array}{c|ccccc}\\text{生徒}&\\text{A}&\\text{B}&\\text{C}&\\text{D}&\\text{E}\\\\\\hline\\text{基準との差（点）}&+8&-5&+12&-3&+3\\end{array}',
       parts: [
@@ -131,10 +115,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '得点がいちばん高い生徒と、いちばん低い生徒の得点の差は何点か。', answer: '[イ]\\ \\text{点}' },
       ],
       boxes: { ア: 73, イ: 17 },
-      hints: [
-        '平均は「基準＋基準との差の平均」で求められる。5人の得点をそれぞれ出さなくてよい。',
-        'いちばん高い生徒といちばん低い生徒の得点の差は、基準との差どうしの差で求められる。',
-      ],
       solution: [
         { text: '基準との差の合計を求める。', math: '(+8)+(-5)+(+12)+(-3)+(+3)=15' },
         { text: '差の平均を基準に足す。', math: '70+15\\div5=70+3=73' },
@@ -144,17 +124,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '得点の差を $12-5=7$ としない。Bは基準より $5$ 点低いので、差は $12+5$。',
     },
     {
-      id: 'mx-pn-06', unit: 'pn', level: 'standard', pattern: 'prime', minutes: 4,
+      id: 'mx-pn-06', unit: 'pn', level: 'standard', pattern: 'prime',
       text: '$180$ にできるだけ小さい自然数 $n$ をかけて、その積がある自然数の2乗になるようにしたい。',
       parts: [
         { q: '$n$ の値を求めなさい。', answer: 'n=[ア]' },
         { q: 'そのときの積は、どんな自然数の2乗になるか。', answer: '[イ]^2' },
       ],
       boxes: { ア: 5, イ: 30 },
-      hints: [
-        'まず $180$ を素因数分解する。',
-        'ある自然数の2乗を素因数分解すると、どの素数の指数も偶数になっている。',
-      ],
       solution: [
         { text: '$180$ を素因数分解する。', math: '180=2^2\\times3^2\\times5' },
         { text: '指数が奇数なのは $5$ だけ。$5$ をかければ、どの指数も偶数になる。', math: '180\\times5=2^2\\times3^2\\times5^2' },
@@ -164,15 +140,11 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$2$ や $3$ をかけても2乗にはならない。指数が奇数の素因数を探してかける。',
     },
     {
-      id: 'mx-pn-07', unit: 'pn', level: 'standard', pattern: 'power', minutes: 3,
+      id: 'mx-pn-07', unit: 'pn', level: 'standard', pattern: 'power',
       text: '次の計算をしなさい。',
       math: '(-2)^3\\times\\left(-\\dfrac{3}{4}\\right)^2\\div\\left(-\\dfrac{3}{2}\\right)',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 3 },
-      hints: [
-        'まず累乗を計算し、わり算を逆数のかけ算に直す。',
-        'かけ算だけの式になったら、負の数がいくつあるかで先に符号を決める。',
-      ],
       solution: [
         { text: '累乗を計算する。', math: '(-2)^3=-8,\\quad\\left(-\\dfrac{3}{4}\\right)^2=\\dfrac{9}{16}' },
         { text: 'わり算を逆数のかけ算に直す。負の数が2つなので、符号は $+$。', math: '(-8)\\times\\dfrac{9}{16}\\times\\left(-\\dfrac{2}{3}\\right)=+\\dfrac{8\\times9\\times2}{16\\times3}' },
@@ -182,7 +154,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$\\left(-\\dfrac34\\right)^2$ を $-\\dfrac{9}{16}$ としない。2乗すると正になる。',
     },
     {
-      id: 'mx-pn-08', unit: 'pn', level: 'standard', pattern: 'sign', minutes: 3,
+      id: 'mx-pn-08', unit: 'pn', level: 'standard', pattern: 'sign',
       text: '$a$ が負の数、$b$ が正の数のとき、次の⓪〜③の式のうち、値がいつも負の数になるものを1つ選びなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 1 },
@@ -197,10 +169,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        '$a=-2,\\ b=3$ のように、条件に合う数を入れて確かめてみる。',
-        '「いつも」負かを調べるので、$a$ と $b$ の絶対値の大小を入れかえても負のままかを考える。',
-      ],
       solution: [
         { text: '$a+b$ は、$a=-1,\\ b=5$ で $4$、$a=-5,\\ b=1$ で $-4$。符号が決まらない。' },
         { text: '$a-b=a+(-b)$ は、負の数 $a$ と負の数 $-b$ の和なので、いつも負。' },
@@ -212,15 +180,11 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── 文字と式 ──
     {
-      id: 'mx-expr1-01', unit: 'expr1', level: 'basic', pattern: 'simplify', minutes: 2,
+      id: 'mx-expr1-01', unit: 'expr1', level: 'basic', pattern: 'simplify',
       text: '次の計算をしなさい。',
       math: '3(2x-5)-2(4x-7)',
       parts: [{ answer: '[ア]x-[イ]' }],
       boxes: { ア: -2, イ: 1 },
-      hints: [
-        '分配法則でかっこをはずす。$-2$ は、かっこの中の両方の項にかける。',
-        '$x$ の項どうし、数の項どうしをまとめる。',
-      ],
       solution: [
         { text: 'かっこをはずす。', math: '6x-15-8x+14' },
         { text: '同類項をまとめる。', math: '(6-8)x+(-15+14)=-2x-1' },
@@ -229,15 +193,11 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$-2(4x-7)$ を $-8x-14$ としない。$(-2)\\times(-7)=+14$。',
     },
     {
-      id: 'mx-expr1-02', unit: 'expr1', level: 'basic', pattern: 'simplify', minutes: 3,
+      id: 'mx-expr1-02', unit: 'expr1', level: 'basic', pattern: 'simplify',
       text: '次の計算をしなさい。',
       math: '\\dfrac{x+3}{2}-\\dfrac{2x-1}{3}',
       parts: [{ answer: '\\dfrac{-x+[ア]}{[イ]}' }],
       boxes: { ア: 11, イ: 6 },
-      hints: [
-        '分母を最小公倍数にそろえて（通分して）、分子どうしを計算する。',
-        'ひく方の分数の分子は、かっこでくくったまま引く。',
-      ],
       solution: [
         { text: '分母を $6$ にそろえる。', math: '\\dfrac{3(x+3)}{6}-\\dfrac{2(2x-1)}{6}' },
         { text: '分子のかっこをはずす。ひく方の符号に注意。', math: '\\dfrac{3x+9-4x+2}{6}' },
@@ -247,14 +207,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: 'ひく方の分子の $-1$ の符号を変え忘れて $-2$ としない。$-2(2x-1)=-4x+2$。',
     },
     {
-      id: 'mx-expr1-03', unit: 'expr1', level: 'basic', pattern: 'value', minutes: 2,
+      id: 'mx-expr1-03', unit: 'expr1', level: 'basic', pattern: 'value',
       text: '$x=-3$ のとき、$2x^2-5x$ の値を求めなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 33 },
-      hints: [
-        '負の数を代入するときは、かっこをつけて代入する。',
-        '$x^2$ には $(-3)^2$ を代入する。',
-      ],
       solution: [
         { text: 'かっこをつけて代入する。', math: '2\\times(-3)^2-5\\times(-3)' },
         { text: '計算する。', math: '2\\times9+15=33' },
@@ -263,14 +219,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$2\\times(-3)^2$ を $2\\times(-9)$ としない。$(-3)^2=9$。',
     },
     {
-      id: 'mx-expr1-04', unit: 'expr1', level: 'basic', pattern: 'model', minutes: 2,
+      id: 'mx-expr1-04', unit: 'expr1', level: 'basic', pattern: 'model',
       text: '1個 $a$ 円のパンを3個と、1本 $b$ 円のジュースを2本買い、$1000$ 円札で支払った。おつりを、$a,\\ b$ を使った式で表しなさい。',
       parts: [{ answer: '[ア]-[イ]a-[ウ]b\\ \\text{（円）}' }],
       boxes: { ア: 1000, イ: 3, ウ: 2 },
-      hints: [
-        '代金の合計を、パンとジュースに分けて式にする。',
-        'おつりは「出したお金−代金の合計」。',
-      ],
       solution: [
         { text: '代金の合計を式にする。', math: 'a\\times3+b\\times2=3a+2b' },
         { text: 'おつりは、出したお金から代金を引く。', math: '1000-(3a+2b)=1000-3a-2b' },
@@ -279,14 +231,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: 'かっこをはずすとき、$-2b$ の符号を $+$ にしない。代金全体を引くので両方とも $-$。',
     },
     {
-      id: 'mx-expr1-05', unit: 'expr1', level: 'standard', pattern: 'model', minutes: 3,
+      id: 'mx-expr1-05', unit: 'expr1', level: 'standard', pattern: 'model',
       text: '家から駅までの $x$ km を時速 $4$ km で歩き、駅から学校までの $y$ km を時速 $12$ km のバスで行った。かかった時間の合計は何分か。$x,\\ y$ を使った式で表しなさい。',
       parts: [{ answer: '[ア]x+[イ]y\\ \\text{（分）}' }],
       boxes: { ア: 15, イ: 5 },
-      hints: [
-        '時間は「道のり÷速さ」。まず「時間」の単位で表す。',
-        '1時間は $60$ 分。問われているのは「分」で表した時間。',
-      ],
       solution: [
         { text: '時間で表す。', math: '\\dfrac{x}{4}+\\dfrac{y}{12}\\ \\text{（時間）}' },
         { text: '$60$ をかけて分に直す。', math: '60\\times\\dfrac{x}{4}+60\\times\\dfrac{y}{12}=15x+5y' },
@@ -295,7 +243,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$\\dfrac{x}{4}+\\dfrac{y}{12}$ のままで答えない。問われているのは「分」。',
     },
     {
-      id: 'mx-expr1-06', unit: 'expr1', level: 'standard', pattern: 'relation', minutes: 3,
+      id: 'mx-expr1-06', unit: 'expr1', level: 'standard', pattern: 'relation',
       text: '「ある数 $a$ の3倍から $5$ をひいた数は、$b$ の2倍より大きい」という数量の関係を表した不等式を、⓪〜③から1つ選びなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 0 },
@@ -310,10 +258,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        'ことばを前から順に式にする。「3倍から $5$ をひく」は、先に3倍する。',
-        '「より大きい」が、等しい場合をふくむかどうかを考える。',
-      ],
       solution: [
         { text: '「$a$ の3倍から $5$ をひいた数」は $3a-5$、「$b$ の2倍」は $2b$。' },
         { text: '「より大きい」は $>$（等しい場合はふくまない）。', math: '3a-5>2b' },
@@ -322,14 +266,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '「3倍から $5$ をひく」を $3(a-5)$ としない。かっこをつけると「$5$ をひいてから3倍」になる。',
     },
     {
-      id: 'mx-expr1-07', unit: 'expr1', level: 'standard', pattern: 'value', minutes: 3,
+      id: 'mx-expr1-07', unit: 'expr1', level: 'standard', pattern: 'value',
       text: '$a=\\dfrac{1}{5},\\ b=-\\dfrac{3}{2}$ のとき、$4(2a-b)-3(a-2b)$ の値を求めなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: -2 },
-      hints: [
-        'そのまま代入すると分数の計算が多くなる。先に式を簡単にする。',
-        'かっこをはずして、$a$ の項と $b$ の項をそれぞれまとめる。',
-      ],
       solution: [
         { text: '式を簡単にする。', math: '8a-4b-3a+6b=5a+2b' },
         { text: '代入する。', math: '5\\times\\dfrac{1}{5}+2\\times\\left(-\\dfrac{3}{2}\\right)=1-3=-2' },
@@ -338,7 +278,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$-3(a-2b)$ の $-2b$ に $-3$ をかけると $+6b$。符号を落とさない。',
     },
     {
-      id: 'mx-expr1-08', unit: 'expr1', level: 'standard', pattern: 'rule', minutes: 4,
+      id: 'mx-expr1-08', unit: 'expr1', level: 'standard', pattern: 'rule',
       text: '図のように、同じ長さの棒を並べて、正方形を横に1列につなげていく。',
       figure: {
         label: '同じ長さの棒で、正方形を横に3個つなげた図',
@@ -356,10 +296,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '正方形を $20$ 個つくるのに必要な棒は何本か。', answer: '[ウ]\\ \\text{本}' },
       ],
       boxes: { ア: 3, イ: 1, ウ: 61 },
-      hints: [
-        '正方形が1個・2個・3個のときの本数を数えて、増え方を見る。',
-        '左はしの1本を別にすると、正方形が1個増えるたびに同じ本数ずつ増える。',
-      ],
       solution: [
         { text: '正方形1個で $4$ 本、2個で $7$ 本、3個で $10$ 本。1個増えるごとに $3$ 本ずつ増える。' },
         { text: '左はしの1本と、正方形1個ごとの3本と考える。', math: '1+3n=3n+1' },
@@ -371,14 +307,10 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── 一次方程式 ──
     {
-      id: 'mx-eq1-01', unit: 'eq1', level: 'basic', pattern: 'solve', minutes: 2,
+      id: 'mx-eq1-01', unit: 'eq1', level: 'basic', pattern: 'solve',
       text: '方程式 $5x-7=2x+8$ を解きなさい。',
       parts: [{ answer: 'x=[ア]' }],
       boxes: { ア: 5 },
-      hints: [
-        '$x$ をふくむ項を左辺に、数の項を右辺に移項する。',
-        '移項すると、項の符号が変わる。',
-      ],
       solution: [
         { text: '移項する。', math: '5x-2x=8+7' },
         { text: 'まとめて、両辺を $x$ の係数でわる。', math: '3x=15,\\quad x=5' },
@@ -387,14 +319,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$-7$ を右辺へ移すときに $-7$ のままにしない。移項すると $+7$。',
     },
     {
-      id: 'mx-eq1-02', unit: 'eq1', level: 'basic', pattern: 'solve', minutes: 3,
+      id: 'mx-eq1-02', unit: 'eq1', level: 'basic', pattern: 'solve',
       text: '方程式 $\\dfrac{x-1}{3}=\\dfrac{x+2}{4}$ を解きなさい。',
       parts: [{ answer: 'x=[ア]' }],
       boxes: { ア: 10 },
-      hints: [
-        '両辺に分母の最小公倍数をかけて、分母をはらう。',
-        '分子はかっこでくくってから、かけた数をかける。',
-      ],
       solution: [
         { text: '両辺に $12$ をかける。', math: '4(x-1)=3(x+2)' },
         { text: 'かっこをはずして移項する。', math: '4x-4=3x+6,\\quad x=10' },
@@ -403,14 +331,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '分母をはらうとき、分子にかっこをつけずに $4x-1$ としない。$4(x-1)=4x-4$。',
     },
     {
-      id: 'mx-eq1-03', unit: 'eq1', level: 'basic', pattern: 'ratio', minutes: 2,
+      id: 'mx-eq1-03', unit: 'eq1', level: 'basic', pattern: 'ratio',
       text: '比例式 $(x+2):6=5:3$ を満たす $x$ の値を求めなさい。',
       parts: [{ answer: 'x=[ア]' }],
       boxes: { ア: 8 },
-      hints: [
-        '比例式 $a:b=c:d$ ならば $ad=bc$（外側の積＝内側の積）。',
-        '$(x+2)$ はひとまとまりとして、かっこのままかける。',
-      ],
       solution: [
         { text: '外側の積と内側の積を等しくおく。', math: '3(x+2)=6\\times5' },
         { text: '解く。', math: '3x+6=30,\\quad 3x=24,\\quad x=8' },
@@ -419,14 +343,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$3(x+2)$ を $3x+2$ としない。かっこの中の両方の項に $3$ をかける。',
     },
     {
-      id: 'mx-eq1-04', unit: 'eq1', level: 'basic', pattern: 'param', minutes: 3,
+      id: 'mx-eq1-04', unit: 'eq1', level: 'basic', pattern: 'param',
       text: '$x$ についての方程式 $ax-7=2x+a$ の解が $x=3$ であるとき、$a$ の値を求めなさい。',
       parts: [{ answer: 'a=\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 13, イ: 2 },
-      hints: [
-        '解が $x=3$ なので、方程式の $x$ に $3$ を代入すると等式が成り立つ。',
-        '代入したあとは、$a$ についての方程式として解く。',
-      ],
       solution: [
         { text: '$x=3$ を代入する。', math: '3a-7=6+a' },
         { text: '$a$ について解く。', math: '3a-a=6+7,\\quad 2a=13,\\quad a=\\dfrac{13}{2}' },
@@ -435,17 +355,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$x$ と $a$ を取りちがえない。代入するのは $x$ で、求めるのは $a$。',
     },
     {
-      id: 'mx-eq1-05', unit: 'eq1', level: 'standard', pattern: 'word', minutes: 5,
+      id: 'mx-eq1-05', unit: 'eq1', level: 'standard', pattern: 'word',
       text: '何人かの生徒にノートを配る。1人に3冊ずつ配ると8冊余り、1人に4冊ずつ配ると5冊たりない。',
       parts: [
         { q: '生徒の人数を求めなさい。', answer: '[ア]\\ \\text{人}' },
         { q: 'ノートの冊数を求めなさい。', answer: '[イ]\\ \\text{冊}' },
       ],
       boxes: { ア: 13, イ: 47 },
-      hints: [
-        '生徒の人数を $x$ 人として、ノートの冊数を2通りの式で表す。',
-        '「3冊ずつで8冊余る」なら冊数は $3x+8$。「4冊ずつで5冊たりない」ならどう表せるか。',
-      ],
       solution: [
         { text: 'ノートの冊数を2通りに表して、等しいとおく。', math: '3x+8=4x-5' },
         { text: '解く。', math: 'x=13' },
@@ -455,14 +371,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '「たりない」を $+5$ としない。4冊ずつ配るには5冊たりないので、実際の冊数は $4x-5$。',
     },
     {
-      id: 'mx-eq1-06', unit: 'eq1', level: 'standard', pattern: 'word', minutes: 5,
+      id: 'mx-eq1-06', unit: 'eq1', level: 'standard', pattern: 'word',
       text: '家から公園まで分速 $60$ m で行き、帰りは同じ道を分速 $90$ m で帰ったところ、往復で $50$ 分かかった。家から公園までの道のりは何 m か。',
       parts: [{ answer: '[ア]\\ \\text{m}' }],
       boxes: { ア: 1800 },
-      hints: [
-        '道のりを $x$ m として、行きと帰りにかかった時間をそれぞれ式にする。',
-        '時間＝道のり÷速さ。行きと帰りの時間の和が $50$ 分。',
-      ],
       solution: [
         { text: '時間の和で方程式をつくる。', math: '\\dfrac{x}{60}+\\dfrac{x}{90}=50' },
         { text: '両辺に $180$ をかける。', math: '3x+2x=9000' },
@@ -472,14 +384,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '速さの平均を $75$ m/分として $75\\times50$ を往復の道のりとしない。行きと帰りでかかる時間がちがうので、単純な平均は使えない。',
     },
     {
-      id: 'mx-eq1-07', unit: 'eq1', level: 'standard', pattern: 'word', minutes: 5,
+      id: 'mx-eq1-07', unit: 'eq1', level: 'standard', pattern: 'word',
       text: '$8$ % の食塩水 $200$ g に水を加えて、$5$ % の食塩水にしたい。水を何 g 加えればよいか。',
       parts: [{ answer: '[ア]\\ \\text{g}' }],
       boxes: { ア: 120 },
-      hints: [
-        '水を加えても、ふくまれる食塩の重さは変わらない。',
-        '加える水を $x$ g として、食塩の重さを2通りに表す。',
-      ],
       solution: [
         { text: 'はじめの食塩の重さ。', math: '200\\times\\dfrac{8}{100}=16\\ \\text{(g)}' },
         { text: '水を加えたあとの食塩の重さも $16$ g。', math: '(200+x)\\times\\dfrac{5}{100}=16' },
@@ -489,14 +397,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '水を加えたあとの食塩水の重さを $200$ g のままにしない。水を加えると $200+x$ g。',
     },
     {
-      id: 'mx-eq1-08', unit: 'eq1', level: 'standard', pattern: 'solve', minutes: 3,
+      id: 'mx-eq1-08', unit: 'eq1', level: 'standard', pattern: 'solve',
       text: '方程式 $0.3(x-2)=0.5x+1.4$ を解きなさい。',
       parts: [{ answer: 'x=[ア]' }],
       boxes: { ア: -10 },
-      hints: [
-        '両辺に $10$ をかけて、係数を整数にする。',
-        'かっこの前の $0.3$ にも $10$ をかけるので、左辺は $3(x-2)$ になる。',
-      ],
       solution: [
         { text: '両辺に $10$ をかける。', math: '3(x-2)=5x+14' },
         { text: 'かっこをはずして移項する。', math: '3x-6=5x+14,\\quad -2x=20' },
@@ -508,17 +412,13 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── 比例と反比例 ──
     {
-      id: 'mx-prop-01', unit: 'prop', level: 'basic', pattern: 'formula', minutes: 2,
+      id: 'mx-prop-01', unit: 'prop', level: 'basic', pattern: 'formula',
       text: '$y$ は $x$ に比例し、$x=-4$ のとき $y=12$ である。',
       parts: [
         { q: '$y$ を $x$ の式で表しなさい。', answer: 'y=[ア]x' },
         { q: '$x=6$ のときの $y$ の値を求めなさい。', answer: 'y=[イ]' },
       ],
       boxes: { ア: -3, イ: -18 },
-      hints: [
-        '比例の式は $y=ax$。わかっている $x,\\ y$ の組を代入して $a$ を求める。',
-        '求めた式に $x=6$ を代入する。',
-      ],
       solution: [
         { text: '$y=ax$ に $x=-4,\\ y=12$ を代入する。', math: '12=-4a,\\quad a=-3' },
         { text: '$y=-3x$ に $x=6$ を代入する。', math: 'y=-3\\times6=-18' },
@@ -527,17 +427,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$a=\\dfrac{x}{y}$ と逆にしない。$a=\\dfrac{y}{x}=\\dfrac{12}{-4}$。',
     },
     {
-      id: 'mx-prop-02', unit: 'prop', level: 'basic', pattern: 'formula', minutes: 2,
+      id: 'mx-prop-02', unit: 'prop', level: 'basic', pattern: 'formula',
       text: '$y$ は $x$ に反比例し、$x=3$ のとき $y=-8$ である。',
       parts: [
         { q: '$y$ を $x$ の式で表しなさい。', answer: 'y=\\dfrac{[ア]}{x}' },
         { q: '$x=-6$ のときの $y$ の値を求めなさい。', answer: 'y=[イ]' },
       ],
       boxes: { ア: -24, イ: 4 },
-      hints: [
-        '反比例の式は $y=\\dfrac{a}{x}$。$a=xy$ で求められる。',
-        '求めた式に $x=-6$ を代入する。',
-      ],
       solution: [
         { text: '$a=xy$ を計算する。', math: 'a=3\\times(-8)=-24' },
         { text: '$y=\\dfrac{-24}{x}$ に $x=-6$ を代入する。', math: 'y=\\dfrac{-24}{-6}=4' },
@@ -546,14 +442,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '反比例を $y=ax$ の形で求めない。$xy$ が一定の関係は $y=\\dfrac{a}{x}$。',
     },
     {
-      id: 'mx-prop-03', unit: 'prop', level: 'basic', pattern: 'domain', minutes: 2,
+      id: 'mx-prop-03', unit: 'prop', level: 'basic', pattern: 'domain',
       text: '関数 $y=-2x$ について、$x$ の変域が $-3\\leqq x\\leqq 2$ のとき、$y$ の変域を求めなさい。',
       parts: [{ answer: '[ア]\\leqq y\\leqq[イ]' }],
       boxes: { ア: -4, イ: 6 },
-      hints: [
-        '$x$ の変域の両はしの値を代入して、$y$ の値を求める。',
-        '比例定数が負なので、$x$ が大きいほど $y$ は小さくなる。',
-      ],
       solution: [
         { text: '両はしを代入する。', math: 'x=-3\\ \\text{のとき}\\ y=6,\\quad x=2\\ \\text{のとき}\\ y=-4' },
         { text: '小さい方から並べる。', math: '-4\\leqq y\\leqq 6' },
@@ -562,14 +454,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$x=-3$ のときの値を左に書いて $6\\leqq y\\leqq-4$ としない。比例定数が負だと大小が入れかわる。',
     },
     {
-      id: 'mx-prop-04', unit: 'prop', level: 'basic', pattern: 'graph', minutes: 2,
+      id: 'mx-prop-04', unit: 'prop', level: 'basic', pattern: 'graph',
       text: '比例のグラフが点 $(4,\\ -6)$ を通る。このグラフの式を求めなさい。',
       parts: [{ answer: 'y=\\dfrac{[ア]}{[イ]}x' }],
       boxes: { ア: -3, イ: 2 },
-      hints: [
-        '比例のグラフは原点を通る直線で、式は $y=ax$。',
-        '通る点の座標を代入して $a$ を求める。',
-      ],
       solution: [
         { text: '$y=ax$ に $x=4,\\ y=-6$ を代入する。', math: '-6=4a' },
         { text: '解いて約分する。', math: 'a=-\\dfrac{6}{4}=-\\dfrac{3}{2}' },
@@ -578,17 +466,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$a=-\\dfrac{4}{6}$ と逆にしない。$a=\\dfrac{y}{x}$。',
     },
     {
-      id: 'mx-prop-05', unit: 'prop', level: 'standard', pattern: 'graph', minutes: 4,
+      id: 'mx-prop-05', unit: 'prop', level: 'standard', pattern: 'graph',
       text: '反比例 $y=\\dfrac{a}{x}$ のグラフが点 $(2,\\ 9)$ を通る。',
       parts: [
         { q: '$a$ の値を求めなさい。', answer: 'a=[ア]' },
         { q: 'このグラフ上の点のうち、$x$ 座標と $y$ 座標がともに整数である点は何個あるか。', answer: '[イ]\\ \\text{個}' },
       ],
       boxes: { ア: 18, イ: 12 },
-      hints: [
-        '$a=xy$ で求められる。',
-        '$x$ も $y$ も整数になるのは、$x$ が $a$ の約数（負の数もふくむ）のとき。',
-      ],
       solution: [
         { text: '$a=xy$ を計算する。', math: 'a=2\\times9=18' },
         { text: '$xy=18$ で $x$ が整数なら、$x$ は $18$ の約数。正の約数は $1,2,3,6,9,18$ の6個。' },
@@ -598,7 +482,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '正の約数の6個だけを数えない。$x=-1,\\ y=-18$ のような点もグラフ上にある。',
     },
     {
-      id: 'mx-prop-06', unit: 'prop', level: 'standard', pattern: 'apply', minutes: 5,
+      id: 'mx-prop-06', unit: 'prop', level: 'standard', pattern: 'apply',
       text: '図のように、比例 $y=2x$ のグラフと反比例 $y=\\dfrac{a}{x}$ のグラフが点Aで交わっていて、点Aの $x$ 座標は $3$ である。点Bは反比例のグラフ上の点で、$x$ 座標は $6$ である。原点をOとする。',
       figure: {
         label: '比例 y=2x の直線と、反比例のグラフが点Aで交わり、反比例のグラフ上に点Bがある図。三角形OABに色がついている',
@@ -618,10 +502,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '$\\triangle$OAB の面積を求めなさい。', answer: '\\dfrac{[イ]}{[ウ]}' },
       ],
       boxes: { ア: 18, イ: 27, ウ: 2 },
-      hints: [
-        '点Aは $y=2x$ 上にあるので、まずAの $y$ 座標がわかる。',
-        '三角形の面積は、各点から $x$ 軸へ垂線をひいてできる三角形や台形を足したり引いたりして求める。',
-      ],
       solution: [
         { text: 'Aの $y$ 座標は $2\\times3=6$。A$(3,\\ 6)$ が $y=\\dfrac{a}{x}$ 上にあるので、', math: 'a=3\\times6=18' },
         { text: 'Bの $y$ 座標は $\\dfrac{18}{6}=3$ で、B$(6,\\ 3)$。' },
@@ -631,7 +511,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '反比例の比例定数を $a=\\dfrac{y}{x}$ としない。反比例では $a=xy$。',
     },
     {
-      id: 'mx-prop-07', unit: 'prop', level: 'standard', pattern: 'apply', minutes: 5,
+      id: 'mx-prop-07', unit: 'prop', level: 'standard', pattern: 'apply',
       text: '図のような長方形ABCDで、AB$=6$ cm、BC$=10$ cm である。点PはBを出発して、辺BC上をCまで毎秒 $1$ cm の速さで動く。Pが出発してから $x$ 秒後の $\\triangle$ABP の面積を $y$ cm$^2$ とする。',
       figure: {
         label: '縦6cm、横10cmの長方形ABCDで、辺BC上に点Pがあり、三角形ABPに色がついている図',
@@ -647,10 +527,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '$x$ の変域が $0\\leqq x\\leqq 10$ のとき、$y$ の変域を求めなさい。', answer: '[イ]\\leqq y\\leqq[ウ]' },
       ],
       boxes: { ア: 3, イ: 0, ウ: 30 },
-      hints: [
-        '$x$ 秒後、BPの長さは $x$ cm。$\\triangle$ABP の底辺をBP、高さをABと考える。',
-        '$y$ の変域は、$x$ の変域の両はしを代入して求める。',
-      ],
       solution: [
         { text: '底辺BP $=x$、高さAB $=6$ の三角形。', math: 'y=\\dfrac{1}{2}\\times x\\times6=3x' },
         { text: '$x=0$ のとき $y=0$、$x=10$ のとき $y=30$。', math: '0\\leqq y\\leqq30' },
@@ -659,17 +535,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '底辺をBC（$10$ cm）のままにしない。三角形の底辺はBPで、$x$ とともに変わる。',
     },
     {
-      id: 'mx-prop-08', unit: 'prop', level: 'standard', pattern: 'formula', minutes: 4,
+      id: 'mx-prop-08', unit: 'prop', level: 'standard', pattern: 'formula',
       text: '歯の数が $24$ の歯車Aが毎分 $15$ 回転している。歯車Aにかみ合っている歯車Bの歯の数を $x$、毎分の回転数を $y$ とする。',
       parts: [
         { q: '$y$ を $x$ の式で表しなさい。', answer: 'y=\\dfrac{[ア]}{x}' },
         { q: '歯車Bの歯の数が $40$ のとき、歯車Bは毎分何回転するか。', answer: '[イ]\\ \\text{回転}' },
       ],
       boxes: { ア: 360, イ: 9 },
-      hints: [
-        'かみ合う2つの歯車では、1分間にかみ合って進む歯の数が等しい。',
-        '1分間に進む歯の数は「歯の数×回転数」。',
-      ],
       solution: [
         { text: '1分間に進む歯の数は等しい。', math: 'xy=24\\times15=360' },
         { text: '$y$ について解く。', math: 'y=\\dfrac{360}{x}' },
@@ -681,7 +553,7 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── 平面図形 ──
     {
-      id: 'mx-plane1-01', unit: 'plane1', level: 'basic', pattern: 'sector', minutes: 3,
+      id: 'mx-plane1-01', unit: 'plane1', level: 'basic', pattern: 'sector',
       text: '図のような、半径 $6$ cm、中心角 $120^\\circ$ のおうぎ形の弧の長さと面積を求めなさい。ただし、円周率は $\\pi$ とする。',
       figure: {
         label: '半径6cm、中心角120度のおうぎ形OAB',
@@ -698,10 +570,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '面積', answer: '[イ]\\pi\\ \\text{cm}^2' },
       ],
       boxes: { ア: 4, イ: 12 },
-      hints: [
-        'おうぎ形は、同じ半径の円の $\\dfrac{\\text{中心角}}{360}$ の大きさ。',
-        '円周は $2\\pi r$、円の面積は $\\pi r^2$。',
-      ],
       solution: [
         { text: '中心角の割合は $\\dfrac{120}{360}=\\dfrac13$。' },
         { text: '弧の長さ。', math: '2\\pi\\times6\\times\\dfrac{1}{3}=4\\pi' },
@@ -711,14 +579,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '弧の長さに $\\pi r^2$ を使わない。長さは円周 $2\\pi r$ から、面積は $\\pi r^2$ から。',
     },
     {
-      id: 'mx-plane1-02', unit: 'plane1', level: 'basic', pattern: 'sector', minutes: 3,
+      id: 'mx-plane1-02', unit: 'plane1', level: 'basic', pattern: 'sector',
       text: '半径 $9$ cm、弧の長さ $6\\pi$ cm のおうぎ形の中心角を求めなさい。',
       parts: [{ answer: '[ア]^\\circ' }],
       boxes: { ア: 120 },
-      hints: [
-        '中心角を $x^\\circ$ として、弧の長さの式をつくる。',
-        '弧の長さ＝$2\\pi r\\times\\dfrac{x}{360}$。',
-      ],
       solution: [
         { text: '弧の長さの式をつくる。', math: '2\\pi\\times9\\times\\dfrac{x}{360}=6\\pi' },
         { text: '解く。', math: '\\dfrac{18x}{360}=6,\\quad x=120' },
@@ -727,7 +591,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '半径 $9$ cm を直径と取りちがえて円周を $9\\pi$ としない。円周は $2\\pi\\times9=18\\pi$。',
     },
     {
-      id: 'mx-plane1-03', unit: 'plane1', level: 'basic', pattern: 'move', minutes: 2,
+      id: 'mx-plane1-03', unit: 'plane1', level: 'basic', pattern: 'move',
       text: '図の正方形ABCDで、対角線の交点をOとする。$\\triangle$OAB を、点Oを中心として時計回りに $90^\\circ$ 回転移動させると、どの三角形に重なるか。⓪〜③から1つ選びなさい。',
       figure: {
         label: '正方形ABCDと対角線の交点O。Aが左上、Bが左下、Cが右下、Dが右上にある',
@@ -751,10 +615,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        'まず点Aが、Oのまわりを時計回りに $90^\\circ$ 回ってどこへ行くかを考える。',
-        '次に点Bの行き先を考える。OA、OBは、回転しても長さが変わらない。',
-      ],
       solution: [
         { text: '正方形の対角線は長さが等しく、交点Oで垂直に交わる。だから $90^\\circ$ 回すと、頂点は別の頂点に重なる。' },
         { text: '時計回りに $90^\\circ$ 回すと、Aは右上のDへ、Bは左上のAへ移る。' },
@@ -764,7 +624,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '回す向きを逆にしない。時計回りは、時計の針と同じ向き。',
     },
     {
-      id: 'mx-plane1-04', unit: 'plane1', level: 'basic', pattern: 'construct', minutes: 2,
+      id: 'mx-plane1-04', unit: 'plane1', level: 'basic', pattern: 'construct',
       text: '$\\angle$XOY の二等分線上に点Pをとる。このとき、Pの位置にかかわらずいつでも成り立つことを、⓪〜②から1つ選びなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 0 },
@@ -782,10 +642,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        '角の二等分線の作図は、角の2辺から等しい距離にある点を結んだ線をかいている。',
-        '「2点から等しい距離」は垂直二等分線、「2辺（2直線）から等しい距離」は角の二等分線。',
-      ],
       solution: [
         { text: 'Pから半直線OX、OYへ垂線PH、PKをひく。$\\triangle$OPH と $\\triangle$OPK は、斜辺OPが共通で、$\\angle$POH＝$\\angle$POK の直角三角形なので合同。' },
         { text: 'よって PH＝PK。角の二等分線上の点は、角の2辺から等しい距離にある。' },
@@ -794,7 +650,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '「2点から等しい距離」と「2辺から等しい距離」を混同しない。',
     },
     {
-      id: 'mx-plane1-05', unit: 'plane1', level: 'standard', pattern: 'area', minutes: 5,
+      id: 'mx-plane1-05', unit: 'plane1', level: 'standard', pattern: 'area',
       text: '図は、1辺が $6$ cm の正方形ABCDの中に、点B、点Dをそれぞれ中心として、半径 $6$ cm の円の一部をかいたものである。2つの弧で囲まれた色のついた部分の面積を求めなさい。',
       figure: {
         label: '正方形ABCDの中に、Bを中心とする弧とDを中心とする弧がかかれ、2つの弧で囲まれた部分に色がついている図',
@@ -811,10 +667,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '[ア]\\pi-[イ]\\ \\text{cm}^2' }],
       boxes: { ア: 18, イ: 36 },
-      hints: [
-        '色のついた部分は、対角線ACで同じ形の2つに分けられる。',
-        '分けた半分の形は「おうぎ形−直角二等辺三角形」になっている。',
-      ],
       solution: [
         { text: '対角線ACで2つに分ける。半分は、中心B・半径 $6$・中心角 $90^\\circ$ のおうぎ形から、$\\triangle$ABC を除いた形。', math: '\\pi\\times6^2\\times\\dfrac{90}{360}-\\dfrac{1}{2}\\times6\\times6=9\\pi-18' },
         { text: '2倍する。', math: '2\\times(9\\pi-18)=18\\pi-36' },
@@ -823,17 +675,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: 'おうぎ形2つ分 $18\\pi$ から正方形 $36$ を引いても同じ答えになる。おうぎ形1つ分から正方形を引かないように、重なりを確かめる。',
     },
     {
-      id: 'mx-plane1-06', unit: 'plane1', level: 'standard', pattern: 'sector', minutes: 4,
+      id: 'mx-plane1-06', unit: 'plane1', level: 'standard', pattern: 'sector',
       text: '弧の長さが $4\\pi$ cm、面積が $12\\pi$ cm$^2$ のおうぎ形がある。このおうぎ形の半径と中心角を求めなさい。',
       parts: [
         { q: '半径', answer: '[ア]\\ \\text{cm}' },
         { q: '中心角', answer: '[イ]^\\circ' },
       ],
       boxes: { ア: 6, イ: 120 },
-      hints: [
-        'おうぎ形の面積は $S=\\dfrac{1}{2}\\ell r$（$\\ell$ は弧の長さ、$r$ は半径）とも表せる。',
-        '半径がわかったら、弧の長さ＝円周×$\\dfrac{\\text{中心角}}{360}$ から中心角を求める。',
-      ],
       solution: [
         { text: '$S=\\dfrac12\\ell r$ に代入する。', math: '12\\pi=\\dfrac{1}{2}\\times4\\pi\\times r,\\quad r=6' },
         { text: '中心角を $x^\\circ$ とする。', math: '2\\pi\\times6\\times\\dfrac{x}{360}=4\\pi,\\quad x=120' },
@@ -842,7 +690,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '半径がわからないまま中心角の式を2つ立てて迷わない。$S=\\dfrac12\\ell r$ なら半径が1段で出る。',
     },
     {
-      id: 'mx-plane1-07', unit: 'plane1', level: 'standard', pattern: 'move', minutes: 5,
+      id: 'mx-plane1-07', unit: 'plane1', level: 'standard', pattern: 'move',
       text: '図のように、1辺 $6$ cm の正三角形ABCが、辺BCを直線 $\\ell$ にのせて置いてある。この三角形を、点Cを中心として時計回りに、辺CAが直線 $\\ell$ に重なるまで回転させる。このとき、点Aが動いてできる線の長さを求めなさい。',
       figure: {
         label: '直線ℓの上に正三角形ABCが置かれ、点Cを中心に点Aが弧をえがいて直線ℓ上の点A′まで動く図',
@@ -856,10 +704,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '[ア]\\pi\\ \\text{cm}' }],
       boxes: { ア: 4 },
-      hints: [
-        '点Aは、点Cを中心とする円の弧の上を動く。半径はCA。',
-        '回転する角度は、直線上の $180^\\circ$ から、正三角形の1つの角をひいた大きさ。',
-      ],
       solution: [
         { text: 'CAが $\\ell$ に重なるまでに回る角を求める。', math: '180^\\circ-60^\\circ=120^\\circ' },
         { text: '点Aは、中心C・半径 $6$ cm・中心角 $120^\\circ$ の弧をえがく。', math: '2\\pi\\times6\\times\\dfrac{120}{360}=4\\pi' },
@@ -868,7 +712,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '回転の角度を正三角形の角 $60^\\circ$ としない。CAが直線に重なるまでに回るのは $120^\\circ$。',
     },
     {
-      id: 'mx-plane1-08', unit: 'plane1', level: 'standard', pattern: 'area', minutes: 5,
+      id: 'mx-plane1-08', unit: 'plane1', level: 'standard', pattern: 'area',
       text: '図のように、半径 $6$ cm、中心角 $90^\\circ$ のおうぎ形OABの中に、線分OAを直径とする半円をかいた。色のついた部分（おうぎ形から半円を除いた部分）の面積を求めなさい。',
       figure: {
         label: '中心角90度のおうぎ形OABの中に、OAを直径とする半円がかかれ、おうぎ形から半円を除いた部分に色がついている図',
@@ -885,10 +729,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}\\pi\\ \\text{cm}^2' }],
       boxes: { ア: 9, イ: 2 },
-      hints: [
-        '色のついた部分＝おうぎ形OAB−半円。',
-        '半円の半径は、直径OAの半分。',
-      ],
       solution: [
         { text: 'おうぎ形の面積。', math: '\\pi\\times6^2\\times\\dfrac{90}{360}=9\\pi' },
         { text: '半円の面積（半径 $3$ cm）。', math: '\\pi\\times3^2\\times\\dfrac{1}{2}=\\dfrac{9}{2}\\pi' },
@@ -900,7 +740,7 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── 空間図形 ──
     {
-      id: 'mx-space1-01', unit: 'space1', level: 'basic', pattern: 'volume', minutes: 2,
+      id: 'mx-space1-01', unit: 'space1', level: 'basic', pattern: 'volume',
       text: '図のような、底面が1辺 $6$ cm の正方形で、高さが $8$ cm の正四角錐の体積を求めなさい。',
       figure: {
         label: '底面が正方形の正四角錐。頂点から底面の中心へ高さの線がひかれている',
@@ -916,10 +756,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '[ア]\\ \\text{cm}^3' }],
       boxes: { ア: 96 },
-      hints: [
-        '錐体の体積は $\\dfrac{1}{3}\\times\\text{底面積}\\times\\text{高さ}$。',
-        '底面積は正方形の面積。',
-      ],
       solution: [
         { text: '底面積を求める。', math: '6\\times6=36' },
         { text: '体積を求める。', math: '\\dfrac{1}{3}\\times36\\times8=96' },
@@ -928,17 +764,13 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$\\dfrac13$ をかけ忘れて $288$ としない。錐体は柱体の $\\dfrac13$。',
     },
     {
-      id: 'mx-space1-02', unit: 'space1', level: 'basic', pattern: 'sphere', minutes: 2,
+      id: 'mx-space1-02', unit: 'space1', level: 'basic', pattern: 'sphere',
       text: '半径 $3$ cm の球の体積と表面積を求めなさい。',
       parts: [
         { q: '体積', answer: '[ア]\\pi\\ \\text{cm}^3' },
         { q: '表面積', answer: '[イ]\\pi\\ \\text{cm}^2' },
       ],
       boxes: { ア: 36, イ: 36 },
-      hints: [
-        '球の体積は $\\dfrac{4}{3}\\pi r^3$、表面積は $4\\pi r^2$。',
-        '$r=3$ のとき、$r^3$ と $r^2$ の値を先に出しておく。',
-      ],
       solution: [
         { text: '体積。', math: '\\dfrac{4}{3}\\pi\\times3^3=\\dfrac{4}{3}\\times27\\pi=36\\pi' },
         { text: '表面積。', math: '4\\pi\\times3^2=36\\pi' },
@@ -947,7 +779,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '半径 $3$ cm のときは、体積と表面積の数がたまたま同じ $36$ になる。半径がちがえば同じにならないので、公式を取りちがえない。',
     },
     {
-      id: 'mx-space1-03', unit: 'space1', level: 'basic', pattern: 'position', minutes: 2,
+      id: 'mx-space1-03', unit: 'space1', level: 'basic', pattern: 'position',
       text: '図の直方体ABCD-EFGHで、辺ABとねじれの位置にある辺は何本あるか。',
       figure: {
         label: '直方体ABCD-EFGH。上の面がABCD、下の面がEFGHで、AとE、BとF、CとG、DとHが縦の辺で結ばれている',
@@ -963,10 +795,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '[ア]\\ \\text{本}' }],
       boxes: { ア: 4 },
-      hints: [
-        'ねじれの位置は「平行でなく、交わらない」2直線の位置関係。',
-        'ABと交わる辺、ABと平行な辺を先に数えて除く。',
-      ],
       solution: [
         { text: 'ABと交わる辺：AD、AE、BC、BF の4本。ABと平行な辺：DC、EF、HG の3本。' },
         { text: '直方体の辺は12本。AB自身と、交わる辺・平行な辺を除く。', math: '12-1-4-3=4' },
@@ -976,14 +804,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: 'DCのように同じ面にある辺は、ねじれの位置ではない。同じ平面上の2直線は、交わるか平行。',
     },
     {
-      id: 'mx-space1-04', unit: 'space1', level: 'basic', pattern: 'volume', minutes: 3,
+      id: 'mx-space1-04', unit: 'space1', level: 'basic', pattern: 'volume',
       text: '底面の半径が $4$ cm、高さが $5$ cm の円柱の表面積を求めなさい。',
       parts: [{ answer: '[ア]\\pi\\ \\text{cm}^2' }],
       boxes: { ア: 72 },
-      hints: [
-        '表面積＝底面積×2＋側面積。',
-        '側面を開くと長方形になり、横の長さは底面の円周に等しい。',
-      ],
       solution: [
         { text: '底面積2つ分。', math: '\\pi\\times4^2\\times2=32\\pi' },
         { text: '側面積（縦 $5$、横は円周 $8\\pi$ の長方形）。', math: '5\\times2\\pi\\times4=40\\pi' },
@@ -993,7 +817,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '底面を1つ分しか足さない誤りに注意。円柱の底面は上と下の2つ。',
     },
     {
-      id: 'mx-space1-05', unit: 'space1', level: 'standard', pattern: 'cone', minutes: 5,
+      id: 'mx-space1-05', unit: 'space1', level: 'standard', pattern: 'cone',
       text: '底面の半径が $3$ cm、母線の長さが $9$ cm の円錐がある。',
       figure: {
         label: '底面の半径3cm、母線9cmの円錐',
@@ -1010,10 +834,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: 'この円錐の表面積を求めなさい。', answer: '[イ]\\pi\\ \\text{cm}^2' },
       ],
       boxes: { ア: 120, イ: 36 },
-      hints: [
-        '側面のおうぎ形の弧の長さは、底面の円周と等しい。',
-        'おうぎ形の半径は母線の長さ。中心角は、半径 $9$ の円周のうち弧がしめる割合から求める。',
-      ],
       solution: [
         { text: '弧の長さ＝底面の円周＝$6\\pi$。おうぎ形の半径は $9$ なので、', math: '360^\\circ\\times\\dfrac{6\\pi}{18\\pi}=360^\\circ\\times\\dfrac{3}{9}=120^\\circ' },
         { text: '側面積は、半径 $9$ の円の $\\dfrac13$。', math: '\\pi\\times9^2\\times\\dfrac{1}{3}=27\\pi' },
@@ -1023,7 +843,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: 'おうぎ形の半径を底面の半径 $3$ cm としない。展開したおうぎ形の半径は母線の $9$ cm。',
     },
     {
-      id: 'mx-space1-06', unit: 'space1', level: 'standard', pattern: 'rotate', minutes: 5,
+      id: 'mx-space1-06', unit: 'space1', level: 'standard', pattern: 'rotate',
       text: '図のように、$\\angle$B$=90^\\circ$、AB$=4$ cm、BC$=3$ cm、CA$=5$ cm の直角三角形ABCを、辺ABを軸として1回転させてできる立体について答えなさい。',
       figure: {
         label: '直角三角形ABC。辺ABが回転の軸で、点線でのばしてある',
@@ -1041,10 +861,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '表面積を求めなさい。', answer: '[イ]\\pi\\ \\text{cm}^2' },
       ],
       boxes: { ア: 12, イ: 24 },
-      hints: [
-        '辺ABを軸に回転させると円錐ができる。底面の半径はBC、高さはAB、母線はCA。',
-        '円錐の側面積は $\\pi\\times\\text{母線}\\times\\text{底面の半径}$。',
-      ],
       solution: [
         { text: '底面の半径 $3$ cm、高さ $4$ cm の円錐の体積。', math: '\\dfrac{1}{3}\\times\\pi\\times3^2\\times4=12\\pi' },
         { text: '側面積（母線 $5$、底面の半径 $3$）。', math: '\\pi\\times5\\times3=15\\pi' },
@@ -1054,7 +870,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '軸を取りちがえて、底面の半径を $4$ cm としない。軸ABに垂直な辺BCが底面の半径になる。',
     },
     {
-      id: 'mx-space1-07', unit: 'space1', level: 'standard', pattern: 'volume', minutes: 5,
+      id: 'mx-space1-07', unit: 'space1', level: 'standard', pattern: 'volume',
       text: '図のような1辺 $6$ cm の立方体ABCD-EFGHがある。辺AB、AD、AEの中点をそれぞれP、Q、Rとし、3点P、Q、Rを通る平面で立方体を切る。頂点Aをふくむ方の立体の体積を求めなさい。',
       figure: {
         label: '立方体ABCD-EFGHの頂点Aの近くで、辺AB、AD、AEの中点P、Q、Rを通る平面で切った図',
@@ -1075,10 +891,6 @@ export const MATH_EXAM_JUNIOR1 = {
       },
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}\\ \\text{cm}^3' }],
       boxes: { ア: 9, イ: 2 },
-      hints: [
-        '頂点Aをふくむ方の立体は、Aに集まる3辺を持つ三角錐。',
-        '底面を $\\triangle$APQ、高さをARと考える。',
-      ],
       solution: [
         { text: 'AP＝AQ＝AR＝$3$ cm で、3つの辺はたがいに垂直。' },
         { text: '底面 $\\triangle$APQ の面積。', math: '\\dfrac{1}{2}\\times3\\times3=\\dfrac{9}{2}' },
@@ -1088,7 +900,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$\\dfrac13$ をかけ忘れて $\\dfrac{27}{2}$ としない。切り取った立体は三角錐（錐体）。',
     },
     {
-      id: 'mx-space1-08', unit: 'space1', level: 'standard', pattern: 'sphere', minutes: 4,
+      id: 'mx-space1-08', unit: 'space1', level: 'standard', pattern: 'sphere',
       text: '半径 $3$ cm の球が、円柱の中にぴったり入っている（球は円柱の側面と上下の底面に接している）。',
       figure: {
         label: '円柱の中に、側面と上下の底面に接する球がぴったり入っている図',
@@ -1107,10 +919,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '円柱と球の体積の比を、もっとも簡単な整数の比で表しなさい。', answer: '[イ]:[ウ]' },
       ],
       boxes: { ア: 54, イ: 3, ウ: 2 },
-      hints: [
-        '球がぴったり入るので、円柱の底面の半径は球の半径と等しく、高さは球の直径と等しい。',
-        '球の体積は $\\dfrac43\\pi r^3$。',
-      ],
       solution: [
         { text: '円柱は、底面の半径 $3$ cm、高さ $6$ cm。', math: '\\pi\\times3^2\\times6=54\\pi' },
         { text: '球の体積。', math: '\\dfrac{4}{3}\\pi\\times3^3=36\\pi' },
@@ -1122,7 +930,7 @@ export const MATH_EXAM_JUNIOR1 = {
 
     // ── データの活用 ──
     {
-      id: 'mx-data1-01', unit: 'data1', level: 'basic', pattern: 'representative', minutes: 3,
+      id: 'mx-data1-01', unit: 'data1', level: 'basic', pattern: 'representative',
       text: '10人の生徒の小テストの得点は、次のとおりである。',
       math: '4,\\ 9,\\ 6,\\ 12,\\ 9,\\ 7,\\ 8,\\ 10,\\ 6,\\ 9\\ \\text{（点）}',
       parts: [
@@ -1131,10 +939,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '最頻値', answer: '[エ]\\ \\text{点}' },
       ],
       boxes: { ア: 8, イ: 8, ウ: 5, エ: 9 },
-      hints: [
-        'まず、得点を小さい順に並べかえる。',
-        'データが10個（偶数個）のときの中央値は、まん中の2つの値の平均。',
-      ],
       solution: [
         { text: '合計は $80$ 点なので、平均値は', math: '80\\div10=8' },
         { text: '小さい順に並べる。', math: '4,\\ 6,\\ 6,\\ 7,\\ 8,\\ 9,\\ 9,\\ 9,\\ 10,\\ 12' },
@@ -1145,7 +949,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '並べかえずに、書かれた順の5番目・6番目（$9$ と $7$）で中央値を出さない。',
     },
     {
-      id: 'mx-data1-02', unit: 'data1', level: 'basic', pattern: 'frequency', minutes: 3,
+      id: 'mx-data1-02', unit: 'data1', level: 'basic', pattern: 'frequency',
       text: '次の表は、ある学級25人の通学時間を度数分布表にまとめたものである。',
       math: '\\begin{array}{c|c}\\text{通学時間（分）}&\\text{度数（人）}\\\\\\hline 0\\text{以上}\\ 10\\text{未満}&3\\\\10\\ \\text{〜}\\ 20&8\\\\20\\ \\text{〜}\\ 30&6\\\\30\\ \\text{〜}\\ 40&5\\\\40\\ \\text{〜}\\ 50&3\\\\\\hline\\text{合計}&25\\end{array}',
       parts: [
@@ -1153,10 +957,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '30分未満の階級の累積相対度数を求めなさい。', answer: '0.[イ]' },
       ],
       boxes: { ア: 24, イ: 68 },
-      hints: [
-        '相対度数＝その階級の度数÷度数の合計。',
-        '累積相対度数は、最初の階級からその階級までの度数を足してから、合計でわる。',
-      ],
       solution: [
         { text: '20分以上30分未満の度数は $6$ 人。', math: '6\\div25=0.24' },
         { text: '30分未満の累積度数は $3+8+6=17$ 人。', math: '17\\div25=0.68' },
@@ -1165,7 +965,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '累積相対度数を、その階級だけの相対度数 $0.24$ としない。30分未満の3つの階級を合わせる。',
     },
     {
-      id: 'mx-data1-03', unit: 'data1', level: 'basic', pattern: 'representative', minutes: 4,
+      id: 'mx-data1-03', unit: 'data1', level: 'basic', pattern: 'representative',
       text: '次の表は、ある学級25人の通学時間を度数分布表にまとめたものである。',
       math: '\\begin{array}{c|c}\\text{通学時間（分）}&\\text{度数（人）}\\\\\\hline 0\\text{以上}\\ 10\\text{未満}&3\\\\10\\ \\text{〜}\\ 20&8\\\\20\\ \\text{〜}\\ 30&6\\\\30\\ \\text{〜}\\ 40&5\\\\40\\ \\text{〜}\\ 50&3\\\\\\hline\\text{合計}&25\\end{array}',
       parts: [
@@ -1173,10 +973,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '最頻値を求めなさい。', answer: '[ウ]\\ \\text{分}' },
       ],
       boxes: { ア: 23, イ: 8, ウ: 15 },
-      hints: [
-        '度数分布表では、各階級のまん中の値（階級値）を使う。',
-        '平均値は（階級値×度数）の合計を、度数の合計でわる。最頻値は、度数がいちばん多い階級の階級値。',
-      ],
       solution: [
         { text: '階級値は $5,\\ 15,\\ 25,\\ 35,\\ 45$。（階級値×度数）の合計を求める。', math: '5\\times3+15\\times8+25\\times6+35\\times5+45\\times3=595' },
         { text: '度数の合計でわる。', math: '595\\div25=23.8' },
@@ -1186,14 +982,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '最頻値を度数の $8$ としない。最頻値は「いちばん多い値」で、答えるのは階級値の $15$ 分。',
     },
     {
-      id: 'mx-data1-04', unit: 'data1', level: 'basic', pattern: 'probability', minutes: 2,
+      id: 'mx-data1-04', unit: 'data1', level: 'basic', pattern: 'probability',
       text: 'あるボタンを何回も投げる実験をしたところ、表が出た割合（相対度数）は、投げる回数を増やすにつれて $0.4$ に近づいていった。このボタンを $2000$ 回投げると、表はおよそ何回出ると考えられるか。',
       parts: [{ answer: '\\text{およそ}\\ [ア]\\ \\text{回}' }],
       boxes: { ア: 800 },
-      hints: [
-        '多数回の実験で相対度数が近づいていく値を、そのことがらの起こりやすさ（確率）と考える。',
-        '回数に、表が出る割合をかける。',
-      ],
       solution: [
         { text: '表が出る確率は $0.4$ と考えられる。' },
         { text: '$2000$ 回に $0.4$ をかける。', math: '2000\\times0.4=800' },
@@ -1202,14 +994,10 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '「ちょうど $800$ 回出る」とは限らない。確率から見込める「およその回数」である。',
     },
     {
-      id: 'mx-data1-05', unit: 'data1', level: 'standard', pattern: 'representative', minutes: 3,
+      id: 'mx-data1-05', unit: 'data1', level: 'standard', pattern: 'representative',
       text: 'ある9人のテストの得点の平均値は $7$ 点だった。そこに1人の得点を加えて10人にしたところ、平均値は $7.3$ 点になった。加えた1人の得点は何点か。',
       parts: [{ answer: '[ア]\\ \\text{点}' }],
       boxes: { ア: 10 },
-      hints: [
-        '平均値×人数＝合計。9人の合計と10人の合計を、それぞれ求める。',
-        '合計の差が、加えた1人の得点になる。',
-      ],
       solution: [
         { text: '9人の合計。', math: '7\\times9=63' },
         { text: '10人の合計。', math: '7.3\\times10=73' },
@@ -1219,7 +1007,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '平均値の差 $0.3$ 点を答えにしない。1人加えたことで合計がいくつ増えたかを求める。',
     },
     {
-      id: 'mx-data1-06', unit: 'data1', level: 'standard', pattern: 'frequency', minutes: 5,
+      id: 'mx-data1-06', unit: 'data1', level: 'standard', pattern: 'frequency',
       text: '図は、ある学級25人のテストの得点をヒストグラムに表したものである。たとえば、50点以上60点未満の人は2人である。',
       figure: {
         label: 'テストの得点のヒストグラム。50点以上60点未満が2人、60点台が6人、70点台が9人、80点台が5人、90点以上100点未満が3人',
@@ -1259,10 +1047,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        '25人の中央値は、得点の低い方から数えて13番目の人の得点。',
-        '低い方の階級から度数を足していき（累積度数）、13番目がどの階級に入るかを見る。',
-      ],
       solution: [
         { text: '累積度数は、60点未満 $2$、70点未満 $8$、80点未満 $17$。13番目の人は70点以上80点未満にいる。' },
         { text: '80点以上は $5+3=8$ 人。', math: '8\\div25=0.32' },
@@ -1271,7 +1055,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '度数がいちばん多い階級（最頻値の階級）を中央値の階級と決めつけない。累積度数で位置を確かめる。',
     },
     {
-      id: 'mx-data1-07', unit: 'data1', level: 'standard', pattern: 'representative', minutes: 5,
+      id: 'mx-data1-07', unit: 'data1', level: 'standard', pattern: 'representative',
       text: '7人の生徒の得点は、次のとおりである。ただし、$a$ は $0$ 以上の整数である。この7人の得点の中央値が $6$ 点であるとき、次の問いに答えなさい。',
       math: '5,\\ 8,\\ 6,\\ a,\\ 9,\\ 4,\\ 7\\ \\text{（点）}',
       parts: [
@@ -1279,10 +1063,6 @@ export const MATH_EXAM_JUNIOR1 = {
         { q: '$a$ がその値のとき、得点の範囲を求めなさい。', answer: '[イ]\\ \\text{点}' },
       ],
       boxes: { ア: 6, イ: 5 },
-      hints: [
-        '7人の中央値は、小さい順に並べて4番目の値。$a$ 以外の6つを先に並べてみる。',
-        '$a$ をいろいろな場所に入れたとき、4番目が $6$ のままになるのはどんなときかを考える。',
-      ],
       solution: [
         { text: '$a$ 以外を並べると $4,\\ 5,\\ 6,\\ 7,\\ 8,\\ 9$。' },
         { text: '$a\\leqq6$ なら、4番目は $6$。$a\\geqq7$ なら、4番目は $7$ 以上になる。よって $a$ の最大値は $6$。' },
@@ -1292,7 +1072,7 @@ export const MATH_EXAM_JUNIOR1 = {
       pitfall: '$a=7$ でも中央値は $6$ と思いこまない。$a=7$ なら並べると $4,5,6,7,7,8,9$ で、4番目は $7$。',
     },
     {
-      id: 'mx-data1-08', unit: 'data1', level: 'standard', pattern: 'compare', minutes: 5,
+      id: 'mx-data1-08', unit: 'data1', level: 'standard', pattern: 'compare',
       text: '次の表は、ある中学校の1年生40人と2年生50人の通学時間を、度数分布表にまとめたものである。',
       math: '\\begin{array}{c|c|c}\\text{通学時間（分）}&\\text{1年（人）}&\\text{2年（人）}\\\\\\hline 0\\text{以上}\\ 10\\text{未満}&6&5\\\\10\\ \\text{〜}\\ 20&8&11\\\\20\\ \\text{〜}\\ 30&14&17\\\\30\\ \\text{〜}\\ 40&9&12\\\\40\\ \\text{〜}\\ 50&3&5\\\\\\hline\\text{合計}&40&50\\end{array}',
       parts: [
@@ -1310,10 +1090,6 @@ export const MATH_EXAM_JUNIOR1 = {
           ],
         },
       },
-      hints: [
-        '人数（全体の数）がちがう集団は、度数ではなく相対度数で比べる。',
-        '20分未満は、0分以上10分未満と10分以上20分未満の2つの階級を合わせたもの。',
-      ],
       solution: [
         { text: '1年：20分未満は $6+8=14$ 人。', math: '14\\div40=0.35' },
         { text: '2年：20分未満は $5+11=16$ 人。', math: '16\\div50=0.32' },

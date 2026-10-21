@@ -10,37 +10,32 @@ import {
   mathExamProblemsForUnit,
 } from '../data/math-exam.js'
 import { unitById } from '../data/math.js'
-import {
-  MATH_EXAM_RESULTS,
-  TIME_VERDICTS,
-  attemptResult,
-  checkProblemAnswers,
-  choiceMark,
-  formatSeconds,
-  problemBoxes,
-  timeVerdict,
-} from '../lib/mathExam.js'
+import { MATH_EXAM_RESULTS, formatSeconds } from '../lib/mathExam.js'
 import { latestMathExamAttempt } from '../lib/mathExamLog.js'
+import { approachResult, approachStepsDone } from '../lib/mathExamApproach.js'
+import { mathExamApproach } from '../data/math-exam-approach.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
 import { mixRankedForStudy, questionMixStockOf } from '../lib/studyMix.js'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { readableMathAccent } from '../lib/mathVisualColors.js'
-import { MathAnswerKeypad, MathAnswerSheet } from '../components/MathAnswerPad.jsx'
 import { MathExamFigure } from '../components/MathExamFigure.jsx'
-import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { MathExamApproachSteps, MathExamSolutionFlow } from '../components/MathExamApproach.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
-import { Button, Chip, cx } from '../components/ui.jsx'
-import { ArrowRight, BookOpen, Lightbulb, Refresh, Target } from '../components/Icons.jsx'
+import { Button, Chip } from '../components/ui.jsx'
+import { ArrowRight, BookOpen, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { QuestionSessionControls, useIndexedSessionState } from '../components/QuestionSessionControls.jsx'
 
-// 数学の入試演習。紙に解いた答えを解答欄（ア・イ…）へ入れて答え合わせし、解答の筋道・ポイント・つまずきやすい点を読む。
+// 数学の入試演習。手で計算せずに、解き方の方針を3択で1段ずつ選んで解く（lib/mathExamApproach.js）。
+// 段ごとのヒントは、考え方（なぜそうする必要があるのか）→ 手がかり（図にする・表にする・書き出すなど）の順に開く。
+// 答え合わせのあとは、解き方の流れ（どこから手をつけ、なぜそう進めるのか）・全段の全選択肢の説明・ポイント・つまずきやすい点を読む。
 // 開き方：1つの単元（unitId）・範囲を混ぜる総合演習（scope）・入試の種類全体（kind）・選んだ問題（ids）。
 // 出題の順は、問題ごとの結果（contentQuizResults の math-exam）から全教材共通の決まりで組む。
 // 単元別は同じ段の中を基礎 → 標準の順に、総合演習は単元を混ぜて出す。
 
 const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
+const EMPTY_TALLY = Object.freeze({ solved: 0, hinted: 0, wrong: 0, unknown: 0, seconds: 0 })
 
 function poolFor(params) {
   if (Array.isArray(params.ids) && params.ids.length) return params.ids.map(mathExamProblem).filter(Boolean)
@@ -49,16 +44,6 @@ function poolFor(params) {
   if (params.scope) return mathExamProblemsForScope(params.scope, level)
   if (params.kind) return mathExamProblemsForKind(params.kind, level)
   return []
-}
-
-// 答え方の決まり。その問題の解答欄の式に出てくる形のものだけを出す。
-function answerRules(problem) {
-  const tex = (problem.parts ?? []).map((part) => part.answer).join(' ')
-  const rules = []
-  if (/\\d?frac/.test(tex)) rules.push('分数は、それ以上約分できない形で。負の符号は分子につける')
-  if (/\\sqrt/.test(tex)) rules.push('根号の中は、できるだけ小さい自然数に')
-  if (/\[[゠-ヿ]\]\s*:\s*\[[゠-ヿ]\]/.test(tex)) rules.push('比は、もっとも簡単な整数の比に')
-  return rules
 }
 
 export function MathExamSolveScreen() {
@@ -87,17 +72,16 @@ export function MathExamSolveScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => pickProblems(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
-  // 答え合わせした問題の記録（位置ごと）。前へ戻っても、その問題の答えと結果を見せる。
+  // 答え合わせした問題の記録（位置ごと）。前へ戻っても、その問題の選択と結果を見せる。
   const {
     value: record,
     setValue: setRecord,
     clear: clearRecords,
     values: records,
   } = useIndexedSessionState(index)
-  // 答え合わせ前の入力（位置ごと）：欄の値・いまの欄・開いたヒントの数・解き始めた時刻。
+  // 答え合わせ前の選択（位置ごと）：段ごとに選んだ番号・段ごとに開いたヒントの数・解き始めた時刻。
   const [drafts, setDrafts] = useState({})
-  const [now, setNow] = useState(() => Date.now())
-  const [tally, setTally] = useState({ solved: 0, hinted: 0, wrong: 0, unknown: 0, seconds: 0 })
+  const [tally, setTally] = useState(EMPTY_TALLY)
   const [missedIds, setMissedIds] = useState([])
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
@@ -107,23 +91,13 @@ export function MathExamSolveScreen() {
   const unit = problem ? unitById(problem.unit) : null
   const accent = readableMathAccent(unit?.color ?? '#7c3aed')
   const draft = drafts[index] ?? null
-  const labels = problem ? problemBoxes(problem) : []
+  const steps = problem ? mathExamApproach(problem.id) : []
 
   // 表示した問題の解き始めの時刻を置く（前へ戻って開き直しても、最初に開いた時刻のまま）。
   useEffect(() => {
     if (!problem) return
-    setDrafts((current) => (current[index]
-      ? current
-      : { ...current, [index]: { entries: {}, active: problemBoxes(problem)[0] ?? null, hints: 0, startedAt: Date.now() } }))
+    setDrafts((current) => (current[index] ? current : { ...current, [index]: { picks: {}, hints: {}, startedAt: Date.now() } }))
   }, [index, problem])
-
-  // 答え合わせまでの時間を1秒ごとに進める。
-  const running = Boolean(problem) && !record && !done
-  useEffect(() => {
-    if (!running) return undefined
-    const timer = setInterval(() => setNow(Date.now()), 1000)
-    return () => clearInterval(timer)
-  }, [running])
 
   // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
   useStudyMixRebuild({
@@ -163,32 +137,27 @@ export function MathExamSolveScreen() {
     setIndex(0)
     clearRecords()
     setDrafts({})
-    setTally({ solved: 0, hinted: 0, wrong: 0, unknown: 0, seconds: 0 })
+    setTally(EMPTY_TALLY)
     setMissedIds([])
     setDone(false)
   }
 
   const updateDraft = (change) => {
     setDrafts((current) => {
-      const base = current[index] ?? { entries: {}, active: labels[0] ?? null, hints: 0, startedAt: Date.now() }
+      const base = current[index] ?? { picks: {}, hints: {}, startedAt: Date.now() }
       return { ...current, [index]: { ...base, ...change(base) } }
     })
   }
 
-  const elapsed = record
-    ? record.seconds
-    : Math.max(0, Math.floor((now - (draft?.startedAt ?? now)) / 1000))
-
   const finish = (unknown) => {
     if (!problem || record) return
-    const entries = draft?.entries ?? {}
-    const checked = checkProblemAnswers(problem, entries)
-    const hintsUsed = draft?.hints ?? 0
-    const result = attemptResult({ correct: checked.correct, hintsUsed, unknown })
+    const picks = draft?.picks ?? {}
+    const hintsUsed = Object.values(draft?.hints ?? {}).reduce((sum, count) => sum + count, 0)
+    const result = approachResult(steps, picks, { hintsUsed, unknown })
     const seconds = Math.max(1, Math.floor((Date.now() - (draft?.startedAt ?? Date.now())) / 1000))
     // 問題ごとの記録（入試演習の記録と、出題の順に使う問題ごとの結果）に残す。
     recordAttempt(problem.id, result, seconds)
-    setRecord({ result, perBox: unknown ? null : checked.perBox, seconds, hintsUsed, entries })
+    setRecord({ result, seconds, picks, hints: draft?.hints ?? {} })
     setTally((current) => ({ ...current, [result]: current[result] + 1, seconds: current.seconds + seconds }))
     if (result !== 'solved') setMissedIds((ids) => [...new Set([...ids, problem.id])])
   }
@@ -210,7 +179,7 @@ export function MathExamSolveScreen() {
           <div>
             <p className="text-xs font-extrabold text-violet-700">{`${params.title ?? '入試演習'}の結果`}</p>
             <p className="mt-1 font-display text-2xl font-extrabold text-ink">{`自力で正解 ${tally.solved} / ${total}問`}</p>
-            <p className="mt-1 text-sm font-bold text-ink/55">{`解いた時間 ${formatSeconds(tally.seconds)}（${answered}問）`}</p>
+            <p className="mt-1 text-sm font-bold text-ink/55">{`考えた時間 ${formatSeconds(tally.seconds)}（${answered}問）`}</p>
           </div>
 
           <div className="grid w-full grid-cols-2 gap-2 text-left" data-math-exam-result-counts>
@@ -260,16 +229,17 @@ export function MathExamSolveScreen() {
   const revealIdentity = !mixed || Boolean(record)
   const previous = latestMathExamAttempt(mathExamLog, problem.id)
   const shownPrevious = record ? null : previous
-  const entries = record?.entries ?? draft?.entries ?? {}
-  const hintsOpened = record ? problem.hints.length : draft?.hints ?? 0
-  const rules = answerRules(problem)
-  const activeBox = record ? null : draft?.active ?? labels[0]
-  const activate = (label) => updateDraft(() => ({ active: label }))
-  const enter = (label, value) => updateDraft((base) => ({ entries: { ...base.entries, [label]: value } }))
-  const emptyBoxes = labels.filter((label) => (
-    problem.choices?.[label] ? !Number.isInteger(entries[label]) : !/\d/.test(String(entries[label] ?? ''))
-  )).length
-  const verdict = record ? timeVerdict(record.seconds, problem.minutes) : null
+  const picks = record?.picks ?? draft?.picks ?? {}
+  const hints = record?.hints ?? draft?.hints ?? {}
+  const left = steps.length - approachStepsDone(steps, picks)
+  const pick = (stepIndex, optionIndex) => updateDraft((base) => {
+    const chosen = base.picks?.[stepIndex] ?? []
+    if (chosen.includes(0) || chosen.includes(optionIndex)) return {}
+    return { picks: { ...base.picks, [stepIndex]: [...chosen, optionIndex] } }
+  })
+  const openHint = (stepIndex) => updateDraft((base) => ({
+    hints: { ...base.hints, [stepIndex]: Math.min(2, (base.hints?.[stepIndex] ?? 0) + 1) },
+  }))
   const resultMeta = record ? MATH_EXAM_RESULTS[record.result] : null
 
   return (
@@ -311,23 +281,13 @@ export function MathExamSolveScreen() {
           <div className="flex flex-wrap items-center gap-2">
             <Chip color={level.color}>{level.label}</Chip>
             {revealIdentity && unit && <Chip color={accent}>{`${unit.emoji} ${unit.title}`}</Chip>}
-            <span
-              className={cx(
-                'ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold tabular-nums',
-                !record && elapsed > problem.minutes * 60 ? 'bg-amber-100 text-amber-800' : 'bg-paper text-ink/60',
-              )}
-              data-math-exam-timer
-              aria-label={`かかった時間 ${formatSeconds(elapsed)}、目安 ${problem.minutes}分`}
-            >
-              <Target size={13} /> {`${formatSeconds(elapsed)} / 目安${problem.minutes}分`}
-            </span>
           </div>
           {revealIdentity && pattern && (
             <p className="mt-2 text-[11px] font-extrabold text-ink/50" data-math-exam-pattern>{`型：${pattern.title}`}</p>
           )}
           {shownPrevious && (
             <p className="mt-1 text-[11px] font-bold text-ink/45" data-math-exam-previous>
-              {`前回：${MATH_EXAM_RESULTS[shownPrevious.result].label}・${formatSeconds(shownPrevious.seconds)}`}
+              {`前回：${MATH_EXAM_RESULTS[shownPrevious.result].label}`}
             </p>
           )}
           <p className="mt-3 text-[15px] font-bold leading-relaxed text-ink">
@@ -341,104 +301,36 @@ export function MathExamSolveScreen() {
               <MathExamFigure figure={problem.figure} />
             </div>
           )}
-        </section>
-
-        {/* ヒント：押したときだけ1段ずつ開く。答え合わせのあとは全部見せる。 */}
-        <section className="mt-3 space-y-2" aria-label="ヒント" data-math-exam-hints>
-          {problem.hints.slice(0, hintsOpened).map((hint, hintIndex) => (
-            <div key={hintIndex} className="flex gap-2 rounded-2xl bg-hint-soft px-3.5 py-2.5 text-sm font-bold leading-relaxed text-amber-950/85">
-              <Lightbulb size={16} className="mt-0.5 shrink-0 text-amber-600" />
-              <span className="min-w-0 flex-1">
-                <span className="mr-1 text-[11px] font-extrabold text-amber-700">{`ヒント${hintIndex + 1}`}</span>
-                <MathText>{hint}</MathText>
-              </span>
-            </div>
-          ))}
-          {!record && hintsOpened < problem.hints.length && (
-            <button
-              type="button"
-              onClick={() => updateDraft((base) => ({ hints: Math.min(problem.hints.length, base.hints + 1) }))}
-              className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-amber-300 bg-white px-3 text-sm font-extrabold text-amber-800 transition-transform active:scale-[0.98]"
-              data-math-exam-hint-button
-            >
-              <Lightbulb size={16} />
-              {hintsOpened ? `次のヒントを見る（あと${problem.hints.length - hintsOpened}）` : `ヒントを見る（全${problem.hints.length}段）`}
-            </button>
-          )}
-          {!record && hintsOpened === 0 && (
-            <p className="px-1 text-center text-[11px] font-bold text-ink/45">ヒントを開くと、正解しても「ヒントで正解」と記録します。</p>
+          {!record && (
+            <p className="mt-3 text-[11px] font-bold text-ink/50">{'計算はしなくてよい。どう解くかを、下の段で1つずつ選ぼう。'}</p>
           )}
         </section>
 
-        <MathAnswerSheet
+        <MathExamApproachSteps
           problem={problem}
-          entries={entries}
-          active={activeBox}
-          onActivate={activate}
-          onEntry={enter}
-          perBox={record?.perBox ?? null}
-          reveal={Boolean(record)}
+          steps={steps}
+          picks={picks}
+          hints={hints}
+          onPick={pick}
+          onHint={openHint}
+          reviewed={Boolean(record)}
         />
-        {rules.length > 0 && !record && (
-          <ul className="mt-2 space-y-0.5 px-2 text-[11px] font-bold leading-relaxed text-ink/55" data-math-exam-answer-rules>
-            {rules.map((rule) => <li key={rule}>{`・${rule}`}</li>)}
-          </ul>
+        {!record && (
+          <p className="mt-2 px-1 text-center text-[11px] font-bold text-ink/45">{'ヒントを開くと、正しく選べても「ヒントで正解」と記録します。'}</p>
         )}
 
-        {/* 答え合わせのあと：結果・かかった時間・解答の筋道・ポイント・つまずきやすい点。 */}
+        {/* 答え合わせのあと：結果・解き方の流れ・ポイント・つまずきやすい点。 */}
         {record && (
           <section className="mt-4 space-y-3 animate-slide-up" data-math-exam-review>
             <div className="rounded-2xl bg-white p-4 shadow-card">
               <p className="font-display text-lg font-extrabold" style={{ color: resultMeta.color }} data-math-exam-result-label>
-                {record.result === 'solved' ? '正解！' : record.result === 'hinted' ? 'ヒントで正解' : record.result === 'wrong' ? '解き方を確かめよう' : '答えを確かめよう'}
-              </p>
-              <p className="mt-1 text-xs font-bold text-ink/60">
-                {`かかった時間 ${formatSeconds(record.seconds)}（目安${problem.minutes}分）`}
-                {/* 時間の比べは、正しく解けたときだけ出す（まちがえたのに「速い」とは言わない）。 */}
-                {(record.result === 'solved' || record.result === 'hinted') && (
-                  <span style={{ color: TIME_VERDICTS[verdict].color }}>{`・${TIME_VERDICTS[verdict].label}`}</span>
-                )}
+                {record.result === 'solved' ? '正解！' : record.result === 'hinted' ? 'ヒントで正解' : record.result === 'wrong' ? '方針を確かめよう' : '解き方の流れを読もう'}
               </p>
               {record.result !== 'solved' && (
-                <p className="mt-1 text-xs font-bold text-ink/60">この問題は解き直しに入りました。次は自力で解いてみよう。</p>
+                <p className="mt-1 text-xs font-bold text-ink/60">{'この問題は解き直しに入りました。次はヒントなしで方針を選んでみよう。'}</p>
               )}
             </div>
-
-            {labels.filter((label) => problem.choices?.[label]).map((label) => (
-              <ChoiceExplanations
-                key={label}
-                title={`欄${label}の選択肢解説（${problem.choices[label].options.length}つすべて）`}
-                name={`math-exam-${label}`}
-                renderText={(text) => <MathText>{text}</MathText>}
-                rows={problem.choices[label].options.map((option, optionIndex) => ({
-                  id: String(optionIndex),
-                  heading: <span><span className="mr-1 text-violet-700">{choiceMark(optionIndex)}</span><MathText>{option}</MathText></span>,
-                  body: problem.choices[label].notes[optionIndex],
-                  correct: optionIndex === problem.boxes[label],
-                  chosen: record.entries[label] === optionIndex,
-                }))}
-              />
-            ))}
-
-            <section className="rounded-2xl bg-white p-4 shadow-card" data-math-exam-solution aria-label="解答の筋道">
-              <p className="text-xs font-extrabold tracking-wide text-violet-700">解答の筋道</p>
-              <ol className="mt-2 space-y-3">
-                {problem.solution.map((step, stepIndex) => (
-                  <li key={stepIndex} className="flex gap-2.5">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-extrabold text-violet-700">
-                      {stepIndex + 1}
-                    </span>
-                    <div className="min-w-0 flex-1 text-left">
-                      {step.text && (
-                        <p className="text-sm font-bold leading-relaxed text-ink/80"><MathText>{step.text}</MathText></p>
-                      )}
-                      {step.math && <MathBlock tex={step.math} className="mt-1 overflow-x-auto text-ink [&_.katex]:text-[1.05rem]" />}
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
+            <MathExamSolutionFlow steps={steps} />
             <div className="rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100" data-math-exam-point>
               <p className="text-xs font-extrabold text-emerald-700">この型のポイント</p>
               <p className="mt-1 text-sm font-bold leading-relaxed text-emerald-950/85"><MathText>{problem.point}</MathText></p>
@@ -457,16 +349,13 @@ export function MathExamSolveScreen() {
             {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
           </Button>
         ) : (
-          <div className="space-y-2">
-            <MathAnswerKeypad problem={problem} entries={entries} active={activeBox} onActivate={activate} onEntry={enter} />
-            <div className="grid grid-cols-[auto_1fr] gap-2">
-              <Button variant="secondary" onClick={() => finish(true)} data-math-exam-unknown>
-                わからない
-              </Button>
-              <Button disabled={emptyBoxes > 0} onClick={() => finish(false)} data-math-exam-check>
-                {emptyBoxes > 0 ? `答え合わせ（空の欄 ${emptyBoxes}）` : '答え合わせ'}
-              </Button>
-            </div>
+          <div className="grid grid-cols-[auto_1fr] gap-2">
+            <Button variant="secondary" onClick={() => finish(true)} data-math-exam-unknown>
+              わからない
+            </Button>
+            <Button disabled={left > 0} onClick={() => finish(false)} data-math-exam-check>
+              {left > 0 ? `答え合わせ（あと${left}段）` : '答え合わせ'}
+            </Button>
           </div>
         )}
       </div>

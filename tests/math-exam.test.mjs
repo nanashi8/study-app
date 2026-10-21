@@ -22,15 +22,9 @@ import {
 } from '../src/data/math-exam.js'
 import {
   BOX_LABELS,
-  answerTexWithValues,
   attemptResult,
-  checkProblemAnswers,
-  normalizeEntry,
-  pressAnswerKey,
   problemBoxes,
-  renderAnswerTex,
   templateBoxes,
-  timeVerdict,
 } from '../src/lib/mathExam.js'
 import {
   appendMathExamLog,
@@ -126,7 +120,7 @@ test('全単元に出題の型の一覧があり、全ての型に問題が1問�
 })
 
 // ── answer-entry ──
-test('全問の解答欄は、キーで入れられる整数か選択肢で、式の中の欄と答えが1対1に合い、KaTeX で描ける', () => {
+test('全問の求めるもの（解答欄の式）は、整数か選択肢の欄で、式の中の欄と正解が1対1に合う', () => {
   const failures = []
   let boxCount = 0
   for (const problem of MATH_EXAM_PROBLEMS) {
@@ -153,9 +147,6 @@ test('全問の解答欄は、キーで入れられる整数か選択肢で、�
         if (!Number.isInteger(value) || value < 0 || value >= choice.options.length) failures.push(`${at} ${label}: 正解の番号が範囲外`)
       } else {
         if (!Number.isInteger(value)) failures.push(`${at} ${label}: 答えが整数でない（${value}）`)
-        if (Math.abs(value) > 99999) failures.push(`${at} ${label}: 5けたをこえる`)
-        // 数字キーで入れた文字列が、そのまま正解になる。
-        if (normalizeEntry(String(value)) !== String(value)) failures.push(`${at} ${label}: 入力の形にならない`)
       }
     }
     for (const label of Object.keys(problem.choices ?? {})) {
@@ -166,87 +157,25 @@ test('全問の解答欄は、キーで入れられる整数か選択肢で、�
       for (const match of part.answer.matchAll(/([+\-])\s*\[([゠-ヿ])\]/g)) {
         if (!problem.choices?.[match[2]] && problem.boxes[match[2]] < 0) failures.push(`${at} ${match[2]}: 符号のあとの欄に負の数`)
       }
-      try {
-        renderTex(renderAnswerTex(problem, part.answer), `${at} 小問${index + 1}（空の欄）`)
-        renderTex(renderAnswerTex(problem, part.answer, { values: Object.fromEntries(labels.map((label) => [label, problem.choices?.[label] ? problem.boxes[label] : String(problem.boxes[label])])), perBox: Object.fromEntries(labels.map((label) => [label, true])) }), `${at} 小問${index + 1}（答え合わせ）`)
-        renderTex(answerTexWithValues(problem, part.answer), `${at} 小問${index + 1}（正しい答え）`)
-      } catch (error) {
-        failures.push(error.message)
-      }
     }
   }
   assert.deepEqual(failures, [])
   assert.ok(boxCount >= MATH_EXAM_PROBLEMS.length)
 })
 
-test('数字キーで入れた値を正しく答え合わせする（符号・0・けた・選択式）', () => {
-  assert.equal(pressAnswerKey('', '5'), '5')
-  assert.equal(pressAnswerKey('5', 'minus'), '-5')
-  assert.equal(pressAnswerKey('-5', 'minus'), '5')
-  assert.equal(pressAnswerKey('', 'minus'), '-')
-  assert.equal(pressAnswerKey('-', '3'), '-3')
-  assert.equal(pressAnswerKey('0', '7'), '7')
-  assert.equal(pressAnswerKey('-12', 'back'), '-1')
-  assert.equal(pressAnswerKey('-1', 'back'), '-')
-  assert.equal(pressAnswerKey('12345', '6'), '12345')
-  assert.equal(normalizeEntry('-0'), '0')
-  assert.equal(normalizeEntry('007'), '7')
-  assert.equal(normalizeEntry('-'), '')
-  for (const problem of MATH_EXAM_PROBLEMS) {
-    const labels = problemBoxes(problem)
-    const right = Object.fromEntries(labels.map((label) => [label, problem.choices?.[label] ? problem.boxes[label] : String(problem.boxes[label])]))
-    const result = checkProblemAnswers(problem, right)
-    assert.ok(result.correct && result.filled, `${problem.id}: 正解を入れても正解にならない`)
-    const [first] = labels
-    const wrongValue = problem.choices?.[first]
-      ? (problem.boxes[first] + 1) % problem.choices[first].options.length
-      : String(problem.boxes[first] + 1)
-    const wrong = checkProblemAnswers(problem, { ...right, [first]: wrongValue })
-    assert.equal(wrong.correct, false, `${problem.id}: まちがいを正解にしてしまう`)
-    assert.equal(wrong.perBox[first], false)
-    assert.equal(checkProblemAnswers(problem, {}).filled, false)
-  }
-  // 画面：解答欄の式・欄のボタン・数字キー・答え方の決まり。
-  const solve = read('src/screens/MathExamSolve.jsx')
-  const pad = read('src/components/MathAnswerPad.jsx')
-  assert.match(pad, /data-math-exam-box=\{label\}/)
-  assert.match(pad, /data-math-exam-keypad/)
-  assert.match(pad, /\['1', '2', '3', '4', '5', 'minus', 'back'\]/)
-  assert.match(pad, /\['6', '7', '8', '9', '0', 'next'\]/)
-  assert.match(pad, /data-math-exam-choices=\{active\}/)
-  assert.match(solve, /分数は、それ以上約分できない形で。負の符号は分子につける/)
-  assert.match(solve, /根号の中は、できるだけ小さい自然数に/)
-  assert.match(solve, /比は、もっとも簡単な整数の比に/)
-  assert.match(solve, /data-math-exam-answer-rules/)
-})
-
-// ── hints-solutions ──
-test('全問に段階ヒント（2段以上・答えの値を書かない）・解答の筋道（2段以上）・ポイント・つまずきやすい点があり、数式が描ける', () => {
+test('全問に解答の筋道（2段以上）・ポイント・つまずきやすい点があり、数式が描ける', () => {
   const failures = []
   for (const problem of MATH_EXAM_PROBLEMS) {
     const at = problem.id
     if (!problem.text?.trim()) failures.push(`${at}: 問題文がない`)
-    if (!Array.isArray(problem.hints) || problem.hints.length < 2) failures.push(`${at}: ヒントが2段未満`)
     if (!Array.isArray(problem.solution) || problem.solution.length < 2) failures.push(`${at}: 解答の筋道が2段未満`)
     if (!problem.point?.trim()) failures.push(`${at}: ポイントがない`)
     if (!problem.pitfall?.trim()) failures.push(`${at}: つまずきやすい点がない`)
     for (const step of problem.solution ?? []) {
       if (!step.text?.trim() && !step.math?.trim()) failures.push(`${at}: 空の筋道`)
     }
-    if (new Set(problem.hints).size !== problem.hints.length) failures.push(`${at}: 同じヒントが2つ`)
-    // ヒントに、正しい答えを入れた解答欄の式（x=5 など）をそのまま書かない。
-    for (const part of problem.parts) {
-      const filled = answerTexWithValues(problem, part.answer).replace(/\\[,;: ]|\\quad|\\text\{[^}]*\}|\s/g, '')
-      for (const hint of problem.hints) {
-        const flat = inlineMath(hint).join('').replace(/\\[,;: ]|\\quad|\s/g, '')
-        if (filled.length >= 3 && flat.includes(filled)) failures.push(`${at}: ヒントに答え ${filled} が書いてある`)
-      }
-    }
-    for (const hint of problem.hints) {
-      if (/答えは|正解は/.test(hint)) failures.push(`${at}: ヒントが答えを言っている`)
-    }
     // 数式として描けるか。
-    const texts = [problem.text, ...problem.hints, problem.point, problem.pitfall, ...(problem.parts.map((part) => part.q ?? '')), ...(problem.solution ?? []).map((step) => step.text ?? '')]
+    const texts = [problem.text, problem.point, problem.pitfall, ...(problem.parts.map((part) => part.q ?? '')), ...(problem.solution ?? []).map((step) => step.text ?? '')]
     for (const [index, text] of texts.entries()) {
       for (const tex of inlineMath(text)) {
         try {
@@ -282,24 +211,6 @@ test('全問に段階ヒント（2段以上・答えの値を書かない）・�
   assert.deepEqual(failures, [])
 })
 
-test('ヒントは押したときだけ1段ずつ開き、正しい答えは答え合わせか「わからない」のあとだけ出る', () => {
-  const solve = read('src/screens/MathExamSolve.jsx')
-  const pad = read('src/components/MathAnswerPad.jsx')
-  // ヒント：開いた数だけ出す。答え合わせのあとは全部。
-  assert.match(solve, /const hintsOpened = record \? problem\.hints\.length : draft\?\.hints \?\? 0/)
-  assert.match(solve, /problem\.hints\.slice\(0, hintsOpened\)\.map/)
-  assert.match(solve, /hints: Math\.min\(problem\.hints\.length, base\.hints \+ 1\)/)
-  // 答え：記録（答え合わせ・わからない）があるときだけ reveal し、解答の筋道も記録のあとだけ。
-  assert.match(solve, /reveal=\{Boolean\(record\)\}/)
-  assert.match(solve, /\{record && \(\s*<section className="mt-4 space-y-3 animate-slide-up" data-math-exam-review>/)
-  assert.match(pad, /\{checked && \(\s*<MathBlock\s*tex=\{answerTexWithValues\(problem, part\.answer\)\}/)
-  assert.match(pad, /\{perBox && !ok && \(/)
-  // 選択式の欄は、答え合わせのあとに全選択肢の説明を出す。
-  assert.match(solve, /rows=\{problem\.choices\[label\]\.options\.map\(\(option, optionIndex\) => \(\{/)
-  assert.match(solve, /body: problem\.choices\[label\]\.notes\[optionIndex\]/)
-})
-
-// ── review-cycle ──
 test('結果は4通り（自力で正解・ヒントで正解・不正解・わからない）に分け、自力で正解だけを正解として記録する', () => {
   assert.equal(attemptResult({ correct: true, hintsUsed: 0 }), 'solved')
   assert.equal(attemptResult({ correct: true, hintsUsed: 2 }), 'hinted')
@@ -370,21 +281,6 @@ test('入試の範囲4つ×基礎・標準・すべてで、単元を混ぜた�
   assert.match(solve, /\{revealIdentity && unit && <Chip/)
   assert.match(solve, /\{revealIdentity && pattern && \(/)
   assert.match(solve, /rng: mixed \? Math\.random : null/)
-})
-
-// ── time-target ──
-test('全問に目安時間があり、演習中はかかった時間を、答え合わせで目安との比べを出す', () => {
-  for (const problem of MATH_EXAM_PROBLEMS) {
-    assert.ok(Number.isInteger(problem.minutes) && problem.minutes >= 1 && problem.minutes <= 20, `${problem.id}: 目安時間 ${problem.minutes}`)
-  }
-  assert.equal(timeVerdict(50, 2), 'fast')
-  assert.equal(timeVerdict(100, 2), 'ok')
-  assert.equal(timeVerdict(130, 2), 'slow')
-  const solve = read('src/screens/MathExamSolve.jsx')
-  assert.match(solve, /data-math-exam-timer/)
-  assert.match(solve, /`\$\{formatSeconds\(elapsed\)\} \/ 目安\$\{problem\.minutes\}分`/)
-  assert.match(solve, /setInterval\(\(\) => setNow\(Date\.now\(\)\), 1000\)/)
-  assert.match(solve, /`かかった時間 \$\{formatSeconds\(record\.seconds\)\}（目安\$\{problem\.minutes\}分）/)
 })
 
 // ── figures ──

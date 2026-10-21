@@ -2265,8 +2265,8 @@ for (const question of WRITING_EXAM_QUESTIONS) {
   }
 }
 
-// ── 数学クエスト：誘導ステップが「答えられる形」になっているか ──
-// 空所の正解がタイルに無いと、学習者はどれを選んでも不正解になる。
+// ── 数学クエスト：誘導問題に問題文・着眼点・つまずきがそろっているか ──
+// 解き方の方針の段そのものは tests/math-guided-approach.test.mjs が全問を確かめる。
 const mathUnitIds = new Set(MATH_UNITS.map((unit) => unit.id))
 const mathProblemIds = new Set()
 for (const [unitId, problems] of Object.entries(MATH_PROBLEMS)) {
@@ -2280,49 +2280,8 @@ for (const [unitId, problems] of Object.entries(MATH_PROBLEMS)) {
     if (!problem.text?.trim() && !problem.prompt?.trim()) {
       errors.push(`${at}: 問題文(text)も数式(prompt)も無く、問題欄が空になる`)
     }
-    if (!String(problem.answer ?? '').trim()) errors.push(`${at}: 最終解答が無い`)
+    if (!problem.recall?.points?.length) errors.push(`${at}: 着眼点が無い`)
     if (!String(problem.pitfall ?? '').trim()) errors.push(`${at}: つまずきの注意が無い`)
-
-    const quiz = problem.recall?.quiz
-    if (quiz) {
-      if (!Array.isArray(quiz.choices) || quiz.choices.length < 2) {
-        errors.push(`${at}: 確認クイズの選択肢が2件未満`)
-      } else if (new Set(quiz.choices).size !== quiz.choices.length) {
-        errors.push(`${at}: 確認クイズの選択肢が重複`)
-      }
-      if (!Number.isInteger(quiz.answer) || quiz.answer < 0 || quiz.answer >= (quiz.choices?.length ?? 0)) {
-        errors.push(`${at}: 確認クイズの正解番号が選択肢の範囲外 (${quiz.answer})`)
-      }
-      if (!quiz.why?.trim()) errors.push(`${at}: 確認クイズの解説が無い`)
-    }
-
-    for (const [index, step] of (problem.steps ?? []).entries()) {
-      const where = `${at} 手順${index + 1}`
-      if (!step.note?.trim()) errors.push(`${where}: 解説が無い`)
-      if (step.choices) {
-        if (new Set(step.choices).size !== step.choices.length) errors.push(`${where}: 選択肢が重複`)
-        if (!Number.isInteger(step.answer) || step.answer < 0 || step.answer >= step.choices.length) {
-          errors.push(`${where}: 正解番号が選択肢の範囲外 (${step.answer})`)
-        }
-      }
-      const fill = step.fill
-      if (!fill) continue
-      const squares = (fill.tex?.match(/\\square/g) ?? []).length
-      if (squares !== (fill.blanks?.length ?? 0)) {
-        errors.push(`${where}: 式の□が${squares}個なのに答えが${fill.blanks?.length ?? 0}個`)
-      }
-      if (new Set(fill.tiles ?? []).size !== (fill.tiles?.length ?? 0)) {
-        errors.push(`${where}: タイルが重複 (${(fill.tiles ?? []).join(', ')})`)
-      }
-      for (const blank of fill.blanks ?? []) {
-        if (!(fill.tiles ?? []).includes(blank)) {
-          errors.push(`${where}: 正解「${blank}」がタイルに無く、どれを選んでも不正解になる`)
-        }
-      }
-      if ((fill.tiles ?? []).length <= (fill.blanks ?? []).length) {
-        errors.push(`${where}: 誤答のタイルが無く、選ぶ余地が無い`)
-      }
-    }
   }
 }
 

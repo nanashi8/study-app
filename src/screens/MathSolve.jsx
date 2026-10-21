@@ -1,23 +1,26 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { problemsForUnit, unitById } from '../data/math.js'
-import { shuffle } from '../data/vocab.js'
-import { MathBlock, MathInline, MathText } from '../components/MathText.jsx'
-import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
-import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { mathGuidedApproach } from '../data/math-guided-approach.js'
+import { approachStepsDone } from '../lib/mathExamApproach.js'
+import { MathBlock, MathText } from '../components/MathText.jsx'
+import { MathExamApproachSteps, MathExamSolutionFlow } from '../components/MathExamApproach.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
-import { cx } from '../components/ui.jsx'
-import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { mathChoiceNoteFor } from '../data/math-choice-notes.js'
-import { mathFillNoteFor } from '../data/math-fill-notes.js'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { Button, ProgressBar, IconButton, cx } from '../components/ui.jsx'
+import { Close, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 
-// 誘導型の数学ソルバー。1問を「確認 → 穴埋め → 答え」で解き進める。
-//  ① recall  … 着眼点・公式を思い出し、方針を3択で確認
-//  ② steps   … 穴埋め（タイルをタップ）or 3択で解答を組み立てる
-//  ③ solved  … 最終解とつまずきポイント
+// 誘導型の数学（基本の型）。手で計算せずに、解き方の方針を3択で1段ずつ選んで進む。
+//  ① 方針の段（lib/mathExamApproach.js と同じ形。1段目は方針の確認、2段目からは解き方の手順）。
+//     段ごとのヒントは、考え方（なぜそうするのか）→ 手がかり（図にする・表にする・書き出すなど）の順に開く
+//  ② 解き終わり … 解き方の流れ（決めたこととなぜ）・この型の着眼点と公式・つまずきやすい点
+//     着眼点と公式は方針の答えになるので、選び終わってから見せる
+// 正答率は、はじめの選択で正しく選べた段（ヒントを開いた段はふくめない）で数える。
+const stepScore = (steps, picks, hints) => ({
+  correct: steps.filter((_, index) => (picks[index] ?? [])[0] === 0 && !(hints[index] > 0)).length,
+  total: steps.length,
+})
+
 export function MathSolveScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
@@ -34,18 +37,14 @@ export function MathSolveScreen() {
     : unitProblems
 
   const [pIndex, setPIndex] = useState(0)
-  const [phase, setPhase] = useState('recall') // 'recall' | 'steps' | 'solved'
-  const [si, setSi] = useState(0)
-  const [sel, setSel] = useState(null) // 3択の選択（recall.quiz / choiceステップ）
-  const [placed, setPlaced] = useState([]) // 穴埋めスロットに入れた bank.id
-  const [fillResult, setFillResult] = useState(null) // { perBlank, correct } | null
-  const [lines, setLines] = useState([]) // 積み上がっていく式
+  const [solved, setSolved] = useState(false)
+  const [picks, setPicks] = useState({})
+  const [hints, setHints] = useState({})
   const [score, setScore] = useState({ correct: 0, total: 0 })
-  const [problemScore, setProblemScore] = useState({ correct: 0, total: 0 })
   const [finished, setFinished] = useState(false)
 
   const p = problems[pIndex]
-  const step = phase === 'steps' ? p?.steps[si] : null
+  const steps = p ? mathGuidedApproach(p.id) : []
   const leave = () => {
     if (params.returnTo?.screen) {
       returnTo(params.returnTo.screen, params.returnTo.params ?? {})
@@ -53,12 +52,6 @@ export function MathSolveScreen() {
     }
     back()
   }
-
-  // 穴埋め用タイル（ステップごとにシャッフル固定）。
-  const bank = useMemo(
-    () => (step?.fill ? shuffle(step.fill.tiles.map((label, id) => ({ id, label }))) : []),
-    [p?.id, si, phase], // eslint-disable-line react-hooks/exhaustive-deps
-  )
 
   if (!problems.length || !p) {
     return (
@@ -70,6 +63,11 @@ export function MathSolveScreen() {
     )
   }
 
+  function reset() {
+    setPIndex(0); setSolved(false); setPicks({}); setHints({})
+    setScore({ correct: 0, total: 0 }); setFinished(false)
+  }
+
   if (finished) {
     const pct = score.total ? Math.round((score.correct / score.total) * 100) : 0
     return (
@@ -77,14 +75,12 @@ export function MathSolveScreen() {
         <div className="text-6xl">{pct >= 80 ? '🏆' : pct >= 50 ? '✨' : '💪'}</div>
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">おつかれさま！</p>
-          <p className="mt-1 font-bold text-ink/55">{params.title ?? unit?.title} 全{problems.length}問クリア</p>
+          <p className="mt-1 font-bold text-ink/55">{`${params.title ?? unit?.title} 全${problems.length}問クリア`}</p>
         </div>
         <div className="flex items-center gap-2 rounded-2xl bg-white px-5 py-3 shadow-card">
           <Target size={20} className="text-violet-500" />
-          <span className="font-display text-lg font-extrabold text-ink">
-            正解 {score.correct} / {score.total}
-          </span>
-          <span className="text-sm font-bold text-ink/45">({pct}%)</span>
+          <span className="font-display text-lg font-extrabold text-ink">{`自力で選べた方針 ${score.correct} / ${score.total}`}</span>
+          <span className="text-sm font-bold text-ink/45">{`(${pct}%)`}</span>
         </div>
         <div className="flex w-full max-w-xs flex-col gap-2.5">
           <Button full variant="secondary" onClick={reset}>もう一度</Button>
@@ -94,66 +90,22 @@ export function MathSolveScreen() {
     )
   }
 
-  function reset() {
-    setPIndex(0); setPhase('recall'); setSi(0); setSel(null)
-    setPlaced([]); setFillResult(null); setLines([]); setScore({ correct: 0, total: 0 })
-    setProblemScore({ correct: 0, total: 0 }); setFinished(false)
-  }
+  const left = steps.length - approachStepsDone(steps, picks)
+  const pick = (stepIndex, optionIndex) => setPicks((current) => {
+    const chosen = current[stepIndex] ?? []
+    if (chosen.includes(0) || chosen.includes(optionIndex)) return current
+    return { ...current, [stepIndex]: [...chosen, optionIndex] }
+  })
+  const openHint = (stepIndex) => setHints((current) => ({ ...current, [stepIndex]: Math.min(2, (current[stepIndex] ?? 0) + 1) }))
 
-  const quiz = phase === 'recall' ? p.recall?.quiz : null
-  const isFill = phase === 'steps' && !!step?.fill
-  const isChoice = (phase === 'recall' && !!quiz) || (phase === 'steps' && !step?.fill)
-  const choiceQ = phase === 'recall' ? quiz : step // 3択の設問
-  const allFilled = isFill && placed.length === step.fill.blanks.length
-
-  // 進行可能か（フッターの有効/無効）。
-  const recallReady = phase === 'recall' && (!quiz || sel !== null)
-  const choiceAnswered = phase === 'steps' && isChoice && sel !== null
-  const fillDone = isFill && fillResult !== null
-
-  const chooseOption = (idx) => {
-    if (sel !== null) return
-    setSel(idx)
-    const correct = idx === choiceQ.answer
-    setScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
-    setProblemScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
-    if (phase === 'steps' && step.math) setLines((ls) => [...ls, step.math])
-  }
-
-  const addTile = (id) => { if (!fillResult) setPlaced((p) => [...p, id]) }
-  const removeSlot = (k) => { if (!fillResult) setPlaced((p) => p.filter((_, i) => i !== k)) }
-  const clearTiles = () => { if (!fillResult) setPlaced([]) }
-
-  const checkFill = () => {
-    const f = step.fill
-    const vals = placed.map((id) => bank.find((b) => b.id === id)?.label)
-    let perBlank
-    if (f.unordered) {
-      const pool = [...f.blanks]
-      perBlank = vals.map((v) => {
-        const at = pool.indexOf(v)
-        if (at >= 0) { pool.splice(at, 1); return true }
-        return false
-      })
-    } else {
-      perBlank = vals.map((v, k) => v === f.blanks[k])
-    }
-    const correct = perBlank.length === f.blanks.length && perBlank.every(Boolean)
-    setFillResult({ perBlank, correct })
-    setScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
-    setProblemScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
-    setLines((ls) => [...ls, resolveFill(f, f.blanks)]) // 正しい式を積み上げる
-  }
-
-  const advance = () => {
-    setSel(null); setPlaced([]); setFillResult(null)
-    if (phase === 'recall') { setPhase('steps'); setSi(0); return }
-    if (si + 1 < p.steps.length) { setSi(si + 1) }
-    else {
-      markMathDone(p.id)
-      recordContentQuizResult('math', p.id, problemScore.correct, problemScore.total)
-      setPhase('solved')
-    }
+  // 解き終わり（全段を選んだ、または「わからない」）。わからないで終えた段は、自力で選べなかった段として数える。
+  const finishProblem = (unknown) => {
+    if (solved) return
+    const result = unknown ? { correct: 0, total: steps.length } : stepScore(steps, picks, hints)
+    markMathDone(p.id)
+    recordContentQuizResult('math', p.id, result.correct, result.total)
+    setScore((current) => ({ correct: current.correct + result.correct, total: current.total + result.total }))
+    setSolved(true)
   }
 
   const nextProblem = () => {
@@ -163,25 +115,7 @@ export function MathSolveScreen() {
       setFinished(true)
       return
     }
-    setPIndex(pIndex + 1); setPhase('recall'); setSi(0)
-    setSel(null); setPlaced([]); setFillResult(null); setLines([])
-    setProblemScore({ correct: 0, total: 0 })
-  }
-
-  // フッターの状態。
-  let footer
-  if (phase === 'solved') {
-    footer = { label: pIndex + 1 >= problems.length ? '結果を見る' : '次の問題へ', onClick: nextProblem, disabled: false }
-  } else if (phase === 'recall') {
-    footer = { label: '解いていく', onClick: advance, disabled: !recallReady }
-  } else if (isFill && !fillDone) {
-    footer = {
-      label: allFilled ? '答え合わせ' : `答え合わせ（あと${step.fill.blanks.length - placed.length}）`,
-      onClick: checkFill, disabled: !allFilled,
-    }
-  } else {
-    const last = si + 1 >= p.steps.length
-    footer = { label: last ? '答えを確認' : '次のステップ', onClick: advance, disabled: isChoice && !choiceAnswered }
+    setPIndex(pIndex + 1); setSolved(false); setPicks({}); setHints({})
   }
 
   return (
@@ -190,10 +124,10 @@ export function MathSolveScreen() {
         <IconButton onClick={leave} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={pIndex / problems.length} color="#8b5cf6" /></div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{pIndex + 1}/{problems.length}</span>
+        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{`${pIndex + 1}/${problems.length}`}</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-4" data-math-guided={p.id}>
         {/* 問題（text＝日本語の問題文・任意、prompt＝中央の数式・任意） */}
         <div className="mt-1 rounded-[1.75rem] bg-white p-5 text-center shadow-card">
           <p className="mb-1 text-xs font-extrabold tracking-wide text-violet-500">問題</p>
@@ -203,89 +137,63 @@ export function MathSolveScreen() {
           {p.prompt && (
             <MathBlock tex={p.prompt} className={cx('text-ink [&_.katex]:text-[1.6rem]', p.text && 'mt-2')} />
           )}
+          {!solved && (
+            <p className="mt-3 text-[11px] font-bold text-ink/50">{'計算はしなくてよい。どう解くかを、下の段で1つずつ選ぼう。'}</p>
+          )}
         </div>
 
-        {/* 積み上がる式 */}
-        {lines.length > 0 && (
-          <div className="mt-3 space-y-1.5 rounded-2xl bg-violet-50/70 px-4 py-3">
-            {lines.map((tex, i) => (
-              <MathBlock key={i} tex={tex} className="text-ink/80 [&_.katex]:text-[1.05rem]" />
-            ))}
+        <MathExamApproachSteps
+          problem={p}
+          steps={steps}
+          picks={picks}
+          hints={hints}
+          onPick={pick}
+          onHint={openHint}
+          reviewed={solved}
+        />
+
+        {/* 全教材共通の「わからない」。押すと、自力で選べなかった段として解き方の流れを見る。 */}
+        {!solved && (
+          <div className="mt-4" data-math-guided-unknown>
+            <UnknownChoiceButton onClick={() => finishProblem(true)} />
           </div>
         )}
 
-        {/* ① 確認 */}
-        {phase === 'recall' && (
-          <>
+        {solved && (
+          <div className="mt-4 space-y-3 animate-slide-up" data-math-guided-review>
+            <MathExamSolutionFlow steps={steps} />
             <RecallCard recall={p.recall} />
-            {quiz && (
-              <Question
-                q={quiz}
-                noteKey={`${p.id}:recall`}
-                badge="方針"
-                sel={sel}
-                onChoose={chooseOption}
-              />
-            )}
-          </>
+            <div className="rounded-2xl bg-rose-50 px-4 py-3 text-left ring-1 ring-rose-100" data-math-pitfall>
+              <p className="text-xs font-extrabold text-rose-600">つまずきやすい点</p>
+              <p className="mt-1 text-sm font-bold leading-relaxed text-rose-950/80"><MathText>{p.pitfall}</MathText></p>
+            </div>
+          </div>
         )}
-
-        {/* ② 穴埋め / 3択 */}
-        {phase === 'steps' && (
-          isFill ? (
-            <>
-              <MathFillIn
-                fill={step.fill} bank={bank} placed={placed} result={fillResult}
-                onAdd={addTile} onRemove={removeSlot} onClear={clearTiles}
-              />
-              {fillResult && (
-                <div className="mt-4 space-y-3 animate-slide-up">
-                  {/* この段で行う操作の説明と、出したタイル1枚ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
-                  <div className="rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100" data-math-fill-explanation>
-                    <p className="text-[10px] font-extrabold text-violet-600">解説</p>
-                    <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75"><MathText>{step.note}</MathText></p>
-                  </div>
-                  <ChoiceExplanations
-                    title={`タイルの解説（${bank.length}枚すべて）`}
-                    name="math-fill"
-                    renderText={(text) => <MathText>{text}</MathText>}
-                    rows={bank.map((tile) => ({
-                      id: String(tile.id),
-                      heading: <MathInline tex={tile.label} />,
-                      body: mathFillNoteFor(`${p.id}:step:${si}`, tile.id),
-                      correct: step.fill.blanks.includes(tile.label),
-                      chosen: placed.includes(tile.id),
-                    }))}
-                  />
-                </div>
-              )}
-            </>
-          ) : (
-            <Question q={step} noteKey={`${p.id}:step:${si}`} sel={sel} onChoose={chooseOption} />
-          )
-        )}
-
-        {/* ③ 答え */}
-        {phase === 'solved' && <Solved problem={p} />}
       </div>
 
-      <div className="shrink-0 border-t border-violet-100 bg-white/90 p-4 pb-4 backdrop-blur">
-        <Button full size="lg" disabled={footer.disabled} onClick={footer.onClick}>
-          {footer.label} <ArrowRight size={18} />
-        </Button>
+      <div className="shrink-0 border-t border-violet-100 bg-white/90 px-3 py-2.5 backdrop-blur">
+        {solved ? (
+          <Button full size="lg" onClick={nextProblem}>
+            {pIndex + 1 >= problems.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
+          </Button>
+        ) : (
+          <Button full disabled={left > 0} onClick={() => finishProblem(false)} data-math-guided-check>
+            {left > 0 ? `解き方の流れを見る（あと${left}段）` : '解き方の流れを見る'}
+          </Button>
+        )}
       </div>
     </div>
   )
 }
 
-// 着眼点 + 公式カード。
+// この型の着眼点 + 公式カード（解き終わりに読む）。
 function RecallCard({ recall }) {
   if (!recall) return null
   return (
-    <div className="mt-4 rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-4">
+    <div className="rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-4" data-math-recall>
       <div className="flex items-center gap-1.5">
         <Lightbulb size={16} className="text-amber-500" />
-        <span className="font-display text-sm font-extrabold text-amber-700">まず確認しよう</span>
+        <span className="font-display text-sm font-extrabold text-amber-700">この型の着眼点</span>
       </div>
       {recall.points?.length > 0 && (
         <ul className="mt-2 space-y-1.5">
@@ -303,132 +211,6 @@ function RecallCard({ recall }) {
           <MathBlock tex={recall.formula.tex} className="mt-0.5 text-ink [&_.katex]:text-[1.15rem]" />
         </div>
       )}
-    </div>
-  )
-}
-
-// 選択式の設問（方針確認 / 選択式のステップ）。
-function Question({ q, noteKey, badge, sel, onChoose }) {
-  const answered = sel !== null
-  // 教材は正解を先頭に書いているので、出すたびに並びを混ぜる（同じ設問の間は並びを保つ）。
-  // 選んだ値は教材の選択肢の番号のまま扱う。
-  const order = useMemo(() => shuffle(q.choices.map((_, index) => index)), [q])
-  return (
-    <div className="mt-4">
-      <div className="mb-3 flex items-start gap-2 px-1">
-        {badge && (
-          <span className="mt-0.5 shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-extrabold text-amber-700">
-            {badge}
-          </span>
-        )}
-        <p className="font-extrabold text-ink/80"><MathText>{q.q ?? q.ask}</MathText></p>
-      </div>
-
-      <div className="space-y-2.5">
-        {order.map((idx) => {
-          const c = q.choices[idx]
-          const correct = idx === q.answer
-          const chosen = sel === idx
-          let tone = 'idle'
-          if (answered) {
-            if (correct) tone = 'correct'
-            else if (chosen) tone = 'wrong'
-            else tone = 'dim'
-          }
-          return (
-            <button
-              key={idx}
-              disabled={answered}
-              onClick={() => onChoose(idx)}
-              className={cx(
-                'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
-                tone === 'idle' && 'border-violet-100 bg-white text-ink active:bg-violet-50 active:scale-[0.99]',
-                tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
-                tone === 'wrong' && 'animate-shake border-rose-400 bg-wrong-soft text-rose-800',
-                tone === 'dim' && 'border-transparent bg-paper text-ink/35',
-              )}
-            >
-              <span className="flex-1"><MathText>{c}</MathText></span>
-              {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
-              {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
-            </button>
-          )
-        })}
-        <UnknownChoiceButton
-          selected={sel === UNKNOWN_CHOICE_ID}
-          disabled={answered}
-          onClick={() => onChoose(UNKNOWN_CHOICE_ID)}
-        />
-      </div>
-
-      {answered && (
-        <div className="mt-4 space-y-3 animate-slide-up">
-          {/* この設問固有の説明と、出した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
-          <div className="rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100" data-math-choice-explanation>
-            <p className="text-[10px] font-extrabold text-violet-600">解説</p>
-            <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75"><MathText>{q.why ?? q.note}</MathText></p>
-          </div>
-          <ChoiceExplanations
-            title={`選択肢解説（${q.choices.length}択すべて）`}
-            name="math"
-            renderText={(text) => <MathText>{text}</MathText>}
-            rows={order.map((idx) => ({
-              id: String(idx),
-              heading: q.choices[idx],
-              body: mathChoiceNoteFor(noteKey, idx),
-              correct: idx === q.answer,
-              chosen: sel === idx,
-            }))}
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-
-// 解き終わり：答えと、解き方を1段ずつ、つまずきやすい点。
-function Solved({ problem }) {
-  return (
-    <div className="mt-4 space-y-3">
-      <div className="rounded-2xl border-2 border-emerald-300 bg-correct-soft p-4 text-center">
-        <p className="mb-1 text-xs font-extrabold tracking-wide text-emerald-600">答え</p>
-        <MathBlock tex={problem.answer} className="text-emerald-900 [&_.katex]:text-[1.4rem]" />
-      </div>
-      {/* 解き方を1段ずつ（何を求めるか・式・理由）と、つまずきやすい点を出す（決まり文句の4段解説は置かない）。 */}
-      <section className="rounded-2xl bg-white p-4 shadow-card" data-math-solution aria-label="解き方">
-        <p className="text-xs font-extrabold tracking-wide text-violet-500">解き方</p>
-        <ol className="mt-2 space-y-3">
-          {problem.steps.map((step, index) => (
-            <li key={index} className="flex gap-2.5">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-extrabold text-violet-600">
-                {index + 1}
-              </span>
-              <div className="min-w-0 flex-1 text-left">
-                <p className="text-sm font-extrabold leading-relaxed text-ink/80">
-                  <MathText>{step.fill ? step.fill.ask : step.q ?? step.ask}</MathText>
-                </p>
-                {step.fill ? (
-                  <MathBlock tex={resolveFill(step.fill, step.fill.blanks)} className="mt-1 text-ink [&_.katex]:text-[1.05rem]" />
-                ) : (
-                  <>
-                    <p className="mt-1 text-sm font-bold leading-relaxed text-emerald-800">
-                      <MathText>{step.choices[step.answer]}</MathText>
-                    </p>
-                    {step.math && <MathBlock tex={step.math} className="mt-1 text-ink [&_.katex]:text-[1.05rem]" />}
-                  </>
-                )}
-                <p className="mt-1 text-xs font-bold leading-relaxed text-ink/65">
-                  <MathText>{step.fill ? step.note : step.why ?? step.note}</MathText>
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-      <div className="rounded-2xl bg-rose-50 px-4 py-3 text-left ring-1 ring-rose-100" data-math-pitfall>
-        <p className="text-xs font-extrabold text-rose-600">つまずきやすい点</p>
-        <p className="mt-1 text-sm font-bold leading-relaxed text-rose-950/80"><MathText>{problem.pitfall}</MathText></p>
-      </div>
     </div>
   )
 }

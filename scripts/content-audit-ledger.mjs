@@ -25,8 +25,9 @@ import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
-import { mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
-import { mathFillNoteFor } from '../src/data/math-fill-notes.js'
+import { MATH_GUIDED_APPROACH_ROWS } from '../src/data/math-guided-approach.js'
+import { MATH_EXAM_APPROACH_ROWS } from '../src/data/math-exam-approach.js'
+import { normalizeApproach } from '../src/lib/mathExamApproach.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -116,16 +117,16 @@ const GATE_CATALOG = Object.freeze({
     coverage: '全作品の権利・出典、場面、朗読区切り、語彙参照、英語読解設問',
   },
   math: {
-    command: 'node scripts/check-data.mjs && npm test',
-    coverage: '問題、答え、解法手順、注意点、出題・記録の回帰',
+    command: 'node scripts/check-data.mjs && node --test tests/math-guided-approach.test.mjs',
+    coverage: '誘導問題の全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・計算の結果を選ばせないこと）、着眼点・つまずき、読んだ記録',
   },
   mathHistory: {
     command: 'node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs',
     coverage: '数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画',
   },
   mathExam: {
-    command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs',
-    coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画',
+    command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-exam-approach.test.mjs',
+    coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・解き方の流れ）と読んだ記録、図の条件と描画',
   },
   juniorSocialScience: {
     command: 'node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs',
@@ -346,48 +347,26 @@ function buildQuestionBanks() {
       expectedChoiceCounts: [3],
       choiceRationalesFor: diagnosticChoiceRationales,
     }),
-    // 数学の方針の確認と選択式のステップ。ID は画面と同じ「問題ID:recall」「問題ID:step:番号」。
-    auditQuestionBank({
-      id: 'math-choice',
-      label: '数学選択問題',
-      items: Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
-        ...(problem.recall?.quiz ? [{ ...problem.recall.quiz, id: `${problem.id}:recall` }] : []),
-        ...problem.steps.flatMap((step, index) => (step.fill ? [] : [{ ...step, id: `${problem.id}:step:${index}` }])),
-      ]),
-      answerMatches: (item, choices) => Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0,
-      rationaleFor: (item) => item.why ?? item.note,
-      choiceRationalesFor: (item) => item.choices.map((_, index) => mathChoiceNoteFor(item.id, index)),
-      expectedChoiceCounts: [2, 3],
-    }),
-    // 数学の穴埋め。選択肢はタイル、正答は空所に入るタイルの組（全部がタイルにあること）。ID は画面と同じ「問題ID:step:番号」。
-    auditQuestionBank({
-      id: 'math-fill',
-      label: '数学穴埋め',
-      items: Object.values(MATH_PROBLEMS).flat().flatMap((problem) => (
-        problem.steps.flatMap((step, index) => (step.fill ? [{ ...step, id: `${problem.id}:step:${index}` }] : []))
-      )),
-      choicesFor: (item) => item.fill.tiles,
-      answerMatches: (item, choices) => (item.fill.blanks.every((blank) => choices.includes(blank)) ? 1 : 0),
-      rationaleFor: (item) => item.note,
-      choiceRationalesFor: (item) => item.fill.tiles.map((_, index) => mathFillNoteFor(item.id, index)),
-      expectedChoiceCounts: [2, 3, 4],
-    }),
-    // 数学の入試演習の選択式の欄。欄ごとに選択肢と、選択肢と同じ順の説明（notes）を全択に持つ。
-    auditQuestionBank({
-      id: 'math-exam-choices',
-      label: '数学の入試演習（選択式の欄）',
-      items: MATH_EXAM_PROBLEMS.flatMap((problem) => Object.entries(problem.choices ?? {}).map(([label, choice]) => ({
-        id: `${problem.id}:${label}`,
-        choices: choice.options,
-        answer: problem.boxes[label],
-        notes: choice.notes,
-        solution: problem.solution,
+    // 数学の誘導問題と入試演習の方針の段。手で計算せずに方針を3択で選ぶ。ID は「問題ID:段の番号」。
+    // 正解は教材の先頭の選択肢。問題別の解説はその段の考え方（なぜ）、選択肢別の説明は全択に持つ。
+    ...[
+      ['math-guided-approach', '数学の誘導問題（方針の段）', MATH_GUIDED_APPROACH_ROWS],
+      ['math-exam-approach', '数学の入試演習（方針の段）', MATH_EXAM_APPROACH_ROWS],
+    ].map(([id, label, rowsById]) => auditQuestionBank({
+      id,
+      label,
+      items: Object.entries(rowsById).flatMap(([problemId, rows]) => normalizeApproach(rows).map((step, index) => ({
+        id: `${problemId}:${index}`,
+        choices: step.options,
+        answer: 0,
+        hint: step.hint,
+        notes: step.notes,
       }))),
-      answerMatches: (item, choices) => (Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0),
-      rationaleFor: (item) => item.solution.map((step) => step.text ?? step.math ?? '').join(''),
+      answerMatches: (item, choices) => (choices[item.answer] ? 1 : 0),
+      rationaleFor: (item) => item.hint,
       choiceRationalesFor: (item) => item.notes,
-      expectedChoiceCounts: [2, 3, 4, 5, 6],
-    }),
+      expectedChoiceCounts: [3],
+    })),
     // 数学の歴史の話のテスト。3択（＋わからない）で、選択肢と同じ順の説明（notes）を全択に持つ。
     auditQuestionBank({
       id: 'math-history',
@@ -509,7 +488,10 @@ async function auditImplementationHash() {
     'src/lib/extendedReadingAudit.js',
     'src/lib/readingChoiceNotes.js',
     'src/data/reading-choice-notes.js',
-    'src/data/math-fill-notes.js',
+    'src/data/math-guided-approach.js',
+    'src/data/math-exam-approach.js',
+    'src/lib/mathExamApproach.js',
+    'src/components/MathExamApproach.jsx',
     'src/screens/MathSolve.jsx',
     'src/lib/normalLearningRecordEntries.js',
     'src/data/reading-question-translations.js',

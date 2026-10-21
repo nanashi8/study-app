@@ -16,7 +16,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { MathText } from '../components/MathText.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
-import { ArrowRight, BookOpen, Check, Close } from '../components/Icons.jsx'
+import { ArrowRight, BookOpen, Check, Close, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
@@ -29,6 +29,7 @@ import {
 // 数学の歴史の話のテスト。話1つ・部ごと・コース全体のどれからでも開き、
 // 問題ごとの結果（contentQuizResults の math-history）から全教材共通の出題順で組む。
 // 選択肢は3つ＋「わからない」。並びは問題ごとに毎回入れかえ、答え合わせで3つすべての説明を出す。
+// 求め方を選ぶ問い（手で計算しない）は、なぜその求め方をするのかの考え方のヒントを持ち、押したときだけ開く。
 
 const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
 
@@ -77,6 +78,8 @@ export function MathStoryQuizScreen() {
   const [unknownCount, setUnknownCount] = useState(0)
   const [missedChapterIds, setMissedChapterIds] = useState([])
   const [done, setDone] = useState(false)
+  // 考え方のヒント（計算せずに求め方を選ぶ問いだけが持つ）。問題ごとに、押したときだけ開く。
+  const [openHints, setOpenHints] = useState({})
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
   // 問題ごとの選択肢の並び。前へ戻ったときは同じ並びで見せ、やり直すと入れかえる。
@@ -133,6 +136,7 @@ export function MathStoryQuizScreen() {
     setCorrectCount(0)
     setUnknownCount(0)
     setMissedChapterIds([])
+    setOpenHints({})
     setDone(false)
   }
 
@@ -284,6 +288,22 @@ export function MathStoryQuizScreen() {
           <p className="mt-4 text-[15px] font-extrabold leading-relaxed text-ink">
             <MathText>{question.question}</MathText>
           </p>
+          {question.hint && (openHints[question.id] ? (
+            <div className="mt-3 rounded-xl bg-amber-50 px-3 py-2.5 ring-1 ring-amber-100" data-math-history-hint>
+              <p className="text-[10px] font-extrabold text-amber-700">{'考え方'}</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-amber-950/80"><MathText>{question.hint}</MathText></p>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setOpenHints((current) => ({ ...current, [question.id]: true }))}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-extrabold text-amber-700 ring-1 ring-amber-200 active:bg-amber-100"
+              data-math-history-hint-button
+            >
+              <Lightbulb size={14} />
+              {'ヒント：なぜ・どう考える？'}
+            </button>
+          ))}
         </section>
 
         <div className="mt-4 space-y-2.5">

@@ -106,7 +106,6 @@ export function MathExamUnitScreen() {
                         <span className="min-w-0 flex-1">
                           <span className="flex flex-wrap items-center gap-1.5">
                             <Chip color={level.color}>{level.label}</Chip>
-                            <span className="text-[11px] font-extrabold text-ink/45">{`目安${problem.minutes}分`}</span>
                             {latest && (
                               <span className="text-[11px] font-extrabold" style={{ color: MATH_EXAM_RESULTS[latest.result].color }}>
                                 {`前回：${MATH_EXAM_RESULTS[latest.result].short}`}

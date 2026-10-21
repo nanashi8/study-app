@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-21T13:13:21.254Z",
+  "auditedAt": "2026-10-21T20:57:25.280Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -10,9 +10,9 @@
     "categoryCount": 24,
     "learningItemCount": 20493,
     "quizItemCount": 20864,
-    "storedAndGeneratedQuestionPathCount": 7280,
-    "storedAndGeneratedChoicePathCount": 28415,
-    "overallContentSha256": "9ba7474ad797dca4b867e2f628b671aad1080f8b8ee5630e35fca4361f43074f"
+    "storedAndGeneratedQuestionPathCount": 7813,
+    "storedAndGeneratedChoicePathCount": 29585,
+    "overallContentSha256": "4289718146d44b5d19b656837effd08541196f13ff8ed4541c1e9958b952247c"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -99,16 +99,16 @@
       "coverage": "全作品の権利・出典、場面、朗読区切り、語彙参照、英語読解設問"
     },
     "math": {
-      "command": "node scripts/check-data.mjs && npm test",
-      "coverage": "問題、答え、解法手順、注意点、出題・記録の回帰"
+      "command": "node scripts/check-data.mjs && node --test tests/math-guided-approach.test.mjs",
+      "coverage": "誘導問題の全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・計算の結果を選ばせないこと）、着眼点・つまずき、読んだ記録"
     },
     "mathHistory": {
       "command": "node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs",
       "coverage": "数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画"
     },
     "mathExam": {
-      "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs",
-      "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、ヒント・解答の筋道・選択肢の説明、図の条件と描画"
+      "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-exam-approach.test.mjs",
+      "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・解き方の流れ）と読んだ記録、図の条件と描画"
     },
     "juniorSocialScience": {
       "command": "node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "4d81a0636715c9e4eeeb1370892ee635f95dfe4df53c3bbe0256dda54eaf4565",
+    "sha256": "115d1b6283cb06ed85950da34297b77ac4e297d096807aa3f6303ce6bfc5f2be",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -141,7 +141,10 @@
       "src/lib/extendedReadingAudit.js",
       "src/lib/readingChoiceNotes.js",
       "src/data/reading-choice-notes.js",
-      "src/data/math-fill-notes.js",
+      "src/data/math-guided-approach.js",
+      "src/data/math-exam-approach.js",
+      "src/lib/mathExamApproach.js",
+      "src/components/MathExamApproach.jsx",
       "src/screens/MathSolve.jsx",
       "src/lib/normalLearningRecordEntries.js",
       "src/data/reading-question-translations.js",
@@ -299,7 +302,10 @@
       "tests/lookalike-origins.test.mjs",
       "tests/material-sources.test.mjs",
       "tests/math-exam-answers.test.mjs",
+      "tests/math-exam-approach.test.mjs",
       "tests/math-exam.test.mjs",
+      "tests/math-guided-approach.test.mjs",
+      "tests/math-history-no-calc.test.mjs",
       "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
@@ -805,7 +811,7 @@
       "quizItemCount": 274,
       "learningIdOrderSha256": "02afc1d27ed997314b77e79f457994fb3e68ce91c1a5ce2cca587b41315d8d9c",
       "quizIdOrderSha256": "02afc1d27ed997314b77e79f457994fb3e68ce91c1a5ce2cca587b41315d8d9c",
-      "contentSha256": "4446a2cf08a6d340fc377d05472f489b17b1919ca07b5ff9fcdb589cfa430435",
+      "contentSha256": "86444ea49bc449439aa783899392414d4a431091663ca11b4f1e11d0895d3bf0",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -828,7 +834,7 @@
       "quizItemCount": 252,
       "learningIdOrderSha256": "5435e19f2db073c817781209d51e1968cbb1279c895624cc2e95f3a2d0163172",
       "quizIdOrderSha256": "16742cd0488689fd33d5f9a27aba5d4fff25b3b9796a855d6f7bae3b4e0a759b",
-      "contentSha256": "2e933460b6e558c8f570c7368f6c942727900b04e7916127f781905508954344",
+      "contentSha256": "b3318c2bd2265a335bbfb2373365354c6e4614daf200ef220dcc55a69c1dbaf6",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -851,7 +857,7 @@
       "quizItemCount": 360,
       "learningIdOrderSha256": "7130d37685372cefc61a5953eb70bd09d6f418f82829d75b2971bcc58c9b0c9f",
       "quizIdOrderSha256": "7130d37685372cefc61a5953eb70bd09d6f418f82829d75b2971bcc58c9b0c9f",
-      "contentSha256": "9ab40b90f7b7a6b0ac84ef88d41b6dc20006b84fa74c0c3fe5fc0560fdc50433",
+      "contentSha256": "b85a206eac71f9c3c503c6fed89a786a19c270280bda5beaf50427a986faf4e8",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1079,37 +1085,25 @@
       "failures": []
     },
     {
-      "id": "math-choice",
-      "label": "数学選択問題",
-      "questionCount": 299,
-      "choiceCount": 896,
-      "generalRationaleCount": 299,
-      "choiceSpecificRationaleCount": 896,
-      "questionSetSha256": "7aaa35e67f4f37f849f04244f9b4ecfd3904cca0f9b98a755baa9b3659446995",
+      "id": "math-guided-approach",
+      "label": "数学の誘導問題（方針の段）",
+      "questionCount": 549,
+      "choiceCount": 1647,
+      "generalRationaleCount": 549,
+      "choiceSpecificRationaleCount": 1647,
+      "questionSetSha256": "2ff0982ab540d697428ae1fa8f7689c1279b3a0007a11e6d6c3dca8caf69e9db",
       "result": "pass",
       "failureCount": 0,
       "failures": []
     },
     {
-      "id": "math-fill",
-      "label": "数学穴埋め",
-      "questionCount": 440,
-      "choiceCount": 1745,
-      "generalRationaleCount": 440,
-      "choiceSpecificRationaleCount": 1745,
-      "questionSetSha256": "14c2c1b7e2dff80d00358e61ef148e0f33bfe4ca78a9a439b9541c997b4ded69",
-      "result": "pass",
-      "failureCount": 0,
-      "failures": []
-    },
-    {
-      "id": "math-exam-choices",
-      "label": "数学の入試演習（選択式の欄）",
-      "questionCount": 27,
-      "choiceCount": 86,
-      "generalRationaleCount": 27,
-      "choiceSpecificRationaleCount": 86,
-      "questionSetSha256": "d77b0e16cd9ea947369c2c821cc338ec44f96c63f6af0fa63d3f355fe0c407e4",
+      "id": "math-exam-approach",
+      "label": "数学の入試演習（方針の段）",
+      "questionCount": 750,
+      "choiceCount": 2250,
+      "generalRationaleCount": 750,
+      "choiceSpecificRationaleCount": 2250,
+      "questionSetSha256": "fe131f289eceab7f3aca8e153fb9f69195cdc4bfdaf364286afff807791b3d94",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -1121,7 +1115,7 @@
       "choiceCount": 756,
       "generalRationaleCount": 252,
       "choiceSpecificRationaleCount": 756,
-      "questionSetSha256": "f2de0ba94518905d6c6b3dbafb1fe0430f92e266eafe581acd789540e2f8274a",
+      "questionSetSha256": "89b921caf01b0b6efef7556efa0f74e7394fa5e1d60565778f95f9cd205df851",
       "result": "pass",
       "failureCount": 0,
       "failures": []

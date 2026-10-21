@@ -1,0 +1,1161 @@
+{
+  "readMe": "数学の歴史コースのテスト全252問を1問ずつ読み、答えを出すのに計算が要る問い（数を出す・数をくらべる）を、計算せずに求め方を選ぶ問いに書き直した記録。rewritten は書き直して考え方のヒント hint を持つ問い、kept は計算しない問いとして残した問い（why に理由）。問いを変えたら読み直して node scripts/checks/math-history-no-calc.mjs --stamp <問題ID>。",
+  "questions": {
+    "mh-counting-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b5e70a82fb598a26af60dfe03ce69cc88cae350a4f9c7ca220a84a0adba70c61"
+    },
+    "mh-counting-2": {
+      "decision": "rewritten",
+      "sha256": "7e09e71ed5fb533573938556d743e807b8cc1da94b50f65bc7b4858a6e4a8c8e"
+    },
+    "mh-counting-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "23e0298eaff2bba8b8d0b227c4b05f80e22bcdc406b472e6e20638fd9aa78065"
+    },
+    "mh-place-value-1": {
+      "decision": "kept",
+      "why": "3がどの位（右から何番目）にあるかを読むだけで、計算しない",
+      "sha256": "db8d82412ac5b211e21fb4ddb6ba6543e095da5af5c64593f0137820b424b271"
+    },
+    "mh-place-value-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "d20520ea14f9da22f4d505f05225b7e3d5337e18945743d8954eba9e83cf9332"
+    },
+    "mh-place-value-3": {
+      "decision": "rewritten",
+      "sha256": "6644440ad68d9b27aedbf7592ecbe82b0fe865f31391c782755e490d77022f03"
+    },
+    "mh-place-value-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "4a3a4d1f192ef03d6a4cad4f82b7c7ac09290556612cf26612b263545d1d175a"
+    },
+    "mh-zero-1": {
+      "decision": "kept",
+      "why": "「どんな数に0をかけても0」という決まりを知っているかを問う。計算の手順はない",
+      "sha256": "8d0d1f89e1b51af65e600a6dd2d5bfe08a5565573b9f043ee04274dbb1d1d9f6"
+    },
+    "mh-zero-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "6b5eaab5094d4db998ae5a84efa06c1d340faff794aa8520b571bb4e2c7a2cf3"
+    },
+    "mh-zero-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "6742f0fe4d6ae13890d11278f12f38f29976d4938f375edeb4288fd56a67c1e6"
+    },
+    "mh-soroban-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "ebf5d2f1a2c415a912adb8a07f60345f33a8512b5aabf0b03ee61abdff7e7ddf"
+    },
+    "mh-soroban-2": {
+      "decision": "rewritten",
+      "sha256": "bddb3f3101396fec440a52550c36d762f4c0c2fb52d093a44e389be5646c2530"
+    },
+    "mh-soroban-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "88ce4b84b3234e34dbb92fedb8c498cb48bc61bee688974ab946e1463c9fa5c9"
+    },
+    "mh-soroban-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "1c3de9dc229e80421afe7c21efa937503ced562bb9037f16e2b29aac3ad49318"
+    },
+    "mh-multiply-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "882f40b971dea84f55b672181dbea4c0663ad31031f940126a563d7f55f26190"
+    },
+    "mh-multiply-2": {
+      "decision": "rewritten",
+      "sha256": "6cb05dfe6a7e5a70efe64f7bf8daf14454847d63e86976fb3aac81b05467213e"
+    },
+    "mh-multiply-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "f9e78dfaa647955269e1ae050508209ec8b4788ee8dfcf56258a58340cfe0d3a"
+    },
+    "mh-divide-1": {
+      "decision": "rewritten",
+      "sha256": "ec1cf5521148c58d722139e6296ed7967d051e5ed26f8c1993868fa46a966c86"
+    },
+    "mh-divide-2": {
+      "decision": "rewritten",
+      "sha256": "8e8d6efbd10998231d8149ac36390628338d0b6c03f763e038b12021efbdcff6"
+    },
+    "mh-divide-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e5a4a57aaddb6dfb19080ce2f298777a1cddbe07294b626eb4ee2277c4c87c25"
+    },
+    "mh-laws-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e070a71e8f210aadb67bcaf6cad78891bbf68821bf3c7dcced553e021d0c288d"
+    },
+    "mh-laws-2": {
+      "decision": "rewritten",
+      "sha256": "bf946b08fdbba67e5e6903fc44dbe35d5613091590b77f6c02cd3a059798ecca"
+    },
+    "mh-laws-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e458d775fbbfd005489abfd05f9736b3abbf94da34951339a593865e81dd6822"
+    },
+    "mh-fractions-1": {
+      "decision": "rewritten",
+      "sha256": "8dbef9075afec54e72a3a3679abf7f9e6c55f20c3ef332944d35868431d586ed"
+    },
+    "mh-fractions-2": {
+      "decision": "rewritten",
+      "sha256": "d807e425e115864a40ff0a2c5869cdbc8df9a50ad1f74e1cfb5f295c3c86de14"
+    },
+    "mh-fractions-3": {
+      "decision": "rewritten",
+      "sha256": "03e6b1f594bd5d12cfb16132858d5a130852b16cf5b3ec4ae6292e2b2c561932"
+    },
+    "mh-fractions-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "683c818eae603a44885a5ad028b7b868570f667a625d5de79472e3b9514a7650"
+    },
+    "mh-fraction-calc-1": {
+      "decision": "rewritten",
+      "sha256": "bf584fa1005dabaa89b2a5478f7dd973f0369ee7d882fe8c782bebd67a374dc5"
+    },
+    "mh-fraction-calc-2": {
+      "decision": "rewritten",
+      "sha256": "841109b18fcee241bf343c65c82c9d8d354d1b00bb23464201196f88828c40be"
+    },
+    "mh-fraction-calc-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e20f48ae4267be12880d9f82a9266fcde7e41889df05de47417b652da6c5a3f2"
+    },
+    "mh-fraction-calc-4": {
+      "decision": "rewritten",
+      "sha256": "35d5bb0c63919dcf5bee9b678d63c7b23a6114dc1b3b6fce599fc0265bb7acc4"
+    },
+    "mh-decimals-1": {
+      "decision": "rewritten",
+      "sha256": "a3b03ce5f83f105cf6e59707c17a31de8fff8b30a1950ef9c07d1c1435496360"
+    },
+    "mh-decimals-2": {
+      "decision": "kept",
+      "why": "割・分・厘が小数のどの位にあたるかを読むだけで、計算しない",
+      "sha256": "0a6cfcb9afe40bbb757c9a6967c9f14b59668731038dc517d3233e034899d3e8"
+    },
+    "mh-decimals-3": {
+      "decision": "rewritten",
+      "sha256": "efe0c766b6464f66a6a5b0f93abf8c5ef9239561ec4e56d3f81828e5fe1a5dae"
+    },
+    "mh-decimals-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "f34b00bfbdebbe8e561a3226e45ac5fa08c33eeb9edee257c59b4f3bb0a851d9"
+    },
+    "mh-primes-1": {
+      "decision": "rewritten",
+      "sha256": "b4e7544186e00a34cb3042a5e2fc0a8124c8f7675e5ec7c146da2d55adb9aa49"
+    },
+    "mh-primes-2": {
+      "decision": "rewritten",
+      "sha256": "7d68eaa227cf1c0d229044fc5c8355c1ff7d1a8ee440bc2c6889bcbd9b4346e5"
+    },
+    "mh-primes-3": {
+      "decision": "rewritten",
+      "sha256": "e274f5616da43c3a9abe28038c016abfe24b172ea46cf3d3065f3006e462b72b"
+    },
+    "mh-primes-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a423272bae1ece70b9d02801a2d21ef314fd452da9f96a7b8b84324b3d94745c"
+    },
+    "mh-letters-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "ecbf1d3d59ada63097624d072a9e14a8651331c6fc7857277807ceebc3e76dd6"
+    },
+    "mh-letters-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b5ba5b8aa71fb2071e20590770cc0ffda4a5c11ad673398a50337e1567f74419"
+    },
+    "mh-letters-3": {
+      "decision": "rewritten",
+      "sha256": "ced98e1b06428d05716fc4a69b9985d5841be7fb6b6540901ce71e09451a0969"
+    },
+    "mh-measure-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "951de06acd157400375a8890bfeb84f4b0f09c7ea9aa75420657d9f159d11c4c"
+    },
+    "mh-measure-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a989618f7f6852d2a574e71c10f3294302373d4188090f467bd0d7cc386478d6"
+    },
+    "mh-measure-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "feb492b254feaa404aa7fd29505c5e69d3fab2d536358c751c06911ef4465705"
+    },
+    "mh-measure-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "75e7e2e2de8b5e266ed6dd57ddfa27cbb17ac4782868bd217ebe55dc5db28380"
+    },
+    "mh-base60-1": {
+      "decision": "rewritten",
+      "sha256": "4588a268e44242032157ab70aed8b2b668130affe0d221f074dd54043ef9f10a"
+    },
+    "mh-base60-2": {
+      "decision": "rewritten",
+      "sha256": "4e7c1984ec7f5cf3a89187b8502c5599cb4c8e9ca5d48e4d5b780b95a15fa5d4"
+    },
+    "mh-base60-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "322fb7d7d17bfc4cfe8a3466588990cfcd7e7ded7f704e774eedc7369142317a"
+    },
+    "mh-base60-4": {
+      "decision": "rewritten",
+      "sha256": "b72513c3b66410eee4bccebd2214c54f31ecee75ca7de467c7e10887ac727364"
+    },
+    "mh-angles-1": {
+      "decision": "rewritten",
+      "sha256": "dc6e8a8555e3c5499b75e2eb77222556e7bdddfb911c796c0fe8b44b6030a99a"
+    },
+    "mh-angles-2": {
+      "decision": "rewritten",
+      "sha256": "af32fa2781180a4c60a8812b2c076bf422f9c4f8c6402bd94bf10f248f4b2787"
+    },
+    "mh-angles-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a31738664db124d785f3041fb0b30a1630fac641cba359b0818b101b31e3284c"
+    },
+    "mh-angles-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "47b9475772ddafa29aec901501eca67eee11e1b9181da557cd22b9e56630b370"
+    },
+    "mh-shapes-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "f635d3345a139b0201c777c3c734538586276fab008541bff009c61b3321c1e3"
+    },
+    "mh-shapes-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "d73ca6cf5b2dbf38608f43a22d4c00f98f8171a671a6186426a18d5d448c5d63"
+    },
+    "mh-shapes-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "8b6a971bfa82680cba9acfaf1fb27ab9827ad401ce9b92cf9b98eb6140c643e2"
+    },
+    "mh-shapes-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "aa11199a47379b2f4ab5ed1968db487baef8743c11e2feb03c71785bf089640f"
+    },
+    "mh-area-1": {
+      "decision": "rewritten",
+      "sha256": "3e83f66d48ed2ff1e203590f3f51cd487b968d86a8f038d1bc7fd5b46588c5f4"
+    },
+    "mh-area-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "65814d13541b4b01f2bcb1c2262ba0d766e89fae44caf9192963429a281eb454"
+    },
+    "mh-area-3": {
+      "decision": "rewritten",
+      "sha256": "1c1d7688c44aa768f54178bb47a0edabc36c5984ccdca7ee9e6eacb0de571806"
+    },
+    "mh-area-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "86caecba8280015ae49211756f45cda6e6fe2d38cc113eb4ef551ae04bb96d78"
+    },
+    "mh-pi-1": {
+      "decision": "rewritten",
+      "sha256": "0d0078099f5877083daa3110e2ba583101973427af51374567ee7c11d87b67bd"
+    },
+    "mh-pi-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "83c46242d18dd0bdef827170111571f0a3fdc1bc7e56646a5f60747fbc92d624"
+    },
+    "mh-pi-3": {
+      "decision": "kept",
+      "why": "祖沖之が見つけた分数という史実を問う",
+      "sha256": "2f2ee15287e342806bde009d976963f6b63c012be4309480f7a8cd96c1b5c28f"
+    },
+    "mh-pi-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3f7fc37838a459052e2798cdbf502e469dd593f015350710944f835c4606adc3"
+    },
+    "mh-circle-area-1": {
+      "decision": "rewritten",
+      "sha256": "70d0cb8770e42b07b3292e09940ffc8703c35a8eb8e0fec407393726e2ceb757"
+    },
+    "mh-circle-area-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "6b56f9f573a9b5a30d4aabd4b963738c8f5d8ccb63f12b00712fd2c7f92c1727"
+    },
+    "mh-circle-area-3": {
+      "decision": "rewritten",
+      "sha256": "46f20f24e2823723c018d6b60eff13e3c9bd44a5cba5e20af54f7be8dd9828b1"
+    },
+    "mh-volume-1": {
+      "decision": "rewritten",
+      "sha256": "50f660086f978711400229b8f1777feb18b2b7c7655d7da545955c62f0f96fc4"
+    },
+    "mh-volume-2": {
+      "decision": "rewritten",
+      "sha256": "5b694cc7ad1df54c2c51cb413dcd27f51add2a2ccc3db0d31df3ead915228bba"
+    },
+    "mh-volume-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "c6b91227a043a7d43207e439b35b7f0ecf972563e0d8bc6ce9409266b6e68e33"
+    },
+    "mh-polyhedra-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "cbf33710975d6779faf538727e6fda7bd7a2515cf462c0fd576bf47a52de5756"
+    },
+    "mh-polyhedra-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "aa437082d4311d0e49dadb39682898b7c52ca96876fb12991b22f496b6df20ef"
+    },
+    "mh-polyhedra-3": {
+      "decision": "rewritten",
+      "sha256": "1be83546cb5ca4b24b2a2e45d8e6d2eea554e8b8e272f161924a46900f70f5a1"
+    },
+    "mh-polyhedra-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2624493a2251c0ee5ddd216b9968058189a49a73e0b0ad5f1bd08824f604c670"
+    },
+    "mh-position-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "059785abd0875c1a6df1e0b2d4c62a0cbc44c8cb7a3fd6fcac48f2c4aa3dd6c5"
+    },
+    "mh-position-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "7106d577254a2d08b632289d00f9945e6032bb49ad1ce8cd8df4404fc63cd6bf"
+    },
+    "mh-position-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "8e91887a9567a1152363e8cb8e1e5878ef1f0e763626a51739168ba8922025da"
+    },
+    "mh-ratio-1": {
+      "decision": "rewritten",
+      "sha256": "4d2c1de3cf354cc35866d5515983b1b05935667e73246de172a1610df3163ba0"
+    },
+    "mh-ratio-2": {
+      "decision": "rewritten",
+      "sha256": "e5912a8efe8b5ee8159dcb010dfbb2f54e407f042a746149bb7fd6a435c8050f"
+    },
+    "mh-ratio-3": {
+      "decision": "rewritten",
+      "sha256": "6f6b342833673649e2630a7a7153b11e4309c2bd4e2499a307b25b8af49dad39"
+    },
+    "mh-percent-1": {
+      "decision": "rewritten",
+      "sha256": "d7b17a19eb2249f074d33e3285e53e1b9fe225fb33b2f136702d5c4885572891"
+    },
+    "mh-percent-2": {
+      "decision": "rewritten",
+      "sha256": "0c582f462c125fdcd9813c31e427745d6822232e06c6cce36d01c739d46c3ed7"
+    },
+    "mh-percent-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "1b51176a88c2f521b1e86f2f22869cd534b40a0d70f5ad5cd12e8c4f4a8c0b0f"
+    },
+    "mh-percent-4": {
+      "decision": "rewritten",
+      "sha256": "0929b31d475396ea19bf8f7dea8af1cd06d302b7cfaa197886eb84d9051d5cf0"
+    },
+    "mh-speed-1": {
+      "decision": "rewritten",
+      "sha256": "0d3f946bf25e0af2fa9c0e3d61a709d8a065b3ffc46fe8ad332e49fba8b0f080"
+    },
+    "mh-speed-2": {
+      "decision": "rewritten",
+      "sha256": "cbbff93467e219eb09c2b5cc1bc01917779b05d93eee72e490714ccea7f8a558"
+    },
+    "mh-speed-3": {
+      "decision": "rewritten",
+      "sha256": "ae9fc40ab93eed5f9ab2f390e7fc749bb87456e81eaf87e6208b033bd91729cc"
+    },
+    "mh-speed-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "254bfd1cbe4cdd8c8aba4461917d509907f5397b1f42ef243f70e019ad2f8cf9"
+    },
+    "mh-hooke-1": {
+      "decision": "rewritten",
+      "sha256": "b355e4670c31a90f033ed11ebc0cc48105e6d9e4337f0e222353007ac78a745b"
+    },
+    "mh-hooke-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b53e6020670d51df127414452c315743c642d7987abd217ed7d26309c51cc730"
+    },
+    "mh-hooke-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "634a1a09999244c06c4f40950adc0ed599935b6988ba8a0185a27e9b3f11c8d4"
+    },
+    "mh-lever-1": {
+      "decision": "rewritten",
+      "sha256": "2ef87d3e5112c06c78fd5fce81278bec6193f6274274457dd71725e28c347556"
+    },
+    "mh-lever-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2d4b2dbde481498cb2122c45643bd531961d17ab74fcf86d2d344d48c6813552"
+    },
+    "mh-lever-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2dcb8d31c6ee1ea7cb4f87ade3e81c94067f0c691b32a76c31ebdfadbe52e547"
+    },
+    "mh-charts-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "83ff1b80016c28cc6272bb35f1eb3cf4d2646cc947127e5d32bcb36419f16401"
+    },
+    "mh-charts-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "46f4ae058b22134a0116a6d78b7d30ba173bdfe8c99179636868e3fd0de38d96"
+    },
+    "mh-charts-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "d60871eefd2b096cba4566cc953fe650104c7abacb0e888ee9b87e6a1250c456"
+    },
+    "mh-charts-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3cc613391b3f35d13e5607c0b5d45bf32cbbd5c7bd1fb876fc7d9251e6bfabe4"
+    },
+    "mh-mean-1": {
+      "decision": "rewritten",
+      "sha256": "2cc24b7c0e3f12d8f0f9f9297c68b3094a1d240267c09097a0cee0db8c44d0e1"
+    },
+    "mh-mean-2": {
+      "decision": "kept",
+      "why": "小さい順に並べて真ん中を読むだけで、計算しない（中央値は外れた値に左右されない）",
+      "sha256": "7f2ec6df7c60ed374ba5e195c798b35bb5b4add10e831d3dbbe8ef9914dc2f4c"
+    },
+    "mh-mean-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "eb7d7c384c9f5ecbead18fec1fdf654000cc85feace3a28e49f53d3f8f43a1c3"
+    },
+    "mh-histogram-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "9792f7f4db502d6cda07a26c989af527602ec00a66fa5988563d32c2c7fc0401"
+    },
+    "mh-histogram-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e4176ab84e62e155b4e76288d7c965df8a1bbe2365b2ebdb80bbd0d462900297"
+    },
+    "mh-histogram-3": {
+      "decision": "kept",
+      "why": "いちばん多く出てくる値を数えて読むだけで、計算しない",
+      "sha256": "f811bd39165c05ac6268be8633d51b8dc9eb6904862f2f82a71a43a8086d21c1"
+    },
+    "mh-cases-1": {
+      "decision": "rewritten",
+      "sha256": "bdc8ac0a4d91e7f50cc41f765997df96f40c68d6f6f9c69669f1e1f31a63cd8a"
+    },
+    "mh-cases-2": {
+      "decision": "rewritten",
+      "sha256": "64d283d6df79c6cd89b6d4de066477238be4777d7c580732f7f39f4c6719110b"
+    },
+    "mh-cases-3": {
+      "decision": "rewritten",
+      "sha256": "f5fb6acc58d22c80d112f2fa7f28facd8dcb052416741e508bbac186ab83094f"
+    },
+    "mh-negative-1": {
+      "decision": "rewritten",
+      "sha256": "8c5db2dce465622416e155f22cb437c53a6ad5f84548a2e4b0a07170081dcb3d"
+    },
+    "mh-negative-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "9553b7f7fb8236a6e8b8c5c4f940caede337c9933245400aefe30341bf0c071d"
+    },
+    "mh-negative-3": {
+      "decision": "rewritten",
+      "sha256": "1cee93f37ea40ec6772819766e2f67765707a898de2793c8c2b3206b65f47f31"
+    },
+    "mh-negative-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "14955ccbf5e27709a0fd637248070885a7f6eded68aeb19ec002a4b85e55fac8"
+    },
+    "mh-equation-1": {
+      "decision": "rewritten",
+      "sha256": "c04e1bd78297b39ac72359a68f250512f73cf62f009535d2d65de00fa42acf0a"
+    },
+    "mh-equation-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "672b65c12d103b69520104cd27036106100f482945456676e7822267cfa4d2e9"
+    },
+    "mh-equation-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "bcfbce93153ce3ceb88b75c37bc357a08e4f1df929476a4b4301b0f38eb1cbe7"
+    },
+    "mh-coordinates-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "51b3fff9ef39f2b4569f24c522336d03e0653a2c2667e432761daa8ec2cd9937"
+    },
+    "mh-coordinates-2": {
+      "decision": "rewritten",
+      "sha256": "28624aec54ffd03637337bcf5bf29e59433938e2d08baa8f0334cd162f250044"
+    },
+    "mh-coordinates-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b5acc886a90978501c3b1e95c36f2778f45542a5044595c198cc0a18873289cd"
+    },
+    "mh-sphere-1": {
+      "decision": "rewritten",
+      "sha256": "124500eb7ceff6cb6495a58a31121f66d399ec143aca1cf614187e6ec556205f"
+    },
+    "mh-sphere-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "449be44e5877beac7726bbd5e2953d8bfe49ff4ec9f8fbdbd0eb778f41f6ebe0"
+    },
+    "mh-sphere-3": {
+      "decision": "kept",
+      "why": "アルキメデスが見つけた「球は円柱の3分の2」を知っているかを問う",
+      "sha256": "da52c352e551448de2623acf4da5d35f53116a99f2f51f34965fec6bb5119835"
+    },
+    "mh-simultaneous-1": {
+      "decision": "rewritten",
+      "sha256": "cc37ee25d3bc155d0d47719cb3a066e4cc5ee691e3d0465c44d2366d7705ff49"
+    },
+    "mh-simultaneous-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b660f7b0d49b69e093dc78ce86489db1dc6183ce835147fc2519f7895f007bd5"
+    },
+    "mh-simultaneous-3": {
+      "decision": "rewritten",
+      "sha256": "15ff0d3ea154c183221ba88fcc098cce036fed38d6340578e4979d6bc191b560"
+    },
+    "mh-linear-graph-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3bb515fc28d468d932cfde767936029037ff8f0a34aa605edc3eb61e77dfaf3f"
+    },
+    "mh-linear-graph-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e347ee70ef8f2f9c35aa56be3fe228d30afb307a740f20d94813ce6c334bb289"
+    },
+    "mh-linear-graph-3": {
+      "decision": "rewritten",
+      "sha256": "0d42d4dcbadcfbd2e396f4b6d28505ba44a80587c4b427a5e72002cfb8a07171"
+    },
+    "mh-earth-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e0d658be9869b8c7fdaef33f0554c3d3af962db728f105ba678ddb8c4e91826c"
+    },
+    "mh-earth-2": {
+      "decision": "rewritten",
+      "sha256": "c59583f3bfe689e719511a59b288da6409fda811da07f4c06a9104ab67650ee7"
+    },
+    "mh-earth-3": {
+      "decision": "rewritten",
+      "sha256": "2ee1a090191cb5c84a382a786b33209d903f292a6f02f8789d56fa1b812dda37"
+    },
+    "mh-non-euclid-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "7187f75a9580de6937dbe04974a5615f5a95f91cfaa1794b70d42124e6a70819"
+    },
+    "mh-non-euclid-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "af0652e8c2b8af607b079319d8033d626b7dbedb8d940d3b2fd72c55b7e169f7"
+    },
+    "mh-non-euclid-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "16111fa2c36e6d95298704f575dbeed8ab53237445c7d7e5a9e7b7b4139cefcd"
+    },
+    "mh-proof-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "490301aa2150a0cafaef5bd92b9583f6c275b76680e80a6519340c84cc85f43e"
+    },
+    "mh-proof-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "fba6f5cc9ea3fef10cf4f35bdfe96bf493fa2a3951bfb6d25adca5b9d03cbb6e"
+    },
+    "mh-proof-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "bf20e9b030b60d1de7da1061a099d2f8f8600c7543cef6d7f98bef1132445fdc"
+    },
+    "mh-probability-1": {
+      "decision": "rewritten",
+      "sha256": "2f823cc8dac9c77e0c39b8cc40cf8a80a0658216bb0c8029d2fa7d07ed5db211"
+    },
+    "mh-probability-2": {
+      "decision": "rewritten",
+      "sha256": "f31351c5767583c8a5e02705e19ef0bc6249c0d22103bf9d79e269fd34731c7b"
+    },
+    "mh-probability-3": {
+      "decision": "rewritten",
+      "sha256": "2c20ec1c7c1c54d803e6af2eabd7061b2b19ccd59714be2320110d6c223baf5e"
+    },
+    "mh-probability-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5bbe25693d49538c3e85e0b93bf2125633b8d39c1748612b29e0fa1306999ff5"
+    },
+    "mh-boxplot-1": {
+      "decision": "kept",
+      "why": "並んだデータの前半の真ん中を読むだけで、計算しない",
+      "sha256": "022930254242b2e7c06dc6dfc4bfff72b77f477621ecd9fd56155107e21c8990"
+    },
+    "mh-boxplot-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "09bec787bb48f902ccfb54046b6107ef7d1a1577be90194e7698ba63b7519250"
+    },
+    "mh-boxplot-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "743a177a76579127fe95376c02959666fc3f2958c4d5c8fd4a02bd92f9373403"
+    },
+    "mh-boxplot-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "c4ee63c9cb9aba134e1ff853d484c22af31a90187766c96b3f287f6a73efb58e"
+    },
+    "mh-square-completion-1": {
+      "decision": "rewritten",
+      "sha256": "3eeb5e5c868e1c61ce1a09628ee5dfe29f820a75930742a7b3dc1e6b5441ac06"
+    },
+    "mh-square-completion-2": {
+      "decision": "rewritten",
+      "sha256": "82f8ea622488895859ca64b864cf70c3a991cce09b9ab5fab69e73b86c33eafd"
+    },
+    "mh-square-completion-3": {
+      "decision": "rewritten",
+      "sha256": "226cfb9d6a7c4f8bea86ee6018a0295976a6c7520cf1f1d1981f4483110fe1b8"
+    },
+    "mh-square-completion-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b044a933106258867bf7ca4ab8e0e5fd725acad516c531fe2b92a601972ac506"
+    },
+    "mh-irrational-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "7b6e205b98502316a7451cccecd827562a18d6bf0dd567bd2e98275989a6f177"
+    },
+    "mh-irrational-2": {
+      "decision": "rewritten",
+      "sha256": "03eaf050cfffdd95fbed586ed2a541a61369da99cfa4b8657c03225560c2a823"
+    },
+    "mh-irrational-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "453b9bfc952291d072470ffb4a5ab3902b40eb266f0871cc42e8bd323614aa41"
+    },
+    "mh-irrational-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "686c60020064956de04b6a2c8a2635dccdcee73cc42bbe4526edb03855d34a6e"
+    },
+    "mh-sqrt-method-1": {
+      "decision": "rewritten",
+      "sha256": "f6e2f750dfefa049f51bddcee9254ac23f116faf8f5f43dfc25da727913579ab"
+    },
+    "mh-sqrt-method-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "31bc0ced6816144a4f691d7887a1996057c8e3aa97b7106d296c9d633b2ee8a4"
+    },
+    "mh-sqrt-method-3": {
+      "decision": "rewritten",
+      "sha256": "bca9f11d72e18de2a52fada14c22432cd82470e39965673491dfb4c5a3acecc1"
+    },
+    "mh-galileo-1": {
+      "decision": "rewritten",
+      "sha256": "0dd122dd86e9e4efb0dfe2fb3e23fc2bdf0b17587c1325c0cb86f3fa4f50dd3d"
+    },
+    "mh-galileo-2": {
+      "decision": "rewritten",
+      "sha256": "2eb00a44c3270126c6cbed526fc814bd7ae76b0ccf2ba7b421408440ab0af0de"
+    },
+    "mh-galileo-3": {
+      "decision": "rewritten",
+      "sha256": "0b82765184532cbeef21901643c425bf952faf5285a5bdcdc08067594884d8ad"
+    },
+    "mh-galileo-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "52ce617797703c5c033d1f683472ca58d3ee3417af268e0940ea07b2d2e46941"
+    },
+    "mh-similar-1": {
+      "decision": "rewritten",
+      "sha256": "e288f4ee16365575118f252f7d53e78b2ceb0fd1dc6435a6379f5d4a464da487"
+    },
+    "mh-similar-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5b0e86af3cee554dfb06a39542d01e10cac0c773224bc43a02832499ba5e63d1"
+    },
+    "mh-similar-3": {
+      "decision": "rewritten",
+      "sha256": "95a111612e244cd1e8b26ea82b361367e588b2e2960f0144826bfdac59e48431"
+    },
+    "mh-thales-1": {
+      "decision": "rewritten",
+      "sha256": "4e5603768d5efaa9c4cdace17a075c4358908e69fe614bb0785446d5b346547e"
+    },
+    "mh-thales-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "324b69a8b14288244174122546fcfb65fca825266189ea1cd815c7cd6566bb37"
+    },
+    "mh-thales-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2fb40d8f09e46db52e1fc640b96e1dba5ad1d36eb32db90dcf1829cfe18da695"
+    },
+    "mh-pythagoras-1": {
+      "decision": "rewritten",
+      "sha256": "c1d4f045c82819a69afa0e6e99ea11f8fc254b38f82375d910c061b96c868318"
+    },
+    "mh-pythagoras-2": {
+      "decision": "rewritten",
+      "sha256": "b23eecdb4728946a0887013db78816ae9ba4ae48b32ed836a83f859610372977"
+    },
+    "mh-pythagoras-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "0d06cf0a477618ebf46d864994bc7ebd167b616ac4f7129a8ece05689e59841e"
+    },
+    "mh-pythagoras-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "f21d4a21e4c3570ee93713651ce72d677e7256de1bd7bd98a83081661cac9856"
+    },
+    "mh-sampling-1": {
+      "decision": "rewritten",
+      "sha256": "169f4d46fa1b96be40d2e33872ed13c53fd9fa5d4c51c2583bfc9ccb813670b1"
+    },
+    "mh-sampling-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "edc82d9a6ccd3772aa44deb32b3da10342e3e3c6f7755ebae0057a0f8fee2fa3"
+    },
+    "mh-sampling-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5c685c8a4f93d1032759dfefd65dc972dcae5c79c4697a19ceb4bc202746cf95"
+    },
+    "mh-sampling-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "4a921b2120c1ce1da4e9a34c9875332532533c5472240efb692c0776f63bbcf8"
+    },
+    "mh-sets-1": {
+      "decision": "rewritten",
+      "sha256": "354f842fdf32150197c560b91b568dcf6e0e16da0143643567bccf793fc559d5"
+    },
+    "mh-sets-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "eb48c403717aaf50d0144929a8b5757a52eec825ebf64a91bd1e0822acc48825"
+    },
+    "mh-sets-3": {
+      "decision": "rewritten",
+      "sha256": "946fb9eb42064591e006e53a9dbebbd5750ff8ceb69f3d4a1ceaa2544666f535"
+    },
+    "mh-sets-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "880b015068661797efaf3beec7ff15d31ec27c28c076aaba87a309c59a22f874"
+    },
+    "mh-trig-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "76f2aa866a570a5d671e44ee129df6d35c885bce2f6b03b0138315df5b59e657"
+    },
+    "mh-trig-2": {
+      "decision": "rewritten",
+      "sha256": "3153fc963bbc4d783d88f3d716bb3796ab414bb4117c9be5b2a9c932cd768aa1"
+    },
+    "mh-trig-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3114e17c4f9df817d4c72e2a59ddd1aa45d4a149a00829b08c9ffe97dbd687d5"
+    },
+    "mh-trig-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3b761e17945f809ae5a9f66b5614aee68ff3b3c86bfe8212ec5bf9c4f8789ae0"
+    },
+    "mh-correlation-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "dd389c91afc5f7f5558218415c0e0087ee4164ee090227d9596dfd04b11caa59"
+    },
+    "mh-correlation-2": {
+      "decision": "kept",
+      "why": "散布図の点の並び方から、相関の向きと強さを読む",
+      "sha256": "c94567ff7cff093b18f65e402e632be018da44220905d15c040d1850820a831c"
+    },
+    "mh-correlation-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "e0b13fd1524e7532976842fdd686f6905ed1236707a1b907a72caaf555d0fbbc"
+    },
+    "mh-correlation-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "b14f5a18d786560588065bee3569ef2ccb9a88fac197bf83276f2d4d54fc5e6d"
+    },
+    "mh-pascal-1": {
+      "decision": "rewritten",
+      "sha256": "33820854777afe0f434ac06ee2f9fb8152948efe73bac29f25abac6a2a032675"
+    },
+    "mh-pascal-2": {
+      "decision": "rewritten",
+      "sha256": "52e108073ca5427db56c33eb2ddc96807a9c4261bb74ee6cff8c13f8ca7661b2"
+    },
+    "mh-pascal-3": {
+      "decision": "rewritten",
+      "sha256": "08210a1bf1627cfcc7fbf4ad67b5d843f659570f3c889b05fcc9f10d122bfd6b"
+    },
+    "mh-pascal-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "33124c6ceba8319c4ffec10dd4e44dd5cf77127b74681a1ae97c70e967626d10"
+    },
+    "mh-cipher-1": {
+      "decision": "rewritten",
+      "sha256": "1fcac3f341e21ea1e93f102c488dfb232330af52da56f23051a7f9b4ff6be123"
+    },
+    "mh-cipher-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5d58e80faf98d05cafafa410bdd4447c8e55961111bac3189287edd3d5da93e0"
+    },
+    "mh-cipher-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "debe0bb13fe9d0bf621c6a4c73f940fdafc7eeb8a777620879f6cb4805c377d9"
+    },
+    "mh-cipher-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "8473cbd199d7fd5dcb7a65757a379872ed6fa48a32f58d8fd2c766f1fe4be201"
+    },
+    "mh-complex-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "45a6777eeee4f32593ae6c13434e9e18a6ed25458eba0b2fb109cbd86c837bc4"
+    },
+    "mh-complex-2": {
+      "decision": "rewritten",
+      "sha256": "ef59bb548069d1edd3d5274280d8ec693e1b70ceccf75a8aead28ad446d16f3e"
+    },
+    "mh-complex-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "0422861f922055ffee451e2e7e79ae8ff37c389a297bf91c1d7488ff10421881"
+    },
+    "mh-complex-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "59b6b1f39550010d1b9aa9bcbf332a4dec0faf5daa7f5663787eef7a899e3ccc"
+    },
+    "mh-logarithm-1": {
+      "decision": "rewritten",
+      "sha256": "7bca57455c8b70cad3cfcdad61a8b99da5fd0f65548b7406e6d8fd31adc10888"
+    },
+    "mh-logarithm-2": {
+      "decision": "rewritten",
+      "sha256": "81722f88bba74ff7be8e30fd3636667cba10761ca69eb4c006c9e3b8decd9866"
+    },
+    "mh-logarithm-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "66d61551d5995ac44af9798eb8e45520facd48059302a0a0d55ad609a2a3311d"
+    },
+    "mh-logarithm-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "813dec7429bab9a8c1c47689f81b26b0299159d1aa8144879ca4df25132ce117"
+    },
+    "mh-compound-1": {
+      "decision": "rewritten",
+      "sha256": "20a6cb36375718eb5dc7c47dc9addfc66a2d1be59816adab0d58f5d8d92673f0"
+    },
+    "mh-compound-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "0915effa4dfa246d9fd0b67b2c0c28d348b4d44c66ac372524eddb573e38af41"
+    },
+    "mh-compound-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "692a7df81bb714f03b784f1928378162aea5d3a285048421f343a3f604163fbe"
+    },
+    "mh-waves-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "712cfd1433ee9ebab75bf4bf6553506222c13566e8d08054fc66ad42baa5df87"
+    },
+    "mh-waves-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "6c1934534b59b63b3e9c9e6f9cf26fbba2be364ad903870cc86abb48b3b7e951"
+    },
+    "mh-waves-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a72552b2540eaa984efa611b02f24f3333a7f9291eb30091c2dd5b5724a7e07b"
+    },
+    "mh-waves-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5f7c27aef6562ea8214f5b80757501152a5ffd1ad1d47c9c5bec9a98c9a93a4f"
+    },
+    "mh-derivative-1": {
+      "decision": "rewritten",
+      "sha256": "9b7c6bec501520a273e0d23be8e5bd7c22707910059da21505a759fe76cdd5bd"
+    },
+    "mh-derivative-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "56031f5c1c154dab6baba17cbc62e11e7e8bc5405b7bbf21184c99b861dbcee4"
+    },
+    "mh-derivative-3": {
+      "decision": "rewritten",
+      "sha256": "62a07738301595606b47ff752f06d447f18d99893b460de0bc6ba87bd3777a54"
+    },
+    "mh-derivative-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "1035bef85eec31ef575a19dbe656af377f387099e62fe848d4b7c6fcc8b54e93"
+    },
+    "mh-integral-1": {
+      "decision": "rewritten",
+      "sha256": "c6d81c6ea5af99b80feb35c5aed52bb6073949cae8f62854f8681064a1e76857"
+    },
+    "mh-integral-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "f1822b04f6a176f0d8af29686d7c6b73113cea651e5612d626fe210a63d77928"
+    },
+    "mh-integral-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "903b6323574c0e5d6ba04fcd3cdee3099916870bbf353f5f8d42ef6c3f723022"
+    },
+    "mh-integral-4": {
+      "decision": "kept",
+      "why": "アルキメデスが示した結果（中の三角形の3分の4倍）を知っているかを問う",
+      "sha256": "aabf2586ec6ef3d04ad785af5f137037eeed5bed21d7c1bba573af306e75cbbf"
+    },
+    "mh-ftc-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "962ff630009b78e674bb453986bf413e9c0ee71ecb904c75db823f6348050fc9"
+    },
+    "mh-ftc-2": {
+      "decision": "rewritten",
+      "sha256": "4f4c247ad1a39555df3df808ed7abe7bb1542fcf7207c69c37bca7bc806f308c"
+    },
+    "mh-ftc-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a9dd289123f4500fae8e0cd27b6283b2d527f17b2d2e5a74bf384b7f08f90acf"
+    },
+    "mh-ftc-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "bfa640bf4a3824e6b4ff2280f5b985fe1776c8a5ed2d685d1cea6ccbe972de31"
+    },
+    "mh-optimization-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "6067fb98f71a8f3c107ea0ee9f64370044e05d09cb9b59f6bfc54fbf6ab8b802"
+    },
+    "mh-optimization-2": {
+      "decision": "rewritten",
+      "sha256": "da88fe94aa9d733e76eecaedcd7a1c1aaedb3b70f81c73a98b38798e66ba1b4f"
+    },
+    "mh-optimization-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "a766b49a7d913877a15856d69ac5ff851af10b1f7152b62fe285cbb69843d212"
+    },
+    "mh-sum-1": {
+      "decision": "rewritten",
+      "sha256": "5f94438db21b7679b2a6fa7e1a81614c747d0f4cb4ac1884d28c6e6133820cd5"
+    },
+    "mh-sum-2": {
+      "decision": "rewritten",
+      "sha256": "86cf3b818a348ea51da50affa74fe13a531bf899f0bbc91cf4034340880fd22e"
+    },
+    "mh-sum-3": {
+      "decision": "rewritten",
+      "sha256": "1818f9fceb83e816598575ff8cbfcfdf8e50b7aaa9f8d79f35a473ee1bcb2c72"
+    },
+    "mh-fibonacci-1": {
+      "decision": "rewritten",
+      "sha256": "411c8f016993cd93e25965e5d91c15ab0ec8495fb80d5f211ba9b72f21d3016e"
+    },
+    "mh-fibonacci-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "c13ff9727f15067400099054515ab25c09fcce19d3314034d99d4f3cec9c2ff6"
+    },
+    "mh-fibonacci-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "3c563d699c64864cdaf0437da02108b77297df973c91d69de10d35268b149ed3"
+    },
+    "mh-normal-1": {
+      "decision": "rewritten",
+      "sha256": "5082a2571ea95d2467f4e37b52cf3c10741685658ae8dcff46362491118661d2"
+    },
+    "mh-normal-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "d48e8d95852daa9e35b0617ebc25badf3c9730bf0ad74ed841ac896e8f7f311b"
+    },
+    "mh-normal-3": {
+      "decision": "rewritten",
+      "sha256": "e25d8187b92bac7b6abf663968edc514d91a70e4467681f74c5f9ddddac825d1"
+    },
+    "mh-normal-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2092cc0c7954142cbd481bcc4f56ae673207ed43f556b3e7c510563540bddab8"
+    },
+    "mh-tea-1": {
+      "decision": "rewritten",
+      "sha256": "84d85cb6770548ab71252d016ff8cf12e677451b8acd3516b5e57cef49b85043"
+    },
+    "mh-tea-2": {
+      "decision": "rewritten",
+      "sha256": "a2c3c779aa853fd66f686f94fac1f2ba45f8ed400804fb8817723cda49a8c1a0"
+    },
+    "mh-tea-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "5d0cd5ec707f82f4a9778f4fa255f48208cd6bfdbea3fa380162375628daf39b"
+    },
+    "mh-tea-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "ed0b351662e33e7c375636afc8079cb6a02dbdf8938b8a62af43e3d07de0e787"
+    },
+    "mh-vector-1": {
+      "decision": "rewritten",
+      "sha256": "21c785f522932ba4a023acffdb626cd48d9ef3f60e7412ee098b0481962de692"
+    },
+    "mh-vector-2": {
+      "decision": "rewritten",
+      "sha256": "b56b82d6570906d8d911bf6c78226c7c189e4d6bf930e5be572f0f45f796a70a"
+    },
+    "mh-vector-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "13789e735354202b9df653b110afc92a5c60756bfa7b2974856d7e0eef91fef0"
+    },
+    "mh-vector-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "4f4373b3106abcd5a7b0931f8f922393e457b358e3128b7d7a7ad76879852146"
+    },
+    "mh-ellipse-1": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "2d54c949ee71892e72d5e56cc69ab1922f100b47a18b15a17987c62b782a9194"
+    },
+    "mh-ellipse-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "08ad54342bd669052f48f028fefbd4c9c29d96b79e6b6a136bd0e3d58b937dbc"
+    },
+    "mh-ellipse-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "027daa961e706d34ef0af69484d74355752309a111881f22e496a76e0ce6e002"
+    },
+    "mh-parabola-1": {
+      "decision": "rewritten",
+      "sha256": "a1d1bc78bbbd716cadcdfeb00ad6d3eb5e1232ff55e0e613c8709ab6992a02b0"
+    },
+    "mh-parabola-2": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "43d9172744e4eb10f53e8b5e5daf70ac44dd973fc23410e3bcb9a487557876fb"
+    },
+    "mh-parabola-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "69a0ab2a612e4a6a61666d10c4e37f7a8b163b6f1516125fd9493462e9bde4c4"
+    },
+    "mh-limit-1": {
+      "decision": "rewritten",
+      "sha256": "227702d5203b82f6c9bb44579c12db581fed8c67ae7dd4e3dbd82a0d68d4ac6b"
+    },
+    "mh-limit-2": {
+      "decision": "rewritten",
+      "sha256": "b6f915eee6b5ea7a2550cfd60c61858cacbc0dee565216b2cdef26f0aa7884af"
+    },
+    "mh-limit-3": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "d17a793f22c720513ec32ebf8e14b8b7ec9592ce533b7af14f5e6549b743373d"
+    },
+    "mh-limit-4": {
+      "decision": "kept",
+      "why": "史実・用語の意味・決まり・図や並びの読み取りを問い、答えを出すのに計算しない",
+      "sha256": "dfee86faf84cde840dcee2083efe3c586e16b8e2805464c0f8ba316f2c08c925"
+    }
+  }
+}

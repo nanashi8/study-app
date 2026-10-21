@@ -30,20 +30,23 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   const grammar = ledger.questionBanks.find((bank) => bank.id === 'grammar')
   const reading = ledger.questionBanks.find((bank) => bank.id === 'reading')
   const extendedReading = ledger.questionBanks.find((bank) => bank.id === 'extended-reading')
-  const mathFill = ledger.questionBanks.find((bank) => bank.id === 'math-fill')
   // 数学の歴史のテストは、どの問題も3択で、3択すべてに問題ごとの説明がある。
   const mathHistory = ledger.questionBanks.find((bank) => bank.id === 'math-history')
   assert.ok(mathHistory.questionCount > 0)
   assert.equal(mathHistory.choiceCount, mathHistory.questionCount * 3)
   assert.equal(mathHistory.generalRationaleCount, mathHistory.questionCount)
   assert.equal(mathHistory.choiceSpecificRationaleCount, mathHistory.choiceCount)
-  // 数学の入試演習の選択式の欄（27欄・86択）は、どの選択肢にも問題ごとの説明がある。
-  const mathExamChoices = ledger.questionBanks.find((bank) => bank.id === 'math-exam-choices')
-  assert.equal(mathExamChoices.questionCount, 27)
-  assert.equal(mathExamChoices.choiceCount, 86)
-  assert.equal(mathExamChoices.generalRationaleCount, 27)
-  assert.equal(mathExamChoices.choiceSpecificRationaleCount, 86)
-  assert.equal(mathExamChoices.failureCount, 0)
+  // 数学は手で計算せずに方針を選ぶ（requests/2026-10-22-math-no-hand-calc.json）。誘導問題274問の549段と、
+  // 入試演習360問の750段は、どれも3択で、段ごとの考え方と、全選択肢の説明がある。
+  for (const [id, steps] of [['math-guided-approach', 549], ['math-exam-approach', 750]]) {
+    const bank = ledger.questionBanks.find((item) => item.id === id)
+    assert.equal(bank.questionCount, steps, id)
+    assert.equal(bank.choiceCount, steps * 3, id)
+    assert.equal(bank.generalRationaleCount, steps, id)
+    assert.equal(bank.choiceSpecificRationaleCount, steps * 3, id)
+    assert.equal(bank.failureCount, 0, id)
+  }
+  assert.equal(ledger.questionBanks.some((bank) => ['math-fill', 'math-choice', 'math-exam-choices'].includes(bank.id)), false)
   // 社会・理科の演習の選ぶ問題（776問・3,104択）と語句テスト（1,151問・4,604択）は、どの選択肢にも説明がある。
   const subjectPractice = ledger.questionBanks.find((bank) => bank.id === 'subject-practice-choices')
   assert.equal(subjectPractice.questionCount, 776)
@@ -66,10 +69,6 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(extendedReading.choiceCount, 64)
   assert.equal(extendedReading.generalRationaleCount, 16)
   assert.equal(extendedReading.choiceSpecificRationaleCount, 64)
-  assert.equal(mathFill.questionCount, 440)
-  assert.equal(mathFill.choiceCount, 1_745)
-  assert.equal(mathFill.generalRationaleCount, 440)
-  assert.equal(mathFill.choiceSpecificRationaleCount, 1_745)
   assert.deepEqual(ledger.extendedReadingDetail.actualWords, [987, 1_977, 2_956, 3_940])
   assert.equal(ledger.extendedReadingDetail.totalWords, 9_860)
   assert.equal(ledger.extendedReadingDetail.sentenceCount, 528)

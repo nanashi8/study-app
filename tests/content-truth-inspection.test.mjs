@@ -12,9 +12,7 @@ import { ETYMOLOGY_WORD_STORIES } from '../src/data/vocab.js'
 import { ALL_SUBJECT_QUESTIONS, ALL_SUBJECT_TERMS, termQuestion } from '../src/data/subjects/index.js'
 import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
-import { MATH_PROBLEMS } from '../src/data/math.js'
 import { MATH_HISTORY_QUESTIONS } from '../src/data/math-history.js'
-import { MATH_EXAM_PROBLEMS } from '../src/data/math-exam.js'
 import { PASSAGES } from '../src/data/passages.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
@@ -25,7 +23,9 @@ import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
-import { mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
+import { MATH_GUIDED_APPROACH_ROWS } from '../src/data/math-guided-approach.js'
+import { MATH_EXAM_APPROACH_ROWS } from '../src/data/math-exam-approach.js'
+import { normalizeApproach } from '../src/lib/mathExamApproach.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -59,17 +59,11 @@ function questionRecords() {
     const q = termQuestion(t)
     add('subject-terms', q.id, q.choices, q.answer, q.choices.map((c) => q.notes?.[c]))
   }
-  for (const p of MATH_EXAM_PROBLEMS) {
-    for (const [label, c] of Object.entries(p.choices ?? {})) add('math-exam', `${p.id}:${label}`, c.options, c.options[p.boxes[label]], c.notes)
-  }
-  for (const prob of Object.values(MATH_PROBLEMS).flat()) {
-    if (prob.recall?.quiz) {
-      const q = prob.recall.quiz
-      add('math-choice', `${prob.id}:recall`, q.choices, q.choices[q.answer], q.choices.map((_, i) => mathChoiceNoteFor(`${prob.id}:recall`, i)))
+  // 数学は手で計算せずに方針を3択で選ぶ（誘導問題と入試演習）。教材は正解を先頭に書く。
+  for (const [bank, rowsById] of [['math-guided', MATH_GUIDED_APPROACH_ROWS], ['math-exam', MATH_EXAM_APPROACH_ROWS]]) {
+    for (const [problemId, rows] of Object.entries(rowsById)) {
+      normalizeApproach(rows).forEach((step, i) => add(bank, `${problemId}:${i}`, step.options, step.options[0], step.notes))
     }
-    prob.steps.forEach((s, i) => {
-      if (!s.fill) add('math-choice', `${prob.id}:step:${i}`, s.choices, s.choices?.[s.answer], (s.choices ?? []).map((_, k) => mathChoiceNoteFor(`${prob.id}:step:${i}`, k)))
-    })
   }
   for (const q of DIAGNOSTIC_QUESTIONS) add('diagnostic', q.id, q.choices, q.answer, q.choices.map((c) => diagnosticChoiceNoteFor(q, c)))
   return records

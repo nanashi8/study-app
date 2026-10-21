@@ -95,15 +95,11 @@ export const MATH_EXAM_JUNIOR2 = {
   problems: [
     // ── 式の計算 ──
     {
-      id: 'mx-calc2-01', unit: 'calc2', level: 'basic', pattern: 'poly', minutes: 2,
+      id: 'mx-calc2-01', unit: 'calc2', level: 'basic', pattern: 'poly',
       text: '次の計算をしなさい。',
       math: '(3a^2-2ab+b^2)-(a^2-5ab+4b^2)',
       parts: [{ answer: '[ア]a^2+[イ]ab-[ウ]b^2' }],
       boxes: { ア: 2, イ: 3, ウ: 3 },
-      hints: [
-        'ひく方のかっこをはずすと、中のすべての項の符号が変わる。',
-        '$a^2$ の項、$ab$ の項、$b^2$ の項をそれぞれまとめる。',
-      ],
       solution: [
         { text: 'かっこをはずす。', math: '3a^2-2ab+b^2-a^2+5ab-4b^2' },
         { text: '同類項をまとめる。', math: '2a^2+3ab-3b^2' },
@@ -112,15 +108,11 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$-(-5ab)$ を $-5ab$ のままにしない。符号を変えると $+5ab$。',
     },
     {
-      id: 'mx-calc2-02', unit: 'calc2', level: 'basic', pattern: 'poly', minutes: 2,
+      id: 'mx-calc2-02', unit: 'calc2', level: 'basic', pattern: 'poly',
       text: '次の計算をしなさい。',
       math: '12x^2y\\div(-4xy)\\times3y',
       parts: [{ answer: '[ア]xy' }],
       boxes: { ア: -9 },
-      hints: [
-        'わり算は逆数のかけ算に直して、1つの分数の形にする。',
-        '符号・数・文字の順に計算する。負の数は1つなので符号は $-$。',
-      ],
       solution: [
         { text: 'わる式を分母にして、1つの分数にする。', math: '-\\dfrac{12x^2y\\times3y}{4xy}' },
         { text: '数と文字をそれぞれ約分する。', math: '-\\dfrac{36x^2y^2}{4xy}=-9xy' },
@@ -129,14 +121,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '左から順に $12x^2y\\div(-4xy)$ を計算したあと、$\\times3y$ を分母に入れない。$3y$ は分子にかかる。',
     },
     {
-      id: 'mx-calc2-03', unit: 'calc2', level: 'basic', pattern: 'transform', minutes: 2,
+      id: 'mx-calc2-03', unit: 'calc2', level: 'basic', pattern: 'transform',
       text: '等式 $3x-2y=6$ を、$y$ について解きなさい。',
       parts: [{ answer: 'y=\\dfrac{[ア]}{[イ]}x-[ウ]' }],
       boxes: { ア: 3, イ: 2, ウ: 3 },
-      hints: [
-        '$y$ をふくむ項だけを左辺に残し、ほかの項を右辺に移項する。',
-        '最後に両辺を $y$ の係数でわる。',
-      ],
       solution: [
         { text: '$3x$ を移項する。', math: '-2y=-3x+6' },
         { text: '両辺を $-2$ でわる。', math: 'y=\\dfrac{3}{2}x-3' },
@@ -145,14 +133,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '両辺を $-2$ でわるとき、右辺の $6$ の符号も変わる。$6\\div(-2)=-3$。',
     },
     {
-      id: 'mx-calc2-04', unit: 'calc2', level: 'basic', pattern: 'value', minutes: 3,
+      id: 'mx-calc2-04', unit: 'calc2', level: 'basic', pattern: 'value',
       text: '$x=3,\\ y=-2$ のとき、$2(x-3y)-3(2x-y)$ の値を求めなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: -6 },
-      hints: [
-        '先に式を簡単にしてから代入する。',
-        'かっこをはずして、$x$ の項と $y$ の項をまとめる。',
-      ],
       solution: [
         { text: '式を簡単にする。', math: '2x-6y-6x+3y=-4x-3y' },
         { text: '代入する。', math: '-4\\times3-3\\times(-2)=-12+6=-6' },
@@ -161,15 +145,11 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$-3(2x-y)$ の $-y$ に $-3$ をかけると $+3y$。',
     },
     {
-      id: 'mx-calc2-05', unit: 'calc2', level: 'standard', pattern: 'poly', minutes: 3,
+      id: 'mx-calc2-05', unit: 'calc2', level: 'standard', pattern: 'poly',
       text: '次の計算をしなさい。',
       math: '\\dfrac{2x-y}{3}-\\dfrac{x-3y}{4}',
       parts: [{ answer: '\\dfrac{[ア]x+[イ]y}{[ウ]}' }],
       boxes: { ア: 5, イ: 5, ウ: 12 },
-      hints: [
-        '分母を $12$ にそろえて、分子をかっこでくくる。',
-        'ひく方の分子 $x-3y$ の、両方の項の符号を変える。',
-      ],
       solution: [
         { text: '通分する。', math: '\\dfrac{4(2x-y)-3(x-3y)}{12}' },
         { text: '分子のかっこをはずしてまとめる。', math: '\\dfrac{8x-4y-3x+9y}{12}=\\dfrac{5x+5y}{12}' },
@@ -178,14 +158,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '通分するとき、分母だけ $12$ にして分子に $4$ や $3$ をかけ忘れない。',
     },
     {
-      id: 'mx-calc2-06', unit: 'calc2', level: 'standard', pattern: 'transform', minutes: 3,
+      id: 'mx-calc2-06', unit: 'calc2', level: 'standard', pattern: 'transform',
       text: '台形の面積の公式 $S=\\dfrac{1}{2}(a+b)h$ を、$a$ について解きなさい。',
       parts: [{ answer: 'a=\\dfrac{[ア]S}{h}-b' }],
       boxes: { ア: 2 },
-      hints: [
-        'まず両辺を2倍して、分数をなくす。',
-        '次に両辺を $h$ でわって、$a+b$ だけを残す。',
-      ],
       solution: [
         { text: '両辺を2倍する。', math: '2S=(a+b)h' },
         { text: '両辺を $h$ でわる。', math: '\\dfrac{2S}{h}=a+b' },
@@ -195,14 +171,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '両辺を $h$ でわるとき、$a+b$ 全体がわられることに注意。$a$ だけをわらない。',
     },
     {
-      id: 'mx-calc2-07', unit: 'calc2', level: 'standard', pattern: 'proof', minutes: 4,
+      id: 'mx-calc2-07', unit: 'calc2', level: 'standard', pattern: 'proof',
       text: '「連続する3つの整数の和は、3の倍数である」ことを説明する。いちばん小さい整数を $n$ とするとき、3つの整数の和を次の形に表しなさい。',
       parts: [{ answer: 'n+(n+1)+(n+2)=[ア]n+[イ]=[ウ](n+[エ])' }],
       boxes: { ア: 3, イ: 3, ウ: 3, エ: 1 },
-      hints: [
-        '3つの整数は $n,\\ n+1,\\ n+2$ と表せる。',
-        '和を計算したら、3の倍数であることがわかるように「$3\\times$（整数）」の形にくくる。',
-      ],
       solution: [
         { text: '3つの整数の和を計算する。', math: 'n+(n+1)+(n+2)=3n+3' },
         { text: '3でくくる。$n+1$ は整数なので、$3(n+1)$ は3の倍数。', math: '3n+3=3(n+1)' },
@@ -211,17 +183,13 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$3n+3$ で止めない。$3(n+1)$ とくくって、かっこの中が整数だと言えて説明が完成する。',
     },
     {
-      id: 'mx-calc2-08', unit: 'calc2', level: 'standard', pattern: 'proof', minutes: 4,
+      id: 'mx-calc2-08', unit: 'calc2', level: 'standard', pattern: 'proof',
       text: '2けたの自然数の十の位の数を $a$、一の位の数を $b$ とする。この数と、十の位と一の位を入れかえた数について、次の式を完成させなさい。',
       parts: [
         { q: '2つの数の和', answer: '(10a+b)+(10b+a)=[ア](a+b)' },
         { q: '2つの数の差（もとの数－入れかえた数）', answer: '(10a+b)-(10b+a)=[イ](a-b)' },
       ],
       boxes: { ア: 11, イ: 9 },
-      hints: [
-        '十の位が $a$、一の位が $b$ の数は $10a+b$。入れかえた数は $10b+a$。',
-        '計算したあと、$a+b$ や $a-b$ でくくれる形にする。',
-      ],
       solution: [
         { text: '和を計算する。', math: '10a+b+10b+a=11a+11b=11(a+b)' },
         { text: '差を計算する。', math: '10a+b-10b-a=9a-9b=9(a-b)' },
@@ -233,15 +201,11 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 連立方程式 ──
     {
-      id: 'mx-simul-01', unit: 'simul', level: 'basic', pattern: 'solve', minutes: 2,
+      id: 'mx-simul-01', unit: 'simul', level: 'basic', pattern: 'solve',
       text: '次の連立方程式を解きなさい。',
       math: '\\begin{cases}3x+2y=7\\\\x-2y=5\\end{cases}',
       parts: [{ answer: 'x=[ア],\\quad y=[イ]' }],
       boxes: { ア: 3, イ: -1 },
-      hints: [
-        '$y$ の係数が $+2$ と $-2$ なので、2つの式をたすと $y$ が消える。',
-        '$x$ を求めたら、どちらかの式に代入して $y$ を求める。',
-      ],
       solution: [
         { text: '2つの式をたす（加減法）。', math: '4x=12,\\quad x=3' },
         { text: '$x-2y=5$ に代入する。', math: '3-2y=5,\\quad y=-1' },
@@ -250,15 +214,11 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '代入したあとの $-2y=2$ を $y=1$ としない。両辺を $-2$ でわって $y=-1$。',
     },
     {
-      id: 'mx-simul-02', unit: 'simul', level: 'basic', pattern: 'solve', minutes: 3,
+      id: 'mx-simul-02', unit: 'simul', level: 'basic', pattern: 'solve',
       text: '次の連立方程式を解きなさい。',
       math: '\\begin{cases}y=2x-5\\\\4x-3y=11\\end{cases}',
       parts: [{ answer: 'x=[ア],\\quad y=[イ]' }],
       boxes: { ア: 2, イ: -1 },
-      hints: [
-        '1つ目の式は $y=\\ \\cdots$ の形なので、代入法が使える。',
-        '2つ目の式の $y$ に、かっこをつけて $2x-5$ を入れる。',
-      ],
       solution: [
         { text: '代入する。', math: '4x-3(2x-5)=11' },
         { text: '解く。', math: '4x-6x+15=11,\\quad -2x=-4,\\quad x=2' },
@@ -268,15 +228,11 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$-3(2x-5)$ を $-6x-15$ としない。$(-3)\\times(-5)=+15$。',
     },
     {
-      id: 'mx-simul-03', unit: 'simul', level: 'basic', pattern: 'solve', minutes: 4,
+      id: 'mx-simul-03', unit: 'simul', level: 'basic', pattern: 'solve',
       text: '次の連立方程式を解きなさい。',
       math: '\\begin{cases}0.2x+0.3y=1.3\\\\\\dfrac{x}{2}-\\dfrac{y}{3}=0\\end{cases}',
       parts: [{ answer: 'x=[ア],\\quad y=[イ]' }],
       boxes: { ア: 2, イ: 3 },
-      hints: [
-        '1つ目の式は両辺を $10$ 倍、2つ目の式は両辺を $6$ 倍して、係数を整数にする。',
-        '整数の係数になったら、加減法で1つの文字を消す。',
-      ],
       solution: [
         { text: '係数を整数にする。', math: '2x+3y=13,\\qquad 3x-2y=0' },
         { text: '1つ目を2倍、2つ目を3倍してたす。', math: '4x+6y=26,\\ 9x-6y=0\\ \\Rightarrow\\ 13x=26,\\ x=2' },
@@ -286,14 +242,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '1つ目の式を10倍するとき、右辺の $1.3$ も $13$ にする。',
     },
     {
-      id: 'mx-simul-04', unit: 'simul', level: 'basic', pattern: 'param', minutes: 3,
+      id: 'mx-simul-04', unit: 'simul', level: 'basic', pattern: 'param',
       text: '$x,\\ y$ についての連立方程式 $\\begin{cases}ax+by=7\\\\bx+ay=8\\end{cases}$ の解が $x=2,\\ y=1$ であるとき、$a,\\ b$ の値を求めなさい。',
       parts: [{ answer: 'a=[ア],\\quad b=[イ]' }],
       boxes: { ア: 2, イ: 3 },
-      hints: [
-        '解を代入すると、$a$ と $b$ についての連立方程式ができる。',
-        '$2a+b=7$ と $a+2b=8$ を解く。',
-      ],
       solution: [
         { text: '$x=2,\\ y=1$ を代入する。', math: '\\begin{cases}2a+b=7\\\\2b+a=8\\end{cases}' },
         { text: '1つ目を2倍して2つ目をひく。', math: '4a+2b-(a+2b)=14-8,\\quad 3a=6,\\quad a=2' },
@@ -303,14 +255,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '2つ目の式は $bx+ay$ なので、代入すると $2b+a$。$a$ と $b$ の位置を入れかえない。',
     },
     {
-      id: 'mx-simul-05', unit: 'simul', level: 'standard', pattern: 'word', minutes: 5,
+      id: 'mx-simul-05', unit: 'simul', level: 'standard', pattern: 'word',
       text: '1個120円のりんごと1個80円のみかんを合わせて15個買ったところ、代金の合計は1480円だった。りんごとみかんを、それぞれ何個買ったか。',
       parts: [{ answer: '\\text{りんご}\\ [ア]\\ \\text{個},\\quad\\text{みかん}\\ [イ]\\ \\text{個}' }],
       boxes: { ア: 7, イ: 8 },
-      hints: [
-        'りんごを $x$ 個、みかんを $y$ 個として、「個数」と「代金」の2つの式をつくる。',
-        '$x+y=15$ と、代金の合計の式を連立させる。',
-      ],
       solution: [
         { text: '2つの式をつくる。', math: '\\begin{cases}x+y=15\\\\120x+80y=1480\\end{cases}' },
         { text: '2つ目の式を $40$ でわり、1つ目の式の2倍をひく。', math: '3x+2y=37,\\quad 3x+2y-(2x+2y)=37-30,\\quad x=7' },
@@ -320,14 +268,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '代金の式で、単価と個数を取りちがえない。りんごの代金は $120x$ 円。',
     },
     {
-      id: 'mx-simul-06', unit: 'simul', level: 'standard', pattern: 'word', minutes: 6,
+      id: 'mx-simul-06', unit: 'simul', level: 'standard', pattern: 'word',
       text: '家から学校まで $1500$ m ある。家から途中の公園までは分速 $60$ m で歩き、公園から学校までは分速 $150$ m で走ったところ、全部で16分かかった。家から公園まで、公園から学校までの道のりを求めなさい。',
       parts: [{ answer: '\\text{家から公園}\\ [ア]\\ \\text{m},\\quad\\text{公園から学校}\\ [イ]\\ \\text{m}' }],
       boxes: { ア: 600, イ: 900 },
-      hints: [
-        '家から公園を $x$ m、公園から学校を $y$ m とする。道のりの合計と、時間の合計で2つの式をつくる。',
-        '時間は「道のり÷速さ」。$\\dfrac{x}{60}+\\dfrac{y}{150}=16$。',
-      ],
       solution: [
         { text: '2つの式をつくる。', math: '\\begin{cases}x+y=1500\\\\\\dfrac{x}{60}+\\dfrac{y}{150}=16\\end{cases}' },
         { text: '2つ目の式を $300$ 倍する。', math: '5x+2y=4800' },
@@ -337,14 +281,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '時間の式を $60x+150y=16$ としない。時間は道のりを速さでわる。',
     },
     {
-      id: 'mx-simul-07', unit: 'simul', level: 'standard', pattern: 'word', minutes: 6,
+      id: 'mx-simul-07', unit: 'simul', level: 'standard', pattern: 'word',
       text: 'ある中学校の昨年の生徒数は、男女合わせて500人だった。今年は、昨年に比べて男子が $5$ % 減り、女子が $10$ % 増えたので、全体では5人増えた。今年の男子と女子の人数をそれぞれ求めなさい。',
       parts: [{ answer: '\\text{男子}\\ [ア]\\ \\text{人},\\quad\\text{女子}\\ [イ]\\ \\text{人}' }],
       boxes: { ア: 285, イ: 220 },
-      hints: [
-        '昨年の男子を $x$ 人、女子を $y$ 人とする。求めるのは今年の人数なので、最後に計算し直す。',
-        '増えた人数で式をつくる：$-\\dfrac{5}{100}x+\\dfrac{10}{100}y=5$。',
-      ],
       solution: [
         { text: '昨年の人数で2つの式をつくる。', math: '\\begin{cases}x+y=500\\\\-\\dfrac{5}{100}x+\\dfrac{10}{100}y=5\\end{cases}' },
         { text: '2つ目の式を $20$ 倍する。', math: '-x+2y=100' },
@@ -355,14 +295,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '昨年の人数 $300$ 人・$200$ 人を答えにしない。問われているのは今年の人数。',
     },
     {
-      id: 'mx-simul-08', unit: 'simul', level: 'standard', pattern: 'param', minutes: 5,
+      id: 'mx-simul-08', unit: 'simul', level: 'standard', pattern: 'param',
       text: '2つの連立方程式 $\\begin{cases}x+y=5\\\\ax+by=7\\end{cases}$ と $\\begin{cases}x-y=1\\\\bx+ay=8\\end{cases}$ が同じ解をもつとき、$a,\\ b$ の値を求めなさい。',
       parts: [{ answer: 'a=[ア],\\quad b=[イ]' }],
       boxes: { ア: 1, イ: 2 },
-      hints: [
-        '同じ解をもつので、$a,\\ b$ をふくまない2つの式 $x+y=5$、$x-y=1$ を組にして、先に解を求める。',
-        '求めた解を $a,\\ b$ をふくむ2つの式に代入し、$a,\\ b$ の連立方程式を解く。',
-      ],
       solution: [
         { text: '$x+y=5$ と $x-y=1$ を解く。', math: 'x=3,\\quad y=2' },
         { text: '残りの2つの式に代入する。', math: '\\begin{cases}3a+2b=7\\\\3b+2a=8\\end{cases}' },
@@ -374,14 +310,10 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 一次関数 ──
     {
-      id: 'mx-lin-01', unit: 'lin', level: 'basic', pattern: 'formula', minutes: 3,
+      id: 'mx-lin-01', unit: 'lin', level: 'basic', pattern: 'formula',
       text: '2点 $(-1,\\ 5)$、$(3,\\ -3)$ を通る直線の式を求めなさい。',
       parts: [{ answer: 'y=[ア]x+[イ]' }],
       boxes: { ア: -2, イ: 3 },
-      hints: [
-        '傾きは $\\dfrac{y\\text{の増加量}}{x\\text{の増加量}}$。',
-        '傾きがわかったら、$y=ax+b$ に1点の座標を代入して $b$ を求める。',
-      ],
       solution: [
         { text: '傾きを求める。', math: '\\dfrac{-3-5}{3-(-1)}=\\dfrac{-8}{4}=-2' },
         { text: '$y=-2x+b$ に $(-1,\\ 5)$ を代入する。', math: '5=2+b,\\quad b=3' },
@@ -390,17 +322,13 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '傾きの分母と分子を逆にしない。$y$ の増加量が分子。',
     },
     {
-      id: 'mx-lin-02', unit: 'lin', level: 'basic', pattern: 'rate', minutes: 3,
+      id: 'mx-lin-02', unit: 'lin', level: 'basic', pattern: 'rate',
       text: '一次関数 $y=-3x+2$ について答えなさい。',
       parts: [
         { q: '$x$ の値が $2$ から $5$ まで増加するときの、$y$ の増加量を求めなさい。', answer: '[ア]' },
         { q: '$x$ の変域が $-1\\leqq x\\leqq 3$ のとき、$y$ の変域を求めなさい。', answer: '[イ]\\leqq y\\leqq[ウ]' },
       ],
       boxes: { ア: -9, イ: -7, ウ: 5 },
-      hints: [
-        '一次関数では、$y$ の増加量＝変化の割合（傾き）×$x$ の増加量。',
-        '変域は、$x$ の両はしの値を代入する。傾きが負なので大小が入れかわる。',
-      ],
       solution: [
         { text: '$x$ の増加量は $3$。', math: '-3\\times3=-9' },
         { text: '$x=-1$ のとき $y=5$、$x=3$ のとき $y=-7$。', math: '-7\\leqq y\\leqq5' },
@@ -409,14 +337,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '増加量を $y$ の値そのもの（$x=5$ のときの $-13$）と取りちがえない。',
     },
     {
-      id: 'mx-lin-03', unit: 'lin', level: 'basic', pattern: 'intersect', minutes: 2,
+      id: 'mx-lin-03', unit: 'lin', level: 'basic', pattern: 'intersect',
       text: '2直線 $y=2x-1$ と $y=-x+5$ の交点の座標を求めなさい。',
       parts: [{ answer: '([ア],\\ [イ])' }],
       boxes: { ア: 2, イ: 3 },
-      hints: [
-        '交点は、2つの式を両方満たす点。連立方程式として解く。',
-        '$2x-1=-x+5$ から $x$ を求める。',
-      ],
       solution: [
         { text: '$y$ を消す。', math: '2x-1=-x+5,\\quad 3x=6,\\quad x=2' },
         { text: '$y=2\\times2-1=3$。' },
@@ -425,14 +349,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$x$ だけ求めて終わらない。交点は $(x,\\ y)$ の組で答える。',
     },
     {
-      id: 'mx-lin-04', unit: 'lin', level: 'basic', pattern: 'formula', minutes: 2,
+      id: 'mx-lin-04', unit: 'lin', level: 'basic', pattern: 'formula',
       text: '直線 $y=3x-2$ に平行で、点 $(2,\\ 1)$ を通る直線の式を求めなさい。',
       parts: [{ answer: 'y=[ア]x-[イ]' }],
       boxes: { ア: 3, イ: 5 },
-      hints: [
-        '平行な直線は、傾きが等しい。',
-        '$y=3x+b$ に点の座標を代入して $b$ を求める。',
-      ],
       solution: [
         { text: '傾きは $3$。$y=3x+b$ に $(2,\\ 1)$ を代入する。', math: '1=6+b,\\quad b=-5' },
         { text: 'よって', math: 'y=3x-5' },
@@ -441,7 +361,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '切片まで同じ $-2$ にしない。切片が同じだと同じ直線になってしまう。',
     },
     {
-      id: 'mx-lin-05', unit: 'lin', level: 'standard', pattern: 'area', minutes: 6,
+      id: 'mx-lin-05', unit: 'lin', level: 'standard', pattern: 'area',
       text: '図のように、直線 $\\ell:\\ y=-x+6$ と直線 $m:\\ y=2x$ が点Aで交わり、直線 $\\ell$ と $x$ 軸が点Bで交わっている。原点をOとする。',
       figure: {
         label: '直線 y=-x+6 と直線 y=2x が点Aで交わり、直線 y=-x+6 がx軸と点Bで交わる。三角形OABに色がついている',
@@ -461,10 +381,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: '原点Oを通り、$\\triangle$OAB の面積を2等分する直線の式を求めなさい。', answer: 'y=\\dfrac{[イ]}{[ウ]}x' },
       ],
       boxes: { ア: 12, イ: 1, ウ: 2 },
-      hints: [
-        'Aの座標は2直線の交点、Bの座標は $y=0$ を代入して求める。$\\triangle$OAB は底辺OB、高さはAの $y$ 座標。',
-        '頂点Oを通って面積を2等分する直線は、向かいの辺ABの中点を通る。',
-      ],
       solution: [
         { text: 'A：$-x+6=2x$ より $x=2$、$y=4$。B：$0=-x+6$ より $x=6$。' },
         { text: '面積。', math: '\\dfrac{1}{2}\\times6\\times4=12' },
@@ -474,7 +390,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '2等分する直線の傾きを、AやBの座標から直接とらない。通るのはABの中点。',
     },
     {
-      id: 'mx-lin-06', unit: 'lin', level: 'standard', pattern: 'apply', minutes: 6,
+      id: 'mx-lin-06', unit: 'lin', level: 'standard', pattern: 'apply',
       text: 'Aさんは9時に家を出て、分速 $80$ m で歩いて図書館へ向かった。兄は9時10分に家を出て、同じ道を自転車で分速 $240$ m で追いかけた。図は、9時から $x$ 分後の家からの道のりを $y$ m として、2人の進み方をグラフに表したものである。兄がAさんに追いつくのは、9時何分で、家から何 m の地点か。',
       figure: {
         label: '横軸が9時からの時間（分）、縦軸が家からの道のり（m）。Aさんは原点から、兄は10分の点から、それぞれ直線で進むグラフ',
@@ -491,10 +407,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '9\\text{時}\\ [ア]\\ \\text{分},\\quad\\text{家から}\\ [イ]\\ \\text{m}' }],
       boxes: { ア: 15, イ: 1200 },
-      hints: [
-        'Aさんのグラフは $y=80x$、兄のグラフは、10分後に出発するので $y=240(x-10)$。',
-        '追いつくのは、2つのグラフの交点。連立方程式で求める。',
-      ],
       solution: [
         { text: '2つの式を等しくおく。', math: '80x=240(x-10)' },
         { text: '解く。', math: '80x=240x-2400,\\quad 160x=2400,\\quad x=15' },
@@ -504,7 +416,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '兄の式を $y=240x$ としない。兄は10分おくれて出発するので、$x=10$ のとき $y=0$。',
     },
     {
-      id: 'mx-lin-07', unit: 'lin', level: 'standard', pattern: 'area', minutes: 6,
+      id: 'mx-lin-07', unit: 'lin', level: 'standard', pattern: 'area',
       text: '図のように、2点A$(1,\\ 4)$、B$(5,\\ 2)$ と原点Oがある。$y$ 軸上に原点と異なる点Pをとり、$\\triangle$PAB の面積が $\\triangle$OAB の面積と等しくなるようにする。点Pの $y$ 座標を求めなさい。',
       figure: {
         label: '点A(1,4)、点B(5,2)と原点Oを頂点とする三角形OAB',
@@ -517,10 +429,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 9 },
-      hints: [
-        '底辺ABが共通なので、ABからの距離（高さ）が等しければ面積も等しい。',
-        '直線ABと $y$ 軸の交点をCとすると、Pは「Cについて原点と反対側で、Cから同じ距離」の点になる。',
-      ],
       solution: [
         { text: '直線ABの式を求める。傾きは $\\dfrac{2-4}{5-1}=-\\dfrac12$。', math: 'y=-\\dfrac{1}{2}x+\\dfrac{9}{2}' },
         { text: '直線ABと $y$ 軸の交点は C$\\left(0,\\ \\dfrac92\\right)$。OからABまでと、PからABまでの高さを等しくするには、CP＝COとなる反対側にPをとる。' },
@@ -530,17 +438,13 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: 'Oを通りABに平行な直線と $y$ 軸の交点はO自身。もう1つの答えは、ABの反対側にある。',
     },
     {
-      id: 'mx-lin-08', unit: 'lin', level: 'standard', pattern: 'apply', minutes: 5,
+      id: 'mx-lin-08', unit: 'lin', level: 'standard', pattern: 'apply',
       text: 'ある月の電気料金は、Aプランが「基本料金1000円＋使用量1 kWhあたり20円」、Bプランが「基本料金400円＋使用量1 kWhあたり30円」である。',
       parts: [
         { q: '2つのプランの料金が等しくなるのは、使用量が何 kWh のときか。', answer: '[ア]\\ \\text{kWh}' },
         { q: '使用量が $100$ kWh のとき、安い方のプランの料金は何円か。', answer: '[イ]\\ \\text{円}' },
       ],
       boxes: { ア: 60, イ: 3000 },
-      hints: [
-        '使用量を $x$ kWh、料金を $y$ 円とすると、Aは $y=20x+1000$、Bは $y=30x+400$。',
-        '料金が等しくなるのは2つのグラフの交点。そこより使用量が多いと、傾きの小さいプランが安くなる。',
-      ],
       solution: [
         { text: '等しくおく。', math: '20x+1000=30x+400,\\quad 10x=600,\\quad x=60' },
         { text: '$x=100$ のとき、A：$20\\times100+1000=3000$、B：$30\\times100+400=3400$。安いのはAで $3000$ 円。' },
@@ -551,17 +455,13 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 平行線と角 ──
     {
-      id: 'mx-angle-01', unit: 'angle', level: 'basic', pattern: 'polygon', minutes: 2,
+      id: 'mx-angle-01', unit: 'angle', level: 'basic', pattern: 'polygon',
       text: '正十二角形について答えなさい。',
       parts: [
         { q: '内角の和', answer: '[ア]^\\circ' },
         { q: '1つの内角の大きさ', answer: '[イ]^\\circ' },
       ],
       boxes: { ア: 1800, イ: 150 },
-      hints: [
-        '$n$ 角形の内角の和は $180^\\circ\\times(n-2)$。',
-        '正多角形は内角がすべて等しいので、内角の和を角の数でわる。',
-      ],
       solution: [
         { text: '内角の和。', math: '180^\\circ\\times(12-2)=1800^\\circ' },
         { text: '1つの内角。', math: '1800^\\circ\\div12=150^\\circ' },
@@ -570,14 +470,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '内角の和を $180^\\circ\\times12$ としない。$n$ 角形は $(n-2)$ 個の三角形に分けられる。',
     },
     {
-      id: 'mx-angle-02', unit: 'angle', level: 'basic', pattern: 'polygon', minutes: 2,
+      id: 'mx-angle-02', unit: 'angle', level: 'basic', pattern: 'polygon',
       text: '1つの外角が $24^\\circ$ である正多角形は、正何角形か。',
       parts: [{ answer: '\\text{正}[ア]\\text{角形}' }],
       boxes: { ア: 15 },
-      hints: [
-        '多角形の外角の和は、何角形でも $360^\\circ$。',
-        '正多角形は外角がすべて等しい。',
-      ],
       solution: [
         { text: '多角形の外角の和は、何角形でも $360^\\circ$。正多角形では、どの外角も等しい。' },
         { text: '外角の和を、1つの外角でわる。', math: '360^\\circ\\div24^\\circ=15' },
@@ -586,7 +482,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '内角の和の式に $24^\\circ$ を入れない。$24^\\circ$ は外角。',
     },
     {
-      id: 'mx-angle-03', unit: 'angle', level: 'basic', pattern: 'parallel', minutes: 3,
+      id: 'mx-angle-03', unit: 'angle', level: 'basic', pattern: 'parallel',
       text: '図で、$\\ell\\parallel m$ のとき、$\\angle x$ の大きさを求めなさい。',
       figure: {
         label: '平行な2直線ℓとmの間に点Pがあり、ℓ上の点AとPを結ぶ線がℓと40度、m上の点BとPを結ぶ線がmと35度をつくる。角APBがx',
@@ -604,10 +500,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 75 },
-      hints: [
-        '点Pを通り、$\\ell$ と $m$ に平行な直線をひいてみる。',
-        '平行線の錯角は等しいので、$\\angle x$ は2つの角に分けられる。',
-      ],
       solution: [
         { text: 'Pを通り $\\ell$ に平行な直線をひくと、$\\angle x$ はその直線で上下2つに分かれる。' },
         { text: '上の角は $\\ell$ との錯角で $40^\\circ$、下の角は $m$ との錯角で $35^\\circ$。', math: '\\angle x=40^\\circ+35^\\circ=75^\\circ' },
@@ -616,7 +508,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$40^\\circ$ と $35^\\circ$ の差をとらない。補助線で上下に分けた2つの角を足したものが $\\angle x$。',
     },
     {
-      id: 'mx-angle-04', unit: 'angle', level: 'basic', pattern: 'triangle', minutes: 2,
+      id: 'mx-angle-04', unit: 'angle', level: 'basic', pattern: 'triangle',
       text: '図の $\\triangle$ABC で、辺BCをCの方へのばした。$\\angle$A$=50^\\circ$、$\\angle$ACDの大きさが $130^\\circ$ のとき、$\\angle x$ の大きさを求めなさい。',
       figure: {
         label: '三角形ABCで、辺BCをCの先へのばした点をDとする。角Aが50度、角ACDが130度、角Bがx',
@@ -633,10 +525,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 80 },
-      hints: [
-        '三角形の外角は、となりにない2つの内角の和に等しい。',
-        '$\\angle$ACD＝$\\angle$A＋$\\angle$B の関係を使う。',
-      ],
       solution: [
         { text: '外角の性質より', math: '\\angle\\text{ACD}=\\angle\\text{A}+\\angle x' },
         { text: '代入する。', math: '130^\\circ=50^\\circ+\\angle x,\\quad\\angle x=80^\\circ' },
@@ -645,7 +533,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$\\angle$ACB（$50^\\circ$）と取りちがえない。$\\angle$ACB$=180^\\circ-130^\\circ=50^\\circ$ で、$x$ はBの角。',
     },
     {
-      id: 'mx-angle-05', unit: 'angle', level: 'standard', pattern: 'triangle', minutes: 4,
+      id: 'mx-angle-05', unit: 'angle', level: 'standard', pattern: 'triangle',
       text: '図のように、正三角形ABCの内部に点Dをとる。$\\angle$ABD$=20^\\circ$、$\\angle$ACD$=25^\\circ$ のとき、$\\angle x=\\angle$BDC の大きさを求めなさい。',
       figure: {
         label: '正三角形ABCの内部の点DとB、Cを結んだ図。角ABDが20度、角ACDが25度、角BDCがx',
@@ -663,10 +551,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 105 },
-      hints: [
-        '正三角形の角はすべて $60^\\circ$。$\\angle$DBC と $\\angle$DCB を求める。',
-        '$\\triangle$DBC の内角の和から $\\angle x$ を求める。',
-      ],
       solution: [
         { text: '$\\angle$DBC$=60^\\circ-20^\\circ=40^\\circ$、$\\angle$DCB$=60^\\circ-25^\\circ=35^\\circ$。' },
         { text: '$\\triangle$DBC の内角の和より', math: '\\angle x=180^\\circ-40^\\circ-35^\\circ=105^\\circ' },
@@ -676,7 +560,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$20^\\circ+25^\\circ=45^\\circ$ を答えにしない。$\\angle$A の $60^\\circ$ も足す。',
     },
     {
-      id: 'mx-angle-06', unit: 'angle', level: 'standard', pattern: 'fold', minutes: 5,
+      id: 'mx-angle-06', unit: 'angle', level: 'standard', pattern: 'fold',
       text: '図のように、幅が一定の紙テープを、線分PQを折り目として折り返した。折り目PQとテープの上の辺がつくる角が $50^\\circ$ のとき、折り返した辺PRとテープの下の辺がつくる $\\angle x$ の大きさを求めなさい。',
       figure: {
         label: '平行な2本の辺をもつ紙テープを、上の辺の点Pと下の辺の点Qを結ぶ折り目で折り返した図。折り返した辺PRが下の辺と点Rで交わる。折り目と上の辺の角が50度、角PRQがx',
@@ -693,10 +577,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 80 },
-      hints: [
-        '折り返すと、折り目をはさむ2つの角は等しくなる。',
-        'テープの上の辺と下の辺は平行なので、錯角や同側内角の関係が使える。',
-      ],
       solution: [
         { text: '折り返しで、$\\angle$QPR＝$50^\\circ$（折り目をはさむ角が等しい）。' },
         { text: '上の辺の右側からPRまでの角は $50^\\circ+50^\\circ=100^\\circ$。上の辺と下の辺は平行なので、同側内角の和は $180^\\circ$。', math: '\\angle x=180^\\circ-100^\\circ=80^\\circ' },
@@ -705,17 +585,13 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$\\angle x$ を $50^\\circ$ としない。折り返した辺は、上の辺から $100^\\circ$ 回った向きにある。',
     },
     {
-      id: 'mx-angle-07', unit: 'angle', level: 'standard', pattern: 'polygon', minutes: 4,
+      id: 'mx-angle-07', unit: 'angle', level: 'standard', pattern: 'polygon',
       text: '内角の和が $1440^\\circ$ の多角形について答えなさい。',
       parts: [
         { q: '何角形か。', answer: '[ア]\\ \\text{角形}' },
         { q: '対角線は全部で何本あるか。', answer: '[イ]\\ \\text{本}' },
       ],
       boxes: { ア: 10, イ: 35 },
-      hints: [
-        '$180^\\circ\\times(n-2)=1440^\\circ$ から $n$ を求める。',
-        '1つの頂点からひける対角線は $(n-3)$ 本。どの対角線も2回ずつ数えることになる。',
-      ],
       solution: [
         { text: '$n$ を求める。', math: '180(n-2)=1440,\\quad n-2=8,\\quad n=10' },
         { text: '1つの頂点から $10-3=7$ 本。10個の頂点で数えると同じ対角線を2回ずつ数えるので', math: '\\dfrac{10\\times7}{2}=35' },
@@ -724,7 +600,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$10\\times7=70$ 本としない。対角線ABとBAは同じ1本なので、2でわる。',
     },
     {
-      id: 'mx-angle-08', unit: 'angle', level: 'standard', pattern: 'triangle', minutes: 5,
+      id: 'mx-angle-08', unit: 'angle', level: 'standard', pattern: 'triangle',
       text: '図の $\\triangle$ABC で、$\\angle$B と $\\angle$C の二等分線の交点をPとする。$\\angle$A$=64^\\circ$ のとき、$\\angle x=\\angle$BPC の大きさを求めなさい。',
       figure: {
         label: '三角形ABCで、角Bの二等分線と角Cの二等分線が点Pで交わる。角Aが64度、角BPCがx。角Bの半分をa、角Cの半分をbで示す',
@@ -745,10 +621,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 122 },
-      hints: [
-        '$\\angle$B$=2a$、$\\angle$C$=2b$ とおくと、$\\triangle$ABC の内角の和から $a+b$ がわかる。',
-        '$\\triangle$PBC の内角の和から $\\angle x$ を求める。',
-      ],
       solution: [
         { text: '$\\triangle$ABC の内角の和より', math: '2a+2b=180^\\circ-64^\\circ=116^\\circ,\\quad a+b=58^\\circ' },
         { text: '$\\triangle$PBC の内角の和より', math: '\\angle x=180^\\circ-(a+b)=180^\\circ-58^\\circ=122^\\circ' },
@@ -759,7 +631,7 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 合同と証明 ──
     {
-      id: 'mx-congr-01', unit: 'congr', level: 'basic', pattern: 'condition', minutes: 2,
+      id: 'mx-congr-01', unit: 'congr', level: 'basic', pattern: 'condition',
       text: '$\\triangle$ABC と $\\triangle$DEF で、AB＝DE、BC＝EF、$\\angle$B＝$\\angle$E である。このとき使える三角形の合同条件を、⓪〜②から1つ選びなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 2 },
@@ -773,10 +645,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '等しいとわかっている辺と角が、三角形のどこにあるかを確かめる。',
-        '$\\angle$B は、辺ABと辺BCの間にある角かどうかを見る。',
-      ],
       solution: [
         { text: 'わかっているのは、2組の辺（AB＝DE、BC＝EF）と1組の角（$\\angle$B＝$\\angle$E）。' },
         { text: '$\\angle$B は辺ABと辺BCにはさまれた角なので、「2組の辺とその間の角がそれぞれ等しい」。' },
@@ -785,7 +653,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '2組の辺と「間でない」角が等しくても、合同とは限らない。角の位置を必ず確かめる。',
     },
     {
-      id: 'mx-congr-02', unit: 'congr', level: 'basic', pattern: 'isosceles', minutes: 2,
+      id: 'mx-congr-02', unit: 'congr', level: 'basic', pattern: 'isosceles',
       text: '図の $\\triangle$ABC は、AB＝AC の二等辺三角形で、$\\angle$A$=40^\\circ$ である。$\\angle x=\\angle$B の大きさを求めなさい。',
       figure: {
         label: 'AB=ACの二等辺三角形ABC。頂角Aが40度、底角Bがx',
@@ -802,10 +670,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\angle x=[ア]^\\circ' }],
       boxes: { ア: 70 },
-      hints: [
-        '二等辺三角形の2つの底角は等しい。',
-        '内角の和 $180^\\circ$ から頂角をひいて、2でわる。',
-      ],
       solution: [
         { text: 'AB＝AC なので、底角 $\\angle$B と $\\angle$C は等しい。2つの底角の和は', math: '180^\\circ-40^\\circ=140^\\circ' },
         { text: '2でわる。', math: '\\angle x=140^\\circ\\div2=70^\\circ' },
@@ -814,7 +678,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '頂角と底角を取りちがえない。等しい2辺にはさまれた角が頂角。',
     },
     {
-      id: 'mx-congr-03', unit: 'congr', level: 'basic', pattern: 'parallelogram', minutes: 3,
+      id: 'mx-congr-03', unit: 'congr', level: 'basic', pattern: 'parallelogram',
       text: '四角形ABCDが次の条件を満たすとき、いつでも平行四辺形になるとはいえないものを、⓪〜③から1つ選びなさい。',
       parts: [{ answer: '[ア]' }],
       boxes: { ア: 1 },
@@ -834,10 +698,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '平行四辺形になるための条件は5つある（2組の対辺が平行・2組の対辺が等しい・2組の対角が等しい・対角線が中点で交わる・1組の対辺が平行で等しい）。',
-        '条件に合っているのに平行四辺形でない図形（反例）がかけるかを考える。',
-      ],
       solution: [
         { text: '⓪・②・③は、平行四辺形になるための条件そのもの。' },
         { text: '①は、「1組の対辺が平行で長さも等しい」ではない。上底と下底が平行で、脚の長さが等しい等脚台形は①を満たすが、平行四辺形ではない。' },
@@ -846,7 +706,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '条件の言葉が似ていても、どの辺が平行でどの辺が等しいかで結論が変わる。反例（等脚台形）を思いうかべる。',
     },
     {
-      id: 'mx-congr-04', unit: 'congr', level: 'basic', pattern: 'parallelogram', minutes: 2,
+      id: 'mx-congr-04', unit: 'congr', level: 'basic', pattern: 'parallelogram',
       text: '図の平行四辺形ABCDで、$\\angle$A$=110^\\circ$、AB$=5$ cm、BC$=8$ cm である。',
       figure: {
         label: '平行四辺形ABCD。角Aが110度、ABが5cm、BCが8cm',
@@ -866,10 +726,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: '平行四辺形ABCDの周の長さを求めなさい。', answer: '[イ]\\ \\text{cm}' },
       ],
       boxes: { ア: 70, イ: 26 },
-      hints: [
-        '平行四辺形では、となり合う角の和が $180^\\circ$（AD$\\parallel$BC の同側内角）。',
-        '平行四辺形の対辺はそれぞれ等しい。',
-      ],
       solution: [
         { text: 'AD$\\parallel$BC なので、$\\angle$A＋$\\angle$B$=180^\\circ$。', math: '\\angle x=180^\\circ-110^\\circ=70^\\circ' },
         { text: 'CD＝AB＝5 cm、AD＝BC＝8 cm。', math: '(5+8)\\times2=26' },
@@ -878,7 +734,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$\\angle$B を $\\angle$A と同じ $110^\\circ$ としない。等しいのは向かい合う角（$\\angle$A＝$\\angle$C）。',
     },
     {
-      id: 'mx-congr-05', unit: 'congr', level: 'standard', pattern: 'proofstep', minutes: 5,
+      id: 'mx-congr-05', unit: 'congr', level: 'standard', pattern: 'proofstep',
       text: '図で、AB$\\parallel$DC、線分ACとBDの交点をOとし、AO＝COである。$\\triangle$OAB$\\equiv\\triangle$OCD を次のように証明した。［ア］〜［ウ］にあてはまるものを、それぞれの選択肢から選びなさい。',
       math: '\\begin{array}{l}\\triangle\\text{OAB と }\\triangle\\text{OCD で}\\\\\\text{仮定より AO＝CO}\\ \\cdots\\text{①}\\\\\\angle\\text{OAB}=\\angle\\text{OCD}\\ （［ア］）\\cdots\\text{②}\\\\\\angle\\text{AOB}=\\angle\\text{COD}\\ （［イ］）\\cdots\\text{③}\\\\\\text{①②③より、［ウ］がそれぞれ等しいので}\\\\\\triangle\\text{OAB}\\equiv\\triangle\\text{OCD}\\end{array}',
       figure: {
@@ -922,10 +778,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        'AB$\\parallel$DC と直線ACでできる角は、同位角か錯角のどちらかを図で確かめる。',
-        '①は辺、②③は角。辺AOの両端にある角かどうかを見る。',
-      ],
       solution: [
         { text: '②：AB$\\parallel$DC なので、直線ACでできる錯角 $\\angle$OAB と $\\angle$OCD は等しい。' },
         { text: '③：直線ACとBDの交点Oにできる対頂角 $\\angle$AOB と $\\angle$COD は等しい。' },
@@ -935,7 +787,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '錯角と同位角を取りちがえない。平行線の間で「Z」の形になるのが錯角。',
     },
     {
-      id: 'mx-congr-06', unit: 'congr', level: 'standard', pattern: 'isosceles', minutes: 5,
+      id: 'mx-congr-06', unit: 'congr', level: 'standard', pattern: 'isosceles',
       text: '図の $\\triangle$ABC は、AB＝AC、$\\angle$A$=36^\\circ$ の二等辺三角形である。$\\angle$B の二等分線と辺ACの交点をDとする。BC$=4$ cm のとき、BDとADの長さを求めなさい。',
       figure: {
         label: 'AB=AC、頂角36度の二等辺三角形ABC。角Bの二等分線が辺ACと点Dで交わる。BCが4cm',
@@ -953,10 +805,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: 'AD', answer: '[イ]\\ \\text{cm}' },
       ],
       boxes: { ア: 4, イ: 4 },
-      hints: [
-        'まず角をすべて求める。底角は $72^\\circ$、二等分した角は $36^\\circ$。',
-        '2つの角が等しい三角形は二等辺三角形。どの三角形が二等辺三角形になるかを探す。',
-      ],
       solution: [
         { text: '$\\angle$B＝$\\angle$C＝$72^\\circ$。二等分して $\\angle$ABD＝$\\angle$DBC＝$36^\\circ$。$\\triangle$DBC で $\\angle$BDC$=180^\\circ-36^\\circ-72^\\circ=72^\\circ$。' },
         { text: '$\\triangle$BCD は $\\angle$C＝$\\angle$BDC＝$72^\\circ$ の二等辺三角形なので、BD＝BC＝4 cm。' },
@@ -966,7 +814,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: 'BDとADを、BCと関係のない長さだと思いこまない。角を全部書きこむと、二等辺三角形が2つ見つかる。',
     },
     {
-      id: 'mx-congr-07', unit: 'congr', level: 'standard', pattern: 'parallelogram', minutes: 5,
+      id: 'mx-congr-07', unit: 'congr', level: 'standard', pattern: 'parallelogram',
       text: '図の平行四辺形ABCDで、AB$=6$ cm、AD$=10$ cm である。$\\angle$ABC の二等分線と辺ADの交点をEとするとき、AEとEDの長さを求めなさい。',
       figure: {
         label: '平行四辺形ABCD。角ABCの二等分線が辺ADと点Eで交わる。ABが6cm、ADが10cm',
@@ -983,10 +831,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: 'ED', answer: '[イ]\\ \\text{cm}' },
       ],
       boxes: { ア: 6, イ: 4 },
-      hints: [
-        'AD$\\parallel$BC なので、$\\angle$AEB と $\\angle$EBC は錯角で等しい。',
-        '$\\angle$ABE＝$\\angle$EBC（二等分）と合わせると、$\\triangle$ABE はどんな三角形か。',
-      ],
       solution: [
         { text: 'AD$\\parallel$BC より $\\angle$AEB＝$\\angle$EBC（錯角）。BEは二等分線なので $\\angle$ABE＝$\\angle$EBC。' },
         { text: 'よって $\\angle$ABE＝$\\angle$AEB で、$\\triangle$ABE は AB＝AE の二等辺三角形。AE$=6$ cm。' },
@@ -996,7 +840,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: 'EがADの中点だと決めつけない。長さは二等辺三角形から決まる。',
     },
     {
-      id: 'mx-congr-08', unit: 'congr', level: 'standard', pattern: 'condition', minutes: 4,
+      id: 'mx-congr-08', unit: 'congr', level: 'standard', pattern: 'condition',
       text: '図のように、$\\angle$XOY の二等分線上の点Pから、半直線OX、OYにそれぞれ垂線PA、PBをひいた。',
       figure: {
         label: '角XOYの二等分線上の点Pから、OXへ垂線PA、OYへ垂線PBをひいた図',
@@ -1023,10 +867,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '2つの三角形は、どちらも直角三角形。共通の辺と、等しい角を探す。',
-        '直角三角形の合同条件は「斜辺と1つの鋭角」「斜辺と他の1辺」の2つ。',
-      ],
       solution: [
         { text: '$\\triangle$POA と $\\triangle$POB は、$\\angle$PAO＝$\\angle$PBO$=90^\\circ$ の直角三角形。' },
         { text: '斜辺OPは共通、OPは二等分線なので $\\angle$POA＝$\\angle$POB。よって「斜辺と1つの鋭角がそれぞれ等しい」。' },
@@ -1038,14 +878,10 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 確率 ──
     {
-      id: 'mx-prob-01', unit: 'prob', level: 'basic', pattern: 'dice', minutes: 2,
+      id: 'mx-prob-01', unit: 'prob', level: 'basic', pattern: 'dice',
       text: '大小2つのさいころを同時に投げるとき、出た目の数の和が7になる確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 1, イ: 6 },
-      hints: [
-        '目の出方は全部で $6\\times6=36$ 通りで、どれも同じ程度に起こる。',
-        '和が7になる組（大, 小）を書き出して数える。',
-      ],
       solution: [
         { text: '和が7になるのは (1,6)(2,5)(3,4)(4,3)(5,2)(6,1) の6通り。' },
         { text: '確率は', math: '\\dfrac{6}{36}=\\dfrac{1}{6}' },
@@ -1054,14 +890,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '(1,6) と (6,1) を同じものとして数えない。大小2つのさいころは区別する。',
     },
     {
-      id: 'mx-prob-02', unit: 'prob', level: 'basic', pattern: 'coin', minutes: 2,
+      id: 'mx-prob-02', unit: 'prob', level: 'basic', pattern: 'coin',
       text: '3枚の硬貨を同時に投げるとき、2枚が表で1枚が裏になる確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 3, イ: 8 },
-      hints: [
-        '3枚の硬貨を区別すると、表裏の出方は $2\\times2\\times2$ 通り。',
-        'どの1枚が裏になるかで、場合を数える。',
-      ],
       solution: [
         { text: '出方は全部で $8$ 通り。' },
         { text: '1枚だけが裏になるのは、裏になる硬貨の選び方で3通り。', math: '\\dfrac{3}{8}' },
@@ -1070,14 +902,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '「表3枚・表2枚・表1枚・表0枚」の4通りで考えて $\\dfrac14$ としない。それぞれの起こりやすさはちがう。',
     },
     {
-      id: 'mx-prob-03', unit: 'prob', level: 'basic', pattern: 'draw', minutes: 3,
+      id: 'mx-prob-03', unit: 'prob', level: 'basic', pattern: 'draw',
       text: '赤玉3個と白玉2個が入った袋から、同時に2個の玉を取り出すとき、2個とも赤玉である確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 3, イ: 10 },
-      hints: [
-        '赤玉を $r_1,r_2,r_3$、白玉を $w_1,w_2$ と区別して、2個の組を全部書き出す。',
-        '同時に取り出すので、組の順番は考えない。',
-      ],
       solution: [
         { text: '5個から2個を選ぶ組は', math: '\\dfrac{5\\times4}{2}=10\\ \\text{通り}' },
         { text: '2個とも赤玉の組は $\\{r_1,r_2\\},\\{r_1,r_3\\},\\{r_2,r_3\\}$ の3通り。', math: '\\dfrac{3}{10}' },
@@ -1086,14 +914,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '「赤と赤・赤と白・白と白」の3通りで $\\dfrac13$ としない。それぞれの起こりやすさがちがう。',
     },
     {
-      id: 'mx-prob-04', unit: 'prob', level: 'basic', pattern: 'arrange', minutes: 2,
+      id: 'mx-prob-04', unit: 'prob', level: 'basic', pattern: 'arrange',
       text: 'A、B、C、Dの4人の中から、くじで代表を2人選ぶとき、Aが選ばれる確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 1, イ: 2 },
-      hints: [
-        '2人の選び方を全部書き出す（順番は考えない）。',
-        'その中で、Aが入っている組を数える。',
-      ],
       solution: [
         { text: '選び方は AB, AC, AD, BC, BD, CD の6通り。' },
         { text: 'Aが入るのは AB, AC, AD の3通り。', math: '\\dfrac{3}{6}=\\dfrac{1}{2}' },
@@ -1102,14 +926,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: 'AB と BA を別々に数えない。代表2人を選ぶだけなので、順番は関係ない。',
     },
     {
-      id: 'mx-prob-05', unit: 'prob', level: 'standard', pattern: 'dice', minutes: 5,
+      id: 'mx-prob-05', unit: 'prob', level: 'standard', pattern: 'dice',
       text: '大小2つのさいころを同時に投げ、大きいさいころの出た目の数を $a$、小さいさいころの出た目の数を $b$ とする。$\\dfrac{b}{a}$ が整数になる確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 7, イ: 18 },
-      hints: [
-        '$\\dfrac{b}{a}$ が整数になるのは、$b$ が $a$ の倍数のとき。',
-        '$a=1,2,3,4,5,6$ のそれぞれについて、あてはまる $b$ の個数を数える。',
-      ],
       solution: [
         { text: '$a=1$：6通り、$a=2$：$b=2,4,6$ の3通り、$a=3$：$b=3,6$ の2通り、$a=4,5,6$：それぞれ1通り。' },
         { text: '合計は $6+3+2+1+1+1=14$ 通り。', math: '\\dfrac{14}{36}=\\dfrac{7}{18}' },
@@ -1118,14 +938,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '$a=1$ のときを忘れない。$b$ がどの目でも $\\dfrac{b}{1}$ は整数。',
     },
     {
-      id: 'mx-prob-06', unit: 'prob', level: 'standard', pattern: 'draw', minutes: 5,
+      id: 'mx-prob-06', unit: 'prob', level: 'standard', pattern: 'draw',
       text: '1、2、3、4、5の数字を1つずつ書いた5枚のカードから、1枚ずつ続けて2枚取り出す（取り出したカードはもどさない）。1枚目の数字を十の位、2枚目の数字を一の位として2けたの整数をつくるとき、その整数が3の倍数になる確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 2, イ: 5 },
-      hints: [
-        'つくれる2けたの整数は $5\\times4$ 通り。',
-        '3の倍数は、各位の数の和が3の倍数。和が3の倍数になる2枚の組を探す。',
-      ],
       solution: [
         { text: 'できる整数は $5\\times4=20$ 通り。' },
         { text: '2枚の和が3の倍数になる組は $\\{1,2\\},\\{1,5\\},\\{2,4\\},\\{4,5\\}$ の4組。それぞれ並べ方が2通りで8通り（12, 21, 15, 51, 24, 42, 45, 54）。', math: '\\dfrac{8}{20}=\\dfrac{2}{5}' },
@@ -1134,14 +950,10 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '同じカードを2回使う 33 などを数えない。取り出したカードはもどさない。',
     },
     {
-      id: 'mx-prob-07', unit: 'prob', level: 'standard', pattern: 'apply', minutes: 5,
+      id: 'mx-prob-07', unit: 'prob', level: 'standard', pattern: 'apply',
       text: '1つのさいころを2回投げ、1回目に出た目の数を $a$、2回目に出た目の数を $b$ とする。点 P$(a,\\ b)$ が、関数 $y=\\dfrac{12}{x}$ のグラフ上にある確率を求めなさい。',
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 1, イ: 9 },
-      hints: [
-        '点がグラフ上にあるのは、$b=\\dfrac{12}{a}$、つまり $ab=12$ のとき。',
-        '積が12になる目の組を数える。',
-      ],
       solution: [
         { text: '$ab=12$ となるのは (2,6)(3,4)(4,3)(6,2) の4通り。' },
         { text: '確率は', math: '\\dfrac{4}{36}=\\dfrac{1}{9}' },
@@ -1150,7 +962,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '(1,12) や (12,1) は、さいころの目にないので数えない。',
     },
     {
-      id: 'mx-prob-08', unit: 'prob', level: 'standard', pattern: 'apply', minutes: 6,
+      id: 'mx-prob-08', unit: 'prob', level: 'standard', pattern: 'apply',
       text: '図のような正方形ABCDの頂点Aに点Pがある。1つのさいころを2回投げ、出た目の数の和だけ、点Pを A→B→C→D→A→… の順に頂点から頂点へ動かす。点Pが頂点Cで止まる確率を求めなさい。',
       figure: {
         label: '正方形ABCD。Aが左下、Bが右下、Cが右上、Dが左上で、点PはAにある',
@@ -1163,10 +975,6 @@ export const MATH_EXAM_JUNIOR2 = {
       },
       parts: [{ answer: '\\dfrac{[ア]}{[イ]}' }],
       boxes: { ア: 1, イ: 4 },
-      hints: [
-        'Cで止まるのは、動く回数（目の和）を4でわった余りが2のとき。',
-        '和が 2、6、10 になる目の出方を数える。',
-      ],
       solution: [
         { text: '目の和は2〜12。Cに止まるのは和が 2、6、10 のとき。' },
         { text: '和が2：1通り、6：5通り、10：3通りで、合計9通り。', math: '\\dfrac{9}{36}=\\dfrac{1}{4}' },
@@ -1177,15 +985,11 @@ export const MATH_EXAM_JUNIOR2 = {
 
     // ── 箱ひげ図 ──
     {
-      id: 'mx-data2-01', unit: 'data2', level: 'basic', pattern: 'quartile', minutes: 3,
+      id: 'mx-data2-01', unit: 'data2', level: 'basic', pattern: 'quartile',
       text: '次のデータは、9人の生徒が1か月に読んだ本の冊数である。第1四分位数、第2四分位数（中央値）、第3四分位数を求めなさい。',
       math: '12,\\ 4,\\ 9,\\ 18,\\ 6,\\ 2,\\ 14,\\ 7,\\ 11\\ \\text{（冊）}',
       parts: [{ answer: '\\text{第1}\\ [ア],\\quad\\text{第2}\\ [イ],\\quad\\text{第3}\\ [ウ]' }],
       boxes: { ア: 5, イ: 9, ウ: 13 },
-      hints: [
-        'まず小さい順に並べ、まん中（5番目）の値が中央値。',
-        '中央値より前の4個の中央値が第1四分位数、後ろの4個の中央値が第3四分位数。',
-      ],
       solution: [
         { text: '並べかえる。', math: '2,\\ 4,\\ 6,\\ 7,\\ \\underline{9},\\ 11,\\ 12,\\ 14,\\ 18' },
         { text: '前半 $2,4,6,7$ の中央値は $\\dfrac{4+6}{2}=5$、後半 $11,12,14,18$ の中央値は $\\dfrac{12+14}{2}=13$。' },
@@ -1194,7 +998,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '並べかえずに、書かれた順のまん中をとらない。',
     },
     {
-      id: 'mx-data2-02', unit: 'data2', level: 'basic', pattern: 'iqr', minutes: 3,
+      id: 'mx-data2-02', unit: 'data2', level: 'basic', pattern: 'iqr',
       text: '次のデータは、10人の生徒のゲームの得点である。四分位範囲と範囲を求めなさい。',
       math: '20,\\ 15,\\ 26,\\ 12,\\ 18,\\ 30,\\ 21,\\ 17,\\ 25,\\ 23\\ \\text{（点）}',
       parts: [
@@ -1202,10 +1006,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: '範囲', answer: '[イ]\\ \\text{点}' },
       ],
       boxes: { ア: 8, イ: 18 },
-      hints: [
-        'データが10個（偶数個）なので、前半5個・後半5個に分けて、それぞれの中央値を求める。',
-        '四分位範囲＝第3四分位数－第1四分位数、範囲＝最大値－最小値。',
-      ],
       solution: [
         { text: '並べかえる。', math: '12,\\ 15,\\ 17,\\ 18,\\ 20\\ \\big|\\ 21,\\ 23,\\ 25,\\ 26,\\ 30' },
         { text: '第1四分位数は前半の中央値 $17$、第3四分位数は後半の中央値 $25$。', math: '25-17=8' },
@@ -1215,7 +1015,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '四分位範囲と範囲を取りちがえない。範囲は最大値と最小値の差。',
     },
     {
-      id: 'mx-data2-03', unit: 'data2', level: 'basic', pattern: 'boxplot', minutes: 2,
+      id: 'mx-data2-03', unit: 'data2', level: 'basic', pattern: 'boxplot',
       text: '図は、あるクラスの小テストの得点を箱ひげ図に表したものである。中央値と四分位範囲を読みとりなさい。',
       figure: {
         label: '箱ひげ図。最小値20点、第1四分位数35点、中央値45点、第3四分位数60点、最大値80点',
@@ -1232,10 +1032,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: '四分位範囲', answer: '[イ]\\ \\text{点}' },
       ],
       boxes: { ア: 45, イ: 25 },
-      hints: [
-        '箱の中の線が中央値、箱の左はしが第1四分位数、右はしが第3四分位数。',
-        '四分位範囲は箱の長さ。',
-      ],
       solution: [
         { text: '箱の中の線は $45$ 点。' },
         { text: '箱の左はしは $35$ 点、右はしは $60$ 点。', math: '60-35=25' },
@@ -1244,7 +1040,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '四分位範囲をひげの長さ（最大値－最小値＝範囲）と取りちがえない。',
     },
     {
-      id: 'mx-data2-04', unit: 'data2', level: 'basic', pattern: 'boxplot', minutes: 3,
+      id: 'mx-data2-04', unit: 'data2', level: 'basic', pattern: 'boxplot',
       text: '図は、30人のテストの得点を箱ひげ図に表したもので、最小値30点、第1四分位数50点、中央値62点、第3四分位数75点、最大値95点である。正しいものを⓪〜②から1つ選びなさい。',
       figure: { ...BOX30_FIGURE, texts: ticks([20, 30, 40, 50, 60, 70, 80, 90, 100], -0.3) },
       parts: [{ answer: '[ア]' }],
@@ -1259,10 +1055,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '範囲＝最大値－最小値、四分位範囲＝第3四分位数－第1四分位数。',
-        'それぞれの選択肢を、5つの値から計算して確かめる。',
-      ],
       solution: [
         { text: '範囲は $95-30=65$ 点、四分位範囲は $75-50=25$ 点、中央値は62点。' },
         { text: '正しいのは②。' },
@@ -1271,7 +1063,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '「範囲」と「四分位範囲」を同じものとしない。',
     },
     {
-      id: 'mx-data2-05', unit: 'data2', level: 'standard', pattern: 'quartile', minutes: 5,
+      id: 'mx-data2-05', unit: 'data2', level: 'standard', pattern: 'quartile',
       text: '次の11個のデータを表した箱ひげ図として正しいものを、図の⓪〜②から1つ選びなさい。',
       math: '4,\\ 6,\\ 7,\\ 9,\\ 10,\\ 12,\\ 13,\\ 15,\\ 16,\\ 18,\\ 20',
       figure: {
@@ -1296,10 +1088,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '11個のデータの中央値は6番目。四分位数は、中央値を除いた前半5個・後半5個の中央値。',
-        '5つの値を求めてから、図の箱の位置と見比べる。',
-      ],
       solution: [
         { text: '中央値は6番目の $12$。前半 $4,6,7,9,10$ の中央値 $7$ が第1四分位数、後半 $13,15,16,18,20$ の中央値 $16$ が第3四分位数。' },
         { text: '最小値4・7・12・16・最大値20の箱ひげ図は②。' },
@@ -1308,7 +1096,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '箱の両はしだけ見て決めない。中央値の線の位置もちがうことがある。',
     },
     {
-      id: 'mx-data2-06', unit: 'data2', level: 'standard', pattern: 'boxplot', minutes: 5,
+      id: 'mx-data2-06', unit: 'data2', level: 'standard', pattern: 'boxplot',
       text: '図は、30人のテストの得点を箱ひげ図に表したもので、最小値30点、第1四分位数50点、中央値62点、第3四分位数75点、最大値95点である。得点はすべて整数である。',
       figure: { ...BOX30_FIGURE, texts: ticks([20, 30, 40, 50, 60, 70, 80, 90, 100], -0.3) },
       parts: [
@@ -1316,10 +1104,6 @@ export const MATH_EXAM_JUNIOR2 = {
         { q: '62点以上の生徒は、少なくとも何人いるか。', answer: '[イ]\\ \\text{人}' },
       ],
       boxes: { ア: 8, イ: 15 },
-      hints: [
-        '30人を小さい順に並べると、中央値は15番目と16番目の平均、第1四分位数は前半15人の中央値（8番目）。',
-        '第1四分位数が50点なので、8番目の人は50点。中央値62点のとき、16番目の人は62点以上。',
-      ],
       solution: [
         { text: '前半15人（1〜15番目）の中央値は8番目。第1四分位数が50点なので、8番目は50点で、1〜8番目の8人は50点以下。' },
         { text: '中央値62点は15番目と16番目の平均。16番目は62点以上なので、16〜30番目の15人は62点以上。' },
@@ -1328,7 +1112,7 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: '「50点以下は全体の4分の1」だから7.5人としない。何番目の値かで考えると、少なくとも8人いる。',
     },
     {
-      id: 'mx-data2-07', unit: 'data2', level: 'standard', pattern: 'compare', minutes: 5,
+      id: 'mx-data2-07', unit: 'data2', level: 'standard', pattern: 'compare',
       text: '図は、A組とB組のテストの得点を箱ひげ図に表したものである。',
       figure: {
         label: 'A組とB組の箱ひげ図。A組は最小値40・第1四分位数55・中央値65・第3四分位数70・最大値90、B組は最小値45・第1四分位数50・中央値60・第3四分位数80・最大値85',
@@ -1355,10 +1139,6 @@ export const MATH_EXAM_JUNIOR2 = {
           ],
         },
       },
-      hints: [
-        '範囲はひげの両はしの間、四分位範囲は箱の長さ、中央値は箱の中の線。',
-        'A組・B組の値を読みとって、1つずつ比べる。',
-      ],
       solution: [
         { text: '範囲：A組50点、B組40点。四分位範囲：A組15点、B組30点。中央値：A組65点、B組60点。' },
         { text: '正しいのは①。B組の四分位範囲は', math: '80-50=30' },
@@ -1367,15 +1147,11 @@ export const MATH_EXAM_JUNIOR2 = {
       pitfall: 'ひげの長さだけで散らばりを比べない。極端な値があると範囲は大きくなる。',
     },
     {
-      id: 'mx-data2-08', unit: 'data2', level: 'standard', pattern: 'quartile', minutes: 5,
+      id: 'mx-data2-08', unit: 'data2', level: 'standard', pattern: 'quartile',
       text: '次の8個のデータは小さい順に並んでいて、$a$ は整数である。このデータの中央値が $9$ のとき、$a$ の値と第3四分位数を求めなさい。',
       math: '3,\\ 5,\\ 7,\\ a,\\ 10,\\ 12,\\ 14,\\ 16',
       parts: [{ answer: 'a=[ア],\\quad\\text{第3四分位数}\\ [イ]' }],
       boxes: { ア: 8, イ: 13 },
-      hints: [
-        'データが8個なので、中央値は4番目と5番目の平均。',
-        '第3四分位数は、後半4個（5〜8番目）の中央値。',
-      ],
       solution: [
         { text: '中央値は4番目と5番目の平均。', math: '\\dfrac{a+10}{2}=9,\\quad a=8' },
         { text: '後半 $10,\\ 12,\\ 14,\\ 16$ の中央値。', math: '\\dfrac{12+14}{2}=13' },
