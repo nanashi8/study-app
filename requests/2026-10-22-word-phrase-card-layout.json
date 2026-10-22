@@ -7,7 +7,7 @@
   "sessions": [
     "316ab766-fc23-40ac-be01-c3613b2e98a9"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "three-line-layout-all-cards",
@@ -22,7 +22,8 @@
       "text": "開発版の375pxで見た目と押したときの動きを確かめ、全監査を通し、クリーンな clone で確かめて push し、公開版で確かめる",
       "population": "辞書ページ・暗記カードの裏・公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "result": "開発版（375px）で辞書ページ make・decide と暗記カードの裏 make のカードが3段（英検3級・熟語／be made from／〜から作られる）で、押して詳細が開き、発音ボタン・意味の中の単語リンクは詳細を開かないことを確かめた。コンソールのエラー0件。全監査は1回目に日本語の数の固定値（「説明」を外した分 −1）で落ちたので直し、2回目で npm test 1,446件・失敗0、24カテゴリ・教材20,493件・失敗0。クリーンな clone で台帳の確認・npm test（1,446件・失敗0）・npm run build が通り差分なし。commit 4a7b75b1 を push、デプロイ成功（run 39702988121）、公開版が HEAD と同じ。公開版の辞書ページ make で be made from のカードが3段で、意味を押して詳細が開いた。公開版の暗記カードの裏は、学習記録を変えないよう開かなかった（同じ部品）。"
     }
   ]
 }
