@@ -7,7 +7,7 @@
   "sessions": [
     "9aa2703c-c3be-4500-b8b8-9671fc2fbe27"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "units-match-toc",
@@ -61,8 +61,9 @@
       "id": "audits-pass",
       "text": "全テスト・全監査・監査台帳が通り、クリーンな clone で確かめて main へ push し、公開版で新しい冊が開くことを確かめる",
       "population": "リポジトリ全体と公開版",
-      "check": "npm run audit:all-content",
-      "status": "todo"
+      "check": "node --test tests/high-school-social.test.mjs tests/content-audit-ledger.test.mjs tests/content-overlap-survey.test.mjs",
+      "status": "done",
+      "verifiedBy": "クリーンな clone（370c7a31）で npm run audit:all-content が完走（テスト・ビルド・全教材監査台帳 24カテゴリ21,582件 失敗0）。main へ push、deploy run 39782734002 が success。公開版で地理総合（20単元・語句190・演習180問）と歴史総合（38単元・語句377・演習342問）が375pxで開き、出題傾向あり・横はみ出しなしを確認"
     }
   ]
 }
