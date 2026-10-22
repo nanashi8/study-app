@@ -1,27 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ALL_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { matchOcrTextToWords, normalizeOcrToken, ocrTokenConfidences } from '../lib/vocabOcr.js'
-import { createOcrReader } from '../lib/ocrEngine.js'
-import { createContextReading, loadEnglishTagger } from '../lib/ocrContext.js'
-import { loadEnglishWordSet } from '../lib/englishWordList.js'
-import { prepareImageForOcr } from '../lib/ocrImage.js'
+import { createContextReading } from '../lib/ocrContext.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { PhotoOcrPicker, usePhotoOcr } from '../components/PhotoOcrPicker.jsx'
 import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
 import { activeNotebookSetId } from '../lib/learningNotebook.js'
-import { Button, Card, Chip, ProgressBar } from '../components/ui.jsx'
-import { Check, Close, Refresh, Sparkles, Upload } from '../components/Icons.jsx'
+import { Button, Card, Chip } from '../components/ui.jsx'
+import { Check, Close, Refresh } from '../components/Icons.jsx'
 
 const NO_REFS = Object.freeze([])
-
-const MAX_FILE_BYTES = 20 * 1024 * 1024
-
-// 読み取りの進み具合。エンジンの準備（初回はモデルの読み込み）の間は、読み込んだ量で進める。
-const PREPARE_PROGRESS = [0.05, 0.6]
-const READ_PROGRESS = 0.7
 
 export function VocabCameraScreen() {
   const navigate = useStore((state) => state.navigate)
@@ -29,24 +21,14 @@ export function VocabCameraScreen() {
   const activeBookRefs = useStore((state) => (
     state.learningNotebook.sets.find((set) => set.id === activeNotebookSetId(state.learningNotebook))?.refs ?? NO_REFS
   ))
-  const cameraInput = useRef(null)
-  const photoInput = useRef(null)
-  const previewUrlRef = useRef('')
-  // 読み取りエンジン（PaddleOCR）。最初の読み取りで作り、同じ画面で2枚目からは使い回す。画面を離れたら片付ける。
-  const readerRef = useRef(null)
-  const mountedRef = useRef(true)
+  // 写真を選んで読み取る部品（自作カードの「写真から作る」と同じもの）。
+  const ocr = usePhotoOcr({ readingStatus: '教科書の文字を読み取り中…' })
   // 読み取りのたびに作る、候補の判定に使うもの（文字を直して候補を更新するときも使う）。
   const englishWordsRef = useRef(null)
   // 英文の品詞を決める道具（saw ＝ see の過去形／のこぎり などを、前後の語から読み分ける）。
   const taggerRef = useRef(null)
   const confidencesRef = useRef(new Map())
 
-  const [file, setFile] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState('')
-  const [scanning, setScanning] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [status, setStatus] = useState('')
-  const [error, setError] = useState('')
   const [ocrText, setOcrText] = useState('')
   const [textChanged, setTextChanged] = useState(false)
   const [summary, setSummary] = useState(null)
@@ -65,18 +47,6 @@ export function VocabCameraScreen() {
     label: `読み取った${pendingIds.length}語`,
     present: true,
   })
-
-  // 画面が出ているあいだだけ、読み取りの結果を画面へ書く。開発版の StrictMode は effect を「付ける→外す→付ける」と
-  // 2回走らせるので、付けるたびに true へ戻す（戻さないと読み取りが写真の読み込みの直後で止まる）。
-  useEffect(() => {
-    mountedRef.current = true
-    readerRef.current = null
-    return () => {
-      mountedRef.current = false
-      readerRef.current?.then((reader) => reader.dispose()).catch(() => {})
-      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
-    }
-  }, [])
 
   // 読み取りが不確かな語と、読み違いを直した語は、最初は選ばない（写真で確かめてから選ぶ）。
   const applyMatches = (text) => {
@@ -97,25 +67,8 @@ export function VocabCameraScreen() {
     setAddedCount(0)
   }
 
-  const onPickImage = (event) => {
-    const nextFile = event.target.files?.[0]
-    event.target.value = ''
-    if (!nextFile) return
-    if (!nextFile.type.startsWith('image/') && !/\.(heic|heif|jpe?g|png|webp)$/i.test(nextFile.name)) {
-      setError('画像ファイルを選んでください。')
-      return
-    }
-    if (nextFile.size > MAX_FILE_BYTES) {
-      setError('画像が大きすぎます。20MB以下の写真を選んでください。')
-      return
-    }
-
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
-    const nextUrl = URL.createObjectURL(nextFile)
-    previewUrlRef.current = nextUrl
-    setFile(nextFile)
-    setPreviewUrl(nextUrl)
-    setError('')
+  // 新しい写真を選んだら、前の写真の結果を消す。
+  const clearResults = () => {
     setOcrText('')
     setSummary(null)
     setSelected(new Set())
@@ -124,68 +77,20 @@ export function VocabCameraScreen() {
     setRequestedCount(0)
     setRequestError('')
     setAddedCount(0)
-    setProgress(0)
-    setStatus('')
   }
 
   const scanImage = async () => {
-    if (!file || scanning) return
-    setScanning(true)
-    setError('')
-    setProgress(0.02)
-    setStatus('写真を読み込んでいます…')
+    if (!ocr.file || ocr.scanning) return
     setOcrText('')
     setSummary(null)
     setAddedCount(0)
-
-    // 実在する英単語かを確かめる単語表と、文脈で読み分ける品詞の道具は、写真の下ごしらえと並べて読み込む。
-    const englishWordsLoading = loadEnglishWordSet()
-    englishWordsLoading.catch(() => {})
-    const taggerLoading = loadEnglishTagger()
-    taggerLoading.catch(() => {})
-    try {
-      const image = await prepareImageForOcr(file)
-      if (!mountedRef.current) return
-
-      setStatus('文字認識エンジンを準備中…')
-      setProgress(PREPARE_PROGRESS[0])
-      readerRef.current ??= import('@paddleocr/paddleocr-js').then((paddle) => createOcrReader(paddle, {
-        // 初回はモデル（約 23MB）を読み込むので、読み込んだ量で進み具合を出す。2回目からは端末に残ったものを使う。
-        onDownload: (fraction) => {
-          if (!mountedRef.current) return
-          setStatus('英語と日本語の認識データを読み込み中…')
-          setProgress((current) => Math.max(current, PREPARE_PROGRESS[0] + (PREPARE_PROGRESS[1] - PREPARE_PROGRESS[0]) * fraction))
-        },
-      }))
-      readerRef.current.catch(() => {
-        readerRef.current = null
-      })
-      const reader = await readerRef.current
-      if (!mountedRef.current) return
-
-      setStatus('教科書の文字を読み取り中…')
-      setProgress(READ_PROGRESS)
-      const [page, englishWords, tagger] = await Promise.all([reader.read(image), englishWordsLoading, taggerLoading])
-      if (!mountedRef.current) return
-
-      const text = page.text.trim()
-      englishWordsRef.current = englishWords
-      taggerRef.current = tagger
-      confidencesRef.current = ocrTokenConfidences(page.words)
-      setProgress(1)
-      setStatus('読み取りが完了しました')
-      setOcrText(text)
-      applyMatches(text)
-    } catch (reason) {
-      console.warn('textbook OCR failed', reason)
-      if (mountedRef.current) {
-        setError('文字を読み取れませんでした。通信を確認するか、明るく正面から撮り直してください。')
-        setStatus('')
-        setProgress(0)
-      }
-    } finally {
-      if (mountedRef.current) setScanning(false)
-    }
+    const result = await ocr.scan()
+    if (!result) return
+    englishWordsRef.current = result.englishWords
+    taggerRef.current = result.tagger
+    confidencesRef.current = ocrTokenConfidences(result.page.words)
+    setOcrText(result.text)
+    applyMatches(result.text)
   }
 
   const toggleCandidate = (id) => {
@@ -279,95 +184,14 @@ export function VocabCameraScreen() {
             </div>
           </div>
 
-          {previewUrl ? (
-            <div className="overflow-hidden rounded-2xl bg-ink/5 ring-1 ring-ink/10">
-              <img
-                src={previewUrl}
-                alt="読み取る教科書の写真"
-                className="max-h-72 w-full object-contain"
-              />
-            </div>
-          ) : (
-            <div className="flex min-h-48 items-center justify-center rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/60 px-6 text-center">
-              <div>
-                <div className="text-5xl">📖</div>
-                <p className="mt-3 text-sm font-extrabold text-brand-800">写真はまだ選ばれていません</p>
-                <p className="mt-1 text-xs font-bold text-brand-700/60">
-                  写真は端末内で処理し、保存・送信しません
-                </p>
-              </div>
-            </div>
-          )}
-
-          <input
-            ref={cameraInput}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={onPickImage}
+          <PhotoOcrPicker
+            ocr={ocr}
+            onPicked={clearResults}
+            onRead={scanImage}
+            showRead={Boolean(ocr.file && !summary)}
+            readLabel="英単語を読み取る"
+            previewAlt="読み取る教科書の写真"
           />
-          <input
-            ref={photoInput}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={onPickImage}
-          />
-
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button
-              size="sm"
-              disabled={scanning}
-              onClick={() => cameraInput.current?.click()}
-            >
-              <span aria-hidden="true">📷</span> {previewUrl ? '撮り直す' : 'カメラで撮る'}
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={scanning}
-              onClick={() => photoInput.current?.click()}
-            >
-              <Upload size={16} /> 写真を選ぶ
-            </Button>
-          </div>
-
-          {file && !summary && (
-            <Button full className="mt-3" disabled={scanning} onClick={scanImage}>
-              {scanning ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
-                  読み取り中
-                </>
-              ) : (
-                <>
-                  <Sparkles size={18} /> 英単語を読み取る
-                </>
-              )}
-            </Button>
-          )}
-
-          {scanning && (
-            <div className="mt-4 rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <p className="text-xs font-extrabold text-brand-800">{status}</p>
-                <span className="shrink-0 text-xs font-extrabold tabular-nums text-brand-700">
-                  {Math.round(progress * 100)}%
-                </span>
-              </div>
-              <ProgressBar value={progress} />
-              <p className="mt-2 text-[11px] font-bold text-brand-700/60">
-                初回は英語と日本語の認識データを準備するため、少し時間がかかります。
-              </p>
-            </div>
-          )}
-
-          {error && (
-            <div role="alert" className="mt-3 rounded-2xl bg-rose-50 p-3 text-xs font-bold leading-relaxed text-rose-600 ring-1 ring-rose-100">
-              {error}
-            </div>
-          )}
         </Card>
 
         {summary && (
@@ -681,7 +505,7 @@ export function VocabCameraScreen() {
           </Card>
         )}
 
-        {!summary && !scanning && (
+        {!summary && !ocr.scanning && (
           <div className="rounded-2xl bg-white/60 p-3 text-xs font-bold leading-relaxed text-ink/50">
             <p className="font-extrabold text-ink/65">きれいに読み取るコツ</p>
             <ul className="mt-1 list-disc space-y-1 pl-5">

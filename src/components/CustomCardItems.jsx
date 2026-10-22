@@ -244,7 +244,7 @@ function StudyRow({ label, count, unit, status, units, onStudy, onQuiz, quizDisa
  * 分類（教科・自分のカテゴリー）のまとまり。枚数、英単語のカードとほかのカードの暗記・テスト、カードを見る・作る入口。
  * 作ったカテゴリーだけ歯車（名前・表示する教科・最初に選ぶテンプレート・並び・削除）を持つ。
  */
-export function CustomCategoryBlock({ group, onStudy, onOpen, onCreate, onSettings }) {
+export function CustomCategoryBlock({ group, onStudy, onOpen, onCreate, onPhoto, onSettings }) {
   const { category, words, cards } = group
   const srs = useStore((state) => state.srs)
   const cardSrs = useStore((state) => state.customCardSrs)
@@ -314,7 +314,7 @@ export function CustomCategoryBlock({ group, onStudy, onOpen, onCreate, onSettin
         </div>
       )}
 
-      <div className={cx('mt-2 grid gap-2', onOpen ? 'grid-cols-2' : 'grid-cols-1')}>
+      <div className={cx('mt-2 grid gap-2', [onOpen, onPhoto].filter(Boolean).length === 2 ? 'grid-cols-3' : onOpen || onPhoto ? 'grid-cols-2' : 'grid-cols-1')}>
         {onOpen && (
           <button
             type="button"
@@ -334,6 +334,16 @@ export function CustomCategoryBlock({ group, onStudy, onOpen, onCreate, onSettin
         >
           カードを作る
         </button>
+        {onPhoto && (
+          <button
+            type="button"
+            onClick={() => onPhoto(category)}
+            className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-paper px-2 text-xs font-extrabold text-brand-600"
+            data-custom-category-photo={category.id}
+          >
+            写真から作る
+          </button>
+        )}
       </div>
     </Card>
   )

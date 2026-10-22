@@ -4,6 +4,8 @@
 // していた。src/main.jsx の StrictMode は開発版で effect を「付ける→外す→付ける」と2回走らせるので、印は false の
 // まま残り、scanImage は写真を読み込んだ直後の `if (!mountedRef.current) return` で抜け、scanning も true のまま
 // 残っていた。本番ビルドは effect を2回走らせないので、公開版では起きていなかった。
+// 2026-10-22 に、写真を選んで読む部分を src/components/PhotoOcrPicker.jsx の usePhotoOcr へ移した（自作カードの「写真から作る」と
+// 共通）。生存フラグもそこにあるので、直す前の作りはそのファイルから1行を抜いて作る。
 //
 // 開発サーバー（StrictMode のまま）を立て、実ブラウザ（Playwright の Chromium・スマホの大きさ）で画面を動かす。
 // 文字認識エンジン（PaddleOCR）は、モデルと ONNX Runtime を読み込むので、決まった文を返す代わりのものに差し替える。
@@ -92,7 +94,7 @@ async function openCamera({ beforeFix = false } = {}) {
   await context.route((url) => !url.href.startsWith(base), (route) => route.abort())
   const revert = { replaced: 0 }
   if (beforeFix) {
-    await context.route((url) => url.pathname === '/src/screens/VocabCamera.jsx', async (route) => {
+    await context.route((url) => url.pathname === '/src/components/PhotoOcrPicker.jsx', async (route) => {
       const response = await route.fetch()
       const body = (await response.text()).replace(/\bmountedRef\.current = true;?/g, () => {
         revert.replaced += 1

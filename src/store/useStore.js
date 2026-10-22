@@ -10,6 +10,7 @@ import { battleProgression, clampPos } from '../lib/adaptive.js'
 import { VOCAB_MIX_DEFAULT, normalizeVocabMix } from '../lib/vocabMix.js'
 import { SPEECH_RANGE_DEFAULT, normalizeSpeechRange } from '../lib/speechRange.js'
 import {
+  appendCustomWords,
   customStudyWords,
   isCustomWordId,
   removeCustomWord,
@@ -18,6 +19,7 @@ import {
 import {
   CUSTOM_CARD_QUIZ_DOMAIN,
   ENGLISH_TEMPLATE_ID,
+  appendCustomCards,
   findCustomCategory,
   moveCustomCategory as moveCustomCategoryState,
   registerCustomCards,
@@ -1137,6 +1139,28 @@ export const useStore = create(
               : { customCards: removeCustomCard(st.customCards, previous.id) }),
             learningNotebook: replaceNotebookItemRef(st.learningNotebook, fromRef, toRef),
           }
+        })
+        return result
+      },
+
+      /**
+       * 写真から作ったカードを、同じテンプレート・同じ分類でまとめて登録する。entries は登録欄の中身（lib/customEntryForm.js）の並び。
+       * 必須の欄が空のもの・上限を超えた分は入れない。戻り値 { kind: 'word' | 'card', ids（entries と同じ順。入れなかったものは null）,
+       * fullCount, invalidCount }。
+       */
+      addCustomEntries: ({ template, category, entries = [] }) => {
+        const english = template === ENGLISH_TEMPLATE_ID
+        let result = { kind: english ? 'word' : 'card', ids: entries.map(() => null), fullCount: 0, invalidCount: entries.length }
+        set((st) => {
+          if (!findCustomCategory(st.customCategories, category)) return {}
+          if (english) {
+            const next = appendCustomWords(st.customWords, entries.map((values) => customWordInput(values, category)))
+            result = { kind: 'word', ids: next.ids, fullCount: next.fullCount, invalidCount: next.invalidCount }
+            return next.ids.some(Boolean) ? { customWords: next.words } : {}
+          }
+          const next = appendCustomCards(st.customCards, entries.map((values) => customCardInput(template, values, category)))
+          result = { kind: 'card', ids: next.ids, fullCount: next.fullCount, invalidCount: next.invalidCount }
+          return next.ids.some(Boolean) ? { customCards: next.cards } : {}
         })
         return result
       },

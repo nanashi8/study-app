@@ -10,6 +10,7 @@ import {
   categoryCaption,
 } from '../components/CustomCardItems.jsx'
 import { CustomEditBar, MergeEntriesSheet, MoveEntriesSheet } from '../components/CustomCardEdit.jsx'
+import { CustomCardPhotoView } from '../components/CustomCardPhoto.jsx'
 import { activeNotebookSetId } from '../lib/learningNotebook.js'
 import { Button, Card, EmptyState, IconButton, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Download, Gear, Plus, Search, Upload } from '../components/Icons.jsx'
@@ -61,7 +62,7 @@ import {
 //   form     … 登録欄（{ kind, id } なら書き換え、{ template, category } なら新しく作る）。
 //              新しく作るときは、登録しても登録欄のまま、同じ分類・テンプレートで次のカードを続けて入れられる。
 //   draft    … 英和辞書から渡された語（英単語のテンプレートで登録欄を開く）。
-//   view     … 'file' ならファイルの書き出し・読み込み。
+//   view     … 'file' ならファイルの書き出し・読み込み。'photo' なら写真から作る（category・template はその分類・テンプレートで始める）。
 
 const IMPORT_MESSAGE = {
   broken: 'JSONとして読めないファイルです。書き出したファイルをそのまま選んでください。',
@@ -114,6 +115,15 @@ function CategoryListView({ subject }) {
             full
             size="sm"
             variant="secondary"
+            onClick={() => navigate('customWords', { ...base, view: 'photo', ...(subject ? { category: subjectCategoryId(subject) } : {}) })}
+            data-custom-photo-open
+          >
+            <span aria-hidden="true">📷</span> 写真から作る
+          </Button>
+          <Button
+            full
+            size="sm"
+            variant="secondary"
             onClick={() => setSheet({ category: null })}
             disabled={library.categories.length >= CUSTOM_CARD_LIMITS.categories}
             data-custom-category-add
@@ -142,6 +152,7 @@ function CategoryListView({ subject }) {
                   onStudy={startStudy}
                   onOpen={(category) => navigate('customWords', { ...base, category: category.id })}
                   onCreate={(category) => openForm({ category: category.id })}
+                  onPhoto={(category) => navigate('customWords', { ...base, view: 'photo', category: category.id })}
                   onSettings={group.category.kind === 'custom' ? (category) => setSheet({ category }) : null}
                 />
               </li>
@@ -340,6 +351,7 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
           group={group}
           onStudy={startStudy}
           onCreate={() => navigate('customWords', { ...base, form: { category: category.id } })}
+          onPhoto={() => navigate('customWords', { ...base, view: 'photo', category: category.id })}
         />
 
         {notice && (
@@ -510,6 +522,7 @@ function EntryFormView({ subject, form, draftWord }) {
   const saveCustomCategory = useStore((state) => state.saveCustomCategory)
   const setNotebookSetItem = useStore((state) => state.setNotebookSetItem)
   const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const [initial] = useState(() => initialForm({ form, draftWord, subject, library }))
   const [template, setTemplate] = useState(initial.template)
   const [templateTouched, setTemplateTouched] = useState(Boolean(initial.previous || form?.template))
@@ -599,6 +612,22 @@ function EntryFormView({ subject, form, draftWord }) {
     <div className="flex h-full flex-col">
       <ScreenHeader title={editing ? 'カードを書き換える' : 'カードを作る'} subtitle={scopeTitle(subject, '自作カード')} compact />
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+        {!editing && !fromDictionary && (
+          <button
+            type="button"
+            onClick={() => navigate('customWords', {
+              ...(subject ? { subject } : {}),
+              view: 'photo',
+              ...(category !== NEW_CATEGORY_OPTION ? { category } : {}),
+              template,
+            })}
+            className="flex min-h-12 w-full items-center justify-between rounded-2xl bg-white px-4 text-left text-sm font-extrabold text-brand-700 shadow-card"
+            data-custom-form-photo
+          >
+            <span><span aria-hidden="true">📷 </span>{'写真の文字からまとめて作る'}</span>
+            <ArrowRight size={17} className="shrink-0 text-brand-400" />
+          </button>
+        )}
         {fromDictionary && (
           <p
             className="rounded-2xl bg-amber-50 px-4 py-3 text-xs font-extrabold leading-relaxed text-amber-900"
@@ -949,6 +978,16 @@ export function CustomWordsScreen() {
 
   if (params.form || draftWord) {
     return <EntryFormView key={formKey} subject={subject} form={params.form ?? null} draftWord={draftWord} />
+  }
+  if (params.view === 'photo') {
+    return (
+      <CustomCardPhotoView
+        key={JSON.stringify([params.category ?? null, params.template ?? null])}
+        subject={subject}
+        categoryId={typeof params.category === 'string' ? params.category : null}
+        templateId={typeof params.template === 'string' ? params.template : null}
+      />
+    )
   }
   if (params.view === 'file') return <FileView subject={subject} />
   if (typeof params.category === 'string') {

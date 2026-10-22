@@ -191,8 +191,9 @@ test('写真は PNG にし、まわりに 4px の白い余白をつけてエン�
   const source = readFileSync(new URL('../src/lib/ocrImage.js', import.meta.url), 'utf8')
   assert.match(source, /type = 'image\/png'/)
   assert.match(source, /context\.drawImage\(bitmap, OCR_IMAGE_MARGIN, OCR_IMAGE_MARGIN, width, height\)/)
-  const screen = readFileSync(new URL('../src/screens/VocabCamera.jsx', import.meta.url), 'utf8')
-  assert.match(screen, /await prepareImageForOcr\(file\)/)
+  // 写真を読む共通の部品（教科書から単語追加と自作カードの「写真から作る」。2026-10-22 に VocabCamera.jsx から移した）。
+  const picker = readFileSync(new URL('../src/components/PhotoOcrPicker.jsx', import.meta.url), 'utf8')
+  assert.match(picker, /await prepareImageForOcr\(file\)/)
 })
 
 test('英語の単語表は、小文字の英字の語だけを持ち、語形変化を含む。画面は 24 のファイルを全部読む', () => {

@@ -21,15 +21,17 @@ const freePort = () => new Promise((resolve, reject) => {
 /**
  * 開発サーバーとブラウザを立て、アプリのストアを window.__customTest.store に置いたページを返す。
  * cacheDir はテストごとに分ける（動いている開発サーバーの依存の置き場を書き換えない）。
+ * plugins は開発サーバーに足す vite のプラグイン（読み取りエンジンの代わりなど）、exclude は依存の下ごしらえから外すもの。
  */
-export async function startCustomCardBrowser({ cacheDir }) {
+export async function startCustomCardBrowser({ cacheDir, plugins = [], exclude = [] }) {
   const port = await freePort()
   const vite = await createServer({
     root: ROOT,
     logLevel: 'silent',
     cacheDir,
+    plugins,
     // 画面の依存を最初に見つけておく（途中で見つけるとページを読み直し、開いた画面が入口へ戻る）。
-    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'] },
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], exclude },
     server: { port, host: '127.0.0.1', strictPort: true, hmr: false, watch: null },
   })
   await vite.listen()

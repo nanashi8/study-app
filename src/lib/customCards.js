@@ -432,6 +432,35 @@ export function upsertCustomCard(list, input, { now = Date.now() } = {}) {
   return { cards: next, id: normalized.id, status: 'saved' }
 }
 
+/**
+ * まとめて足す（写真から作る）。inputs は upsertCustomCard に渡す形の並び。必須の欄が空のもの・上限を超えた分は入れない。
+ * 戻り値 { cards, ids（inputs と同じ順。入れなかったものは null）, fullCount, invalidCount }。
+ */
+export function appendCustomCards(list, inputs, { now = Date.now() } = {}) {
+  const cards = normalizeCustomCards(list, { now })
+  const usedIds = new Set(cards.map((card) => card.id))
+  const ids = []
+  let fullCount = 0
+  let invalidCount = 0
+  for (const input of Array.isArray(inputs) ? inputs : []) {
+    let id = createCustomCardId({ now })
+    while (usedIds.has(id)) id = createCustomCardId({ now })
+    const card = normalizeCustomCard({ ...input, id, createdAt: now, updatedAt: now }, { now })
+    if (!card) {
+      invalidCount += 1
+      ids.push(null)
+    } else if (cards.length >= CUSTOM_CARD_LIMITS.cards) {
+      fullCount += 1
+      ids.push(null)
+    } else {
+      usedIds.add(id)
+      cards.push(card)
+      ids.push(id)
+    }
+  }
+  return { cards, ids, fullCount, invalidCount }
+}
+
 export function removeCustomCard(list, id) {
   return normalizeCustomCards(list).filter((card) => card.id !== id)
 }

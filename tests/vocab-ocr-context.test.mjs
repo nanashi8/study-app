@@ -77,9 +77,15 @@ test('写真の文字から候補を作るとき、文脈で読み分けたカ�
 })
 
 test('画面は品詞の道具を読み取りのときに読み込み、候補を作るたびに文脈の読み分けを渡す', () => {
+  // 読み込みは写真を読む共通の部品（教科書から単語追加と自作カードの「写真から作る」。2026-10-22 に VocabCamera.jsx から移した）。
+  const picker = readFileSync(new URL('../src/components/PhotoOcrPicker.jsx', import.meta.url), 'utf8')
+  assert.match(picker, /loadEnglishTagger\(\)/)
   const screen = readFileSync(new URL('../src/screens/VocabCamera.jsx', import.meta.url), 'utf8')
-  assert.match(screen, /loadEnglishTagger\(\)/)
+  assert.match(screen, /usePhotoOcr\(/)
   assert.match(screen, /contextReading: taggerRef\.current \? createContextReading\(taggerRef\.current, text, ALL_WORDS\) : null/)
+  const photo = readFileSync(new URL('../src/components/CustomCardPhoto.jsx', import.meta.url), 'utf8')
+  assert.match(photo, /usePhotoOcr\(/)
+  assert.match(photo, /contextReading: info\?\.tagger \? \(joined\) => createContextReading\(info\.tagger, joined, ALL_WORDS\) : null/)
   const source = readFileSync(new URL('../src/lib/ocrContext.js', import.meta.url), 'utf8')
   assert.match(source, /import\('compromise\/two'\)/)
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))

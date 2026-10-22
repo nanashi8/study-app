@@ -250,6 +250,35 @@ export function upsertCustomWord(list, input, { now = Date.now() } = {}) {
   return { words: next, id: normalized.id, status: 'saved' }
 }
 
+/**
+ * まとめて足す（写真から作る）。inputs は upsertCustomWord に渡す形の並び。語か意味が空のもの・上限を超えた分は入れない。
+ * 戻り値 { words, ids（inputs と同じ順。入れなかったものは null）, fullCount, invalidCount }。
+ */
+export function appendCustomWords(list, inputs, { now = Date.now() } = {}) {
+  const words = normalizeCustomWords(list, { now })
+  const usedIds = new Set(words.map((word) => word.id))
+  const ids = []
+  let fullCount = 0
+  let invalidCount = 0
+  for (const input of Array.isArray(inputs) ? inputs : []) {
+    let id = createCustomWordId({ now })
+    while (usedIds.has(id)) id = createCustomWordId({ now })
+    const word = normalizeCustomWord({ ...input, id, createdAt: now, updatedAt: now }, { now })
+    if (!word) {
+      invalidCount += 1
+      ids.push(null)
+    } else if (words.length >= CUSTOM_WORD_LIMITS.words) {
+      fullCount += 1
+      ids.push(null)
+    } else {
+      usedIds.add(id)
+      words.push(word)
+      ids.push(id)
+    }
+  }
+  return { words, ids, fullCount, invalidCount }
+}
+
 export function removeCustomWord(list, id, { now = Date.now() } = {}) {
   return normalizeCustomWords(list, { now }).filter((word) => word.id !== id)
 }

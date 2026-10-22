@@ -136,16 +136,22 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （src/data/math-fill-notes.js・math-choice-notes.js）を外して 834 から 848 ファイルになった。学習者画面の日本語は
   // 解答欄・目安時間・答え方の決まりの文を消し、誘導問題の「わからない」を共通の部品にして 18358 から 18343（重複なし 13688 から 13685）に、ソース全体の日本語は
   // 方針の段・考え方・手がかり・選択肢の説明を足して 237163 から 244924 になった（requests/2026-10-22-math-no-hand-calc.json）。
-  assert.equal(result.learnerFiles, 354)
+  // 2026-10-22、自作カードの「写真から作る」で、画面（src/components/CustomCardPhoto.jsx）・教科書から単語追加と共通の写真を読む部品
+  // （src/components/PhotoOcrPicker.jsx）・候補の作り方（src/lib/customCardsPhoto.js）の3ファイルが増え、学習者画面が 354 から 357、
+  // ソース全体が 848 から 851 ファイルになった（requests/2026-10-22-custom-cards-photo-ocr.json）。
+  assert.equal(result.learnerFiles, 357)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
   // 2026-10-22、単語の熟語・構文カードの「説明」の文字を外したので、学習者画面の日本語が 18343 から 18342 に、
   // ソース全体の日本語が 244924 から 244923 になった（requests/2026-10-22-word-phrase-card-layout.json）。
-  assert.equal(result.learnerJapaneseEntries, 18342)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13685)
-  assert.equal(result.sourceFiles, 848)
-  assert.equal(result.sourceJapaneseEntries, 244923)
+  // 同じ日、自作カードの「写真から作る」の画面の文（入口・候補の理由の知らせ・登録の知らせ・テンプレートごとの分け方の案内）で、
+  // 学習者画面の日本語が 18342 から 18467（重複なし 13685 から 13770）に、ソース全体の日本語が 244923 から 245048 になった
+  // （写真を読む部品は教科書から単語追加から移したので、移した文は数が変わらない。requests/2026-10-22-custom-cards-photo-ocr.json）。
+  assert.equal(result.learnerJapaneseEntries, 18467)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13770)
+  assert.equal(result.sourceFiles, 851)
+  assert.equal(result.sourceJapaneseEntries, 245048)
   assert.equal(result.issues.length, 0)
 })
 

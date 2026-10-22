@@ -7,6 +7,9 @@
 // 自分の塊を読み込むので、別スレッドでアプリ本体まで動き、document がなくて止まった。開発版にはこの包みがなく、
 // ほかのテスト（vocab-ocr-photos・vocab-camera-dev-ocr）は開発版で読んでいたので見落とした。
 // vite.config.js で先読みの関数を別の小さな塊にした。このテストはビルドを作って配り、実際の画面で写真を読む。
+// 2026-10-22 に、写真を読む部品（PhotoOcrPicker.jsx）を自作カードの「写真から作る」と共通にした（依頼
+// requests/2026-10-22-custom-cards-photo-ocr.json）。読み取りエンジンを読み込む import() がその部品へ移ったので、自作カードの画面でも
+// 本番のビルドで写真を読み、単語表がカードの候補になることを確かめる。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs'
@@ -34,6 +37,11 @@ const READS = [
   { id: 'p12', browser: 'chromium' },
   { id: 'inline-mixed', browser: 'webkit' },
 ]
+// 自作カードの「写真から作る」で読む試料（新出単語の表）。
+const PHOTO_READS = [
+  { id: 'word-list', browser: 'chromium' },
+  { id: 'word-list', browser: 'webkit' },
+]
 
 let outDir
 let server
@@ -45,6 +53,7 @@ const messages = { chromium: [], webkit: [] }
 // （アプリを開いたときのフォントなどは読み取りではない。テストはそれも止めるので、読み込めなかった知らせが出る）。
 let reading = false
 const results = []
+const photoResults = []
 let truths
 
 const freePort = () => new Promise((resolve, reject) => {
@@ -82,6 +91,34 @@ async function readOnScreen(page, path) {
   return { failed: false, text: await page.locator('#ocr-text').inputValue() }
 }
 
+// メニューから自作カードを開き、「写真から作る」で試料を読む。読み取った候補（表・裏・選んだか）か、読めなかった知らせを返す。
+async function readCustomPhoto(context, path) {
+  const page = await context.newPage()
+  await page.goto(base)
+  await page.locator('[data-global-menu-button]').click({ timeout: 60_000 })
+  await page.locator('[data-menu-destination="customWords"]').click()
+  await page.locator('[data-custom-photo-open]').click()
+  await page.locator('[data-custom-photo]').waitFor()
+  await page.locator('[data-custom-photo] input[type=file]:not([capture])').setInputFiles(path)
+  reading = true
+  await page.getByRole('button', { name: '文字を読み取る' }).click()
+  const failed = page.getByText('文字を読み取れませんでした')
+  await page.locator('#custom-photo-text').or(failed).first().waitFor({ timeout: 300_000 })
+  reading = false
+  const result = (await failed.count())
+    ? { failed: true, rows: [] }
+    : {
+        failed: false,
+        rows: await page.locator('[data-custom-photo-candidate]').evaluateAll((items) => items.map((item) => [
+          item.querySelector('[data-custom-photo-front]').value,
+          item.querySelector('[data-custom-photo-back]').value,
+          item.querySelector('[data-custom-photo-check]').checked,
+        ])),
+      }
+  await page.close()
+  return result
+}
+
 before(async () => {
   await ensureOcrModels()
   const photos = await fetchPhotos()
@@ -114,6 +151,11 @@ before(async () => {
       const result = await readOnScreen(page, truth.path)
       results.push({ ...read, ...result, seconds: (Date.now() - started) / 1000, truth })
       await page.close()
+    }
+    for (const read of PHOTO_READS.filter((item) => item.browser === type)) {
+      const started = Date.now()
+      const result = await readCustomPhoto(context, `${ROOT}tests/fixtures/vocab-ocr/${read.id}.png`)
+      photoResults.push({ ...read, ...result, seconds: (Date.now() - started) / 1000 })
     }
   }
 }, { timeout: 1_800_000 })
@@ -156,6 +198,23 @@ test('本番のビルドの画面で、写真を読み取りエンジンで読�
   }
 })
 
+test('本番のビルドの自作カードの「写真から作る」でも読み、新出単語の表の7行を7枚の候補にする（Chromium・WebKit）', (t) => {
+  assert.equal(photoResults.length, PHOTO_READS.length)
+  for (const result of photoResults) {
+    t.diagnostic(`${result.browser} 写真から作る ${result.id} ${result.seconds.toFixed(1)}秒`)
+    assert.equal(result.failed, false, `${result.browser}：文字を読み取れませんでした`)
+    assert.deepEqual(result.rows, [
+      ['library', '図書館', true],
+      ['borrow', '借りる', true],
+      ['animal', '動物', true],
+      ['interesting', 'おもしろい', true],
+      ['librarian', '司書', true],
+      ['wanted', 'want の過去形', true],
+      ['showed', 'show の過去形', true],
+    ], result.browser)
+  }
+})
+
 // 開発版で読んだ数（tests/vocab-ocr-photos.test.mjs の HARD_FLOOR・試料）と同じだけ、画面の候補にする。
 test('本番のビルドでも、開発版と同じだけの英単語を候補にする', () => {
   const englishWords = englishWordSetForTests()
@@ -175,8 +234,11 @@ test('本番のビルドの読み取りは外のサイトへ通信しない（�
 })
 
 // 「No available adapters.」は、テストのブラウザに GPU がないとき、WebGPU を探したブラウザ自身が出す知らせ。
+// 「Successfully preconnected to https://fonts.googleapis.com/」は、アプリを開いたときのフォントの先読み（index.html）を WebKit が
+// 知らせる行で、読み取りとは関係がない。開いてすぐ読む自作カードの「写真から作る」では、読んでいる間に届くことがある（2026-10-22）。
 test('本番のビルドの読み取りのあいだ、コンソールに知らせ・エラーを出さない（Chromium・WebKit）', () => {
-  const ours = (lines) => lines.filter((line) => line !== 'warning: No available adapters.')
+  const ours = (lines) => lines.filter((line) => line !== 'warning: No available adapters.'
+    && line !== 'info: Successfully preconnected to https://fonts.googleapis.com/')
   assert.deepEqual(ours(messages.chromium), [])
   assert.deepEqual(ours(messages.webkit), [])
 })
