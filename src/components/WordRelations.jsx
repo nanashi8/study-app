@@ -255,39 +255,39 @@ export function PhraseCardList({ phrases, navigateTo = null, returnTo = null, cl
           return (
             <li
               key={phrase.id}
-              className="rounded-xl bg-white px-2.5 py-2 ring-1 ring-sky-100"
+              // 意味の中の単語リンクと発音ボタンのほかは、カードのどこを押しても詳細を開く。
+              onClick={(event) => {
+                if (event.target.closest('a, button')) return
+                setDetail(phrase)
+              }}
+              className="flex cursor-pointer items-start gap-2 rounded-xl bg-white px-2.5 py-2 ring-1 ring-sky-100 active:bg-sky-50"
               data-word-phrase-card={phrase.id}
             >
-              <div className="flex items-start gap-2">
-                <RowSpeakButton text={phraseSpeechText(phrase)} title={kindLabel} />
+              <RowSpeakButton text={phraseSpeechText(phrase)} title={kindLabel} />
+              <div className="min-w-0 flex-1">
+                {/* 1段目に級と種類、2段目に見出し、3段目に意味。 */}
                 <button
                   type="button"
                   onClick={() => setDetail(phrase)}
                   aria-label={`${phrase.phrase}の説明を見る`}
-                  className="flex min-w-0 flex-1 items-start gap-2 text-left active:opacity-70"
+                  className="block w-full text-left"
                 >
-                  <span
-                    className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
-                    style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
-                  >
-                    {kindLabel}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">
-                      {phrase.phrase}
-                    </span>
-                    <span className="mt-0.5 inline-block" data-word-phrase-level={phrase.level}>
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <span data-word-phrase-level={phrase.level}>
                       <Chip color={level.color}>英検{level.label}</Chip>
                     </span>
+                    <span
+                      className="rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
+                      style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
+                    >
+                      {kindLabel}
+                    </span>
                   </span>
-                  <span className="mt-0.5 flex shrink-0 items-center gap-0.5 text-[11px] font-extrabold text-sky-600">
-                    説明
-                    <ArrowRight size={14} />
+                  <span className="mt-1 block font-display text-sm font-extrabold leading-snug text-ink" data-explain-exempt="熟語の見出し">
+                    {phrase.phrase}
                   </span>
                 </button>
-              </div>
-              <div className="pl-10">
-                <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
                 <UsageNote text={phrase.usageNote} />
               </div>
             </li>

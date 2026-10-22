@@ -51,6 +51,24 @@ function checkCards(html, expected, label) {
   }
   const buttons = html.match(/aria-label="[^"]*の説明を見る"/g) ?? []
   assert.equal(buttons.length, expected.length, label)
+  // 1枚ごとに「英検◯級」→「熟語／構文」→見出し→意味の順で並び、「説明」の文字は出さない（2026-10-22 の依頼）。
+  const cards = html.split(/(?=<li )/).filter((part) => part.includes('data-word-phrase-card='))
+  assert.equal(cards.length, expected.length, label)
+  cards.forEach((card, index) => {
+    const phrase = expected[index]
+    const text = card.replace(/<[^>]+>/g, '\u0001').split('\u0001')
+      .map((part) => part.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim())
+      .filter(Boolean)
+    const level = `英検${levels.getLevel(phrase.level).label}`
+    const kind = phrase.kind === 'syntax' ? '構文' : '熟語'
+    assert.equal(text[0], level, `${label}: ${phrase.id} の1つ目は級 ${JSON.stringify(text.slice(0, 4))}`)
+    assert.equal(text[1], kind, `${label}: ${phrase.id} の2つ目は種類`)
+    assert.equal(text[2], phrase.phrase.trim(), `${label}: ${phrase.id} の3つ目は見出し`)
+    // 意味は見出しの後（解説の部品が語ごとに分けるので、つなげて比べる）。
+    assert.ok(text.slice(3).join('').replace(/\s+/g, '').startsWith(String(phrase.meaning).replace(/\s+/g, '').slice(0, 2)), `${label}: ${phrase.id} の4つ目からは意味 ${JSON.stringify(text.slice(3, 6))}`)
+    assert.ok(!text.includes('説明'), `${label}: ${phrase.id} に「説明」の文字`)
+    assert.ok(!/<svg/.test(card.replace(/<button[^>]*title="[^"]*"[\s\S]*?<\/button>/, '')), `${label}: ${phrase.id} に矢印`)
+  })
 }
 
 test('「◯◯を含む熟語・構文」の全行（ほかの品詞の形の欄・畳んだ欄を含む）が級つきのカード', () => {

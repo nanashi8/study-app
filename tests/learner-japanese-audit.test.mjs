@@ -140,10 +140,12 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
-  assert.equal(result.learnerJapaneseEntries, 18343)
+  // 2026-10-22、単語の熟語・構文カードの「説明」の文字を外したので、学習者画面の日本語が 18343 から 18342 に、
+  // ソース全体の日本語が 244924 から 244923 になった（requests/2026-10-22-word-phrase-card-layout.json）。
+  assert.equal(result.learnerJapaneseEntries, 18342)
   assert.equal(result.learnerUniqueJapaneseEntries, 13685)
   assert.equal(result.sourceFiles, 848)
-  assert.equal(result.sourceJapaneseEntries, 244924)
+  assert.equal(result.sourceJapaneseEntries, 244923)
   assert.equal(result.issues.length, 0)
 })
 
