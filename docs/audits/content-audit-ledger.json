@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-22T03:28:21.135Z",
+  "auditedAt": "2026-10-22T07:51:43.962Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 24,
-    "learningItemCount": 20493,
-    "quizItemCount": 20864,
-    "storedAndGeneratedQuestionPathCount": 7813,
-    "storedAndGeneratedChoicePathCount": 29585,
-    "overallContentSha256": "4289718146d44b5d19b656837effd08541196f13ff8ed4541c1e9958b952247c"
+    "learningItemCount": 21582,
+    "quizItemCount": 21953,
+    "storedAndGeneratedQuestionPathCount": 8840,
+    "storedAndGeneratedChoicePathCount": 33693,
+    "overallContentSha256": "467bf153a37b82fe2529288c6485ef4891959720e8c9601e9f652340c2671d3a"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "760da19b553ec048debe8c0fab6eebd5cf69ef3c8041b631fadbfec205d00e86",
+    "sha256": "55e5f1940ecf2125b015289c5399e1c862ef891d9e4a4f02afc97686ea638ec1",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -262,6 +262,7 @@
       "tests/grammar-usage-quality.test.mjs",
       "tests/heteronyms.test.mjs",
       "tests/hide-login-save.test.mjs",
+      "tests/high-school-social.test.mjs",
       "tests/history-authors.test.mjs",
       "tests/homograph-headwords.test.mjs",
       "tests/homograph-words.test.mjs",
@@ -879,11 +880,11 @@
       "label": "社会の重要語句",
       "learningUnit": "語句",
       "quizUnit": "問",
-      "learningItemCount": 649,
-      "quizItemCount": 649,
-      "learningIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
-      "quizIdOrderSha256": "5ab00ac527ed0ac7e4cce124da382bef05c3d33403f40747b560b896f139c139",
-      "contentSha256": "64a19c0e470332689e2b910c3fecbdb85203ca9cc4a872d9f211abf8d77485d5",
+      "learningItemCount": 1216,
+      "quizItemCount": 1216,
+      "learningIdOrderSha256": "2f7dc5545fff668fa1b23c309068668d95518960aec2bd2176c93e5b201a342f",
+      "quizIdOrderSha256": "2f7dc5545fff668fa1b23c309068668d95518960aec2bd2176c93e5b201a342f",
+      "contentSha256": "58812c15f205337ac4331decea76ed2894daccc5b0a10434e1047342420c1bef",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -902,11 +903,11 @@
       "label": "社会の演習",
       "learningUnit": "問",
       "quizUnit": "問",
-      "learningItemCount": 522,
-      "quizItemCount": 522,
-      "learningIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
-      "quizIdOrderSha256": "26f1045b88475643a2cc29ef2998f40be37ffaecb509e99d1082712aa37d2616",
-      "contentSha256": "71b0a63d89a36a6734ee9da662a6993beca67bf865de7e9c5fdf9049dc23c375",
+      "learningItemCount": 1044,
+      "quizItemCount": 1044,
+      "learningIdOrderSha256": "7172dc7b1e628c17214d07825ac7721acbfbd4dce1ff3f2bf64a8dcfdcca4649",
+      "quizIdOrderSha256": "7172dc7b1e628c17214d07825ac7721acbfbd4dce1ff3f2bf64a8dcfdcca4649",
+      "contentSha256": "34503b317cc275a6122dbe94dad2338490657e0b1a31a0b0e4a4b41d9bcacf8c",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1126,11 +1127,11 @@
     {
       "id": "subject-practice-choices",
       "label": "社会・理科の演習（選ぶ問題）",
-      "questionCount": 776,
-      "choiceCount": 3104,
-      "generalRationaleCount": 776,
-      "choiceSpecificRationaleCount": 3104,
-      "questionSetSha256": "8d1ab31dad905316bb74dfd65cc7787ac045ea05db692a6495973d955fee6577",
+      "questionCount": 1236,
+      "choiceCount": 4944,
+      "generalRationaleCount": 1236,
+      "choiceSpecificRationaleCount": 4944,
+      "questionSetSha256": "adb17a688af17992e816ab122fcbe3f0ea21fd5dc4a2d2318ff5138c5284b512",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -1138,11 +1139,11 @@
     {
       "id": "subject-terms",
       "label": "社会・理科の語句テスト",
-      "questionCount": 1151,
-      "choiceCount": 4604,
-      "generalRationaleCount": 1151,
-      "choiceSpecificRationaleCount": 4604,
-      "questionSetSha256": "0c0b7784b18f83e561df45f5aed301742b160d682235dc4e483fbf0cdd642173",
+      "questionCount": 1718,
+      "choiceCount": 6872,
+      "generalRationaleCount": 1718,
+      "choiceSpecificRationaleCount": 6872,
+      "questionSetSha256": "84a483b7ed5370a066db2f15568358522e300c65e4a7935d707368a7235ad01d",
       "result": "pass",
       "failureCount": 0,
       "failures": []

@@ -51,18 +51,18 @@ export function subjectStatus({ terms, questions, srs, quizResults, practiceDoma
   return { ...learning, quiz: practice.counts, quizTotal: practice.total }
 }
 
-/** 冊（地理・歴史・公民、1年・2年・3年）の切り替え。 */
+/** 冊（地理・歴史・公民・地理総合・歴史総合、1年・2年・3年）の切り替え。 */
 export function BookSwitch({ subject, value, onChange, label = '冊を選ぶ', allLabel = null }) {
   const books = SUBJECTS[subject].books
   const items = allLabel ? [{ id: 'all', label: allLabel }, ...books] : books
   return (
     <div
-      className={cx('grid gap-1 rounded-2xl bg-brand-50 p-1', items.length === 4 ? 'grid-cols-4' : 'grid-cols-3')}
+      className={cx('grid gap-1 rounded-2xl bg-brand-50 p-1', items.length === 4 ? 'grid-cols-4' : items.length === 5 ? 'grid-cols-6' : 'grid-cols-3')}
       role="group"
       aria-label={label}
       data-subject-book-switch={subject}
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const on = value === item.id
         return (
           <button
@@ -72,6 +72,8 @@ export function BookSwitch({ subject, value, onChange, label = '冊を選ぶ', a
             aria-pressed={on}
             className={cx(
               'min-h-11 rounded-xl px-1 py-1.5 font-display text-sm font-extrabold transition-colors',
+              // 5冊（社会：中学の3冊＋高校の2冊）は上の段に3つ、下の段に2つ並べる。
+              items.length === 5 ? (index < 3 ? 'col-span-2' : 'col-span-3') : '',
               on ? 'bg-white text-brand-700 shadow-sm' : 'text-ink/55 active:bg-white/70',
             )}
             data-subject-book-option={item.id}
@@ -246,6 +248,21 @@ function SubjectHomeScreen({ subject }) {
           catalogAriaLabel={`${book.label}の重要語句を一覧で確認する`}
           onCatalog={() => openCatalog(bookId)}
         />
+
+        {/* 高校の地理総合・歴史総合：共通テストの出題傾向（読みたいときだけ開く）。 */}
+        {book.examTrend && (
+          <details className="rounded-2xl bg-white p-4 shadow-sm" data-subject-exam-trend={bookId}>
+            <summary className="cursor-pointer font-display text-sm font-extrabold text-ink/80">共通テストの出題傾向と、この冊の学び方</summary>
+            <dl className="mt-3 space-y-3">
+              {book.examTrend.map((item) => (
+                <div key={item.heading}>
+                  <dt className="text-xs font-extrabold text-emerald-700">{item.heading}</dt>
+                  <dd className="mt-1 text-sm font-bold leading-relaxed text-ink/75"><SubjectText>{item.body}</SubjectText></dd>
+                </div>
+              ))}
+            </dl>
+          </details>
+        )}
 
         <h2 className="px-1 pt-2 font-display text-base font-extrabold text-ink/80">単元から選ぶ</h2>
         <div className="space-y-6" data-subject-units={bookId}>

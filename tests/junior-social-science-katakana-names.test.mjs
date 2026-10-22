@@ -16,7 +16,8 @@ import {
 test('社会・理科の漢字のかたまりを全件見た記録と、今の教材が一致し、カタカナの読みは辞書にある', async () => {
   const ledger = readKatakanaNamesLedger()
   assert.ok(ledger.runs.length >= 7000, '漢字のかたまりの数')
-  assert.deepEqual(Object.keys(ledger.katakana).sort(), ['上海', '北京', '南京', '安重根', '青島', '香港'].sort())
+  // 中学の6語に、高校（地理総合・歴史総合）で現地の読みを示す6語（深圳・金日成・李承晩・平壌・仁川・板門店）を足した。
+  assert.deepEqual(Object.keys(ledger.katakana).sort(), ['上海', '北京', '南京', '安重根', '青島', '香港', '深圳', '金日成', '李承晩', '平壌', '仁川', '板門店'].sort())
   assert.deepEqual(await katakanaNamesProblems(ledger), [])
 })
 

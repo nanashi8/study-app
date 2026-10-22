@@ -1,0 +1,68 @@
+{
+  "id": "2026-10-22-high-school-social",
+  "title": "高校の社会「地理総合」「歴史総合」の学習コンテンツを、教科書の出版社の目次・内容と共通テストなどの出題傾向を参考に作る",
+  "asked": [
+    "地理総合と歴史総合のコンテンツを教科書の出版社の目次や内容を参考にして出題傾向等も参考にして作成しなさい。"
+  ],
+  "sessions": [
+    "9aa2703c-c3be-4500-b8b8-9671fc2fbe27"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "units-match-toc",
+      "text": "地理総合・歴史総合の単元の並びと名前が、教科書の出版社が公開している目次（二宮書店『地理総合』『歴史総合 近代から現代へ』の章・節、学習指導要領の大項目 A・B・C と 歴史の扉・近代化・大衆化・グローバル化）の順にそろい、社会アプリの冊として開ける（本文・図・問題はこのアプリで書き、教科書の文や図は使わない）",
+      "population": "地理総合の全単元と歴史総合の全単元（単元の一覧は tests/high-school-social.test.mjs の HIGH_SCHOOL_UNITS に名前まで固定する）",
+      "check": "node --test tests/high-school-social.test.mjs",
+      "status": "done",
+      "verifiedBy": "地理総合20単元・歴史総合38単元の計58単元の並びと名前を HIGH_SCHOOL_UNITS に固定し、58/58を確認（社会アプリの冊は5冊に）"
+    },
+    {
+      "id": "learn-every-unit",
+      "text": "全単元に、めあて・要点（4つ以上、本文60字以上）・重要語句（8つ以上、すべて解説つき）がある。全要点に図表と図の読み方がある（図表を付けないものは理由を書く）",
+      "population": "高校の全単元の全要点・全語句",
+      "check": "node --test tests/high-school-social.test.mjs tests/junior-social-science-figures.test.mjs tests/junior-social-science-glossary.test.mjs",
+      "status": "done",
+      "verifiedBy": "58単元・要点232（全単元4つ以上）・重要語句567（全単元8つ以上・全語句に解説）・全要点に図表または理由"
+    },
+    {
+      "id": "practice-every-unit-levels",
+      "text": "全単元に、基礎・標準・入試の演習が3問ずつある。選ぶ問題は4択すべてに説明があり、並べる問題は順の理由がある。入試の段階は共通テストの出題傾向（資料の読み取り・複数資料の比較・会話文や仮説の検証・因果や時期の判断）に合わせて、単元ごとに資料を読んで答える問題を含む",
+      "population": "高校の全単元の全演習問題（単元数×9問）",
+      "check": "node --test tests/high-school-social.test.mjs tests/junior-social-science.test.mjs",
+      "status": "done",
+      "verifiedBy": "58単元×基礎・標準・入試3問＝522問（58×9）、選ぶ問題の全選択肢に説明・並べる問題に順の理由・入試は単元ごとに資料を読む問題あり"
+    },
+    {
+      "id": "answers-read",
+      "text": "全問の正解がひとつに決まり、誤答が誤りであることを1問ずつ読み直して根拠を台帳に残し、問題の指紋と一致する。数を入れる問題は問題文の数から計算し直す",
+      "population": "高校の全演習問題",
+      "check": "node --test tests/junior-social-science-answers.test.mjs && node scripts/checks/junior-social-science-answers.mjs",
+      "status": "done",
+      "verifiedBy": "非数問題の全問に根拠と指紋を台帳に残し一致、数を入れる問題は問題文から計算し直し（522問すべて）"
+    },
+    {
+      "id": "exam-trend-guide",
+      "text": "共通テスト（地理総合・歴史総合）の出題傾向（大問の構成・出題形式・資料の種類・思考力を問う形）と、各単元がどの出題にあたるかを、学習者が読める形で画面に載せる（権利・出典・作り方の説明ではなく、学習に使う説明だけ）",
+      "population": "地理総合・歴史総合の2冊（冊のトップ）",
+      "check": "node --test tests/high-school-social.test.mjs",
+      "status": "done",
+      "verifiedBy": "地理総合・歴史総合の2冊のトップに出題傾向（4見出し）を畳んで載せ、全58単元に出題傾向の1行"
+    },
+    {
+      "id": "all-screens",
+      "text": "依頼に関わるすべての画面（社会ホーム・冊・単元・暗記・語句テスト・演習・学習の記録・ノート・一覧・単語帳・成績表など）で、新しい冊が開き、375px で横にはみ出さず、読みがなが付く",
+      "population": "高校の全単元の入口3つ・単元ページ・暗記・語句テスト・演習3形と、共通の一覧・記録の画面",
+      "check": "node --test tests/junior-social-science-screens.test.mjs",
+      "status": "done",
+      "verifiedBy": "375pxの画面テスト（junior-social-science-screens）で新しい冊の入口・単元・暗記・語句テスト・演習が横にはみ出さず読みがな付き。共通の一覧・記録・ノートの件数も 21,582項目 に更新"
+    },
+    {
+      "id": "audits-pass",
+      "text": "全テスト・全監査・監査台帳が通り、クリーンな clone で確かめて main へ push し、公開版で新しい冊が開くことを確かめる",
+      "population": "リポジトリ全体と公開版",
+      "check": "npm run audit:all-content",
+      "status": "todo"
+    }
+  ]
+}

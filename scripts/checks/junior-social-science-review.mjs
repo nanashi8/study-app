@@ -24,6 +24,7 @@ export const unitFingerprint = (unit) => createHash('sha256').update(JSON.string
   points: unit.points,
   terms: unit.terms.map((term) => [term.term, term.meaning, term.note]),
   questions: unit.questions,
+  ...(unit.exam ? { exam: unit.exam } : {}),
 })).digest('hex')
 
 export const readReviewLedger = () => (existsSync(REVIEW_LEDGER_PATH)

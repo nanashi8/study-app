@@ -77,6 +77,12 @@ function SubjectUnitScreen({ subject }) {
               <SubjectText>{unit.goal}</SubjectText>
             </p>
           )}
+          {unit.exam && (
+            <p className="mt-2 text-sm font-bold leading-relaxed text-ink/70" data-subject-unit-exam>
+              <span className="mr-1 text-[11px] font-extrabold text-rose-700">出題傾向</span>
+              <SubjectText>{unit.exam}</SubjectText>
+            </p>
+          )}
         </Card>
 
         {/* 要点：見出しと本文、必要なら図。 */}

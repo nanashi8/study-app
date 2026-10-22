@@ -1,9 +1,9 @@
 // 中学の社会・理科の画面の確認（依頼台帳 requests/2026-09-29-junior-social-science.json の screens-work・learn-every-unit・credits-page、
 // requests/2026-09-30-subject-figures-glossary.json の screens-and-audits）。
 // 375px の幅の Chromium で動かし、次を確かめる。
-//   入口   … ポータルのタイルとメニューの教材の行から社会・理科へ入れる。全102単元に「暗記」「演習」「要点を読む」の入口があり、
+//   入口   … ポータルのタイルとメニューの教材の行から社会・理科へ入れる。全単元に「暗記」「演習」「要点を読む」の入口があり、
 //            押すとその単元の暗記カード・演習・単元のページが開く。
-//   単元   … 全102単元のページに、めあて・要点（図つき）・重要語句・基礎／標準／入試の演習の一覧がそろう。
+//   単元   … 全単元のページに、めあて・要点（図つき）・重要語句・基礎／標準／入試の演習の一覧がそろう。
 //            要点の図はどれも描かれ（図の組の中の図解も名前どおりに出る）、図の下に「図の読み方」が出る。重要語句には解説が出る。
 //   学ぶ   … 暗記カードはめくると意味と解説が出て、「覚えた」「まだ」が記録され、最後に全教材共通の終わりの報告が出る。
 //            語句テストは3択＋わからないで答え、3択すべての説明が出て、結果が記録される。
@@ -176,7 +176,7 @@ test('ポータルのタイルとメニューの教材の行から、社会・�
   }
 })
 
-test('全102単元に「暗記」「演習」「要点を読む」の入口があり、押すとその単元の暗記カード・演習・ページが開く', async () => {
+test('全単元に「暗記」「演習」「要点を読む」の入口があり、押すとその単元の暗記カード・演習・ページが開く', async () => {
   let checked = 0
   for (const subject of ['social', 'science']) {
     const meta = SUBJECTS[subject]
@@ -211,11 +211,12 @@ test('全102単元に「暗記」「演習」「要点を読む」の入口が�
       }
     }
   }
-  assert.equal(checked, 102)
-  assert.equal(ALL_SUBJECT_UNITS.length, 102)
+  assert.equal(checked, ALL_SUBJECT_UNITS.length)
+  // 中学の102単元と、高校の地理総合・歴史総合の単元（tests/high-school-social.test.mjs）。
+  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id)).length, 102)
 })
 
-test('全102単元のページに、めあて・要点（図）・重要語句・基礎／標準／入試の演習がそろい、横にはみ出さない', async () => {
+test('全単元のページに、めあて・要点（図）・重要語句・基礎／標準／入試の演習がそろい、横にはみ出さない', async () => {
   for (const unit of ALL_SUBJECT_UNITS) {
     const meta = SUBJECTS[unit.subject]
     await open(meta.screens.unit, { unitId: unit.id })

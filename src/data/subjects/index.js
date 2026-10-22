@@ -3,6 +3,8 @@
 import { GEOGRAPHY_UNITS } from './geography.js'
 import { HISTORY_UNITS } from './history.js'
 import { CIVICS_UNITS } from './civics.js'
+import { GEO_SOGO_UNITS } from './geoSogo.js'
+import { HIS_SOGO_UNITS } from './hisSogo.js'
 import { SCIENCE1_UNITS } from './science1.js'
 import { SCIENCE2_UNITS } from './science2.js'
 import { SCIENCE3_UNITS } from './science3.js'
@@ -16,6 +18,8 @@ const BOOK_SOURCES = Object.freeze({
   geography: GEOGRAPHY_UNITS,
   history: HISTORY_UNITS,
   civics: CIVICS_UNITS,
+  geoSogo: GEO_SOGO_UNITS,
+  hisSogo: HIS_SOGO_UNITS,
   science1: SCIENCE1_UNITS,
   science2: SCIENCE2_UNITS,
   science3: SCIENCE3_UNITS,
@@ -85,6 +89,8 @@ function finalizeUnit(subject, bookId, source, order) {
     chapter: source.chapter ?? '',
     title: source.title,
     goal: source.goal ?? '',
+    // 共通テストでの出方（高校の地理総合・歴史総合の単元だけ）。
+    exam: source.exam ?? '',
     points: Object.freeze((source.points ?? []).map((point) => Object.freeze({ ...point }))),
   }
   unit.terms = Object.freeze((source.terms ?? []).map((entry, index) => finalizeTerm(unit, entry, index)))

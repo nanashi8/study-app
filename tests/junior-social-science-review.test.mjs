@@ -9,7 +9,7 @@ import { ALL_SUBJECT_UNITS } from '../src/data/subjects/index.js'
 import { readReviewLedger, reviewLedgerProblems } from '../scripts/checks/junior-social-science-review.mjs'
 
 test('全102単元を読み直した記録と、今の中身が一致する', () => {
-  assert.equal(ALL_SUBJECT_UNITS.length, 102)
+  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id)).length, 102)
   assert.deepEqual(reviewLedgerProblems(), [])
 })
 

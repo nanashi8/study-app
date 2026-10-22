@@ -148,10 +148,13 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 同じ日、自作カードの「写真から作る」の画面の文（入口・候補の理由の知らせ・登録の知らせ・テンプレートごとの分け方の案内）で、
   // 学習者画面の日本語が 18342 から 18467（重複なし 13685 から 13770）に、ソース全体の日本語が 244923 から 245048 になった
   // （写真を読む部品は教科書から単語追加から移したので、移した文は数が変わらない。requests/2026-10-22-custom-cards-photo-ocr.json）。
-  assert.equal(result.learnerJapaneseEntries, 18467)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13770)
-  assert.equal(result.sourceFiles, 851)
-  assert.equal(result.sourceJapaneseEntries, 245048)
+  // 2026-10-22、社会アプリに高校の地理総合・歴史総合を足した。冊の切り替えと出題傾向の画面の文で学習者画面の日本語が 18467 から 18469
+  //（重複なし 13770 から 13772）に、教材のファイル（src/data/subjects の geoSogo・hisSogo 計16本）でソース全体が 851 から 867 ファイル・
+  // 日本語が 245048 から 258252 になった（requests/2026-10-22-high-school-social.json）。
+  assert.equal(result.learnerJapaneseEntries, 18469)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13772)
+  assert.equal(result.sourceFiles, 867)
+  assert.equal(result.sourceJapaneseEntries, 258252)
   assert.equal(result.issues.length, 0)
 })
 

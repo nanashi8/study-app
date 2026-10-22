@@ -22,13 +22,13 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-vocab': 293,
   'kanbun-grammar': 131,
   'kanbun-culture': 95,
-  'social-terms': 649,
+  'social-terms': 1216,
   'science-terms': 502,
 })
 
-test('指定11カテゴリの通常入口5,067項目を欠落なくスワイプ記録へ接続する', () => {
+test('指定11カテゴリの通常入口5,634項目を欠落なくスワイプ記録へ接続する', () => {
   assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 11)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_067)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_634)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,

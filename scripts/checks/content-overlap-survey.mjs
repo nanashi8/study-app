@@ -252,6 +252,13 @@ export const OVERLAP_SETS = [
   ...['social-terms', 'science-terms'].map((id) => ({
     id, label: byId[id].label, title: (item) => `${item.term}（${item.unitId}）`,
     measures: { 同じ語句: () => sameKey(byId[id].items, (item) => termKey(item.term)) },
+    // 中学の社会で学んだ語句を、高校の地理総合・歴史総合でもう一度学ぶ（中学で出会い、高校で深める）。同じ冊の中の重なりは決めない（直す）。
+    rule: id === 'social-terms'
+      ? (a, b) => {
+        if (HIGH_SCHOOL_UNIT.test(a.unitId) !== HIGH_SCHOOL_UNIT.test(b.unitId)) return same('中学の社会と高校の地理総合・歴史総合の両方に出る語句')
+        return a.unitId.slice(0, 3) !== b.unitId.slice(0, 3) && HIGH_SCHOOL_UNIT.test(a.unitId) ? same('地理総合と歴史総合の両方に出る語句') : undefined
+      }
+      : undefined,
   })),
   ...['social-practice', 'science-practice'].map((id) => ({
     id, label: byId[id].label, title: (item) => `${item.id}`,
@@ -268,6 +275,7 @@ export const OVERLAP_SETS = [
   },
   {
     id: 'social-science-terms', label: '社会の語句 × 理科の語句', title: (item) => `${item.term}（${item.unitId}）`,
+    rule: (a) => (HIGH_SCHOOL_UNIT.test(a.unitId) ? same('高校の地理総合・歴史総合と理科の両方の教科書に出る語句') : undefined),
     measures: {
       同じ語句: () => {
         const science = new Map(byId['science-terms'].items.map((item) => [termKey(item.term), item]))
@@ -293,6 +301,8 @@ export const OVERLAP_SETS = [
   },
 ]
 
+/** 高校の地理総合・歴史総合の単元 id。 */
+const HIGH_SCHOOL_UNIT = /^(gso|hso)-/u
 const D = (kind, why, note) => ({ kind, why, ...(note ? { note } : {}) })
 const dup = (note) => D('duplicate', 'duplicate', note)
 const form = (note) => D('form', 'form', note)

@@ -12,8 +12,8 @@ test('全教材監査台帳は24カテゴリの母数・ゲート・ハッシュ
   // 2026-09-30、中学の社会・理科（重要語句・演習の4カテゴリ、2,069件）で24カテゴリになった。
   assert.equal(ledger.scope.categoryCount, 24)
   assert.equal(ledger.categories.length, 24)
-  assert.equal(ledger.scope.learningItemCount, 20_493)
-  assert.equal(ledger.scope.quizItemCount, 20_864)
+  assert.equal(ledger.scope.learningItemCount, 21_582)
+  assert.equal(ledger.scope.quizItemCount, 21_953)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -47,18 +47,18 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
     assert.equal(bank.failureCount, 0, id)
   }
   assert.equal(ledger.questionBanks.some((bank) => ['math-fill', 'math-choice', 'math-exam-choices'].includes(bank.id)), false)
-  // 社会・理科の演習の選ぶ問題（776問・3,104択）と語句テスト（1,151問・4,604択）は、どの選択肢にも説明がある。
+  // 社会・理科の演習の選ぶ問題（1,236問・4,944択）と語句テスト（1,718問・6,872択）は、どの選択肢にも説明がある。
   const subjectPractice = ledger.questionBanks.find((bank) => bank.id === 'subject-practice-choices')
-  assert.equal(subjectPractice.questionCount, 776)
-  assert.equal(subjectPractice.choiceCount, 3_104)
-  assert.equal(subjectPractice.generalRationaleCount, 776)
-  assert.equal(subjectPractice.choiceSpecificRationaleCount, 3_104)
+  assert.equal(subjectPractice.questionCount, 1_236)
+  assert.equal(subjectPractice.choiceCount, 4_944)
+  assert.equal(subjectPractice.generalRationaleCount, 1_236)
+  assert.equal(subjectPractice.choiceSpecificRationaleCount, 4_944)
   assert.equal(subjectPractice.failureCount, 0)
   const subjectTerms = ledger.questionBanks.find((bank) => bank.id === 'subject-terms')
-  assert.equal(subjectTerms.questionCount, 1_151)
-  assert.equal(subjectTerms.choiceCount, 4_604)
-  assert.equal(subjectTerms.generalRationaleCount, 1_151)
-  assert.equal(subjectTerms.choiceSpecificRationaleCount, 4_604)
+  assert.equal(subjectTerms.questionCount, 1_718)
+  assert.equal(subjectTerms.choiceCount, 6_872)
+  assert.equal(subjectTerms.generalRationaleCount, 1_718)
+  assert.equal(subjectTerms.choiceSpecificRationaleCount, 6_872)
   assert.equal(subjectTerms.failureCount, 0)
   assert.equal(grammar.questionCount, 3_450)
   assert.equal(grammar.choiceCount, 13_800)

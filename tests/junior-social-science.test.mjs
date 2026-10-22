@@ -83,8 +83,9 @@ test('社会3冊・理科3冊の全102単元が、教科書の単元の順と名
     total += units.length
   }
   assert.equal(total, 102)
-  assert.equal(ALL_SUBJECT_UNITS.length, 102)
-  assert.deepEqual(SUBJECTS.social.books.map((book) => book.id), ['geography', 'history', 'civics'])
+  // 高校の地理総合・歴史総合の単元は tests/high-school-social.test.mjs が確かめる。
+  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id)).length, 102)
+  assert.deepEqual(SUBJECTS.social.books.map((book) => book.id), ['geography', 'history', 'civics', 'geoSogo', 'hisSogo'])
   assert.deepEqual(SUBJECTS.science.books.map((book) => book.id), ['science1', 'science2', 'science3'])
 })
 
@@ -107,9 +108,15 @@ test('全単元に、めあて・要点（4つ以上）・重要語句（8つ以
 
 test('重要語句は教科の中で重ならず、意味の文に語句そのものを書かない（語句テストの答えが見えない）', () => {
   const failures = []
-  for (const subject of Object.keys(SUBJECTS)) {
+  // 中学の教材と高校の教材（地理総合・歴史総合）は別の冊として持つので、同じ語を両方に載せてよい。重なりは、それぞれの中で見る。
+  const stages = [
+    ...Object.keys(SUBJECTS).map((subject) => [subject, (term) => !/^(gso|hso)-/.test(term.unitId)]),
+    ['social', (term) => /^gso-/.test(term.unitId)],
+    ['social', (term) => /^hso-/.test(term.unitId)],
+  ]
+  for (const [subject, inStage] of stages) {
     const seen = new Map()
-    for (const term of subjectTerms(subject)) {
+    for (const term of subjectTerms(subject).filter(inStage)) {
       if (!term.term?.trim() || !term.meaning?.trim()) failures.push(`${term.id}: 語句か意味がない`)
       if (term.meaning.includes(term.term)) failures.push(`${term.id}: 意味に「${term.term}」が入っている`)
       if (seen.has(term.term)) failures.push(`${term.id}: 「${term.term}」が ${seen.get(term.term)} と重複`)
@@ -147,7 +154,7 @@ test('全単元に、基礎・標準・入試の演習がそれぞれ決まっ�
   }
   assert.deepEqual(failures, [])
   const perUnit = Object.values(QUESTIONS_PER_LEVEL).reduce((sum, count) => sum + count, 0)
-  assert.equal(ALL_SUBJECT_QUESTIONS.length, 102 * perUnit)
+  assert.equal(ALL_SUBJECT_QUESTIONS.length, ALL_SUBJECT_UNITS.length * perUnit)
 })
 
 // ── all-choices-explained ──

@@ -11,7 +11,7 @@ export const SUBJECT_PRACTICE_RESULTS = Object.freeze({
 export const SUBJECT_PRACTICE_RESULT_IDS = Object.freeze(Object.keys(SUBJECT_PRACTICE_RESULTS))
 
 export const SUBJECT_PRACTICE_LOG_LIMIT = 10
-const QUESTION_ID = /^(geo|his|civ|sc1|sc2|sc3)-\d{2}-q\d{2}$/
+const QUESTION_ID = /^(geo|his|civ|gso|hso|sc1|sc2|sc3)-\d{2}-q\d{2}$/
 const RESULT_SET = new Set(SUBJECT_PRACTICE_RESULT_IDS)
 
 // ── 数を入れる問題 ─────────────────────────────────────────────
