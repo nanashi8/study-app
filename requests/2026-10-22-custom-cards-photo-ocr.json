@@ -7,7 +7,7 @@
   "sessions": [
     "41d6d747-5763-4329-a131-106254309107"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "photo-entry-all-places",
@@ -53,8 +53,9 @@
       "id": "deployed",
       "text": "開発版の375pxで見た目と操作を確かめ、全監査を通し、クリーンな clone で確かめて main へ push し、公開版で「写真から作る」を確かめる",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor dabab641 origin/main && test \"$(gh run view 39718186201 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs tests/custom-cards-photo-screens.test.mjs",
+      "status": "done",
+      "result": "開発版の375pxで、自作カードのホーム・分類のまとまり（3つのボタン）・カードを作る画面の入口、写真から作る画面（写真の欄→テンプレート・分類・単語帳→読み取った文字→候補→登録の欄）を見て、本物のエンジンで試料の単語表を読み、7枚を登録して分類の一覧に出ることを確かめた（コンソールのエラー0件）。クリーンな clone で npm run audit:all-content が通った（テスト 1,477件・成功 1,476・失敗0・前からの条件つきの1件は飛ばす、24カテゴリ・教材20,493件・失敗0、ビルド・公開物の監査・台帳の書き直し）。1回目のコミットは commit のフックで止まった：本番ビルドのテストの WebKit で、開いてすぐ読む写真から作る画面の読み取り中に、index.html のフォントの先読みを知らせる info の1行が届いた。読み取りとは関係のない行なので、その1行だけを除き、全監査を流し直して通した（同じ件数）。台帳のテスト（content-audit-ledger）も書き直したあとに通った。dabab641 を main へ push、deploy.yml の run 39718186201 が success、公開版の入口の塊（index-CaIHo10C.js）が clone のビルドと同じ。公開版を Chromium・WebKit（375px・新しいゲスト）で開き、メニューの自作カード→写真から作る→試料の単語表 word-list.png を読ませて、7行が library＝図書館・borrow＝借りる・animal＝動物・interesting＝おもしろい・librarian＝司書・wanted＝want の過去形・showed＝show の過去形の7枚（どれも選んだ状態）になり、登録して「7枚を「英語」に登録しました。」、分類の一覧に7枚が出た。1回目の読み取りはモデル（約23MB）の読み込みを含めて Chromium 42.9秒・WebKit 47.9秒。コンソールのエラー0件。"
     }
   ]
 }
