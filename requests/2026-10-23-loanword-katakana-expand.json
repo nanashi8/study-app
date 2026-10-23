@@ -1,0 +1,35 @@
+{
+  "id": "2026-10-23-loanword-katakana-expand",
+  "title": "カタカナ語として使われている英単語の情報を全見出し語で見直して足し、紛らわしい語（同じカタカナになる別の語・和製英語・外来語の取り違え）に注意を促す",
+  "asked": [
+    "コーヒーのバリスタは法定弁護士のbarristerか？日本語として使われている英語は例も挙げなさいと過去に指示しなかったか？",
+    "入念にカタカナ語として使用されている語の情報を追加しなさい。紛らわしい語も注意を促しなさい。"
+  ],
+  "sessions": [
+    "6704fe95-c4df-45b8-a106-bb7005e68593"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "loanword-all-headwords-read",
+      "text": "辞書の見出し語を1語ずつ読み、日本語でカタカナ語として使われている語（単独でも複合語の一部でも、和製英語の「元になった英語」の側も）を台帳 loanword-hints.js に足す。読んだ語は docs/audits/loanword-survey.json に記録し、全語が記録されるまでテストが止める",
+      "population": "辞書の全見出し語（ALL_WORDS 8,929語）",
+      "check": "node --test tests/loanword-survey.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "loanword-confusables-noted",
+      "text": "同じカタカナ（長音・ッ・ウィ/ウイ・ヴ/ブの書き分けをそろえた形）になる別の英単語どうしは、全組が互いの語を名指しする注意書きを持つ。見出し語にない英語・外国語のカタカナ語（barista・barrister など）との取り違えは、近い見出し語の注意書きに書く",
+      "population": "loanword-hints.js の全語どうしの組（同じ形のカタカナを持つ組すべて）",
+      "check": "node --test tests/loanword-survey.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "loanword-screens-and-audits",
+      "text": "足した情報が単語カード裏・辞書ページ（WordDetail・VocabStudy）に出て、意味欄とだぶる語は出さない。全テスト・全監査（npm run audit:all-content）を通し、クリーンな clone で確かめて push し、公開版で確かめる",
+      "population": "カタカナ語のヒントを出す画面2つ（WordDetail・VocabStudy）と、全テスト・全監査・公開版",
+      "check": "node --test tests/word-relations.test.mjs tests/loanword-survey.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
