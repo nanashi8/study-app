@@ -8,7 +8,7 @@
   "sessions": [
     "6704fe95-c4df-45b8-a106-bb7005e68593"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "loanword-all-headwords-read",
@@ -29,7 +29,7 @@
       "text": "足した情報が単語カード裏・辞書ページ（WordDetail・VocabStudy）に出て、意味欄とだぶる語は出さない。全テスト・全監査（npm run audit:all-content）を通し、クリーンな clone で確かめて push し、公開版で確かめる",
       "population": "カタカナ語のヒントを出す画面2つ（WordDetail・VocabStudy）と、全テスト・全監査・公開版",
       "check": "node --test tests/word-relations.test.mjs tests/loanword-survey.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
