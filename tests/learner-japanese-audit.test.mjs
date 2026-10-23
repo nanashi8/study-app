@@ -154,7 +154,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   assert.equal(result.learnerJapaneseEntries, 18469)
   assert.equal(result.learnerUniqueJapaneseEntries, 13772)
   assert.equal(result.sourceFiles, 867)
-  assert.equal(result.sourceJapaneseEntries, 258252)
+  // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
+  // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
+  assert.equal(result.sourceJapaneseEntries, 260042)
   assert.equal(result.issues.length, 0)
 })
 
