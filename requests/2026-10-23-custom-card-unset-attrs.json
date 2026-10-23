@@ -8,7 +8,7 @@
   "sessions": [
     "dff6e4b4-3081-4aac-a247-233b3c78ad52"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "unset-option-and-save",
@@ -32,7 +32,7 @@
       "population": "全テスト・全監査・公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/custom-card-unset-attrs.test.mjs tests/custom-card-unset-attrs-browser.test.mjs",
       "status": "done",
-      "result": "クリーンな clone で npm run audit:all-content を通した（npm test 1,493件・失敗0、24カテゴリ・教材21,582件・問題経路8,840件・失敗0、台帳一致）。1回目は固定値2件（級のチップの形・学習者画面の日本語 18469→18472）で落ちたので直した。別セッションの pkill で1回中断された。公開版の確認は push 後に追記"
+      "result": "クリーンな clone で上流の変更を載せたうえで npm run audit:all-content を通した（npm test 1,498件・失敗0、24カテゴリ・教材21,582件・問題経路8,840件・失敗0、台帳一致）。1回目は固定値2件（級のチップの形・学習者画面の日本語 18469→18472）で落ちたので直し、別セッションの pkill で1回中断され、上流の push で1回やり直した。c7d3a5f を push、デプロイ成功（run 39913174515）。公開版が登録欄の「ー」の選択肢と「級ー」の表示を含む配信になっていることを、配信ファイルの中身で確かめた（画面を開いての操作確認はしていない）"
     }
   ]
 }
