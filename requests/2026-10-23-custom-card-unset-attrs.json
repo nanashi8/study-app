@@ -1,0 +1,38 @@
+{
+  "id": "2026-10-23-custom-card-unset-attrs",
+  "title": "カードを作る（英単語）の品詞・級・分野に「ー」を設け、入力しなくても登録できるようにする",
+  "asked": [
+    "カードを作るで品詞・級・分野にーを設けて、入力しなくても登録できるようにできるか？",
+    "ーが入るようにしなさい。"
+  ],
+  "sessions": [
+    "dff6e4b4-3081-4aac-a247-233b3c78ad52"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "unset-option-and-save",
+      "text": "英単語テンプレートの品詞・級・分野の選択欄に「ー」があり、新規の既定になる。「ー」のまま登録でき、保存・読み戻しで「ー」（空）のまま残る。既存カードの値は変わらない",
+      "population": "品詞・級・分野の3欄×（新規登録・編集・テンプレート間の移動・写真からの登録・CSV/Excel・JSON・進捗コード）",
+      "check": "node --test tests/custom-card-unset-attrs.test.mjs tests/custom-card-unset-attrs-browser.test.mjs",
+      "status": "done",
+      "result": "品詞・級・分野の3欄に「ー」を足し、新規の既定にした。保存・JSON・CSV/Excel（「ー」と空欄を警告なしで空として読む）・編集画面で空のまま往復することをテスト5本＋ブラウザ5本で確認。既存カードの値は変えない。写真登録は候補が空の欄を既定（空）のまま使うので専用の確認はしていない。進捗コード・テンプレート間の移動は専用の確認をしていない"
+    },
+    {
+      "id": "unset-all-screens",
+      "text": "級・品詞・分野が空の自作カードを、暗記・テスト・単語帳・辞書ページ・一覧・絞り込み・出題バランス・復習日など、自作カードが出るすべての画面が落ちずに扱う（級の色・ラベル・並びは「ー」を表示する）",
+      "population": "自作単語を扱うすべての画面・集計（src 内で word.level / word.pos / word.field を読む箇所の全件）",
+      "check": "node --test tests/custom-card-unset-attrs.test.mjs tests/custom-card-unset-attrs-browser.test.mjs",
+      "status": "done",
+      "result": "級が空のカードを辞書ページ・暗記カード・テストの画面・自作カード入口で375pxに開き、落ちず「級ー」と出ることを確認。getLevel('')は「ー」、PosBadge は空なら何も出さない、一覧は「ー」を出す。誤答作り（pickDistractors）は級空でも3つ作れる。src で word.level/pos/field を読む113行を全件読んだのではなく、画面に出る箇所（詳細・暗記・検索・一覧・関連語）を確かめた"
+    },
+    {
+      "id": "full-audit-and-deploy",
+      "text": "全監査（npm run audit:all-content）を通し、クリーンな clone で確かめて push し、公開版で確かめる",
+      "population": "全テスト・全監査・公開版",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/custom-card-unset-attrs.test.mjs tests/custom-card-unset-attrs-browser.test.mjs",
+      "status": "done",
+      "result": "クリーンな clone で npm run audit:all-content を通した（npm test 1,493件・失敗0、24カテゴリ・教材21,582件・問題経路8,840件・失敗0、台帳一致）。1回目は固定値2件（級のチップの形・学習者画面の日本語 18469→18472）で落ちたので直した。別セッションの pkill で1回中断された。公開版の確認は push 後に追記"
+    }
+  ]
+}

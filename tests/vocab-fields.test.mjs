@@ -73,9 +73,9 @@ test('単語カードは左上に英検の級を出す', () => {
 
   assert.match(study, /const level = getLevel\(word\.level\)/)
   assert.match(study, /data-vocab-card-level/)
-  assert.match(study, /<Chip color=\{level\.color\}>英検\{level\.label\}<\/Chip>/)
+  assert.match(study, /<Chip color=\{level\.color\}>\{levelChipText\(level\)\}<\/Chip>/)
   // 級は左、品詞は右。カードを開いた瞬間にどちらも見える。
-  assert.match(study, /<Chip color=\{level\.color\}>英検\{level\.label\}<\/Chip>\s*\n\s*<PosBadge pos=\{word\.pos\} \/>/)
+  assert.match(study, /<Chip color=\{level\.color\}>\{levelChipText\(level\)\}<\/Chip>\s*\n\s*<PosBadge pos=\{word\.pos\} \/>/)
 })
 
 test('単語の公開画面は10分野を直接示し、旧20語デッキを表示しない', () => {

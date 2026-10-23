@@ -39,13 +39,13 @@ export function excelRoundtripSource() {
   ], { now: NOW })
   const words = [
     normalizeCustomWord({
-      id: 'u-w1', word: 'popular', meanings: ['人気のある', '大衆の'], pos: '形', level: '4', phonetic: '/ˈpɑːpjələr/',
+      id: 'u-w1', word: 'popular', meanings: ['人気のある', '大衆の'], pos: '形', level: '4', field: '基本・日常', phonetic: '/ˈpɑːpjələr/',
       example: { en: 'It is "popular", isn\'t it?', ja: 'それは「人気」だ。' }, note: '-er がつく', category: 'cat-1',
       otherSenses: [{ pos: '名', meaning: '人気者（愛称）' }], synonyms: [{ w: 'famous', m: '有名な' }, { w: 'well-known', m: '' }],
       phrases: [{ phrase: 'be fond of (doing)', meaning: '' }, { phrase: 'a;b', meaning: 'x；y' }],
       derivatives: [{ w: 'popularity', m: '人気（こと）（もの）' }], etymology: 'ラテン語 populus（人々）', createdAt: 100,
     }, { now: NOW }),
-    normalizeCustomWord({ id: 'u-w2', word: 'one-two', meanings: ['1-2', '3/4'], category: 'cat-1', createdAt: 101 }, { now: NOW }),
+    normalizeCustomWord({ id: 'u-w2', word: 'one-two', meanings: ['1-2', '3/4'], pos: '名', level: '5', field: '基本・日常', category: 'cat-1', createdAt: 101 }, { now: NOW }),
   ]
   return { words, cards, categories }
 }

@@ -19,6 +19,7 @@ const POS_COLORS = {
 }
 
 export function PosBadge({ pos, className = '' }) {
+  if (!pos) return null // 品詞を決めていない自作カード
   const color = POS_COLORS[pos] ?? '#6366f1'
   return (
     <span

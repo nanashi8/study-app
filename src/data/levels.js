@@ -28,4 +28,10 @@ export const READING_LEVELS = [
 
 export const LEVELS_BY_ID = Object.fromEntries(READING_LEVELS.map((l) => [l.id, l]))
 
-export const getLevel = (id) => LEVELS_BY_ID[id] ?? LEVELS[0]
+// 級を決めていない自作カードの級（id は空）。級の絞り込み・出題には混ぜず、表示は「ー」。
+export const UNSET_LEVEL = Object.freeze({ id: '', label: 'ー', sub: '', cefr: '', color: '#94a3b8', emoji: '' })
+
+export const getLevel = (id) => (id === '' ? UNSET_LEVEL : LEVELS_BY_ID[id] ?? LEVELS[0])
+
+/** 級のチップの文字（「英検3級」。級を決めていないカードは「級ー」）。 */
+export const levelChipText = (level) => (level?.id === '' ? '級ー' : `英検${level?.label ?? ''}`)

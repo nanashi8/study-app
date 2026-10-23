@@ -471,6 +471,9 @@ function encodeMeanings(meanings) {
 
 const encodeList = (items) => items.join(LIST_SEPARATOR)
 
+/** 「ー」や「-」だけの欄は、決めていない印として読む。 */
+const isUnsetText = (value) => /^[ー\-―‐]*$/u.test(String(value ?? '').normalize('NFKC').trim())
+
 /** 級の欄（「準2級」「英検準2級」「2」「pre2」のどれでも）。読めなければ null。 */
 export function levelFromText(value) {
   const text = String(value ?? '').normalize('NFKC').replace(/\s+/gu, '').replace(/^英検/u, '').replace(/級$/u, '')
@@ -810,11 +813,15 @@ export function parseCustomCardsTable(text, { categories = [], subject = null, n
         errors.push({ line, message: `英単語のカードは${CUSTOM_WORD_LIMITS.words}語までなので、この行は読みません` })
         return
       }
-      const pos = values.pos ? POS_BY_TEXT.get(values.pos.normalize('NFKC').trim()) : undefined
-      if (values.pos && !pos) warnings.push({ line, message: `品詞「${values.pos}」は英単語の品詞にないので、名詞にします` })
-      const level = values.level ? levelFromText(values.level) : undefined
-      if (values.level && !level) warnings.push({ line, message: `級「${values.level}」を読めないので、5級にします` })
-      if (values.field && !CUSTOM_WORD_FIELDS.includes(values.field)) warnings.push({ line, message: `分野「${values.field}」はないので、基本・日常にします` })
+      // 「ー」（または空）は、品詞・級・分野を決めない印。
+      const posText = isUnsetText(values.pos) ? '' : values.pos
+      const levelText = isUnsetText(values.level) ? '' : values.level
+      const fieldText = isUnsetText(values.field) ? '' : values.field
+      const pos = posText ? POS_BY_TEXT.get(posText.normalize('NFKC').trim()) : undefined
+      if (posText && !pos) warnings.push({ line, message: `品詞「${values.pos}」は英単語の品詞にないので、ーにします` })
+      const level = levelText ? levelFromText(levelText) : undefined
+      if (levelText && !level) warnings.push({ line, message: `級「${values.level}」を読めないので、ーにします` })
+      if (fieldText && !CUSTOM_WORD_FIELDS.includes(fieldText)) warnings.push({ line, message: `分野「${values.field}」はないので、ーにします` })
 
       const meanings = parseMeanings(values.back)
       const pairLists = Object.fromEntries(['derivatives', 'synonyms', 'antonyms', 'confusables'].map((key) => [
@@ -850,7 +857,7 @@ export function parseCustomCardsTable(text, { categories = [], subject = null, n
         meanings,
         pos,
         level,
-        field: values.field,
+        field: fieldText,
         phonetic: values.phonetic,
         example: { en: values.example ?? '', ja: values.exampleTranslation ?? '' },
         note: values.note,

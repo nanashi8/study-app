@@ -148,15 +148,18 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 同じ日、自作カードの「写真から作る」の画面の文（入口・候補の理由の知らせ・登録の知らせ・テンプレートごとの分け方の案内）で、
   // 学習者画面の日本語が 18342 から 18467（重複なし 13685 から 13770）に、ソース全体の日本語が 244923 から 245048 になった
   // （写真を読む部品は教科書から単語追加から移したので、移した文は数が変わらない。requests/2026-10-22-custom-cards-photo-ocr.json）。
+  // 2026-10-23、自作カードの品詞・級・分野に「ー」を足した。級の表示の文字（級ー）と選択欄で学習者画面の日本語が 18469 から 18472（重複なし 13772 から 13774）
+  // ソース全体の日本語は 6 増える（requests/2026-10-23-custom-card-unset-attrs.json）。
   // 2026-10-22、社会アプリに高校の地理総合・歴史総合を足した。冊の切り替えと出題傾向の画面の文で学習者画面の日本語が 18467 から 18469
   //（重複なし 13770 から 13772）に、教材のファイル（src/data/subjects の geoSogo・hisSogo 計16本）でソース全体が 851 から 867 ファイル・
   // 日本語が 245048 から 258252 になった（requests/2026-10-22-high-school-social.json）。
-  assert.equal(result.learnerJapaneseEntries, 18469)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13772)
+  assert.equal(result.learnerJapaneseEntries, 18472)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13774)
   assert.equal(result.sourceFiles, 867)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
-  assert.equal(result.sourceJapaneseEntries, 260042)
+  // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
+  assert.equal(result.sourceJapaneseEntries, 260048)
   assert.equal(result.issues.length, 0)
 })
 

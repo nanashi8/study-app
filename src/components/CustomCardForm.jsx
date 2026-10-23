@@ -142,7 +142,7 @@ function RowListField({ item, rows, onChange, fallbackPos }) {
   const [firstPlaceholder, secondPlaceholder] = ROW_PLACEHOLDERS[item.key] ?? ['', '']
   const update = (index, key, value) => onChange(list.map((row, at) => (at === index ? { ...row, [key]: value } : row)))
   const add = () => onChange([...list, item.list === 'sense'
-    ? { pos: fallbackPos, meaning: '' }
+    ? { pos: fallbackPos || CUSTOM_WORD_POS[0].id, meaning: '' }
     : { [shape.first]: '', [shape.second]: '' }])
   const remove = (index) => onChange(list.filter((_, at) => at !== index))
   return (
@@ -224,6 +224,7 @@ function EnglishFields({ values, onChange }) {
         return (
           <Field key="pos" label={item.label}>
             <select value={values.posId} onChange={(event) => set('posId')(event.target.value)} className={selectClass} data-custom-card-input="posId">
+              <option value="">ー</option>
               {CUSTOM_WORD_POS.map((pos) => <option key={pos.id} value={pos.id}>{pos.label}</option>)}
             </select>
           </Field>
@@ -232,6 +233,7 @@ function EnglishFields({ values, onChange }) {
         return (
           <Field key="level" label={item.label}>
             <select value={values.level} onChange={(event) => set('level')(event.target.value)} className={selectClass} data-custom-card-input="level">
+              <option value="">ー</option>
               {CUSTOM_WORD_LEVELS.map((level) => <option key={level.id} value={level.id}>{`英検${level.label}`}</option>)}
             </select>
           </Field>
@@ -240,6 +242,7 @@ function EnglishFields({ values, onChange }) {
         return (
           <Field key="field" label={item.label}>
             <select value={values.field} onChange={(event) => set('field')(event.target.value)} className={selectClass} data-custom-card-input="field">
+              <option value="">ー</option>
               {CUSTOM_WORD_FIELDS.map((name) => <option key={name} value={name}>{name}</option>)}
             </select>
           </Field>

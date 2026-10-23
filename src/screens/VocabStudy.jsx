@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore, useContentSettings, currentContentSettings } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord, homographsFor } from '../data/vocab.js'
-import { getLevel } from '../data/levels.js'
+import { getLevel, levelChipText } from '../data/levels.js'
 import {
   answeredSessionIndexes,
   buildDeck,
@@ -424,7 +424,7 @@ export function VocabStudyScreen() {
         >
           {/* 表：単語（左上に英検の級、右上に品詞） */}
           <div className="flex items-start justify-between gap-2" data-vocab-card-level>
-            <Chip color={level.color}>英検{level.label}</Chip>
+            <Chip color={level.color}>{levelChipText(level)}</Chip>
             <PosBadge pos={word.pos} />
           </div>
 

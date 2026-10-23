@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getLevel } from '../data/levels.js'
+import { getLevel, levelChipText } from '../data/levels.js'
 import { SpeakButton } from './SpeakButton.jsx'
 import { StudyReviewHistory } from './StudyReviewHistory.jsx'
 import { LearningStatusBars } from './LearningStatusBars.jsx'
@@ -69,12 +69,12 @@ function EntryContent({ kind, entry, speak = true }) {
           <span className="rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-700" data-custom-entry-template={template.id}>
             {template.label}
           </span>
-          {english && <Chip color={level.color}>英検{level.label}</Chip>}
+          {english && <Chip color={level.color}>{levelChipText(level)}</Chip>}
           {english && (
-            <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-extrabold text-ink/60">{entry.pos}</span>
+            <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-extrabold text-ink/60">{entry.pos || 'ー'}</span>
           )}
           {english && (
-            <span className="truncate rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-ink/45">{entry.field}</span>
+            <span className="truncate rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-ink/45">{entry.field || 'ー'}</span>
           )}
         </div>
         <p className="mt-1 whitespace-pre-line break-words font-display text-xl font-extrabold text-ink">{title}</p>

@@ -76,9 +76,10 @@ export const CUSTOM_WORD_FIELDS = VOCAB_FIELDS
 export const DEFAULT_CUSTOM_WORD = Object.freeze({
   word: '',
   meanings: [],
-  pos: POS_IDS[0],
-  level: LEVEL_IDS[0],
-  field: VOCAB_FIELDS[0],
+  // 品詞・級・分野は空（「ー」）が既定。入力しなくても登録できる。
+  pos: '',
+  level: '',
+  field: '',
   phonetic: '',
   example: null,
   note: '',
@@ -184,20 +185,20 @@ export function normalizeCustomWord(value, { now = Date.now() } = {}) {
   const exampleJa = text(value.example?.ja, CUSTOM_WORD_LIMITS.example)
   const id = isCustomWordId(value.id) ? value.id : createCustomWordId({ now })
   const createdAt = timestamp(value.createdAt, now)
-  const pos = POS_IDS.includes(value.pos) ? value.pos : DEFAULT_CUSTOM_WORD.pos
+  const pos = POS_IDS.includes(value.pos) ? value.pos : ''
   return {
     id,
     word,
     meanings,
     pos,
-    level: LEVEL_IDS.includes(value.level) ? value.level : DEFAULT_CUSTOM_WORD.level,
-    field: VOCAB_FIELDS.includes(value.field) ? value.field : DEFAULT_CUSTOM_WORD.field,
+    level: LEVEL_IDS.includes(value.level) ? value.level : '',
+    field: VOCAB_FIELDS.includes(value.field) ? value.field : '',
     phonetic: text(value.phonetic, CUSTOM_WORD_LIMITS.phonetic),
     example: exampleEn || exampleJa ? { en: exampleEn, ja: exampleJa } : null,
     note: text(value.note, CUSTOM_WORD_LIMITS.note),
     // 以前の自作単語（分類を持たない保存）は、教科「英語」のカードとして読む。
     category: isCategoryKey(value.category) ? value.category : DEFAULT_CATEGORY_ID,
-    otherSenses: normalizeOtherSenses(value.otherSenses, { fallbackPos: pos }),
+    otherSenses: normalizeOtherSenses(value.otherSenses, { fallbackPos: pos || POS_IDS[0] }),
     derivatives: normalizeWordPairs(value.derivatives, { exclude: word }),
     synonyms: normalizeWordPairs(value.synonyms, { exclude: word }),
     antonyms: normalizeWordPairs(value.antonyms, { exclude: word }),

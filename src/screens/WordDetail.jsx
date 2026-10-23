@@ -7,7 +7,7 @@ import {
   neighborWords,
   vocabFieldFor,
 } from '../data/vocab.js'
-import { getLevel } from '../data/levels.js'
+import { getLevel, levelChipText } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
@@ -138,7 +138,7 @@ export function WordDetailScreen() {
             <div className="flex items-center justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <PosBadge pos={word.pos} />
-                <Chip color={level.color}>英検{level.label}</Chip>
+                <Chip color={level.color}>{levelChipText(level)}</Chip>
                 {word.field && (
                   <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
                     {vocabFieldFor(word)}
