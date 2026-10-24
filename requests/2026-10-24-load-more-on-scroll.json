@@ -7,7 +7,7 @@
   "sessions": [
     "5b2c423b-b812-44c7-8f86-cfa36e89b6b2"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "all-load-more-auto",
@@ -30,8 +30,8 @@
       "text": "全監査（npm run audit:all-content）を通し、クリーンな clone で確かめて push し、公開版で確かめる",
       "population": "全テスト・全監査・公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/load-more-on-scroll.test.mjs",
-      "status": "waiting",
-      "waitingFor": "裏で流している npm run audit:all-content（task b5zexbf24）の終わり"
+      "status": "done",
+      "result": "クリーンな clone で npm run audit:all-content を通した（npm test 1,503件・失敗0、24カテゴリ・教材21,582件・問題経路8,840件・失敗0、台帳一致）。1回目は固定値2件（学習者画面 357→358・ソース全体 867→868 ファイル）、2回目は全画面の「一番下から上へ戻れる」テストが語源の一覧で落ちた（一番下へ送った直後に続きが足されて下が伸びる）ので、テストを伸びなくなるまで送る形に直した（全89画面で通る）。0a85104 を push、デプロイ成功（run 40091742764）。公開版（375px）で英語アプリ→語源を開き、ボタンを押さずにスクロールだけで24枚→96枚に増えることを確認"
     }
   ]
 }
