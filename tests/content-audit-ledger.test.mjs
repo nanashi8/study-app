@@ -13,7 +13,8 @@ test('全教材監査台帳は24カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.scope.categoryCount, 24)
   assert.equal(ledger.categories.length, 24)
   assert.equal(ledger.scope.learningItemCount, 21_582)
-  assert.equal(ledger.scope.quizItemCount, 21_953)
+  // 2026-10-25、数学の歴史のテスト252問を削除した。
+  assert.equal(ledger.scope.quizItemCount, 21_701)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -30,12 +31,8 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   const grammar = ledger.questionBanks.find((bank) => bank.id === 'grammar')
   const reading = ledger.questionBanks.find((bank) => bank.id === 'reading')
   const extendedReading = ledger.questionBanks.find((bank) => bank.id === 'extended-reading')
-  // 数学の歴史のテストは、どの問題も3択で、3択すべてに問題ごとの説明がある。
-  const mathHistory = ledger.questionBanks.find((bank) => bank.id === 'math-history')
-  assert.ok(mathHistory.questionCount > 0)
-  assert.equal(mathHistory.choiceCount, mathHistory.questionCount * 3)
-  assert.equal(mathHistory.generalRationaleCount, mathHistory.questionCount)
-  assert.equal(mathHistory.choiceSpecificRationaleCount, mathHistory.choiceCount)
+  // 数学の歴史のテストは 2026-10-25 に削除した（requests/2026-10-25-math-history-remove-quiz.json）。
+  assert.equal(ledger.questionBanks.find((bank) => bank.id === 'math-history'), undefined)
   // 数学は手で計算せずに方針を選ぶ（requests/2026-10-22-math-no-hand-calc.json）。誘導問題274問の549段と、
   // 入試演習360問の750段は、どれも3択で、段ごとの考え方と、全選択肢の説明がある。
   for (const [id, steps] of [['math-guided-approach', 549], ['math-exam-approach', 750]]) {

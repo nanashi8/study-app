@@ -9,7 +9,6 @@ import { fileURLToPath } from 'node:url'
 import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
-import { MATH_HISTORY_QUESTIONS } from '../src/data/math-history.js'
 import { MATH_EXAM_PROBLEMS } from '../src/data/math-exam.js'
 import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
@@ -367,16 +366,6 @@ function buildQuestionBanks() {
       choiceRationalesFor: (item) => item.notes,
       expectedChoiceCounts: [3],
     })),
-    // 数学の歴史の話のテスト。3択（＋わからない）で、選択肢と同じ順の説明（notes）を全択に持つ。
-    auditQuestionBank({
-      id: 'math-history',
-      label: '数学の歴史',
-      items: MATH_HISTORY_QUESTIONS,
-      answerMatches: (item, choices) => (Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0),
-      rationaleFor: (item) => item.explanation,
-      choiceRationalesFor: (item) => item.notes,
-      expectedChoiceCounts: [3],
-    }),
     // 社会・理科の演習の選ぶ問題。教材は4択（出題は3択＋わからない）で、選択肢の文ごとの説明（notes）を全択に持つ。
     stringBank(
       'subject-practice-choices',

@@ -4,7 +4,7 @@
 //   basics   … 算数の基本33項目のすべてに、第1部（算数の基本）の話が1話以上ある
 //   units    … 数学の45単元のすべてに、つながる話が1話以上あり、単元の導入と話の両方から行き来できる
 //   chapters … 全話が、年代・場所・人物・問い・筋道（3段落以上）・動かす図・今の使われ方（2件以上）・
-//              つながる学習・テスト（3問以上、3択、全選択肢の説明）をそろえている
+//              つながる学習をそろえている（テストの問題は持たない）
 //   facts    … 全話の史実を確かめた記録（docs/audits/math-history-facts.json）が、いまの本文と一致する
 //              （本文を変えたら、読み直して --stamp <話ID> で記録を押し直すまで通らない）
 //   引数なし … 4つとも
@@ -48,12 +48,6 @@ export function chapterText(chapter) {
     ...chapter.story,
     chapter.visual?.instruction,
     ...chapter.uses.flatMap((use) => [use.title, use.text]),
-    ...chapter.quiz.flatMap((question) => [
-      question.question,
-      ...question.choices,
-      question.explanation,
-      ...question.notes,
-    ]),
   ].filter((part) => typeof part === 'string').join('\n')
 }
 
@@ -93,7 +87,6 @@ export function checkChapters() {
   const unitIds = new Set(MATH_UNITS.map((unit) => unit.id))
   const basicIds = new Set(MATH_BASICS.map((basic) => basic.id))
   const ids = new Set()
-  const questionIds = new Set()
   let partIndex = 0
   for (const chapter of MATH_HISTORY_CHAPTERS) {
     const at = chapter.id ?? '(id なし)'
@@ -158,24 +151,7 @@ export function checkChapters() {
     for (const unitId of chapter.units ?? []) if (!unitIds.has(unitId)) fail(`単元「${unitId}」がない`)
     for (const basicId of chapter.basics ?? []) if (!basicIds.has(basicId)) fail(`算数の基本「${basicId}」がない`)
     if (!(chapter.units?.length || chapter.basics?.length)) fail('つながる単元も算数の基本もない')
-    if (!Array.isArray(chapter.quiz) || chapter.quiz.length < 3) fail('テストが3問に満たない')
-    for (const [number, question] of (chapter.quiz ?? []).entries()) {
-      const where = `${question.id ?? `${number + 1}問目`}`
-      if (question.id !== `${chapter.id}-${number + 1}`) fail(`${where}: 問題の id は ${chapter.id}-${number + 1}`)
-      if (questionIds.has(question.id)) fail(`${where}: 問題の id が重複`)
-      questionIds.add(question.id)
-      if (!hasText(question.question)) fail(`${where}: 問題文がない`)
-      if (!Array.isArray(question.choices) || question.choices.length !== 3) fail(`${where}: 選択肢は3つ`)
-      else {
-        if (question.choices.some((choice) => !hasText(choice))) fail(`${where}: 空の選択肢がある`)
-        if (new Set(question.choices).size !== 3) fail(`${where}: 選択肢が重複`)
-      }
-      if (!Number.isInteger(question.answer) || question.answer < 0 || question.answer > 2) fail(`${where}: 正解の番号が0〜2でない`)
-      if (!hasText(question.explanation)) fail(`${where}: 解説がない`)
-      if (!Array.isArray(question.notes) || question.notes.length !== 3 || question.notes.some((note) => !hasText(note))) {
-        fail(`${where}: 選択肢の説明が3つそろっていない`)
-      } else if (new Set(question.notes).size !== 3) fail(`${where}: 選択肢の説明が重複`)
-    }
+    if ('quiz' in chapter) fail('テストの問題は持たない（2026-10-25 に削除）')
   }
   return problems
 }
@@ -290,7 +266,7 @@ if (runDirectly) {
       const counts = {
         basics: `算数の基本 ${MATH_BASICS.length}項目すべてに話がある`,
         units: `数学の ${MATH_UNITS.length}単元すべてに、つながる話がある`,
-        chapters: `全${MATH_HISTORY_CHAPTERS.length}話・テスト${MATH_HISTORY_CHAPTERS.reduce((sum, chapter) => sum + chapter.quiz.length, 0)}問がそろっている`,
+        chapters: `全${MATH_HISTORY_CHAPTERS.length}話がそろっている`,
         facts: `全${MATH_HISTORY_CHAPTERS.length}話の史実の記録が本文と一致する`,
       }
       console.log(`✅ ${mode}: ${counts[mode]}`)

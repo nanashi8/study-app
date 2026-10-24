@@ -239,10 +239,9 @@ export const OVERLAP_SETS = [
   { id: 'literature', label: '名作に親しむ', title: (item) => item.title, measures: { 同じ題名: () => sameKey(byId.literature.items, (item) => norm(item.title)) } },
   { id: 'math', label: '数学', title: (item) => text(item.text).slice(0, 30), measures: { 同じ問題: () => sameKey(byId.math.items, (item) => norm(text(item.text) + text(item.answer))) } },
   {
-    id: 'math-history', label: '数学の歴史', title: (item) => item.title ?? text(item.question).slice(0, 30),
+    id: 'math-history', label: '数学の歴史', title: (item) => item.title,
     measures: {
       同じ題名: () => sameKey(byId['math-history'].items, (item) => norm(item.title)),
-      同じ問題: () => sameKey(byId['math-history'].quizItems, (item) => norm(text(item.question) + text(item.choices))),
     },
   },
   {

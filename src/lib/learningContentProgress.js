@@ -16,11 +16,7 @@ import { KANBUN_CULTURE } from '../data/kanbun-culture.js'
 import { KANBUN_KUNDOKU_EXERCISES } from '../data/kanbun-kundoku.js'
 import { PUBLIC_DOMAIN_LITERATURE } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS } from '../data/math.js'
-import {
-  MATH_HISTORY_CHAPTERS,
-  MATH_HISTORY_QUESTIONS,
-  MATH_HISTORY_QUIZ_DOMAIN,
-} from '../data/math-history.js'
+import { MATH_HISTORY_CHAPTERS } from '../data/math-history.js'
 import { notYetMathStories, understoodMathStories } from './mathStoryLog.js'
 import { MATH_EXAM_PROBLEMS, MATH_EXAM_QUIZ_DOMAIN } from '../data/math-exam.js'
 import { latestMathExamAttempt } from './mathExamLog.js'
@@ -57,7 +53,7 @@ const srsContent = (id, group, label, unit, screen, items, store, quiz = {}) => 
   hasQuiz: quiz.enabled !== false,
 })
 
-// 1項目に複数の問題がある教材（数学の歴史：1話に3〜4問）は、quiz に問題の一覧と単位を渡す。
+// 1項目に複数の問題がある教材は、quizItems に問題の一覧と単位を渡す。テストのない教材は hasQuiz: false。
 // reviewingIds は「まだまだ」のように、学んだが理解しきれていない項目（復習中として数える）。
 const completionContent = (
   id,
@@ -68,7 +64,7 @@ const completionContent = (
   items,
   completedIds,
   quizDomain = id,
-  { quizItems = null, quizUnit = unit, reviewingIds = null } = {},
+  { quizItems = null, quizUnit = unit, reviewingIds = null, hasQuiz = true } = {},
 ) => Object.freeze({
   id,
   group,
@@ -82,7 +78,7 @@ const completionContent = (
   reviewingIds,
   quizItems,
   quizDomain,
-  hasQuiz: true,
+  hasQuiz,
 })
 
 export const LEARNING_CONTENT_GROUPS = Object.freeze([
@@ -185,7 +181,7 @@ export const LEARNING_CONTENTS = Object.freeze([
     MATH_ITEMS,
     (state) => state.mathDone,
   ),
-  // 数学の歴史：学習は話ごとの「理解した」、テストは問題ごとの結果で数える。
+  // 数学の歴史：学習は話ごとの「理解した」で数える。テストはない。
   completionContent(
     'math-history',
     'other',
@@ -194,10 +190,9 @@ export const LEARNING_CONTENTS = Object.freeze([
     'mathHistory',
     MATH_HISTORY_CHAPTERS,
     (state) => understoodMathStories(state.mathStoryLog),
-    MATH_HISTORY_QUIZ_DOMAIN,
+    null,
     {
-      quizItems: MATH_HISTORY_QUESTIONS,
-      quizUnit: '問',
+      hasQuiz: false,
       reviewingIds: (state) => notYetMathStories(state.mathStoryLog),
     },
   ),

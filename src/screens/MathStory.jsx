@@ -19,7 +19,7 @@ import { MathBlock, MathText } from '../components/MathText.jsx'
 import { StudySelfCheck } from '../components/GrammarStudyRecord.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import {
-  ArrowRight, Cards, ChevronLeft, ChevronRight, Eye, Lightbulb, Link as LinkIcon, Sparkles, Target,
+  ArrowRight, ChevronLeft, ChevronRight, Eye, Lightbulb, Link as LinkIcon, Sparkles, Target,
 } from '../components/Icons.jsx'
 import { VisualControl } from './MathIntro.jsx'
 import './MathIntro.css'
@@ -123,11 +123,6 @@ export function MathStoryScreen() {
     replaceParams({ ...params, chapterId: id })
     scrollScreenToTop()
   }
-  const startTest = () => navigate('mathStoryQuiz', {
-    chapterIds: [chapter.id],
-    title: chapter.title,
-    returnTo: { screen: 'mathStory', params: { chapterId: chapter.id } },
-  })
 
   return (
     <div className="pb-6" data-math-story={chapter.id}>
@@ -305,15 +300,8 @@ export function MathStoryScreen() {
           onRecord={(result) => recordMathStory(chapter.id, result)}
         />
 
-        {/* テストへ・前後の話 */}
-        <section className="space-y-2.5">
-          <Button full size="lg" onClick={startTest} className="h-auto min-h-14 py-2.5" data-math-story-test>
-            <Cards size={20} />
-            <span className="text-left leading-tight">
-              <span className="block">この話のテストにチャレンジ</span>
-              <span className="block text-xs font-bold text-white/80">{`${chapter.title}・${chapter.quiz.length}問`}</span>
-            </span>
-          </Button>
+        {/* 前後の話 */}
+        <section>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"

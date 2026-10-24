@@ -1,0 +1,52 @@
+{
+  "id": "2026-10-25-math-history-remove-quiz",
+  "title": "数学の歴史をたどるコースから、テスト（3択の問題）を削除する。話（筋道・図・使われ方・つながる学習）と学習の記録は残す",
+  "asked": [
+    "数学の歴史をたどる部分の問題は不要なので削除しなさい。"
+  ],
+  "sessions": [
+    "91e032c1-e4c5-4dad-835e-f47e4987bf00"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "no-quiz-data",
+      "text": "数学の歴史の全話から問題（quiz）を消す。問題を1列にした一覧・問題を引く関数・テストの教材名もなくす",
+      "population": "数学の歴史の全71話（算数31・中学19・高校21）の全252問",
+      "check": "node --test tests/math-history-no-quiz.test.mjs",
+      "status": "done",
+      "verifiedBy": "71話中71話で quiz なし。252問を削除し、MATH_HISTORY_QUESTIONS・MATH_HISTORY_QUIZ_DOMAIN・mathHistoryQuestion・questionsForChapters もなくした"
+    },
+    {
+      "id": "no-quiz-screen",
+      "text": "テストの画面（MathStoryQuiz）と、そこへ入るすべての入口（目次の全体・部・まちがえた問題のテスト、話の末尾のテスト）をなくす。画面の名前は画面の一覧・設定・ナビ・出題バランスの対象から消す。目次の数字から問題の数・正答率を消す",
+      "population": "src のすべてのファイル（App・目次 MathHistory・話 MathStory・appHome・contentSettings・navigationPolicy・VocabMixConsole）",
+      "check": "node --test tests/math-history-no-quiz.test.mjs",
+      "status": "done",
+      "verifiedBy": "MathStoryQuiz.jsx を削除。目次の部カード・話の行・今日の学習の「間違えた問題をやり直す」・話の末尾の「テストにチャレンジ」を外し、App・appHome・contentSettings・navigationPolicy・VocabMixConsole から画面名を消した。開発版で目次と話を開いてテストの入口0件・エラー0件を確かめた"
+    },
+    {
+      "id": "stories-kept",
+      "text": "話そのもの（年代・場所・人物・問い・筋道・動かす図・使われ方・つながる単元と算数の基本）と「理解した／まだまだ」の記録は全話そのまま残り、算数の基本33項目・数学45単元のつながりも保つ",
+      "population": "全71話・算数の基本33項目・数学45単元",
+      "check": "node --test tests/math-history.test.mjs && node scripts/checks/math-history.mjs",
+      "status": "done",
+      "verifiedBy": "71話・算数の基本33項目・数学45単元の検査が通る。史実の記録は321件→問題の文だけにあった10件を外し、mh-charts に本文から1件足して312件、全71話の指紋を押し直した（本文の変更は削除だけ）"
+    },
+    {
+      "id": "dependents-updated",
+      "text": "問題に依っていた台帳・検査・一覧をそろえる：計算しない問いの台帳と検査（math-history-no-calc）を削除、史実の記録から問題の文だけにあった史実を外して全話の指紋を押し直す、全教材監査台帳・全教材の一覧・学習の記録の数え方・重複の調べ・真偽検査・出題順のテストから数学の歴史の問題を外す",
+      "population": "問題を参照していたすべてのファイル（git grep で MATH_HISTORY_QUESTIONS・MATH_HISTORY_QUIZ_DOMAIN・questionsForChapters・mathStoryQuiz・MathStoryQuiz・chapter.quiz・math-history-no-calc が src・tests・scripts・docs で0件）",
+      "check": "node --test tests/math-history-no-quiz.test.mjs",
+      "status": "done",
+      "verifiedBy": "math-history-no-calc の台帳・検査・テストを削除。全教材監査台帳から数学の歴史の問題経路を外して書き直し（出題 21,953→21,701問）。check-content-progress・重複の調べ・真偽検査・出題順・出題バランス・問題の操作の固定値（30→29画面など）を直した。git grep で参照0件"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版でテストの入口がなく話が開けることを確かめる",
+      "population": "全テスト・全監査と公開版の数学の歴史の目次・話",
+      "check": "npm test",
+      "status": "todo"
+    }
+  ]
+}

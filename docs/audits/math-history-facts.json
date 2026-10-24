@@ -3,7 +3,7 @@
   "about": "数学の歴史をたどるコースの各話に書いた史実（人物・年代・場所・したこと・数値）を1件ずつ確かめた記録。quote は本文のその箇所、status は established（確かな史実）・approximate（年代・数値に幅があり、本文で「ごろ」「約」などと書く）・debated（説が分かれ、本文で「考えられている」「説がある」などと書く）・legend（伝説・言い伝えで、本文で「伝えられる」などと書く）。textSha256 は確かめたときの本文の指紋で、本文を変えたら読み直して押し直す（node scripts/checks/math-history.mjs --stamp 話ID）。",
   "chapters": {
     "mh-counting": {
-      "textSha256": "3a2e15965588e4c94987024dc8de17a6cc5e20a544dfd0fd8a62fe0f1966d673",
+      "textSha256": "685a1fe62e949d09e9a6268531febf211ef05cee8d386f6ef26ac003abe9e3a9",
       "facts": [
         {
           "claim": "数万年前の骨に刻み目が並んだものが見つかっていて、数の記録と考えられている",
@@ -24,16 +24,11 @@
           "claim": "指が5本・10本あることが5や10のまとまりのもと",
           "status": "debated",
           "quote": "5や10でまとめる数え方のもとになったと考えられている"
-        },
-        {
-          "claim": "月の満ち欠けは約29.5日でくり返す",
-          "status": "approximate",
-          "quote": "月の満ち欠けは約29.5日でくり返す"
         }
       ]
     },
     "mh-place-value": {
-      "textSha256": "57aa4dbf07a2564d87365692c8f37f9d4f3b2e0f8eeb65fb76cab1bc5d6a8672",
+      "textSha256": "7e5612790fae764c85c83e318bf443aad2cfed098d83d82794252a29317cd089",
       "facts": [
         {
           "claim": "ローマ数字は I=1・V=5・X=10・L=50・C=100・D=500・M=1000 の合計で表し、2026は MMXXVI",
@@ -78,7 +73,7 @@
       ]
     },
     "mh-zero": {
-      "textSha256": "bc69276c507477f6e561ca6613e56141c6132d3e096028c2a7f9cfd3cedbdc0f",
+      "textSha256": "3c767409665aae76c5ec1777a8003e9a2f7b7a85b4a9f389bfa9512b4f36b8d7",
       "facts": [
         {
           "claim": "メソポタミアでは紀元前300年ごろまでに、空いた位を示す記号（2つの斜めのくさび）を使うようになった。計算に使う数ではなかった",
@@ -118,7 +113,7 @@
       ]
     },
     "mh-soroban": {
-      "textSha256": "7bad7bc1f8774ff4bc74ad18dd45155ce89ee4bf95a041aba5022782dd957d19",
+      "textSha256": "810e11430ee6bac234c544e717d64f3c75bdac450e9ec7d98eca99e656547399",
       "facts": [
         {
           "claim": "古代の中国では算木を並べて計算し、ローマでは線を引いた板の上で小石を動かして計算した",
@@ -153,7 +148,7 @@
       ]
     },
     "mh-multiply": {
-      "textSha256": "b051278f91a6491e966e60966d1e0c359c09410e9834ea6f20322af189e68876",
+      "textSha256": "8168b5131ea77627f164c07c7cf191711c6de77061999e3ca49a9a6637ce47df",
       "facts": [
         {
           "claim": "リンド・パピルスは紀元前1550年ごろに書記アーメスが写した",
@@ -188,7 +183,7 @@
       ]
     },
     "mh-divide": {
-      "textSha256": "a0f48faff202297896900dc8da6eff1bd4bea82dc6977a7c45d6df84bb4162cc",
+      "textSha256": "02da05c636d8d574dfcc6e990727d26d7065920ca5088082f5d6166f34492c08",
       "facts": [
         {
           "claim": "リンド・パピルスでは、わり算をかけ算の逆として、わる数を倍々にしてさがす",
@@ -218,7 +213,7 @@
       ]
     },
     "mh-laws": {
-      "textSha256": "70ac2feac0764b51972ce7d57912b0db89f55717b5c9c178f70d61c1fa6f3cd3",
+      "textSha256": "d8b547ad08ee7434b4d55252ac0bc8d3a9c1dfb65aad04a6e2df015e7063cb1a",
       "facts": [
         {
           "claim": "ユークリッドが紀元前300年ごろ、アレクサンドリアで『原論』を書いた",
@@ -243,7 +238,7 @@
       ]
     },
     "mh-fractions": {
-      "textSha256": "3059dd31d40f14a2a24082358917758e973bc65e74a08c93c5cc2df9783df024",
+      "textSha256": "0c6208e2a13c71e7cf50ce73f671783223ecfd394d71a9ed5239c923f3c10a03",
       "facts": [
         {
           "claim": "古代エジプトでは単位分数を使い、2/3 にだけ特別な記号があった",
@@ -278,7 +273,7 @@
       ]
     },
     "mh-fraction-calc": {
-      "textSha256": "648807b766f04d436bdd7224df36698e4d884a582a64de5880dcfc0a0c02753a",
+      "textSha256": "16d95cc9992b444e43b2cc5e831dcc182b29167e4b0fe08e1d1a8f433ec3c3b7",
       "facts": [
         {
           "claim": "『九章算術』は紀元1世紀ごろまでにまとめられた",
@@ -308,7 +303,7 @@
       ]
     },
     "mh-decimals": {
-      "textSha256": "1e2c4d73d107d9fb850e29031c915ab485d8c4528a3f080799effb09b2f706c8",
+      "textSha256": "cdb687c98f0d484f45903839403e995c2a11b5c751e99671d319daf5b34a677c",
       "facts": [
         {
           "claim": "1を10に分けて数える考えは中国やアラビアの数学にもあった",
@@ -343,7 +338,7 @@
       ]
     },
     "mh-primes": {
-      "textSha256": "30e2bd6ba25a9ce58b8076cecd5a51dbca3d646c3e851ee636f6385a0357e51d",
+      "textSha256": "7b79e9914a1c99064b3ce151338a9d3380c2d043bbb8dda22dc8bd04b870fbc4",
       "facts": [
         {
           "claim": "ユークリッドは『原論』で素数が限りなくあることを証明した",
@@ -366,11 +361,6 @@
           "quote": "60歳を「還暦」というのは、このためだ"
         },
         {
-          "claim": "100までの素数は25個",
-          "status": "established",
-          "quote": "100までの素数が25個なのは正しい"
-        },
-        {
           "claim": "大きな素数のかけ算を戻すのが難しいことが、ネットの暗号に使われる",
           "status": "established",
           "quote": "ネットで買い物をするときの暗号に使われている"
@@ -378,7 +368,7 @@
       ]
     },
     "mh-letters": {
-      "textSha256": "198e9e7bbb29f98404124e276e87737c1537892220f323ba1997c980dcd95479",
+      "textSha256": "1d9dfd7a9590589ecad005a7d4e1657347636d79661c5e599067c916588c1485",
       "facts": [
         {
           "claim": "3世紀ごろのディオファントスが、分からない数を表す記号を使い始めた",
@@ -408,7 +398,7 @@
       ]
     },
     "mh-measure": {
-      "textSha256": "56380292ce9fae7a20ddc16214089dfd30ab9c192bebdbb01312ba33489793fb",
+      "textSha256": "dff0a55f2bf0999156ed1911d3f2a0bdf11303e6d777b076a53cf4703bbb1d94",
       "facts": [
         {
           "claim": "1791年、北極から赤道までの長さの1000万分の1を1メートルとすると決めた",
@@ -441,11 +431,6 @@
           "quote": "1983年から、光が $\\frac{1}{299792458}$ 秒に進む長さと決められている"
         },
         {
-          "claim": "1秒で往復する振り子の長さを使う案もあったが選ばれなかった",
-          "status": "established",
-          "quote": "振り子の長さを使う案も話し合われたが"
-        },
-        {
           "claim": "一寸は約3cm、尺八は長さ1尺8寸（約55cm）から",
           "status": "approximate",
           "quote": "一寸法師の「一寸」は約3cm、楽器の尺八の名前は長さ1尺8寸（約55cm）から来ている"
@@ -453,7 +438,7 @@
       ]
     },
     "mh-base60": {
-      "textSha256": "613694b16695245be4f0bff0a24c31b447bbe93db9077c09a7edcab61fc120e5",
+      "textSha256": "029b12b7f3168242d3a0eda962b5de1e4e006516b8f83896901f800d6c9895c7",
       "facts": [
         {
           "claim": "メソポタミアで60進法が使われ、紀元前2000年ごろの粘土板に60進法の数や計算が残る",
@@ -476,11 +461,6 @@
           "quote": "1時間を60分に分けるのは60進法から来たと考えられている"
         },
         {
-          "claim": "マヤでは20のまとまりで位が上がる書き方が使われた",
-          "status": "established",
-          "quote": "マヤでは、20のまとまりで位が上がる書き方が使われた"
-        },
-        {
           "claim": "緯度・経度は度・分・秒で表し、1度＝60分、1分＝60秒",
           "status": "established",
           "quote": "1度＝60分、1分＝60秒"
@@ -488,7 +468,7 @@
       ]
     },
     "mh-angles": {
-      "textSha256": "af75d86adb8bfb3a610a9583a642e1ca9f337d5c48c2ff889498851d117ad2c9",
+      "textSha256": "be4952775f4b74e15ec7374ab1f539affe72d310ab532da5c51fe85823063f3d",
       "facts": [
         {
           "claim": "ギリシャでは三角形の角の和が2直角になることが知られていた",
@@ -513,7 +493,7 @@
       ]
     },
     "mh-shapes": {
-      "textSha256": "b0f933aad48f850609995da480bc7b2786eb363191dd23d3e874c8c07d8cab58",
+      "textSha256": "449e6bb5bfa12e0bdf4c0df6e1f14721e5e358d8f929a51b5e17bc8b72688704",
       "facts": [
         {
           "claim": "『原論』の最初の問題（第1巻命題1）は、線分を1辺とする正三角形の作図",
@@ -538,7 +518,7 @@
       ]
     },
     "mh-area": {
-      "textSha256": "272eb2bf45a29eb4eaccd3dac8d22086c917824c9d67d4658bdede5b994a5057",
+      "textSha256": "bd869bb681aca7eaffe13149ea2deb89c3c967994fdd497170f9d4c7b2474954",
       "facts": [
         {
           "claim": "ヘロドトス（紀元前5世紀）は、土地のはかり直しのためにエジプトで幾何学が生まれたと書いた",
@@ -563,7 +543,7 @@
       ]
     },
     "mh-pi": {
-      "textSha256": "d3caf646f5eb40f21e4802dcdb6a4a324e8dcddac5559e41a8ff7ddab717901d",
+      "textSha256": "c0ded7ab4f5199fb4393b6024c61c4b5d5c845a4d43a062f31f6024c223a178a",
       "facts": [
         {
           "claim": "バビロニアでは3.125（25/8）、エジプトでは3.16（256/81）に近い値が使われた",
@@ -589,16 +569,11 @@
           "claim": "コンピューターで何兆けたも計算されている",
           "status": "established",
           "quote": "今ではコンピューターで、何兆けたもの円周率が計算されている"
-        },
-        {
-          "claim": "22/7はアルキメデスの示した上の値、256/81はリンド・パピルスの円の面積から出る値",
-          "status": "established",
-          "quote": "$\\frac{256}{81}=3.16\\cdots$ は、エジプトのリンド・パピルスの円の面積から出る値"
         }
       ]
     },
     "mh-circle-area": {
-      "textSha256": "3096e55d0e7740f3235786b5455200049766a48a590bf386cfad17687dc6fdde",
+      "textSha256": "905d256e8db628dbfbecf6748df93cc6c88b8a06bf64f4a363e99a538adf0ecf",
       "facts": [
         {
           "claim": "リンド・パピルスでは直径から1/9を引いた長さの正方形で円の面積を求めた（約3.16）",
@@ -618,7 +593,7 @@
       ]
     },
     "mh-volume": {
-      "textSha256": "4a76851451504c48aa61917c501d5be8614570b24887cd28c956027c0a7697dd",
+      "textSha256": "dcaadca9575c5e4b3cba63a1baa10111e12de8bbdd134620abaa134a934b30da",
       "facts": [
         {
           "claim": "5〜6世紀の祖暅が、切り口の面積が等しい立体は体積も等しいと述べた",
@@ -638,7 +613,7 @@
       ]
     },
     "mh-polyhedra": {
-      "textSha256": "0575906d63045ce595a59b36ec1cfcaef312942a3e2c484e176e9698864cabd7",
+      "textSha256": "18217da6db5755ed2aedea9872a61174440ef9df8ae94117859af0a382ab63a4",
       "facts": [
         {
           "claim": "正多面体は5種類しかない",
@@ -678,7 +653,7 @@
       ]
     },
     "mh-position": {
-      "textSha256": "0fb6c49cb54c7c5b7b6251c208380301cada26e7e427d0caf4cf589c5f25c83b",
+      "textSha256": "f83332d9413a955db9fbbcfe9d6967cebca42217b9f0119c2e3237b26e9000e8",
       "facts": [
         {
           "claim": "2世紀、プトレマイオスは『地理学』でおよそ8000か所を経度と緯度で表した",
@@ -703,7 +678,7 @@
       ]
     },
     "mh-ratio": {
-      "textSha256": "85c238f52a98361d75c2a4594ed6b172cb25b31f0671c357842c0fec40fb5a3f",
+      "textSha256": "bf0edaa59715ec152ab2a757dacfe08bd2f2a1624cc3f0e66570bf44f43694fa",
       "facts": [
         {
           "claim": "紀元前4世紀にエウドクソスが比の理論を作り、『原論』第5巻にまとめられた",
@@ -733,7 +708,7 @@
       ]
     },
     "mh-percent": {
-      "textSha256": "515f06873b6c33ef4d35638fc09fbb6dff21081782b9adbb9fe6472553ce7d4c",
+      "textSha256": "a9362223b994e217921dddfdce075df0f1a76c4040542d9575e55e14c4892c62",
       "facts": [
         {
           "claim": "アウグストゥスは競売で売れたものに100分の1の税をかけた",
@@ -763,7 +738,7 @@
       ]
     },
     "mh-speed": {
-      "textSha256": "6088525d03aebf39360f641d6fc511370a95547a5199f4e45f54034d1a390383",
+      "textSha256": "dc8dd71d8268b280a1e269884616ebb75f711bba208d99b41a26add3dfb6f9c2",
       "facts": [
         {
           "claim": "1676年、パリ天文台のデンマーク人レーマーが、イオの食の時刻のずれに気づいた",
@@ -793,7 +768,7 @@
       ]
     },
     "mh-hooke": {
-      "textSha256": "5f5710c83be970801285e4f1aab305b9b4cf935b54a5f4160930a0e1856cd8fa",
+      "textSha256": "2c00047cf37e589a85ac1989a7f059d068c2b4dce074883c539000fcd336b4f1",
       "facts": [
         {
           "claim": "フックはばねののびがおもりの重さに比例することを確かめた",
@@ -813,7 +788,7 @@
       ]
     },
     "mh-lever": {
-      "textSha256": "0a566f7ee65924b14e8607f9d05affafd3d4a9592aa17715c2c06a6819c9be33",
+      "textSha256": "43a3b4272a20ec1e13383f9eed5c6e83454d5e06dd128e6184238c23b64e0946",
       "facts": [
         {
           "claim": "アルキメデスは『平面の釣り合いについて』で、てこのつり合いの決まりを示した",
@@ -833,8 +808,13 @@
       ]
     },
     "mh-charts": {
-      "textSha256": "c67856f12f9c2d971152387fd4241fc482b785d04c16bffbc9940bb39fd29252",
+      "textSha256": "6368f311214def1fe84c5e3ff9a2d21bd4a0de11f55486617c3484bcd31afa43",
       "facts": [
+        {
+          "claim": "ウィリアム・プレイフェア（1759〜1823年）はスコットランド生まれ",
+          "status": "established",
+          "quote": "スコットランド生まれのウィリアム・プレイフェア"
+        },
         {
           "claim": "1786年、プレイフェアがイギリスの貿易の移り変わりを折れ線グラフ・棒グラフで表した本を出した",
           "status": "established",
@@ -844,16 +824,11 @@
           "claim": "1801年の本で円グラフを使った",
           "status": "established",
           "quote": "1801年の本では円グラフも使った"
-        },
-        {
-          "claim": "ナイチンゲールは1850年代にグラフを使って病院の改善を訴えた",
-          "status": "approximate",
-          "quote": "1850年代にグラフを使って病院の改善を訴えた看護師"
         }
       ]
     },
     "mh-mean": {
-      "textSha256": "93fb59e63d12bad1c40ebdee490f834a211238a9b94e7d15241df91d9a9a1c0f",
+      "textSha256": "d8518235781dec9e73dbe7eb27515c559df4bb0031e639d9018f3998d7ced6e1",
       "facts": [
         {
           "claim": "1662年、グラントがロンドンの死亡の記録を表にまとめ、男女の出生の比などを調べた",
@@ -878,7 +853,7 @@
       ]
     },
     "mh-histogram": {
-      "textSha256": "99a0bff186e9a32acb86b3ac6ce608ec360b4e04df7fc7fb1097d5f767fc062d",
+      "textSha256": "79b45029f2525424d1d161ce21415e1d7130d4b1430052a7ff48c4bf3b8a0fbb",
       "facts": [
         {
           "claim": "ケトレーは1835年の本で「平均的な人」の考えを示した",
@@ -898,7 +873,7 @@
       ]
     },
     "mh-cases": {
-      "textSha256": "d01d6ea6a4749bc33b7ad79c0bb27cd8ae9c1044330bc193af45c1549a1d022d",
+      "textSha256": "cad9ca6dacc25599b6b099fa905bb8f7847e0718ca99fc888e44e939b9f17fbd",
       "facts": [
         {
           "claim": "『易経』では陰と陽の線を6本重ねた64の形を使う",
@@ -928,7 +903,7 @@
       ]
     },
     "mh-negative": {
-      "textSha256": "e2827fa715f822a86a0c45924d715de431675b9f5dd22884f702c57c9f312348",
+      "textSha256": "820645a72e648c44ccbad6ad1fd34eeb73c0dd2946b3f25b895776f96f41d498",
       "facts": [
         {
           "claim": "『九章算術』（紀元1世紀ごろに今の形）に、正負の数のたし算・ひき算の決まり（正負術）がある",
@@ -963,7 +938,7 @@
       ]
     },
     "mh-equation": {
-      "textSha256": "b76c5662f2333bbb1746468c741999b6ab0bb6e4f6e6ca16bb478387ed173802",
+      "textSha256": "bfb47902065fa17a4340147d5c03b668599a901fd93fef0b9d6bccbcf829303b",
       "facts": [
         {
           "claim": "アル・フワーリズミーは9世紀前半のバグダッドで、方程式の解き方を体系的にまとめた本（アル・ジャブルとアル・ムカーバラの計算の書）を書いた",
@@ -993,7 +968,7 @@
       ]
     },
     "mh-coordinates": {
-      "textSha256": "f05e1b241d87c6787c451e14818a08280519c217113112254bdf733f3099a3bc",
+      "textSha256": "33a26fddb6906dc832a1ce1ec074d46aff9b15f6b69ce556e98c1cb4724de324",
       "facts": [
         {
           "claim": "デカルトは1637年、『方法序説』の付録「幾何学（La Géométrie）」で図形を式で扱う方法を示した",
@@ -1009,21 +984,11 @@
           "claim": "座標幾何は、のちのニュートン・ライプニッツの微分積分の土台になった",
           "status": "established",
           "quote": "のちの微分・積分の発見につながった"
-        },
-        {
-          "claim": "アルキメデス（紀元前3世紀）は正多角形で円周率を求めた",
-          "status": "established",
-          "quote": "円周率を正多角形で求めたのは、紀元前3世紀のアルキメデス"
-        },
-        {
-          "claim": "素数のふるいは、のちの記録でエラトステネスの方法とされる",
-          "status": "legend",
-          "quote": "素数のふるいは、紀元前3世紀のエラトステネスの方法と伝えられる"
         }
       ]
     },
     "mh-sphere": {
-      "textSha256": "c9335e8f6fc5dbc600dcc21e1cacbac09949ad9cc00ca9197c37fb5d95a0fd20",
+      "textSha256": "4848a30d14ea6a7cfe944aca2eb36b04cb3f011f11bb5912996a5e40a9291a11",
       "facts": [
         {
           "claim": "アルキメデス『球と円柱について』：球の体積は外接する円柱の2/3、球の表面積は円柱の側面積（大円の4倍）に等しい",
@@ -1053,7 +1018,7 @@
       ]
     },
     "mh-simultaneous": {
-      "textSha256": "76cca4f104c1887d497c08e5f9daef7e1e69cb1eeb1c00261186193ccfd4e818",
+      "textSha256": "7d79bac345f8a461ca2566ed0aa47de03219194086bc5978b2ee04d1175ab96d",
       "facts": [
         {
           "claim": "『孫子算経』（3〜5世紀）に、きじとうさぎが同じかご、頭35・足94の問題がある（答えはきじ23・うさぎ12）",
@@ -1078,7 +1043,7 @@
       ]
     },
     "mh-linear-graph": {
-      "textSha256": "278ce255db0776edd6952a742b56f543ae31894c9da1d4615d8f3790f4fd4fca",
+      "textSha256": "f1edc1552d432da83571a40658afff1b26fa2ed542d36e7ecb6ef41eab731b19",
       "facts": [
         {
           "claim": "14世紀のオックスフォード（マートン・カレッジ）の学者たちが、平均速度の定理（一様に加速する運動の距離＝中間時刻の速さでの距離）を示した",
@@ -1103,7 +1068,7 @@
       ]
     },
     "mh-earth": {
-      "textSha256": "62c090eae5a177d49feb30773240cdd31f3d6bb591c5f5136de587075590b798",
+      "textSha256": "649dcb4e69f28c77810a210fe28052fdbfaa6447c194df1a262f54a2004262ac",
       "facts": [
         {
           "claim": "エラトステネスはアレクサンドリアの図書館長で、紀元前3世紀に地球の大きさを求めた",
@@ -1133,7 +1098,7 @@
       ]
     },
     "mh-non-euclid": {
-      "textSha256": "688491ad3295a0a97c23748230ea0fd21adc459ac11932addb81d1bdfb6a0c21",
+      "textSha256": "ac2917233a72aa16945aea7a05353b66f3e2b731a28930701fc18d11214a5627",
       "facts": [
         {
           "claim": "『原論』の第5公準（平行線の公準）は、ほかの公準より長く複雑な文で、今のプレイフェアの形では「1点を通る平行線は1本」",
@@ -1163,7 +1128,7 @@
       ]
     },
     "mh-proof": {
-      "textSha256": "aafd9901d5f6d32de9e36aecb2f1da5fa6f8b68d134d1dc259512c5bb5be8dab",
+      "textSha256": "2240ebac93d89958203f15a978831942837d5eae9c17259fc1aa7a25e00d7b6d",
       "facts": [
         {
           "claim": "ユークリッド『原論』は紀元前300年ごろ",
@@ -1193,7 +1158,7 @@
       ]
     },
     "mh-probability": {
-      "textSha256": "924f2bc75e830ae48db6d7033f0639aba2ed3ada9c7fa5e377172161d8fc0117",
+      "textSha256": "2a8a19501ed834b14d28da20fa9226d9d0841aa49ae3c8be255db8042d804231",
       "facts": [
         {
           "claim": "カルダーノ『さいころ遊びについて』は1564年ごろに書かれ、1663年に出版された",
@@ -1219,16 +1184,11 @@
           "claim": "降水確率は、その予報が100回出たら約何回1mm以上の降水があるかを表す",
           "status": "established",
           "quote": "「降水確率30%」は、この予報が100回出たとき、そのうちおよそ30回は1mm以上の雨や雪が降るという意味"
-        },
-        {
-          "claim": "微分積分はニュートンとライプニッツが別々に見つけた",
-          "status": "established",
-          "quote": "微分・積分の考えを、それぞれ別に見つけた2人"
         }
       ]
     },
     "mh-boxplot": {
-      "textSha256": "7ef0a6850503dfa9f10ea8ce49e8406b59e905e9be95c353e553e6093a78c4c4",
+      "textSha256": "2ef5b9782408720506bae09c1824345f39922923900d1dbe3e5fe33c58b12468",
       "facts": [
         {
           "claim": "quartile（四分位数）の語と考えは1879年（マカリスター）・1882年（ゴルトン）ごろから統計で使われた",
@@ -1253,7 +1213,7 @@
       ]
     },
     "mh-square-completion": {
-      "textSha256": "cbe483c656678f3a360d59bceeaa00a2a6c6e724e2d0c72ad1d0290b3ac02e66",
+      "textSha256": "cc18146ede2b323d4f7f605de605d22b69e7a73a4282bd0c92cd9fe227c2b8b6",
       "facts": [
         {
           "claim": "古バビロニアの粘土板（BM 13901 など、前1800年ごろ）に「正方形の面積と1辺を足すと…」の問題と解き方がある",
@@ -1278,7 +1238,7 @@
       ]
     },
     "mh-irrational": {
-      "textSha256": "234cc7e0b99730a0674f7206156a32782e7c4d95a55c706d2b4f8bab46ee8c38",
+      "textSha256": "cca02d63d471006c3a6ac509576b890bcac887541d12d3a36687a82876e5c720",
       "facts": [
         {
           "claim": "ピタゴラス学派は万物を整数とその比で表せると考えたと伝えられる",
@@ -1308,7 +1268,7 @@
       ]
     },
     "mh-sqrt-method": {
-      "textSha256": "ff6656e7cca4cd10818546cd1577b5894e97700669e3fa500c17cb7bdb19b127",
+      "textSha256": "fcc5a55f7d15be15ea2fb5cd38d560a6d511220c379da8d8a54742ae6d2d63ce",
       "facts": [
         {
           "claim": "イェール大学のバビロニア粘土板 YBC 7289（前1800〜1600年ごろ）に、正方形と対角線、√2 の値 1;24,51,10 がある",
@@ -1333,7 +1293,7 @@
       ]
     },
     "mh-galileo": {
-      "textSha256": "d662e96457d975772de8bc79757bb4aee9dffc10e7c798bf1f748df54e81aa4b",
+      "textSha256": "5733e56346def8fc6a1035458975e08877a86975f9ab337167f17e17e2b104f9",
       "facts": [
         {
           "claim": "アリストテレスは重いものほど速く落ちると考え、長く信じられた",
@@ -1363,7 +1323,7 @@
       ]
     },
     "mh-similar": {
-      "textSha256": "0476a660abf933e0a92a72635e61310da5ccb622e1030c72b5e47a504895e07c",
+      "textSha256": "790de90b56a1af55d067927e57eae4d6ac3e06348592002abce2f6f4f80790d4",
       "facts": [
         {
           "claim": "タレスはエジプトでピラミッドの高さを影から求めたと伝えられる（ディオゲネス・ラエルティオス、プルタルコス）",
@@ -1388,7 +1348,7 @@
       ]
     },
     "mh-thales": {
-      "textSha256": "331cee2a071fd5c6b3cb1479a1fe1a52079a2b61f87b2a7c6891e2665145c143",
+      "textSha256": "21a34a36aceff0aa3de5deac1939720a1c08d9e09d7adf24c3cb4e9207c4fb08",
       "facts": [
         {
           "claim": "半円に内接する角は直角という定理はタレスが見つけたと伝えられる（ディオゲネス・ラエルティオスが伝える）",
@@ -1408,7 +1368,7 @@
       ]
     },
     "mh-pythagoras": {
-      "textSha256": "ba36855eade54656cca689e081be6932ea8db800e74b5a3dae1779523165c147",
+      "textSha256": "10fece72457ada4def0dac18d227860c34b73ee9dfc402eb24120dedb3d52806",
       "facts": [
         {
           "claim": "三平方の関係はピタゴラス（前6世紀）より1000年以上前のバビロニアで知られていた",
@@ -1438,7 +1398,7 @@
       ]
     },
     "mh-sampling": {
-      "textSha256": "bcb9bc577b6bb3b07460915162d244328daec49c262b21aadce9fb1560b719bb",
+      "textSha256": "f26f1965ff7550e22f4db3386ef888ce99e063d9d6383bed929452587c6790f2",
       "facts": [
         {
           "claim": "ラプラスは1802年、選んだ地域の人口と出生数の比からフランスの人口を約2830万人と見積もった",
@@ -1463,7 +1423,7 @@
       ]
     },
     "mh-sets": {
-      "textSha256": "f85ab51325154d32fbd530cabcf5f2131c54ff9863a60a7e84ce4374b7271bc0",
+      "textSha256": "0b318ae22cd2f895a2a7444fda9aa2ae0c21664244f74c04826edd86c98c5a81",
       "facts": [
         {
           "claim": "ブールは1847年『論理の数学的分析』、1854年『思考の法則』で論理を記号の計算として扱った",
@@ -1488,7 +1448,7 @@
       ]
     },
     "mh-trig": {
-      "textSha256": "1a7c4740c5a5d532d97770f1565221d165d45b3a1e38f6e5fcacd115c8197091",
+      "textSha256": "9b17276023e3f40f750dba355f6406d7e82e4808657b3ac76b1d9f70390793e1",
       "facts": [
         {
           "claim": "ヒッパルコス（前2世紀）が最初の弦の表を作ったと伝えられる（テオンの注釈による）",
@@ -1518,7 +1478,7 @@
       ]
     },
     "mh-correlation": {
-      "textSha256": "661e7de0e10c7b7735fd782d7e052c7f19ff54a49f638b0e8eb6c611d5c04422",
+      "textSha256": "9879904cf3bba624e158cab1c223ceba4d018905c74cce80ef980021405ef87f",
       "facts": [
         {
           "claim": "ゴールトンは家族の身長データを集め、両親と子の身長を表や図にまとめた",
@@ -1538,7 +1498,7 @@
       ]
     },
     "mh-pascal": {
-      "textSha256": "b2cf370cc9555baf5e9afbdd245ea0810bdd9b9415c1c4b445cdcec48ef3d850",
+      "textSha256": "644761fd7cfc5ee51313bba793f6db96c01d48cb4f935e2755b19179e04bf4df",
       "facts": [
         {
           "claim": "賈憲（11世紀）が二項係数の三角形を使い、楊輝が1261年の本で紹介した（楊輝の三角形）",
@@ -1563,7 +1523,7 @@
       ]
     },
     "mh-cipher": {
-      "textSha256": "d8dd85acf8162b0ed4ead16dcc7f9a46114d3374b25a06bdd31c9fc149b7fb55",
+      "textSha256": "a803ff2b043a1d0efbbd5e76d6f3f0c64558206001df98be86aa2f72a45bab5a",
       "facts": [
         {
           "claim": "『原論』第7巻（命題1・2）に互除法がある。最古のアルゴリズムの1つとされる",
@@ -1593,7 +1553,7 @@
       ]
     },
     "mh-complex": {
-      "textSha256": "869a42fa094b54956dfbaeb020a5c8364cabf3752f2a416189faca624139b2dd",
+      "textSha256": "4874d7242873db2ca140d20ef33c62a0d27734ef51c3fe4310577035a3d916b3",
       "facts": [
         {
           "claim": "カルダーノは1545年『アルス・マグナ』で三次方程式の解法を発表し、途中に負の数の平方根が出る場合があった",
@@ -1618,7 +1578,7 @@
       ]
     },
     "mh-logarithm": {
-      "textSha256": "a75ddd567c9a54fc226700c6c5f5084675e4fc19c2a2ce1b4f23bfe47671a9fc",
+      "textSha256": "1dd7ff354f128d9aa076796f061379c8e0ea9ef824c605874297915b2280ffcd",
       "facts": [
         {
           "claim": "ネイピアは1614年『驚くべき対数表の記述』で対数表を発表した",
@@ -1648,7 +1608,7 @@
       ]
     },
     "mh-compound": {
-      "textSha256": "4fc6e0000988715e10fe5db52b46a30d9c02ab3247c6ab109697e7e37c77aa9e",
+      "textSha256": "d79245da3dc19f4fc6328d7d3df149666d6021ffc3ae6a6cc121e008f5b785c6",
       "facts": [
         {
           "claim": "ヤコブ・ベルヌーイは1683年に複利の問題から (1+1/n)^n の極限が2と3の間にあることを示した",
@@ -1668,7 +1628,7 @@
       ]
     },
     "mh-waves": {
-      "textSha256": "3bfcf5f569d12fce7ff6fbc41da57f713884e09c13fa97a60f8914c565d2cfe6",
+      "textSha256": "2ebb8bd60c7128d64957396f340a95cbf898ab22621d3513b2ae33c661138a6b",
       "facts": [
         {
           "claim": "オイラーは1748年『無限解析入門』などで sin・cos を関数として扱い、今の書き方の多くを定めた",
@@ -1693,7 +1653,7 @@
       ]
     },
     "mh-derivative": {
-      "textSha256": "d13d6d38a40404b46af08c661bf34312fd5fa673f338ae5602864a184924f087",
+      "textSha256": "7f8ffe24c699658c7cb59319ed51d4130656b9e895289a0dc555e88934a8c4e8",
       "facts": [
         {
           "claim": "フェルマーやデカルトは17世紀前半に接線を求める方法を考えていた",
@@ -1709,16 +1669,11 @@
           "claim": "ライプニッツは独立に微分法に達し、1684年の論文「新しい方法」で発表。dy/dx の記法もライプニッツ",
           "status": "established",
           "quote": "ドイツのライプニッツは別に同じ考えにたどり着き、1684年に「微分」の方法を論文で発表した。$\\frac{dy}{dx}$ という書き方は、ライプニッツが考えたものだ"
-        },
-        {
-          "claim": "ニュートンは文字の上に点をつける記法を使った",
-          "status": "established",
-          "quote": "ニュートンは、文字の上に点をつける書き方を使った"
         }
       ]
     },
     "mh-integral": {
-      "textSha256": "27416cc736081bbb6665d34d64cd5495117f05d846119673c69dc8a0e87f8089",
+      "textSha256": "571919369c700683f2c2f01090688ed254533b19286520c879ca505c317037fd",
       "facts": [
         {
           "claim": "アルキメデス『放物線の求積』：放物線の弓形の面積は内接三角形の4/3",
@@ -1738,7 +1693,7 @@
       ]
     },
     "mh-ftc": {
-      "textSha256": "2bf60760ec342e5dda1f03383af5f4071d6c1f264f1e254591a5fae682ee14e7",
+      "textSha256": "57e705d13cfcb2cce65d834418ffb0909ed759b9aab5b58aa5916a55d35c9ded",
       "facts": [
         {
           "claim": "バロウは1670年『幾何学講義』で、接線と面積の逆の関係を幾何学的に示した。ニュートンの師とされる（師弟関係の程度には諸説）",
@@ -1758,7 +1713,7 @@
       ]
     },
     "mh-optimization": {
-      "textSha256": "07f4dbfd8e58bf2614cd6ad222cf58d54fe97c64b0a1c30ac5b3e22e5c60b925",
+      "textSha256": "21b200c1d062baf43bc1e134cca8fcec757ac2d8a6d85898eae6eaa7caaea31c",
       "facts": [
         {
           "claim": "ケプラーは1613年の結婚の祝いのワインで、棒1本で量を決める商人に疑問をもったと1615年『ワインだるの新立体計量』に書いた",
@@ -1783,7 +1738,7 @@
       ]
     },
     "mh-sum": {
-      "textSha256": "baabee0a83b59f8f83fe98b822159f498041ac6690b0fbb3e900dd1d60320ecd",
+      "textSha256": "b349ddcb27262b1cc25cbd74a7e1f1751c9ecf6485e8ff91e8ac8cf8bb6ae2ee",
       "facts": [
         {
           "claim": "ガウスが子どものころ1から100までの和をすぐに答えたという逸話（数や細部には諸説）",
@@ -1808,7 +1763,7 @@
       ]
     },
     "mh-fibonacci": {
-      "textSha256": "35437fa75d63d6912c9a72004ccf8bf387973a3ab628c872df3276875297135f",
+      "textSha256": "5bebd77e4d9ed53e4f8f521fa1f651507c8a9f007bac82f8a01702cff312e43d",
       "facts": [
         {
           "claim": "フィボナッチ（ピサのレオナルド）は1202年『算盤の書』でインド・アラビア数字と筆算をヨーロッパに紹介した",
@@ -1833,7 +1788,7 @@
       ]
     },
     "mh-normal": {
-      "textSha256": "6a05b090bcb483a4789097c5fe1c4c6a80b78da26463b4c64ff345a384ec3039",
+      "textSha256": "49e82016001110372e50d6b32ecad52de47aeb61de20fbc23b2beec680420455",
       "facts": [
         {
           "claim": "ド・モアブル（フランス生まれ、ロンドンで活動）は1733年、二項分布が n の大きいとき正規曲線で近似できることを示した",
@@ -1853,7 +1808,7 @@
       ]
     },
     "mh-tea": {
-      "textSha256": "a81174a37e099e49a12f1416f049505c9278dff01e88389d985f247285c3cf1f",
+      "textSha256": "4dcda55924e9fdd63a2af0a221745105574a6eea826149a6094e1d6224dab47c",
       "facts": [
         {
           "claim": "ロザムステッドの同僚ミュリエル・ブリストルがミルクの順を見分けられると言った（1920年代の逸話）",
@@ -1878,7 +1833,7 @@
       ]
     },
     "mh-vector": {
-      "textSha256": "5bf8d74296d5f807696f8214610f99ac288fa6a6c916069e598ab2e375dd355d",
+      "textSha256": "3d3a8372f9250be5dc0fff24ba0ba4df2664d288609bf7d9e4073ff7c7c837b4",
       "facts": [
         {
           "claim": "ステヴィンは1586年『つり合いの原理』で力のつり合いを調べ、力の三角形・平行四辺形の法則につながる考えを示したとされる",
@@ -1898,7 +1853,7 @@
       ]
     },
     "mh-ellipse": {
-      "textSha256": "1ec80c54b1d37c6d74be4460b5933d0309eab808ddff7e6afea20738196f81fb",
+      "textSha256": "349fb0a19742affa1b4a85c539fe8677fca098b98e8748100cc4b8de2b20d389",
       "facts": [
         {
           "claim": "アポロニオス『円錐曲線論』（前200年ごろ）が円錐曲線の性質を体系的に調べた",
@@ -1923,7 +1878,7 @@
       ]
     },
     "mh-parabola": {
-      "textSha256": "4e9b1fae2f9e253823060944ad81921bb8e68a4506799cf9e8469e94aaba434e",
+      "textSha256": "04f80be807d37ec4eb01c5a731e4835a1f53e568a0725ffaa7befed3c0537cfc",
       "facts": [
         {
           "claim": "ディオクレス（前2世紀ごろ）は『燃える鏡について』で放物線の焦点の性質を証明した",
@@ -1943,7 +1898,7 @@
       ]
     },
     "mh-limit": {
-      "textSha256": "3fe605265e9c8e2447570ed081ef4ca3ea3bbf1002da22e0f8abb3d0e0a5008d",
+      "textSha256": "84b5105651dd00562c42b4cac21b473872b142db1206ce1eb5982c3177cf9bd0",
       "facts": [
         {
           "claim": "ゼノン（前5世紀）のアキレスと亀のパラドックス（アリストテレスが伝える）",

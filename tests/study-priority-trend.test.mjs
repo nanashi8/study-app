@@ -29,11 +29,6 @@ import {
   pickKanbunKundokuExercises,
 } from '../src/data/kanbun-kundoku.js'
 import { WRITING_GRAMMAR } from '../src/data/writing.js'
-import {
-  MATH_HISTORY_CHAPTERS,
-  MATH_HISTORY_QUIZ_DOMAIN,
-  questionsForChapters,
-} from '../src/data/math-history.js'
 import { MATH_EXAM_QUIZ_DOMAIN, mathExamProblemsForScope } from '../src/data/math-exam.js'
 import {
   SUBJECTS,
@@ -198,7 +193,7 @@ function distinctGrammarIds(items, count) {
   return ids
 }
 
-// 暗記・テストの全25画面の出題口（tests/study-order.test.mjs の25画面と同じ呼び方）。
+// 暗記・テストの全24画面の出題口（tests/study-order.test.mjs の25画面と同じ呼び方）。
 // order は並べた全項目の id、purpose は暗記（study）かテスト（quiz）。
 const ITEM_SCREENS = [
   {
@@ -368,21 +363,6 @@ const QUESTION_SCREENS = [
     pick: (itemIds, { srs, quizResults }) => pickKotenCultureQuestions(itemIds, { size: 12, srs, quizResults, now: NOW }),
   },
   {
-    label: '数学の歴史のテスト（MathStoryQuiz）',
-    domain: MATH_HISTORY_QUIZ_DOMAIN,
-    field: null,
-    questions: questionsForChapters(MATH_HISTORY_CHAPTERS.map((chapter) => chapter.id)),
-    itemOf: () => null,
-    pick: (_itemIds, { quizResults }) => pickInStudyOrder(
-      rankQuestionsForStudy(questionsForChapters(MATH_HISTORY_CHAPTERS.map((chapter) => chapter.id)), {
-        quizResults,
-        quizDomain: MATH_HISTORY_QUIZ_DOMAIN,
-        now: NOW,
-      }),
-      12,
-    ),
-  },
-  {
     label: '数学の入試演習（MathExamSolve）',
     domain: MATH_EXAM_QUIZ_DOMAIN,
     field: null,
@@ -417,12 +397,12 @@ const QUESTION_SCREENS = [
   ]),
 ]
 
-test('全25画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
+test('全24画面の出題口を数える（最上位・後回しの確かめの母集団）', () => {
   const screens = new Set([
     ...ITEM_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
     ...QUESTION_SCREENS.map((screen) => /（(\w+)/.exec(screen.label)[1]),
   ])
-  assert.equal(screens.size, 25)
+  assert.equal(screens.size, 24)
 })
 
 // ── 直近の答え ─────────────────────────────────────────
@@ -484,10 +464,10 @@ test('直近の答え：問題ごとの結果にも直近5回の○×を残し�
   let results = {}
   for (const correct of [1, 0, 0, 1, 0, 1]) {
     results = recordContentQuizResult(results, {
-      domain: MATH_HISTORY_QUIZ_DOMAIN, itemId: 'question', correct, total: 1, timestamp: NOW,
+      domain: MATH_EXAM_QUIZ_DOMAIN, itemId: 'question', correct, total: 1, timestamp: NOW,
     })
   }
-  const key = `${MATH_HISTORY_QUIZ_DOMAIN}:question`
+  const key = `${MATH_EXAM_QUIZ_DOMAIN}:question`
   assert.deepEqual(results[key].marks, [0, 0, 1, 0, 1])
   assert.deepEqual(normalizeContentQuizResults(results)[key].marks, [0, 0, 1, 0, 1])
   assert.deepEqual(contentQuizMarks({ correct: 0, total: 1, lastResult: 'wrong' }), [0])
@@ -925,21 +905,24 @@ test('一覧と学習結果：わたしの学習の一覧は全教材で苦手�
     assert.equal(rows[0].priority, 'struggling', `${content.id}: 札`)
     assert.equal(rows[1].id, once, `${content.id}: 1回のまちがいはその次`)
   }
-  // 数学の歴史（問題ごとに記録）も、何度も間違えている問題がある話を苦手にする。
-  const mathHistory = LEARNING_CONTENTS.find((content) => content.id === 'math-history')
-  const chapter = mathHistory.items[3]
+  // 数学の入試演習（問題ごとに記録）も、何度も間違えている問題を苦手にする。
+  const mathExam = LEARNING_CONTENTS.find((content) => content.id === 'math-exam')
+  const problem = mathExam.items[3]
   let quizResults = {}
   for (const minutesAgo of [90, 30]) {
     quizResults = recordContentQuizResult(quizResults, {
-      domain: MATH_HISTORY_QUIZ_DOMAIN, itemId: chapter.quiz[0].id, correct: 0, total: 1, timestamp: NOW - minutesAgo * 60_000,
+      domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problem.id, correct: 0, total: 1, timestamp: NOW - minutesAgo * 60_000,
     })
   }
   quizResults = recordContentQuizResult(quizResults, {
-    domain: MATH_HISTORY_QUIZ_DOMAIN, itemId: mathHistory.items[0].quiz[0].id, correct: 0, total: 1, timestamp: NOW,
+    domain: MATH_EXAM_QUIZ_DOMAIN, itemId: mathExam.items[0].id, correct: 0, total: 1, timestamp: NOW,
   })
-  const mathRows = learningContentCatalogRows(mathHistory, { ...state, contentQuizResults: quizResults }, { now: NOW, day: DAY })
-  assert.equal(mathRows[0].id, chapter.id)
+  const mathRows = learningContentCatalogRows(mathExam, { ...state, contentQuizResults: quizResults }, { now: NOW, day: DAY })
+  assert.equal(mathRows[0].id, problem.id)
   assert.equal(mathRows[0].priority, 'struggling')
+  // 数学の歴史はテストがない（2026-10-25 に削除）。一覧は「理解した／まだまだ」だけで並ぶ。
+  const mathHistory = LEARNING_CONTENTS.find((content) => content.id === 'math-history')
+  assert.equal(mathHistory.hasQuiz, false)
 })
 
 test('一覧と学習結果：語源の一覧・語根の画面の次に学ぶ単語・学習結果の優先順も苦手を先頭にする', () => {
@@ -974,7 +957,7 @@ test('一覧と学習結果：語源の一覧・語根の画面の次に学ぶ�
   assert.equal(report.priorityItems[1].id, ids[0])
 })
 
-test('全25画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の25画面）', () => {
+test('全24画面の出題口は、画面の呼び方と同じ（tests/study-order.test.mjs の画面）', () => {
   const studyOrderTest = read('./study-order.test.mjs')
   for (const screen of [...ITEM_SCREENS, ...QUESTION_SCREENS]) {
     const file = `${/（(\w+)/.exec(screen.label)[1]}.jsx`

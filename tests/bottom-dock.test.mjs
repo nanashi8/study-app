@@ -359,7 +359,7 @@ test('スペルを隠しているあいだの再生パネルは、つづり・�
 })
 
 // ─── 出題（出題バランス） ──────────────────────────────────────────────────────────
-// 暗記・テストの全30画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
+// 暗記・テストの全29画面（SessionCounter を持つ画面）を、App.jsx の画面IDに引き当てる。
 function studyScreens() {
   const app = read('src/App.jsx')
   const componentFile = new Map(
@@ -414,9 +414,9 @@ function withInitialState(patch, run) {
 }
 const renderDock = (patch) => withInitialState(patch, () => renderToStaticMarkup(React.createElement(modules.console.GlobalSpeechConsole)))
 
-test('出題を全30画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
+test('出題を全29画面に出す：暗記・テストのどの画面にも下部の「出題」があり、英単語はすべての出題元で出す', () => {
   const screens = studyScreens()
-  assert.equal(screens.length, 30)
+  assert.equal(screens.length, 29)
   assert.deepEqual([...modules.mix.STUDY_MIX_SCREENS].sort(), screens.map(({ screen }) => screen).sort())
   for (const { file, screen } of screens) {
     const source = read(`src/screens/${file}`)
@@ -485,7 +485,7 @@ function stockedRecords(items, { idOf = (item) => item.id } = {}) {
   return { srs, kindOf }
 }
 
-test('今の出題順の上で：出題バランスの6段が、全30画面の出題口で今の出題順に効く', () => {
+test('今の出題順の上で：出題バランスの6段が、全29画面の出題口で今の出題順に効く', () => {
   const realNow = Date.now
   Date.now = () => NOW
   try {
@@ -654,7 +654,6 @@ test('今の出題順の上で：出題バランスの6段が、全30画面の�
       'KotenInterpretationQuiz.jsx': /mixItemsForStudy\(\n\s*orderForStudy\(selected, useStore\.getState\(\)\.kotenInterpretationSrs/,
       'KanbunStudy.jsx': /mixItemsForStudy\(\n\s*orderForStudy\(selected, useStore\.getState\(\)\[meta\.srsField\]/,
       'WritingGrammarReview.jsx': /mixItemsForStudy\(\n\s*orderForStudy\(due\.length \? due : items, state\.srs/,
-      'MathStoryQuiz.jsx': /pickInStudyOrder\(mixRankedForStudy\(ranked, \{ freshShare: currentStudyMixShare\(\), stockOf: questionMixStockOf \}\), size\)/,
       'MathExamSolve.jsx': /pickInStudyOrder\(mixRankedForStudy\(ranked, \{ freshShare: currentStudyMixShare\(\), stockOf: questionMixStockOf \}\), size\)/,
       'KotenGrammarQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
       'KotenCultureQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
@@ -675,7 +674,7 @@ test('今の出題順の上で：出題バランスの6段が、全30画面の�
       'CustomCardStudy.jsx': /pickCustomCards\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/,
       'CustomCardQuiz.jsx': /freshShare: currentStudyMixShare\(\),/,
     }
-    assert.equal(Object.keys(wiring).length, 27)
+    assert.equal(Object.keys(wiring).length, 26)
     for (const [file, pattern] of Object.entries(wiring)) assert.match(read(`src/screens/${file}`), pattern, file)
     // 下部の説明も今の出題順で書く。
     assert.match(read('src/lib/vocabMix.js'), /adaptive \? 'たまり具合で自動' : '苦手→復習→未修の順'/)
@@ -688,7 +687,7 @@ test('今の出題順の上で：出題バランスの6段が、全30画面の�
   }
 })
 
-test('先の問題を組み直す：バーを動かすと、全30画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
+test('先の問題を組み直す：バーを動かすと、全29画面で表示中と答えた分を残して先を新しい割合で組み直す', () => {
   for (const { file } of studyScreens()) {
     const source = read(`src/screens/${file}`)
     assert.match(source, /useStudyMixRebuild\(\{\n\s*index(?:: \w+)?,\n\s*answeredIndexes(?::|,)/, file)

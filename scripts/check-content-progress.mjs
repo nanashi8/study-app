@@ -76,9 +76,10 @@ for (const row of rows) {
   assert.equal(statusTotal(row.progress.learning, LEARNING_STATUS_KEYS), row.progress.total)
   assert.equal(row.progress.learning.unlearned, row.progress.total)
   if (!row.hasQuiz) {
-    assert.equal(row.id, 'etymology', `${row.id}: クイズなし教材が想定外です`)
-    assert.equal(row.store, 'srs', '語源学習は英単語の記録を共有していません')
-    assert.equal(row.progress.quizTotal, 0, '語源にクイズ母数が残っています')
+    // テストのない教材：語源（英単語の記録を共有）と数学の歴史（2026-10-25 にテストを削除）。
+    assert.ok(['etymology', 'math-history'].includes(row.id), `${row.id}: クイズなし教材が想定外です`)
+    if (row.id === 'etymology') assert.equal(row.store, 'srs', '語源学習は英単語の記録を共有していません')
+    assert.equal(row.progress.quizTotal, 0, `${row.id}: クイズ母数が残っています`)
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), 0)
   } else if (row.quizItems) {
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
@@ -162,7 +163,6 @@ for (const [file, marker] of [
   ['src/components/ReadingComprehensionCheck.jsx', "recordContentQuizResult('reading', passageId"],
   ['src/screens/LiteratureReader.jsx', "'literature',"],
   ['src/screens/MathSolve.jsx', "recordContentQuizResult('math', p.id"],
-  ['src/screens/MathStoryQuiz.jsx', 'recordQuizResult(MATH_HISTORY_QUIZ_DOMAIN, question.id'],
   ['src/store/useStore.js', 'domain: MATH_EXAM_QUIZ_DOMAIN, itemId: problemId'],
   // 社会・理科の語句テストは語句ごと、演習は問題ごとに、全教材共通の結果（contentQuizResults）へ残す。
   ['src/screens/SubjectQuiz.jsx', 'recordQuizResult(meta.termDomain, question.termId'],

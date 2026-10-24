@@ -322,10 +322,7 @@ function srsReviewState(entry, options) {
   }
 }
 
-// 1項目に複数の問題がある教材（数学の歴史）は、その項目の問題の結果をまとめて見る。
-const quizIdsForItem = (content, item) => (
-  content.id === 'math-history' ? item.quiz.map((question) => question.id) : [item.id]
-)
+const quizIdsForItem = (content, item) => (content.hasQuiz === false ? [] : [item.id])
 
 function completionReviewState(content, item, state, normalizedQuiz) {
   const completedIds = new Set(content.completedIds(state) ?? [])

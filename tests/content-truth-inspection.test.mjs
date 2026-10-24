@@ -12,7 +12,6 @@ import { ETYMOLOGY_WORD_STORIES } from '../src/data/vocab.js'
 import { ALL_SUBJECT_QUESTIONS, ALL_SUBJECT_TERMS, termQuestion } from '../src/data/subjects/index.js'
 import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
-import { MATH_HISTORY_QUESTIONS } from '../src/data/math-history.js'
 import { PASSAGES } from '../src/data/passages.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
@@ -53,7 +52,6 @@ function questionRecords() {
       add('literature', `${w.id}:${q.id}`, q.choices, q.choices[q.answer], q.choices.map((_, i) => literatureReadingChoiceNoteFor(q, i)))
     }
   }
-  for (const q of MATH_HISTORY_QUESTIONS) add('math-history', q.id, q.choices, q.choices[q.answer], q.notes)
   for (const q of ALL_SUBJECT_QUESTIONS.filter((x) => x.kind === 'choice')) add('subject-choice', q.id, q.choices, q.answer, q.choices.map((c) => q.notes?.[c]))
   for (const t of ALL_SUBJECT_TERMS) {
     const q = termQuestion(t)

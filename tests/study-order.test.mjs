@@ -461,7 +461,7 @@ test('古典文法・古典常識のテストは、問題ごとの結果で、�
   }
 })
 
-test('暗記・テストの全27画面が、いまの記録から共通の出題順で組む', () => {
+test('暗記・テストの全26画面が、いまの記録から共通の出題順で組む', () => {
   const read = (file) => readFileSync(new URL(`../src/screens/${file}`, import.meta.url), 'utf8')
   const expectations = [
     ['VocabStudy.jsx', /buildDeck\(source, \{[\s\S]*?purpose: 'study'/],
@@ -484,7 +484,6 @@ test('暗記・テストの全27画面が、いまの記録から共通の出題
     ['KanbunQuiz.jsx', /pickKanbunQuestions\(domain, ids, \{\s*size,\s*srs: useStore\.getState\(\)\[meta\.srsField\],/],
     ['KanbunKundokuQuiz.jsx', /pickKanbunKundokuExercises\(ids, \{\s*size,\s*preserveOrder: params\.preserveOrder,\s*srs: useStore\.getState\(\)\.kanbunKundokuSrs,/],
     ['WritingGrammarReview.jsx', /orderForStudy\(due\.length \? due : items, state\.srs, \{ purpose: 'study', rng: null \}\)/],
-    ['MathStoryQuiz.jsx', /rankQuestionsForStudy\(questionsForChapters\(ids\), \{\s*quizResults: state\.contentQuizResults,\s*quizDomain: MATH_HISTORY_QUIZ_DOMAIN,/],
     ['MathExamSolve.jsx', /rankQuestionsForStudy\(pool, \{\s*quizResults: state\.contentQuizResults,\s*quizDomain: MATH_EXAM_QUIZ_DOMAIN,/],
     // 社会・理科（画面は社会と理科で共通。出題順は src/data/subjects/index.js の pickSubject… が lib/studyOrder.js で決める）。
     ['SubjectStudy.jsx', /const srs = useStore\.getState\(\)\[SUBJECTS\[subject\]\.termSrsField\]\s*return pickSubjectTerms\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/],
@@ -494,7 +493,7 @@ test('暗記・テストの全27画面が、いまの記録から共通の出題
     ['CustomCardStudy.jsx', /const srs = useStore\.getState\(\)\.customCardSrs\s*return pickCustomCards\(ids, \{ srs, size, freshShare: currentStudyMixShare\(\), preserveOrder \}\)/],
     ['CustomCardQuiz.jsx', /pickCustomCardQuestions\(ids, \{\s*size,\s*srs: state\.customCardSrs,\s*quizResults: state\.contentQuizResults,/],
   ]
-  assert.equal(expectations.length, 27)
+  assert.equal(expectations.length, 26)
   // 1回の数を数える部品（SessionCounter）を持つ画面が、暗記・テストの画面のすべて。
   const sessionScreens = readdirSync(new URL('../src/screens/', import.meta.url))
     .filter((file) => file.endsWith('.jsx') && /<SessionCounter\b/.test(read(file)))

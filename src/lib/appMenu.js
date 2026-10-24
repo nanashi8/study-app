@@ -50,7 +50,7 @@ export const CONTENT_SETTING_GROUPS = Object.freeze([
 const SETTING_ORDER = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
 
 // 教材から開く暗記・テスト・読み上げの画面が、それぞれ読んでいる設定。
-// 出題バランス（画面下部の「出題」）は、暗記・テストの全30画面で使う（STUDY_MIX）。
+// 出題バランス（画面下部の「出題」）は、暗記・テストの全29画面で使う（STUDY_MIX）。
 const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
 const STUDY_MIX = ['vocabMix']
 // 英単語・熟語・構文の暗記カードは、読み上げる範囲に合わせて意味と例文の意味を日本語の声で読む。

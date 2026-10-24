@@ -6,7 +6,7 @@ import { ArrowRight, Book, BookOpen, Cards } from './Icons.jsx'
 // 古典、漢文でも共通に使う。
 //   1段目：見出し（記号・題名・件数）
 //   2段目：暗記とテストの進み具合
-//   3段目：暗記／テスト（文法は参考書を読む「学習」／テスト）
+//   3段目：暗記／テスト（文法は参考書を読む「学習」／テスト。テストのない教材は onQuiz を渡さず、入口は1つ）
 //   4段目：任意の絞り込み入口／一覧を確認
 const NOTE_TONES = Object.freeze({
   muted: 'text-ink/45',
@@ -138,7 +138,7 @@ export function LearningEntryCard({
         </p>
       )}
 
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className={cx('mt-3 grid gap-2', onQuiz ? 'grid-cols-2' : 'grid-cols-1')}>
         <Button
           variant="primary"
           size="sm"
@@ -148,15 +148,17 @@ export function LearningEntryCard({
         >
           {studyIcon ?? <Book size={16} />} {studyLabel}
         </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          disabled={quizDisabled}
-          onClick={onQuiz}
-          aria-label={quizAriaLabel}
-        >
-          <Cards size={16} /> {quizLabel}
-        </Button>
+        {onQuiz && (
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={quizDisabled}
+            onClick={onQuiz}
+            aria-label={quizAriaLabel}
+          >
+            <Cards size={16} /> {quizLabel}
+          </Button>
+        )}
       </div>
 
       {hasSubRow && (

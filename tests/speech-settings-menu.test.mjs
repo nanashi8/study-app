@@ -315,7 +315,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   const ownFiles = {
     mathMap: [
       'screens/MathMap', 'screens/MathUnits', 'screens/MathSolve', 'screens/MathIntro',
-      'screens/MathHistory', 'screens/MathStory', 'screens/MathStoryQuiz',
+      'screens/MathHistory', 'screens/MathStory',
     ],
     kotenList: [
       'screens/KotenList', 'screens/KotenStudy', 'screens/KotenQuiz',

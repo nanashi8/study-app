@@ -1,5 +1,5 @@
 // ── 数学の歴史をたどって、基本から学び直すコース ─────────────────────────
-// 1話＝1つの発見・発明。「困っていたこと → 発見の筋道 → 動かす図 → 今の使われ方 → テスト」で学ぶ。
+// 1話＝1つの発見・発明。「困っていたこと → 発見の筋道 → 動かす図 → 今の使われ方」で学ぶ。
 // 並びは学ぶ順（算数の基本 → 中学の数学 → 高校の数学）。年代順の表示は year で並べ替える。
 //
 // 話（chapter）の形は src/data/math-history/basic-number.js の冒頭を参照。
@@ -105,9 +105,6 @@ export const MATH_HISTORY_ERAS = Object.freeze([
   { id: 'contemporary', title: '1900年から', note: '統計と計算機の時代', from: 1900, to: Infinity },
 ])
 
-// テストの問題ごとの結果を contentQuizResults に残すときの教材名。
-export const MATH_HISTORY_QUIZ_DOMAIN = 'math-history'
-
 export const MATH_HISTORY_CHAPTERS = Object.freeze([
   ...MATH_HISTORY_BASIC_NUMBER,
   ...MATH_HISTORY_BASIC_SHAPE,
@@ -120,19 +117,9 @@ export const MATH_HISTORY_CHAPTERS = Object.freeze([
   ...MATH_HISTORY_SENIOR_MORE,
 ])
 
-// テストの問題（話ごとの quiz を1列に並べ、どの話の問題かを持たせる）。
-export const MATH_HISTORY_QUESTIONS = Object.freeze(
-  MATH_HISTORY_CHAPTERS.flatMap((chapter) => chapter.quiz.map((question) => Object.freeze({
-    ...question,
-    chapterId: chapter.id,
-  }))),
-)
-
 const CHAPTER_BY_ID = new Map(MATH_HISTORY_CHAPTERS.map((chapter) => [chapter.id, chapter]))
-const QUESTION_BY_ID = new Map(MATH_HISTORY_QUESTIONS.map((question) => [question.id, question]))
 
 export const mathHistoryChapter = (id) => CHAPTER_BY_ID.get(id) ?? null
-export const mathHistoryQuestion = (id) => QUESTION_BY_ID.get(id) ?? null
 export const mathHistoryPart = (id) => MATH_HISTORY_PARTS.find((part) => part.id === id) ?? null
 export const mathHistoryThemeColor = (theme) => MATH_HISTORY_THEME_COLORS[theme] ?? '#6366f1'
 
@@ -175,10 +162,4 @@ export function chaptersByEra() {
       chapters: ordered.filter((chapter) => chapter.year >= era.from && chapter.year < era.to),
     }))
     .filter((group) => group.chapters.length > 0)
-}
-
-/** 話の集まりのテストの問題（話の並びの順）。 */
-export const questionsForChapters = (chapterIds = []) => {
-  const wanted = new Set(chapterIds)
-  return MATH_HISTORY_QUESTIONS.filter((question) => wanted.has(question.chapterId))
 }

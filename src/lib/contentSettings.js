@@ -55,7 +55,7 @@ export const SCOPE_SCREENS = Object.freeze({
   literatureLibrary: ['literatureLibrary', 'literatureReader'],
   // 数学アプリの画面。数学の歴史のテストと入試演習が、問題数と出題バランスに数学アプリの値を使う。
   mathMap: [
-    'mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory', 'mathStoryQuiz',
+    'mathMap', 'mathUnits', 'mathIntro', 'mathSolve', 'mathHistory', 'mathStory',
     'mathExam', 'mathExamUnit', 'mathExamSolve',
   ],
   // 社会・理科アプリの画面。重要語句の暗記・語句テスト・演習が、同じ教科の値を使う。

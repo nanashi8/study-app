@@ -1,4 +1,4 @@
-// 数学の歴史をたどるコース：話のデータ・史実の記録・動かす図・テスト・画面の配線・保存。
+// 数学の歴史をたどるコース：話のデータ・史実の記録・動かす図・画面の配線・保存（テストの問題は持たない）。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -11,14 +11,11 @@ import {
   MATH_BASICS,
   MATH_HISTORY_CHAPTERS,
   MATH_HISTORY_PARTS,
-  MATH_HISTORY_QUESTIONS,
-  MATH_HISTORY_QUIZ_DOMAIN,
   chapterNeighbors,
   chaptersByEra,
   chaptersByYear,
   chaptersForUnit,
   mathHistoryThemeColor,
-  questionsForChapters,
 } from '../src/data/math-history.js'
 import { toKanjiNumeral, toRomanNumeral } from '../src/data/math-history/controls.js'
 import { MATH_UNITS } from '../src/data/math.js'
@@ -78,7 +75,7 @@ const render = (chapterId, values) => {
   }))
 }
 
-test('全話が、年代・場所・問い・筋道・動かす図・今の使われ方・つながる学習・テストをそろえる', () => {
+test('全話が、年代・場所・問い・筋道・動かす図・今の使われ方・つながる学習をそろえる', () => {
   assert.deepEqual(checkChapters(), [])
   assert.ok(MATH_HISTORY_CHAPTERS.length > 0)
   // 学ぶ順の最初は「数える」。
@@ -422,31 +419,6 @@ test('算数の基本33項目と、数学の45単元のすべてに、つなが�
   assert.deepEqual(checkBasics(), [])
   assert.deepEqual(checkUnits(), [])
   assert.ok(MATH_HISTORY_CHAPTERS.length >= 70, `話の数 ${MATH_HISTORY_CHAPTERS.length}`)
-  assert.ok(MATH_HISTORY_QUESTIONS.length >= 210, `問題の数 ${MATH_HISTORY_QUESTIONS.length}`)
-})
-
-test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
-  const ids = MATH_HISTORY_QUESTIONS.map((question) => question.id)
-  assert.equal(new Set(ids).size, ids.length)
-  for (const question of MATH_HISTORY_QUESTIONS) {
-    assert.equal(question.choices.length, 3, question.id)
-    assert.equal(question.notes.length, 3, question.id)
-    assert.ok(question.notes[question.answer].startsWith('正解'), `${question.id}: 正解の説明は「正解」から始める`)
-    question.notes.forEach((note, index) => {
-      if (index !== question.answer) assert.ok(!note.startsWith('正解'), `${question.id}: 誤答の説明が「正解」で始まる`)
-    })
-    assert.ok(MATH_HISTORY_CHAPTERS.some((chapter) => chapter.id === question.chapterId), question.id)
-  }
-  const quiz = read('src/screens/MathStoryQuiz.jsx')
-  assert.match(quiz, /choiceOrders\.current\[question\.id\] = shuffledOrder\(question\.choices\.length\)/)
-  assert.match(quiz, /rows=\{order\.map\(\(choiceIndex\) => \(\{/)
-  assert.match(quiz, /body: question\.notes\[choiceIndex\]/)
-  assert.match(quiz, /recordQuizResult\(MATH_HISTORY_QUIZ_DOMAIN, question\.id, result === 'correct' \? 1 : 0, 1\)/)
-  assert.match(quiz, /rankQuestionsForStudy\(questionsForChapters\(ids\), \{/)
-  assert.equal(MATH_HISTORY_QUIZ_DOMAIN, 'math-history')
-  // 話1つのテストは、その話の問題だけを出す。
-  const first = MATH_HISTORY_CHAPTERS[0]
-  assert.deepEqual(questionsForChapters([first.id]).map((question) => question.id), first.quiz.map((question) => question.id))
 })
 
 test('目次は学ぶ順と年代順で同じ話を並べ、前後の話・単元からの話が引ける', () => {
@@ -494,11 +466,10 @@ test('学習の記録は端末保存・進捗コード・クラウド・記録�
 
 test('数学マップ・単元の導入・ポータルから、コースと話へ行き来できる', () => {
   const app = read('src/App.jsx')
-  for (const screen of ['mathHistory', 'mathStory', 'mathStoryQuiz']) {
+  for (const screen of ['mathHistory', 'mathStory']) {
     assert.match(app, new RegExp(`\\b${screen}: `), `${screen} が画面一覧にない`)
     assert.match(read('src/lib/appHome.js'), new RegExp(`'${screen}'`), `${screen} が数学アプリに属していない`)
   }
-  assert.match(read('src/lib/navigationPolicy.js'), /'mathStoryQuiz',/)
   assert.match(read('src/screens/MathMap.jsx'), /onClick=\{\(\) => navigate\('mathHistory'\)\}/)
   assert.match(read('src/screens/MathIntro.jsx'), /navigate\('mathStory', \{ chapterId: chapter\.id \}\)/)
   assert.match(read('src/screens/MathStory.jsx'), /navigate\('mathIntro', \{ unitId: unit\.id \}\)/)
@@ -507,7 +478,7 @@ test('数学マップ・単元の導入・ポータルから、コースと話�
   assert.match(read('src/data/contents.js'), /数えることから数IIIまで/)
 })
 
-test('話・図・テストの日本語は、常用漢字の外の字に読みを添える', () => {
+test('話・図の日本語は、常用漢字の外の字に読みを添える', () => {
   const texts = []
   for (const chapter of MATH_HISTORY_CHAPTERS) {
     texts.push(chapter.title, chapter.headline, chapter.era, chapter.place, ...chapter.people, chapter.question, ...chapter.story)
@@ -517,7 +488,6 @@ test('話・図・テストの日本語は、常用漢字の外の字に読み�
     }
     for (const values of valueSetsFor(chapter.visual.controls)) texts.push(chapter.visual.insight(values))
     texts.push(...chapter.uses.flatMap((use) => [use.title, use.text]))
-    texts.push(...chapter.quiz.flatMap((question) => [question.question, ...question.choices, question.explanation, ...question.notes]))
   }
   for (const basic of MATH_BASICS) texts.push(basic.title)
   const unreadable = []
