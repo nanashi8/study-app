@@ -444,8 +444,19 @@ class Phone {
 
   // 一番下まで送ったところから、さらに指で下の続きへ送り、そのあと指で上へ戻す。
   async checkBackUpFromBottom(selector, where) {
-    await this.setAreaScroll(selector, 'bottom')
-    const atBottom = await this.areaState(selector)
+    // 下まで来たら続きを足す一覧（components/LoadMoreButton.jsx）は、送るたびに下が伸びる。伸びなくなるまで一番下へ送る。
+    let atBottom = null
+    for (let round = 0; round < 40; round += 1) {
+      await this.setAreaScroll(selector, 'bottom')
+      await this.page.waitForTimeout(100)
+      await this.settle()
+      const state = await this.areaState(selector)
+      if (atBottom && state && state.max === atBottom.max) {
+        atBottom = state
+        break
+      }
+      atBottom = state
+    }
     assert.ok(atBottom, `${where}: 欄が見つからない`)
     assert.ok(atBottom.scrollTop >= atBottom.max - 1, `${where}: 一番下まで送れない`)
     assert.ok(atBottom.point, `${where}: 一番下で、この欄の上に指を置ける所がない`)
