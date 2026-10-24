@@ -52,6 +52,7 @@ import {
   decodeTableFile,
   parseCustomCardsTable,
 } from '../lib/customCardsCsv.js'
+import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
 
 // 自作カード（これまでの自作単語を広げたもの）。テンプレートを選んでカードを登録し、
 // 分類（既存の教科、または自分で作ったカテゴリー）ごとに暗記・テストする。
@@ -426,9 +427,9 @@ function CategoryView({ subject, categoryId, mergedFrom }) {
           ))}
         </ul>
         {entries.length > shownCount && (
-          <Button full size="sm" variant="secondary" onClick={() => setShownCount((count) => count + ENTRY_PAGE_SIZE)} data-custom-entry-more>
+          <LoadMoreButton size="sm" count={shownCount} onMore={() => setShownCount((count) => count + ENTRY_PAGE_SIZE)} data-custom-entry-more>
             {`さらに${Math.min(ENTRY_PAGE_SIZE, entries.length - shownCount)}枚を表示（${shownCount}/${entries.length}枚）`}
-          </Button>
+          </LoadMoreButton>
         )}
       </div>
 

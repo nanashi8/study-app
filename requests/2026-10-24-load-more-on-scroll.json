@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-24-load-more-on-scroll",
+  "title": "「次の◯枚を表示」などの続き表示ボタンを押さなくても、一覧の下までスクロールしたら続きを足して表示する",
+  "asked": [
+    "次の⚪︎枚を押さなくても、下までスクロールしたら追加で表示できるようにならないか？"
+  ],
+  "sessions": [
+    "5b2c423b-b812-44c7-8f86-cfa36e89b6b2"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "all-load-more-auto",
+      "text": "続きを足して表示するボタンすべてが、共通の部品 LoadMoreButton を使い、一覧の下まで来たら押さなくても続きを足す。ボタンは残し、押しても足せる。src に部品を通らない続き表示ボタンが残らない",
+      "population": "src の続き表示ボタン全8か所（語源 Roots・自作カード CustomWords・辞書の検索 VocabSearch・学習の記録の分析 LearningAnalytics・単語帳 MyList・単語の一覧 VocabDecks・学習の記録の一覧 NormalLearningRecordList・各教材の一覧 LearningContentCatalog）",
+      "check": "node --test tests/load-more-on-scroll.test.mjs",
+      "status": "done",
+      "result": "続き表示のボタン8か所すべてを共通の部品 LoadMoreButton に置き換えた。ボタンが画面に見えたら（一覧の下まで来たら）押さなくても続きを足し、足してもまだ見えていれば続けて足す。ボタンは残し、押しても足せる。辞書の検索の「続きを表示」は白い独自のボタンだったのを、ほかと同じ見た目のボタンにそろえた。src の .jsx で続き表示の文言を持つボタンを全件調べ、部品を通らないものは0"
+    },
+    {
+      "id": "browser-scroll-loads",
+      "text": "実際のブラウザで、語源カードの一覧を下までスクロールすると、ボタンを押さずに枚数が増える",
+      "population": "語源カードの一覧（依頼の画面）を375pxで",
+      "check": "node --test tests/load-more-on-scroll-browser.test.mjs",
+      "status": "done",
+      "result": "375pxの実ブラウザで語源カードの一覧を開き、ボタンを押さずにホイールで下まで送ると24枚から48枚以上に増え、並べた数が画面の状態（visible）に残ることを確認。開いた直後（一番上）は増えず、ボタンを押しても増える。ほかの7か所はブラウザでは動かしておらず、同じ部品を使うことを静的テストで確かめた"
+    },
+    {
+      "id": "full-audit-and-deploy",
+      "text": "全監査（npm run audit:all-content）を通し、クリーンな clone で確かめて push し、公開版で確かめる",
+      "population": "全テスト・全監査・公開版",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/load-more-on-scroll.test.mjs",
+      "status": "waiting",
+      "waitingFor": "裏で流している npm run audit:all-content（task b5zexbf24）の終わり"
+    }
+  ]
+}

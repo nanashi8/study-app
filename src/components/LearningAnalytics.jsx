@@ -7,6 +7,7 @@ import {
 } from '../lib/learningAnalyticsReport.js'
 import { Button, Card, cx } from './ui.jsx'
 import { SubjectSourceText } from './SubjectText.jsx'
+import { LoadMoreButton } from './LoadMoreButton.jsx'
 
 const DIAGNOSTIC_SKILL_META = {
   vocab: { emoji: '📖', label: '英単語' },
@@ -645,9 +646,9 @@ function Gradebook({ report, onNavigate }) {
         )}
         {shown.length < groups.length && (
           <div className="border-t border-slate-200 p-3">
-            <Button full variant="secondary" onClick={() => setLimit((value) => value + 24)}>
+            <LoadMoreButton count={shown.length} onMore={() => setLimit((value) => value + 24)}>
               さらに表示（残り{groups.length - shown.length}件）
-            </Button>
+            </LoadMoreButton>
           </div>
         )}
       </div>

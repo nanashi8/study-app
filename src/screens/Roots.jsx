@@ -28,6 +28,7 @@ import { NormalLearningRecordList } from '../components/NormalLearningRecordList
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card, IconButton, cx } from '../components/ui.jsx'
 import { ArrowRight, Book, Search } from '../components/Icons.jsx'
+import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
 
 const PAGE_SIZE = 24
 const STATUSES = ['all', 'due', 'unstarted', 'learning', 'mastered']
@@ -445,9 +446,9 @@ export function RootsScreen() {
         )}
 
         {visible < cards.length && (
-          <Button full variant="secondary" className="mt-3" onClick={() => setVisible(visible + PAGE_SIZE)}>
+          <LoadMoreButton className="mt-3" count={visible} onMore={() => setVisible(visible + PAGE_SIZE)}>
             次の{Math.min(PAGE_SIZE, cards.length - visible)}枚を表示
-          </Button>
+          </LoadMoreButton>
         )}
       </section>
 

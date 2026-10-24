@@ -22,6 +22,7 @@ import { useWordBookSlot, wordBookSlotLabel } from '../components/WordBookSlot.j
 import { Chip, IconButton } from '../components/ui.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { Search, Close, ArrowRight, Bookmark, BookmarkFilled, Plus } from '../components/Icons.jsx'
+import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
 
 // 見つからなかったときの案内。ボタンを押さなくても、その場で自動リクエストする。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
@@ -537,12 +538,9 @@ export function VocabSearchScreen() {
                 )}
                 {listed.slice(0, shown).map(renderEntry)}
                 {listed.length > shown && (
-                  <button
-                    onClick={() => setPaging({ key: pagingKey, count: shown + PAGE })}
-                    className="w-full rounded-2xl bg-white py-3 text-sm font-extrabold text-brand-500 shadow-sm ring-1 ring-brand-100 active:bg-brand-50"
-                  >
+                  <LoadMoreButton count={shown} onMore={() => setPaging({ key: pagingKey, count: shown + PAGE })}>
                     続きを表示（残り{listed.length - shown}件）
-                  </button>
+                  </LoadMoreButton>
                 )}
                 {!draftFirst && registerEntry}
               </div>

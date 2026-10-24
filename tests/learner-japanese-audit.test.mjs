@@ -139,7 +139,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-22、自作カードの「写真から作る」で、画面（src/components/CustomCardPhoto.jsx）・教科書から単語追加と共通の写真を読む部品
   // （src/components/PhotoOcrPicker.jsx）・候補の作り方（src/lib/customCardsPhoto.js）の3ファイルが増え、学習者画面が 354 から 357、
   // ソース全体が 848 から 851 ファイルになった（requests/2026-10-22-custom-cards-photo-ocr.json）。
-  assert.equal(result.learnerFiles, 357)
+  // 2026-10-24、続き表示のボタンを共通の部品（src/components/LoadMoreButton.jsx）にし、下までスクロールしたら押さなくても
+  // 続きを足すようにしたので、学習者画面が 357 から 358 ファイルになった（requests/2026-10-24-load-more-on-scroll.json）。
+  assert.equal(result.learnerFiles, 358)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
@@ -155,7 +157,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 日本語が 245048 から 258252 になった（requests/2026-10-22-high-school-social.json）。
   assert.equal(result.learnerJapaneseEntries, 18472)
   assert.equal(result.learnerUniqueJapaneseEntries, 13774)
-  assert.equal(result.sourceFiles, 867)
+  // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
+  // （requests/2026-10-24-load-more-on-scroll.json）。
+  assert.equal(result.sourceFiles, 868)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。

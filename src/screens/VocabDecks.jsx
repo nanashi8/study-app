@@ -36,6 +36,7 @@ import {
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
 } from '../components/VocabularyHistoryRow.jsx'
+import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
 
 const CATALOG_PAGE_SIZE = 80
 
@@ -381,17 +382,16 @@ function VocabularyCatalog({
           </div>
         )}
         {visible < remainingRows.length && (
-          <Button
-            full
-            variant="secondary"
+          <LoadMoreButton
             className="mt-3"
-            onClick={() => setPaging({
+            count={visible}
+            onMore={() => setPaging({
               key: pagingKey,
               visible: Math.min(remainingRows.length, visible + CATALOG_PAGE_SIZE),
             })}
           >
             さらに{Math.min(CATALOG_PAGE_SIZE, remainingRows.length - visible).toLocaleString('ja-JP')}語を表示
-          </Button>
+          </LoadMoreButton>
         )}
       </div>
     </div>

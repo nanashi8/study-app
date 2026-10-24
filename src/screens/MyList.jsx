@@ -43,6 +43,7 @@ import {
   Search,
 } from '../components/Icons.jsx'
 import { MAINTENANCE_SRS_BOX } from '../lib/srs.js'
+import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
 
 const PAGE_SIZE = 40
 const readTab = readChoice(['notebook', 'sets', 'history'], 'notebook')
@@ -886,9 +887,9 @@ export function MyListScreen() {
                   />
                 ))}
                 {visible < filteredItems.length && (
-                  <Button full variant="secondary" onClick={() => setPaging({ key: pagingKey, count: visible + PAGE_SIZE })}>
+                  <LoadMoreButton count={visible} onMore={() => setPaging({ key: pagingKey, count: visible + PAGE_SIZE })}>
                     さらに {Math.min(PAGE_SIZE, filteredItems.length - visible)}項目を表示
-                  </Button>
+                  </LoadMoreButton>
                 )}
               </div>
             ) : (

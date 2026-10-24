@@ -15,6 +15,7 @@ import {
   LearningRecordRow,
   VOCABULARY_HISTORY_ACTIVITY_META,
 } from './VocabularyHistoryRow.jsx'
+import { LoadMoreButton } from './LoadMoreButton.jsx'
 
 const DEFAULT_PAGE_SIZE = 80
 const NO_ROWS = new Set()
@@ -223,16 +224,15 @@ export function NormalLearningRecordList({
       )}
 
       {visible < remainingRows.length && (
-        <Button
-          full
-          variant="secondary"
-          onClick={() => setListState((current) => ({
+        <LoadMoreButton
+          count={visible}
+          onMore={() => setListState((current) => ({
             ...current,
             shown: { key: pagingKey, count: Math.min(remainingRows.length, visible + pageSize) },
           }))}
         >
           さらに{Math.min(pageSize, remainingRows.length - visible).toLocaleString('ja-JP')}{itemUnit}を表示
-        </Button>
+        </LoadMoreButton>
       )}
     </div>
   )
