@@ -142,6 +142,11 @@ test('誘導問題と入試演習の画面は穴埋めだけで進み、方針�
     'tests/math-exam-approach.test.mjs',
     'tests/math-guided-approach.test.mjs',
   ]) assert.equal(existsSync(new URL(`../${gone}`, import.meta.url)), false, `${gone} が残っている`)
+  // 入口の説明も穴埋めの解き方にそろえる（公開版で方針の3択の頃の説明が残っていた）。
+  for (const file of ['src/screens/MathMap.jsx', 'src/screens/MathExam.jsx', 'src/screens/MathExamUnit.jsx', 'src/lib/learningContentCatalog.js']) {
+    assert.doesNotMatch(read(file), /どう解くかを選|方針を選|方針の3択/, `${file}: 方針の3択の頃の説明が残っている`)
+  }
+  assert.match(read('src/screens/MathMap.jsx'), /計算の経過を1行ずつタイルで埋めて解く/)
   // 入試演習の結果は4通り。解き終わり（または「わからない」）で記録する。
   const exam = read('src/screens/MathExamSolve.jsx')
   assert.match(exam, /workResult\(lines, work, \{ unknown \}\)/)
