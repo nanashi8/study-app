@@ -62,4 +62,5 @@
 ## そのほかの決まり
 
 - main に直接コミットして push する（ブランチ・PR は作らない）。push 前の最終確認はクリーンな clone で行う。
+- 検証用の clone は、push して公開版を確かめたら消す（`rm -rf <scratchpad>/clone`）。npm ci で1つ約1.8GB になり、scratchpad は再起動まで消えないので、残すとセッションの数だけ Mac のストレージを食う（2026-10-25 に2つ・3.3GB 残っていた）。
 - 変更は `npm run audit:all-content`（全テスト・全監査・監査台帳の書き直し）を通してからコミットする。

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-25T02:37:07.826Z",
+  "auditedAt": "2026-10-25T11:13:16.052Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c1a020b6a16c14d1baf33b34345417dcccc92725b3bf02c90a6d35d12dea9f17",
+    "sha256": "394c003017b6f573d81c7649cd16744f3eae86626770be75c67cb16eabb02809",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -309,6 +309,7 @@
       "tests/long-sentence-translations.test.mjs",
       "tests/lookalike-forms.test.mjs",
       "tests/lookalike-origins.test.mjs",
+      "tests/mac-storage-2026-10-25.test.mjs",
       "tests/material-sources.test.mjs",
       "tests/math-exam-answers.test.mjs",
       "tests/math-exam.test.mjs",

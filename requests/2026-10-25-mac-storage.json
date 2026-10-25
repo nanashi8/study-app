@@ -1,0 +1,31 @@
+{
+  "id": "2026-10-25-mac-storage",
+  "title": "このプロジェクトが Mac のストレージを逼迫させているものを片付け、再発を止める",
+  "asked": [
+    "このプロジェクト由来のmacのストレージを逼迫している問題があれば解決しなさい。"
+  ],
+  "sessions": [
+    "45fe26a6-56bd-4efd-a718-e5c2a18b46ab"
+  ],
+  "status": "done",
+  "criteria": [
+    {
+      "id": "finished-verify-clones-removed",
+      "text": "作業を終えたセッションが scratchpad に残した検証用の clone（node_modules・dist・.git を含め1つ約1.8GB）を消す。消す前に、未公開のコミットや変更がないことを確かめる",
+      "population": "2026-10-25 時点で /private/tmp/claude-501/-Users-yuichinakamura-projects-study-app/*/scratchpad/ にあった clone の全件（2件：91e032c1…＝数学の歴史のテスト削除、340789d7…＝数学の穴埋め。どちらも依頼を閉じて公開済み・セッションは停止）",
+      "check": "node --test tests/mac-storage-2026-10-25.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "verify-clone-cleanup-rule",
+      "text": "検証用の clone は公開を確かめたら消す、という決まりを全セッションが読む CLAUDE.md に書く（毎回 npm ci で約1.8GB 作られ、再起動まで消えないのが原因）",
+      "population": "CLAUDE.md の「そのほかの決まり」",
+      "check": "node --test tests/mac-storage-2026-10-25.test.mjs",
+      "status": "done"
+    }
+  ],
+  "notes": [
+    "調べた範囲：作業ツリー 2.1GB（node_modules 1.4GB・dist 200MB・.git 358MB・public 101MB。どれも必要か作り直せる生成物）、scratchpad 3.3GB、Playwright のブラウザ 829MB（package-lock の 1.61.0 の chromium・webkit の1版ずつ。テストで使う）、会話ログ 584MB（消えた作業の復元に使うので残す）。",
+    "このプロジェクト由来でないもの（research-app 45GB、~/.codex 3.3GB、Claude アプリの vm_bundles 10GB、~/.npm 1.5GB）は触らない。Mac 全体の逼迫は別のセッション「Mac ストレージ逼迫対策」が扱っている。"
+  ]
+}
