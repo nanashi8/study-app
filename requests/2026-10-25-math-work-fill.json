@@ -11,7 +11,7 @@
   "sessions": [
     "340789d7-4dd0-44a2-9bdb-e6df7a40a0b1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "guided-work-all",
@@ -58,8 +58,8 @@
       "text": "全テスト・全監査を通してコミットし、クリーンな clone で確かめて main へ push し、公開版で誘導問題と入試演習が穴埋めで解けることを確かめる",
       "population": "この依頼の変更のすべて",
       "check": "node --test tests/math-work.test.mjs",
-      "status": "waiting",
-      "waitingFor": "裏で流している全テスト（npm test, b8oypth1k）の結果。通ったら audit:all-content・コミット・clone 検証・push・公開版の確認へ進む"
+      "status": "done",
+      "verifiedBy": "手元とクリーンな clone で audit:all-content（テスト1,490件・全監査）が通り、41a92458・b055f743 を main へ push。公開版（GitHub Pages の配備 success）で、入試演習の今日の演習1問と誘導問題の一次方程式1問を穴埋めで解き終え、全行の考え方と全タイルの説明が出ることと、数学トップの入試演習の説明が穴埋めの解き方になっていることを確かめた。"
     }
   ]
 }
