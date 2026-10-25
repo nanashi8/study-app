@@ -22,9 +22,9 @@ import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
-import { MATH_GUIDED_APPROACH_ROWS } from '../src/data/math-guided-approach.js'
-import { MATH_EXAM_APPROACH_ROWS } from '../src/data/math-exam-approach.js'
-import { normalizeApproach } from '../src/lib/mathExamApproach.js'
+import { MATH_GUIDED_WORK_ROWS } from '../src/data/math-guided-work.js'
+import { MATH_EXAM_WORK_ROWS } from '../src/data/math-exam-work.js'
+import { normalizeWork } from '../src/lib/mathWork.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -57,10 +57,13 @@ function questionRecords() {
     const q = termQuestion(t)
     add('subject-terms', q.id, q.choices, q.answer, q.choices.map((c) => q.notes?.[c]))
   }
-  // 数学は手で計算せずに方針を3択で選ぶ（誘導問題と入試演習）。教材は正解を先頭に書く。
-  for (const [bank, rowsById] of [['math-guided', MATH_GUIDED_APPROACH_ROWS], ['math-exam', MATH_EXAM_APPROACH_ROWS]]) {
+  // 数学は手計算のいらない計算の経過の穴埋め（誘導問題と入試演習）。空所ごとに、その行のタイル（同じ値は1枚）から選ぶ問題とみる。
+  for (const [bank, rowsById] of [['math-guided', MATH_GUIDED_WORK_ROWS], ['math-exam', MATH_EXAM_WORK_ROWS]]) {
     for (const [problemId, rows] of Object.entries(rowsById)) {
-      normalizeApproach(rows).forEach((step, i) => add(bank, `${problemId}:${i}`, step.options, step.options[0], step.notes))
+      normalizeWork(rows).forEach((line, i) => {
+        const tiles = line.tiles.filter((tile, index) => line.tiles.findIndex((other) => other.label === tile.label) === index)
+        line.blanks.forEach((blank, slot) => add(bank, `${problemId}:${i}:${slot}`, tiles.map((tile) => tile.label), blank, tiles.map((tile) => tile.note)))
+      })
     }
   }
   for (const q of DIAGNOSTIC_QUESTIONS) add('diagnostic', q.id, q.choices, q.answer, q.choices.map((c) => diagnosticChoiceNoteFor(q, c)))

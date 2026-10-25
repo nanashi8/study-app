@@ -24,9 +24,9 @@ import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
-import { MATH_GUIDED_APPROACH_ROWS } from '../src/data/math-guided-approach.js'
-import { MATH_EXAM_APPROACH_ROWS } from '../src/data/math-exam-approach.js'
-import { normalizeApproach } from '../src/lib/mathExamApproach.js'
+import { MATH_GUIDED_WORK_ROWS } from '../src/data/math-guided-work.js'
+import { MATH_EXAM_WORK_ROWS } from '../src/data/math-exam-work.js'
+import { normalizeWork } from '../src/lib/mathWork.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -116,16 +116,16 @@ const GATE_CATALOG = Object.freeze({
     coverage: '全作品の権利・出典、場面、朗読区切り、語彙参照、英語読解設問',
   },
   math: {
-    command: 'node scripts/check-data.mjs && node --test tests/math-guided-approach.test.mjs',
-    coverage: '誘導問題の全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・計算の結果を選ばせないこと）、着眼点・つまずき、読んだ記録',
+    command: 'node scripts/check-data.mjs && node --test tests/math-work.test.mjs',
+    coverage: '誘導問題の全問の計算の経過の穴埋め（行ごとの考え方・空所・正解と誤りの全タイルの説明・KaTeX）、着眼点・つまずき、読んだ記録',
   },
   mathHistory: {
     command: 'node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs',
     coverage: '数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画',
   },
   mathExam: {
-    command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-exam-approach.test.mjs',
-    coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・解き方の流れ）と読んだ記録、図の条件と描画',
+    command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-work.test.mjs',
+    coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画',
   },
   juniorSocialScience: {
     command: 'node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs',
@@ -346,25 +346,26 @@ function buildQuestionBanks() {
       expectedChoiceCounts: [3],
       choiceRationalesFor: diagnosticChoiceRationales,
     }),
-    // 数学の誘導問題と入試演習の方針の段。手で計算せずに方針を3択で選ぶ。ID は「問題ID:段の番号」。
-    // 正解は教材の先頭の選択肢。問題別の解説はその段の考え方（なぜ）、選択肢別の説明は全択に持つ。
+    // 数学の誘導問題と入試演習の計算の経過の穴埋め。手で計算せずに、1行ずつ空所にタイルを入れる。ID は「問題ID:行の番号」。
+    // 選択肢は行のタイル（正解の空所の数＋誤り）。問題別の解説はその行の考え方（なぜ）、選択肢別の説明は全タイルに持つ。
+    // 同じ値の正解が2つある行（□ が2つとも 5）があるので、正解のタイルは「値#空所」で区別する。
     ...[
-      ['math-guided-approach', '数学の誘導問題（方針の段）', MATH_GUIDED_APPROACH_ROWS],
-      ['math-exam-approach', '数学の入試演習（方針の段）', MATH_EXAM_APPROACH_ROWS],
+      ['math-guided-work', '数学の誘導問題（計算の経過の穴埋め）', MATH_GUIDED_WORK_ROWS],
+      ['math-exam-work', '数学の入試演習（計算の経過の穴埋め）', MATH_EXAM_WORK_ROWS],
     ].map(([id, label, rowsById]) => auditQuestionBank({
       id,
       label,
-      items: Object.entries(rowsById).flatMap(([problemId, rows]) => normalizeApproach(rows).map((step, index) => ({
+      items: Object.entries(rowsById).flatMap(([problemId, rows]) => normalizeWork(rows).flatMap((line, index) => (line.given ? [] : [{
         id: `${problemId}:${index}`,
-        choices: step.options,
-        answer: 0,
-        hint: step.hint,
-        notes: step.notes,
-      }))),
-      answerMatches: (item, choices) => (choices[item.answer] ? 1 : 0),
+        choices: line.tiles.map((tile) => ({ id: tile.blank === null ? tile.label : `${tile.label}#${tile.blank}` })),
+        blanks: line.blanks,
+        tiles: line.tiles,
+        hint: line.why,
+      }]))),
+      answerMatches: (item) => (item.blanks.every((blank, slot) => item.tiles.some((tile) => tile.blank === slot && tile.label === blank)) ? 1 : 0),
       rationaleFor: (item) => item.hint,
-      choiceRationalesFor: (item) => item.notes,
-      expectedChoiceCounts: [3],
+      choiceRationalesFor: (item) => item.tiles.map((tile) => tile.note),
+      expectedChoiceCounts: [2, 3, 4, 5, 6],
     })),
     // 社会・理科の演習の選ぶ問題。教材は4択（出題は3択＋わからない）で、選択肢の文ごとの説明（notes）を全択に持つ。
     stringBank(
@@ -477,10 +478,10 @@ async function auditImplementationHash() {
     'src/lib/extendedReadingAudit.js',
     'src/lib/readingChoiceNotes.js',
     'src/data/reading-choice-notes.js',
-    'src/data/math-guided-approach.js',
-    'src/data/math-exam-approach.js',
-    'src/lib/mathExamApproach.js',
-    'src/components/MathExamApproach.jsx',
+    'src/data/math-guided-work.js',
+    'src/data/math-exam-work.js',
+    'src/lib/mathWork.js',
+    'src/components/MathWork.jsx',
     'src/screens/MathSolve.jsx',
     'src/lib/normalLearningRecordEntries.js',
     'src/data/reading-question-translations.js',

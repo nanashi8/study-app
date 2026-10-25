@@ -12,14 +12,14 @@ import {
 import { unitById } from '../data/math.js'
 import { MATH_EXAM_RESULTS, formatSeconds } from '../lib/mathExam.js'
 import { latestMathExamAttempt } from '../lib/mathExamLog.js'
-import { approachResult, approachStepsDone } from '../lib/mathExamApproach.js'
-import { mathExamApproach } from '../data/math-exam-approach.js'
+import { checkLine, clearTiles, fillLineIndexes, openWorkHint, placeTile, removeTile, workLinesDone, workResult } from '../lib/mathWork.js'
+import { mathExamWork } from '../data/math-exam-work.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
 import { mixRankedForStudy, questionMixStockOf } from '../lib/studyMix.js'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { readableMathAccent } from '../lib/mathVisualColors.js'
 import { MathExamFigure } from '../components/MathExamFigure.jsx'
-import { MathExamApproachSteps, MathExamSolutionFlow } from '../components/MathExamApproach.jsx'
+import { MathWorkSteps } from '../components/MathWork.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, BookOpen, Refresh } from '../components/Icons.jsx'
@@ -27,9 +27,9 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import { QuestionSessionControls, useIndexedSessionState } from '../components/QuestionSessionControls.jsx'
 
-// 数学の入試演習。手で計算せずに、解き方の方針を3択で1段ずつ選んで解く（lib/mathExamApproach.js）。
-// 段ごとのヒントは、考え方（なぜそうする必要があるのか）→ 手がかり（図にする・表にする・書き出すなど）の順に開く。
-// 答え合わせのあとは、解き方の流れ（どこから手をつけ、なぜそう進めるのか）・全段の全選択肢の説明・ポイント・つまずきやすい点を読む。
+// 数学の入試演習。手で計算せずに、計算の経過を1行ずつ穴埋めして解く（lib/mathWork.js）。
+// 行ごとの考え方（なぜその操作をするのか）は、ヒントボタンを押したときだけ開く。最後の行が解答欄の答えになる。
+// 解き終わり（または「わからない」）のあとは、全行の考え方・全タイルの説明・ポイント・つまずきやすい点を読む。
 // 開き方：1つの単元（unitId）・範囲を混ぜる総合演習（scope）・入試の種類全体（kind）・選んだ問題（ids）。
 // 出題の順は、問題ごとの結果（contentQuizResults の math-exam）から全教材共通の決まりで組む。
 // 単元別は同じ段の中を基礎 → 標準の順に、総合演習は単元を混ぜて出す。
@@ -79,7 +79,7 @@ export function MathExamSolveScreen() {
     clear: clearRecords,
     values: records,
   } = useIndexedSessionState(index)
-  // 答え合わせ前の選択（位置ごと）：段ごとに選んだ番号・段ごとに開いたヒントの数・解き始めた時刻。
+  // 解き終わる前の穴埋め（位置ごと）：行ごとの入れたタイル・答え合わせ・ヒント（lib/mathWork.js）と、解き始めた時刻。
   const [drafts, setDrafts] = useState({})
   const [tally, setTally] = useState(EMPTY_TALLY)
   const [missedIds, setMissedIds] = useState([])
@@ -91,12 +91,12 @@ export function MathExamSolveScreen() {
   const unit = problem ? unitById(problem.unit) : null
   const accent = readableMathAccent(unit?.color ?? '#7c3aed')
   const draft = drafts[index] ?? null
-  const steps = problem ? mathExamApproach(problem.id) : []
+  const lines = problem ? mathExamWork(problem.id) : []
 
   // 表示した問題の解き始めの時刻を置く（前へ戻って開き直しても、最初に開いた時刻のまま）。
   useEffect(() => {
     if (!problem) return
-    setDrafts((current) => (current[index] ? current : { ...current, [index]: { picks: {}, hints: {}, startedAt: Date.now() } }))
+    setDrafts((current) => (current[index] ? current : { ...current, [index]: { work: {}, startedAt: Date.now() } }))
   }, [index, problem])
 
   // 画面下部の「出題」を動かしたら、表示中と答えた分を残して、先の問題を新しい割合で組み直す。
@@ -144,20 +144,18 @@ export function MathExamSolveScreen() {
 
   const updateDraft = (change) => {
     setDrafts((current) => {
-      const base = current[index] ?? { picks: {}, hints: {}, startedAt: Date.now() }
+      const base = current[index] ?? { work: {}, startedAt: Date.now() }
       return { ...current, [index]: { ...base, ...change(base) } }
     })
   }
 
-  const finish = (unknown) => {
+  const finish = (unknown, work = draft?.work ?? {}) => {
     if (!problem || record) return
-    const picks = draft?.picks ?? {}
-    const hintsUsed = Object.values(draft?.hints ?? {}).reduce((sum, count) => sum + count, 0)
-    const result = approachResult(steps, picks, { hintsUsed, unknown })
+    const result = workResult(lines, work, { unknown })
     const seconds = Math.max(1, Math.floor((Date.now() - (draft?.startedAt ?? Date.now())) / 1000))
     // 問題ごとの記録（入試演習の記録と、出題の順に使う問題ごとの結果）に残す。
     recordAttempt(problem.id, result, seconds)
-    setRecord({ result, seconds, picks, hints: draft?.hints ?? {} })
+    setRecord({ result, seconds, work })
     setTally((current) => ({ ...current, [result]: current[result] + 1, seconds: current.seconds + seconds }))
     if (result !== 'solved') setMissedIds((ids) => [...new Set([...ids, problem.id])])
   }
@@ -229,17 +227,9 @@ export function MathExamSolveScreen() {
   const revealIdentity = !mixed || Boolean(record)
   const previous = latestMathExamAttempt(mathExamLog, problem.id)
   const shownPrevious = record ? null : previous
-  const picks = record?.picks ?? draft?.picks ?? {}
-  const hints = record?.hints ?? draft?.hints ?? {}
-  const left = steps.length - approachStepsDone(steps, picks)
-  const pick = (stepIndex, optionIndex) => updateDraft((base) => {
-    const chosen = base.picks?.[stepIndex] ?? []
-    if (chosen.includes(0) || chosen.includes(optionIndex)) return {}
-    return { picks: { ...base.picks, [stepIndex]: [...chosen, optionIndex] } }
-  })
-  const openHint = (stepIndex) => updateDraft((base) => ({
-    hints: { ...base.hints, [stepIndex]: Math.min(2, (base.hints?.[stepIndex] ?? 0) + 1) },
-  }))
+  const work = record?.work ?? draft?.work ?? {}
+  const left = fillLineIndexes(lines).length - workLinesDone(lines, work)
+  const changeWork = (change) => updateDraft((base) => ({ work: change(base.work ?? {}) }))
   const resultMeta = record ? MATH_EXAM_RESULTS[record.result] : null
 
   return (
@@ -302,35 +292,41 @@ export function MathExamSolveScreen() {
             </div>
           )}
           {!record && (
-            <p className="mt-3 text-[11px] font-bold text-ink/50">{'計算はしなくてよい。どう解くかを、下の段で1つずつ選ぼう。'}</p>
+            <p className="mt-3 text-[11px] font-bold text-ink/50">{'紙に計算はしなくてよい。下の経過の空所に、タイルを入れて1行ずつ進もう。'}</p>
           )}
         </section>
 
-        <MathExamApproachSteps
-          problem={problem}
-          steps={steps}
-          picks={picks}
-          hints={hints}
-          onPick={pick}
-          onHint={openHint}
+        <MathWorkSteps
+          problemId={problem.id}
+          lines={lines}
+          state={work}
+          onPlace={(lineIndex, tileIndex) => changeWork((current) => placeTile(current, lines[lineIndex], lineIndex, tileIndex))}
+          onRemove={(lineIndex, slot) => changeWork((current) => removeTile(current, lineIndex, slot))}
+          onClear={(lineIndex) => changeWork((current) => clearTiles(current, lineIndex))}
+          onHint={(lineIndex) => changeWork((current) => openWorkHint(current, lineIndex))}
+          onCheck={(lineIndex) => {
+            const next = checkLine(work, lines[lineIndex], lineIndex)
+            changeWork(() => next)
+            // 最後の行まで正しく埋めたら、そのまま解き終わりにする。
+            if (workLinesDone(lines, next) === fillLineIndexes(lines).length) finish(false, next)
+          }}
           reviewed={Boolean(record)}
         />
         {!record && (
-          <p className="mt-2 px-1 text-center text-[11px] font-bold text-ink/45">{'ヒントを開くと、正しく選べても「ヒントで正解」と記録します。'}</p>
+          <p className="mt-2 px-1 text-center text-[11px] font-bold text-ink/45">{'ヒントを開くと、正しく埋めても「ヒントで正解」と記録します。'}</p>
         )}
 
-        {/* 答え合わせのあと：結果・解き方の流れ・ポイント・つまずきやすい点。 */}
+        {/* 解き終わりのあと：結果・ポイント・つまずきやすい点（全行の考え方とタイルの説明は経過の中）。 */}
         {record && (
           <section className="mt-4 space-y-3 animate-slide-up" data-math-exam-review>
             <div className="rounded-2xl bg-white p-4 shadow-card">
               <p className="font-display text-lg font-extrabold" style={{ color: resultMeta.color }} data-math-exam-result-label>
-                {record.result === 'solved' ? '正解！' : record.result === 'hinted' ? 'ヒントで正解' : record.result === 'wrong' ? '方針を確かめよう' : '解き方の流れを読もう'}
+                {record.result === 'solved' ? '正解！' : record.result === 'hinted' ? 'ヒントで正解' : record.result === 'wrong' ? 'まちがえた行を確かめよう' : '計算の経過を読もう'}
               </p>
               {record.result !== 'solved' && (
-                <p className="mt-1 text-xs font-bold text-ink/60">{'この問題は解き直しに入りました。次はヒントなしで方針を選んでみよう。'}</p>
+                <p className="mt-1 text-xs font-bold text-ink/60">{'この問題は解き直しに入りました。次はヒントなしで経過を埋めてみよう。'}</p>
               )}
             </div>
-            <MathExamSolutionFlow steps={steps} />
             <div className="rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100" data-math-exam-point>
               <p className="text-xs font-extrabold text-emerald-700">この型のポイント</p>
               <p className="mt-1 text-sm font-bold leading-relaxed text-emerald-950/85"><MathText>{problem.point}</MathText></p>
@@ -349,13 +345,11 @@ export function MathExamSolveScreen() {
             {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
           </Button>
         ) : (
-          <div className="grid grid-cols-[auto_1fr] gap-2">
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
             <Button variant="secondary" onClick={() => finish(true)} data-math-exam-unknown>
               わからない
             </Button>
-            <Button disabled={left > 0} onClick={() => finish(false)} data-math-exam-check>
-              {left > 0 ? `答え合わせ（あと${left}段）` : '答え合わせ'}
-            </Button>
+            <p className="text-center text-xs font-bold text-ink/50" data-math-exam-left>{`空所のある行 あと${left}行`}</p>
           </div>
         )}
       </div>

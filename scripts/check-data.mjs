@@ -2266,7 +2266,7 @@ for (const question of WRITING_EXAM_QUESTIONS) {
 }
 
 // ── 数学クエスト：誘導問題に問題文・着眼点・つまずきがそろっているか ──
-// 解き方の方針の段そのものは tests/math-guided-approach.test.mjs が全問を確かめる。
+// 計算の経過の穴埋めそのものは tests/math-work.test.mjs が全問を確かめる。
 const mathUnitIds = new Set(MATH_UNITS.map((unit) => unit.id))
 const mathProblemIds = new Set()
 for (const [unitId, problems] of Object.entries(MATH_PROBLEMS)) {

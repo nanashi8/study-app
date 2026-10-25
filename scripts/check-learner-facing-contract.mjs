@@ -227,16 +227,15 @@ const [
   readProjectFile('src/components/QuestionSessionControls.jsx'),
 ])
 
-// 数学は手で計算せずに方針を選ぶ（requests/2026-10-22-math-no-hand-calc.json）。答え合わせでは、段ごとの考え方と、
-// 出した選択肢すべての説明を、方針の段の共通部品（components/MathExamApproach.jsx）で出す。
-const mathApproachSource = await readProjectFile('src/components/MathExamApproach.jsx')
+// 数学は手計算のいらない計算の経過の穴埋めで解く（requests/2026-10-25-math-work-fill.json）。解き終わりには、行ごとの考え方と、
+// その行に出したタイルすべての説明を、穴埋めの共通部品（components/MathWork.jsx）で出す。
+const mathWorkSource = await readProjectFile('src/components/MathWork.jsx')
 if (
-  !mathSolveSource.includes('<MathExamApproachSteps')
-  || !mathSolveSource.includes('<MathExamSolutionFlow steps={steps} />')
-  || !mathApproachSource.includes('title={`選択肢解説（${step.options.length}択すべて）`}')
-  || !mathApproachSource.includes('body: step.notes[optionIndex]')
+  !mathSolveSource.includes('<MathWorkSteps')
+  || !mathWorkSource.includes('title={`タイルの説明（${line.tiles.length}枚すべて）`}')
+  || !mathWorkSource.includes('body: line.tiles[tileIndex].note')
 ) {
-  errors.push('数学の方針の答え合わせに、解き方の流れと、出した選択肢すべての説明がない')
+  errors.push('数学の穴埋めの答え合わせに、行ごとの考え方と、出したタイルすべての説明がない')
 }
 if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に選択肢解説部品がない')
 if (!grammarQuizSource.includes('{grammarRuleExplanationFor(item)}')) errors.push('英文法画面に規則ごとの解説がない')

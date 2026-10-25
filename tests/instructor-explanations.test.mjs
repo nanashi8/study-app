@@ -40,9 +40,9 @@ import {
   listeningChoiceNoteFor,
 } from '../src/data/listening-choice-notes.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
-import { MATH_GUIDED_APPROACH_ROWS } from '../src/data/math-guided-approach.js'
-import { MATH_EXAM_APPROACH_ROWS } from '../src/data/math-exam-approach.js'
-import { normalizeApproach } from '../src/lib/mathExamApproach.js'
+import { MATH_GUIDED_WORK_ROWS } from '../src/data/math-guided-work.js'
+import { MATH_EXAM_WORK_ROWS } from '../src/data/math-exam-work.js'
+import { normalizeWork } from '../src/lib/mathWork.js'
 import { PHRASES } from '../src/data/phrases.js'
 import {
   ALL_WORDS,
@@ -212,37 +212,38 @@ test('英作文の答え合わせは、選んだ文のポイントと文法の�
   assert.equal(tips.size, 330)
 })
 
-// 数学は手で計算せずに方針を3択で選ぶ（requests/2026-10-22-math-no-hand-calc.json）。決まり文句の4段解説は置かず、
-// 段ごとの考え方と、出した選択肢すべての説明を示す。教材は正解を先頭に書くので、画面で並びを混ぜる。
-test('数学の誘導問題と入試演習の方針の段は、全選択肢に説明があり、正解を先頭に固定せず、決まり文句の講師解説を使わない', async () => {
-  const component = await readFile(new URL('../src/components/MathExamApproach.jsx', import.meta.url), 'utf8')
-  for (const file of ['src/screens/MathSolve.jsx', 'src/screens/MathExamSolve.jsx', 'src/components/MathExamApproach.jsx']) {
+// 数学は手計算のいらない計算の経過の穴埋めで解く（requests/2026-10-25-math-work-fill.json）。決まり文句の4段解説は置かず、
+// 行ごとの考え方と、出したタイルすべての説明を示す。教材は正解のタイルを先に書くので、画面で並びを混ぜる。
+test('数学の誘導問題と入試演習の穴埋めは、全タイルに説明があり、正解を先頭に固定せず、決まり文句の講師解説を使わない', async () => {
+  const component = await readFile(new URL('../src/components/MathWork.jsx', import.meta.url), 'utf8')
+  for (const file of ['src/screens/MathSolve.jsx', 'src/screens/MathExamSolve.jsx', 'src/components/MathWork.jsx']) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8')
     assert.doesNotMatch(source, /InstructorExplanation|instructorExplanations/, `${file}: 決まり文句の講師解説が戻っています`)
   }
-  assert.match(component, /const order = approachOrder\(problem\.id, stepIndex, step\.options\.length\)/, '選択肢の並びを混ぜていません')
-  assert.match(component, /rows=\{order\.map\(\(optionIndex\) => \(\{[\s\S]*?body: step\.notes\[optionIndex\]/, '選択肢の欄がボタンと同じ並びから作られていません')
-  let steps = 0
-  for (const rowsById of [MATH_GUIDED_APPROACH_ROWS, MATH_EXAM_APPROACH_ROWS]) {
+  assert.match(component, /const order = tileOrder\(problemId, lineIndex, line\.tiles\.length\)/, 'タイルの並びを混ぜていません')
+  assert.match(component, /rows=\{order\.map\(\(tileIndex\) => \(\{[\s\S]*?body: line\.tiles\[tileIndex\]\.note/, 'タイルの説明の欄がボタンと同じ並びから作られていません')
+  let lines = 0
+  for (const rowsById of [MATH_GUIDED_WORK_ROWS, MATH_EXAM_WORK_ROWS]) {
     for (const [problemId, rows] of Object.entries(rowsById)) {
-      normalizeApproach(rows).forEach((step, index) => {
-        steps += 1
+      normalizeWork(rows).forEach((line, index) => {
+        if (line.given) return
+        lines += 1
         const label = `math:${problemId}:${index}`
-        assert.ok(normalize(step.hint), `${label} の考え方がありません`)
-        // 「逆。」「わる。」のような一言ではなく、その選択肢を選ぶとどうなるか・なぜかが読める文にする（数式は1字と数える）
-        step.notes.forEach((note, optionIndex) => assert.ok(
-          normalize(note).replace(/\$[^$]*\$/g, 'X').length >= 10 || normalize(note).length >= 20,
-          `${label}「${step.options[optionIndex]}」の説明が一言だけです（${note}）`,
+        assert.ok(normalize(line.why), `${label} の考え方がありません`)
+        // 「逆。」「わる。」のような一言ではなく、そのタイルがなぜ入る・入らないのか、どの計算でその値になるのかが読める文にする（数式は1字と数える）
+        line.tiles.forEach((tile) => assert.ok(
+          normalize(tile.note).replace(/\$[^$]*\$/g, 'X').length >= 10 || normalize(tile.note).length >= 20,
+          `${label}「${tile.label}」の説明が一言だけです（${tile.note}）`,
         ))
       })
     }
   }
-  assert.equal(steps, 549 + 750)
+  assert.equal(lines, 547 + 865)
 })
 
-test('数学の解き終わりは、解き方の流れ（決めたこととなぜ）・この型の着眼点・つまずきやすい点を示し、計算の答えを出さない', async () => {
+test('数学の解き終わりは、計算の経過（行ごとの考え方とタイルの説明）・この型の着眼点・つまずきやすい点を示す', async () => {
   const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
-  assert.match(source, /<MathExamSolutionFlow steps=\{steps\} \/>/)
+  assert.match(source, /<MathWorkSteps/)
   assert.match(source, /<RecallCard recall=\{p\.recall\} \/>/)
   assert.match(source, /data-math-pitfall/)
   assert.doesNotMatch(source, /problem\.answer|p\.answer|resolveFill|MathFillIn/)

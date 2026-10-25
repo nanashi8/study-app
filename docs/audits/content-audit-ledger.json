@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-25T00:41:53.616Z",
+  "auditedAt": "2026-10-25T01:41:07.228Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -10,8 +10,8 @@
     "categoryCount": 24,
     "learningItemCount": 21582,
     "quizItemCount": 21701,
-    "storedAndGeneratedQuestionPathCount": 8588,
-    "storedAndGeneratedChoicePathCount": 32937,
+    "storedAndGeneratedQuestionPathCount": 8701,
+    "storedAndGeneratedChoicePathCount": 33485,
     "overallContentSha256": "9315b0f0a62f37f828ddc828fdf53ed752a0b398f1756be520cd1b9ba009bd01"
   },
   "completionCriteria": [
@@ -99,16 +99,16 @@
       "coverage": "全作品の権利・出典、場面、朗読区切り、語彙参照、英語読解設問"
     },
     "math": {
-      "command": "node scripts/check-data.mjs && node --test tests/math-guided-approach.test.mjs",
-      "coverage": "誘導問題の全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・計算の結果を選ばせないこと）、着眼点・つまずき、読んだ記録"
+      "command": "node scripts/check-data.mjs && node --test tests/math-work.test.mjs",
+      "coverage": "誘導問題の全問の計算の経過の穴埋め（行ごとの考え方・空所・正解と誤りの全タイルの説明・KaTeX）、着眼点・つまずき、読んだ記録"
     },
     "mathHistory": {
       "command": "node scripts/checks/math-history.mjs chapters facts && node --test tests/math-history.test.mjs",
       "coverage": "数学の歴史の全話の年代・物語・動かす図・今の使われ方・テスト、史実の記録と本文の一致、図の全操作値の描画"
     },
     "mathExam": {
-      "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-exam-approach.test.mjs",
-      "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の方針の段（3択・全選択肢の説明・考え方と手がかりのヒント・解き方の流れ）と読んだ記録、図の条件と描画"
+      "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-work.test.mjs",
+      "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画"
     },
     "juniorSocialScience": {
       "command": "node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "b21003a25efd4a872f7c779dce7d6967dd6bef27d1c2b899edc0d6564aad739b",
+    "sha256": "29d92e5505dc8ad3ae125169e0a8d94c9cc2cc5e05a533a2fcb5c9dabe33a113",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -141,10 +141,10 @@
       "src/lib/extendedReadingAudit.js",
       "src/lib/readingChoiceNotes.js",
       "src/data/reading-choice-notes.js",
-      "src/data/math-guided-approach.js",
-      "src/data/math-exam-approach.js",
-      "src/lib/mathExamApproach.js",
-      "src/components/MathExamApproach.jsx",
+      "src/data/math-guided-work.js",
+      "src/data/math-exam-work.js",
+      "src/lib/mathWork.js",
+      "src/components/MathWork.jsx",
       "src/screens/MathSolve.jsx",
       "src/lib/normalLearningRecordEntries.js",
       "src/data/reading-question-translations.js",
@@ -311,12 +311,11 @@
       "tests/lookalike-origins.test.mjs",
       "tests/material-sources.test.mjs",
       "tests/math-exam-answers.test.mjs",
-      "tests/math-exam-approach.test.mjs",
       "tests/math-exam.test.mjs",
-      "tests/math-guided-approach.test.mjs",
       "tests/math-history-no-quiz.test.mjs",
       "tests/math-history.test.mjs",
       "tests/math-intros.test.mjs",
+      "tests/math-work.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
       "tests/meaning-readable.test.mjs",
       "tests/meaning-readings.test.mjs",
@@ -1094,25 +1093,25 @@
       "failures": []
     },
     {
-      "id": "math-guided-approach",
-      "label": "数学の誘導問題（方針の段）",
-      "questionCount": 549,
-      "choiceCount": 1647,
-      "generalRationaleCount": 549,
-      "choiceSpecificRationaleCount": 1647,
-      "questionSetSha256": "2ff0982ab540d697428ae1fa8f7689c1279b3a0007a11e6d6c3dca8caf69e9db",
+      "id": "math-guided-work",
+      "label": "数学の誘導問題（計算の経過の穴埋め）",
+      "questionCount": 547,
+      "choiceCount": 1699,
+      "generalRationaleCount": 547,
+      "choiceSpecificRationaleCount": 1699,
+      "questionSetSha256": "0bd86a36c507f73cc019313e7694858dfafbae58548fd8c342b42e0f785785e0",
       "result": "pass",
       "failureCount": 0,
       "failures": []
     },
     {
-      "id": "math-exam-approach",
-      "label": "数学の入試演習（方針の段）",
-      "questionCount": 750,
-      "choiceCount": 2250,
-      "generalRationaleCount": 750,
-      "choiceSpecificRationaleCount": 2250,
-      "questionSetSha256": "fe131f289eceab7f3aca8e153fb9f69195cdc4bfdaf364286afff807791b3d94",
+      "id": "math-exam-work",
+      "label": "数学の入試演習（計算の経過の穴埋め）",
+      "questionCount": 865,
+      "choiceCount": 2746,
+      "generalRationaleCount": 865,
+      "choiceSpecificRationaleCount": 2746,
+      "questionSetSha256": "e802617a4ccdd1b3efef95842bb75f58d747e28caef1a7c1d85388bd401fe88b",
       "result": "pass",
       "failureCount": 0,
       "failures": []

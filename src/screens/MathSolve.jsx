@@ -1,25 +1,20 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { problemsForUnit, unitById } from '../data/math.js'
-import { mathGuidedApproach } from '../data/math-guided-approach.js'
-import { approachStepsDone } from '../lib/mathExamApproach.js'
+import { mathGuidedWork } from '../data/math-guided-work.js'
+import { checkLine, clearTiles, fillLineIndexes, openWorkHint, placeTile, removeTile, workLineScore, workLinesDone } from '../lib/mathWork.js'
 import { MathBlock, MathText } from '../components/MathText.jsx'
-import { MathExamApproachSteps, MathExamSolutionFlow } from '../components/MathExamApproach.jsx'
+import { MathWorkSteps } from '../components/MathWork.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 
-// 誘導型の数学（基本の型）。手で計算せずに、解き方の方針を3択で1段ずつ選んで進む。
-//  ① 方針の段（lib/mathExamApproach.js と同じ形。1段目は方針の確認、2段目からは解き方の手順）。
-//     段ごとのヒントは、考え方（なぜそうするのか）→ 手がかり（図にする・表にする・書き出すなど）の順に開く
-//  ② 解き終わり … 解き方の流れ（決めたこととなぜ）・この型の着眼点と公式・つまずきやすい点
-//     着眼点と公式は方針の答えになるので、選び終わってから見せる
-// 正答率は、はじめの選択で正しく選べた段（ヒントを開いた段はふくめない）で数える。
-const stepScore = (steps, picks, hints) => ({
-  correct: steps.filter((_, index) => (picks[index] ?? [])[0] === 0 && !(hints[index] > 0)).length,
-  total: steps.length,
-})
+// 誘導型の数学（基本の型）。手で計算せずに、計算の経過を1行ずつ穴埋めして進む（lib/mathWork.js）。
+//  ① 計算の経過 … 解いた行は上へ積み上がる。行ごとの考え方はヒントボタンで開く
+//  ② 解き終わり … 全行の考え方とタイルの説明・この型の着眼点と公式・つまずきやすい点
+//     着眼点と公式は穴埋めの答えになるので、解き終わってから見せる
+// 正答率は、はじめの答え合わせで正しく埋めた行（ヒントを開いた行はふくめない）で数える。
 
 export function MathSolveScreen() {
   const params = useStore((s) => s.params)
@@ -38,13 +33,12 @@ export function MathSolveScreen() {
 
   const [pIndex, setPIndex] = useState(0)
   const [solved, setSolved] = useState(false)
-  const [picks, setPicks] = useState({})
-  const [hints, setHints] = useState({})
+  const [work, setWork] = useState({})
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [finished, setFinished] = useState(false)
 
   const p = problems[pIndex]
-  const steps = p ? mathGuidedApproach(p.id) : []
+  const lines = p ? mathGuidedWork(p.id) : []
   const leave = () => {
     if (params.returnTo?.screen) {
       returnTo(params.returnTo.screen, params.returnTo.params ?? {})
@@ -64,7 +58,7 @@ export function MathSolveScreen() {
   }
 
   function reset() {
-    setPIndex(0); setSolved(false); setPicks({}); setHints({})
+    setPIndex(0); setSolved(false); setWork({})
     setScore({ correct: 0, total: 0 }); setFinished(false)
   }
 
@@ -79,7 +73,7 @@ export function MathSolveScreen() {
         </div>
         <div className="flex items-center gap-2 rounded-2xl bg-white px-5 py-3 shadow-card">
           <Target size={20} className="text-violet-500" />
-          <span className="font-display text-lg font-extrabold text-ink">{`自力で選べた方針 ${score.correct} / ${score.total}`}</span>
+          <span className="font-display text-lg font-extrabold text-ink">{`自力で埋めた行 ${score.correct} / ${score.total}`}</span>
           <span className="text-sm font-bold text-ink/45">{`(${pct}%)`}</span>
         </div>
         <div className="flex w-full max-w-xs flex-col gap-2.5">
@@ -90,18 +84,12 @@ export function MathSolveScreen() {
     )
   }
 
-  const left = steps.length - approachStepsDone(steps, picks)
-  const pick = (stepIndex, optionIndex) => setPicks((current) => {
-    const chosen = current[stepIndex] ?? []
-    if (chosen.includes(0) || chosen.includes(optionIndex)) return current
-    return { ...current, [stepIndex]: [...chosen, optionIndex] }
-  })
-  const openHint = (stepIndex) => setHints((current) => ({ ...current, [stepIndex]: Math.min(2, (current[stepIndex] ?? 0) + 1) }))
+  const left = fillLineIndexes(lines).length - workLinesDone(lines, work)
 
-  // 解き終わり（全段を選んだ、または「わからない」）。わからないで終えた段は、自力で選べなかった段として数える。
-  const finishProblem = (unknown) => {
+  // 解き終わり（全行を埋めた、または「わからない」）。わからないで終えた問題は、全行を自力で埋められなかった行として数える。
+  const finishProblem = (unknown, state = work) => {
     if (solved) return
-    const result = unknown ? { correct: 0, total: steps.length } : stepScore(steps, picks, hints)
+    const result = unknown ? { correct: 0, total: fillLineIndexes(lines).length } : workLineScore(lines, state)
     markMathDone(p.id)
     recordContentQuizResult('math', p.id, result.correct, result.total)
     setScore((current) => ({ correct: current.correct + result.correct, total: current.total + result.total }))
@@ -115,7 +103,7 @@ export function MathSolveScreen() {
       setFinished(true)
       return
     }
-    setPIndex(pIndex + 1); setSolved(false); setPicks({}); setHints({})
+    setPIndex(pIndex + 1); setSolved(false); setWork({})
   }
 
   return (
@@ -138,21 +126,28 @@ export function MathSolveScreen() {
             <MathBlock tex={p.prompt} className={cx('text-ink [&_.katex]:text-[1.6rem]', p.text && 'mt-2')} />
           )}
           {!solved && (
-            <p className="mt-3 text-[11px] font-bold text-ink/50">{'計算はしなくてよい。どう解くかを、下の段で1つずつ選ぼう。'}</p>
+            <p className="mt-3 text-[11px] font-bold text-ink/50">{'紙に計算はしなくてよい。下の経過の空所に、タイルを入れて1行ずつ進もう。'}</p>
           )}
         </div>
 
-        <MathExamApproachSteps
-          problem={p}
-          steps={steps}
-          picks={picks}
-          hints={hints}
-          onPick={pick}
-          onHint={openHint}
+        <MathWorkSteps
+          problemId={p.id}
+          lines={lines}
+          state={work}
+          onPlace={(lineIndex, tileIndex) => setWork((current) => placeTile(current, lines[lineIndex], lineIndex, tileIndex))}
+          onRemove={(lineIndex, slot) => setWork((current) => removeTile(current, lineIndex, slot))}
+          onClear={(lineIndex) => setWork((current) => clearTiles(current, lineIndex))}
+          onHint={(lineIndex) => setWork((current) => openWorkHint(current, lineIndex))}
+          onCheck={(lineIndex) => {
+            const next = checkLine(work, lines[lineIndex], lineIndex)
+            setWork(next)
+            // 最後の行まで正しく埋めたら、そのまま解き終わりにする。
+            if (workLinesDone(lines, next) === fillLineIndexes(lines).length) finishProblem(false, next)
+          }}
           reviewed={solved}
         />
 
-        {/* 全教材共通の「わからない」。押すと、自力で選べなかった段として解き方の流れを見る。 */}
+        {/* 全教材共通の「わからない」。押すと、正しい経過と全行の考え方を見る。 */}
         {!solved && (
           <div className="mt-4" data-math-guided-unknown>
             <UnknownChoiceButton onClick={() => finishProblem(true)} />
@@ -161,7 +156,6 @@ export function MathSolveScreen() {
 
         {solved && (
           <div className="mt-4 space-y-3 animate-slide-up" data-math-guided-review>
-            <MathExamSolutionFlow steps={steps} />
             <RecallCard recall={p.recall} />
             <div className="rounded-2xl bg-rose-50 px-4 py-3 text-left ring-1 ring-rose-100" data-math-pitfall>
               <p className="text-xs font-extrabold text-rose-600">つまずきやすい点</p>
@@ -177,9 +171,9 @@ export function MathSolveScreen() {
             {pIndex + 1 >= problems.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
           </Button>
         ) : (
-          <Button full disabled={left > 0} onClick={() => finishProblem(false)} data-math-guided-check>
-            {left > 0 ? `解き方の流れを見る（あと${left}段）` : '解き方の流れを見る'}
-          </Button>
+          <p className="py-2 text-center text-xs font-bold text-ink/50" data-math-guided-left>
+            {`空所のある行 あと${left}行。ヒントを開いた行は、自力で埋めた行に数えません。`}
+          </p>
         )}
       </div>
     </div>

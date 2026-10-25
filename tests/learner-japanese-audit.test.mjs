@@ -159,8 +159,11 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 日本語が 245048 から 258252 になった（requests/2026-10-22-high-school-social.json）。
   // 2026-10-25、数学の歴史のテストの画面と、目次・話のテストの入口・間違えた問題のやり直しの文を外して、
   // 学習者画面の日本語が 18472 から 18430（重複なし 13774 から 13756）になった（requests/2026-10-25-math-history-remove-quiz.json）。
-  assert.equal(result.learnerJapaneseEntries, 18430)
-  assert.equal(result.learnerUniqueJapaneseEntries, 13756)
+  // 2026-10-25、数学の誘導問題と入試演習を方針の3択から計算の経過の穴埋めにした。方針の段の部品（MathExamApproach.jsx・
+  // mathExamApproach.js）を外し、穴埋めの部品（src/components/MathWork.jsx・src/lib/mathWork.js）を足したのでファイル数は変わらず、
+  // 学習者画面の日本語が 18430 から 18426（重複なし 13756 から 13752）になった（requests/2026-10-25-math-work-fill.json）。
+  assert.equal(result.learnerJapaneseEntries, 18426)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13752)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -169,7 +172,10 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
   // 2026-10-25、数学の歴史のテスト252問（問い・選択肢・解説・選択肢の説明・考え方）を外して 260048 から 257937 になった。
-  assert.equal(result.sourceJapaneseEntries, 257937)
+  // 2026-10-25、数学の方針の段のデータ（16ファイル）を経過の穴埋めのデータ（src/data/math-guided-work.js とその5ファイル・
+  // src/data/math-exam-work.js とその9ファイル）に置きかえ、ファイル数は 867 のまま、日本語が 257937 から 251704 になった
+  // （requests/2026-10-25-math-work-fill.json）。
+  assert.equal(result.sourceJapaneseEntries, 251704)
   assert.equal(result.issues.length, 0)
 })
 
