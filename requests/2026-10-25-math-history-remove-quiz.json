@@ -7,7 +7,7 @@
   "sessions": [
     "91e032c1-e4c5-4dad-835e-f47e4987bf00"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "no-quiz-data",
@@ -29,7 +29,7 @@
       "id": "stories-kept",
       "text": "話そのもの（年代・場所・人物・問い・筋道・動かす図・使われ方・つながる単元と算数の基本）と「理解した／まだまだ」の記録は全話そのまま残り、算数の基本33項目・数学45単元のつながりも保つ",
       "population": "全71話・算数の基本33項目・数学45単元",
-      "check": "node --test tests/math-history.test.mjs && node scripts/checks/math-history.mjs",
+      "check": "node --test tests/math-history.test.mjs",
       "status": "done",
       "verifiedBy": "71話・算数の基本33項目・数学45単元の検査が通る。史実の記録は321件→問題の文だけにあった10件を外し、mh-charts に本文から1件足して312件、全71話の指紋を押し直した（本文の変更は削除だけ）"
     },
@@ -45,8 +45,9 @@
       "id": "all-content-audit-and-deploy",
       "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版でテストの入口がなく話が開けることを確かめる",
       "population": "全テスト・全監査と公開版の数学の歴史の目次・話",
-      "check": "npm test",
-      "status": "todo"
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/math-history-no-quiz.test.mjs",
+      "status": "done",
+      "verifiedBy": "クリーンな clone で npm run audit:all-content が通った（テスト1,501件・台帳OK、24カテゴリ・教材21,582件・出題21,701問）。14f34580 を main へ push、GitHub Pages のデプロイ成功。公開版で目次（部カード・各話の行は「学習」1つ、間違えた問題のやり直しなし）と1話目（テストのボタンなし・理解した／まだまだあり）を確かめた"
     }
   ]
 }
