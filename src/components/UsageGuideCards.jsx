@@ -17,7 +17,8 @@ export function UsageGuideSection({ guides = [], self = {}, onWord = null, navig
   if (!guides.length) return null
   const openWord = onWord ?? ((id) => (navigateTo ?? storeNavigate)('wordDetail', { id }))
   return (
-    <div className="space-y-3" data-usage-guide-section>
+    // 熟語の暗記カードは裏のどこを押してもめくれるので、カードの中（相手の語・熟語を開くボタンと開いた詳細シート）の押下は外へ伝えない。
+    <div className="space-y-3" data-usage-guide-section onClick={(event) => event.stopPropagation()}>
       {guides.map((guide) => (
         <UsageGuideCard
           key={guide.id}

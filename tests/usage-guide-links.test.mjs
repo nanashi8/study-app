@@ -125,6 +125,8 @@ test('4つの画面と熟語の欄が、使い分けカードとボタンを出�
     assert.match(source, /<UsageGuideSection guides=\{word\.usageGuides\} self=\{\{ wordId: word\.id \}\}/, path)
   }
   assert.match(read('src/screens/PhraseStudy.jsx'), /<UsageGuideSection guides=\{usageGuidesForPhrase\(item\)\} self=\{\{ phraseId: item\.id \}\}/)
+  // 熟語の暗記カードは裏を押すとめくれる。カードの中の相手を押したときにめくれて詳細シートが閉じないよう、押下を外へ伝えない。
+  assert.match(read('src/components/UsageGuideCards.jsx'), /data-usage-guide-section onClick=\{\(event\) => event\.stopPropagation\(\)\}/)
   assert.match(read('src/components/PhraseDetailSheet.jsx'), /<UsageGuideSection guides=\{usageGuidesForPhrase\(phrase\)\} self=\{\{ phraseId: phrase\.id \}\}/)
   const relations = read('src/components/WordRelations.jsx')
   assert.match(relations, /<UsageGuideLink text=\{row\.text\} wordId=\{row\.entry\?\.id \?\? null\} \/>/)
