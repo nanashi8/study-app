@@ -7,7 +7,7 @@
   "sessions": [
     "2a0a2a7d-baf5-4a22-8a02-5219db845836"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "all-linked-words-have-level",
@@ -30,8 +30,8 @@
       "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版の語源カードで単語の行に級の印が出ることを確かめる",
       "population": "全テスト・全監査と公開版の語源カード詳細・暗記カード",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/etymology-word-levels.test.mjs",
-      "status": "waiting",
-      "waitingFor": "裏で流している npm run audit:all-content の終わり（そのあとクリーンな clone で確かめて push・公開版の確認）"
+      "status": "done",
+      "verifiedBy": "手元とクリーンな clone の両方で npm run audit:all-content が通った（テスト1,497件・成功1,496・失敗0、台帳OK：24カテゴリ・教材21,582件）。ffcb28d2 を main へ push、GitHub Pages のデプロイ（run 40256011692）が success。公開版で -able / -ible のカード詳細の最初の80行すべてに級の印（comfortable 4級など）、語根の暗記カードの裏の「この形を使う語」4語（president 3級・session 準2級・obsession 2級・preside 準1級）に印が出ることを確かめた"
     }
   ]
 }
