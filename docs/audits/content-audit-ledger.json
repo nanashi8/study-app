@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-25T11:13:16.052Z",
+  "auditedAt": "2026-10-26T01:17:58.032Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "394c003017b6f573d81c7649cd16744f3eae86626770be75c67cb16eabb02809",
+    "sha256": "4635bef49e6a10208a68cbd1db64ebe4840c56014e1b30927d89a1e0f9ff03d0",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -244,6 +244,7 @@
       "tests/etymology-progress.test.mjs",
       "tests/etymology-source-completion.test.mjs",
       "tests/etymology-suffix-al.test.mjs",
+      "tests/etymology-word-levels.test.mjs",
       "tests/exam-dictionary.test.mjs",
       "tests/example-learned-sense.test.mjs",
       "tests/explanation-words.test.mjs",

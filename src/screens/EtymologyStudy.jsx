@@ -37,6 +37,7 @@ import {
 import { ArrowRight, Book, Lightbulb } from '../components/Icons.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { LookalikeCardSection } from '../components/LookalikeOrigins.jsx'
+import { WordLevelBadge } from '../components/WordLevelBadge.jsx'
 
 // 語源そのものを暗記するカード。表は語根の形、裏は意味・由来・確認済みの例語。
 // 判定は語源専用の記録（etymologySrs）に入る。紐づく英単語の暗記は別画面。
@@ -348,6 +349,7 @@ export function EtymologyStudyScreen() {
                   {examples.map((word) => (
                     <li key={word.id} className="flex min-w-0 items-baseline gap-2 rounded-xl bg-violet-50/70 px-3 py-1.5">
                       <span className="font-display text-sm font-extrabold text-ink">{word.word}</span>
+                      <WordLevelBadge word={word} marks={{ 'data-etymology-study-word-level': word.id }} />
                       <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink/55">
                         <MeaningText>{word.meanings?.[0] ?? word.meaning}</MeaningText>
                       </span>

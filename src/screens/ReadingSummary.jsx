@@ -1,10 +1,10 @@
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getWord } from '../data/vocab.js'
-import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
+import { WordLevelBadge } from '../components/WordLevelBadge.jsx'
 import { Card, Button, cx } from '../components/ui.jsx'
 import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
@@ -77,7 +77,7 @@ export function ReadingSummaryScreen() {
           onOpen={(item) => navigate('wordDetail', { id: item.id })}
           openLabel="この単語の詳細を見る"
           openHint="詳細"
-          badgeFor={(item) => <WordLevelBadge word={item} />}
+          badgeFor={(item) => <WordLevelBadge word={item} marks={{ 'data-reading-summary-word-level': item.id }} />}
           actionsFor={(item) => <WordRowActions word={item} />}
           emptyMessage="この長文に出てきた単語はありません。"
         />
@@ -96,20 +96,6 @@ export function ReadingSummaryScreen() {
         )}
       </div>
     </div>
-  )
-}
-
-// 行の見出しの行（品詞の隣）に置く級の印。行そのものが button なので、押せない span で出す。
-function WordLevelBadge({ word }) {
-  const level = getLevel(word.level)
-  return (
-    <span
-      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold"
-      style={{ backgroundColor: `${level.color}1a`, color: level.color }}
-      data-reading-summary-word-level={word.id}
-    >
-      {level.label}
-    </span>
   )
 }
 

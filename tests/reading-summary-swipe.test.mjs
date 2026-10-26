@@ -68,10 +68,10 @@ test('summary-rows-swipe: 全42本の単語まとめの語がすべて共通ス�
 test('summary-keeps-controls: 行の4つ・上の3つ・下の2つの操作を残す', () => {
   // 行：単語の詳細へ・級の印・読み上げ・1語ずつの単語帳
   assert.match(source, /onOpen=\{\(item\) => navigate\('wordDetail', \{ id: item\.id \}\)\}/)
-  assert.match(source, /badgeFor=\{\(item\) => <WordLevelBadge word=\{item\} \/>\}/)
+  assert.match(source, /badgeFor=\{\(item\) => <WordLevelBadge word=\{item\} marks=\{\{ 'data-reading-summary-word-level': item\.id \}\} \/>\}/)
   assert.match(source, /actionsFor=\{\(item\) => <WordRowActions word=\{item\} \/>\}/)
   assert.doesNotMatch(source, /renderAfter=/)
-  const badge = source.slice(source.indexOf('function WordLevelBadge'), source.indexOf('function WordRowActions'))
+  const badge = readFileSync(new URL('../src/components/WordLevelBadge.jsx', import.meta.url), 'utf8')
   assert.match(badge, /\{level\.label\}/)
   const actions = source.slice(source.indexOf('function WordRowActions'), source.indexOf('function WordRowBookButton'))
   assert.match(actions, /<SpeakButton text=\{word\.word\}/)

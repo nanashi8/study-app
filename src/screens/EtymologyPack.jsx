@@ -9,6 +9,7 @@ import {
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
+import { WordLevelBadge } from '../components/WordLevelBadge.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
 import { ArrowRight, Book, Cards } from '../components/Icons.jsx'
@@ -149,6 +150,7 @@ export function EtymologyPackScreen() {
             onOpen={(item) => navigate('wordDetail', { id: item.id })}
             openLabel="この単語の詳細を見る"
             openHint="詳細"
+            badgeFor={(item) => <WordLevelBadge word={item} marks={{ 'data-etymology-pack-word-level': item.id }} />}
             noteFor={(item) => etymologyGlanceNote(item, pack)}
             emptyMessage="このカードに紐づく単語はまだありません。"
           />

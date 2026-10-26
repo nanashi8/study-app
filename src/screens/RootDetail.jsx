@@ -5,6 +5,7 @@ import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { nextWordsForRoot } from '../lib/etymologyProgress.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
+import { WordLevelBadge } from '../components/WordLevelBadge.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { useSessionSize } from '../components/SessionSize.jsx'
 import { Button, Card } from '../components/ui.jsx'
@@ -128,6 +129,7 @@ export function RootDetailScreen() {
             onOpen={(item) => navigate('wordDetail', { id: item.id })}
             openLabel="この単語の詳細を見る"
             openHint="詳細"
+            badgeFor={(item) => <WordLevelBadge word={item} marks={{ 'data-root-detail-word-level': item.id }} />}
             noteFor={(item) => etymologyGlanceNote(item, card)}
             emptyMessage="この語根に紐づく単語はまだありません。"
           />

@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-26-etymology-word-levels",
+  "title": "語源カードに出てくる単語カード（紐づく単語の行・暗記カードの「この形を使う語」）に、英検の級を載せる",
+  "asked": [
+    "語源カードに出てくる単語カードに級の情報が抜けているので載せなさい。"
+  ],
+  "sessions": [
+    "2a0a2a7d-baf5-4a22-8a02-5219db845836"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "all-linked-words-have-level",
+      "text": "語源カードに紐づく単語と、暗記カードに出す代表の語は、すべて英検の7つの級のどれかを持つ（級の印が「5級」へ黙って落ちない）",
+      "population": "公開の語源カード全340枚に紐づく全4,026語と、代表の語1,173語",
+      "check": "node --test tests/etymology-word-levels.test.mjs",
+      "status": "done",
+      "verifiedBy": "340枚に紐づく4,026語中4,026語、代表の語1,173語中1,173語が7つの級のどれかを持つ（級のない語0語）"
+    },
+    {
+      "id": "level-badge-on-every-word-card",
+      "text": "語源カードで単語を1語ずつカードで出す画面すべてに、その語の級の印を出す：カード詳細（EtymologyPack）の「この形を使う語」の行、語根の一覧（RootDetail）の「同じ語根の単語」の行、語源の暗記カード（EtymologyStudy）の裏の「この形を使う語」。印は長文のまとめと同じ共通の部品にする",
+      "population": "語源カードの単語を1語ずつ並べる3画面（EtymologyPack・RootDetail・EtymologyStudy）の全行。全340枚で行の数＝級の印の数",
+      "check": "node --test tests/etymology-word-levels.test.mjs",
+      "status": "done",
+      "verifiedBy": "共通の部品 WordLevelBadge を作り（長文のまとめも同じ部品へ移した）、カード詳細・語根の一覧の行と暗記カードの裏の「この形を使う語」に出した。カード詳細は全340枚を描いて、最初に表示する全行で行の数＝級の印の数・印の文字＝その語の級を確かめた。開発版の画面で port のカード詳細18行・語根の一覧18行・暗記カードの裏4語に印が出ることを見た"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版の語源カードで単語の行に級の印が出ることを確かめる",
+      "population": "全テスト・全監査と公開版の語源カード詳細・暗記カード",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/etymology-word-levels.test.mjs",
+      "status": "waiting",
+      "waitingFor": "裏で流している npm run audit:all-content の終わり（そのあとクリーンな clone で確かめて push・公開版の確認）"
+    }
+  ]
+}
