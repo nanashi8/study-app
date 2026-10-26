@@ -83,5 +83,5 @@ test('選択欄の先頭は「ー」、品詞バッジは空なら何も出さ�
     assert.ok(at > 0, key)
     assert.match(form.slice(at, at + 160), /<option value="">ー<\/option>/u, key)
   }
-  assert.match(read('src/components/WordBits.jsx'), /if \(!pos\) return null/u)
+  assert.match(read('src/components/PosBadge.jsx'), /if \(!pos\) return null/u)
 })

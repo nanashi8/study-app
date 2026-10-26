@@ -75,6 +75,9 @@ export function lookalikeMatches(card, word) {
   return matches
 }
 
+/** 語のつづりに、似た語を拾ったカードの形（3文字以上）が見えるか。active・exact は act が見え、mitigate は見えない。 */
+export const cardFormShownIn = (card, word) => lookalikeFormsOf(card).some((form) => spellingOf(word).includes(form))
+
 /** 比べる見出し語（自作の単語を除く全見出し語。Monday・post office のような語も、小文字にして比べる）。 */
 export const lookalikeWordPool = (words) => words.filter((word) => word?.id && !word.custom)
 
@@ -181,6 +184,7 @@ const cardNamedNotes = (card) => {
 /**
  * 単語の画面に出す「つづりが似た語は同じ語源？」。語が出てくるカードごとに1つの欄を返す。
  * - カードの語（とその形のまとまり）: カードの似た語のまとまりを、カードの語根とのつながりで並べる。
+ *   語根の形がつづりに見えない語（ag のカードの mitigate）には、この欄を出さない。
  * - 似た語: まずカードの語とのつながり（その語のまとまりの説明）、続けて同じカードのほかの似た語とのつながり。
  * [{ card, role: 'family' | 'lookalike', siblings?: [語], rows: [{ kind, label, words, note, card? }] }]
  */
@@ -192,6 +196,8 @@ export function lookalikeSectionsForWord(word) {
     // 台帳の説明の「このカード」は語源カードの画面の言い方なので、単語の画面では語根の名前で言う。
     const named = cardNamedNotes(card)
     if (group < 0) {
+      // 似た語は語根の形に似た語なので、その形がつづりに見えない語（mitigate・navigate）には出さない。
+      if (!cardFormShownIn(card, word)) continue
       const rows = lookalikeRowsForCard(rootId).map(named)
       if (rows.length) sections.push({ card, role: 'family', rows })
       continue

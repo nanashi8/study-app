@@ -7,6 +7,9 @@ import { lookalikeFormSectionsForWord } from '../lib/lookalikeForms.js'
 import { ExplainedText, WordLink } from './ExplainedText.jsx'
 import { defaultMeaningOf } from '../lib/explanationWords.js'
 import { cx } from './ui.jsx'
+import { ArrowRight } from './Icons.jsx'
+import { MeaningText } from './MeaningText.jsx'
+import { PosBadge } from './PosBadge.jsx'
 
 const KIND_STYLES = {
   same: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
@@ -15,8 +18,8 @@ const KIND_STYLES = {
   unrelated: 'bg-slate-100 text-slate-600 ring-slate-200',
 }
 
-// 1行に並べる語の数と、はじめに見せる行の数。多い分は押すと開く。
-const WORD_LIMIT = 8
+// 1行にはじめに並べる語のカードの数と、はじめに見せる行の数。多い分は押すと開く。
+const WORD_LIMIT = 4
 const ROW_LIMIT = 4
 
 /** つながりの種類（同じ語源・遠い親戚・はっきりしない・別の語源）の印。 */
@@ -47,35 +50,25 @@ export function OriginNote({ origin }) {
 }
 
 // rowAttr は行の印。語根カードの似た語は data-lookalike-row、形の似た語のまとまりは data-lookalike-form-row。
+// 語は「この語源から増やせる単語」と同じく、品詞・単語・意味のカードで並べる。onWord があれば押してその語を開ける。
 function LookalikeRow({ row, onWord, rowAttr = 'data-lookalike-row' }) {
   const [allWords, setAllWords] = useState(false)
   const words = allWords ? row.words : row.words.slice(0, WORD_LIMIT)
   return (
     <li className="py-2" {...{ [rowAttr]: row.kind }}>
-      <div className="flex flex-wrap items-center gap-1.5">
-        <LookalikeKindChip kind={row.kind} label={row.label} />
-        {words.map((word) => (onWord ? (
-          <button
-            key={word.id}
-            type="button"
-            onClick={() => onWord(word.id)}
-            className="min-h-8 rounded-lg bg-white px-2 font-display text-sm font-extrabold text-ink ring-1 ring-slate-200 active:bg-slate-50"
-          >
-            {word.word}
-          </button>
-        ) : (
-          <span key={word.id} className="font-display text-sm font-extrabold text-ink">{word.word}</span>
-        )))}
-        {row.words.length > words.length && (
-          <button
-            type="button"
-            onClick={() => setAllWords(true)}
-            className="min-h-8 rounded-lg px-2 text-[11px] font-extrabold text-violet-700 active:bg-violet-50"
-          >
-            ほか{row.words.length - words.length}語
-          </button>
-        )}
+      <LookalikeKindChip kind={row.kind} label={row.label} />
+      <div className="mt-1.5 space-y-1.5">
+        {words.map((word) => <LookalikeWordCard key={word.id} word={word} onWord={onWord} />)}
       </div>
+      {row.words.length > words.length && (
+        <button
+          type="button"
+          onClick={() => setAllWords(true)}
+          className="mt-1.5 min-h-9 w-full rounded-xl bg-violet-50 px-3 text-[11px] font-extrabold text-violet-700 active:bg-violet-100"
+        >
+          ほか{row.words.length - words.length}語も見る
+        </button>
+      )}
       {/* 形の似た語のまとまりでは、まとまりどうしのつながりの説明を、由来の説明の前に分けて出す。 */}
       {row.relationNote && (
         <p className="mt-1 text-xs font-extrabold leading-relaxed text-ink/70" data-lookalike-relation-note>
@@ -86,6 +79,34 @@ function LookalikeRow({ row, onWord, rowAttr = 'data-lookalike-row' }) {
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60"><ExplainedText>{row.note}</ExplainedText></p>
       )}
     </li>
+  )
+}
+
+/** 似た語1語のカード。品詞・単語・意味（代表義）。 */
+function LookalikeWordCard({ word, onWord }) {
+  const body = (
+    <>
+      <PosBadge pos={word.pos} />
+      <span className="min-w-0 flex-1">
+        <span className="block font-display text-sm font-extrabold text-ink">{word.word}</span>
+        <span className="block truncate text-xs font-bold text-ink/55">
+          <MeaningText>{defaultMeaningOf(word)}</MeaningText>
+        </span>
+      </span>
+    </>
+  )
+  const className = 'flex min-h-12 w-full items-center gap-2 rounded-2xl bg-white p-2.5 text-left ring-1 ring-slate-200'
+  if (!onWord) return <div className={className} data-lookalike-word-card={word.id}>{body}</div>
+  return (
+    <button
+      type="button"
+      onClick={() => onWord(word.id)}
+      className={cx(className, 'active:bg-violet-50')}
+      data-lookalike-word-card={word.id}
+    >
+      {body}
+      <ArrowRight size={17} className="shrink-0 text-violet-400" />
+    </button>
   )
 }
 

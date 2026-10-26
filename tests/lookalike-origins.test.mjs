@@ -13,10 +13,14 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
 
+import { ROOT_LOOKALIKES } from '../src/data/lookalike-origins.js'
+import { lookalikeFormSectionsForWord } from '../src/lib/lookalikeForms.js'
 import { ALL_WORDS, ETYMOLOGY_PACKS, etymologyStoryForWord, getWord } from '../src/data/vocab.js'
 import { confusablesFor } from '../src/lib/wordRelations.js'
 import {
   LOOKALIKE_ROOT_CARDS,
+  cardFamilyIds,
+  cardFormShownIn,
   isAffixCard,
   lookalikeRowsForCard,
   lookalikeSectionsForWord,
@@ -26,8 +30,9 @@ import { lookalikeOriginGaps, storyClaimConflicts } from '../scripts/checks/look
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const h = React.createElement
 const count = (html, attribute) => html.split(attribute).length - 1
-// 画面ではじめに見せる行の数（src/components/LookalikeOrigins.jsx の ROW_LIMIT）。
+// 画面ではじめに見せる行の数と、1行にはじめに並べる語のカードの数（src/components/LookalikeOrigins.jsx の ROW_LIMIT・WORD_LIMIT）。
 const ROW_LIMIT = 4
+const WORD_LIMIT = 4
 
 let vite
 let parts
@@ -239,4 +244,89 @@ test('語の成り立ち：本文が名指しした語のつながりが似た�
     assert.ok(card('insul').coverageIds.includes(id), `${id} が insul のカードにない`)
     assert.ok(!card('solus').coverageIds.includes(id), `${id} が solus のカードに残っている`)
   }
+})
+
+// 1行にはじめに出る語のカード（品詞・単語・意味）が、そのとおり HTML に出ているか。
+const assertWordCards = (html, rows, label) => {
+  let cards = 0
+  for (const row of rows) {
+    for (const word of row.words.slice(0, WORD_LIMIT)) {
+      cards += 1
+      const card = html.match(new RegExp(`data-lookalike-word-card="${word.id}"[\\s\\S]*?</button>`))?.[0] ?? ''
+      assert.ok(card.includes(`>${word.word}<`), `${label}: ${word.id} の単語`)
+      if (word.pos) assert.ok(card.includes(`>${word.pos}<`), `${label}: ${word.id} の品詞`)
+      const meaning = word.meanings?.[0] ?? word.meaning
+      assert.ok(meaning && card.includes('text-ink/55'), `${label}: ${word.id} の意味`)
+    }
+    if (row.words.length > WORD_LIMIT) assert.ok(html.includes(`ほか${row.words.length - WORD_LIMIT}語も見る`), `${label}: ほかの語`)
+  }
+  assert.equal(count(html, 'data-lookalike-word-card='), cards, `${label}: 語のカードの数`)
+  return cards
+}
+
+test('同じ語源・別の語源の語をカードで：単語の画面と語源カードの画面の全行の語が、品詞・単語・意味のカードで出る', () => {
+  // 母集団: 似た語の欄を出す全見出し語の全欄（語根カードの似た語・形の似た語のまとまり）と、似た語を持つ語根カード162枚。
+  let words = 0
+  let cards = 0
+  for (const word of ALL_WORDS) {
+    const sections = lookalikeSectionsForWord(word)
+    const formSections = lookalikeFormSectionsForWord(word)
+    if (!sections.length && !formSections.length) continue
+    words += 1
+    const html = renderToStaticMarkup(h(parts.LookalikeWordSection, { word, onWord: () => {} }))
+    const rows = [...sections, ...formSections].flatMap((section) => section.rows.slice(0, ROW_LIMIT))
+    cards += assertWordCards(html, rows, word.id)
+  }
+  assert.ok(words > 2000 && cards > words, `語 ${words}・カード ${cards}`)
+  let cardScreens = 0
+  for (const card of LOOKALIKE_ROOT_CARDS) {
+    const rows = lookalikeRowsForCard(card.rootId)
+    if (!rows.length) continue
+    cardScreens += 1
+    const html = renderToStaticMarkup(h(parts.LookalikeCardSection, { rootId: card.rootId, onWord: () => {} }))
+    assertWordCards(html, rows.slice(0, ROW_LIMIT), card.rootId)
+  }
+  assert.equal(cardScreens, 162)
+  // 語を開けない所（カードの暗記の途中など）でも、カードの形で出す（ボタンにしない）。
+  const still = renderToStaticMarkup(h(parts.LookalikeCardSection, { rootId: 'miss' }))
+  assert.match(still, /<div class="[^"]*" data-lookalike-word-card="mitigate">[\s\S]*?>mitigate<[\s\S]*?>和らげる/)
+  assert.ok(!still.includes('<button type="button" class="flex min-h-12'))
+})
+
+test('語根の形がつづりに見えない語には「語根 X とつづりが似た語」の欄を出さない（mitigate に actual・exactly を並べない）', () => {
+  // 母集団: 似た語を持つ語根カードの語とその形のまとまりの全組（カード×語）。
+  let pairs = 0
+  const hidden = []
+  for (const rootId of Object.keys(ROOT_LOOKALIKES)) {
+    const card = ETYMOLOGY_PACKS.find((pack) => pack.rootId === rootId)
+    if (!card) continue
+    for (const id of cardFamilyIds(card)) {
+      const word = getWord(id)
+      if (!word) continue
+      pairs += 1
+      const shown = lookalikeSectionsForWord(word).some((section) => section.card.rootId === rootId && section.role === 'family')
+      const expected = cardFormShownIn(card, word) && lookalikeRowsForCard(rootId).length > 0
+      assert.equal(shown, expected, `${rootId} ${id}`)
+      if (!cardFormShownIn(card, word)) hidden.push(`${rootId} ${id}`)
+    }
+  }
+  assert.equal(pairs, 1847)
+  assert.equal(hidden.length, 280)
+  // mitigate: ag（act）の似た語（actual・exactly・interact…）は出さず、mit / miss の「別の語源」だけをカードで出す。
+  const mitigate = lookalikeSectionsForWord(getWord('mitigate'))
+  assert.deepEqual(mitigate.map((section) => `${section.card.rootId}:${section.role}`), ['miss:lookalike'])
+  assert.equal(mitigate[0].rows[0].kind, 'unrelated')
+  assert.match(mitigate[0].rows[0].note, /mītis「柔らかい」/)
+  const html = renderToStaticMarkup(h(bits.EtymologyBlock, { word: getWord('mitigate'), onWord: () => {} }))
+  assert.ok(!html.includes('data-lookalike-word-card="actual"') && !html.includes('data-lookalike-word-card="interact"'))
+  assert.ok(html.includes('data-lookalike-word-card="message"'))
+  for (const id of ['navigate', 'agenda', 'agile', 'clear', 'receive', 'promise']) assert.ok(hidden.some((pair) => pair.endsWith(` ${id}`)), id)
+  // つづりに act が見える active・react には、これまでどおり出る。
+  for (const id of ['active', 'react', 'exact']) {
+    if (!cardFamilyIds(ETYMOLOGY_PACKS.find((pack) => pack.rootId === 'ag')).has(id)) continue
+    assert.ok(lookalikeSectionsForWord(getWord(id)).some((section) => section.card.rootId === 'ag' && section.role === 'family'), id)
+  }
+  // 似た語の側（actual）の画面と、カードの画面のつながりはそのまま。
+  assert.ok(lookalikeSectionsForWord(getWord('actual')).some((section) => section.card.rootId === 'ag'))
+  assert.ok(lookalikeRowsForCard('ag').some((row) => row.words.some((word) => word.id === 'actual')))
 })

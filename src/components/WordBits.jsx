@@ -12,24 +12,9 @@ import { Chip, cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
 import { LookalikeWordSection } from './LookalikeOrigins.jsx'
 import { ExplainedText } from './ExplainedText.jsx'
+import { PosBadge } from './PosBadge.jsx'
 
-const POS_COLORS = {
-  動: '#6366f1', 名: '#0ea5e9', 形: '#f59e0b', 副: '#10b981',
-  前: '#8b5cf6', 接: '#ec4899', 代: '#14b8a6',
-}
-
-export function PosBadge({ pos, className = '' }) {
-  if (!pos) return null // 品詞を決めていない自作カード
-  const color = POS_COLORS[pos] ?? '#6366f1'
-  return (
-    <span
-      className={cx('inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1.5 text-xs font-extrabold', className)}
-      style={{ backgroundColor: `${color}1f`, color }}
-    >
-      {pos}
-    </span>
-  )
-}
+export { PosBadge }
 
 // 代表義には入りきらない、その語のほかの意味。品詞と、その意味を習う級を添える。
 // カードの級より上のものは、先に出会う意味と取り違えないよう「この先の級で出てくる」と示す。

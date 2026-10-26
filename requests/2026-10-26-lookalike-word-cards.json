@@ -1,0 +1,35 @@
+{
+  "id": "2026-10-26-lookalike-word-cards",
+  "title": "「つづりが似た語は同じ語源？」の同じ語源・別の語源の語を、品詞と意味つきのカードで見せ、語に関係のない欄を出さない",
+  "asked": [
+    "同じ語源、別の語源の単語もカードで表示するようにしなさい。\n\nmitigateの別の語源に、message, promise, admission, admit, commit, admission, admit, commit, dismiss,mission, transmit\n同じ語源に、actual, actualy, actuality,exactly, interact, interaction, inactive, inactionが表示されているのは果たして妥当か？学習を効率的に進める上で抱き合わせで学習が必要か？確認しなさい。"
+  ],
+  "sessions": [
+    "6627e9c1-3acd-47d0-b7e7-3fe31be0fd39"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "rows-as-word-cards",
+      "text": "「つづりが似た語は同じ語源？」の全行（同じ語源・遠い親戚・はっきりしない・別の語源）の語を、「この語源から増やせる単語」と同じく品詞・単語・意味のカードで出す。単語の画面（辞書ページ・暗記カードの裏・テストの答え）と語源カードの画面（同じ語根の単語・カード・カードの暗記・カードのテスト）のどちらも",
+      "population": "似た語の欄を出す全見出し語の全欄の全行（語根カードの似た語・形の似た語のまとまり）と、似た語を持つ語根カード162枚の全行",
+      "check": "node --test tests/lookalike-origins.test.mjs tests/lookalike-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "family-section-only-when-spelling-shows-root",
+      "text": "語根カードの語の画面に出す「語根 X とつづりが似た語」の欄は、その語のつづりに語根の形（似た語を拾った形）が見えるときだけ出す。mitigate・navigate のように語根の形がつづりに見えない語には出さない（似た語は語根の形に似ているだけで、その語には似ていないため）。カードの画面と、似た語自身の画面のつながりはそのまま残す",
+      "population": "似た語を持つ語根カードの語とその形のまとまりの全組（カード×語 1,847組）。うち語根の形がつづりに見えない組 280組を1組ずつ確かめる",
+      "check": "node --test tests/lookalike-origins.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版で mitigate の辞書ページに ag の「同じ語源」の欄が出ず、mit / miss の「別の語源」がカードで出ることを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の mitigate・active の辞書ページ",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/lookalike-origins.test.mjs tests/lookalike-forms.test.mjs",
+      "status": "waiting",
+      "waitingFor": "裏で流している npm run audit:all-content（task b0bw7rrv2）の終わり"
+    }
+  ]
+}

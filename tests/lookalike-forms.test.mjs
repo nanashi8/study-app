@@ -208,9 +208,9 @@ test('単語の画面：まとまりに入る 1,666語の辞書ページ・暗�
   }
   assert.equal(sectionCount, lookalikeForms.reduce((sum, entry) => sum + entry.ids.length, 0))
   assert.equal(sectionCount, 1697, 'まとまりの欄の数（2つ以上のまとまりに入る語がある）')
-  // 押すとその語へ移れる（語はボタン）。
+  // 語は品詞・単語・意味のカードで、押すとその語へ移れる（カードはボタン）。
   const html = renderToStaticMarkup(h(parts.LookalikeWordSection, { word: getWord('temple'), onWord: () => {} }))
-  assert.match(html, /<button type="button"[^>]*>tempt<\/button>/)
+  assert.match(html, /<button type="button"[^>]*data-lookalike-word-card="tempt">[\s\S]*?>動<[\s\S]*?>tempt<[\s\S]*?>誘惑する</)
   // 似て見える部分だけが同じ由来の語（over- の語どうし）は同じ由来の語として並べず、つながりも決めない。
   const overseas = lookalikeFormSectionsForWord(getWord('overseas')).find((section) => section.form === 'over')
   assert.deepEqual(overseas?.siblings, [])
