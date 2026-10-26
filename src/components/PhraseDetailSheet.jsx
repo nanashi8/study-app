@@ -8,6 +8,8 @@ import { SyntaxFamilyGuide } from './SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from './IdiomFormGuide.jsx'
 import { Chip } from './ui.jsx'
 import { Lightbulb, Link } from './Icons.jsx'
+import { UsageGuideSection } from './UsageGuideCards.jsx'
+import { usageGuidesForPhrase } from '../lib/usageGuides.js'
 
 /**
  * 熟語・構文1件の詳細（意味・例文・成り立ち・注意・同じ形の仲間）。
@@ -68,6 +70,8 @@ export function PhraseDetail({ phrase, familyId = null, returnTo = null, navigat
           <p className="text-sm font-bold leading-relaxed text-amber-900/90">{phrase.note}</p>
         </div>
       )}
+      {/* 使い分けカード（この熟語と取り違えやすい語・熟語を例文で比べる）。相手の語・熟語へ移れる。 */}
+      <UsageGuideSection guides={usageGuidesForPhrase(phrase)} self={{ phraseId: phrase.id }} navigateTo={navigateTo} returnTo={returnTo} />
       <SyntaxFamilyGuide item={phrase} />
       <IdiomFormGuide item={phrase} familyId={familyId} returnTo={returnTo} navigateTo={navigateTo} />
     </div>

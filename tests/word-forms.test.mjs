@@ -141,7 +141,7 @@ test('使い分けの区別がある関連語には、使い分けを参考に�
   assert.match(component, /data-word-usage-note/)
   // 暗記カードの裏にも、辞書ページと同じ使い方・使い分けを出す。
   const card = read('src/screens/VocabStudy.jsx')
-  assert.match(card, /<UsageGuideCards guides=\{word\.usageGuides\} \/>/)
+  assert.match(card, /<UsageGuideSection guides=\{word\.usageGuides\}/)
   assert.match(card, /data-word-usage>/)
   for (const screen of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
     assert.match(read(screen), /<UsagePartnerSection items=\{relations\.usagePartners\}/, screen)

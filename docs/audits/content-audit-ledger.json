@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-26T05:42:56.239Z",
+  "auditedAt": "2026-10-26T06:56:53.796Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 21701,
     "storedAndGeneratedQuestionPathCount": 8701,
     "storedAndGeneratedChoicePathCount": 33485,
-    "overallContentSha256": "9315b0f0a62f37f828ddc828fdf53ed752a0b398f1756be520cd1b9ba009bd01"
+    "overallContentSha256": "7c691fc73f719614c5eaf2cc1a29ec1272f3203094ac0eb6873bf07d4a84b07c"
   },
   "completionCriteria": [
     "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -116,7 +116,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "3f9c9d802801a0c996b373e121720b1c25f10bffd0675407d0437d52ef001250",
+    "sha256": "8d5def2b98380b61274aa24d26dca2f7da45759c1eab7b9a73435d4a68233d15",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -377,6 +377,9 @@
       "tests/tts-quality.test.mjs",
       "tests/unknown-choice.test.mjs",
       "tests/unused-files.test.mjs",
+      "tests/usage-guide-cards.test.mjs",
+      "tests/usage-guide-links.test.mjs",
+      "tests/usage-guide-survey.test.mjs",
       "tests/vocab-camera-dev-ocr.test.mjs",
       "tests/vocab-catalog.test.mjs",
       "tests/vocab-completion.test.mjs",
@@ -420,7 +423,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "defb82a1ac2f28fca1c7b32fe24e15aee2a57426219fbc9ba2d978f490854d90",
+      "contentSha256": "294fd034d93156a5c33744e57af68bbd1318c00814a6bc41c8358c4c55900f47",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 import { LEVELS } from '../src/data/levels.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
-import {
-  EXAM_USAGE_GUIDES,
-  EXAM_WORDS,
-} from '../src/data/exam-lexicon.js'
+import { EXAM_WORDS } from '../src/data/exam-lexicon.js'
+import { ALL_USAGE_GUIDES } from '../src/data/usage-guides.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
 import { CURRICULUM_IDIOMS } from '../src/data/phrases-bank.js'
@@ -26,8 +24,9 @@ console.log('='.repeat(52))
 line('英単語（全見出し語）', ALL_WORDS.length)
 line('今回の学術・現代語補充', EXAM_WORDS.length)
 line('語法説明付き見出し語', ALL_WORDS.filter((word) => word.usage).length)
-line('使い分けガイド', EXAM_USAGE_GUIDES.length)
-line('使い分け対象見出し語', new Set(EXAM_USAGE_GUIDES.flatMap((guide) => guide.wordIds)).size)
+line('使い分けガイド', ALL_USAGE_GUIDES.length)
+line('使い分け対象見出し語', new Set(ALL_USAGE_GUIDES.flatMap((guide) => guide.wordIds)).size)
+line('使い分け対象熟語・構文', new Set(ALL_USAGE_GUIDES.flatMap((guide) => guide.phraseIds)).size)
 line('熟語・構文（全項目）', PHRASES.length)
 line('熟語', PHRASES.filter((phrase) => phrase.kind === 'idiom').length)
 line('構文', PHRASES.filter((phrase) => phrase.kind === 'syntax').length)

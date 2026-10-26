@@ -1,0 +1,57 @@
+{
+  "id": "2026-10-26-usage-guide-cards",
+  "title": "細かな使い分けがある英単語・英熟語の組に、使い分け解説カードを作り、関連語に紐付けて表示する",
+  "asked": [
+    "seeとwatch、tellとspeak等、細かな使い分けがある英単語や英熟語があるが、生徒が注意しなければならない細かい使い分け解説をカードにして関連語に紐付けて表示するようにできないか？",
+    "提案の1〜3（関連語からつなぐ・単語の組を全件洗い出してカードを増やす・熟語にも広げる）で進めて。"
+  ],
+  "sessions": [
+    "c225b2b1-f335-4631-8162-932658965f4f"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "word-pairs-all-reviewed",
+      "text": "見出し語どうしの候補の組を1組ずつ読み、生徒が注意すべき使い分けがある組は使い分けカードに入れ（カードの id を記録）、入れない組には理由の略号を残す。読んでいない組・母集団から外れた古い行・存在しないカードを指す行が0",
+      "population": "見出し語どうしの全候補の組（約26,800組）：類義語欄・反意語欄の全行、つづり注意の全組、使い分けの台帳（word-usage-notes.js）の全組、代表義・ほかの意味の訳語が同じ組、訳語の漢字の語幹（見える・見る→見）が同じ組、既存の使い分けカード43枚の中の組",
+      "check": "node --test tests/usage-guide-survey.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phrase-pairs-all-reviewed",
+      "text": "熟語・構文を含む候補の組を1組ずつ読み、使い分けカードに入れるか、入れない理由を残す。読んでいない組・古い行・存在しないカードを指す行が0",
+      "population": "熟語・構文2,259件を含む全候補の組（約4,300組）：熟語どうしで訳語か訳語の漢字の語幹が同じ組、前置詞・副詞・冠詞などの機能語1語だけがちがう熟語の組（look at / look for、be used to / used to）、熟語と見出し語で訳語か語幹が同じ組、同じ意味の熟語の台帳（word-idiom-equivalents.js）の全483組",
+      "check": "node --test tests/usage-guide-survey.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "guide-cards-complete",
+      "text": "使い分けカードはすべて、まとめの一文・語ごとの決まり・語ごとの例文と和訳を持ち、カードの語（単語・熟語）はすべて辞書の見出し語か熟語に実在する。日本語は学習者向け日本語の監査を通る",
+      "population": "使い分けカードの全枚（既存43枚＋新しく作る全枚）の全項目",
+      "check": "node --test tests/usage-guide-cards.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "linked-from-relations",
+      "text": "使い分けカードに入っている語どうしは、互いの関連語の欄（暗記カードの裏・辞書ページ）で相手の行に「使い分けカード」として出て、押すとそのカードが開く。類義語などの欄に出ていない相手（see と watch など）も、関連語の欄に使い分けカードの相手として並ぶ",
+      "population": "全使い分けカードの、カードに入っている見出し語すべてと、その語から見た同じカードの相手すべて（語×相手の全組）。画面は暗記カードの裏（VocabStudy）と辞書ページ（WordDetail）",
+      "check": "node --test tests/usage-guide-links.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phrase-screens-show-guides",
+      "text": "熟語・構文が入った使い分けカードは、その熟語の暗記カードの裏と熟語の詳細シート（PhraseDetailSheet）に出て、カードの相手（熟語・単語）へ移れる。単語のページの熟語の欄・同じ意味の熟語の欄でも、カードのある熟語の行から開ける",
+      "population": "使い分けカードに入っている全熟語と、その熟語を含む全カード。画面は熟語の暗記カードの裏（PhraseStudy）・熟語の詳細シート・単語の熟語の欄",
+      "check": "node --test tests/usage-guide-links.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版で see の関連語から使い分けカードが開くこと、熟語の詳細から使い分けカードが開くことを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の単語・熟語の画面",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/usage-guide-survey.test.mjs tests/usage-guide-cards.test.mjs tests/usage-guide-links.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone で裏で流している npm run audit:all-content（task bcwgt69gj）の終わり"
+    }
+  ]
+}

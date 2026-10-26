@@ -14,7 +14,8 @@ import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, RelatedWo
 import { GrammarRoles } from '../components/GrammarRoles.jsx'
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
-import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
+import { UsageGuideSection } from '../components/UsageGuideCards.jsx'
+import { UsageGuideProvider } from '../components/UsageGuideLink.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { ExplainedText, ExplanationScope } from '../components/ExplainedText.jsx'
@@ -206,8 +207,10 @@ export function WordDetailScreen() {
           {/* 由来のちがう、同じつづりの別の語。それぞれの見出し語へ移れる。 */}
           <HomographWords word={word} onWord={openWord} />
 
-          {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
-          <UsageGuideCards guides={word.usageGuides} />
+          {/* 使い分けカード（混同しやすい語・熟語を例文で比べる）と、カードで比べる相手の語。
+              下の関連語の行の相手が同じカードに入っていれば、行のボタンからこのカードへ移る。 */}
+          <UsageGuideProvider guides={word.usageGuides}>
+          <UsageGuideSection guides={word.usageGuides} self={{ wordId: word.id }} onWord={openWord} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
 
           {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
           {(relations.forms.length > 0 || relations.sameForms.length > 0) && (
@@ -239,6 +242,7 @@ export function WordDetailScreen() {
               <WordPhraseSection word={word} groups={relatedPhrases} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
             </Card>
           )}
+          </UsageGuideProvider>
 
           {/* 自作単語（英単語のカード）に自分で書いた熟語・構文と語の成り立ち。 */}
           {word.custom && word.customPhrases?.length > 0 && (

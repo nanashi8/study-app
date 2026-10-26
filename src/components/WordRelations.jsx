@@ -9,6 +9,7 @@ import { ExplainedText } from './ExplainedText.jsx'
 import { OriginNote } from './LookalikeOrigins.jsx'
 import { PhraseDetailSheet } from './PhraseDetailSheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
+import { UsageGuideLink } from './UsageGuideLink.jsx'
 import { Chip, cx } from './ui.jsx'
 
 // 単語カードの裏と辞書ページで使う、その語と組にして押さえたい語の表示部品。
@@ -91,7 +92,8 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
           </>
         )
         // 意味と解説は行のボタンの外に置く（中の英単語もリンクなので、ボタンの中に入れない）。
-        const notes = (row.meaning || row.note || row.usage) && (
+        // 相手が見ている語と同じ使い分けカードに入っていれば、そのカードへ移るボタンも添える。
+        const notes = (
           <div className="pl-10">
             {row.meaning && (
               <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{row.meaning}</ExplainedText></p>
@@ -101,6 +103,7 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
               <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-note><ExplainedText>{row.note}</ExplainedText></p>
             )}
             <UsageNote text={row.usage} />
+            <UsageGuideLink text={row.text} wordId={row.entry?.id ?? null} />
           </div>
         )
         return (
@@ -289,6 +292,7 @@ export function PhraseCardList({ phrases, navigateTo = null, returnTo = null, cl
                 </button>
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{phrase.meaning}</ExplainedText></p>
                 <UsageNote text={phrase.usageNote} />
+                <UsageGuideLink phraseId={phrase.id} />
               </div>
             </li>
           )
@@ -419,7 +423,7 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
                 )}
               </div>
               {/* 解説は行のボタンの外に置く（解説の中の語もリンクなので、ボタンの中に入れない）。 */}
-              {(item.word.meaning || item.usageNote || item.origin) && (
+              {(
                 <div className="pl-10">
                   {item.word.meaning && (
                     <p className="text-xs font-bold leading-relaxed text-ink/55"><ExplainedText>{item.word.meaning}</ExplainedText></p>
@@ -427,6 +431,7 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
                   <UsageNote text={item.usageNote} />
                   {/* 2語の語源がつながっているか（同じ語源・遠い親戚・別の語源・はっきりしない）。 */}
                   <OriginNote origin={item.origin} />
+                  <UsageGuideLink text={item.word.word} wordId={item.word.id ?? null} />
                 </div>
               )}
             </li>

@@ -20,6 +20,8 @@ import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
+import { UsageGuideSection } from '../components/UsageGuideCards.jsx'
+import { usageGuidesForPhrase } from '../lib/usageGuides.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
@@ -375,6 +377,8 @@ export function PhraseStudyScreen() {
                   <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.note}</p>
                 </div>
               )}
+              {/* 使い分けカード（辞書ページ・熟語の詳細と同じ中身）。 */}
+              <UsageGuideSection guides={usageGuidesForPhrase(item)} self={{ phraseId: item.id }} returnTo={params.returnTo} />
               <SyntaxFamilyGuide item={item} />
               <IdiomFormGuide item={item}
                 familyId={params.idiomFormFamilyId}

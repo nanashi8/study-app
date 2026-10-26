@@ -47,7 +47,7 @@ test('入試・英検向けの新規見出し語139語は既存辞書へ一意�
   }
 })
 
-test('使い分けガイドは実在する93見出し語と往復でき、推奨表現も検証できる', () => {
+test('使い分けガイドは実在する95見出し語と往復でき、推奨表現も検証できる', () => {
   assert.equal(EXAM_USAGE_GUIDES.length, 43)
   assert.equal(new Set(EXAM_USAGE_GUIDES.map((guide) => guide.id)).size, EXAM_USAGE_GUIDES.length)
 
@@ -71,7 +71,7 @@ test('使い分けガイドは実在する93見出し語と往復でき、推奨
       assert.ok(guide.preferred.reason, guide.id)
     }
   }
-  assert.equal(referenced.size, 93)
+  assert.equal(referenced.size, 95)
 })
 
 test('辞書検索は見出し語・意味に加えて語法と推奨表現も検索する', () => {

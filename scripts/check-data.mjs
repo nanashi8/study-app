@@ -181,6 +181,7 @@ import { PASSAGE_DICTIONARY_WORD_IDS } from '../src/data/reading-words.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../src/data/word-idiom-equivalents.js'
 import { SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
+import { ALL_USAGE_GUIDES, USAGE_GUIDES_BY_PHRASE } from '../src/data/usage-guides.js'
 import { MEANING_READINGS, MEANING_READING_KANJI } from '../src/data/meaning-readings.js'
 import { meaningSegments } from '../src/lib/meaningReadings.js'
 import { SCENE_BUNDLE_LEDGER } from '../src/data/scene-bundles.js'
@@ -909,9 +910,10 @@ for (const added of EXAM_WORDS) {
   }
 }
 
+// 入試の43枚と、候補の組を全件読んで足したカード（data/usage-guides.js）を合わせて確かめる。
 const usageGuideIds = new Set()
 const usageGuideWordIds = new Set()
-for (const guide of EXAM_USAGE_GUIDES) {
+for (const guide of ALL_USAGE_GUIDES) {
   if (!guide.id || usageGuideIds.has(guide.id)) {
     errors.push(`使い分けガイド id が無いか重複 (${guide.id ?? '?'})`)
   }
@@ -927,6 +929,16 @@ for (const guide of EXAM_USAGE_GUIDES) {
     } else if (!(word.usageGuides ?? []).some((item) => item.id === guide.id)) {
       errors.push(`使い分けガイド ${guide.id}: ${wordId} の詳細画面へ逆参照されない`)
     }
+  }
+  for (const phraseId of guide.phraseIds ?? []) {
+    if (!getPhrase(phraseId)) {
+      errors.push(`使い分けガイド ${guide.id}: 熟語 ${phraseId} が熟語・構文に無い`)
+    } else if (!(USAGE_GUIDES_BY_PHRASE[phraseId] ?? []).some((item) => item.id === guide.id)) {
+      errors.push(`使い分けガイド ${guide.id}: ${phraseId} の熟語の詳細へ逆参照されない`)
+    }
+  }
+  if ((guide.wordIds?.length ?? 0) + (guide.phraseIds?.length ?? 0) < 2) {
+    errors.push(`使い分けガイド ${guide.id}: 比べる語・熟語が2つ未満`)
   }
   for (const [index, choice] of (guide.choices ?? []).entries()) {
     if (!choice?.term || !choice?.rule || !choice?.example || !choice?.ja) {
@@ -2787,7 +2799,7 @@ for (const guide of SYNTAX_FAMILY_GUIDES) {
   guide.patterns.forEach((pattern, index) =>
     auditEnglish(`構文ファミリー ${guide.id} 例文${index + 1}`, pattern.example))
 }
-for (const guide of EXAM_USAGE_GUIDES) {
+for (const guide of ALL_USAGE_GUIDES) {
   for (const [index, choice] of guide.choices.entries()) {
     auditEnglish(`使い分け ${guide.id} 例文${index + 1}`, choice.example, { complete: true })
   }
@@ -2867,4 +2879,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSentenceCount}文・${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSentenceCount}文・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${ALL_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSentenceCount}文・${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSentenceCount}文・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

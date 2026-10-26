@@ -25,7 +25,8 @@ import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { ExplainedText, ExplanationScope } from '../components/ExplainedText.jsx'
-import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
+import { UsageGuideSection } from '../components/UsageGuideCards.jsx'
+import { UsageGuideProvider } from '../components/UsageGuideLink.jsx'
 import {
   AntonymSection,
   ConfusableSection,
@@ -554,7 +555,9 @@ export function VocabStudyScreen() {
                   <p className="text-sm font-bold leading-relaxed text-amber-900/90"><ExplainedText>{word.usage}</ExplainedText></p>
                 </div>
               )}
-              <UsageGuideCards guides={word.usageGuides} />
+              {/* 使い分けカードと、カードで比べる相手の語。下の関連語の行の相手が同じカードに入っていれば、行のボタンからこのカードへ移る。 */}
+              <UsageGuideProvider guides={word.usageGuides}>
+              <UsageGuideSection guides={word.usageGuides} self={{ wordId: word.id }} onWord={openRelatedWord} navigateTo={saveBeforeReference} returnTo={{ screen: 'vocabStudy', params }} />
 
               {/* 自作単語に自分で書いた派生語・ほかの品詞の形。 */}
               {word.custom && relations.derivatives.length > 0 && (
@@ -600,6 +603,7 @@ export function VocabStudyScreen() {
                   <WordPhraseSection word={word} groups={relatedPhrases} navigateTo={saveBeforeReference} returnTo={{ screen: 'vocabStudy', params }} />
                 </div>
               )}
+              </UsageGuideProvider>
 
               <button
                 onClick={() => saveBeforeReference('wordDetail', { id: word.id })}

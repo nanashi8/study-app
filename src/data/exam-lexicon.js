@@ -365,7 +365,7 @@ export const EXAM_USAGE_GUIDES = [
   {
     id: 'during-while',
     title: 'during / while',
-    wordIds: ['during'],
+    wordIds: ['during', 'while'],
     summary: 'during は前置詞で名詞を、while は接続詞で主語＋動詞を続ける。',
     choices: [
       { term: 'during', rule: 'during＋名詞', example: 'No one spoke during the meeting.', ja: '会議中は誰も話さなかった。' },
@@ -467,12 +467,13 @@ export const EXAM_USAGE_GUIDES = [
   },
   {
     id: 'rise-raise',
-    title: 'rise / raise',
-    wordIds: ['rise', 'raise'],
-    summary: 'rise は自動詞「上がる」、raise は他動詞「〜を上げる」。',
+    title: 'rise / raise / arise',
+    wordIds: ['rise', 'raise', 'arise'],
+    summary: 'rise は自動詞「上がる」、raise は他動詞「〜を上げる」。arise は問題などが「生じる・起こる」自動詞。',
     choices: [
       { term: 'rise', rule: '主語自身が上がる（rise-rose-risen）', example: 'Sea levels are rising.', ja: '海面が上昇している。' },
       { term: 'raise', rule: 'raise＋目的語（raise-raised-raised）', example: 'The bank raised interest rates.', ja: '銀行は金利を引き上げた。' },
+      { term: 'arise', rule: '問題・機会が生じる（arise-arose-arisen）。目的語をとらない', example: 'A new problem arose during the meeting.', ja: '会議中に新しい問題が生じた。' },
     ],
   },
   {
