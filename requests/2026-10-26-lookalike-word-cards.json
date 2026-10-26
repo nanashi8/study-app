@@ -7,7 +7,7 @@
   "sessions": [
     "6627e9c1-3acd-47d0-b7e7-3fe31be0fd39"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "rows-as-word-cards",
@@ -28,8 +28,7 @@
       "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版で mitigate の辞書ページに ag の「同じ語源」の欄が出ず、mit / miss の「別の語源」がカードで出ることを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の mitigate・active の辞書ページ",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/lookalike-origins.test.mjs tests/lookalike-forms.test.mjs",
-      "status": "waiting",
-      "waitingFor": "裏で流している npm run audit:all-content（task b0bw7rrv2）の終わり"
+      "status": "done"
     }
   ]
 }
