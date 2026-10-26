@@ -8,7 +8,7 @@
   "sessions": [
     "c225b2b1-f335-4631-8162-932658965f4f"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "word-pairs-all-reviewed",
@@ -50,8 +50,8 @@
       "text": "npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版で see の関連語から使い分けカードが開くこと、熟語の詳細から使い分けカードが開くことを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の単語・熟語の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/usage-guide-survey.test.mjs tests/usage-guide-cards.test.mjs tests/usage-guide-links.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone で裏で流している npm run audit:all-content（task bcwgt69gj）の終わり"
+      "status": "done",
+      "verifiedBy": "2026-10-26: クリーンな clone で npm run audit:all-content を通して 9a510b4・2657c5d を push。公開版で rise の関連語の行の「使い分けカード」ボタンが rise / raise / arise のカードへ移り、see の辞書ページに see / look / watch のカード（下に watch）、get on の暗記カードの裏から get off の詳細シートが開いてカードが出ることを確かめた。検証用の clone は消した。"
     }
   ]
 }
