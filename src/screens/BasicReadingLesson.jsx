@@ -18,7 +18,10 @@ import {
 } from '../lib/basicReading.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
+import { analyzeBasicReadingSentence, basicReadingSentence, basicReadingWordMeaning } from '../lib/basicReadingSentence.js'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { ReadingSentenceDetail } from '../components/ReadingSentenceDetail.jsx'
+import { Sheet } from '../components/Sheet.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
@@ -245,6 +248,10 @@ function BasicReadingLesson({ passageId }) {
   const [answers, setAnswers] = useState(initial.answers)
   const [checked, setChecked] = useState(initial.checked)
   const questionsRef = useRef(null)
+  const [activeIdx, setActiveIdx] = useState(null)
+  const [activeWord, setActiveWord] = useState(null)
+  const sentenceSheetScrollRef = useRef(null)
+  const recordVocabHistory = useStore((state) => state.recordVocabHistory)
 
   useEffect(() => {
     if (passage) writeDraft(passage.id, { answers, checked })
@@ -294,6 +301,31 @@ function BasicReadingLesson({ passageId }) {
     setChecked(false)
     questionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  // 文を押すと、長文と同じ一文の構文解説（構造台帳から作る）を開く。
+  const openSentence = (index) => {
+    dismissSpeechPlayer()
+    setActiveWord(null)
+    if (sentenceSheetScrollRef.current) sentenceSheetScrollRef.current.scrollTop = 0
+    setActiveIdx(index)
+  }
+  const closeSentence = () => {
+    dismissSpeechPlayer()
+    setActiveIdx(null)
+  }
+  const tapToken = (token) => {
+    playSpeechItems([{ text: token.word, label: token.word, style: 'word' }], {
+      title: '単語の読み上げ',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+    })
+    const meaning = basicReadingWordMeaning(passage, token.key)
+    if (meaning?.id) recordVocabHistory(meaning.id)
+    setActiveWord({ word: token.word, ja: meaning?.ja ?? null, id: meaning?.id ?? null })
+  }
+  const activeSentence = activeIdx != null ? basicReadingSentence(passage, activeIdx) : null
+  const activeAnalysis = activeIdx != null ? analyzeBasicReadingSentence(passage, activeIdx) : null
 
   const readAloud = () => playSpeechItems(
     passage.sentences.map((sentence) => ({ label: sentence.en, text: sentence.en, style: 'passage' })),
@@ -358,6 +390,9 @@ function BasicReadingLesson({ passageId }) {
               <SpeakerWave size={14} /> 全文を読み上げ
             </button>
           </div>
+          <p className="px-1 text-xs font-bold text-ink/45">
+            {'文を押すと、前から読む訳と文の組み立ての解説が開きます。'}
+          </p>
           <div className="space-y-4 rounded-3xl bg-white p-5 shadow-card" data-basic-reading-passage-text>
             {paragraphs.map((paragraph, paragraphIndex) => (
               <section key={paragraphIndex}>
@@ -365,7 +400,14 @@ function BasicReadingLesson({ passageId }) {
                   {paragraph.map(({ item, index }) => (
                     <span key={index}>
                       <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                      {item.en}{' '}
+                      <button
+                        type="button"
+                        onClick={() => openSentence(index)}
+                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                        data-basic-reading-sentence={index + 1}
+                      >
+                        {item.en}
+                      </button>{' '}
                     </span>
                   ))}
                 </p>
@@ -425,6 +467,48 @@ function BasicReadingLesson({ passageId }) {
           </Button>
         )}
       </div>
+
+      <Sheet
+        open={activeIdx != null}
+        onClose={closeSentence}
+        title="一文の構文解説"
+        maxH="88vh"
+        scrollAreaRef={sentenceSheetScrollRef}
+        footer={activeSentence ? (
+          <nav className="flex items-center justify-between gap-2" aria-label="文の移動" data-basic-reading-sentence-navigation>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx === 0}
+              onClick={() => openSentence(activeIdx - 1)}
+            >
+              ← 前の文
+            </Button>
+            <span className="text-xs font-bold text-ink/40" aria-live="polite">
+              {activeIdx + 1}/{passage.sentences.length}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx >= passage.sentences.length - 1}
+              onClick={() => openSentence(activeIdx + 1)}
+            >
+              次の文 →
+            </Button>
+          </nav>
+        ) : null}
+      >
+        <ReadingSentenceDetail
+          sentence={activeSentence}
+          sentenceAnalysis={activeAnalysis}
+          activeWord={activeWord}
+          onWordTap={tapToken}
+          onNavigateAway={closeSentence}
+          resolveWord={(key) => basicReadingWordMeaning(passage, key)}
+        />
+      </Sheet>
     </div>
   )
 }

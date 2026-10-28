@@ -128,8 +128,8 @@ const GATE_CATALOG = Object.freeze({
     coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画',
   },
   basicReading: {
-    command: 'npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-screens.test.mjs',
-    coverage: '基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、画面（入口・級・長文・答え合わせ・記録）',
+    command: 'npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-structures.test.mjs tests/basic-reading-screens.test.mjs',
+    coverage: '基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、全611文の手書きの構造台帳（文の要素・節と句・語順訳・記号の働き）、画面（入口・級・長文・答え合わせ・記録・全文の一文の構文解説）',
   },
   juniorSocialScience: {
     command: 'node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs',

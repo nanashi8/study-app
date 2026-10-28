@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-28-basic-reading-sentence-detail",
+  "title": "基礎長文も、長文と同じく本文の文を押すと一文ずつの逐語和訳・構文の解説が出るようにする",
+  "asked": [
+    "基礎長文も、長文の解説のように長文をタップすると、一文一文逐語和訳や解説が表示されるように同じ作りにしなさい。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "structure-ledger-every-sentence",
+      "text": "基礎長文の全文に、長文・名作と同じ記法の構造台帳を1文ずつ手で書く（主節の要素 S・V・O・C・M、節・句の入れ子、並列、語順訳のまとまりと日本語）。台帳に書き方の誤りがなく、動詞のある文は文型が決まり、前置詞はすべて前置詞句で囲み、and・or・but の並列はすべて {並列} に入れ、節にはつなぐ語の種類と見分け方がある。語順訳は8語以内で、つなぐと本文に戻り、日本語に英字がない。— : ; の記号はすべてその文での働きを書く",
+      "population": "基礎長文50本（5級・4級・3級・準2級・2級の各10本）の全611文",
+      "check": "node --test tests/basic-reading-structures.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-28: tests/basic-reading-structures.test.mjs で、50本の全611文（5級93・4級94・3級133・準2級147・2級144）に手書きの構造台帳があり、書き方の誤り・文型・前置詞句・並列・つなぐ語・記号の働き（— : ; すべて）の検査が0件、語順訳1,927まとまりが8語以内でつなぐと本文に戻り、日本語に英字がないことを確かめた。"
+    },
+    {
+      "id": "tap-opens-sentence-detail",
+      "text": "基礎長文の学習画面で本文のどの文を押しても、長文と同じ一文の構文解説（文の要素・節と句・構造図・逐語和訳と各まとまりの解説・読解ルール・きれいな日本語訳）が開き、前の文・次の文へ移れ、単語を押すと意味が出る。375px の幅で崩れない",
+      "population": "基礎長文50本の全611文と、その一文の構文解説の画面",
+      "check": "node --test tests/basic-reading-screens.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-28: tests/basic-reading-screens.test.mjs（375px の Chromium）で、全611文を押して一文の構文解説（台帳から作った文の要素・語順訳・読解ルール・文型または動詞のない文の表示・きれいな日本語訳）が開き、「次の文」で全文を順に移れ、単語を押すと意味が出て、横にはみ出さないことを確かめた。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で基礎長文の文を押して一文の構文解説が開くことを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の基礎長文の画面",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-structures.test.mjs tests/basic-reading-screens.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone で流している npm run audit:all-content の終わり。終わったら commit・push・公開版の確認へ進む"
+    }
+  ]
+}

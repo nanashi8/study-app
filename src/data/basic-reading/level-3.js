@@ -27,7 +27,7 @@ export const BASIC_READING_LEVEL_3 = Object.freeze([
       S('Children under 12 must come with an adult.', '12歳未満の子どもは、大人といっしょに来てください。'),
       P('If you are interested, please send an e-mail to the city office by June 1.', '参加したい人は、6月1日までに市役所へEメールを送ってください。'),
       S('After the event, all volunteers will get a free lunch.', 'イベントのあと、ボランティア全員に無料の昼食があります。'),
-      S('Last year, more than two hundred people joined the event and collected over five hundred kilograms of trash.', '去年は200人を超える人がイベントに参加し、500キログラムを超えるごみを集めました。'),
+      S('Last year, more than two hundred people joined the event and collected more than five hundred kilograms of trash.', '去年は200人を超える人がイベントに参加し、500キログラムを超えるごみを集めました。'),
       S('Thanks to their effort, more fish and birds have returned to the river.', 'その努力のおかげで、川にはより多くの魚や鳥が戻ってきました。'),
       S('This is a great chance to protect the environment and meet people in your local area.', '環境を守り、地域の人と知り合える、よい機会です。'),
     ],

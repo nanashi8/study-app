@@ -6,6 +6,7 @@
 //            その単語の暗記カードを開く。本文は全文が並び、和訳を出せる。ルールの問題3問は3択＋わからないで答え、
 //            答え合わせで当てはめ方の解説・使う文・出した選択肢すべての説明・ルールのカードが出る。
 //   記録   … 答え合わせで、問題ごとの結果と読んだ長文が記録され、全教材の進み具合に基礎長文として数えられる。
+//   一文   … 全611文で、文を押すと長文と同じ一文の構文解説が開き、前後の文へ移れ、単語を押すと意味が出る（2026-10-28 追加）。
 //   幅     … 開いたどの画面も、375px の幅で横にはみ出さない。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
@@ -21,6 +22,7 @@ import {
   basicReadingQuestionId,
 } from '../src/data/basic-reading/index.js'
 import { basicReadingLevelWords, basicReadingPhrases } from '../src/lib/basicReading.js'
+import { analyzeBasicReadingSentence } from '../src/lib/basicReadingSentence.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
 import { limitQuizChoices } from '../src/lib/quizChoices.js'
 
@@ -232,6 +234,52 @@ test('単語を押すと辞書のページ、暗記の入口はその長文の�
   await page.getByRole('button', { name: '単語を暗記' }).click()
   await waitScreen('vocabStudy')
   assert.deepEqual((await current()).params.source.ids, words.map((word) => word.id))
+})
+
+// 依頼 2026-10-28-basic-reading-sentence-detail の条件 tap-opens-sentence-detail。
+test('全611文で、文を押すと一文の構文解説（文の要素・語順訳・読解ルール・和訳）が開き、次の文へ移れる', async () => {
+  let opened = 0
+  for (const passage of BASIC_READING_PASSAGES) {
+    await open('basicReadingLesson', { passageId: passage.id })
+    await page.click('[data-basic-reading-sentence="1"]')
+    for (const [index, sentence] of passage.sentences.entries()) {
+      const analysis = analyzeBasicReadingSentence(passage, index)
+      await page.waitForFunction(([count, en]) => {
+        const card = document.querySelector('[data-reading-role-card="direct-labels"]')
+        return card?.getAttribute('data-reading-structure') === 'ledger' &&
+          document.querySelectorAll('[data-reading-phrase-status]').length === count &&
+          document.body.innerText.includes(en.slice(0, 12))
+      }, [analysis.meaningPhraseSequence.length, sentence.en], { timeout: 10_000 })
+      const detail = await page.evaluate(() => ({
+        rules: document.querySelectorAll('[data-reading-rules-for-sentence] [data-reading-rule-id]').length,
+        pattern: Boolean(document.querySelector('[data-reading-sentence-pattern]')),
+        fragment: Boolean(document.querySelector('[data-reading-sentence-fragment]')),
+        position: document.querySelector('[data-basic-reading-sentence-navigation] [aria-live]')?.textContent,
+      }))
+      const where = `${passage.id}#${index + 1}`
+      assert.ok(detail.rules > 0, `${where}: 読解ルールがない`)
+      assert.equal(detail.fragment, Boolean(analysis.structure && !analysis.structure.patterns.length), `${where}: 動詞のない文の表示`)
+      assert.equal(detail.pattern, !detail.fragment, `${where}: 文型の表示`)
+      assert.equal(detail.position, `${index + 1}/${passage.sentences.length}`, where)
+      assert.ok((await page.locator('text=きれいな日本語訳').count()) > 0, `${where}: 和訳がない`)
+      if (index === 0) await checkWidth(`${passage.id}の一文の構文解説`)
+      opened += 1
+      if (index < passage.sentences.length - 1) {
+        await page.locator('[data-basic-reading-sentence-navigation] button', { hasText: '次の文' }).click()
+      }
+    }
+  }
+  assert.equal(opened, 611)
+})
+
+test('一文の構文解説で単語を押すと、その語の意味が出る', async () => {
+  const passage = BASIC_READING_PASSAGES.find((item) => item.id === 'br4_elephants')
+  await open('basicReadingLesson', { passageId: passage.id })
+  await page.click('[data-basic-reading-sentence="1"]')
+  await page.waitForSelector('[data-reading-role-card="direct-labels"]')
+  await page.locator('[data-reading-role-card="direct-labels"] button', { hasText: /^Elephants$/ }).first().click()
+  await page.waitForFunction(() => document.body.innerText.includes('ゾウ'))
+  assert.ok((await page.evaluate(() => document.body.innerText)).includes('ゾウ'))
 })
 
 test('開いたどの画面も、375px の幅で横にはみ出さない', () => {

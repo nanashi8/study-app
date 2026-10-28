@@ -20,7 +20,7 @@
     "audit:grammar-explanations": "node scripts/audit-grammar-explanations.mjs",
     "audit:reading-translations": "node scripts/audit-reading-translations.mjs",
     "audit:extended-reading": "node scripts/audit-extended-reading.mjs",
-    "audit:basic-reading": "node scripts/checks/basic-reading.mjs",
+    "audit:basic-reading": "node scripts/checks/basic-reading.mjs && node scripts/checks/basic-reading-structures.mjs",
     "audit:question-formats": "node scripts/audit-english-question-formats.mjs",
     "audit:content-ledger": "node scripts/content-audit-ledger.mjs",
     "audit:all-content": "node scripts/record-content-audit.mjs",

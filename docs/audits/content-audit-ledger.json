@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-28T03:15:00.760Z",
+  "auditedAt": "2026-10-28T04:43:56.919Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 21851,
     "storedAndGeneratedQuestionPathCount": 8701,
     "storedAndGeneratedChoicePathCount": 33485,
-    "overallContentSha256": "664a035d77ff82c9259000c48d999b27d9255c69e03176e759786c8e07d311f9"
+    "overallContentSha256": "c94f33b0c340085ad4be414006105174ac66130452a5cf0fb9600749b07977ac"
   },
   "completionCriteria": [
     "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -111,8 +111,8 @@
       "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画"
     },
     "basicReading": {
-      "command": "npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-screens.test.mjs",
-      "coverage": "基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、画面（入口・級・長文・答え合わせ・記録）"
+      "command": "npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-structures.test.mjs tests/basic-reading-screens.test.mjs",
+      "coverage": "基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、全611文の手書きの構造台帳（文の要素・節と句・語順訳・記号の働き）、画面（入口・級・長文・答え合わせ・記録・全文の一文の構文解説）"
     },
     "juniorSocialScience": {
       "command": "node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "5290319d2ab91eb9a953583f3e09b6b1e3e96f863191fcb505ff4423c13cd081",
+    "sha256": "f2944a1232b3037227b6404cdb5816981571c5338c8188c3b565e2c51f8ccd29",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -179,6 +179,7 @@
       "tests/app-recovery.test.mjs",
       "tests/basic-reading-content.test.mjs",
       "tests/basic-reading-screens.test.mjs",
+      "tests/basic-reading-structures.test.mjs",
       "tests/basic-reading-vocab.test.mjs",
       "tests/battle-cinematic-visuals.test.mjs",
       "tests/battle-standing-visuals.test.mjs",
@@ -601,7 +602,7 @@
       "quizItemCount": 150,
       "learningIdOrderSha256": "a23b635e58417276ffc536d0098b73135e34dd5bef19042e5496eedc8a75d58a",
       "quizIdOrderSha256": "c9f34a4224b78c40809acf8548dd9bfa3e6f05970f0d01f19bc5dea3d10633be",
-      "contentSha256": "3bd99e0f725a4451f531bbd6a30f7a734ed1e3d453ec121cb93213d789057e28",
+      "contentSha256": "92e02f8eb79ac2a7d6d98644fcc05fc25d3ad45b9f4aa8eeb82403a51ed230e2",
       "auditGateIds": [
         "inventory",
         "coreData",
