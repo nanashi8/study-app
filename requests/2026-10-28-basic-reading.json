@@ -7,7 +7,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "all-rules-every-grade",
@@ -54,8 +54,8 @@
       "text": "学習者向け日本語の監査・英語の監査を含む npm run audit:all-content を通し、クリーンな clone で確かめて main へ push し、公開版で基礎長文を開いて問題に答えられることを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-screens.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone（scratchpad/clone）で流している npm run audit:all-content の終わり。終わったら commit・push・公開版の確認へ進む"
+      "status": "done",
+      "verifiedBy": "2026-10-28: クリーンな clone で npm run audit:all-content（全テスト1,527件・全検査・ビルド・台帳25カテゴリ）を通して e9e2d910 を push。公開の処理は success。公開版で英語アプリの「長文」の次に「基礎長文」、5つの級、3級の10本が並び、コアラの長文で3問に答えて答え合わせ（解説3つ・選択肢の説明9行）が出ることを確かめた。検証用の clone は消した。"
     }
   ]
 }
