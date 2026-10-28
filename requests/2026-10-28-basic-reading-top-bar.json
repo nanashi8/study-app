@@ -1,0 +1,29 @@
+{
+  "id": "2026-10-28-basic-reading-top-bar",
+  "title": "基礎長文で上の「戻る・アプリ名・メニュー」の帯が画面の外へ押し出されて見えなくなる不具合を、長文と同じ作りに直す",
+  "asked": [
+    "長文基礎でトップメニューや戻る等のメニューが表示されない問題を解消しなさい。長文を参考にして修正しなさい。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "top-bar-stays-on-every-screen",
+      "text": "基礎長文のどの画面でも、どの操作のあとでも、上の帯（戻る・アプリ名・メニュー）と長文の見出し（閉じる・題名）が画面の上に見えたまま押せる。原因（ルールの問題の sr-only の legend がスクロール欄ではなく外枠を基準に置かれ、外枠がはみ出して「ルールの問題へ」・解き直す・文のタップなどのスクロールで外枠ごと動く）を長文と同じ作り（外枠は動かず、スクロールは本文の欄だけ）に直す。外枠（.study-app-surface）は伸びず動かない",
+      "population": "基礎長文の画面すべて：級の一覧1画面・級ごとの長文一覧5画面・長文50本（本文の一番下までのスクロール、ルールの問題へ、3問に答えて答え合わせ、解き直す、全611文のタップで開く一文の構文解説とその前後の文への移動、解説を閉じたあと）",
+      "check": "node --test tests/basic-reading-top-bar.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-28: tests/basic-reading-top-bar.test.mjs（375px の Chromium）で、級の一覧と級ごとの長文一覧5画面（一番下までのスクロールを含む）、長文50本の開いたとき・一番下・ルールの問題へ・答えたあと・答え合わせ・解き直す・解説を閉じたあと・解説で次の文へ、全611文のタップで開いた解説のすべてで、外枠が動かず伸びず、上の帯（戻る・アプリ名・メニュー）と長文の見出しの「閉じる」が画面の中にあることを確かめた。直す前は br5_family のルールの問題へで外枠が125px 動き「戻る」が見えなくなる（外枠が2,111px はみ出す）ことを同じテストで確かめた。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文で「ルールの問題へ」と文のタップのあとも上の帯が見えることを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の基礎長文の画面",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-top-bar.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 b97qxabto）の終了"
+    }
+  ]
+}

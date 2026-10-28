@@ -356,7 +356,9 @@ function BasicReadingLesson({ passageId }) {
         <Chip color={level.color}>英検{level.label}</Chip>
       </header>
 
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-6 pt-1" data-return-scroll="basicReadingLesson">
+      {/* relative：問題の sr-only の見出しをこの欄の中に置く。外枠を基準にすると外枠がはみ出し、
+          「ルールの問題へ」などのスクロールで外枠ごと動いて上の帯（戻る・メニュー）が画面の外へ出る。 */}
+      <div className="relative flex-1 space-y-4 overflow-y-auto px-4 pb-6 pt-1" data-return-scroll="basicReadingLesson">
         <div className="flex flex-wrap gap-1.5">
           <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-extrabold text-brand-700">{basicReadingThemeLabel(passage)}</span>
           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-extrabold text-ink/60">{BASIC_READING_KINDS[passage.kind]}</span>
