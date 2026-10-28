@@ -50,6 +50,8 @@ const ProgressScreen = lazyScreen(() => import('./screens/Progress.jsx'), 'Progr
 const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'SettingsScreen')
 const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 'ReadingListScreen')
 const ReadingRulesScreen = lazyScreen(() => import('./screens/ReadingRules.jsx'), 'ReadingRulesScreen')
+const BasicReadingScreen = lazyScreen(() => import('./screens/BasicReading.jsx'), 'BasicReadingScreen')
+const BasicReadingLessonScreen = lazyScreen(() => import('./screens/BasicReadingLesson.jsx'), 'BasicReadingLessonScreen')
 const ReadingPrepScreen = lazyScreen(() => import('./screens/ReadingPrep.jsx'), 'ReadingPrepScreen')
 const SceneBundlesScreen = lazyScreen(() => import('./screens/SceneBundles.jsx'), 'SceneBundlesScreen')
 const ReaderScreen = lazyScreen(() => import('./screens/Reader.jsx'), 'ReaderScreen')
@@ -176,6 +178,8 @@ const SCREENS = {
   settings: SettingsScreen,
   readingList: ReadingListScreen,
   readingRules: ReadingRulesScreen,
+  basicReading: BasicReadingScreen,
+  basicReadingLesson: BasicReadingLessonScreen,
   readingPrep: ReadingPrepScreen,
   sceneBundles: SceneBundlesScreen,
   reader: ReaderScreen,

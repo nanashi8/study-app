@@ -45,6 +45,7 @@ const expectedContentIds = [
   'dictation',
   'etymology',
   'reading',
+  'basic-reading',
   'writing',
   'koten-vocab',
   'koten-grammar',
@@ -158,7 +159,7 @@ test('SRS外教材は完了状態と直近テスト結果を独立して保存�
   assert.deepEqual(normalizeContentQuizResults({ invalid: { total: 0 } }), {})
 })
 
-test('全24教材の母集団は重複なく、空状態でも両方の3区分が全件を覆う', () => {
+test('全25教材の母集団は重複なく、空状態でも両方の3区分が全件を覆う', () => {
   assert.deepEqual(LEARNING_CONTENTS.map((content) => content.id), expectedContentIds)
   assert.deepEqual(LEARNING_CONTENT_GROUPS.map((group) => group.id), [
     'english',

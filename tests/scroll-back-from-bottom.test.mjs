@@ -218,6 +218,8 @@ class Phone {
         readingPrep: { passageId },
         reader: { passageId },
         readingSummary: { passageId },
+        basicReading: { level: '2' },
+        basicReadingLesson: { passageId: 'br2_food_waste' },
         literatureReader: { workId: literature.PUBLIC_DOMAIN_LITERATURE[0].id },
         vocabSearch: { q: 'take' },
         mathIntro: { unitId: mathUnit.id },
@@ -589,8 +591,8 @@ test('直す前の作りでは、欄の下端から先の指でページがず�
   for (const [where, state] of Object.entries(fixed)) assertPageStill(state, `直した作り・${where}`)
 })
 
-test('全88画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
-  assert.equal(SCREEN_NAMES.length, 88)
+test('全90画面で、見えている範囲のどの状態でもページそのものが動かない', async () => {
+  assert.equal(SCREEN_NAMES.length, 90)
   const checked = new Set()
   await eachScreen(async (phone, screen) => {
     const opened = await phone.openScreen(screen, paramsByScreen[screen])
@@ -632,10 +634,10 @@ test('全88画面で、見えている範囲のどの状態でもページその
   }
   await phone.closeMenu()
   await phone.applyFrameState('normal')
-  assert.equal(checked.size, 88 * FRAME_STATES.length + FRAME_STATES.length)
+  assert.equal(checked.size, 90 * FRAME_STATES.length + FRAME_STATES.length)
 })
 
-test('全88画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
+test('全90画面の縦に動く欄で、一番下から上へ戻れる', async (t) => {
   const counts = new Map()
   const revealedScreens = []
   const smallScreens = []
@@ -694,7 +696,7 @@ test('全88画面の縦に動く欄で、一番下から上へ戻れる', async 
   t.diagnostic(`縦に動く欄のある画面 ${SCREEN_NAMES.length - without.length}/${SCREEN_NAMES.length}（欄 ${[...counts.values()].reduce((sum, count) => sum + count, 0)}、状態2つとメニューで ${total} 回）`)
   t.diagnostic(`中身を開いてからも確かめた画面 ${revealedScreens.length}：${revealedScreens.join('・')}`)
   t.diagnostic(`小さい画面（${SMALL_VIEWPORT.width}×${SMALL_VIEWPORT.height}）で確かめた画面 ${smallScreens.length}：${smallScreens.join('・')}`)
-  assert.equal(counts.size, 88)
+  assert.equal(counts.size, 90)
   // 標準の大きさで縦に動く欄がない画面は、決めた画面だけ（ほかの画面で欄がなくなったら理由を確かめる）。
   assert.deepEqual([...new Set(smallScreens)].sort(), [...SMALL_ONLY_SCREENS].sort(), '標準の大きさで縦に動く欄がない画面')
   // どの画面にも、一番下まで送る縦の欄がある（中身が空の画面には中身を入れてから開く）。

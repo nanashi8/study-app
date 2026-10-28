@@ -439,14 +439,14 @@ if (actualMenuSections.join(',') !== expectedMenuSections.join(',')) {
   errors.push(`メニューの見出しが不一致: ${actualMenuSections.join(',')}`)
 }
 const menuSectionCounts = APP_MENU_SECTIONS.map((section) => section.items.length)
-if (menuSectionCounts.join(',') !== '8,8,6,1,4,2,1') {
+if (menuSectionCounts.join(',') !== '8,9,6,1,4,2,1') {
   errors.push(`メニューの項目数が不一致: ${menuSectionCounts.join(',')}`)
 }
 const appHomeEntry = APP_MENU_ITEMS.find((item) => item.kind === 'screen' && item.screen === 'portal')
 if (appHomeEntry?.label !== 'スタディアプリ ホーム') {
   errors.push('メニューからスタディアプリ ホームを直接開けない')
 }
-if (APP_MENU_ITEMS.length !== 30) errors.push(`メニューが全30項目ではない: ${APP_MENU_ITEMS.length}`)
+if (APP_MENU_ITEMS.length !== 31) errors.push(`メニューが全31項目ではない: ${APP_MENU_ITEMS.length}`)
 if (new Set(APP_MENU_SCREEN_DESTINATIONS).size !== APP_MENU_SCREEN_DESTINATIONS.length) {
   errors.push('メニューに重複した画面入口がある')
 }

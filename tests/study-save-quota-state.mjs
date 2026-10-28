@@ -58,7 +58,7 @@ export function buildFullLearningState() {
   for (const content of LEARNING_CONTENTS) {
     if (content.kind !== 'completion') continue
     for (const item of content.items) {
-      if (content.id === 'reading') state().markReadingDone(item.id)
+      if (content.id === 'reading' || content.id === 'basic-reading') state().markReadingDone(item.id)
       else if (content.id === 'literature') state().markLiteratureDone(item.id)
       else if (content.id === 'writing') {
         state().recordWritingCompletion({

@@ -75,6 +75,8 @@ const ENGLISH_CONTENT_SETTINGS = Object.freeze({
   writing: settingsOf(['sessionSize'], ENGLISH_SPEECH, STUDY_MIX),
   roots: settingsOf(CARD_STUDY, QUESTION_TEST, WORD_STUDY, WORD_TEST, STUDY_MIX),
   readingList: settingsOf(READ_ALOUD, WORD_STUDY, WORD_TEST, PHRASE_STUDY, PHRASE_TEST, STUDY_MIX),
+  // 基礎長文：本文の読み上げと、本文に出る単語・熟語の暗記・テスト。
+  basicReading: settingsOf(READ_ALOUD, WORD_STUDY, WORD_TEST, PHRASE_STUDY, PHRASE_TEST, STUDY_MIX),
   phrases: settingsOf(PHRASE_STUDY, PHRASE_TEST, STUDY_MIX),
   grammar: settingsOf(QUESTION_TEST, ENGLISH_SPEECH, STUDY_MIX),
   listening: settingsOf(QUESTION_TEST, ENGLISH_SPEECH, STUDY_MIX),
@@ -117,6 +119,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
     englishItem('writing', '英作文', '書いて使える知識にする'),
     englishItem('roots', '語源学習', '語源から関連英単語を一緒に暗記'),
     englishItem('readingList', '長文読解', '前から読む訳・文法・設問'),
+    englishItem('basicReading', '基礎長文', '級の語彙で読み、30ルールを学ぶ'),
     englishItem('phrases', '熟語・構文', '全2,104項目を検索・復習'),
     englishItem('grammar', '英文法', '級・単元ごとの参考書とテスト'),
     englishItem('listening', 'リスニング', '級別形式・本文確認・復習'),
@@ -135,7 +138,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', 'コンテンツのメモ・単語帳・履歴'),
-    screenItem('myLearning', '暗記・テストの記録', '全24教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
+    screenItem('myLearning', '暗記・テストの記録', '全25教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),

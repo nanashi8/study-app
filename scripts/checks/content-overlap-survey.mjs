@@ -65,6 +65,7 @@ const AXES = {
   dictation: [{ name: '級', of: (item) => item.level, values: levelIds }],
   etymology: [{ name: '語根', of: (item) => item.rootId }],
   reading: [{ name: '級', of: (item) => item.level, values: readingLevelIds }],
+  'basic-reading': [{ name: '級', of: (item) => item.level, values: readingLevelIds }, { name: 'テーマ', of: (item) => `${item.level}:${item.theme}` }],
   writing: [{ name: '級', of: (item) => item.level, values: levelIds }],
   literature: [{ name: '種類', of: (item) => item.kind, values: ['english', 'classical', 'kanbun'] }, { name: '難しさの目安', of: (item) => item.level }],
   math: [{ name: '単元', of: (item) => mathUnitOf.get(item.id), values: MATH_UNITS.map((unit) => unit.id) }],
@@ -233,6 +234,14 @@ export const OVERLAP_SETS = [
     measures: {
       同じ題名: () => sameKey(byId.reading.items, (item) => norm(item.title)),
       同じ最初の文: () => sameKey(byId.reading.items, (item) => norm(text(item.sentences?.[0]?.en ?? item.sentences?.[0]))),
+    },
+  },
+  {
+    // 基礎長文は、基礎長文どうしと、英語長文と同じ題名・同じ最初の文がないかを見る。
+    id: 'basic-reading', label: '基礎長文', title: (item) => item.title,
+    measures: {
+      同じ題名: () => sameKey([...byId['basic-reading'].items, ...byId.reading.items], (item) => norm(item.title)),
+      同じ最初の文: () => sameKey([...byId['basic-reading'].items, ...byId.reading.items], (item) => norm(text(item.sentences?.[0]?.en ?? item.sentences?.[0]))),
     },
   },
   { id: 'writing', label: '英作文', title: (item) => item.title, measures: { 同じ題名・課題: () => sameKey(byId.writing.items, (item) => [norm(item.title), norm(text(item.task))]) } },

@@ -20,6 +20,7 @@ const PRIMARY_LEARNING_MODES = [
   { id: 'listening', label: 'リスニング', Icon: Headphones, color: '#0284c7', screen: 'listening' },
   { id: 'dictation', label: 'ディクテーション', Icon: Keyboard, color: '#14b8a6', screen: 'dictation' },
   { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
+  { id: 'basic-reading', label: '基礎長文', Icon: BookOpen, color: '#059669', screen: 'basicReading' },
   { id: 'writing', label: '英作文', Icon: Scroll, color: '#e11d48', screen: 'writing' },
   { id: 'dictionary', label: '英和辞書', Icon: Search, color: '#0ea5e9', screen: 'vocabSearch' },
   { id: 'etymology', label: '語源', Icon: Sprout, color: '#7c3aed', screen: 'roots' },

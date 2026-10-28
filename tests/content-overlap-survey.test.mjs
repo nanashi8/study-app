@@ -13,10 +13,10 @@ import { surveyContentOverlaps } from '../scripts/checks/content-overlap-survey.
 
 const result = surveyContentOverlaps()
 
-test('段の作り：16教材20,189件が、どの軸でもちょうど1つの決まった値を持ち、id の重なりがない', () => {
+test('段の作り：17教材20,239件が、どの軸でもちょうど1つの決まった値を持ち、id の重なりがない', () => {
   assert.deepEqual(result.problems, [])
-  assert.equal(result.structure.length, 16)
-  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 20_189)
+  assert.equal(result.structure.length, 17)
+  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 20_239)
   for (const content of result.structure) {
     assert.deepEqual(content.duplicateIds, [], `${content.label}: id の重なり`)
     for (const axis of content.axes) assert.deepEqual(axis.bad, [], `${content.label}: ${axis.name}`)
@@ -31,6 +31,7 @@ test('段の作り：16教材20,189件が、どの軸でもちょうど1つの�
       ディクテーション: '級7',
       語源: '語根340',
       英語長文: '級8',
+      基礎長文: '級5・テーマ50',
       英作文: '級7',
       名作に親しむ: '種類3・難しさの目安10',
       数学: '単元45',

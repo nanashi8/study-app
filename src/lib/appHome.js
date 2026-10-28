@@ -58,7 +58,7 @@ export const APP_HOMES = [
       'home', 'vocabLevels', 'vocabGroups', 'vocabDecks', 'vocabStudy', 'vocabQuiz',
       'sessionResult', 'wordDetail', 'rootDetail', 'etymologyPack', 'roots',
       'etymologyStudy', 'etymologyQuiz', 'myList',
-      'vocabCamera', 'readingList', 'readingRules',
+      'vocabCamera', 'readingList', 'readingRules', 'basicReading', 'basicReadingLesson',
       'readingPrep', 'sceneBundles', 'reader', 'readingSummary', 'phrases', 'phraseStudy', 'phraseQuiz',
       'listening', 'listeningQuiz', 'dictation', 'dictationPlay', 'vocabSearch',
       'wordRequests', 'grammar', 'grammarQuiz', 'grammarReference', 'grammarStrandReference', 'writing', 'writingPlay', 'writingExam',

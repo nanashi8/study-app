@@ -726,7 +726,7 @@ test('出題バランスを教材の設定に並べる：30画面を開く教材
     }
   }
   assert.deepEqual([...owners].sort(), [
-    'dictation', 'grammar', 'kanbunHome', 'kotenList', 'listening', 'literatureLibrary', 'mathMap',
+    'basicReading', 'dictation', 'grammar', 'kanbunHome', 'kotenList', 'listening', 'literatureLibrary', 'mathMap',
     'phrases', 'readingList', 'roots', 'scienceHome', 'socialHome', 'vocabLevels', 'writing',
   ])
   assert.ok(settingsOf('home').includes('vocabMix'))

@@ -24,7 +24,7 @@ const AUTH_STATES = [
   ['ログイン中', { status: 'in', user: { uid: 'hidden-login-test', email: EMAIL } }],
 ]
 
-// 直す前の全28行から「ログイン・保存」の1行だけを外した27行に、社会・理科アプリと出典の3行（2026-09-29）を足した30行。ほかの行は1つも消さない。
+// 直す前の全28行から「ログイン・保存」の1行だけを外した27行に、社会・理科アプリと出典の3行（2026-09-29）、基礎長文の1行（2026-10-28）を足した31行。ほかの行は1つも消さない。
 const EXPECTED_ROWS = [
   ['apps', 'portal', 'スタディアプリ ホーム'],
   ['apps', 'home', '英語アプリ'],
@@ -39,6 +39,7 @@ const EXPECTED_ROWS = [
   ['english', 'writing', '英作文'],
   ['english', 'roots', '語源学習'],
   ['english', 'readingList', '長文読解'],
+  ['english', 'basicReading', '基礎長文'],
   ['english', 'phrases', '熟語・構文'],
   ['english', 'grammar', '英文法'],
   ['english', 'listening', 'リスニング'],
@@ -160,7 +161,7 @@ after(async () => {
   await vite?.close()
 })
 
-test('メニューの台帳に「ログイン・保存」の行がなく、ほかの30行はそのまま残る', () => {
+test('メニューの台帳に「ログイン・保存」の行がなく、ほかの31行はそのまま残る', () => {
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
     ['apps', 'スタディアプリ'],
     ['english', '英語の学習'],
@@ -200,7 +201,7 @@ for (const [name, state] of AUTH_STATES) {
       assert.ok(!text.includes(EMAIL), 'ログイン中のメールアドレスを出さない')
       assert.doesNotMatch(html, /data-menu-account-entry|data-menu-action="account"|data-menu-account-panel/)
 
-      // 全30行がそのまま並ぶ。
+      // 全31行がそのまま並ぶ。
       const labels = [...html.matchAll(/<strong[^>]*>([^<]+)<\/strong>/g)].map((match) => unescapeHtml(match[1]))
       for (const [, , label] of EXPECTED_ROWS) assert.ok(labels.includes(label), `${label} の行がない`)
       assert.equal((html.match(/ data-menu-item="true"/g) ?? []).length, EXPECTED_ROWS.length)
@@ -226,7 +227,7 @@ test('アカウントの表示とログイン画面は、どこからも開け�
   assert.ok(!existsSync(join(ROOT, 'src/screens/Login.jsx')))
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routes = [...screenMap.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1])
-  assert.equal(routes.length, 88)
+  assert.equal(routes.length, 90)
   assert.ok(!routes.includes('login'))
   assert.doesNotMatch(app, /LoginScreen|screens\/Login/)
 

@@ -40,6 +40,7 @@ export const SCOPE_SCREENS = Object.freeze({
   writing: ['writing', 'writingPlay', 'writingExam', 'writingGrammarReview', 'myGrammar'],
   roots: ['roots', 'rootDetail', 'etymologyPack', 'etymologyStudy', 'etymologyQuiz'],
   readingList: ['readingList', 'readingRules', 'readingPrep', 'sceneBundles', 'reader', 'readingSummary'],
+  basicReading: ['basicReading', 'basicReadingLesson'],
   phrases: ['phrases'],
   grammar: ['grammar', 'grammarQuiz', 'grammarReference', 'grammarStrandReference'],
   listening: ['listening', 'listeningQuiz'],
@@ -70,10 +71,10 @@ const CUSTOM_CARD_SCOPES = Object.freeze(['vocabLevels', 'kotenList', 'kanbunHom
 // 単語帳や記録など教材の画面を通らずに開いたときは primary の教材の値を使う。
 // 結果画面は、その前の暗記・テストと同じ教材の値を使う。
 export const SHARED_SCREENS = Object.freeze({
-  vocabStudy: { primary: 'vocabLevels', scopes: ['vocabLevels', 'roots', 'readingList', 'literatureLibrary'] },
-  vocabQuiz: { primary: 'vocabLevels', scopes: ['vocabLevels', 'roots', 'readingList'] },
-  phraseStudy: { primary: 'phrases', scopes: ['phrases', 'readingList', 'vocabSearch'] },
-  phraseQuiz: { primary: 'phrases', scopes: ['phrases', 'readingList'] },
+  vocabStudy: { primary: 'vocabLevels', scopes: ['vocabLevels', 'roots', 'readingList', 'basicReading', 'literatureLibrary'] },
+  vocabQuiz: { primary: 'vocabLevels', scopes: ['vocabLevels', 'roots', 'readingList', 'basicReading'] },
+  phraseStudy: { primary: 'phrases', scopes: ['phrases', 'readingList', 'basicReading', 'vocabSearch'] },
+  phraseQuiz: { primary: 'phrases', scopes: ['phrases', 'readingList', 'basicReading'] },
   kotenStudy: { primary: 'kotenList', scopes: ['kotenList', 'literatureLibrary'] },
   kanbunStudy: { primary: 'kanbunHome', scopes: ['kanbunHome', 'literatureLibrary'] },
   wordDetail: { primary: 'vocabSearch', scopes: [...ENGLISH_CONTENT_SCREENS, 'literatureLibrary'] },

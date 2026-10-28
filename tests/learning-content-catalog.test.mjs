@@ -40,6 +40,7 @@ const EXPECTED_COUNTS = Object.freeze({
   dictation: 140,
   etymology: 340,
   reading: 42,
+  'basic-reading': 50,
   writing: 14,
   'koten-vocab': 612,
   'koten-grammar': 130,
@@ -103,9 +104,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全24教材・21,582項目を一覧行へ重複も欠落もなく変換する', () => {
-  assert.equal(LEARNING_CONTENTS.length, 24)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 21_582)
+test('全25教材・21,632項目を一覧行へ重複も欠落もなく変換する', () => {
+  assert.equal(LEARNING_CONTENTS.length, 25)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 21_632)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
@@ -215,7 +216,7 @@ test('日付を持たない読了記録と、日付を持つ作文・独立テ�
   assert.equal(writingRow.memoryAt, 20_000 * DAY_MS)
 })
 
-test('24教材すべてに既存の学習画面への開始契約と一覧への帰り先がある', () => {
+test('25教材すべてに既存の学習画面への開始契約と一覧への帰り先がある', () => {
   const expectedScreens = {
     vocab: 'vocabStudy',
     usage: 'phraseStudy',
@@ -224,6 +225,7 @@ test('24教材すべてに既存の学習画面への開始契約と一覧への
     dictation: 'dictationPlay',
     etymology: 'etymologyStudy',
     reading: 'readingPrep',
+    'basic-reading': 'basicReadingLesson',
     writing: 'writingPlay',
     'koten-vocab': 'kotenStudy',
     'koten-grammar': 'kotenGrammarStudy',
@@ -398,7 +400,7 @@ test('マイ学習の入口を一覧確認へ統一し、英単語と指定11カ
   assert.match(myLearning, /data-learning-content-catalog-entry=\{content\.id\}/)
   assert.match(myLearning, /一覧を確認/)
   assert.doesNotMatch(myLearning, /一覧から学ぶ|一覧から確認/)
-  assert.match(appMenu, /全24教材の一覧を確認し/)
+  assert.match(appMenu, /全25教材の一覧を確認し/)
   assert.doesNotMatch(appMenu, /一覧から学び|一覧から学ぶ|一覧から確認|一覧から復習/)
   assert.match(myLearning, /view: 'catalog', contentId: content\.id/)
   assert.match(catalog, /data-learning-content-catalog=\{content\.id\}/)

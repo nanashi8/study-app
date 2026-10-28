@@ -1,3 +1,4 @@
+import { basicReadingThemeLabel } from '../data/basic-reading/index.js'
 import { vocabFieldFor } from '../data/vocab.js'
 import { ETYMOLOGY_MODE_META } from '../data/etymology-compression.js'
 import { KOTEN_CATEGORIES } from '../data/koten.js'
@@ -146,6 +147,14 @@ function presentationFor(contentId, item) {
       title: item.titleJa || item.title,
       subtitle: item.titleJa ? item.title : item.blurb,
       field: '英語長文',
+      level: examLevel(item.level),
+    }
+  }
+  if (contentId === 'basic-reading') {
+    return {
+      title: item.titleJa,
+      subtitle: item.title,
+      field: basicReadingThemeLabel(item) || '基礎長文',
       level: examLevel(item.level),
     }
   }
@@ -439,6 +448,7 @@ export const LEARNING_CONTENT_CATALOG_ACTIONS = Object.freeze({
   dictation: { selection: 'many', verb: '練習' },
   etymology: { selection: 'many', verb: '暗記' },
   reading: { selection: 'one', verb: '読む' },
+  'basic-reading': { selection: 'one', verb: '読む' },
   writing: { selection: 'one', verb: '書く' },
   'koten-vocab': { selection: 'many', verb: '暗記' },
   'koten-grammar': { selection: 'many', verb: '暗記' },
@@ -522,6 +532,9 @@ export function learningContentCatalogLaunch(
   }
   if (content.id === 'reading') {
     return { screen: 'readingPrep', params: { passageId: ids[0], returnTo } }
+  }
+  if (content.id === 'basic-reading') {
+    return { screen: 'basicReadingLesson', params: { passageId: ids[0], returnTo } }
   }
   if (content.id === 'writing') {
     return { screen: 'writingPlay', params: { exerciseId: ids[0], mode: 'guide', returnTo } }

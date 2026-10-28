@@ -69,7 +69,7 @@ const GATE_CATALOG = Object.freeze({
   },
   routesAndProgress: {
     command: 'npm run audit:content-progress && npm run audit:links',
-    coverage: '全24教材の公開導線、母数、暗記・テスト記録、参照リンク',
+    coverage: '全25教材の公開導線、母数、暗記・テスト記録、参照リンク',
   },
   english: {
     command: 'npm run audit:english',
@@ -127,6 +127,10 @@ const GATE_CATALOG = Object.freeze({
     command: 'node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-work.test.mjs',
     coverage: '入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画',
   },
+  basicReading: {
+    command: 'npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-screens.test.mjs',
+    coverage: '基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、画面（入口・級・長文・答え合わせ・記録）',
+  },
   juniorSocialScience: {
     command: 'node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs',
     coverage: '中学の社会・理科の全102単元（教科書の単元の並び）、重要語句1,151・演習918問、全選択肢・並べる項目の説明、数を入れる92問の検算と知識826問の読み直しの記録、常用漢字にない字の読み、画面（入口・単元・暗記・語句テスト・演習・出典）',
@@ -142,6 +146,7 @@ const CATEGORY_SPECIFIC_GATES = Object.freeze({
   dictation: ['english'],
   etymology: ['etymology'],
   reading: ['english', 'readingTranslations', 'extendedReading', 'questionFormats'],
+  'basic-reading': ['basicReading'],
   writing: ['english'],
   'koten-vocab': ['classicsKanbun'],
   'koten-grammar': ['classicsKanbun'],

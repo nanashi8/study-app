@@ -4,6 +4,11 @@ import { GRAMMAR_PRACTICE } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
 import { DICTATION_ITEMS } from '../data/dictation.js'
 import { ALL_PASSAGES } from '../data/passages.js'
+import {
+  BASIC_READING_PASSAGES,
+  BASIC_READING_QUESTIONS,
+  BASIC_READING_QUIZ_DOMAIN,
+} from '../data/basic-reading/index.js'
 import { WRITING_EXERCISES } from '../data/writing.js'
 import { KOTEN_WORDS } from '../data/koten.js'
 import { KOTEN_GRAMMAR } from '../data/koten-grammar.js'
@@ -137,6 +142,18 @@ export const LEARNING_CONTENTS = Object.freeze([
     'readingList',
     ALL_PASSAGES,
     (state) => state.readingsDone,
+  ),
+  // 基礎長文：学習は長文ごとの答え合わせ、テストはルールの問題ごと（1本に3問）で数える。
+  completionContent(
+    'basic-reading',
+    'english',
+    '基礎長文',
+    '本',
+    'basicReading',
+    BASIC_READING_PASSAGES,
+    (state) => state.readingsDone,
+    BASIC_READING_QUIZ_DOMAIN,
+    { quizItems: BASIC_READING_QUESTIONS, quizUnit: '問' },
   ),
   completionContent(
     'writing',

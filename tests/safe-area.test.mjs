@@ -356,7 +356,7 @@ test('画面下の操作バーはviewportへ固定せず、本文の外の足元
   }
 })
 
-test('下端に接する操作欄36実装・追従欄3件・読み上げ欄を共通退避領域が守る', () => {
+test('下端に接する操作欄37実装・追従欄3件・読み上げ欄を共通退避領域が守る', () => {
   const footerImplementations = sourceFiles.flatMap(({ path, source }) => (
     source.split('\n')
       .filter((line) => line.includes('shrink-0') && line.includes('border-t'))
@@ -374,7 +374,8 @@ test('下端に接する操作欄36実装・追従欄3件・読み上げ欄を�
 
   // 自作カードの登録欄の「やめる・登録する」とテストの「次の問題へ」で2つ、暗記カードの下の操作で1つ増えた（2026-09-30）。
   // 自作カードの編集で選んだカードの操作（書き換える・移す・統合・削除）の欄で1つ増えた（2026-09-30）。
-  assert.equal(footerImplementations.length, 36)
+  // 基礎長文の学習の「答え合わせ」「解き直す・次の長文へ」の欄で1つ増えた（2026-10-28）。
+  assert.equal(footerImplementations.length, 37)
   assert.equal(cardFooterUses, 9)
   // 自作カードの「写真から作る」の「選んだ◯枚を登録する」の欄で、追従欄が1つ増えた（2026-10-22。教科書から単語追加の欄と同じ形）。
   assert.equal(stickyBottomControls.length, 3)

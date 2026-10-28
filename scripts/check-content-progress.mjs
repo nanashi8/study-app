@@ -25,6 +25,7 @@ const expected = [
   ['dictation', 'src/screens/Dictation.jsx'],
   ['etymology', 'src/screens/Roots.jsx'],
   ['reading', 'src/screens/ReadingList.jsx'],
+  ['basic-reading', 'src/screens/BasicReading.jsx'],
   ['writing', 'src/screens/Writing.jsx'],
   ['koten-vocab', 'src/screens/KotenList.jsx'],
   ['koten-grammar', 'src/screens/KotenGrammar.jsx'],

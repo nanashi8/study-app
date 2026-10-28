@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-10-26T07:35:32.798Z",
+  "auditedAt": "2026-10-28T03:15:00.760Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
   "failures": [],
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
-    "categoryCount": 24,
-    "learningItemCount": 21582,
-    "quizItemCount": 21701,
+    "categoryCount": 25,
+    "learningItemCount": 21632,
+    "quizItemCount": 21851,
     "storedAndGeneratedQuestionPathCount": 8701,
     "storedAndGeneratedChoicePathCount": 33485,
-    "overallContentSha256": "7c691fc73f719614c5eaf2cc1a29ec1272f3203094ac0eb6873bf07d4a84b07c"
+    "overallContentSha256": "664a035d77ff82c9259000c48d999b27d9255c69e03176e759786c8e07d311f9"
   },
   "completionCriteria": [
-    "全24教材カテゴリのID・母数・重複・内容ハッシュが一致する",
+    "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
     "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
@@ -52,7 +52,7 @@
     },
     "routesAndProgress": {
       "command": "npm run audit:content-progress && npm run audit:links",
-      "coverage": "全24教材の公開導線、母数、暗記・テスト記録、参照リンク"
+      "coverage": "全25教材の公開導線、母数、暗記・テスト記録、参照リンク"
     },
     "english": {
       "command": "npm run audit:english",
@@ -110,13 +110,17 @@
       "command": "node --test tests/math-exam.test.mjs tests/math-exam-answers.test.mjs tests/math-work.test.mjs",
       "coverage": "入試演習の全単元の基礎・標準問題と出題の型、全解答欄の正解の検算、全問の計算の経過の穴埋め（行ごとの考え方・全タイルの説明・解答欄の正解に行き着くこと）と読んだ記録、図の条件と描画"
     },
+    "basicReading": {
+      "command": "npm run audit:basic-reading && node --test tests/basic-reading-content.test.mjs tests/basic-reading-vocab.test.mjs tests/basic-reading-screens.test.mjs",
+      "coverage": "基礎長文の5級×10本、30ルール×5級＝150のルールの学習（使う文・当てはめ方・4択と全選択肢の説明）、本文の全語の級と熟語、頻出テーマと級の語の分野、長さ、画面（入口・級・長文・答え合わせ・記録）"
+    },
     "juniorSocialScience": {
       "command": "node --test tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-screens.test.mjs",
       "coverage": "中学の社会・理科の全102単元（教科書の単元の並び）、重要語句1,151・演習918問、全選択肢・並べる項目の説明、数を入れる92問の検算と知識826問の読み直しの記録、常用漢字にない字の読み、画面（入口・単元・暗記・語句テスト・演習・出典）"
     }
   },
   "auditImplementation": {
-    "sha256": "10dc81b1a796fb4de2cfa4bd522101bddc2e623bf5de3ab0408efbe0d4002832",
+    "sha256": "5290319d2ab91eb9a953583f3e09b6b1e3e96f863191fcb505ff4423c13cd081",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -173,6 +177,9 @@
       "tests/answer-reselect.test.mjs",
       "tests/app-navigation.test.mjs",
       "tests/app-recovery.test.mjs",
+      "tests/basic-reading-content.test.mjs",
+      "tests/basic-reading-screens.test.mjs",
+      "tests/basic-reading-vocab.test.mjs",
       "tests/battle-cinematic-visuals.test.mjs",
       "tests/battle-standing-visuals.test.mjs",
       "tests/bottom-dock.test.mjs",
@@ -579,6 +586,29 @@
         "readingTranslations",
         "extendedReading",
         "questionFormats"
+      ],
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "basic-reading",
+      "group": "english",
+      "label": "基礎長文",
+      "learningUnit": "本",
+      "quizUnit": "問",
+      "learningItemCount": 50,
+      "quizItemCount": 150,
+      "learningIdOrderSha256": "a23b635e58417276ffc536d0098b73135e34dd5bef19042e5496eedc8a75d58a",
+      "quizIdOrderSha256": "c9f34a4224b78c40809acf8548dd9bfa3e6f05970f0d01f19bc5dea3d10633be",
+      "contentSha256": "3bd99e0f725a4451f531bbd6a30f7a734ed1e3d453ec121cb93213d789057e28",
+      "auditGateIds": [
+        "inventory",
+        "coreData",
+        "behavior",
+        "learnerCopy",
+        "routesAndProgress",
+        "basicReading"
       ],
       "result": "pass",
       "failureCount": 0,

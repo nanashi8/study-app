@@ -12,7 +12,7 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('公開中の全88ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
+test('公開中の全90ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -20,7 +20,7 @@ test('公開中の全88ルートは共通の可読性レイヤー・上部戻る
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 88)
+  assert.equal(routeCount, 90)
   assert.match(app, /<AppShell>/)
   assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.match(shell, /study-app-surface/)
@@ -83,7 +83,7 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
 
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['vocab', 'phrases', 'grammar', 'listening', 'dictation', 'reading', 'writing', 'dictionary', 'etymology'],
+    ['vocab', 'phrases', 'grammar', 'listening', 'dictation', 'reading', 'basic-reading', 'writing', 'dictionary', 'etymology'],
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
@@ -94,7 +94,7 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
   assert.match(home, /grid grid-cols-1 gap-2\.5"/)
   assert.doesNotMatch(home, /sm:grid-cols/)
   assert.doesNotMatch(home, /flex-1 truncate font-display/)
-  const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '英作文', '英和辞書', '語源']
+  const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '基礎長文', '英作文', '英和辞書', '語源']
   let lastIndex = -1
   for (const label of orderedLabels) {
     const index = home.indexOf(`label: '${label}'`)

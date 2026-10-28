@@ -62,7 +62,7 @@ test('値を持つ教材は、メニューの教材の行と画面の持ち主�
   )
   assert.deepEqual(Object.keys(SCOPE_SCREENS).sort(), [...SETTING_SCOPES].sort())
   assert.deepEqual(ENGLISH_SETTING_SCOPES, [
-    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening', 'diagnostic', 'dictation',
+    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'basicReading', 'phrases', 'grammar', 'listening', 'diagnostic', 'dictation',
   ])
   // 1つの画面の持ち主は1教材だけ。共通の画面は持ち主を持たない。
   const owned = Object.values(SCOPE_SCREENS).flat()

@@ -135,7 +135,7 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   assert.match(advisor, /data-advisor-next-unit/)
   const expectedScreens = [
     'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
-    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
+    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'basicReading', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation', 'vocabCamera', 'wordRequests',
     // 自作カードは、区切り「カード自作」に置く（2026-09-30 利用者「カード自作のセクションを作るか？」）。
     'customWords',
@@ -154,9 +154,9 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [8, 8, 6, 1, 4, 2, 1],
+    [8, 9, 6, 1, 4, 2, 1],
   )
-  assert.equal(APP_MENU_ITEMS.length, 30)
+  assert.equal(APP_MENU_ITEMS.length, 31)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
@@ -260,7 +260,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   // 学ぶ内容の行だけが設定を開く。ホーム・道具・保存・記録・設定の行は押すとそのまま開く。
   assert.deepEqual(APP_MENU_CONTENT_ITEMS.map((item) => item.screen), [
     'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
-    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
+    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'basicReading', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation',
   ])
   assert.equal(APP_MENU_ITEMS.find((item) => item.screen === 'portal').settings, undefined)
@@ -282,15 +282,15 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   // 読み上げる範囲は、その暗記カードを開く教材だけ。
   assert.deepEqual(screensUsing('vocabMix'), [
     'home', 'mathMap', 'kotenList', 'kanbunHome', 'socialHome', 'scienceHome', 'literatureLibrary',
-    'vocabLevels', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening', 'dictation',
+    'vocabLevels', 'writing', 'roots', 'readingList', 'basicReading', 'phrases', 'grammar', 'listening', 'dictation',
   ])
   assert.deepEqual(
     screensUsing('ttsJapaneseVoiceURI'),
-    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
+    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'basicReading', 'phrases'],
   )
   assert.deepEqual(
     screensUsing('speechRange'),
-    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
+    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'basicReading', 'phrases'],
   )
   assert.deepEqual(screensUsing('speechRange'), screensUsing('autoSpeak').filter((screen) => screen !== 'dictation'))
   assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・出題バランス・読み上げ')
@@ -345,6 +345,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
       'screens/ReadingList', 'screens/ReadingPrep', 'screens/Reader', 'screens/ReadingSummary', 'screens/SceneBundles',
       'components/ExtendedReader', 'components/LongSentenceTranslation', 'components/SceneBundles',
     ],
+    basicReading: ['screens/BasicReading', 'screens/BasicReadingLesson'],
     phrases: ['screens/Phrases', 'screens/PhraseStudy', 'screens/PhraseQuiz'],
     grammar: [
       'screens/Grammar', 'screens/GrammarReference', 'screens/GrammarStrandReference', 'screens/GrammarQuiz',
@@ -504,7 +505,7 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全33 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -521,8 +522,9 @@ test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由
   // 2026-09-29、名作の文を押したときの一文の解説（components/LiteratureSentenceSheet.jsx）で1つ増えた。
   // 2026-09-30、自作カードの一覧のカード（英単語の発音ボタン）は画面から部品（components/CustomCardItems.jsx）へ移った。
   // 2026-10-21、熟語・構文の一覧の詳細シートを部品（components/PhraseDetailSheet.jsx）へ移し、単語の熟語・構文カードと共有したので画面は 20 から 19。
-  assert.equal(speechUi.length, 32)
-  assert.equal(screenCount, 19)
+  // 2026-10-28、基礎長文の学習（screens/BasicReadingLesson.jsx の全文の読み上げ）で 32 から 33、画面は 19 から 20。
+  assert.equal(speechUi.length, 33)
+  assert.equal(screenCount, 20)
   assert.ok(speechUi.some(({ path }) => path === 'components/PhraseDetailSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/CustomCardItems.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureSentenceSheet.jsx'))

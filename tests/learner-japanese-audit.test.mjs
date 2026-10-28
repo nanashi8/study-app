@@ -149,7 +149,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （requests/2026-10-26-lookalike-word-cards.json）。
   // 2026-10-26、使い分けカードを関連語の欄からつなぐ部品（src/components/UsageGuideLink.jsx）と、カードを語・熟語から引く
   // src/lib/usageGuides.js で 359 から 361 ファイルになった（requests/2026-10-26-usage-guide-cards.json）。
-  assert.equal(result.learnerFiles, 361)
+  // 2026-10-28、基礎長文の画面2つ（src/screens/BasicReading.jsx・BasicReadingLesson.jsx）と src/lib/basicReading.js で
+  // 361 から 364 ファイルになった（requests/2026-10-28-basic-reading.json）。
+  assert.equal(result.learnerFiles, 364)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
@@ -169,20 +171,22 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // mathExamApproach.js）を外し、穴埋めの部品（src/components/MathWork.jsx・src/lib/mathWork.js）を足したのでファイル数は変わらず、
   // 学習者画面の日本語が 18430 から 18426（重複なし 13756 から 13752）になった（requests/2026-10-25-math-work-fill.json）。
   // 2026-10-26、使い分けカードの「このカードで比べる語」と行のボタン「使い分けカード：」で 18426 から 18428 になった。
-  assert.equal(result.learnerJapaneseEntries, 18428)
+  // 2026-10-28、基礎長文の画面の文とメニュー・英語アプリの入口で 18428 から 18516 になった（requests/2026-10-28-basic-reading.json）。
+  assert.equal(result.learnerJapaneseEntries, 18516)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
   // 重複なしが 13751 から 13752 になった（requests/2026-10-26-lookalike-word-cards.json）。
   // 同じく使い分けカードの2文で、重複なしが 13752 から 13754 になった（requests/2026-10-26-usage-guide-cards.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 13754)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13801)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
   // 2026-10-26、単語カードの級の印の共通の部品（src/components/WordLevelBadge.jsx）で 867 から 868 ファイルになった。
   // 2026-10-26、品詞バッジの共通の部品（src/components/PosBadge.jsx）で 868 から 869 ファイルになった。
   // 2026-10-26、使い分けカードの台帳・部品・調査の道具（usage-guide-cards.js・usage-guides.js・usageGuides.js・UsageGuideLink.jsx）で 869 から 873 ファイルになった。
-  assert.equal(result.sourceFiles, 873)
+  // 2026-10-28、基礎長文の教材（src/data/basic-reading の6本）・画面2つ・lib で 873 から 882 ファイルになった。
+  assert.equal(result.sourceFiles, 882)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
@@ -192,7 +196,8 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （requests/2026-10-25-math-work-fill.json）。
   // 2026-10-26、候補の組を全件読んで足した使い分けカード152枚と、解説の英単語の意味の台帳で 251704 から 253239 になった
   // （requests/2026-10-26-usage-guide-cards.json）。
-  assert.equal(result.sourceJapaneseEntries, 253239)
+  // 2026-10-28、基礎長文50本の和訳・ルールの学習の文で 253239 から 255344 になった（requests/2026-10-28-basic-reading.json）。
+  assert.equal(result.sourceJapaneseEntries, 255344)
   assert.equal(result.issues.length, 0)
 })
 

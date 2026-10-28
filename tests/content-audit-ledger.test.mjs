@@ -4,17 +4,18 @@ import test from 'node:test'
 
 const readJson = async (relative) => JSON.parse(await readFile(new URL(relative, import.meta.url), 'utf8'))
 
-test('全教材監査台帳は24カテゴリの母数・ゲート・ハッシュ・合否を保持する', async () => {
+test('全教材監査台帳は25カテゴリの母数・ゲート・ハッシュ・合否を保持する', async () => {
   const ledger = await readJson('../docs/audits/content-audit-ledger.json')
   assert.equal(ledger.schemaVersion, 1)
   assert.equal(ledger.result, 'pass')
   assert.equal(ledger.failureCount, 0)
   // 2026-09-30、中学の社会・理科（重要語句・演習の4カテゴリ、2,069件）で24カテゴリになった。
-  assert.equal(ledger.scope.categoryCount, 24)
-  assert.equal(ledger.categories.length, 24)
-  assert.equal(ledger.scope.learningItemCount, 21_582)
-  // 2026-10-25、数学の歴史のテスト252問を削除した。
-  assert.equal(ledger.scope.quizItemCount, 21_701)
+  // 2026-10-28、基礎長文（50本・ルールの問題150問）で25カテゴリになった（requests/2026-10-28-basic-reading.json）。
+  assert.equal(ledger.scope.categoryCount, 25)
+  assert.equal(ledger.categories.length, 25)
+  assert.equal(ledger.scope.learningItemCount, 21_632)
+  // 2026-10-25、数学の歴史のテスト252問を削除した。2026-10-28、基礎長文のルールの問題150問を足した。
+  assert.equal(ledger.scope.quizItemCount, 21_851)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
