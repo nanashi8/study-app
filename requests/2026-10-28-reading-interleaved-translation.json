@@ -1,0 +1,30 @@
+{
+  "id": "2026-10-28-reading-interleaved-translation",
+  "title": "基礎長文と長文の本文の和訳ONを、英文と和訳を一文ごとに交互に並べる表示にする",
+  "asked": [
+    "本文を読むの和訳ONでは英文と和訳を一文ごとに交互に並べたほうが見やすくないですか？",
+    "長文も同じように交互にそろえなさい。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "interleaved-every-sentence",
+      "text": "和訳ONのとき、本文のどの文も英文のすぐ下にその文の和訳が出て、英文と和訳が一文ごとに交互に並ぶ（段落ごとにまとめた和訳は出さない）。英文を押すと一文の構文解説が開く・重点語を押せるなど、和訳OFFのときの操作は変わらない。和訳OFFでは今までどおり英文だけを段落で読む。375px の幅で崩れない",
+      "population": "基礎長文50本の全611文、長文（長文読解）の全42本（通常の長文38本と語彙強化ロングリーディング4本の全節）の全文",
+      "check": "node --test tests/reading-interleaved-translation.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-28: tests/reading-interleaved-translation.test.mjs（375px の Chromium）で、和訳ONのとき基礎長文50本の全611文と長文読解42本（通常38本・語彙強化4本の全節）の全文が、英文のすぐ下にその文の和訳を置いて一文ごとに交互に並び、英文を押すと一文の構文解説が開き、和訳OFFでは英文だけになり、横にはみ出さないことを確かめた。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で基礎長文と長文の和訳ONが交互の表示になることを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の基礎長文・長文の本文の画面",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-interleaved-translation.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone で流す npm run audit:all-content の終わり"
+    }
+  ]
+}

@@ -396,24 +396,46 @@ function BasicReadingLesson({ passageId }) {
           <div className="space-y-4 rounded-3xl bg-white p-5 shadow-card" data-basic-reading-passage-text>
             {paragraphs.map((paragraph, paragraphIndex) => (
               <section key={paragraphIndex}>
-                <p className="text-lg leading-loose text-ink">
-                  {paragraph.map(({ item, index }) => (
-                    <span key={index}>
-                      <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => openSentence(index)}
-                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                        data-basic-reading-sentence={index + 1}
-                      >
-                        {item.en}
-                      </button>{' '}
-                    </span>
-                  ))}
-                </p>
-                {showJa && (
-                  <p className="mt-1.5 text-sm font-bold leading-relaxed text-ink/55">
-                    {paragraph.map(({ item }) => item.ja).join('')}
+                {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
+                {showJa ? (
+                  <div className="space-y-3">
+                    {paragraph.map(({ item, index }) => (
+                      <div key={index} data-sentence-translation-pair>
+                        <p className="text-lg leading-loose text-ink">
+                          <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => openSentence(index)}
+                            className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                            data-basic-reading-sentence={index + 1}
+                          >
+                            {item.en}
+                          </button>
+                        </p>
+                        <p
+                          className="mt-0.5 border-l-2 border-brand-200 pl-2 text-sm font-bold leading-relaxed text-ink/55"
+                          data-sentence-translation
+                        >
+                          {item.ja}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-lg leading-loose text-ink">
+                    {paragraph.map(({ item, index }) => (
+                      <span key={index}>
+                        <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => openSentence(index)}
+                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                          data-basic-reading-sentence={index + 1}
+                        >
+                          {item.en}
+                        </button>{' '}
+                      </span>
+                    ))}
                   </p>
                 )}
               </section>

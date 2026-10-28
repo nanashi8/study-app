@@ -310,34 +310,42 @@ export function ExtendedReader({ passage }) {
           <div className="space-y-5 text-[17px] leading-[2.05] text-ink">
             {paragraphs.map((paragraph, paragraphIndex) => (
               <section key={`${section.id}:${paragraphIndex}`} data-extended-reading-paragraph>
-                <p>
-                  {paragraph.map((sentence) => (passage.annotated ? (
-                    <span key={sentence.reviewId}>
-                      <button
-                        type="button"
-                        onClick={() => openSentence(passage.sentences.indexOf(sentence))}
-                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                      >
-                        {sentence.en}
-                      </button>{' '}
-                    </span>
-                  ) : (
-                    <TappableSentence
-                      key={sentence.reviewId}
-                      sentence={sentence}
-                      onWord={openWord}
-                      sectionTargetIds={sectionTargetIds}
-                    />
-                  )))}
-                </p>
-                {showJa && (
-                  <p
-                    lang="ja"
-                    className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-3 py-2 text-sm font-bold leading-relaxed text-amber-950"
-                  >
-                    <MeaningText>{paragraph.map((sentence) => sentence.ja).join(' ')}</MeaningText>
-                  </p>
-                )}
+                {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
+                <div className={showJa ? 'space-y-3' : undefined}>
+                  {paragraph.map((sentence) => {
+                    const english = passage.annotated ? (
+                      <span key={sentence.reviewId}>
+                        <button
+                          type="button"
+                          onClick={() => openSentence(passage.sentences.indexOf(sentence))}
+                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                        >
+                          {sentence.en}
+                        </button>{' '}
+                      </span>
+                    ) : (
+                      <TappableSentence
+                        key={sentence.reviewId}
+                        sentence={sentence}
+                        onWord={openWord}
+                        sectionTargetIds={sectionTargetIds}
+                      />
+                    )
+                    if (!showJa) return english
+                    return (
+                      <div key={sentence.reviewId} data-sentence-translation-pair>
+                        <p>{english}</p>
+                        <p
+                          lang="ja"
+                          className="mt-1 border-l-2 border-amber-300 bg-amber-50/70 px-3 py-1.5 text-sm font-bold leading-relaxed text-amber-950"
+                          data-sentence-translation
+                        >
+                          <MeaningText>{sentence.ja}</MeaningText>
+                        </p>
+                      </div>
+                    )
+                  })}
+                </div>
               </section>
             ))}
           </div>

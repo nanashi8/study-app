@@ -207,18 +207,40 @@ export function ReaderScreen() {
           <div className="space-y-6 text-lg leading-loose text-ink">
             {paragraphs.map((paragraph, paragraphIndex) => (
               <section key={paragraphIndex}>
-                <p>
-                  {paragraph.map(({ item, index }) => (
-                    <span key={index}>
-                      <button
-                        onClick={() => openSentence(index)}
-                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                      >
-                        {item.en}
-                      </button>{' '}
-                    </span>
-                  ))}
-                </p>
+                {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
+                {showJa ? (
+                  <div className="space-y-3">
+                    {paragraph.map(({ item, index }) => (
+                      <div key={index} data-sentence-translation-pair>
+                        <button
+                          onClick={() => openSentence(index)}
+                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                        >
+                          {item.en}
+                        </button>
+                        <p
+                          className="mt-1 border-l-2 border-brand-200 pl-2 text-sm font-bold leading-relaxed text-ink/55"
+                          data-sentence-translation
+                        >
+                          {item.ja}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>
+                    {paragraph.map(({ item, index }) => (
+                      <span key={index}>
+                        <button
+                          onClick={() => openSentence(index)}
+                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                        >
+                          {item.en}
+                        </button>{' '}
+                      </span>
+                    ))}
+                  </p>
+                )}
                 {showParagraphGuide && paragraphGuides[paragraphIndex] && (
                   <div className="mt-2 border-l-2 border-emerald-300 bg-emerald-50/60 px-3 py-2 text-sm leading-relaxed">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -239,15 +261,6 @@ export function ReaderScreen() {
               </section>
             ))}
           </div>
-          {showJa && (
-            <div className="mt-4 space-y-3 border-t border-brand-100 pt-4 text-sm font-bold leading-relaxed text-ink/55">
-              {paragraphs.map((paragraph, paragraphIndex) => (
-                <p key={paragraphIndex}>
-                  {paragraph.map(({ item }) => item.ja).join(' ')}
-                </p>
-              ))}
-            </div>
-          )}
         </div>
         <p className="mt-3 px-1 text-center text-xs font-bold text-ink/40">
           一文をタップすると、英語と対応する日本語、SVOCM、文法上の注意を確認できます。
