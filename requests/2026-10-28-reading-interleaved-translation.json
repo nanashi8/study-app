@@ -8,7 +8,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "interleaved-every-sentence",
@@ -23,8 +23,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で基礎長文と長文の和訳ONが交互の表示になることを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文・長文の本文の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-interleaved-translation.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone で流す npm run audit:all-content の終わり"
+      "status": "done",
+      "verifiedBy": "2026-10-28: クリーンな clone で npm run audit:all-content（全テスト1,535件・全検査・ビルド・台帳）を通して 75461962 を push。公開の処理は success。公開版で基礎長文（わたしの家族・12文）と長文（リナのノート・9文）の和訳ONが、英文と和訳を一文ごとに交互に並べる表示になることを確かめた。検証用の clone は消した。"
     }
   ]
 }
