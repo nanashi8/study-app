@@ -7,7 +7,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "top-bar-stays-on-every-screen",
@@ -22,8 +22,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文で「ルールの問題へ」と文のタップのあとも上の帯が見えることを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-top-bar.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 b97qxabto）の終了"
+      "status": "done",
+      "verifiedBy": "2026-10-28: クリーンな clone で npm run audit:all-content（全テスト1,538件・失敗0・全検査・ビルド・台帳）を通して 51b99f34 を push。公開の処理（run 40655211715）は success。公開版の基礎長文（わたしの家族）で「ルールの問題へ」と第5文のタップのあとも、外枠は動かず（はみ出し0px）上の帯の「戻る」が画面の上（8px）にあることを確かめた。検証用の clone は消した。"
     }
   ]
 }
