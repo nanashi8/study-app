@@ -7,7 +7,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "structure-ledger-every-sentence",
@@ -30,8 +30,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で基礎長文の文を押して一文の構文解説が開くことを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-structures.test.mjs tests/basic-reading-screens.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone で流している npm run audit:all-content の終わり。終わったら commit・push・公開版の確認へ進む"
+      "status": "done",
+      "verifiedBy": "2026-10-28: クリーンな clone で npm run audit:all-content（全テスト1,532件・全検査・ビルド・台帳25カテゴリ）を通して a4094ca1 を push。公開の処理は success。公開版で基礎長文（2級・富岡製糸場）の第4文を押すと、台帳から作った一文の構文解説（語順訳5まとまり・文型・4/11の文の移動）が開くことを確かめた。検証用の clone は消した。"
     }
   ]
 }
