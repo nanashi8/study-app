@@ -20,6 +20,7 @@ import { cx } from '../components/ui.jsx'
 import { ReadingComprehensionCheck } from '../components/ReadingComprehensionCheck.jsx'
 import { ExtendedReader } from '../components/ExtendedReader.jsx'
 import { ReadingSentenceDetail } from '../components/ReadingSentenceDetail.jsx'
+import { SentenceTap } from '../components/SentenceTap.jsx'
 
 // 和訳と段落解説の表示は params に置き、語の詳細などから戻ったときも同じ表示・同じ位置から読み続ける。
 const readShown = (value) => value === true
@@ -204,20 +205,21 @@ export function ReaderScreen() {
           </section>
         )}
         <div className="rounded-3xl bg-white p-5 shadow-card">
-          <div className="space-y-6 text-lg leading-loose text-ink">
+          {/* 段落の間は文の間より大きく空け、段落の第1文を字下げする（和訳ON・OFFとも）。 */}
+          <div className="space-y-8 text-lg leading-loose text-ink">
             {paragraphs.map((paragraph, paragraphIndex) => (
-              <section key={paragraphIndex}>
+              <section key={paragraphIndex} data-reading-paragraph>
                 {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
                 {showJa ? (
                   <div className="space-y-3">
-                    {paragraph.map(({ item, index }) => (
+                    {paragraph.map(({ item, index }, sentenceIndex) => (
                       <div key={index} data-sentence-translation-pair>
-                        <button
-                          onClick={() => openSentence(index)}
-                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                        <p
+                          className={sentenceIndex === 0 ? 'indent-[1.5em]' : undefined}
+                          data-reading-paragraph-first={sentenceIndex === 0 ? '' : undefined}
                         >
-                          {item.en}
-                        </button>
+                          <SentenceTap onOpen={() => openSentence(index)}>{item.en}</SentenceTap>
+                        </p>
                         <p
                           className="mt-1 border-l-2 border-brand-200 pl-2 text-sm font-bold leading-relaxed text-ink/55"
                           data-sentence-translation
@@ -228,15 +230,10 @@ export function ReaderScreen() {
                     ))}
                   </div>
                 ) : (
-                  <p>
+                  <p className="indent-[1.5em]" data-reading-paragraph-first>
                     {paragraph.map(({ item, index }) => (
                       <span key={index}>
-                        <button
-                          onClick={() => openSentence(index)}
-                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                        >
-                          {item.en}
-                        </button>{' '}
+                        <SentenceTap onOpen={() => openSentence(index)}>{item.en}</SentenceTap>{' '}
                       </span>
                     ))}
                   </p>

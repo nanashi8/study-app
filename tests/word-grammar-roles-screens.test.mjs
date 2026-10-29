@@ -114,7 +114,7 @@ test('参考書へのリンクを押すと単元のページが開き、戻る�
 test('長文と参考書の本文で語を押すと、関係詞の意味が働きつきで出る', async () => {
   // 長文：older people who knew … の who
   await ui.open('reader', { passageId: 'p_3_school_garden' })
-  await ui.page.locator('.study-app-content button', { hasText: 'older people who knew many useful farming tips' }).first().click()
+  await ui.page.locator('.study-app-content [data-reading-sentence-tap]', { hasText: 'older people who knew many useful farming tips' }).first().click()
   await ui.page.locator('[data-reading-role-sentence] button', { hasText: /^who$/u }).first().click()
   await ui.page.waitForFunction(() => document.body.innerText.includes('（関係代名詞）〜する(人)'))
   assert.ok((await ui.page.evaluate(() => document.body.innerText)).includes('（疑問詞）誰が・誰'))

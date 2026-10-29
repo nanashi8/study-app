@@ -19,6 +19,7 @@ import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
 import { analyzeBasicReadingSentence, basicReadingSentence, basicReadingWordMeaning } from '../lib/basicReadingSentence.js'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { ReadingSentenceDetail } from '../components/ReadingSentenceDetail.jsx'
+import { SentenceTap } from '../components/SentenceTap.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -324,27 +325,26 @@ function BasicReadingLesson({ passageId }) {
           <p className="px-1 text-xs font-bold text-ink/45">
             {'文を押すと、前から読む訳と文の組み立ての解説が開きます。'}
           </p>
-          <div className="space-y-4 rounded-3xl bg-white p-5 shadow-card" data-basic-reading-passage-text>
+          {/* 段落の間は文の間より大きく空け、段落の第1文を字下げする（和訳ON・OFFとも。長文と同じ）。 */}
+          <div className="space-y-8 rounded-3xl bg-white p-5 text-lg leading-loose text-ink shadow-card" data-basic-reading-passage-text>
             {paragraphs.map((paragraph, paragraphIndex) => (
-              <section key={paragraphIndex}>
+              <section key={paragraphIndex} data-reading-paragraph>
                 {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
                 {showJa ? (
                   <div className="space-y-3">
-                    {paragraph.map(({ item, index }) => (
+                    {paragraph.map(({ item, index }, sentenceIndex) => (
                       <div key={index} data-sentence-translation-pair>
-                        <p className="text-lg leading-loose text-ink">
+                        <p
+                          className={sentenceIndex === 0 ? 'indent-[1.5em]' : undefined}
+                          data-reading-paragraph-first={sentenceIndex === 0 ? '' : undefined}
+                        >
                           <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => openSentence(index)}
-                            className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                            data-basic-reading-sentence={index + 1}
-                          >
+                          <SentenceTap onOpen={() => openSentence(index)} data-basic-reading-sentence={index + 1}>
                             {item.en}
-                          </button>
+                          </SentenceTap>
                         </p>
                         <p
-                          className="mt-0.5 border-l-2 border-brand-200 pl-2 text-sm font-bold leading-relaxed text-ink/55"
+                          className="mt-1 border-l-2 border-brand-200 pl-2 text-sm font-bold leading-relaxed text-ink/55"
                           data-sentence-translation
                         >
                           {item.ja}
@@ -353,18 +353,13 @@ function BasicReadingLesson({ passageId }) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-lg leading-loose text-ink">
+                  <p className="indent-[1.5em]" data-reading-paragraph-first>
                     {paragraph.map(({ item, index }) => (
                       <span key={index}>
                         <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                        <button
-                          type="button"
-                          onClick={() => openSentence(index)}
-                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                          data-basic-reading-sentence={index + 1}
-                        >
+                        <SentenceTap onOpen={() => openSentence(index)} data-basic-reading-sentence={index + 1}>
                           {item.en}
-                        </button>{' '}
+                        </SentenceTap>{' '}
                       </span>
                     ))}
                   </p>

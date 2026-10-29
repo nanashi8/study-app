@@ -127,7 +127,7 @@ after(async () => {
 
 // 画面に並ぶ「英文と和訳の組」を、上から順に読む。
 const pairs = () => page.evaluate(() => [...document.querySelectorAll('[data-sentence-translation-pair]')].map((pair) => ({
-  en: pair.querySelector('button')?.innerText.replace(/\s+/g, ' ').trim() ?? pair.innerText,
+  en: pair.querySelector('[data-reading-sentence-tap]')?.innerText.replace(/\s+/g, ' ').trim() ?? pair.innerText,
   ja: pair.querySelector('[data-sentence-translation]')?.innerText.replace(/\s+/g, ' ').trim() ?? '',
 })))
 const norm = (text) => String(text).replace(/\s+/g, ' ').trim()
@@ -189,7 +189,7 @@ test('長文読解42本の全文：和訳ONで英文と和訳が一文ごとに�
   assert.equal(checked, total)
   // 通常の長文は、交互に並べた英文を押すと一文の構文解説が開く。和訳OFFでは英文だけ。
   await open('reader', { passageId: ALL_PASSAGES[0].id, showJa: true })
-  await page.locator('[data-sentence-translation-pair] button').first().click()
+  await page.locator('[data-sentence-translation-pair] [data-reading-sentence-tap]').first().click()
   await page.waitForSelector('[data-reading-role-card="direct-labels"]')
   await open('reader', { passageId: ALL_PASSAGES[0].id, showJa: false })
   assert.equal((await pairs()).length, 0, '和訳OFFでは英文だけ')

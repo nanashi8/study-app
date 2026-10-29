@@ -1,0 +1,37 @@
+{
+  "id": "2026-10-29-reading-paragraph-layout",
+  "title": "基礎長文と長文の本文で、和訳OFF・ONのどちらでも段落が分かるように、段落の間に空白を設け、段落の第1文を字下げする",
+  "asked": [
+    "基礎長文を長文のように、和訳OFFの状態でパラグラフが分からないので分かるように表示しなさい。基礎長文と長文を、和訳ONの状態でもパラグラフが分かるように段落間に空白を設け、段落の第1文を字下げしなさい。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "paragraphs-visible-off",
+      "text": "和訳OFFでは、本文を段落ごとのまとまりで読める：段落の中の文は改行されずに続けて流れ（文ごとに行が分かれない）、段落と段落の間には文の行間よりはっきり大きい空白があり、段落の第1文は字下げされる。文を押すと一文の構文解説が開く操作は変わらない",
+      "population": "基礎長文の全50本の全段落（全611文）と、長文（長文読解）の全42本（通常の長文38本・語彙強化ロングリーディング4本の全節）の全段落",
+      "check": "node --test tests/reading-paragraph-layout.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-29: tests/reading-paragraph-layout.test.mjs（375px の Chromium）で、和訳OFFの基礎長文50本（全611文）と長文42本（通常38本・語彙強化4本の全節）の全段落について、段落の数が本文の段落と一致し、段落の第1文が字下げ（1.5字）され、段落の間が28px以上空き、段落の文の箱がすべて inline で文が続けて流れることを確かめた。原因は、文を押せるようにした button がブラウザでは必ず inline-block になり、文ごとに箱が分かれて1文ずつ行が改まっていたこと。文は文字の流れに乗る span（role=button、Enter・スペースでも開く SentenceTap）にした。文を押すと一文の構文解説が開くことは tests/reading-interleaved-translation.test.mjs・basic-reading-screens（全611文）・basic-reading-top-bar で確かめた。"
+    },
+    {
+      "id": "paragraphs-visible-on",
+      "text": "和訳ONでは、英文と和訳を一文ごとに交互に並べたまま、段落と段落の間に、段落の中の文と文の間よりはっきり大きい空白があり、段落の第1文の英文が字下げされる",
+      "population": "基礎長文の全50本の全段落と、長文の全42本（通常38本・語彙強化4本の全節）の全段落",
+      "check": "node --test tests/reading-paragraph-layout.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-29: 同じテストで、和訳ONの基礎長文50本と長文42本（語彙強化4本は全節）の全段落について、英文と和訳の組が段落の文の数だけ並び、段落の第1文の英文が字下げされ、段落の間が28px以上かつ段落の中の組の間より12px以上大きいことを確かめた。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文と長文で、和訳OFF・ONの段落の空白と字下げを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の基礎長文・長文の本文",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-paragraph-layout.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content の終了"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import { useWordBookSlot, wordBookSlotButtonText } from './WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Button, Chip, IconButton, cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
+import { SentenceTap } from './SentenceTap.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -200,6 +201,13 @@ export function ExtendedReader({ passage }) {
     })
   }
 
+  // 本文の1文。注釈つきの長文は押すと一文の構文解説、ほかは重点語を押せる文。
+  const sentenceText = (sentence) => (passage.annotated ? (
+    <SentenceTap onOpen={() => openSentence(passage.sentences.indexOf(sentence))}>{sentence.en}</SentenceTap>
+  ) : (
+    <TappableSentence sentence={sentence} onWord={openWord} sectionTargetIds={sectionTargetIds} />
+  ))
+
   return (
     <div
       className="flex h-full flex-col"
@@ -307,34 +315,21 @@ export function ExtendedReader({ passage }) {
         </section>
 
         <article className="mt-3 rounded-3xl bg-white p-5 shadow-card" lang="en">
-          <div className="space-y-5 text-[17px] leading-[2.05] text-ink">
+          {/* 段落の間は文の間より大きく空け、段落の第1文を字下げする（和訳ON・OFFとも）。 */}
+          <div className="space-y-8 text-[17px] leading-[2.05] text-ink">
             {paragraphs.map((paragraph, paragraphIndex) => (
-              <section key={`${section.id}:${paragraphIndex}`} data-extended-reading-paragraph>
+              <section key={`${section.id}:${paragraphIndex}`} data-extended-reading-paragraph data-reading-paragraph>
                 {/* 和訳ONは英文と和訳を一文ごとに交互に並べ、OFFは英文だけを段落で読む。 */}
-                <div className={showJa ? 'space-y-3' : undefined}>
-                  {paragraph.map((sentence) => {
-                    const english = passage.annotated ? (
-                      <span key={sentence.reviewId}>
-                        <button
-                          type="button"
-                          onClick={() => openSentence(passage.sentences.indexOf(sentence))}
-                          className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
-                        >
-                          {sentence.en}
-                        </button>{' '}
-                      </span>
-                    ) : (
-                      <TappableSentence
-                        key={sentence.reviewId}
-                        sentence={sentence}
-                        onWord={openWord}
-                        sectionTargetIds={sectionTargetIds}
-                      />
-                    )
-                    if (!showJa) return english
-                    return (
+                {showJa ? (
+                  <div className="space-y-3">
+                    {paragraph.map((sentence, sentenceIndex) => (
                       <div key={sentence.reviewId} data-sentence-translation-pair>
-                        <p>{english}</p>
+                        <p
+                          className={sentenceIndex === 0 ? 'indent-[1.5em]' : undefined}
+                          data-reading-paragraph-first={sentenceIndex === 0 ? '' : undefined}
+                        >
+                          {sentenceText(sentence)}
+                        </p>
                         <p
                           lang="ja"
                           className="mt-1 border-l-2 border-amber-300 bg-amber-50/70 px-3 py-1.5 text-sm font-bold leading-relaxed text-amber-950"
@@ -343,9 +338,15 @@ export function ExtendedReader({ passage }) {
                           <MeaningText>{sentence.ja}</MeaningText>
                         </p>
                       </div>
-                    )
-                  })}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="indent-[1.5em]" data-reading-paragraph-first>
+                    {paragraph.map((sentence) => (
+                      <span key={sentence.reviewId}>{sentenceText(sentence)}{' '}</span>
+                    ))}
+                  </p>
+                )}
               </section>
             ))}
           </div>
