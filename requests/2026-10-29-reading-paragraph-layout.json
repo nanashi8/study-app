@@ -7,7 +7,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "paragraphs-visible-off",
@@ -30,8 +30,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文と長文で、和訳OFF・ONの段落の空白と字下げを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文・長文の本文",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-paragraph-layout.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content の終了"
+      "status": "done",
+      "verifiedBy": "2026-10-29: クリーンな clone で npm run audit:all-content（全テスト1,545件・失敗0・全検査・ビルド・台帳）を通して ce89c94e を push（1回目の全監査は、長文の文を button で探していた tests/word-grammar-roles-screens.test.mjs が落ちたので、文の目印 data-reading-sentence-tap で探すように直して流し直した。push は1回目がネットの名前引きの失敗で届かず、2回目で届いた）。公開の処理（run 40813132362）は success。公開版の基礎長文（コアラはなぜよく眠るの？）で、和訳OFFは4段落の第1文が28.5px字下げされ段落の間が32px空き、文がすべて inline で続けて流れ、和訳ONは13組を並べたまま段落の間32px（組の間は12px）と字下げを確かめた。長文（リナのノート）の和訳OFFも3段落の字下げ・段落の間32px・9文が inline で流れることを確かめた。検証用の clone は消した。"
     }
   ]
 }
