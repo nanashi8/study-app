@@ -7,7 +7,7 @@
   "sessions": [
     "104af697-4c42-4c15-b776-a37a8a3122d1"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "two-entrances-per-passage",
@@ -46,8 +46,8 @@
       "text": "動く固定値・台帳（画面の数・メニュー・読み上げ・日本語の見直し台帳など）を合わせ、npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で基礎長文の「準備して読む」「本文から読む」と準備の画面を確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文の画面",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/basic-reading-prep.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content（2回目・裏の処理 bt6yfrgws。1回目は OCR のビルドのテストでフォントの先読みの知らせが1件出て止まり、そのファイルだけ流し直すと通った）の終了"
+      "status": "done",
+      "verifiedBy": "2026-10-29: 動いた固定値（91ルート・下端の操作欄38・学習者日本語の件数）と日本語の見直し台帳（何時間必要）を合わせ、クリーンな clone で npm run audit:all-content（全テスト1,543件・失敗0・全検査・ビルド・台帳）を通して c4f1a73a を push。1回目は OCR のビルドのテストでフォントの先読みの知らせが1件出て止まった（この変更と関係なく、そのファイルだけ流し直すと通った）ので、全監査を流し直して通した。公開の処理（run 40801830289）は success。公開版で準2級の10本すべてに「準備して読む」「本文から読む」が並び、職場体験のお知らせの準備にテーマの読み方（手順3つ）・読解ルール18件（問題で学ぶ3件に印）・単語と熟語・表現の暗記・テスト・一覧（どれも押せる）があり、「本文を読む」で本文が開き、本文の画面に「単語・熟語・表現」「読解ルール」の入口があり単語の欄がなく、上の帯の「戻る」が画面の上にあることを確かめた。検証用の clone は消した。"
     }
   ]
 }
