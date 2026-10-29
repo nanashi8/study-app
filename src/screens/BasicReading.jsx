@@ -12,7 +12,7 @@ import {
 } from '../data/basic-reading/index.js'
 import { getLevel } from '../data/levels.js'
 import { READING_RULES_BY_ID } from '../data/reading-rules.js'
-import { basicReadingWordCount } from '../lib/basicReading.js'
+import { basicReadingLevelWords, basicReadingPhrases, basicReadingWordCount } from '../lib/basicReading.js'
 import {
   contentQuizKey,
   normalizeContentQuizResults,
@@ -20,7 +20,7 @@ import {
   summarizeQuizItems,
 } from '../lib/contentProgress.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, Chip } from '../components/ui.jsx'
+import { Button, Card, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { ArrowRight, Book, Check } from '../components/Icons.jsx'
 
@@ -57,7 +57,7 @@ function LevelList({ navigate, readingsDone, quizResults }) {
         <ol className="mt-2 grid gap-1.5">
           {[
             '自分に合う級を選び、長文を1本選ぶ。',
-            '本文に出るその級の単語・熟語を確かめてから、本文を読む。',
+            '「準備して読む」で、テーマの読み方・読解ルールと、本文に出る単語・熟語を確かめてから読む。すぐ読むときは「本文から読む」。',
             'ルールを使って3問を解き、答え合わせで、この本文での使い方を確かめる。',
           ].map((text, index) => (
             <li key={text} className="flex gap-2 text-xs font-bold leading-relaxed text-ink/65">
@@ -151,14 +151,8 @@ function PassageList({ levelId, navigate, readingsDone, quizResults }) {
       {passages.map((passage, index) => {
         const result = passageResult(passage, readingsDone, quizResults)
         return (
-          <Card key={passage.id} className="overflow-hidden" data-return-row={passage.id}>
-            <button
-              type="button"
-              onClick={() => navigate('basicReadingLesson', { passageId: passage.id })}
-              className="flex w-full items-start gap-3 p-4 text-left active:bg-brand-50"
-              data-basic-reading-passage={passage.id}
-              aria-label={`${passage.titleJa}を学習する`}
-            >
+          <Card key={passage.id} className="overflow-hidden" data-return-row={passage.id} data-basic-reading-passage={passage.id}>
+            <div className="flex items-start gap-3 p-4">
               <span
                 className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl"
                 style={{ backgroundColor: `${level.color}22` }}
@@ -166,29 +160,52 @@ function PassageList({ levelId, navigate, readingsDone, quizResults }) {
               >
                 {passage.emoji}
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[10px] font-black text-ink/40">{index + 1}本目 ・ {BASIC_READING_KINDS[passage.kind]}</span>
-                <span className="block font-display text-base font-extrabold leading-snug text-ink">{passage.title}</span>
-                <span className="block text-sm font-bold text-ink/55">{passage.titleJa}</span>
-                <span className="mt-0.5 block text-[11px] font-extrabold text-brand-600">{basicReadingThemeLabel(passage)}</span>
-                <span className="mt-1.5 flex flex-wrap gap-1">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-black text-ink/40">{index + 1}本目 ・ {BASIC_READING_KINDS[passage.kind]}</p>
+                <h3 className="font-display text-base font-extrabold leading-snug text-ink">{passage.title}</h3>
+                <p className="text-sm font-bold text-ink/55">{passage.titleJa}</p>
+                <p className="mt-0.5 text-[11px] font-extrabold text-brand-600">{basicReadingThemeLabel(passage)}</p>
+                <div className="mt-1.5 flex flex-wrap gap-1">
                   {passage.lessons.map((lesson) => (
                     <span key={lesson.rule} className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-extrabold text-sky-700">
                       {READING_RULES_BY_ID[lesson.rule]?.title}
                     </span>
                   ))}
-                </span>
-                <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-bold text-ink/40">
+                </div>
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-bold text-ink/40">
                   <span className="inline-flex items-center gap-0.5 whitespace-nowrap"><Book size={12} /> 本文 {basicReadingWordCount(passage)}語</span>
+                  <span className="whitespace-nowrap">・ 単語・熟語 {basicReadingLevelWords(passage).length + basicReadingPhrases(passage).length}項目</span>
                   {result.done && (
                     <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-emerald-600">
                       <Check size={12} /> 正解 {result.correct}/{result.total}問
                     </span>
                   )}
-                </span>
-              </span>
-              <ArrowRight size={19} className="mt-3 shrink-0 text-brand-500" />
-            </button>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 border-t border-brand-100 bg-brand-50/40 p-3">
+              <Button
+                full
+                size="sm"
+                variant="secondary"
+                className="min-h-12"
+                data-basic-reading-start="prep"
+                aria-label={`${passage.titleJa}の読解の準備をする`}
+                onClick={() => navigate('basicReadingPrep', { passageId: passage.id })}
+              >
+                準備して読む
+              </Button>
+              <Button
+                full
+                size="sm"
+                className="min-h-12"
+                data-basic-reading-start="direct"
+                aria-label={`${passage.titleJa}の本文から読む`}
+                onClick={() => navigate('basicReadingLesson', { passageId: passage.id })}
+              >
+                本文から読む
+              </Button>
+            </div>
           </Card>
         )
       })}

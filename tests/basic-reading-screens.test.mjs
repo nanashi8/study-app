@@ -2,8 +2,8 @@
 // 375px の幅の Chromium で動かし、次を確かめる。
 //   入口   … 英語アプリの「コンテンツを選ぶ」で「長文」のすぐ後に「基礎長文」が並び、押すと級の一覧が開く。
 //   級     … 5つの級が並び、押すとその級の10本の長文が並ぶ。
-//   長文   … 全50本で、語彙の確認の欄にその級の単語と熟語がすべて並び、単語を押すと辞書のページ、暗記の入口は
-//            その単語の暗記カードを開く。本文は全文が並び、和訳を出せる。ルールの問題3問は3択＋わからないで答え、
+//   長文   … 全50本で、本文は全文が並び、和訳を出せる（単語・熟語の暗記・テスト・一覧は読解の準備へ移した。
+//            tests/basic-reading-prep.test.mjs が確かめる）。ルールの問題3問は3択＋わからないで答え、
 //            答え合わせで当てはめ方の解説・使う文・出した選択肢すべての説明・ルールのカードが出る。
 //   記録   … 答え合わせで、問題ごとの結果と読んだ長文が記録され、全教材の進み具合に基礎長文として数えられる。
 //   一文   … 全611文で、文を押すと長文と同じ一文の構文解説が開き、前後の文へ移れ、単語を押すと意味が出る（2026-10-28 追加）。
@@ -21,7 +21,6 @@ import {
   basicReadingPassagesForLevel,
   basicReadingQuestionId,
 } from '../src/data/basic-reading/index.js'
-import { basicReadingLevelWords, basicReadingPhrases } from '../src/lib/basicReading.js'
 import { analyzeBasicReadingSentence } from '../src/lib/basicReadingSentence.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
 import { limitQuizChoices } from '../src/lib/quizChoices.js'
@@ -162,20 +161,16 @@ test('級を押すと、その級の10本の長文が並び、押すとその長
     assert.deepEqual(ids, basicReadingPassagesForLevel(level).map((passage) => passage.id), `${level}級`)
     await checkWidth(`${level}級の長文の一覧`)
     const first = basicReadingPassagesForLevel(level)[0]
-    await page.click(`[data-basic-reading-passage="${first.id}"]`)
+    await page.click(`[data-basic-reading-passage="${first.id}"] [data-basic-reading-start="direct"]`)
     await waitScreen('basicReadingLesson')
     assert.equal((await current()).params.passageId, first.id)
   }
 })
 
-test('全50本で、語彙の確認・本文・ルールの問題の答え合わせがそろい、結果が記録される', async () => {
+test('全50本で、本文・ルールの問題の答え合わせがそろい、結果が記録される', async () => {
   await page.evaluate(() => sessionStorage.clear())
   for (const passage of BASIC_READING_PASSAGES) {
     await open('basicReadingLesson', { passageId: passage.id })
-    const words = await page.locator('[data-basic-reading-word]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-basic-reading-word')))
-    assert.deepEqual(words, basicReadingLevelWords(passage).map((word) => word.id), `${passage.id}: 単語`)
-    const phrases = await page.locator('[data-basic-reading-phrase]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-basic-reading-phrase')))
-    assert.deepEqual(phrases, basicReadingPhrases(passage).map((phrase) => phrase.id), `${passage.id}: 熟語`)
     const text = await page.locator('[data-basic-reading-passage-text]').innerText()
     for (const sentence of passage.sentences) assert.ok(text.includes(sentence.en), `${passage.id}: 本文「${sentence.en}」`)
 
@@ -221,19 +216,6 @@ test('全50本で、語彙の確認・本文・ルールの問題の答え合わ
   assert.equal(progress.quizTotal, 150)
   assert.equal(progress.quiz.correct, 50)
   assert.equal(progress.quiz.incorrect, 100)
-})
-
-test('単語を押すと辞書のページ、暗記の入口はその長文の単語の暗記カードを開く', async () => {
-  const passage = BASIC_READING_PASSAGES[0]
-  const words = basicReadingLevelWords(passage)
-  await open('basicReadingLesson', { passageId: passage.id })
-  await page.click(`[data-basic-reading-word="${words[0].id}"]`)
-  await waitScreen('wordDetail')
-  assert.equal((await current()).params.id, words[0].id)
-  await open('basicReadingLesson', { passageId: passage.id })
-  await page.getByRole('button', { name: '単語を暗記' }).click()
-  await waitScreen('vocabStudy')
-  assert.deepEqual((await current()).params.source.ids, words.map((word) => word.id))
 })
 
 // 依頼 2026-10-28-basic-reading-sentence-detail の条件 tap-opens-sentence-detail。

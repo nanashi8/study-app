@@ -51,6 +51,7 @@ const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'Setti
 const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 'ReadingListScreen')
 const ReadingRulesScreen = lazyScreen(() => import('./screens/ReadingRules.jsx'), 'ReadingRulesScreen')
 const BasicReadingScreen = lazyScreen(() => import('./screens/BasicReading.jsx'), 'BasicReadingScreen')
+const BasicReadingPrepScreen = lazyScreen(() => import('./screens/BasicReadingPrep.jsx'), 'BasicReadingPrepScreen')
 const BasicReadingLessonScreen = lazyScreen(() => import('./screens/BasicReadingLesson.jsx'), 'BasicReadingLessonScreen')
 const ReadingPrepScreen = lazyScreen(() => import('./screens/ReadingPrep.jsx'), 'ReadingPrepScreen')
 const SceneBundlesScreen = lazyScreen(() => import('./screens/SceneBundles.jsx'), 'SceneBundlesScreen')
@@ -179,6 +180,7 @@ const SCREENS = {
   readingList: ReadingListScreen,
   readingRules: ReadingRulesScreen,
   basicReading: BasicReadingScreen,
+  basicReadingPrep: BasicReadingPrepScreen,
   basicReadingLesson: BasicReadingLessonScreen,
   readingPrep: ReadingPrepScreen,
   sceneBundles: SceneBundlesScreen,

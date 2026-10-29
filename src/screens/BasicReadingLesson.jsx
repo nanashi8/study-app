@@ -11,9 +11,7 @@ import {
 import { getLevel } from '../data/levels.js'
 import { READING_RULES_BY_ID, getReadingRulePhase } from '../data/reading-rules.js'
 import {
-  basicReadingLevelWords,
   basicReadingParagraphs,
-  basicReadingPhrases,
   basicReadingWordCount,
 } from '../lib/basicReading.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -25,8 +23,8 @@ import { Sheet } from '../components/Sheet.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { Button, Card, Chip, IconButton, cx } from '../components/ui.jsx'
-import { ArrowRight, Close, Refresh, SpeakerWave } from '../components/Icons.jsx'
+import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
+import { ArrowRight, BookOpen, Close, Lightbulb, Refresh, SpeakerWave } from '../components/Icons.jsx'
 
 const readShown = (value) => value === true
 const draftKey = (passageId) => `study-app:basic-reading:v1:${passageId}`
@@ -58,90 +56,6 @@ function StepTitle({ step, children }) {
       <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand-500 text-xs font-black text-white">{step}</span>
       {children}
     </h2>
-  )
-}
-
-// 意味の欄の最初の訳語（「名前・名づける(動)」なら「名前」）。
-const firstMeaning = (meaning) => String(meaning ?? '').split(/[・、；;]/)[0]
-
-function VocabularyCheck({ passage, level, navigate }) {
-  const words = basicReadingLevelWords(passage)
-  const phrases = basicReadingPhrases(passage)
-  const returnTo = { screen: 'basicReadingLesson', params: { passageId: passage.id } }
-  const continueTo = { ...returnTo, label: '基礎長文に戻る' }
-  const studyWords = (asQuiz) => navigate(asQuiz ? 'vocabQuiz' : 'vocabStudy', {
-    source: { type: 'deck', ids: words.map((word) => word.id) },
-    size: words.length,
-    title: `${passage.titleJa}・英検${level.label}の単語`,
-    ...(asQuiz ? {} : { mode: 'study' }),
-    continueTo,
-    returnTo,
-  })
-  const studyPhrases = (asQuiz) => navigate(asQuiz ? 'phraseQuiz' : 'phraseStudy', {
-    source: { type: 'customPhrase', items: phrases },
-    size: phrases.length,
-    title: `${passage.titleJa}・熟語`,
-    ...(asQuiz ? {} : { mode: 'study', engine: 'phrase' }),
-    continueTo,
-    returnTo,
-  })
-
-  return (
-    <Card className="p-4" data-basic-reading-vocabulary={passage.id}>
-      <p className="text-xs font-bold leading-relaxed text-ink/55">
-        {`本文に出る英検${level.label}の単語${words.length}語と熟語${phrases.length}件です。意味を確かめてから読みましょう。`}
-      </p>
-      {/* 語が多い級でも本文まで遠くならないよう、語と最初の意味だけを並べる。押すと辞書のページで全部の意味を見る。 */}
-      <ul className="mt-3 flex flex-wrap gap-1.5" aria-label={`英検${level.label}の単語`}>
-        {words.map((word) => (
-          <li key={word.id} className="max-w-full">
-            <button
-              type="button"
-              onClick={() => navigate('wordDetail', { id: word.id })}
-              className="flex max-w-full items-baseline gap-1 rounded-lg bg-slate-50 px-2 py-1.5 text-left ring-1 ring-slate-200 active:bg-brand-50"
-              data-basic-reading-word={word.id}
-              aria-label={`${word.word}の詳細を見る`}
-            >
-              <span className="shrink-0 font-display text-sm font-extrabold text-ink">{word.word}</span>
-              <span className="min-w-0 truncate text-[11px] font-bold text-ink/55">{firstMeaning(word.meaning)}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <Button size="sm" variant="secondary" className="min-h-11" disabled={!words.length} onClick={() => studyWords(false)}>
-          単語を暗記
-        </Button>
-        <Button size="sm" variant="secondary" className="min-h-11" disabled={!words.length} onClick={() => studyWords(true)}>
-          単語のテスト
-        </Button>
-      </div>
-      {phrases.length > 0 && (
-        <>
-          <p className="mt-4 text-xs font-extrabold text-brand-700">熟語</p>
-          <ul className="mt-1.5 grid grid-cols-1 gap-1.5" aria-label="本文に出る熟語">
-            {phrases.map((phrase) => (
-              <li
-                key={phrase.id}
-                className="flex items-baseline gap-2 rounded-xl bg-violet-50 px-3 py-2"
-                data-basic-reading-phrase={phrase.id}
-              >
-                <span className="shrink-0 font-display text-sm font-extrabold text-ink">{phrase.phrase}</span>
-                <span className="min-w-0 flex-1 text-xs font-bold text-ink/60">{phrase.meaning}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            <Button size="sm" variant="secondary" className="min-h-11" onClick={() => studyPhrases(false)}>
-              熟語を暗記
-            </Button>
-            <Button size="sm" variant="secondary" className="min-h-11" onClick={() => studyPhrases(true)}>
-              熟語のテスト
-            </Button>
-          </div>
-        </>
-      )}
-    </Card>
   )
 }
 
@@ -238,6 +152,7 @@ export function BasicReadingLessonScreen() {
 function BasicReadingLesson({ passageId }) {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
+  const params = useStore((state) => state.params)
   const markReadingDone = useStore((state) => state.markReadingDone)
   const recordContentQuizResult = useStore((state) => state.recordContentQuizResult)
   const recordSkillResult = useStore((state) => state.recordSkillResult)
@@ -365,13 +280,27 @@ function BasicReadingLesson({ passageId }) {
           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-extrabold text-ink/60">本文 {basicReadingWordCount(passage)}語</span>
         </div>
 
-        <section className="space-y-2">
-          <StepTitle step={1}>単語・熟語を確かめる</StepTitle>
-          <VocabularyCheck passage={passage} level={level} navigate={navigate} />
-        </section>
+        {/* 長文と同じ操作バー：読解の準備（単語・熟語・表現と読解ルール）と、全30ルールへ。 */}
+        <div className="flex flex-wrap items-center gap-2" data-basic-reading-lesson-tools>
+          <button
+            type="button"
+            onClick={() => navigate('basicReadingPrep', { passageId: passage.id, returnTo: params.returnTo })}
+            className="flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
+            data-basic-reading-lesson-prep
+          >
+            <BookOpen size={14} /> 単語・熟語・表現
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('readingRules')}
+            className="flex items-center gap-1 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-extrabold text-sky-700"
+          >
+            <Lightbulb size={14} /> 読解ルール
+          </button>
+        </div>
 
         <section className="space-y-2">
-          <StepTitle step={2}>本文を読む</StepTitle>
+          <StepTitle step={1}>本文を読む</StepTitle>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -446,7 +375,7 @@ function BasicReadingLesson({ passageId }) {
         </section>
 
         <section className="scroll-mt-3 space-y-2" ref={questionsRef}>
-          <StepTitle step={3}>ルールを使って解く</StepTitle>
+          <StepTitle step={2}>ルールを使って解く</StepTitle>
           <div className="space-y-3">
             {lessons.map((lesson, index) => (
               <RuleQuestion
