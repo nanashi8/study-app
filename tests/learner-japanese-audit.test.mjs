@@ -178,13 +178,14 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-28、基礎長文の画面の文とメニュー・英語アプリの入口で 18428 から 18516 になった（requests/2026-10-28-basic-reading.json）。
   // 同じ日、基礎長文の学習画面に一文の構文解説を開く案内と文の移動を足して 18516 から 18523 になった。
   // 2026-10-29、基礎長文の読解の準備（テーマの読み方50本・単語と熟語の入口）を足し、本文の画面から単語の欄を移して 18583 になった。
-  assert.equal(result.learnerJapaneseEntries, 18583)
+  // 2026-11-02、写真を読む部品の文を関数へ移した（見える文は変わらない）ので、三つの数が 1 ずつ減った（requests/2026-11-02-photo-ocr-dense-page-crash.json）。
+  assert.equal(result.learnerJapaneseEntries, 18582)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
   // 重複なしが 13751 から 13752 になった（requests/2026-10-26-lookalike-word-cards.json）。
   // 同じく使い分けカードの2文で、重複なしが 13752 から 13754 になった（requests/2026-10-26-usage-guide-cards.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 13807)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13806)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -208,7 +209,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-28、基礎長文50本の和訳・ルールの学習の文で 253239 から 255344 になった（requests/2026-10-28-basic-reading.json）。
   // 同じ日、基礎長文の全611文の語順訳と解説で 255344 から 258107 になった。
   // 2026-10-29、基礎長文の読み方50本と準備の画面で 258417 になった。
-  assert.equal(result.sourceJapaneseEntries, 258417)
+  assert.equal(result.sourceJapaneseEntries, 258416)
   assert.equal(result.issues.length, 0)
 })
 

@@ -1,0 +1,49 @@
+{
+  "id": "2026-11-02-photo-ocr-dense-page-crash",
+  "title": "写真からカードを作る機能で、文字の多いページ（添付の入試対策テスト）を読むとアプリが途中で落ちるのを直す",
+  "asked": [
+    "写真からカードを作る機能で、添付したテキストは読み込みを開始するもののアプリが途中で落ちてできません。修正しなさい。（添付：入試対策テスト(1) 6 のスピーチ原稿 615語の教科書の写真 1500×2000）",
+    "google翻訳等スムーズに翻訳できるのだから、もっと軽い動作にできるのではないか。"
+  ],
+  "sessions": [
+    "30aeb882-62b0-4e45-8f54-4376636c588c"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "cause-found",
+      "text": "原因を実際に動かして突き止める。パソコンのブラウザでは添付の写真でも落ちないので、メモリの山を段ごとに測った。原因はエンジンの既定：認識を6行ずつ・一番長い行の幅にそろえて計算（添付の写真は最大幅約2000の行が約40行）、検出は写真の大きさのまま。GPU で読むと山が約3.8〜4GB（ソフトの GPU で測定）に達し、単語表（短い行）の写真では起きない。iPhone 実機では再現できていない（この環境に実機もシミュレーターもない）ので、スマホのメモリ不足で落ちるというのは測定からの判断。候補づくり・画面の表示では山は増えなかった",
+      "population": "読み取りの全段（写真の下ごしらえ・エンジンの準備・検出・認識・候補づくり・画面の表示）",
+      "check": "node --test tests/photo-ocr-dense-page.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "dense-page-reads",
+      "text": "添付の写真（リポジトリには入れない）を本番ビルドの「写真から作る」で読み、確かめた本文・注の42か所を Chromium・WebKit とも全部読む（直す前は36か所。行が丸ごと抜けていた）。同じ形の40行のページを試料として描き、Chromium・WebKit で40行すべて読み、5テンプレートすべてで候補が出て、英単語のカードを登録できることをテストで守る",
+      "population": "添付の写真1枚（手元で確認）と、同じ形の試料ページ1枚 × Chromium・WebKit × 5テンプレート",
+      "check": "node --test tests/photo-ocr-dense-page.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "lighter",
+      "text": "軽くした。認識を1行ずつ、検出を長い辺1600pxまで。メモリの山（ブラウザ全体）：GPU 4,057→2,313MB、GPU なし 1,872→1,724MB。単語表の写真（GPU なし）は 1,534→1,563MB でほぼ同じ。読む時間（パソコン・GPU なし）は添付の写真で 13.0→13.6秒とほぼ同じで、速くはなっていない。写真28枚：英単語 547→551/582、日本語 1,619→1,657/1,794字、試料7枚は英単語 111/111 のまま。写真にない語を最初から選ぶ数は 3→6（star・six・Star-Spangled は写真にあるが正解の書き起こしの表記で数えられない語、本当の読み違いは Tax→Tar の1件）。前回落ちた端末・読み取りが失敗したときは GPU なし・検出1280px で読む。認識モデルを tiny にすれば約5倍速いが、ひらがなを漢字に読み違えるので使わない（10-14 の比較）",
+      "population": "文字の多いページと、これまでの実写真28枚・試料7枚",
+      "check": "node --test tests/photo-ocr-dense-page.test.mjs tests/vocab-ocr-photos.test.mjs tests/custom-cards-photo-screens.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "all-ocr-screens",
+      "text": "読み取り部品 PhotoOcrPicker を使う2画面（教科書から単語追加・写真から作る）を Chromium・WebKit で本物のエンジンに読ませ、40行を全部読む。失敗したときの読み直し・前回落ちた端末の軽い読み方は部品の中にあるので両画面に効く",
+      "population": "PhotoOcrPicker を使う全2画面 × Chromium・WebKit",
+      "check": "node --test tests/photo-ocr-dense-page.test.mjs tests/vocab-camera-dev-ocr.test.mjs tests/vocab-ocr-build.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全監査を通して main へ push し、公開版で確かめる",
+      "population": "この依頼の変更 全部",
+      "check": "false",
+      "status": "todo"
+    }
+  ]
+}

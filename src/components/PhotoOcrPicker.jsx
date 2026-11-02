@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { createOcrReader } from '../lib/ocrEngine.js'
+import { beginOcrReading, createOcrReader, endOcrReading, rememberOcrLowMemory } from '../lib/ocrEngine.js'
 import { loadEnglishTagger } from '../lib/ocrContext.js'
 import { loadEnglishWordSet } from '../lib/englishWordList.js'
 import { prepareImageForOcr } from '../lib/ocrImage.js'
@@ -33,6 +33,44 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
 
+  const disposeReader = () => {
+    readerRef.current?.promise.then((reader) => reader.dispose()).catch(() => {})
+    readerRef.current = null
+  }
+
+  // lowMemory の読み方のエンジンを用意する。読み方が変わったら作り直す。
+  const prepareReader = (lowMemory) => {
+    if (readerRef.current?.lowMemory !== lowMemory) {
+      disposeReader()
+      const promise = import('@paddleocr/paddleocr-js').then((paddle) => createOcrReader(paddle, {
+        lowMemory,
+        // 初回はモデル（約 23MB）を読み込むので、読み込んだ量で進み具合を出す。2回目からは端末に残ったものを使う。
+        onDownload: (fraction) => {
+          if (!mountedRef.current) return
+          setStatus('英語と日本語の認識データを読み込み中…')
+          setProgress((current) => Math.max(current, PREPARE_PROGRESS[0] + (PREPARE_PROGRESS[1] - PREPARE_PROGRESS[0]) * fraction))
+        },
+      }))
+      const entry = { promise, lowMemory }
+      readerRef.current = entry
+      promise.catch(() => {
+        if (readerRef.current === entry) readerRef.current = null
+      })
+    }
+    return readerRef.current.promise
+  }
+
+  // 1枚を読む。画面を離れたら null。
+  const readImage = async (image, lowMemory) => {
+    setStatus('文字認識エンジンを準備中…')
+    setProgress(PREPARE_PROGRESS[0])
+    const reader = await prepareReader(lowMemory)
+    if (!mountedRef.current) return null
+    setStatus(readingStatus)
+    setProgress(READ_PROGRESS)
+    return reader.read(image)
+  }
+
   // 画面が出ているあいだだけ、読み取りの結果を画面へ書く。開発版の StrictMode は effect を「付ける→外す→付ける」と
   // 2回走らせるので、付けるたびに true へ戻す（戻さないと読み取りが写真の読み込みの直後で止まる）。
   useEffect(() => {
@@ -40,7 +78,7 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
     readerRef.current = null
     return () => {
       mountedRef.current = false
-      readerRef.current?.then((reader) => reader.dispose()).catch(() => {})
+      disposeReader()
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
     }
   }, [])
@@ -86,25 +124,19 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
       const image = await prepareImageForOcr(file)
       if (!mountedRef.current) return null
 
-      setStatus('文字認識エンジンを準備中…')
-      setProgress(PREPARE_PROGRESS[0])
-      readerRef.current ??= import('@paddleocr/paddleocr-js').then((paddle) => createOcrReader(paddle, {
-        // 初回はモデル（約 23MB）を読み込むので、読み込んだ量で進み具合を出す。2回目からは端末に残ったものを使う。
-        onDownload: (fraction) => {
-          if (!mountedRef.current) return
-          setStatus('英語と日本語の認識データを読み込み中…')
-          setProgress((current) => Math.max(current, PREPARE_PROGRESS[0] + (PREPARE_PROGRESS[1] - PREPARE_PROGRESS[0]) * fraction))
-        },
-      }))
-      readerRef.current.catch(() => {
-        readerRef.current = null
-      })
-      const reader = await readerRef.current
+      const lowMemory = beginOcrReading()
+      let page
+      try {
+        page = await readImage(image, lowMemory)
+      } catch (reason) {
+        // メモリ不足などで失敗したら、GPU を使わない軽い読み方で1度読み直す。
+        if (lowMemory || !mountedRef.current) throw reason
+        console.warn('photo OCR retrying with low memory', reason)
+        rememberOcrLowMemory()
+        page = await readImage(image, true)
+      }
       if (!mountedRef.current) return null
-
-      setStatus(readingStatus)
-      setProgress(READ_PROGRESS)
-      const [page, englishWords, tagger] = await Promise.all([reader.read(image), englishWordsLoading, taggerLoading])
+      const [englishWords, tagger] = await Promise.all([englishWordsLoading, taggerLoading])
       if (!mountedRef.current) return null
 
       setProgress(1)
@@ -119,6 +151,7 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
       }
       return null
     } finally {
+      endOcrReading()
       if (mountedRef.current) setScanning(false)
     }
   }

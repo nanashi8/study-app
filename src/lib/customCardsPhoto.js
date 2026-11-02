@@ -64,9 +64,18 @@ function boxOf(poly) {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }
 }
 
+// 左右に大きく重なる箱は、同じ高さに見えても別の行（紙面が傾いたページの上下の行）。
+function overlapsSideways(item, row) {
+  return row.items.some(({ box }) => {
+    const overlap = Math.min(item.box.x1, box.x1) - Math.max(item.box.x0, box.x0)
+    return overlap > Math.min(item.box.x1 - item.box.x0, box.x1 - box.x0) / 2
+  })
+}
+
 /**
  * 読み取った箱（ocrEngine.js の ocrPageFromItems の lines：{ text, confidence, poly }）を、写真で同じ高さに並ぶものごとに
- * 1行へまとめる。箱の高さの中ほどが、行の高さの中ほどから小さいほうの高さの半分の内にあれば同じ行。行の中は左から並べる。
+ * 1行へまとめる。箱の高さの中ほどが、行の高さの中ほどから小さいほうの高さの半分の内にあり、左右に大きく重ならなければ同じ行。
+ * 行の中は左から並べる。
  * 位置のない箱があるときは、読み取った順の1箱1行にする。
  * 戻り値 [{ text, confidence, segments }]（text は箱を「　」でつないだ文、confidence は行の箱でいちばん低い確からしさ）。
  */
@@ -98,7 +107,7 @@ export function photoRowsFromLines(lines) {
     let best = null
     for (const row of rows) {
       const distance = Math.abs(center - row.center)
-      if (distance <= Math.min(height, row.height) / 2 && (!best || distance < best.distance)) best = { row, distance }
+      if (distance <= Math.min(height, row.height) / 2 && !overlapsSideways(item, row) && (!best || distance < best.distance)) best = { row, distance }
     }
     if (best) {
       const { row } = best

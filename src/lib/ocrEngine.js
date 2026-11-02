@@ -17,14 +17,24 @@ export function ocrModelUrl(file, base = import.meta.env?.BASE_URL ?? './') {
   return new URL(`${base}ocr-models/${file}`, globalThis.location?.href ?? 'http://localhost/').href
 }
 
-export function ocrCreateOptions({ base } = {}) {
+// 読み取りの負荷。2026-11-02、615語の教科書のページ（長い行が約40行）をスマホで読むとアプリが落ちた。
+// - 認識は1行ずつ（textRecognitionBatchSize: 1）。モデルの既定は6行ずつで、6行を一番長い行の幅にそろえて計算するので、
+//   長い行が並ぶページほどメモリを食う。GPU で読むときのメモリの山は 3,781MB から 1,755MB に下がった（ソフトの GPU で測定）。
+// - 検出は長い辺 1600px まで（モデルの既定は写真の大きさのまま）。ピクセル数が減るぶん軽くなる。
+// - 箱のしきい値は 0.4（既定 0.6）。既定では文字の詰まったページの行が丸ごと抜けた（42か所中36か所 → 42か所）。
+export const OCR_READ_PARAMS = Object.freeze({ textDetLimitSideLen: 1600, textDetLimitType: 'max', textDetBoxThresh: 0.4 })
+// 前の読み取りが途中で止まった端末や、読み取りが失敗したときの読み方。GPU を使わず、検出の解像度も下げる。
+export const OCR_LOW_MEMORY_READ_PARAMS = Object.freeze({ ...OCR_READ_PARAMS, textDetLimitSideLen: 1280 })
+
+export function ocrCreateOptions({ base, lowMemory = false } = {}) {
   return {
     textDetectionModelName: OCR_MODEL_NAMES.det,
     textDetectionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.det, base) },
     textRecognitionModelName: OCR_MODEL_NAMES.rec,
     textRecognitionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.rec, base) },
+    textRecognitionBatchSize: 1,
     // WebGPU があれば GPU で動かす。wasm で動かすときは、計算を別スレッドに移して画面が固まらないようにする（proxy）。
-    ortOptions: { backend: 'auto', proxy: true },
+    ortOptions: { backend: lowMemory ? 'wasm' : 'auto', proxy: true },
   }
 }
 
@@ -85,6 +95,7 @@ function progressFetch(onDownload) {
 
 // 読み取りエンジンを作る（モデルと ONNX Runtime を読み込む）。paddle は import('@paddleocr/paddleocr-js') の中身。
 //   options.onDownload  初回のモデルの読み込みの進み具合（0〜1）
+//   options.lowMemory   GPU を使わず、検出の解像度を下げて読む
 export async function createOcrReader(paddle, options = {}) {
   await quietOrt()
   const fetchWithProgress = progressFetch(options.onDownload)
@@ -95,11 +106,56 @@ export async function createOcrReader(paddle, options = {}) {
   })
   return {
     async read(image) {
-      const [result] = await ocr.predict(image)
+      const [result] = await ocr.predict(image, options.lowMemory ? OCR_LOW_MEMORY_READ_PARAMS : OCR_READ_PARAMS)
       return { ...ocrPageFromItems(result?.items), metrics: result?.metrics ?? null, runtime: result?.runtime ?? null }
     },
     async dispose() {
       await ocr.dispose?.()
     },
+  }
+}
+
+// 読み取りの途中でアプリごと落ちると（スマホのメモリ不足）、JavaScript では受け止められない。読む前に印を置き、読み終えたら消す。
+// 次に読むときに印が残っていれば前回は落ちたので、その端末はしばらく軽い読み方にする。印が読み書きできない端末では普通に読む。
+const OCR_READING_KEY = 'eigo-quest-ocr-reading'
+const OCR_LOW_MEMORY_UNTIL_KEY = 'eigo-quest-ocr-low-memory-until'
+export const OCR_LOW_MEMORY_DAYS = 30
+
+function storageOf(env) {
+  try {
+    return env.localStorage ?? null
+  } catch {
+    return null
+  }
+}
+
+/** この端末を軽い読み方にする。 */
+export function rememberOcrLowMemory({ env = globalThis, now = Date.now() } = {}) {
+  try {
+    storageOf(env)?.setItem(OCR_LOW_MEMORY_UNTIL_KEY, String(now + OCR_LOW_MEMORY_DAYS * 86_400_000))
+  } catch {
+    // 覚えられなくても読み取りは続ける。
+  }
+}
+
+/** 読む前に呼ぶ。この読み取りを軽い読み方にするなら true。 */
+export function beginOcrReading({ env = globalThis, now = Date.now() } = {}) {
+  const storage = storageOf(env)
+  if (!storage) return false
+  try {
+    if (storage.getItem(OCR_READING_KEY)) rememberOcrLowMemory({ env, now })
+    storage.setItem(OCR_READING_KEY, '1')
+    return Number(storage.getItem(OCR_LOW_MEMORY_UNTIL_KEY)) > now
+  } catch {
+    return false
+  }
+}
+
+/** 読み終えたとき（読めなかったとき・画面を離れたときも）に呼ぶ。 */
+export function endOcrReading({ env = globalThis } = {}) {
+  try {
+    storageOf(env)?.removeItem(OCR_READING_KEY)
+  } catch {
+    // 消せなければ、次の読み取りが軽い読み方になるだけ。
   }
 }

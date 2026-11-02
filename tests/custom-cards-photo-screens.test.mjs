@@ -18,10 +18,16 @@ const PHOTO = fileURLToPath(new URL('./fixtures/vocab-ocr/word-list.png', import
 // 読み取りエンジンの代わり。読むたびに window.__photoOcrItems の箱（{ text, score, poly }）を返す。
 const PADDLE_STUB = `
 export const PaddleOCR = {
-  async create() {
+  async create(options) {
+    ;(window.__photoOcrBackends ??= []).push(options.ortOptions.backend)
     return {
-      async predict() {
+      async predict(image, params) {
         window.__photoOcrReads = (window.__photoOcrReads ?? 0) + 1
+        ;(window.__photoOcrParams ??= []).push(params)
+        if (window.__photoOcrFail > 0) {
+          window.__photoOcrFail -= 1
+          throw new Error('memory access out of bounds')
+        }
         return [{ items: window.__photoOcrItems ?? [], metrics: {}, runtime: {} }]
       },
       async dispose() {},
@@ -406,4 +412,56 @@ test('上限（英単語のカード5,000語）を超える分は登録せず、
   assert.deepEqual(rows.map((row) => row.notes.includes('登録しました')), [true, false])
   assert.equal((await library()).customWords.length, 5000)
   await ui.act('importCustomLibrary', { words: [], cards: [], categories: [] }, 'replace')
+})
+
+// 依頼 requests/2026-11-02-photo-ocr-dense-page-crash.json：メモリ不足で落ちる・失敗する端末でも読めるようにする。
+const OCR_MARK = 'eigo-quest-ocr-reading'
+const OCR_LOW_UNTIL = 'eigo-quest-ocr-low-memory-until'
+async function resetEngineLog({ fail = 0, marks = {} } = {}) {
+  await page.evaluate(([failures, values, keys]) => {
+    window.__photoOcrBackends = []
+    window.__photoOcrParams = []
+    window.__photoOcrFail = failures
+    for (const key of keys) localStorage.removeItem(key)
+    for (const [key, value] of Object.entries(values)) localStorage.setItem(key, value)
+  }, [fail, marks, [OCR_MARK, OCR_LOW_UNTIL]])
+  await ui.open('portal', {})
+  await ui.open('customWords', { view: 'photo' })
+  await waitPhotoView()
+}
+const engineLog = () => page.evaluate(([mark]) => ({
+  backends: window.__photoOcrBackends,
+  sides: window.__photoOcrParams.map((params) => params.textDetLimitSideLen),
+  mark: localStorage.getItem(mark),
+}), [OCR_MARK])
+const TWO_ROWS = table([['library', '図書館'], ['borrow', '借りる']])
+
+test('普通の端末は GPU も使える読み方で1度だけ読み、読み終えたら印を消す', async () => {
+  await resetEngineLog()
+  await readPhoto(TWO_ROWS)
+  assert.deepEqual(await engineLog(), { backends: ['auto'], sides: [1600], mark: null })
+})
+
+test('読み取りが失敗したら、GPU を使わない軽い読み方で自動で読み直して候補を出し、次の写真からも軽い読み方で読む', async () => {
+  await resetEngineLog({ fail: 1 })
+  await readPhoto(TWO_ROWS)
+  assert.deepEqual((await candidates()).map((row) => row.front), ['library', 'borrow'])
+  assert.deepEqual(await engineLog(), { backends: ['auto', 'wasm'], sides: [1600, 1280], mark: null })
+  await resetEngineLog()
+})
+
+test('前の読み取りの途中でアプリが落ちた（印が残っている）端末は、はじめから軽い読み方で読む', async () => {
+  await resetEngineLog({ marks: { [OCR_MARK]: '1' } })
+  await readPhoto(TWO_ROWS)
+  assert.deepEqual(await engineLog(), { backends: ['wasm'], sides: [1280], mark: null })
+})
+
+test('軽い読み方でも失敗したら、読めなかった知らせを出す（読み直しを繰り返さない）', async () => {
+  await resetEngineLog({ fail: 2 })
+  await page.evaluate(() => { window.__photoOcrItems = [] })
+  await photoView().locator('input[type=file]:not([capture])').setInputFiles(PHOTO)
+  await page.getByRole('button', { name: '文字を読み取る' }).click()
+  await page.getByText('文字を読み取れませんでした').waitFor({ timeout: 30_000 })
+  assert.deepEqual(await engineLog(), { backends: ['auto', 'wasm'], sides: [1600, 1280], mark: null })
+  await page.evaluate(([key]) => localStorage.removeItem(key), [OCR_LOW_UNTIL])
 })
