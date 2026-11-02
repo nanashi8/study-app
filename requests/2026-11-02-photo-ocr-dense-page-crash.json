@@ -72,10 +72,10 @@
     },
     {
       "id": "audit-speed-deployed",
-      "text": "監査の短縮を main へ push し、公開の処理が通る",
+      "text": "監査の短縮 9038f28a を main へ push し、公開の処理 run 41397965320 が success。clone で全監査（テスト1,567件成功・1件スキップ・失敗0）を通してから push した",
       "population": "この依頼の監査の変更 全部",
-      "check": "git fetch -q origin main && git merge-base --is-ancestor HEAD origin/main && node --test tests/audit-speed.test.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 9038f28a origin/main && test \"$(gh run view 41397965320 --json conclusion -q .conclusion)\" = success && node --test tests/audit-speed.test.mjs",
+      "status": "done"
     }
   ]
 }
