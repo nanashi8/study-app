@@ -52,6 +52,11 @@ export async function startCustomCardBrowser({ cacheDir, plugins = [], exclude =
 
   async function boot() {
     await page.goto(base)
+    await hook()
+  }
+
+  // ストアを window に出す。写真の読み取り（ocr.html）から戻るとアプリが開き直すので、使う前に毎回確かめる。
+  async function hook() {
     await page.waitForSelector('.study-app-content', { timeout: 60_000 })
     await page.evaluate(async () => {
       if (window.__customTest) return
@@ -65,10 +70,10 @@ export async function startCustomCardBrowser({ cacheDir, plugins = [], exclude =
     })
   }
 
-  const current = () => page.evaluate(() => {
+  const current = async () => (await hook(), page.evaluate(() => {
     const state = window.__customTest.store.getState()
     return { screen: state.screen, params: JSON.parse(JSON.stringify(state.params ?? {})) }
-  })
+  }))
 
   async function waitScreen(screen) {
     await page.waitForFunction((name) => {
@@ -79,6 +84,7 @@ export async function startCustomCardBrowser({ cacheDir, plugins = [], exclude =
   }
 
   async function open(screen, params = {}) {
+    await hook()
     await page.evaluate(([name, screenParams]) => {
       const state = window.__customTest.store.getState()
       state.closeSpeechSettings()
@@ -88,14 +94,14 @@ export async function startCustomCardBrowser({ cacheDir, plugins = [], exclude =
   }
 
   /** ストアの操作を1つ呼ぶ（テストの準備に使う）。戻り値は JSON にできる形で返す。 */
-  const act = (name, ...args) => page.evaluate(([action, values]) => (
+  const act = async (name, ...args) => (await hook(), page.evaluate(([action, values]) => (
     JSON.parse(JSON.stringify(window.__customTest.store.getState()[action](...values) ?? null))
-  ), [name, args])
+  ), [name, args]))
 
-  const state = (keys) => page.evaluate((names) => {
+  const state = async (keys) => (await hook(), page.evaluate((names) => {
     const current = window.__customTest.store.getState()
     return JSON.parse(JSON.stringify(Object.fromEntries(names.map((name) => [name, current[name]]))))
-  }, keys)
+  }, keys))
 
   const mainText = () => page.evaluate(() => document.querySelector('.study-app-content').innerText)
   const topBarLabel = () => page.evaluate(() => document.querySelector('[data-global-home-button]')?.innerText.trim() ?? '')

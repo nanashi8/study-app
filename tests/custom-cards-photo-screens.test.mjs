@@ -12,35 +12,9 @@ import { fileURLToPath } from 'node:url'
 
 import { CUSTOM_SUBJECTS, subjectCategoryId } from '../src/lib/customCards.js'
 import { entryValues, startCustomCardBrowser } from './custom-cards-browser.mjs'
+import { OCR_STUB_KEY, ocrWorkerStub } from './ocr-worker-stub.mjs'
 
 const PHOTO = fileURLToPath(new URL('./fixtures/vocab-ocr/word-list.png', import.meta.url))
-
-// 読み取りエンジンの代わり。読むたびに window.__photoOcrItems の箱（{ text, score, poly }）を返す。
-const PADDLE_STUB = `
-export const PaddleOCR = {
-  async create(options) {
-    ;(window.__photoOcrBackends ??= []).push(options.ortOptions.backend)
-    return {
-      async predict(image, params) {
-        window.__photoOcrReads = (window.__photoOcrReads ?? 0) + 1
-        ;(window.__photoOcrParams ??= []).push(params)
-        if (window.__photoOcrFail > 0) {
-          window.__photoOcrFail -= 1
-          throw new Error('memory access out of bounds')
-        }
-        return [{ items: window.__photoOcrItems ?? [], metrics: {}, runtime: {} }]
-      },
-      async dispose() {},
-    }
-  },
-}
-`
-const paddleStub = () => ({
-  name: 'paddle-stub',
-  enforce: 'pre',
-  resolveId: (id) => (id === '@paddleocr/paddleocr-js' ? '\0paddle-stub' : null),
-  load: (id) => (id === '\0paddle-stub' ? PADDLE_STUB : null),
-})
 
 // 表の形の箱：行ごとに、左から 330px ずつ離れた箱を並べる（左右の箱は少し上下にずらす）。
 const table = (rows) => rows.flatMap((cells, row) => cells.map((text, column) => {
@@ -56,7 +30,7 @@ let page
 before(async () => {
   ui = await startCustomCardBrowser({
     cacheDir: 'node_modules/.vite-custom-photo-test',
-    plugins: [paddleStub()],
+    plugins: [ocrWorkerStub()],
     exclude: ['@paddleocr/paddleocr-js'],
   })
   page = ui.page
@@ -66,6 +40,9 @@ after(async () => {
   await ui?.close()
 })
 
+const setStub = (patch) => page.evaluate(([key, value]) => {
+  localStorage.setItem(key, JSON.stringify({ ...JSON.parse(localStorage.getItem(key) || '{}'), ...value }))
+}, [OCR_STUB_KEY, patch])
 const photoView = () => page.locator('[data-custom-photo]')
 async function waitPhotoView() {
   await ui.waitScreen('customWords')
@@ -79,7 +56,7 @@ const photoState = async () => ({
 })
 
 async function readPhoto(items) {
-  await page.evaluate((value) => { window.__photoOcrItems = value }, items)
+  await setStub({ items })
   await photoView().locator('input[type=file]:not([capture])').setInputFiles(PHOTO)
   await page.getByRole('button', { name: '文字を読み取る' }).click()
   await page.locator('[data-custom-photo-summary]').waitFor({ timeout: 30_000 })
@@ -418,50 +395,63 @@ test('上限（英単語のカード5,000語）を超える分は登録せず、
 const OCR_MARK = 'eigo-quest-ocr-reading'
 const OCR_LOW_UNTIL = 'eigo-quest-ocr-low-memory-until'
 async function resetEngineLog({ fail = 0, marks = {} } = {}) {
-  await page.evaluate(([failures, values, keys]) => {
-    window.__photoOcrBackends = []
-    window.__photoOcrParams = []
-    window.__photoOcrFail = failures
+  await setStub({ fail, reads: [] })
+  await page.evaluate(([values, keys]) => {
     for (const key of keys) localStorage.removeItem(key)
     for (const [key, value] of Object.entries(values)) localStorage.setItem(key, value)
-  }, [fail, marks, [OCR_MARK, OCR_LOW_UNTIL]])
+  }, [marks, [OCR_MARK, OCR_LOW_UNTIL]])
   await ui.open('portal', {})
   await ui.open('customWords', { view: 'photo' })
   await waitPhotoView()
 }
-const engineLog = () => page.evaluate(([mark]) => ({
-  backends: window.__photoOcrBackends,
-  sides: window.__photoOcrParams.map((params) => params.textDetLimitSideLen),
+const engineLog = () => page.evaluate(([mark, stub]) => ({
+  lowMemory: JSON.parse(localStorage.getItem(stub)).reads,
   mark: localStorage.getItem(mark),
-}), [OCR_MARK])
+}), [OCR_MARK, OCR_STUB_KEY])
 const TWO_ROWS = table([['library', '図書館'], ['borrow', '借りる']])
 
-test('普通の端末は GPU も使える読み方で1度だけ読み、読み終えたら印を消す', async () => {
+test('普通の端末はふつうの読み方で1度だけ読み、読み終えたら印を消す', async () => {
   await resetEngineLog()
   await readPhoto(TWO_ROWS)
-  assert.deepEqual(await engineLog(), { backends: ['auto'], sides: [1600], mark: null })
+  assert.deepEqual(await engineLog(), { lowMemory: [false], mark: null })
 })
 
-test('読み取りが失敗したら、GPU を使わない軽い読み方で自動で読み直して候補を出し、次の写真からも軽い読み方で読む', async () => {
+test('読み取りが失敗したら、軽い読み方で自動で読み直して候補を出し、次の写真からも軽い読み方で読む', async () => {
   await resetEngineLog({ fail: 1 })
   await readPhoto(TWO_ROWS)
   assert.deepEqual((await candidates()).map((row) => row.front), ['library', 'borrow'])
-  assert.deepEqual(await engineLog(), { backends: ['auto', 'wasm'], sides: [1600, 1280], mark: null })
+  assert.deepEqual(await engineLog(), { lowMemory: [false, true], mark: null })
   await resetEngineLog()
 })
 
 test('前の読み取りの途中でアプリが落ちた（印が残っている）端末は、はじめから軽い読み方で読む', async () => {
   await resetEngineLog({ marks: { [OCR_MARK]: '1' } })
   await readPhoto(TWO_ROWS)
-  assert.deepEqual(await engineLog(), { backends: ['wasm'], sides: [1280], mark: null })
+  assert.deepEqual(await engineLog(), { lowMemory: [true], mark: null })
 })
 
 test('軽い読み方でも失敗したら、読めなかった知らせを出す（読み直しを繰り返さない）', async () => {
   await resetEngineLog({ fail: 2 })
-  await page.evaluate(() => { window.__photoOcrItems = [] })
+  await setStub({ items: [] })
   await photoView().locator('input[type=file]:not([capture])').setInputFiles(PHOTO)
   await page.getByRole('button', { name: '文字を読み取る' }).click()
   await page.getByText('文字を読み取れませんでした').waitFor({ timeout: 30_000 })
-  assert.deepEqual(await engineLog(), { backends: ['auto', 'wasm'], sides: [1600, 1280], mark: null })
+  assert.deepEqual(await engineLog(), { lowMemory: [false, true], mark: null })
+  await page.evaluate(([key]) => localStorage.removeItem(key), [OCR_LOW_UNTIL])
+})
+
+test('読み取りの途中でページごと落ちても（端末が読み直す）、軽い読み方でやり直し、2度落ちたら読めなかったと知らせて戻る', async () => {
+  await resetEngineLog()
+  await setStub({ items: TWO_ROWS, hold: true })
+  await photoView().locator('input[type=file]:not([capture])').setInputFiles(PHOTO)
+  await page.getByRole('button', { name: '文字を読み取る' }).click()
+  await page.waitForURL(/ocr\.html/)
+  await page.locator('[data-ocr-status]').getByText('写真の文字を読み取り中…').waitFor()
+  await page.reload()
+  await page.locator('[data-ocr-status]').getByText('写真の文字を読み取り中…').waitFor()
+  await page.reload()
+  await page.getByText('文字を読み取れませんでした').waitFor({ timeout: 60_000 })
+  assert.deepEqual(await engineLog(), { lowMemory: [false, true], mark: null })
+  await setStub({ hold: false })
   await page.evaluate(([key]) => localStorage.removeItem(key), [OCR_LOW_UNTIL])
 })

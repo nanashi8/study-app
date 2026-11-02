@@ -36,7 +36,7 @@ const freePort = () => new Promise((resolve, reject) => {
 // 画面と同じ部品で読み、ONNX Runtime へ渡す計算の大きさを控えるページ。
 const CHECK_PAGE = `
 import * as paddle from '@paddleocr/paddleocr-js'
-import * as ort from 'onnxruntime-web'
+import * as ort from 'onnxruntime-web/wasm'
 import { prepareImageForOcr } from '/src/lib/ocrImage.js'
 import { createOcrReader } from '/src/lib/ocrEngine.js'
 window.readDense = async (url, options) => {
@@ -137,12 +137,11 @@ test('普通の読み方：40行のページを全行読み、認識は1行ず�
   assertLight(result, OCR_READ_PARAMS.textDetLimitSideLen)
 })
 
-test('軽い読み方：GPU を使わず、40行のページを全行読み、検出は長い辺1280pxまで', async () => {
+test('軽い読み方：40行のページを全行読み、検出は長い辺1280pxまで', async () => {
   const result = await readDense({ lowMemory: true })
   assert.deepEqual(DENSE_PAGE_LINES.filter((line) => !denseLinesFound(result.text).includes(line)), [])
   assertLight(result, OCR_LOW_MEMORY_READ_PARAMS.textDetLimitSideLen)
-  assert.equal(ocrCreateOptions({ lowMemory: true }).ortOptions.backend, 'wasm')
-  assert.equal(ocrCreateOptions().ortOptions.backend, 'auto')
+  assert.equal(ocrCreateOptions().ortOptions.backend, 'wasm')
   assert.equal(ocrCreateOptions().textRecognitionBatchSize, 1)
 })
 

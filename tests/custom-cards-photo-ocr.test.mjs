@@ -63,13 +63,19 @@ before(async () => {
     if (message.type() === 'error' && !/Failed to load resource/.test(message.text())) messages.push(message.text())
   })
   await page.goto(base)
+  await hookStore()
+})
+
+// ストアを window に出す。読み取り（ocr.html）から戻るとアプリが開き直すので、使う前に毎回確かめる。
+async function hookStore() {
   await page.waitForSelector('.study-app-content', { timeout: 60_000 })
   await page.evaluate(async () => {
+    if (window.__photoTest) return
     const moduleUrl = (path) => performance.getEntriesByType('resource').map((entry) => entry.name).find((name) => new URL(name).pathname === path)
     const { useStore } = await import(moduleUrl('/src/store/useStore.js'))
     window.__photoTest = { store: useStore }
   })
-})
+}
 
 after(async () => {
   await browser?.close()
@@ -77,6 +83,7 @@ after(async () => {
 })
 
 async function openPhoto(params) {
+  await hookStore()
   await page.evaluate((value) => {
     const state = window.__photoTest.store.getState()
     state.navigate('portal', {})
@@ -123,6 +130,7 @@ test('新出単語の表（word-list）：7行がそのまま単語・意味・�
   await page.locator('[data-custom-photo-book]').selectOption('')
   await page.locator('[data-custom-photo-save]').click()
   assert.equal(await page.locator('[data-custom-photo-notice] p').innerText(), '7枚を「英語」に登録しました。')
+  await hookStore()
   const words = await page.evaluate(() => window.__photoTest.store.getState().customWords.map((word) => [word.word, word.meanings.join('・'), word.pos]))
   assert.deepEqual(words, [
     ['library', '図書館', '名'],

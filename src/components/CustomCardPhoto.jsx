@@ -169,7 +169,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
   const addCustomEntries = useStore((state) => state.addCustomEntries)
   const saveCustomCategory = useStore((state) => state.saveCustomCategory)
   const setNotebookSetItems = useStore((state) => state.setNotebookSetItems)
-  const ocr = usePhotoOcr({ readingStatus: '写真の文字を読み取り中…' })
+  const ocr = usePhotoOcr({ key: 'customCardPhoto', readingStatus: '写真の文字を読み取り中…', onRead: (read, resume) => applyRead(read, resume) })
   const base = subject ? { subject } : {}
 
   const [category, setCategory] = useState(() => {
@@ -258,11 +258,19 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
     setError('')
   }
 
-  const scan = async () => {
+  const scan = () => {
     if (!ocr.file || ocr.scanning) return
     clearResults()
-    const read = await ocr.scan()
-    if (!read) return
+    ocr.scan({ category, template, templateTouched, newCategoryTitle, chosenBookId })
+  }
+
+  // 読み取りから戻ったとき（アプリは開き直している）。選んでいたカテゴリーなどを戻してから候補を作る。
+  const applyRead = (read, resume) => {
+    setCategory(resume.category)
+    setTemplate(resume.template)
+    setTemplateTouched(resume.templateTouched)
+    setNewCategoryTitle(resume.newCategoryTitle)
+    setChosenBookId(resume.chosenBookId)
     const rows = photoRowsFromLines(read.page.lines)
     const nextText = photoTextFromRows(rows)
     const info = {
@@ -273,7 +281,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
     }
     setReading(info)
     setText(nextText)
-    rebuild(nextText, template, category, info)
+    rebuild(nextText, resume.template, resume.category, info)
   }
 
   const updateCandidate = (key, patch) => {

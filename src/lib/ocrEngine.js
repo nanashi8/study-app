@@ -7,7 +7,8 @@
 // これらも読める。
 // モデルは、検出が PP-OCRv6_tiny（1.8MB）、認識が PP-OCRv6_small（21MB。日本語・英語・中国語を1つで読む）。認識の tiny は
 // ひらがなを漢字に読み違え（「は」→「注」）、PP-OCRv5_mobile の認識は英単語が少し落ちた。検出は tiny でも small とほぼ同じだった。
-// 端末に WebGPU があれば GPU で、なければ wasm で動かす（パソコンで1枚平均 0.46 秒と約 2.6 秒）。
+// wasm で動かす（パソコンで1枚平均 約 2.6 秒）。WebGPU は使わない：GPU 対応版の ONNX Runtime は本体だけでメモリを大きく食い、
+// 2026-11-02 に iPhone で落ちた（WebKit のメモリの山 1,415MB → GPU なしの版 759MB、読める量と時間は同じ）。vite.config.js の resolve.alias も参照。
 import { OCR_MODEL_BYTES, OCR_MODEL_FILES, OCR_MODEL_NAMES } from './ocrModels.js'
 
 // ONNX Runtime Web の本体（wasm）は、ビルドが同じサイトの assets/ に入れたものを読む（外のサイトに頼らない）。
@@ -19,22 +20,22 @@ export function ocrModelUrl(file, base = import.meta.env?.BASE_URL ?? './') {
 
 // 読み取りの負荷。2026-11-02、615語の教科書のページ（長い行が約40行）をスマホで読むとアプリが落ちた。
 // - 認識は1行ずつ（textRecognitionBatchSize: 1）。モデルの既定は6行ずつで、6行を一番長い行の幅にそろえて計算するので、
-//   長い行が並ぶページほどメモリを食う。GPU で読むときのメモリの山は 3,781MB から 1,755MB に下がった（ソフトの GPU で測定）。
+//   長い行が並ぶページほどメモリを食う。
 // - 検出は長い辺 1600px まで（モデルの既定は写真の大きさのまま）。ピクセル数が減るぶん軽くなる。
 // - 箱のしきい値は 0.4（既定 0.6）。既定では文字の詰まったページの行が丸ごと抜けた（42か所中36か所 → 42か所）。
 export const OCR_READ_PARAMS = Object.freeze({ textDetLimitSideLen: 1600, textDetLimitType: 'max', textDetBoxThresh: 0.4 })
-// 前の読み取りが途中で止まった端末や、読み取りが失敗したときの読み方。GPU を使わず、検出の解像度も下げる。
+// 前の読み取りが途中で止まった端末や、読み取りが失敗したときの読み方。検出の解像度を下げる。
 export const OCR_LOW_MEMORY_READ_PARAMS = Object.freeze({ ...OCR_READ_PARAMS, textDetLimitSideLen: 1280 })
 
-export function ocrCreateOptions({ base, lowMemory = false } = {}) {
+export function ocrCreateOptions({ base } = {}) {
   return {
     textDetectionModelName: OCR_MODEL_NAMES.det,
     textDetectionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.det, base) },
     textRecognitionModelName: OCR_MODEL_NAMES.rec,
     textRecognitionModelAsset: { url: ocrModelUrl(OCR_MODEL_FILES.rec, base) },
     textRecognitionBatchSize: 1,
-    // WebGPU があれば GPU で動かす。wasm で動かすときは、計算を別スレッドに移して画面が固まらないようにする（proxy）。
-    ortOptions: { backend: lowMemory ? 'wasm' : 'auto', proxy: true },
+    // 読み取り全体を専用の別スレッド（ocrWorker.js）で動かすので、計算をさらに別スレッドへ移さない。
+    ortOptions: { backend: 'wasm', proxy: false },
   }
 }
 
@@ -52,11 +53,10 @@ export function ocrPageFromItems(items) {
 }
 
 let ortQuiet = null
-// ONNX Runtime の知らせ（WebGPU で一部の計算を CPU に回したときの「Some nodes were not assigned…」など）を、
-// エラーのときだけにする。セッションごとの知らせの度合いは作るときの設定（logSeverityLevel、指定がなければ警告）で決まり、
+// ONNX Runtime の知らせを、エラーのときだけにする。セッションごとの知らせの度合いは作るときの設定（logSeverityLevel、指定がなければ警告）で決まり、
 // SDK はそれを渡さないので、セッションを作る関数を包んで渡す（3 ＝ エラー）。
 async function quietOrt() {
-  ortQuiet ??= import('onnxruntime-web').then((ort) => {
+  ortQuiet ??= import('onnxruntime-web/wasm').then((ort) => {
     ort.env.logLevel = 'error'
     const create = ort.InferenceSession.create
     if (!create.quiet) {
@@ -95,7 +95,7 @@ function progressFetch(onDownload) {
 
 // 読み取りエンジンを作る（モデルと ONNX Runtime を読み込む）。paddle は import('@paddleocr/paddleocr-js') の中身。
 //   options.onDownload  初回のモデルの読み込みの進み具合（0〜1）
-//   options.lowMemory   GPU を使わず、検出の解像度を下げて読む
+//   options.lowMemory   検出の解像度を下げて読む
 export async function createOcrReader(paddle, options = {}) {
   await quietOrt()
   const fetchWithProgress = progressFetch(options.onDownload)

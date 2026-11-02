@@ -27,17 +27,13 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
 // 画面と同じ部品で写真1枚を読むページ（開発サーバーの中だけで出す）。
 const CHECK_PAGE = `
-import * as paddle from '@paddleocr/paddleocr-js'
 import { prepareImageForOcr } from '/src/lib/ocrImage.js'
-import { createOcrReader } from '/src/lib/ocrEngine.js'
-let reader
+import { readPhotoInWorker } from '/src/lib/ocrWorkerClient.js'
 window.readPhoto = async (url) => {
-  reader ??= createOcrReader(paddle)
-  const ready = await reader
   const file = await (await fetch(url)).blob()
   const image = await prepareImageForOcr(file)
   const started = performance.now()
-  const page = await ready.read(image)
+  const page = await readPhotoInWorker(image).promise
   return { text: page.text, words: page.words, ms: performance.now() - started, type: image.type, runtime: page.runtime }
 }
 window.checkReady = true

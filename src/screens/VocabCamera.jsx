@@ -22,7 +22,7 @@ export function VocabCameraScreen() {
     state.learningNotebook.sets.find((set) => set.id === activeNotebookSetId(state.learningNotebook))?.refs ?? NO_REFS
   ))
   // 写真を選んで読み取る部品（自作カードの「写真から作る」と同じもの）。
-  const ocr = usePhotoOcr({ readingStatus: '教科書の文字を読み取り中…' })
+  const ocr = usePhotoOcr({ key: 'vocabCamera', readingStatus: '教科書の文字を読み取り中…', onRead: (result) => applyRead(result) })
   // 読み取りのたびに作る、候補の判定に使うもの（文字を直して候補を更新するときも使う）。
   const englishWordsRef = useRef(null)
   // 英文の品詞を決める道具（saw ＝ see の過去形／のこぎり などを、前後の語から読み分ける）。
@@ -79,13 +79,16 @@ export function VocabCameraScreen() {
     setAddedCount(0)
   }
 
-  const scanImage = async () => {
+  const scanImage = () => {
     if (!ocr.file || ocr.scanning) return
     setOcrText('')
     setSummary(null)
     setAddedCount(0)
-    const result = await ocr.scan()
-    if (!result) return
+    ocr.scan()
+  }
+
+  // 読み取りから戻ったとき（アプリは開き直している）。
+  const applyRead = (result) => {
     englishWordsRef.current = result.englishWords
     taggerRef.current = result.tagger
     confidencesRef.current = ocrTokenConfidences(result.page.words)

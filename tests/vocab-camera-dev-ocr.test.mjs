@@ -17,6 +17,7 @@ import net from 'node:net'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 import { chromium } from 'playwright'
+import { OCR_STUB_KEY, ocrWorkerStub } from './ocr-worker-stub.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const SENTENCE = 'The student reads zorblax books.'
@@ -31,43 +32,6 @@ const OCR_ITEMS = [
   { text: 'hot', score: 0.3 },
 ].map((item, i) => ({ ...item, poly: [[10, i * 50], [400, i * 50], [400, i * 50 + 30], [10, i * 50 + 30]] }))
 const OCR_TEXT = OCR_ITEMS.map((item) => item.text).join('\n')
-
-// 読み取りエンジンの代わり。作ったときの設定と、読んだ回数・片付けた回数を window に残す。
-// window.__cameraOcrHold に Promise を置くと、読み取りをそこで待たせる（途中で画面を離れる確かめに使う）。
-const PADDLE_STUB = `
-const state = () => (window.__cameraOcr ??= { created: 0, predicted: 0, disposed: 0, options: [] })
-const ITEMS = ${JSON.stringify(OCR_ITEMS)}
-export const PaddleOCR = {
-  async create(options) {
-    state().created += 1
-    state().options.push({
-      det: options.textDetectionModelName,
-      rec: options.textRecognitionModelName,
-      detUrl: options.textDetectionModelAsset?.url,
-      recUrl: options.textRecognitionModelAsset?.url,
-      ortOptions: options.ortOptions,
-      hasFetch: typeof options.fetch === 'function',
-    })
-    return {
-      async predict() {
-        if (window.__cameraOcrHold) await window.__cameraOcrHold
-        state().predicted += 1
-        return [{ items: ITEMS, metrics: {}, runtime: { requestedBackend: 'auto' } }]
-      },
-      async dispose() {
-        state().disposed += 1
-      },
-    }
-  },
-}
-`
-
-const paddleStub = () => ({
-  name: 'paddle-stub',
-  enforce: 'pre',
-  resolveId: (id) => (id === '@paddleocr/paddleocr-js' ? '\0paddle-stub' : null),
-  load: (id) => (id === '\0paddle-stub' ? PADDLE_STUB : null),
-})
 
 let vite
 let browser
@@ -84,6 +48,10 @@ const freePort = () => new Promise((resolve, reject) => {
 
 // スマホの大きさの画面を開き、メニューから「教科書から単語追加」へ進む。
 // beforeFix なら、画面の JS から「付けたときに生きている印を true に戻す」1行を抜いて、直す前の作りにする。
+const setStub = (page, patch) => page.evaluate(([key, value]) => {
+  localStorage.setItem(key, JSON.stringify({ ...JSON.parse(localStorage.getItem(key) || '{}'), ...value }))
+}, [OCR_STUB_KEY, patch])
+
 async function openCamera({ beforeFix = false } = {}) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -123,6 +91,7 @@ async function openCamera({ beforeFix = false } = {}) {
   await page.locator('[data-global-menu-button]').click({ timeout: 30_000 })
   await page.locator('[data-menu-destination="vocabCamera"]').click()
   await page.getByText('撮影した写真から英単語を読み取る').waitFor()
+  await setStub(page, { items: OCR_ITEMS, reads: [], hold: false })
   return { context, page, errors, revert }
 }
 
@@ -153,7 +122,7 @@ before(async () => {
   vite = await createServer({
     root: ROOT,
     logLevel: 'silent',
-    plugins: [paddleStub()],
+    plugins: [ocrWorkerStub()],
     // 動かしている開発サーバーの依存の置き場を書き換えない。
     cacheDir: 'node_modules/.vite-camera-test',
     // 依存を最初に見つけておく（途中で見つけるとページを読み直し、開いた画面が入口へ戻る）。
@@ -178,18 +147,15 @@ test('開発版は StrictMode で画面を描く（effect が2回走る場合を
   assert.equal(vite.config.mode, 'development')
 })
 
-test('直す前の作りでは、開発版の読み取りが「写真を読み込んでいます…」2% で止まり、エンジンも呼ばれない', async () => {
+test('直す前の作りでは、開発版で読み取りから戻っても結果が出ない（StrictMode の effect が2回走るため）', async () => {
   const { context, page, errors, revert } = await openCamera({ beforeFix: true })
   try {
     assert.ok(revert.replaced >= 1, '画面の JS に「付けたときに true に戻す」行が見つからず、直す前の作りを再現できていない')
     await scanSentence(page)
-    await page.getByText('写真を読み込んでいます…').waitFor()
+    await page.waitForURL(/ocr\.html/)
+    await page.getByText('撮影した写真から英単語を読み取る').waitFor({ timeout: 30_000 })
     await page.waitForTimeout(2_500)
-    const main = await page.locator('main').innerText()
-    assert.match(main, /写真を読み込んでいます…/)
-    assert.match(main, /\b2%/)
     assert.equal(await page.locator('#ocr-candidates-title').count(), 0)
-    assert.equal(await page.evaluate(() => window.__cameraOcr?.created ?? 0), 0)
     assert.deepEqual(errors, [])
   } finally {
     await context.close()
@@ -223,15 +189,9 @@ test('開発版（StrictMode）でも、PaddleOCR で読み、辞書と一致し
     // 実在しない並びと人名は、リクエストに出さず、確かめられなかった文字として示す。
     const rejected = await page.locator('[data-ocr-rejected] li').allInnerTexts()
     assert.deepEqual(rejected, ['Emi', 'xqzrt'])
-    // エンジンは PaddleOCR を1つ作り（検出 PP-OCRv6_tiny・認識 PP-OCRv6_small、モデルは同じサイトの ocr-models/）、1回読む。
-    const state = await page.evaluate(() => window.__cameraOcr)
-    assert.deepEqual([state.created, state.predicted], [1, 1])
-    assert.equal(state.options[0].det, 'PP-OCRv6_tiny_det')
-    assert.equal(state.options[0].rec, 'PP-OCRv6_small_rec')
-    assert.match(state.options[0].detUrl, /\/ocr-models\/PP-OCRv6_tiny_det_onnx_infer\.tar$/)
-    assert.match(state.options[0].recUrl, /\/ocr-models\/PP-OCRv6_small_rec_onnx_infer\.tar$/)
-    assert.deepEqual(state.options[0].ortOptions, { backend: 'auto', proxy: true })
-    assert.equal(state.options[0].hasFetch, true)
+    // 読み取り専用のページで1度だけ読み、元の画面へ戻っている。
+    assert.deepEqual((await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), OCR_STUB_KEY)).reads, [false])
+    assert.doesNotMatch(page.url(), /ocr\.html/)
     // 送信ボタンは押さない（開発版の Firebase は本番）。外への通信も止めてある。
     assert.deepEqual(errors, [])
   } finally {
@@ -239,27 +199,16 @@ test('開発版（StrictMode）でも、PaddleOCR で読み、辞書と一致し
   }
 })
 
-test('読み取りの途中で画面を離れると、エンジンを止めて写真のプレビューの URL を消し、結果を書かない', async () => {
+test('読み取りの途中で「やめる」を押すと、元の画面へ戻って写真は残し、結果は出さない', async () => {
   const { context, page, errors } = await openCamera()
   try {
-    await page.evaluate(() => {
-      window.__cameraOcrHold = new Promise((resolve) => { window.__cameraOcrRelease = resolve })
-    })
+    await setStub(page, { hold: true })
     await scanSentence(page)
+    await page.waitForURL(/ocr\.html/)
     await page.getByText('教科書の文字を読み取り中…').waitFor({ timeout: 15_000 })
-    const previewUrl = await page.locator('main img[src^="blob:"]').first().getAttribute('src')
-    assert.ok(previewUrl, '写真のプレビューが出ていない')
-    await page.locator('[data-global-back-button]').click()
-    await page.getByText('撮影した写真から英単語を読み取る').waitFor({ state: 'detached' })
-    const afterLeaving = await page.evaluate(() => ({ ...window.__cameraOcr, revoked: window.__revokedUrls }))
-    assert.equal(afterLeaving.created, 1)
-    assert.equal(afterLeaving.disposed, 1, '画面を離れてもエンジンを片付けていない')
-    assert.equal(afterLeaving.predicted, 0)
-    assert.ok(afterLeaving.revoked.includes(previewUrl), '画面を離れても写真のプレビューの URL を消していない')
-    // 待たせていた読み取りを終わらせても、離れた画面の結果は出さず、エラーも出ない。
-    await page.evaluate(() => window.__cameraOcrRelease())
-    await page.waitForTimeout(500)
-    assert.equal(await page.evaluate(() => window.__cameraOcr.predicted), 1)
+    await page.getByRole('button', { name: 'やめる' }).click()
+    await page.getByText('撮影した写真から英単語を読み取る').waitFor({ timeout: 30_000 })
+    await page.locator('main img[src^="blob:"]').first().waitFor()
     assert.equal(await page.locator('#ocr-candidates-title').count(), 0)
     assert.deepEqual(errors, [])
   } finally {

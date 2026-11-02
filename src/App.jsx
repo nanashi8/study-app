@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import { pendingOcrNavigation } from './lib/ocrPageBridge.js'
 import { useStore } from './store/useStore.js'
 import { useAuth } from './store/useAuth.js'
 import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
@@ -318,6 +319,13 @@ export default function App() {
     if (/[#&]code=EQ1-/.test(location.hash)) {
       useStore.getState().navigate('progress')
     }
+  }, [])
+
+  // 写真の読み取り専用のページ（ocr.html）から戻ったら、読み取りを始めた画面を開き直す。結果はその画面が受け取る。
+  useEffect(() => {
+    pendingOcrNavigation().then((navigation) => {
+      if (navigation) useStore.setState(navigation)
+    })
   }, [])
 
   // ログインしたら：クラウドから進捗を復元 → 以後は自動保存。

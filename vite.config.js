@@ -36,8 +36,17 @@ function ocrModels() {
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss(), ocrModels()],
+  resolve: {
+    // 写真の読み取りは GPU なしの版の ONNX Runtime で動かす（SDK の import もこちらへ向ける）。GPU 対応版は本体が大きく、
+    // GPU を使わないときでも WebKit のメモリの山が 1,415MB になってスマホで落ちた。この版は 759MB（2026-11-02）。
+    alias: [{ find: /^onnxruntime-web$/, replacement: 'onnxruntime-web/wasm' }],
+  },
+  // 読み取りの別スレッド（src/lib/ocrWorker.js）は ONNX Runtime を塊に分けて読むので ES モジュールにする。
+  worker: { format: 'es' },
   build: {
     rolldownOptions: {
+      // ocr.html は写真の読み取り専用のページ（アプリ本体を読み込まない。src/lib/ocrPageBridge.js）。
+      input: { main: 'index.html', ocr: 'ocr.html' },
       output: {
         codeSplitting: {
           // vite は import() を先読みの関数（\0vite/preload-helper.js）で包む。この関数がアプリ本体の塊に入ると、

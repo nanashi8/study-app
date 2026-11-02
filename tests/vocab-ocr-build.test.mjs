@@ -137,13 +137,15 @@ before(async () => {
     const browser = await { chromium, webkit }[type].launch()
     browsers.push(browser)
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: type === 'chromium', hasTouch: true })
+    // 読み取りは専用のページ（ocr.html）で動く。戻ってアプリを開き直すときのフォントなどは読み取りに入れない。
+    const onOcrPage = () => context.pages().some((page) => /ocr\.html/.test(page.url()))
     // 自分のサーバーにだけ通す（モデルも ONNX Runtime の本体も同じサイトから読む）。外へ出ようとした数を数える。
     await context.route((url) => !url.href.startsWith(base) && !url.href.startsWith('blob:') && !url.href.startsWith('data:'), (route) => {
-      if (reading) externalRequests.push(route.request().url())
+      if (reading && onOcrPage()) externalRequests.push(route.request().url())
       return route.abort()
     })
-    context.on('console', (message) => reading && messages[type].push(`${message.type()}: ${message.text()}`))
-    context.on('weberror', (error) => reading && messages[type].push(`pageerror: ${error.error().message}`))
+    context.on('console', (message) => reading && onOcrPage() && messages[type].push(`${message.type()}: ${message.text()}`))
+    context.on('weberror', (error) => reading && onOcrPage() && messages[type].push(`pageerror: ${error.error().message}`))
     for (const read of READS.filter((item) => item.browser === type)) {
       const page = await openCamera(context)
       const truth = truths.find((item) => item.id === read.id)
@@ -181,12 +183,14 @@ test('ONNX Runtime の塊（別スレッドでも読み込む）は、アプリ�
   const assets = readdirSync(join(outDir, 'assets'))
   const html = readFileSync(join(outDir, 'index.html'), 'utf8')
   const entry = html.match(/<script type="module"[^>]*src="\.\/assets\/([^"]+\.js)"/)[1]
-  const ort = assets.filter((file) => /^ort\.bundle\.min-.*\.js$/.test(file))
-  assert.equal(ort.length, 1, assets.join(' '))
-  const reached = [...staticImports(ort[0])]
-  assert.ok(!reached.includes(entry), `${ort[0]} が ${entry} を読み込む：${reached.join(' ')}`)
-  // 読み込むのは rolldown の下回りと先読みの関数だけ（どちらも読み込んだときに document を使わない）。
-  for (const file of reached) assert.match(file, /^(rolldown-runtime|preload-helper)-/, file)
+  const ort = assets.filter((file) => /^(ort\.wasm\.bundle\.min|ocrWorker)-.*\.js$/.test(file))
+  assert.equal(ort.length, 2, assets.join(' '))
+  for (const chunk of ort) {
+    const reached = [...staticImports(chunk)]
+    assert.ok(!reached.includes(entry), `${chunk} が ${entry} を読み込む：${reached.join(' ')}`)
+    // 読み込むのは rolldown の下回りと先読みの関数だけ（どちらも読み込んだときに document を使わない）。
+    for (const file of reached) assert.match(file, /^(rolldown-runtime|preload-helper|ocrWorker)-/, file)
+  }
 })
 
 test('本番のビルドの画面で、写真を読み取りエンジンで読む（Chromium・WebKit）', (t) => {
@@ -241,4 +245,15 @@ test('本番のビルドの読み取りのあいだ、コンソールに知ら�
     && line !== 'info: Successfully preconnected to https://fonts.googleapis.com/')
   assert.deepEqual(ours(messages.chromium), [])
   assert.deepEqual(ours(messages.webkit), [])
+})
+
+test('写真の読み取りは GPU なしの版の ONNX Runtime で、アプリ本体のいない専用のページで動く', () => {
+  const assets = readdirSync(join(outDir, 'assets'))
+  assert.deepEqual(assets.filter((name) => /\.wasm$/.test(name) && /jsep|asyncify|jspi/.test(name)), [])
+  assert.equal(assets.filter((name) => /^ort-wasm-simd-threaded.*\.wasm$/.test(name)).length, 1)
+  const html = readFileSync(join(outDir, 'ocr.html'), 'utf8')
+  const scripts = [...html.matchAll(/(?:src|href)="\.\/assets\/([^"]+\.js)"/g)].map((match) => match[1])
+  assert.ok(scripts.length >= 1)
+  // ページが読み込む JS はごく小さい（アプリ本体もエンジンも入らない。エンジンは別スレッドで読む）。
+  for (const name of scripts) assert.ok(readFileSync(join(outDir, 'assets', name)).length < 100_000, name)
 })

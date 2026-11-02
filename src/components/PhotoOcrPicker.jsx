@@ -1,31 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
-import { beginOcrReading, createOcrReader, endOcrReading, rememberOcrLowMemory } from '../lib/ocrEngine.js'
 import { loadEnglishTagger } from '../lib/ocrContext.js'
 import { loadEnglishWordSet } from '../lib/englishWordList.js'
-import { prepareImageForOcr } from '../lib/ocrImage.js'
+import { startOcrPage, takeOcrResult } from '../lib/ocrPageBridge.js'
+import { useStore } from '../store/useStore.js'
 import { Button, ProgressBar } from './ui.jsx'
 import { Sparkles, Upload } from './Icons.jsx'
 
 // 写真の文字を読み取る部品。「教科書から単語追加」（VocabCamera.jsx）と自作カードの「写真から作る」が同じものを使う。
-// 写真を選ぶ（カメラで撮る・写真を選ぶ）→ 読み取りエンジン（PaddleOCR）を準備する → 読む、までを受け持ち、
+// 写真を選ぶ（カメラで撮る・写真を選ぶ）→ 読み取り専用のページ（ocr.html）で読む → 戻ってくる、までを受け持ち、
 // 読んだ結果をどう使うか（辞書と照らす・カードの候補にする）は画面が決める。
 
 const MAX_FILE_BYTES = 20 * 1024 * 1024
 
-// 読み取りの進み具合。エンジンの準備（初回はモデルの読み込み）の間は、読み込んだ量で進める。
-const PREPARE_PROGRESS = [0.05, 0.6]
-const READ_PROGRESS = 0.7
-
 /**
- * 写真を選んで読む。readingStatus は読んでいる間の知らせ。
- * scan() は読み終えたら { text, page, englishWords, tagger }（page は ocrEngine.js の行と語、englishWords は実在する英単語の表、
- * tagger は英文の品詞を決める道具）を返し、読めなかったときと画面を離れたときは null を返す。
+ * 写真を選んで読む。key は画面の名前（結果の受け取り先）、readingStatus は読んでいる間の知らせ。
+ * scan(resume) で読み取り専用のページへ移る（アプリはいったん閉じる）。読み終えて戻ると、onRead(read, resume) を呼ぶ。
+ * read は { text, page, englishWords, tagger }（page は ocrEngine.js の行と語、englishWords は実在する英単語の表、
+ * tagger は英文の品詞を決める道具）、resume は scan に渡した、画面の選びを戻すための値。
  */
-export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中…' } = {}) {
+export function usePhotoOcr({ key, readingStatus = '写真の文字を読み取り中…', onRead }) {
   const previewUrlRef = useRef('')
-  // 読み取りエンジン（PaddleOCR）。最初の読み取りで作り、同じ画面で2枚目からは使い回す。画面を離れたら片付ける。
-  const readerRef = useRef(null)
   const mountedRef = useRef(true)
+  const takenRef = useRef(false)
+  const onReadRef = useRef(onRead)
+  onReadRef.current = onRead
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [scanning, setScanning] = useState(false)
@@ -33,52 +31,56 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
 
-  const disposeReader = () => {
-    readerRef.current?.promise.then((reader) => reader.dispose()).catch(() => {})
-    readerRef.current = null
+  const showFile = (nextFile) => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    const nextUrl = URL.createObjectURL(nextFile)
+    previewUrlRef.current = nextUrl
+    setFile(nextFile)
+    setPreviewUrl(nextUrl)
   }
 
-  // lowMemory の読み方のエンジンを用意する。読み方が変わったら作り直す。
-  const prepareReader = (lowMemory) => {
-    if (readerRef.current?.lowMemory !== lowMemory) {
-      disposeReader()
-      const promise = import('@paddleocr/paddleocr-js').then((paddle) => createOcrReader(paddle, {
-        lowMemory,
-        // 初回はモデル（約 23MB）を読み込むので、読み込んだ量で進み具合を出す。2回目からは端末に残ったものを使う。
-        onDownload: (fraction) => {
-          if (!mountedRef.current) return
-          setStatus('英語と日本語の認識データを読み込み中…')
-          setProgress((current) => Math.max(current, PREPARE_PROGRESS[0] + (PREPARE_PROGRESS[1] - PREPARE_PROGRESS[0]) * fraction))
-        },
-      }))
-      const entry = { promise, lowMemory }
-      readerRef.current = entry
-      promise.catch(() => {
-        if (readerRef.current === entry) readerRef.current = null
-      })
+  const failed = () => {
+    setError('文字を読み取れませんでした。通信を確認するか、明るく正面から撮り直してください。')
+    setStatus('')
+    setProgress(0)
+  }
+
+  // 読み取りから戻ってきたら、結果を受け取る。実在する英単語かを確かめる単語表と、文脈で読み分ける品詞の道具はここで読み込む。
+  const receive = async (result) => {
+    showFile(result.file)
+    if (result.cancelled) return
+    if (result.failed) {
+      failed()
+      return
     }
-    return readerRef.current.promise
+    setScanning(true)
+    setStatus('読み取った文字を整えています…')
+    setProgress(0.9)
+    try {
+      const [englishWords, tagger] = await Promise.all([loadEnglishWordSet(), loadEnglishTagger()])
+      if (!mountedRef.current) return
+      setProgress(1)
+      setStatus('読み取りが完了しました')
+      onReadRef.current?.({ text: result.page.text.trim(), page: result.page, englishWords, tagger }, result.resume)
+    } catch (reason) {
+      console.warn('photo OCR failed', reason)
+      if (mountedRef.current) failed()
+    } finally {
+      if (mountedRef.current) setScanning(false)
+    }
   }
 
-  // 1枚を読む。画面を離れたら null。
-  const readImage = async (image, lowMemory) => {
-    setStatus('文字認識エンジンを準備中…')
-    setProgress(PREPARE_PROGRESS[0])
-    const reader = await prepareReader(lowMemory)
-    if (!mountedRef.current) return null
-    setStatus(readingStatus)
-    setProgress(READ_PROGRESS)
-    return reader.read(image)
-  }
-
-  // 画面が出ているあいだだけ、読み取りの結果を画面へ書く。開発版の StrictMode は effect を「付ける→外す→付ける」と
-  // 2回走らせるので、付けるたびに true へ戻す（戻さないと読み取りが写真の読み込みの直後で止まる）。
+  // 開発版の StrictMode は effect を「付ける→外す→付ける」と2回走らせるので、付けるたびに true へ戻す。
   useEffect(() => {
     mountedRef.current = true
-    readerRef.current = null
+    if (!takenRef.current) {
+      takenRef.current = true
+      takeOcrResult(key).then((result) => {
+        if (result && mountedRef.current) receive(result)
+      })
+    }
     return () => {
       mountedRef.current = false
-      disposeReader()
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
     }
   }, [])
@@ -97,62 +99,33 @@ export function usePhotoOcr({ readingStatus = '写真の文字を読み取り中
       return false
     }
 
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
-    const nextUrl = URL.createObjectURL(nextFile)
-    previewUrlRef.current = nextUrl
-    setFile(nextFile)
-    setPreviewUrl(nextUrl)
+    showFile(nextFile)
     setError('')
     setProgress(0)
     setStatus('')
     return true
   }
 
-  const scan = async () => {
-    if (!file || scanning) return null
+  const scan = async (resume) => {
+    if (!file || scanning) return
     setScanning(true)
     setError('')
     setProgress(0.02)
     setStatus('写真を読み込んでいます…')
-
-    // 実在する英単語かを確かめる単語表と、文脈で読み分ける品詞の道具は、写真の下ごしらえと並べて読み込む。
-    const englishWordsLoading = loadEnglishWordSet()
-    englishWordsLoading.catch(() => {})
-    const taggerLoading = loadEnglishTagger()
-    taggerLoading.catch(() => {})
     try {
-      const image = await prepareImageForOcr(file)
-      if (!mountedRef.current) return null
-
-      const lowMemory = beginOcrReading()
-      let page
-      try {
-        page = await readImage(image, lowMemory)
-      } catch (reason) {
-        // メモリ不足などで失敗したら、GPU を使わない軽い読み方で1度読み直す。
-        if (lowMemory || !mountedRef.current) throw reason
-        console.warn('photo OCR retrying with low memory', reason)
-        rememberOcrLowMemory()
-        page = await readImage(image, true)
-      }
-      if (!mountedRef.current) return null
-      const [englishWords, tagger] = await Promise.all([englishWordsLoading, taggerLoading])
-      if (!mountedRef.current) return null
-
-      setProgress(1)
-      setStatus('読み取りが完了しました')
-      return { text: page.text.trim(), page, englishWords, tagger }
+      const { screen, params, stack } = useStore.getState()
+      await startOcrPage({
+        key,
+        file,
+        readingStatus,
+        returnUrl: location.href,
+        navigation: JSON.parse(JSON.stringify({ screen, params, stack })),
+        resume,
+      })
     } catch (reason) {
       console.warn('photo OCR failed', reason)
-      if (mountedRef.current) {
-        setError('文字を読み取れませんでした。通信を確認するか、明るく正面から撮り直してください。')
-        setStatus('')
-        setProgress(0)
-      }
-      return null
-    } finally {
-      endOcrReading()
-      if (mountedRef.current) setScanning(false)
+      setScanning(false)
+      failed()
     }
   }
 

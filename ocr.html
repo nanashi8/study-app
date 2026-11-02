@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title></title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #f4f7fb; color: #1f2a44; font-family: system-ui, -apple-system, sans-serif; }
+      main { box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 12px; min-height: 100%; max-width: 448px; margin: 0 auto; padding: 24px 16px; }
+      .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 800; }
+      .track { height: 10px; border-radius: 999px; background: #dbe6f7; overflow: hidden; }
+      .bar { height: 100%; width: 0; border-radius: 999px; background: #3b82f6; transition: width 0.3s; }
+      .note { margin: 0; font-size: 12px; font-weight: 700; opacity: 0.65; }
+      button { align-self: center; margin-top: 12px; padding: 10px 24px; border: 1px solid #c3cfe2; border-radius: 12px; background: #fff; color: inherit; font: inherit; font-size: 14px; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="row"><span data-ocr-status></span><span data-ocr-percent></span></div>
+      <div class="track"><div class="bar" data-ocr-bar></div></div>
+      <p class="note" data-ocr-note></p>
+      <button type="button" data-ocr-cancel></button>
+    </main>
+    <!-- 文言と読み取りの手順は src/lib/ocrPage.js -->
+    <script type="module" src="/src/lib/ocrPage.js"></script>
+  </body>
+</html>

@@ -150,9 +150,11 @@ test('読み取りエンジンは、検出 PP-OCRv6_tiny・認識 PP-OCRv6_small
   assert.match(options.textDetectionModelAsset.url, /\/study-app\/ocr-models\/PP-OCRv6_tiny_det_onnx_infer\.tar$/)
   assert.match(options.textRecognitionModelAsset.url, /\/study-app\/ocr-models\/PP-OCRv6_small_rec_onnx_infer\.tar$/)
   // ONNX Runtime の本体は、外のサイト（jsdelivr）からではなく、ビルドが入れた同じサイトのものを読む。
-  assert.deepEqual(options.ortOptions, { backend: 'auto', proxy: true })
+  assert.deepEqual(options.ortOptions, { backend: 'wasm', proxy: false })
   const lock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'))
   assert.ok(lock.packages['node_modules/onnxruntime-web'])
+  // GPU 対応版は本体だけでメモリを大きく食う（WebKit の山 1,415MB → 759MB）。SDK の import も GPU なしの版へ向ける。
+  assert.match(readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8'), /find: \/\^onnxruntime-web\$\/, replacement: 'onnxruntime-web\/wasm'/)
   assert.ok(lock.packages['node_modules/@paddleocr/paddleocr-js'])
   assert.equal(lock.packages['node_modules/tesseract.js'], undefined)
   // 取り込みの道具とビルドは、画面と同じモデルの表を使う。
@@ -192,8 +194,8 @@ test('写真は PNG にし、まわりに 4px の白い余白をつけてエン�
   assert.match(source, /type = 'image\/png'/)
   assert.match(source, /context\.drawImage\(bitmap, OCR_IMAGE_MARGIN, OCR_IMAGE_MARGIN, width, height\)/)
   // 写真を読む共通の部品（教科書から単語追加と自作カードの「写真から作る」。2026-10-22 に VocabCamera.jsx から移した）。
-  const picker = readFileSync(new URL('../src/components/PhotoOcrPicker.jsx', import.meta.url), 'utf8')
-  assert.match(picker, /await prepareImageForOcr\(file\)/)
+  const reader = readFileSync(new URL('../src/lib/ocrPage.js', import.meta.url), 'utf8')
+  assert.match(reader, /await prepareImageForOcr\(job\.photo\)/)
 })
 
 test('英語の単語表は、小文字の英字の語だけを持ち、語形変化を含む。画面は 24 のファイルを全部読む', () => {
