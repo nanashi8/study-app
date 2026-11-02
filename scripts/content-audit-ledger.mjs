@@ -587,7 +587,7 @@ async function buildLedger(auditedAt) {
       'カテゴリ別に登録した全品質ゲート、全テスト、ビルド、差分検査が成功する',
     ],
     verifiedCommands: [
-      'npm test',
+      'node scripts/run-tests.mjs',
       'npm run check:content',
       'npm exec -- vite build',
       'npm run audit:dist',

@@ -6,8 +6,11 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
+// --full：全テストを流す。ふだんは変更に関係するテストだけ（読むファイルが前回の合格から変わったテスト）を流す。
+const testArgs = ['scripts/run-tests.mjs', ...(process.argv.includes('--full') ? ['--full'] : [])]
+
 const steps = [
-  ['npm', ['test']],
+  [process.execPath, testArgs],
   ['npm', ['run', 'check:content']],
   ['npm', ['exec', '--', 'vite', 'build']],
   ['npm', ['run', 'audit:dist']],

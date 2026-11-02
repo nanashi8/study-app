@@ -13,9 +13,9 @@
 // 依頼の持ち主は、台帳の sessions に書いたセッション。台帳の書き方は CLAUDE.md の「依頼台帳」を参照。
 import { execSync, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { homedir, tmpdir } from 'node:os'
 import { dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 // テストでは CHECK_REQUESTS_DIR で別の台帳を読ませる。
@@ -157,9 +157,23 @@ function describe(requests, sessionId = null) {
 const REPOSITORY_ENV = /^GIT_(?:DIR|WORK_TREE|INDEX_FILE|PREFIX|OBJECT_DIRECTORY|ALTERNATE_OBJECT_DIRECTORIES|COMMON_DIR|NAMESPACE|QUARANTINE_PATH|REFLOG_ACTION|PUSH_OPTION_\w+)$/
 const cleanEnv = () => Object.fromEntries(Object.entries(process.env).filter(([key]) => !REPOSITORY_ENV.test(key)))
 
+// 確認コマンドの node --test にテストの結果の控えを使わせる（読むファイルが前回の合格から変わっていないテストは流さない。scripts/run-tests.mjs と同じ）。
+const TEST_CACHE_PRELOAD = join(ROOT, 'scripts/test-cache/preload.mjs')
+const checkEnv = () => {
+  const env = cleanEnv()
+  if (!existsSync(TEST_CACHE_PRELOAD)) return env
+  return {
+    ...env,
+    NODE_OPTIONS: [env.NODE_OPTIONS, `--import=${pathToFileURL(TEST_CACHE_PRELOAD).href}`].filter(Boolean).join(' '),
+    AUDIT_TEST_ROOT: ROOT,
+    AUDIT_TEST_CACHE_DIR: env.AUDIT_TEST_CACHE_DIR ?? join(homedir(), '.cache', 'study-app-test-cache'),
+    AUDIT_TEST_USE_CACHE: '1',
+  }
+}
+
 function runCheck(command) {
   try {
-    execSync(command, { cwd: ROOT, env: cleanEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: 15 * 60 * 1000 })
+    execSync(command, { cwd: ROOT, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: 15 * 60 * 1000 })
     return { ok: true, output: '' }
   } catch (error) {
     const output = `${error.stdout ?? ''}${error.stderr ?? ''}`.trim().split('\n').slice(-15).join('\n')

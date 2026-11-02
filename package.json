@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "test": "node scripts/run-tests.mjs --full",
+    "test:changed": "node scripts/run-tests.mjs",
     "check": "npm run check:content && npm run audit:content-ledger",
     "check:content": "npm run audit:secrets && npm run audit:public-data && npm run check:deployment && npm run check:learner-contract && npm run audit:japanese && npm run audit:japanese-review && npm run audit:curriculum-1900 && node scripts/check-data.mjs && npm run audit:word-levels && npm run audit:idiom-forms && npm run audit:etymology-quality && node scripts/english-content-audit.mjs && npm run audit:grammar-explanations && npm run audit:reading-translations && npm run audit:extended-reading && npm run audit:basic-reading && npm run audit:question-formats && npm run audit:classics-kanbun && npm run audit:normal-learning-record-lists && npm run audit:notebook && npm run audit:analytics && npm run audit:phrases && npm run audit:xp-retirement && npm run audit:content-progress && npm run audit:links && npm run audit:example-sense",
     "check:deployment": "node scripts/check-deployment-target.mjs",
@@ -24,6 +25,7 @@
     "audit:question-formats": "node scripts/audit-english-question-formats.mjs",
     "audit:content-ledger": "node scripts/content-audit-ledger.mjs",
     "audit:all-content": "node scripts/record-content-audit.mjs",
+    "audit:full": "node scripts/record-content-audit.mjs --full",
     "audit:classics-kanbun": "node scripts/check-classics-kanbun.mjs",
     "audit:normal-learning-record-lists": "node scripts/check-normal-learning-record-lists.mjs",
     "audit:notebook": "node scripts/check-learning-notebook.mjs",

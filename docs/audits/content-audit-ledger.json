@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-02T02:37:18.604Z",
+  "auditedAt": "2026-11-02T05:45:06.503Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -27,7 +27,7 @@
     "カテゴリ別に登録した全品質ゲート、全テスト、ビルド、差分検査が成功する"
   ],
   "verifiedCommands": [
-    "npm test",
+    "node scripts/run-tests.mjs",
     "npm run check:content",
     "npm exec -- vite build",
     "npm run audit:dist",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "a88ba597a995b9fb0f3eac53c06dfb90b200f63d47ca8c4a3a71dcb8ee4691eb",
+    "sha256": "95874d1449cd1100a2bbac67172accb79e96a0bec2cf800976e5e39364c5c34f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -177,6 +177,7 @@
       "tests/answer-reselect.test.mjs",
       "tests/app-navigation.test.mjs",
       "tests/app-recovery.test.mjs",
+      "tests/audit-speed.test.mjs",
       "tests/basic-reading-content.test.mjs",
       "tests/basic-reading-prep.test.mjs",
       "tests/basic-reading-screens.test.mjs",
