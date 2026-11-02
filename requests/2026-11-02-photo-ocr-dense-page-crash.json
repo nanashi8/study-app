@@ -3,7 +3,8 @@
   "title": "写真からカードを作る機能で、文字の多いページ（添付の入試対策テスト）を読むとアプリが途中で落ちるのを直す",
   "asked": [
     "写真からカードを作る機能で、添付したテキストは読み込みを開始するもののアプリが途中で落ちてできません。修正しなさい。（添付：入試対策テスト(1) 6 のスピーチ原稿 615語の教科書の写真 1500×2000）",
-    "google翻訳等スムーズに翻訳できるのだから、もっと軽い動作にできるのではないか。"
+    "google翻訳等スムーズに翻訳できるのだから、もっと軽い動作にできるのではないか。",
+    "まだ終わらないか？いつも監査がとても長いが問題があるのではないか？もっと短くできないか？"
   ],
   "sessions": [
     "30aeb882-62b0-4e45-8f54-4376636c588c"
@@ -40,10 +41,26 @@
     },
     {
       "id": "deployed",
-      "text": "全監査を通して main へ push し、公開版で確かめる",
+      "text": "クリーンな clone で npm run audit:all-content が通り（テスト1,558件成功・台帳を書き直し）、8fceb351 を main へ push、deploy の run 41380670557 が success。公開版の画面（スマホの大きさ）で添付の写真を読み、確かめた42か所を Chromium・WebKit とも全部読んだ。公開版で登録までは押していない（登録はテストで確かめた）",
       "population": "この依頼の変更 全部",
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 8fceb351 origin/main && test \"$(gh run view 41380670557 --json conclusion -q .conclusion)\" = success && node --test tests/deploy-workflow.test.mjs tests/photo-ocr-dense-page.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "real-phone",
+      "text": "実際のスマホで添付のページが落ちずに読めることを確かめる。この環境に実機もシミュレーターもないので、利用者に確かめてもらう",
+      "population": "利用者のスマホ1台",
       "check": "false",
-      "status": "todo"
+      "status": "needs-user",
+      "question": "公開版を開き直し、スマホの「写真から作る」で同じページを読んでください。落ちずに候補が出ますか？1回目に落ちた場合も、もう1度読むと軽い読み方に切り替わります。"
+    },
+    {
+      "id": "audit-time",
+      "text": "全監査が長い理由を調べて答える。テスト251ファイルを1本ずつ順に流すので約28分（--test-concurrency=1。10コアのうち実質1つ）。短くするかは利用者の判断待ち",
+      "population": "npm run audit:all-content の全テスト 1,559件",
+      "check": "false",
+      "status": "needs-user",
+      "question": "全監査の短縮に進めてよいですか？"
     }
   ]
 }
