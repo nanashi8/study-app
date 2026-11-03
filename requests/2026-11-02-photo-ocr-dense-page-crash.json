@@ -39,10 +39,10 @@
     },
     {
       "id": "phone-fix-deployed",
-      "text": "直しを main へ push し、公開版で文字の多いページを読めることを確かめる",
+      "text": "直しを公開した（be1ed576 の run 41410954024、462e6e22 の run 41557348096 が success）。公開版を iPhone と同じ WebKit で開き、添付の写真を2回読んで2回とも42/42か所・候補256枚（22秒・20秒）。WebKit の本当の使用量の山はメモリ不足の知らせを送りながら1回目 1,514MB・2回目 654MB（1回目はこれまでの見込み1,050〜1,300MBより高かった）。Chromium では2回とも42/42か所で、2回目は13秒・モデルを取りに行かなかった。iPhone 実機では確かめていない",
       "population": "この直し 全部",
-      "check": "node --test tests/photo-ocr-dense-page.test.mjs",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 462e6e22 origin/main && test \"$(gh run view 41557348096 --repo nanashi8/study-app --json conclusion -q .conclusion)\" = success && node --test tests/vocab-ocr-build.test.mjs",
+      "status": "done"
     },
     {
       "id": "many-pages",
