@@ -23,11 +23,17 @@ export function envSignature(root) {
   return sha(JSON.stringify([process.version, process.platform, process.arch, sha(lock), tools.map(sha)]))
 }
 
+// 1本のテストにつき、中身の違う控えを RECORDS_PER_TEST 件まで持つ。作業ツリーと検証用の clone のように中身の違う所で
+// 交互に流すと、1件だけでは上書きし合って毎回流し直しになった（2026-11-03）。
+export const RECORDS_PER_TEST = 8
+
+/** そのテストの控えの並び（新しい順）。 */
 export function currentRecord(cacheDir, owner) {
   try {
-    return JSON.parse(readFileSync(recordPath(cacheDir, owner), 'utf8'))
+    const stored = JSON.parse(readFileSync(recordPath(cacheDir, owner), 'utf8'))
+    return Array.isArray(stored.records) ? stored.records : []
   } catch {
-    return null
+    return []
   }
 }
 
@@ -55,6 +61,12 @@ const READERS = {
 
 /** 控えが今も使えるか。使えないときは、どのファイルが変わったかを返す。 */
 export function evaluateRecord({ root, record, signature, now, runId }) {
+  // 控えの並びを渡されたら、どれか1件が使えれば使う。
+  if (Array.isArray(record)) {
+    if (!record.length) return { hit: false, reason: '控えなし' }
+    const verdicts = record.map((item) => evaluateRecord({ root, record: item, signature, now, runId }))
+    return verdicts.find((verdict) => verdict.hit) ?? verdicts[0]
+  }
   if (!record) return { hit: false, reason: '控えなし' }
   // 読んだものが分からないテストの控えは、同じ1回の確認（commit・push の前の確認）の中でだけ使う。
   if (record.runId) return record.runId === runId ? { hit: true } : { hit: false, reason: '別の回の確認' }
@@ -68,14 +80,22 @@ export function evaluateRecord({ root, record, signature, now, runId }) {
   return { hit: true }
 }
 
+// 控えを足す（同じ中身の古い控えと、使えなくなった控えは外す）。
+function addRecord(cacheDir, owner, record) {
+  const key = JSON.stringify([record.runId ?? null, record.deps])
+  const kept = currentRecord(cacheDir, owner)
+    .filter((item) => item.signature === record.signature && record.passedAt - item.passedAt <= RECORD_TTL_MS)
+    .filter((item) => JSON.stringify([item.runId ?? null, item.deps]) !== key)
+  writeAtomic(recordPath(cacheDir, owner), JSON.stringify({ owner, records: [record, ...kept].slice(0, RECORDS_PER_TEST) }))
+}
+
 export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt, runId }) {
-  removeRecord(cacheDir, owner)
   // 控えないテスト：node 以外のコマンドを使った・ビルドは Rust の中で読むので読んだものが分からない。
   // ただし commit・push の前の確認は、作業ツリーが変わらない1回の中で同じテストを何度も呼ぶ（いくつもの条件の check が
   // 同じテストを流す）ので、その回の中でだけ使う控えを残す（2026-11-03、本番ビルドのテストを1回の commit で何度も流していた）。
   if (trace.uncacheable.size) {
     saveUncacheable(cacheDir, owner, [...trace.uncacheable])
-    if (runId) writeAtomic(recordPath(cacheDir, owner), JSON.stringify({ owner, signature, passedAt: Date.now(), runId, deps: {} }))
+    if (runId) addRecord(cacheDir, owner, { owner, signature, passedAt: Date.now(), runId, deps: {} })
     return
   }
   const deps = {}
@@ -93,9 +113,10 @@ export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt,
       deps[kind][rel] = READERS[kind](root, rel)
     }
   }
-  writeAtomic(recordPath(cacheDir, owner), JSON.stringify({ owner, signature, passedAt: Date.now(), deps }))
+  addRecord(cacheDir, owner, { owner, signature, passedAt: Date.now(), deps })
 }
 
+// 落ちたテストは、どの中身の控えも捨てる（同じ中身でまた落ちるかもしれない）。
 export const removeRecord = (cacheDir, owner) => rmSync(recordPath(cacheDir, owner), { force: true })
 
 const uncacheablePath = (cacheDir) => join(cacheDir, 'uncacheable')

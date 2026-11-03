@@ -122,6 +122,21 @@ test('読んだものが分からないテストは、commit・push の前の1�
   assert.equal(run(dir).ran, ALWAYS, '全監査ではいつも流す')
 })
 
+test('中身の違う2つの所（作業ツリーと clone）で交互に流しても、どちらの控えも使える', () => {
+  const dir = makeRepo()
+  run(dir)
+  const path = join(dir, 'data/a.txt')
+  writeFileSync(path, 'b')
+  settle(dir)
+  assert.equal(run(dir).ran, ALWAYS + 1, '中身を変えたら流す')
+  writeFileSync(path, 'a')
+  settle(dir)
+  assert.equal(run(dir).ran, ALWAYS, '前の中身に戻したら、前の控えを使う')
+  writeFileSync(path, 'b')
+  settle(dir)
+  assert.equal(run(dir).ran, ALWAYS, 'もう一度変えても、その中身の控えを使う')
+})
+
 test('読むフォルダへファイルが増えたら流し直す', () => {
   const dir = makeRepo()
   run(dir)
@@ -162,8 +177,9 @@ test('1日たった控えは使わない', () => {
   run(dir)
   const cache = join(dir, '.test-cache')
   for (const name of readdirSync(cache).filter((file) => file.endsWith('.json'))) {
-    const record = JSON.parse(readFileSync(join(cache, name), 'utf8'))
-    writeFileSync(join(cache, name), JSON.stringify({ ...record, passedAt: Date.now() - RECORD_TTL_MS - 1000 }))
+    const stored = JSON.parse(readFileSync(join(cache, name), 'utf8'))
+    const records = stored.records.map((record) => ({ ...record, passedAt: Date.now() - RECORD_TTL_MS - 1000 }))
+    writeFileSync(join(cache, name), JSON.stringify({ ...stored, records }))
   }
   assert.equal(run(dir).ran, ALL)
 })
