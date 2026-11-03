@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-03T01:39:19.991Z",
+  "auditedAt": "2026-11-03T02:28:21.727Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "86cc1808c167ffb0681f3b700901693cdf3049be2fc135d8df4b44b1a2bef2f8",
+    "sha256": "928b58acb56539665a909eb48c6ee44b829fd7d5972667baac110dbc7993bb94",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -395,6 +395,7 @@
       "tests/usage-guide-links.test.mjs",
       "tests/usage-guide-survey.test.mjs",
       "tests/vocab-camera-dev-ocr.test.mjs",
+      "tests/vocab-catalog-recommended-order.test.mjs",
       "tests/vocab-catalog.test.mjs",
       "tests/vocab-completion.test.mjs",
       "tests/vocab-fields.test.mjs",

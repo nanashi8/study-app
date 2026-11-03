@@ -31,7 +31,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で並びと発音ボタンを確かめる。clone は消す",
       "population": "全テスト・全監査と公開版の英単語の一覧",
       "check": "node --test tests/vocab-catalog-recommended-order.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 bxj4x23e7。origin/main 462e6e22 の上に載せ直した 81e14953）の終了"
     }
   ]
 }

@@ -505,7 +505,7 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全33 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全34 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -523,10 +523,12 @@ test('読み上げを持つ全33 UIモジュールが共通プレイヤー経由
   // 2026-09-30、自作カードの一覧のカード（英単語の発音ボタン）は画面から部品（components/CustomCardItems.jsx）へ移った。
   // 2026-10-21、熟語・構文の一覧の詳細シートを部品（components/PhraseDetailSheet.jsx）へ移し、単語の熟語・構文カードと共有したので画面は 20 から 19。
   // 2026-10-28、基礎長文の学習（screens/BasicReadingLesson.jsx の全文の読み上げ）で 32 から 33、画面は 19 から 20。
-  assert.equal(speechUi.length, 33)
+  // 2026-11-03、英単語の一覧を確認の行（components/VocabularyHistoryRow.jsx の発音ボタン）で 33 から 34。
+  assert.equal(speechUi.length, 34)
   assert.equal(screenCount, 20)
   assert.ok(speechUi.some(({ path }) => path === 'components/PhraseDetailSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/CustomCardItems.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'components/VocabularyHistoryRow.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureSentenceSheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/GrammarReferenceParts.jsx'))
