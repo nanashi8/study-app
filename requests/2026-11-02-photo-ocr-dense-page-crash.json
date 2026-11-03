@@ -104,7 +104,8 @@
       "text": "利用者のスマホで「まだ落ちる」と返事があった（11-03）。組み直した版を公開し、実際のスマホで添付のページが落ちずに読めることを利用者に確かめてもらう",
       "population": "利用者のスマホ1台",
       "check": "false",
-      "status": "todo"
+      "status": "needs-user",
+      "question": "組み直した版を公開しました。スマホで添付のページ（入試対策テスト）を「写真から作る」で読むと、落ちずに候補が出ますか？（iPhone か Android か、機種も教えてください）"
     },
     {
       "id": "audit-time",
@@ -171,10 +172,10 @@
     },
     {
       "id": "rebuild-deployed",
-      "text": "組み直しを clone の全監査を通して公開し、公開版を WebKit・Chromium で添付の写真を読んで確かめる",
+      "text": "組み直しを clone の全監査（テスト253ファイル中59ファイルを流して失敗0・check:content・ビルド、合計815秒）を通して adb4c46 を main へ push し、公開の処理 run 41614483768 が success。公開版を iPhone と同じ WebKit・Android と同じ Chromium のスマホの大きさの画面で開き、添付の写真を2回ずつ読んで4回とも 42/42か所・候補255枚。WebKit の山（メモリ不足の知らせあり）は 475MB・259MB（組み直す前の公開版 1,514MB・654MB）、時間は22秒・30秒。Chromium は18秒・12秒で、2回目はモデルを取りに行かなかった。実機では確かめていない",
       "population": "この組み直しの変更 全部",
-      "check": "false",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor adb4c46 origin/main && test \"$(gh run view 41614483768 --repo nanashi8/study-app --json conclusion -q .conclusion)\" = success",
+      "status": "done"
     }
   ]
 }
