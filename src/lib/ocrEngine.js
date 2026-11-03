@@ -9,7 +9,7 @@
 // ひらがなを漢字に読み違え（「は」→「注」）、PP-OCRv5_mobile の認識は英単語が少し落ちた。検出は tiny でも small とほぼ同じだった。
 // wasm で動かす（パソコンで1枚平均 約 2.6 秒）。WebGPU は使わない：GPU 対応版の ONNX Runtime は本体だけでメモリを大きく食い、
 // 2026-11-02 に iPhone で落ちた（WebKit のメモリの山 1,415MB → GPU なしの版 759MB、読める量と時間は同じ）。vite.config.js の resolve.alias も参照。
-import { OCR_MODEL_BYTES, OCR_MODEL_FILES, OCR_MODEL_NAMES } from './ocrModels.js'
+import { OCR_MODEL_BYTES, OCR_MODEL_FILES, OCR_MODEL_NAMES, OCR_MODEL_SHA256 } from './ocrModels.js'
 
 // ONNX Runtime Web の本体（wasm）は、ビルドが同じサイトの assets/ に入れたものを読む（外のサイトに頼らない）。
 
@@ -69,39 +69,84 @@ async function quietOrt() {
   return ortQuiet
 }
 
-// モデルを読み込む fetch。読み込んだ量（0〜1）を onDownload に知らせる。
-function progressFetch(onDownload) {
-  if (!onDownload) return undefined
-  const total = OCR_MODEL_BYTES.det + OCR_MODEL_BYTES.rec
+// 1枚読むごとにエンジンを作り直すので、モデルは端末の Cache Storage に置き、2回目からはそこから読む（2026-11-02、
+// 公開版で1枚ごとに約30秒かけてモデルを読み直していた）。ファイル名に指紋がないので、置き場所の名前にモデルの指紋を入れる。
+// 置くのは読み取りのページの側（loadOcrModels）。WebKit では別スレッドの中で置いた分が次の回に残らなかった。
+const MODEL_CACHE = `ocr-models-${OCR_MODEL_SHA256.det.slice(0, 8)}-${OCR_MODEL_SHA256.rec.slice(0, 8)}`
+
+// 中身はいつもバイト列で受け渡す。WebKit の別スレッドでは、保存しながら読む（clone）・Blob から返すと
+// 「Blob loading failed」で読めなかった。
+async function readBytes(response, onBytes) {
+  if (!onBytes || !response.body) return response.arrayBuffer()
+  const reader = response.body.getReader()
+  const chunks = []
+  let received = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    chunks.push(value)
+    received += value.length
+    onBytes(received)
+  }
+  const bytes = new Uint8Array(received)
+  let at = 0
+  for (const chunk of chunks) {
+    bytes.set(chunk, at)
+    at += chunk.length
+  }
+  return bytes.buffer
+}
+
+// 読み込んだ量（0〜1）を onDownload に知らせながら、モデル2つを読み込む。
+function downloadProgress(onDownload) {
   const loaded = new Map()
+  const total = OCR_MODEL_BYTES.det + OCR_MODEL_BYTES.rec
+  return (url) => onDownload && ((received) => {
+    loaded.set(url, received)
+    onDownload(Math.min(1, [...loaded.values()].reduce((sum, value) => sum + value, 0) / total))
+  })
+}
+
+/** モデル2つを { URL: バイト列 } で返す。端末に置いたものがあればそれを使い、なければ取りに行って置く。 */
+export async function loadOcrModels({ base, onDownload } = {}) {
+  const cache = await globalThis.caches?.open(MODEL_CACHE).catch(() => null)
+  const progress = downloadProgress(onDownload)
+  const urls = [OCR_MODEL_FILES.det, OCR_MODEL_FILES.rec].map((file) => ocrModelUrl(file, base))
+  const entries = await Promise.all(urls.map(async (url) => {
+    const hit = await cache?.match(url, { ignoreVary: true }).catch(() => null)
+    if (hit) return [url, await hit.arrayBuffer()]
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`model ${response.status}`)
+    const bytes = await readBytes(response, progress(url))
+    // 置けなくても（容量・プライベートな表示など）、今回は読める。次も取りに行くだけ。
+    await cache?.put(url, new Response(bytes.slice(0))).catch(() => {})
+    return [url, bytes]
+  }))
+  return Object.fromEntries(entries)
+}
+
+// エンジンがモデルを読み込む fetch。models（loadOcrModels の結果）にあればそれを使い、なければ進み具合を知らせながら取りに行く。
+function modelFetch(onDownload, models = {}) {
+  const progress = downloadProgress(onDownload)
   return async (input, init) => {
-    const response = await fetch(input, init)
     const url = String(input?.url ?? input)
-    if (!/\/ocr-models\//.test(url) || !response.ok || !response.body) return response
-    const reader = response.body.getReader()
-    const chunks = []
-    let received = 0
-    for (;;) {
-      const { done, value } = await reader.read()
-      if (done) break
-      chunks.push(value)
-      received += value.length
-      loaded.set(url, received)
-      onDownload(Math.min(1, [...loaded.values()].reduce((sum, bytes) => sum + bytes, 0) / total))
-    }
-    return new Response(new Blob(chunks), { status: response.status, statusText: response.statusText, headers: response.headers })
+    if (!/\/ocr-models\//.test(url)) return fetch(input, init)
+    if (models[url]) return new Response(models[url])
+    const response = await fetch(input, init)
+    if (!response.ok) return response
+    return new Response(await readBytes(response, progress(url)), { status: response.status, headers: response.headers })
   }
 }
 
 // 読み取りエンジンを作る（モデルと ONNX Runtime を読み込む）。paddle は import('@paddleocr/paddleocr-js') の中身。
 //   options.onDownload  初回のモデルの読み込みの進み具合（0〜1）
 //   options.lowMemory   検出の解像度を下げて読む
+//   options.models      読み込んだモデル（loadOcrModels の結果）
 export async function createOcrReader(paddle, options = {}) {
   await quietOrt()
-  const fetchWithProgress = progressFetch(options.onDownload)
   const ocr = await paddle.PaddleOCR.create({
     ...ocrCreateOptions(options),
-    ...(fetchWithProgress ? { fetch: fetchWithProgress } : {}),
+    fetch: modelFetch(options.onDownload, options.models),
     ...(options.createOptions ?? {}),
   })
   return {

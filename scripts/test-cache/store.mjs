@@ -54,8 +54,10 @@ const READERS = {
 }
 
 /** 控えが今も使えるか。使えないときは、どのファイルが変わったかを返す。 */
-export function evaluateRecord({ root, record, signature, now }) {
+export function evaluateRecord({ root, record, signature, now, runId }) {
   if (!record) return { hit: false, reason: '控えなし' }
+  // 読んだものが分からないテストの控えは、同じ1回の確認（commit・push の前の確認）の中でだけ使う。
+  if (record.runId) return record.runId === runId ? { hit: true } : { hit: false, reason: '別の回の確認' }
   if (record.signature !== signature) return { hit: false, reason: '環境が変わった' }
   if (now - record.passedAt > RECORD_TTL_MS) return { hit: false, reason: '1日たった' }
   for (const [kind, entries] of Object.entries(record.deps)) {
@@ -66,11 +68,14 @@ export function evaluateRecord({ root, record, signature, now }) {
   return { hit: true }
 }
 
-export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt }) {
+export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt, runId }) {
   removeRecord(cacheDir, owner)
   // 控えないテスト：node 以外のコマンドを使った・ビルドは Rust の中で読むので読んだものが分からない。
+  // ただし commit・push の前の確認は、作業ツリーが変わらない1回の中で同じテストを何度も呼ぶ（いくつもの条件の check が
+  // 同じテストを流す）ので、その回の中でだけ使う控えを残す（2026-11-03、本番ビルドのテストを1回の commit で何度も流していた）。
   if (trace.uncacheable.size) {
     saveUncacheable(cacheDir, owner, [...trace.uncacheable])
+    if (runId) writeAtomic(recordPath(cacheDir, owner), JSON.stringify({ owner, signature, passedAt: Date.now(), runId, deps: {} }))
     return
   }
   const deps = {}

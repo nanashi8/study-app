@@ -7,6 +7,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node
 import { homedir, tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { acquireTestLock } from './test-cache/lock.mjs'
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const PRELOAD = join(ROOT, 'scripts/test-cache/preload.mjs')
@@ -33,6 +34,9 @@ function main() {
   const { light, heavy } = testGroups()
   const logDir = mkdtempSync(join(tmpdir(), 'study-app-test-run-'))
   const hitLog = join(logDir, 'hits')
+  // ほかのセッションのテストと重ねない（メモリが足りなくなって両方遅れる）。全監査の中から呼ばれたときは待たない。
+  // 子に渡す環境を作る前に取る（子のテストが呼ぶ run-tests が、この順番を待たないように）。
+  acquireTestLock('テスト')
   const env = {
     ...process.env,
     NODE_OPTIONS: [process.env.NODE_OPTIONS, `--import=${pathToFileURL(PRELOAD).href}`].filter(Boolean).join(' '),

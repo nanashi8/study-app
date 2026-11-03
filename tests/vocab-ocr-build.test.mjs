@@ -12,6 +12,7 @@
 // 本番のビルドで写真を読み、単語表がカードの候補になることを確かめる。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
+import { OCR_MODEL_FILES } from '../src/lib/ocrModels.js'
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import net from 'node:net'
 import { tmpdir } from 'node:os'
@@ -48,6 +49,8 @@ let server
 let base
 const browsers = []
 const externalRequests = []
+// ブラウザごとに、モデル（ocr-models/）を取りに行った回数。
+const modelRequests = { chromium: [], webkit: [] }
 const messages = { chromium: [], webkit: [] }
 // 外への通信とコンソールの行は、「英単語を読み取る」を押してから結果が出るまでの間だけを数える
 // （アプリを開いたときのフォントなどは読み取りではない。テストはそれも止めるので、読み込めなかった知らせが出る）。
@@ -143,6 +146,9 @@ before(async () => {
     await context.route((url) => !url.href.startsWith(base) && !url.href.startsWith('blob:') && !url.href.startsWith('data:'), (route) => {
       if (reading && onOcrPage()) externalRequests.push(route.request().url())
       return route.abort()
+    })
+    context.on('request', (request) => {
+      if (/\/ocr-models\//.test(request.url())) modelRequests[type].push(request.url().replace(/^.*\/ocr-models\//, ''))
     })
     context.on('console', (message) => reading && onOcrPage() && messages[type].push(`${message.type()}: ${message.text()}`))
     context.on('weberror', (error) => reading && onOcrPage() && messages[type].push(`pageerror: ${error.error().message}`))
@@ -256,4 +262,13 @@ test('写真の読み取りは GPU なしの版の ONNX Runtime で、アプリ�
   assert.ok(scripts.length >= 1)
   // ページが読み込む JS はごく小さい（アプリ本体もエンジンも入らない。エンジンは別スレッドで読む）。
   for (const name of scripts) assert.ok(readFileSync(join(outDir, 'assets', name)).length < 100_000, name)
+})
+
+test('何枚読んでも、モデルは端末に置いたものを使い、取りに行くのはモデルごとに1回だけ（Chromium）', () => {
+  // 1枚ごとにエンジンを作り直すので、置いておかないと1枚ごとに約23MBを読み直す（公開版で1枚約30秒）。
+  // WebKit はテストのブラウザ（使い捨ての閲覧データ）だと、ページを移ると Cache Storage の中身が消えるので数えない
+  // （保存先の名前は残り、中身だけ空になることを 2026-11-03 に確かめた）。
+  const reads = results.filter((result) => result.browser === 'chromium').length
+  assert.ok(reads >= 2, `Chromium で読んだのは ${reads} 枚`)
+  assert.deepEqual([...modelRequests.chromium].sort(), [OCR_MODEL_FILES.det, OCR_MODEL_FILES.rec].sort())
 })

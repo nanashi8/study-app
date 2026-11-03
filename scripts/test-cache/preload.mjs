@@ -33,7 +33,7 @@ function start() {
     const owner = relative(ROOT, resolve(process.argv[1])).split('\\').join('/')
     const signature = envSignature(ROOT)
     if (USE_CACHE) {
-      const verdict = evaluateRecord({ root: ROOT, record: currentRecord(CACHE_DIR, owner), signature, now: startedAt })
+      const verdict = evaluateRecord({ root: ROOT, record: currentRecord(CACHE_DIR, owner), signature, now: startedAt, runId: process.env.AUDIT_TEST_RUN_ID })
       if (verdict.hit) {
         appendHit(HIT_LOG, owner)
         process.exit(0)
@@ -50,7 +50,7 @@ function start() {
         removeRecord(CACHE_DIR, owner)
         return
       }
-      saveRecord({ root: ROOT, cacheDir: CACHE_DIR, owner, signature, trace: merged, startedAt })
+      saveRecord({ root: ROOT, cacheDir: CACHE_DIR, owner, signature, trace: merged, startedAt, runId: process.env.AUDIT_TEST_RUN_ID })
     })
     return
   }

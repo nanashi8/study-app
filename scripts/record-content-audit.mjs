@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { acquireTestLock } from './test-cache/lock.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
@@ -17,13 +18,24 @@ const steps = [
   ['git', ['diff', '--check']],
 ]
 
+// 機械全体で1つずつ流す（scripts/test-cache/lock.mjs）。段ごとの時間を最後にまとめて出す。
+acquireTestLock('全教材監査')
+const auditStartedAt = Date.now()
+const timings = []
+const elapsed = (from) => `${Math.round((Date.now() - from) / 1000)}秒`
+process.on('exit', () => {
+  if (timings.length) console.log(`\n⏱ 全教材監査の時間：${timings.join('・')}・合計 ${elapsed(auditStartedAt)}`)
+})
+
 for (const [command, args] of steps) {
   console.log(`\n▶ ${command} ${args.join(' ')}`)
+  const stepStartedAt = Date.now()
   const result = spawnSync(command, args, {
     cwd: ROOT,
     env: process.env,
     stdio: 'inherit',
   })
+  timings.push(`${args.find((arg) => !arg.startsWith('-') && arg !== 'run' && arg !== 'exec') ?? command} ${elapsed(stepStartedAt)}`)
   if (result.error) throw result.error
   if (result.status !== 0) {
     console.error(`\n❌ 全教材監査を中止: ${command} ${args.join(' ')} (exit ${result.status})`)

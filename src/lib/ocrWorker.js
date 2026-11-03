@@ -22,10 +22,9 @@ globalThis.Float32Array = new Proxy(NativeFloat32Array, {
 })
 
 // SDK は写真を document の canvas で開くので、別スレッドでは先に OpenCV の画像にして渡す。
-async function imageToMat(image) {
+async function imageToMat(bitmap) {
   // エンジンを作った後なので OpenCV は準備済み。Promise でないときに await すると戻らない（then を持つ）。
   const cv = cvModule instanceof Promise ? await cvModule : cvModule
-  const bitmap = await createImageBitmap(image)
   const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext('2d', { willReadFrequently: true })
   context.drawImage(bitmap, 0, 0)
   const mat = cv.matFromImageData(context.getImageData(0, 0, bitmap.width, bitmap.height))
@@ -34,15 +33,15 @@ async function imageToMat(image) {
 }
 
 self.onmessage = async ({ data }) => {
-  const { image, lowMemory, base } = data
+  const { bitmap, models, lowMemory, base } = data
   try {
     const reader = await createOcrReader(paddle, {
       lowMemory,
       base,
-      onDownload: (fraction) => self.postMessage({ type: 'download', fraction }),
+      models,
     })
     self.postMessage({ type: 'reading' })
-    const mat = await imageToMat(image)
+    const mat = await imageToMat(bitmap)
     const page = await reader.read(mat)
     mat.delete()
     self.postMessage({ type: 'done', page: { text: page.text, words: page.words, lines: page.lines } })

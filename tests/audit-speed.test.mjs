@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -53,8 +53,16 @@ function settle(dir) {
 }
 
 function run(dir, ...args) {
+  return runWith(dir, {}, ...args)
+}
+
+function runWith(dir, extraEnv, ...args) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(AUDIT_TEST_|NODE_OPTIONS$|NODE_TEST_)/.test(key)))
   env.AUDIT_TEST_CACHE_DIR = join(dir, '.test-cache')
+  // 機械全体の順番待ちは、このテストの中だけのものにする（ほかのセッションの全監査を待たない）。
+  env.STUDY_APP_TEST_LOCK_DIR = join(dir, '.test-lock')
+  delete env.STUDY_APP_TEST_LOCK_HELD
+  Object.assign(env, extraEnv)
   const result = spawnSync(process.execPath, ['scripts/run-tests.mjs', ...args], { cwd: dir, env, encoding: 'utf8' })
   const summary = result.stdout.match(/(\d+) ファイルのうち (\d+) ファイルを流した/)
   assert.ok(summary, result.stdout + result.stderr)
@@ -105,6 +113,15 @@ test('読むファイルが変わったテストだけ流し直す', () => {
   }
 })
 
+test('読んだものが分からないテストは、commit・push の前の1回の確認の中でだけ1度にまとめる', () => {
+  const dir = makeRepo()
+  run(dir)
+  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-1' }).ran, ALWAYS, '1回目の確認では流す')
+  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-1' }).ran, 0, '同じ確認の中の2回目は流さない')
+  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-2' }).ran, ALWAYS, '次の確認ではまた流す')
+  assert.equal(run(dir).ran, ALWAYS, '全監査ではいつも流す')
+})
+
 test('読むフォルダへファイルが増えたら流し直す', () => {
   const dir = makeRepo()
   run(dir)
@@ -149,4 +166,55 @@ test('1日たった控えは使わない', () => {
     writeFileSync(join(cache, name), JSON.stringify({ ...record, passedAt: Date.now() - RECORD_TTL_MS - 1000 }))
   }
   assert.equal(run(dir).ran, ALL)
+})
+
+// 2つのセッションが同時に全監査を流すと、ブラウザのテストが重なってメモリが足りなくなり、両方遅れた（2026-11-03）。
+const LOCK_SCRIPT = (label, holdMs) => `
+import { acquireTestLock } from ${JSON.stringify(new URL('../scripts/test-cache/lock.mjs', import.meta.url).href)}
+const release = acquireTestLock(${JSON.stringify(label)}, { log: () => {} })
+console.log('start ${label}', Date.now())
+await new Promise((resolve) => setTimeout(resolve, ${holdMs}))
+console.log('end ${label}', Date.now())
+release()
+`
+const runLock = (dir, label, holdMs, extraEnv = {}) => new Promise((resolve) => {
+  const env = { ...process.env, STUDY_APP_TEST_LOCK_DIR: join(dir, 'lock'), ...extraEnv }
+  delete env.STUDY_APP_TEST_LOCK_HELD
+  Object.assign(env, extraEnv)
+  const child = spawn(process.execPath, ['--input-type=module', '-e', LOCK_SCRIPT(label, holdMs)], { env })
+  let out = ''
+  child.stdout.on('data', (chunk) => { out += chunk })
+  child.on('close', () => resolve(Object.fromEntries(out.trim().split('\n').map((line) => line.split(' ')).map(([kind, , at]) => [kind, Number(at)]))))
+})
+
+test('テストを流すのは機械全体で1つずつ：2つ目は1つ目が終わるまで待つ', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'study-app-audit-lock-'))
+  made.push(dir)
+  const [first, second] = await Promise.all([runLock(dir, 'a', 800), new Promise((resolve) => setTimeout(() => resolve(runLock(dir, 'b', 10)), 200))])
+  assert.ok(second.start >= first.end, `2つ目が先に始まった：${JSON.stringify({ first, second })}`)
+})
+
+test('順番を持っている処理の子は待たない（全監査の中のテストが全監査を待って止まらない）', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'study-app-audit-lock-'))
+  made.push(dir)
+  const outer = runLock(dir, 'outer', 1500)
+  await new Promise((resolve) => setTimeout(resolve, 300))
+  const inner = await runLock(dir, 'inner', 10, { STUDY_APP_TEST_LOCK_HELD: '1' })
+  assert.ok(inner.end < (await outer).end, '子が親の順番を待った')
+})
+
+test('持ち主の処理が消えた順番は取り上げる', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'study-app-audit-lock-'))
+  made.push(dir)
+  mkdirSync(join(dir, 'lock'))
+  writeFileSync(join(dir, 'lock', 'owner.json'), JSON.stringify({ pid: 999_999, label: '消えた処理', cwd: dir, at: Date.now() }))
+  const started = Date.now()
+  await runLock(dir, 'c', 10)
+  assert.ok(Date.now() - started < 10_000)
+})
+
+test('全監査は段ごとの時間を出し、全監査・テスト・commit と push の前の確認は順番を待つ', () => {
+  assert.match(readFileSync('scripts/record-content-audit.mjs', 'utf8'), /acquireTestLock\('全教材監査'\)[\s\S]*⏱ 全教材監査の時間/)
+  assert.match(readFileSync('scripts/run-tests.mjs', 'utf8'), /acquireTestLock\('テスト'\)\n  const env = \{/)
+  assert.match(readFileSync('scripts/check-requests.mjs', 'utf8'), /acquireTestLock\(mode\('git-commit'\)/)
 })

@@ -1,3 +1,5 @@
+import { loadOcrModels } from './ocrEngine.js'
+
 // 写真1枚を専用の別スレッドで読む。読み終えたらスレッドごと捨てる。
 // 2026-11-02、iPhone で読み取りが落ちた。アプリ本体と同じスレッドだと JavaScript の領域が大きいぶん不要なメモリの回収が遅れ、
 // 認識の1行ごとの大きな出力がたまる。別スレッドなら回収が早く、捨てればメモリが丸ごと返る。画面も固まらない。
@@ -22,6 +24,10 @@ export function readPhotoInWorker(image, { lowMemory = false, onDownload, onRead
   }).finally(() => worker.terminate())
   // 別スレッドからはこのページの場所が見えないので、モデルの置き場所は絶対の URL で渡す。
   const base = new URL(import.meta.env?.BASE_URL ?? './', document.baseURI).href
-  worker.postMessage({ image, lowMemory, base })
+  // モデルと写真はこちらで用意して渡す（モデルは端末に置いて2回目から使う。写真は画像にしておく。WebKit の別スレッドでは、
+  // 渡した Blob を開けないことがあった）。
+  Promise.all([loadOcrModels({ base, onDownload }), createImageBitmap(image)])
+    .then(([models, bitmap]) => worker.postMessage({ bitmap, models, lowMemory, base }, [bitmap, ...Object.values(models)]))
+    .catch((reason) => settle.reject(reason))
   return { promise, cancel: () => settle.reject(new Error('cancelled')) }
 }
