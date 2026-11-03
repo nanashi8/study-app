@@ -12,7 +12,7 @@
 // 本番のビルドで写真を読み、単語表がカードの候補になることを確かめる。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
-import { OCR_MODEL_FILES } from '../src/lib/ocrModels.js'
+import { OCR_SERVED_FILES } from '../src/lib/ocrModels.js'
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import net from 'node:net'
 import { tmpdir } from 'node:os'
@@ -189,8 +189,10 @@ test('ONNX Runtime の塊（別スレッドでも読み込む）は、アプリ�
   const assets = readdirSync(join(outDir, 'assets'))
   const html = readFileSync(join(outDir, 'index.html'), 'utf8')
   const entry = html.match(/<script type="module"[^>]*src="\.\/assets\/([^"]+\.js)"/)[1]
+  // 2026-11-03 に読み取りを組み直してから、ONNX Runtime は別スレッドの塊（ocrWorker）の中に入る。
   const ort = assets.filter((file) => /^(ort\.wasm\.bundle\.min|ocrWorker)-.*\.js$/.test(file))
-  assert.equal(ort.length, 2, assets.join(' '))
+  assert.ok(ort.some((file) => file.startsWith('ocrWorker-')), assets.join(' '))
+  assert.equal(assets.filter((file) => file.endsWith('.wasm')).length, 1, '本体（wasm）は GPU なしの版の1つだけ')
   for (const chunk of ort) {
     const reached = [...staticImports(chunk)]
     assert.ok(!reached.includes(entry), `${chunk} が ${entry} を読み込む：${reached.join(' ')}`)
@@ -270,5 +272,5 @@ test('何枚読んでも、モデルは端末に置いたものを使い、取�
   // （保存先の名前は残り、中身だけ空になることを 2026-11-03 に確かめた）。
   const reads = results.filter((result) => result.browser === 'chromium').length
   assert.ok(reads >= 2, `Chromium で読んだのは ${reads} 枚`)
-  assert.deepEqual([...modelRequests.chromium].sort(), [OCR_MODEL_FILES.det, OCR_MODEL_FILES.rec].sort())
+  assert.deepEqual([...modelRequests.chromium].sort(), Object.values(OCR_SERVED_FILES).sort())
 })

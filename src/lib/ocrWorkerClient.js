@@ -8,8 +8,9 @@ import { loadOcrModels } from './ocrEngine.js'
  * 1枚読む。{ promise, cancel } を返す。promise は読んだページ（ocrEngine.js の行と語）になる。
  *   onDownload  モデルの読み込みの進み具合（0〜1）
  *   onReading   読み取りを始めたとき
+ *   onProgress  読み取りの進み具合（0〜1）
  */
-export function readPhotoInWorker(image, { lowMemory = false, onDownload, onReading } = {}) {
+export function readPhotoInWorker(image, { lowMemory = false, onDownload, onReading, onProgress } = {}) {
   const worker = new Worker(new URL('./ocrWorker.js', import.meta.url), { type: 'module' })
   let settle
   const promise = new Promise((resolve, reject) => {
@@ -17,17 +18,17 @@ export function readPhotoInWorker(image, { lowMemory = false, onDownload, onRead
     worker.onmessage = ({ data }) => {
       if (data.type === 'download') onDownload?.(data.fraction)
       if (data.type === 'reading') onReading?.()
+      if (data.type === 'progress') onProgress?.(data.fraction)
       if (data.type === 'done') resolve(data.page)
       if (data.type === 'failed') reject(new Error(data.message))
     }
     worker.onerror = (event) => reject(new Error(event.message || 'photo OCR worker failed'))
   }).finally(() => worker.terminate())
-  // 別スレッドからはこのページの場所が見えないので、モデルの置き場所は絶対の URL で渡す。
   const base = new URL(import.meta.env?.BASE_URL ?? './', document.baseURI).href
   // モデルと写真はこちらで用意して渡す（モデルは端末に置いて2回目から使う。写真は画像にしておく。WebKit の別スレッドでは、
   // 渡した Blob を開けないことがあった）。
   Promise.all([loadOcrModels({ base, onDownload }), createImageBitmap(image)])
-    .then(([models, bitmap]) => worker.postMessage({ bitmap, models, lowMemory, base }, [bitmap, ...Object.values(models)]))
+    .then(([models, bitmap]) => worker.postMessage({ bitmap, models, lowMemory }, [bitmap, ...Object.values(models)]))
     .catch((reason) => settle.reject(reason))
   return { promise, cancel: () => settle.reject(new Error('cancelled')) }
 }

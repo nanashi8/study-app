@@ -44,7 +44,7 @@ before(async () => {
     root: ROOT,
     logLevel: 'silent',
     cacheDir: 'node_modules/.vite-custom-photo-ocr-test',
-    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], include: ['@paddleocr/paddleocr-js'] },
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], include: ['onnxruntime-web/wasm'] },
     server: { port, host: '127.0.0.1', strictPort: true, hmr: false, watch: null },
   })
   await vite.listen()

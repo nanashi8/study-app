@@ -126,7 +126,7 @@ before(async () => {
     // 動かしている開発サーバーの依存の置き場を書き換えない。
     cacheDir: 'node_modules/.vite-camera-test',
     // 依存を最初に見つけておく（途中で見つけるとページを読み直し、開いた画面が入口へ戻る）。
-    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], exclude: ['@paddleocr/paddleocr-js'] },
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'] },
     // ファイルの変更を見張らない。ほかの作業でファイルが変わっても、ページを読み直さない。
     server: { port, host: '127.0.0.1', strictPort: true, hmr: false, watch: null },
   })

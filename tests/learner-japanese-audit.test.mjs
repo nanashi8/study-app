@@ -157,7 +157,8 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 同じ日、本文の1文を押せる部品（SentenceTap.jsx）で 367 ファイルになった。
   // 2026-11-02、写真の読み取りを専用のページと別スレッドへ移した（src/lib/ocrPage.js・ocrPageBridge.js・ocrWorker.js・
   // ocrWorkerClient.js）ので 371 ファイルになった（requests/2026-11-02-photo-ocr-dense-page-crash.json）。
-  assert.equal(result.learnerFiles, 371)
+  // 2026-11-03、写真の読み取りを1から組み直し、前後処理を自分で書いた部品（src/lib/ocrPipeline.js）で 372 ファイルになった（同じ依頼台帳）。
+  assert.equal(result.learnerFiles, 372)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
@@ -201,7 +202,8 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-10-29、基礎長文の読み方（approaches.js）と準備の画面で 892 ファイルになった。
   // 同じ日、本文の1文を押せる部品（SentenceTap.jsx）で 893 ファイルになった。
   // 2026-11-02、写真の読み取りの専用のページと別スレッドの4ファイルで 897 ファイルになった。
-  assert.equal(result.sourceFiles, 897)
+  // 2026-11-03、写真の読み取りを組み直した部品（src/lib/ocrPipeline.js）で 898 ファイルになった。
+  assert.equal(result.sourceFiles, 898)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。

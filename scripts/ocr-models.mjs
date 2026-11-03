@@ -1,14 +1,16 @@
 // 「教科書から単語追加」の読み取りに使う PaddleOCR のモデル（Apache-2.0）を取り込み、公開版に入れる。
 // モデルはリポジトリに入れない。ビルド（vite.config.js の ocrModels プラグイン）と開発サーバーとテストが、
 // PaddlePaddle の配布元から node_modules/.cache/ocr-models/ へ取り込み、sha256 で中身を確かめてから使う。
-// 公開版では dist/ocr-models/<file> に置き、画面は同じサイトから読む（名前は src/lib/ocrModels.js の表）。
+// 公開版では、tar から作った読み取り用のファイル（ocrServedFiles）を dist/ocr-models/<file> に置き、画面は同じサイトから読む
+// （名前は src/lib/ocrModels.js の表）。
 //
 //   node scripts/ocr-models.mjs        取り込む（取り込み済みで中身が同じなら読み直さない）
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-import { OCR_MODEL_FILES, OCR_MODEL_NAMES, OCR_MODEL_SHA256 } from '../src/lib/ocrModels.js'
+import { OCR_MODEL_FILES, OCR_MODEL_NAMES, OCR_MODEL_SHA256, OCR_SERVED_FILES } from '../src/lib/ocrModels.js'
+import { parseCharDict, readTarEntry, withTopOutput } from '../src/lib/ocrPipeline.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 export const OCR_MODEL_CACHE = `${ROOT}node_modules/.cache/ocr-models/`
@@ -37,6 +39,19 @@ export async function ensureOcrModels() {
     writeFileSync(path, buffer)
   }
   return OCR_MODELS.map((model) => ({ ...model, path: ocrModelPath(model) }))
+}
+
+/** 公開版で配るファイル [{ file, type, bytes }]（src/lib/ocrModels.js の OCR_SERVED_FILES）。 */
+export async function ocrServedFiles() {
+  const [det, rec] = await ensureOcrModels()
+  const detTar = readFileSync(det.path)
+  const recTar = readFileSync(rec.path)
+  const chars = parseCharDict(new TextDecoder().decode(readTarEntry(recTar, '/inference.yml')))
+  return [
+    { file: OCR_SERVED_FILES.det, type: 'application/octet-stream', bytes: Buffer.from(readTarEntry(detTar, '/inference.onnx')) },
+    { file: OCR_SERVED_FILES.rec, type: 'application/octet-stream', bytes: Buffer.from(withTopOutput(readTarEntry(recTar, '/inference.onnx'))) },
+    { file: OCR_SERVED_FILES.chars, type: 'application/json', bytes: Buffer.from(JSON.stringify(chars)) },
+  ]
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

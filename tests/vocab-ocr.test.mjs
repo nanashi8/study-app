@@ -6,9 +6,9 @@ import { CREDIT_SECTIONS } from '../src/data/credits.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import { ENGLISH_WORD_LIST_FILES } from '../src/lib/englishWordList.js'
 import { englishWordSetForTests, screenLoaderFiles } from './english-word-set.mjs'
-import { ocrCreateOptions, ocrPageFromItems } from '../src/lib/ocrEngine.js'
+import { ocrModelUrl, ocrPageFromItems } from '../src/lib/ocrEngine.js'
 import { OCR_IMAGE_MARGIN } from '../src/lib/ocrImage.js'
-import { OCR_MODEL_FILES, OCR_MODEL_NAMES, OCR_MODEL_SHA256 } from '../src/lib/ocrModels.js'
+import { OCR_MODEL_FILES, OCR_MODEL_NAMES, OCR_MODEL_SHA256, OCR_SERVED_FILES } from '../src/lib/ocrModels.js'
 import { OCR_MODELS } from '../scripts/ocr-models.mjs'
 import {
   extractEnglishTokens,
@@ -143,31 +143,29 @@ test('読み取りの結果（行ごとの文字と確からしさ）から、�
   assert.deepEqual(ocrPageFromItems(undefined), { text: '', words: [], lines: [] })
 })
 
-test('読み取りエンジンは、検出 PP-OCRv6_tiny・認識 PP-OCRv6_small を同じサイトの ocr-models/ から読み、ONNX Runtime も同じサイトのものを使う', () => {
-  const options = ocrCreateOptions({ base: '/study-app/' })
-  assert.equal(options.textDetectionModelName, 'PP-OCRv6_tiny_det')
-  assert.equal(options.textRecognitionModelName, 'PP-OCRv6_small_rec')
-  assert.match(options.textDetectionModelAsset.url, /\/study-app\/ocr-models\/PP-OCRv6_tiny_det_onnx_infer\.tar$/)
-  assert.match(options.textRecognitionModelAsset.url, /\/study-app\/ocr-models\/PP-OCRv6_small_rec_onnx_infer\.tar$/)
-  // ONNX Runtime の本体は、外のサイト（jsdelivr）からではなく、ビルドが入れた同じサイトのものを読む。
-  assert.deepEqual(options.ortOptions, { backend: 'wasm', proxy: false })
+test('読み取りは、検出 PP-OCRv6_tiny・認識 PP-OCRv6_small を同じサイトの ocr-models/ から読み、ONNX Runtime も同じサイトの GPU なしの版を使う', () => {
+  assert.equal(OCR_MODEL_NAMES.det, 'PP-OCRv6_tiny_det')
+  assert.equal(OCR_MODEL_NAMES.rec, 'PP-OCRv6_small_rec')
+  assert.match(ocrModelUrl(OCR_SERVED_FILES.det, '/study-app/'), /\/study-app\/ocr-models\/ocr-det-ff6ab415\.onnx$/)
+  assert.match(ocrModelUrl(OCR_SERVED_FILES.rec, '/study-app/'), /\/study-app\/ocr-models\/ocr-rec-d267ab07-top1\.onnx$/)
   const lock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'))
   assert.ok(lock.packages['node_modules/onnxruntime-web'])
-  // GPU 対応版は本体だけでメモリを大きく食う（WebKit の山 1,415MB → 759MB）。SDK の import も GPU なしの版へ向ける。
+  // GPU 対応版は本体だけでメモリを大きく食う（WebKit の山 1,415MB → 759MB）。
   assert.match(readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8'), /find: \/\^onnxruntime-web\$\/, replacement: 'onnxruntime-web\/wasm'/)
-  assert.ok(lock.packages['node_modules/@paddleocr/paddleocr-js'])
+  const worker = readFileSync(new URL('../src/lib/ocrWorker.js', import.meta.url), 'utf8')
+  assert.match(worker, /from 'onnxruntime-web\/wasm'/)
+  assert.match(worker, /ort\.env\.logLevel = 'error'/)
+  // 2026-11-03 に読み取りを組み直し、既製の SDK と OpenCV を外した（中で何にどれだけメモリを使うかを決められなかった）。
+  assert.equal(lock.packages['node_modules/@paddleocr/paddleocr-js'], undefined)
+  assert.equal(lock.packages['node_modules/@techstark/opencv-js'], undefined)
   assert.equal(lock.packages['node_modules/tesseract.js'], undefined)
-  // 取り込みの道具とビルドは、画面と同じモデルの表を使う。
+  // 取り込みの道具とビルドは、画面と同じモデルの表を使う。公開版に入れるのは tar から作った読み取り用のファイル。
   assert.deepEqual(OCR_MODELS.map((model) => [model.name, model.file, model.sha256]), [
     [OCR_MODEL_NAMES.det, OCR_MODEL_FILES.det, OCR_MODEL_SHA256.det],
     [OCR_MODEL_NAMES.rec, OCR_MODEL_FILES.rec, OCR_MODEL_SHA256.rec],
   ])
   const config = readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8')
-  assert.match(config, /fileName: `ocr-models\/\$\{model\.file\}`/)
-  // ONNX Runtime の知らせは、セッションを作る関数を包んでエラーだけにする（WebGPU の「Some nodes were not assigned…」を出さない）。
-  const engine = readFileSync(new URL('../src/lib/ocrEngine.js', import.meta.url), 'utf8')
-  assert.match(engine, /logSeverityLevel: 3/)
-  assert.match(engine, /ort\.env\.logLevel = 'error'/)
+  assert.match(config, /fileName: `ocr-models\/\$\{served\.file\}`/)
 })
 
 test('大文字が語の途中から始まる並び（ToriMeshi・SmileyMenu・cArms）は大文字の所で分け、語の途中では分けない', () => {

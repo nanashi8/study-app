@@ -31,7 +31,6 @@ before(async () => {
   ui = await startCustomCardBrowser({
     cacheDir: 'node_modules/.vite-custom-photo-test',
     plugins: [ocrWorkerStub()],
-    exclude: ['@paddleocr/paddleocr-js'],
   })
   page = ui.page
 })

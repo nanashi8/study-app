@@ -2,8 +2,9 @@
 // 利用者：「写真からカードを作る機能で、添付したテキストは読み込みを開始するもののアプリが途中で落ちてできません。修正しなさい。」
 // 「google翻訳等スムーズに翻訳できるのだから、もっと軽い動作にできるのではないか。」
 //
-// 原因：読み取りエンジンが認識を6行ずつ、一番長い行の幅にそろえて計算し、検出も写真の大きさのまま動かしていた。メモリの山は機械で
-// 差が出るので、山を決める計算の大きさ（1回の行数と検出の画像の長い辺）を本物のエンジンで確かめる。読み取りを動かす全画面
+// 原因：読み取りエンジンが認識を6行ずつ、一番長い行の幅にそろえて計算し、検出も写真の大きさのまま動かしていた。11-03 に読み取りを
+// 組み直した（src/lib/ocrPipeline.js）。メモリの山は機械で差が出るので、山を決める計算の大きさ（検出の1回の画素・認識の1回の行数と幅・
+// 受け取る出力）を本物のモデルで確かめる（WebKit の本当の使用量は tests/ocr-pipeline.test.mjs）。読み取りを動かす全画面
 // （教科書から単語追加・写真から作る）で本物のエンジンにページを読ませ、5テンプレートの候補を確かめる。
 // 途中で落ちた端末・失敗した読み取りの扱いは、エンジンの代わりで確かめる。
 import test, { after, before } from 'node:test'
@@ -16,7 +17,8 @@ import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 import { chromium, webkit } from 'playwright'
 
-import { beginOcrReading, endOcrReading, ocrCreateOptions, OCR_LOW_MEMORY_DAYS, OCR_LOW_MEMORY_READ_PARAMS, OCR_READ_PARAMS, rememberOcrLowMemory } from '../src/lib/ocrEngine.js'
+import { beginOcrReading, endOcrReading, OCR_LOW_MEMORY_DAYS, OCR_LOW_MEMORY_READ_OPTIONS, OCR_READ_OPTIONS, rememberOcrLowMemory } from '../src/lib/ocrEngine.js'
+import { REC_CHUNK, REC_MIN_WIDTH, REC_TOP_INDEX, REC_TOP_VALUE } from '../src/lib/ocrPipeline.js'
 import { CUSTOM_CARD_TEMPLATE_IDS } from '../src/lib/customCards.js'
 import { photoRowsFromLines } from '../src/lib/customCardsPhoto.js'
 import { ensureOcrModels } from '../scripts/ocr-models.mjs'
@@ -33,29 +35,39 @@ const freePort = () => new Promise((resolve, reject) => {
   })
 })
 
-// 画面と同じ部品で読み、ONNX Runtime へ渡す計算の大きさを控えるページ。
+// 画面と同じ部品（ocrPipeline.js）とモデルで読み、ONNX Runtime へ渡す計算の大きさと受け取る出力を控えるページ。
 const CHECK_PAGE = `
-import * as paddle from '@paddleocr/paddleocr-js'
 import * as ort from 'onnxruntime-web/wasm'
 import { prepareImageForOcr } from '/src/lib/ocrImage.js'
-import { createOcrReader } from '/src/lib/ocrEngine.js'
-window.readDense = async (url, options) => {
-  const dims = []
+import { loadOcrModels, OCR_LOW_MEMORY_READ_OPTIONS, OCR_READ_OPTIONS, ocrPageFromItems } from '/src/lib/ocrEngine.js'
+import { createOcrPipeline } from '/src/lib/ocrPipeline.js'
+ort.env.wasm.numThreads = 1
+window.readDense = async (url, { lowMemory = false } = {}) => {
+  const runs = []
   const create = ort.InferenceSession.create
   ort.InferenceSession.create = async (...args) => {
     const session = await create.apply(ort.InferenceSession, args)
     const run = session.run.bind(session)
     session.run = (feeds, ...rest) => {
-      dims.push([...Object.values(feeds)[0].dims])
+      runs.push({ dims: [...Object.values(feeds)[0].dims], fetches: Array.isArray(rest[0]) ? rest[0] : null })
       return run(feeds, ...rest)
     }
     return session
   }
-  const reader = await createOcrReader(paddle, options)
-  const page = await reader.read(await prepareImageForOcr(await (await fetch(url)).blob()))
-  await reader.dispose()
+  const models = await loadOcrModels({ base: '/' })
+  const pipeline = await createOcrPipeline({
+    ort,
+    detModel: new Uint8Array(models.det),
+    recModel: new Uint8Array(models.rec),
+    chars: JSON.parse(new TextDecoder().decode(models.chars)),
+    createCanvas: (width, height) => new OffscreenCanvas(width, height),
+    ...(lowMemory ? OCR_LOW_MEMORY_READ_OPTIONS : OCR_READ_OPTIONS),
+  })
   ort.InferenceSession.create = create
-  return { text: page.text, dims, backend: page.runtime?.requestedBackend }
+  const image = await createImageBitmap(await prepareImageForOcr(await (await fetch(url)).blob()))
+  const result = await pipeline.read(image)
+  await pipeline.dispose()
+  return { text: ocrPageFromItems(result.items).text, runs }
 }
 window.checkReady = true
 `
@@ -75,7 +87,7 @@ before(async () => {
     root: ROOT,
     logLevel: 'silent',
     cacheDir: 'node_modules/.vite-dense-page-test',
-    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], include: ['@paddleocr/paddleocr-js'] },
+    optimizeDeps: { entries: ['index.html', 'src/**/*.{js,jsx}'], include: ['onnxruntime-web/wasm'] },
     server: { port, host: '127.0.0.1', strictPort: true, hmr: false, watch: null, fs: { allow: [ROOT, workDir] } },
     plugins: [{
       name: 'dense-check-page',
@@ -122,27 +134,36 @@ async function readDense(options) {
   return result
 }
 
-function assertLight(result, longSide) {
-  const [det, ...rec] = result.dims
-  assert.ok(Math.max(det[2], det[3]) <= longSide + 32, `検出の画像 ${det}`)
+// 検出は1回 detPixels まで・長い辺 detMaxSide まで、認識は1行ずつ・幅 REC_CHUNK まで、認識の出力は最も確かな1字だけを受け取る。
+function assertLight(result, { detMaxSide, detPixels }) {
+  const det = result.runs.filter((run) => !run.fetches)
+  const rec = result.runs.filter((run) => run.fetches)
+  assert.ok(det.length >= 1)
+  for (const { dims } of det) {
+    assert.ok(dims[2] * dims[3] <= detPixels, `検出の1回 ${dims}`)
+    assert.ok(Math.max(dims[2], dims[3]) <= detMaxSide + 32, `検出の画像 ${dims}`)
+  }
   assert.ok(rec.length >= DENSE_PAGE_LINES.length, `認識 ${rec.length} 回`)
-  // 長い行をまとめて計算すると、メモリの山が倍以上になる（6行ずつのとき GPU で 3,781MB、1行ずつで 1,755MB）。
-  for (const dims of rec) assert.equal(dims[0], 1, `認識の1回の行数 ${dims}`)
+  for (const { dims, fetches } of rec) {
+    // 長い行をまとめて計算すると、メモリの山が倍以上になる（6行ずつのとき GPU で 3,781MB、1行ずつで 1,755MB）。
+    assert.equal(dims[0], 1, `認識の1回の行数 ${dims}`)
+    assert.ok(dims[3] <= Math.max(REC_CHUNK, REC_MIN_WIDTH), `認識の1回の幅 ${dims}`)
+    assert.deepEqual(fetches, [REC_TOP_VALUE, REC_TOP_INDEX])
+  }
 }
 
-test('普通の読み方：40行のページを全行読み、認識は1行ずつ・検出は長い辺1600pxまで', async (t) => {
+test('普通の読み方：40行のページを全行読み、検出は帯に分け、認識は1行ずつ・最も確かな1字だけを受け取る', async (t) => {
   const result = await readDense({})
-  t.diagnostic(`認識 ${result.dims.length - 1} 回・検出 ${result.dims[0]}`)
+  t.diagnostic(`検出 ${result.runs.filter((run) => !run.fetches).length} 回・認識 ${result.runs.filter((run) => run.fetches).length} 回`)
   assert.deepEqual(DENSE_PAGE_LINES.filter((line) => !denseLinesFound(result.text).includes(line)), [])
-  assertLight(result, OCR_READ_PARAMS.textDetLimitSideLen)
+  assertLight(result, OCR_READ_OPTIONS)
 })
 
-test('軽い読み方：40行のページを全行読み、検出は長い辺1280pxまで', async () => {
+test('軽い読み方：40行のページを全行読み、検出は長い辺1280px・1回 約33万画素まで', async () => {
   const result = await readDense({ lowMemory: true })
   assert.deepEqual(DENSE_PAGE_LINES.filter((line) => !denseLinesFound(result.text).includes(line)), [])
-  assertLight(result, OCR_LOW_MEMORY_READ_PARAMS.textDetLimitSideLen)
-  assert.equal(ocrCreateOptions().ortOptions.backend, 'wasm')
-  assert.equal(ocrCreateOptions().textRecognitionBatchSize, 1)
+  assertLight(result, OCR_LOW_MEMORY_READ_OPTIONS)
+  assert.ok(OCR_LOW_MEMORY_READ_OPTIONS.detPixels < OCR_READ_OPTIONS.detPixels)
 })
 
 // メニューから画面を開く。

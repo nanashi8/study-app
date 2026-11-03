@@ -44,7 +44,8 @@ async function main() {
     current = readPhotoInWorker(image, {
       lowMemory,
       onDownload: (fraction) => show('英語と日本語の認識データを読み込み中…', 0.05 + 0.55 * fraction),
-      onReading: () => show(job.readingStatus, 0.7),
+      onReading: () => show(job.readingStatus, 0.65),
+      onProgress: (fraction) => show(null, 0.65 + 0.35 * fraction),
     })
     return current.promise
   }
