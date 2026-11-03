@@ -4,6 +4,7 @@ import { learningContentCatalogSwipeSide } from '../lib/learningContentCatalogSw
 import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 import { MeaningText } from './MeaningText.jsx'
 import { SubjectSourceText } from './SubjectText.jsx'
+import { SpeakButton } from './SpeakButton.jsx'
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
 
@@ -202,6 +203,14 @@ export function LearningRecordRow({
   )
 }
 
+// 英単語の一覧の行。カードの右下にその語の発音ボタンを置く。
 export function VocabularyHistoryRow(props) {
-  return <LearningRecordRow {...props} />
+  const word = rowWord(props.row)
+  const text = word.word ?? props.row.title
+  return (
+    <LearningRecordRow
+      {...props}
+      actions={text ? <SpeakButton text={text} size="sm" /> : null}
+    />
+  )
 }

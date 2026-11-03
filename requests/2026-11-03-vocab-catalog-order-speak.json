@@ -1,0 +1,37 @@
+{
+  "id": "2026-11-03-vocab-catalog-order-speak",
+  "title": "英単語の一覧を確認で、確認のおすすめ順なのにABC順に並ぶ不具合を直し、一覧のカードに発音ボタンを出す",
+  "asked": [
+    "英単語の一覧を確認で、並び替えが確認のおすすめ順になっているにも関わらず、ABC順に表示されていないか？不具合があれば修正しなさい。",
+    "また一覧で確認のカードにも発音ボタンを表示しなさい。"
+  ],
+  "sessions": [
+    "6b2ff921-a929-4136-b7ac-01785fec119e"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "recommended-order-not-abc",
+      "text": "確認のおすすめ順（復習のおすすめ順）で重みが同じ語どうしをABC順にせず、教材の並び（級・分野・単語帳の語の並び＝基本語から）のままにする。記録のない語ばかりの一覧が ABC 順にならない",
+      "population": "英単語の一覧を確認の全入口：全級（wordsByLevel の全級）・全級×全分野・単語帳の語、マイ学習の英単語の一覧（learningContentCatalogRows の vocab）。記録なし・記録ありの混在の両方",
+      "check": "node --test tests/vocab-catalog-recommended-order.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-03: 原因は、重みが同じ語どうしの最後の決め手が ABC 順だったこと。記録のない語は重みがみな0なので、学習前の語ばかりの一覧（5級なら609語）が丸ごと ABC 順に並んでいた。vocabCatalog.js と learningContentCatalog.js の同点の決め手を教材の並び（渡された語の順）に変えた。全7級・全10分野・級×分野の全組・単語帳、マイ学習の英単語8,929語で、記録なし（昇順・降順）と記録あり・なしの混在の両方を確かめた。開発版の英検5級の一覧が book, friend, school… の順で出ることも見た。マイ学習の一覧はほかの教材（熟語・文法など）も同じ部品なので、同点が ABC 順ではなく教材の並びになる。"
+    },
+    {
+      "id": "speak-button-on-catalog-cards",
+      "text": "英単語の一覧を確認のカード（行）すべてに、その語を読み上げる発音ボタンを出す。押しても詳細を開かずスワイプとも干渉しない。ただし発音が変わる語（heteronyms.js の96語、例 read）は、以前の決まり（単語だけを読み上げない）どおりボタンを出さない",
+      "population": "英単語の一覧を確認の全入口（級別・分野別・単語帳・マイ学習の英単語）の全行",
+      "check": "node --test tests/vocab-catalog-recommended-order.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-03: VocabularyHistoryRow（級別・分野別・単語帳の一覧と、マイ学習の英単語の一覧の行がどれも使う部品）の右下に SpeakButton を置いた。開発版の英検5級の一覧で最初の80行のうち79行にボタンが出て、出ない1行は read（発音が変わる語）。押しても一覧のまま（詳細を開かない）ことを確かめた。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版で並びと発音ボタンを確かめる。clone は消す",
+      "population": "全テスト・全監査と公開版の英単語の一覧",
+      "check": "node --test tests/vocab-catalog-recommended-order.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -37,8 +37,6 @@ export const VOCAB_CATALOG_DEFAULT_DIRECTIONS = Object.freeze({
   testAt: 'desc',
 })
 
-const WORD_COLLATOR = new Intl.Collator('en', { sensitivity: 'base', numeric: true })
-
 const activityTimestamp = (entry, activity) => (
   Number.isFinite(entry?.[activity]?.lastAt) ? entry[activity].lastAt : null
 )
@@ -102,7 +100,7 @@ export function vocabularyCatalogRows(
     : 'weight'
   const normalizedDirection = direction === 'asc' ? 'asc' : 'desc'
   const metricOptions = day === undefined ? { now } : { now, day }
-  const rows = (Array.isArray(words) ? words : []).map((word) => {
+  const rows = (Array.isArray(words) ? words : []).map((word, order) => {
     const entry = srs?.[word.id]
     const metrics = vocabularyReviewMetrics(entry, metricOptions)
     return {
@@ -117,6 +115,7 @@ export function vocabularyCatalogRows(
       weight: reviewWeightFromMetrics(metrics),
       priority: vocabularyCatalogPriority(metrics),
       metrics,
+      order,
     }
   })
 
@@ -134,9 +133,9 @@ export function vocabularyCatalogRows(
         : b.weight - a.weight
     }
 
-    return compared
-      || WORD_COLLATOR.compare(a.word.word, b.word.word)
-      || String(a.word.id).localeCompare(String(b.word.id))
+    // 重みや日付が同じ語どうしは、教材の並び（級・分野・単語帳の語の並び＝基本語から）のまま。
+    // ABC順にすると、記録のない語ばかりの一覧が ABC 順になり、おすすめ順に見えない。
+    return compared || a.order - b.order
   })
 }
 

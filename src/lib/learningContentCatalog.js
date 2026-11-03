@@ -49,7 +49,6 @@ const DAY_MS = 86_400_000
 const SUBJECT_TERM_CONTENTS = new Set(Object.values(SUBJECTS).map((meta) => meta.termDomain))
 const SUBJECT_PRACTICE_CONTENTS = new Set(Object.values(SUBJECTS).map((meta) => meta.practiceDomain))
 const JA_COLLATOR = new Intl.Collator('ja', { sensitivity: 'base', numeric: true })
-const EN_COLLATOR = new Intl.Collator('en', { sensitivity: 'base', numeric: true })
 const LEVEL_BY_RANK = Object.freeze(['5級', '4級', '3級', '準2級', '2級', '準1級', '1級'])
 const EXAM_LEVEL_LABELS = Object.freeze({
   '5': '5級',
@@ -391,7 +390,7 @@ export function learningContentCatalogRows(
   const normalizedDirection = direction === 'asc' ? 'asc' : 'desc'
   const normalizedQuiz = normalizeContentQuizResults(state.contentQuizResults)
   const metricOptions = day === undefined ? { now } : { now, day }
-  const rows = content.items.map((item) => {
+  const rows = content.items.map((item, order) => {
     const presentation = presentationFor(content.id, item)
     const reviewState = content.kind === 'srs'
       ? srsReviewState(state[content.store]?.[item.id], metricOptions)
@@ -419,6 +418,7 @@ export function learningContentCatalogRows(
       manualPriority,
       weight: reviewState.weight + manualPriority * 1000,
       searchText,
+      order,
     }
   })
 
@@ -434,9 +434,8 @@ export function learningContentCatalogRows(
         ? a.weight - b.weight
         : b.weight - a.weight
     }
-    return compared
-      || EN_COLLATOR.compare(a.title, b.title)
-      || String(a.id).localeCompare(String(b.id))
+    // 重みや日付が同じ項目どうしは、教材の並び（基本の項目から）のまま。ABC順にしない。
+    return compared || a.order - b.order
   })
 }
 
