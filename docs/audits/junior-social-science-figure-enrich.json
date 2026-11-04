@@ -2084,7 +2084,7 @@
     "gtk-21#4": {
       "decision": "text",
       "reason": "「西アジアのおもな紛争」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
-      "sha256": "1d5c39b8eec6219fbf30d41df8a716348ea085afacee08695ef6407376d9a79b"
+      "sha256": "ca41ca3e02cca895440e6b71aef1f30163c25ac1791a8a3f9639a1541e034882"
     },
     "gtk-21#5": {
       "decision": "text",
