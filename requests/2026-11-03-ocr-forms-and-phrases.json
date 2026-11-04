@@ -8,7 +8,7 @@
   "sessions": [
     "30aeb882-62b0-4e45-8f54-4376636c588c"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "forms-all-headwords",
@@ -47,10 +47,10 @@
     },
     {
       "id": "deployed",
-      "text": "clone で全監査を通して main へ push し、公開の処理が成功する",
+      "text": "clone で全監査（テスト254ファイル中の該当分・check:content・ビルド、合計822秒、失敗0）を通して 9c34c099 を main へ push し、公開の処理 run 41746740375 が success。公開版が push した版と同じことを deployed-matches-head で確かめた。公開版の画面で写真を読んで確かめてはいない（画面はテストの開発サーバーで確かめた）",
       "population": "この依頼の変更 全部",
-      "check": "false",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 9c34c099 origin/main && test \"$(gh run view 41746740375 --repo nanashi8/study-app --json conclusion -q .conclusion)\" = success && node --test tests/ocr-forms-phrases.test.mjs",
+      "status": "done"
     }
   ]
 }
