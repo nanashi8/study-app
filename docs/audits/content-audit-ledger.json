@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-04T04:57:58.250Z",
+  "auditedAt": "2026-11-04T11:29:20.323Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 21851,
     "storedAndGeneratedQuestionPathCount": 8701,
     "storedAndGeneratedChoicePathCount": 33485,
-    "overallContentSha256": "c94f33b0c340085ad4be414006105174ac66130452a5cf0fb9600749b07977ac"
+    "overallContentSha256": "7344d7e746c2bdad81d958416ac4cde1ede21b291b451b3b42286d0776c257d3"
   },
   "completionCriteria": [
     "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "ba2af85c704c9985a250b222026f52f1cc4e5a140fdd7b553d10c4ba45a1e644",
+    "sha256": "04998f461e4f61cfe488e7e60a0120017a607b0764aee667a6d0e230793f8490",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -381,6 +381,7 @@
       "tests/scroll-back-from-bottom.test.mjs",
       "tests/session-size.test.mjs",
       "tests/sheet-layer.test.mjs",
+      "tests/social-truth-audit.test.mjs",
       "tests/speech-settings-menu.test.mjs",
       "tests/srs-maintenance-review.test.mjs",
       "tests/study-card-ring.test.mjs",
@@ -934,7 +935,7 @@
       "quizItemCount": 1216,
       "learningIdOrderSha256": "2f7dc5545fff668fa1b23c309068668d95518960aec2bd2176c93e5b201a342f",
       "quizIdOrderSha256": "2f7dc5545fff668fa1b23c309068668d95518960aec2bd2176c93e5b201a342f",
-      "contentSha256": "58812c15f205337ac4331decea76ed2894daccc5b0a10434e1047342420c1bef",
+      "contentSha256": "776d64cffba2243c5edd68707cd3662df55fa527e19bb02f3f854dd5f66550c5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -957,7 +958,7 @@
       "quizItemCount": 1044,
       "learningIdOrderSha256": "7172dc7b1e628c17214d07825ac7721acbfbd4dce1ff3f2bf64a8dcfdcca4649",
       "quizIdOrderSha256": "7172dc7b1e628c17214d07825ac7721acbfbd4dce1ff3f2bf64a8dcfdcca4649",
-      "contentSha256": "34503b317cc275a6122dbe94dad2338490657e0b1a31a0b0e4a4b41d9bcacf8c",
+      "contentSha256": "5198b9e2a1e23122590862ce20f09b0ec914ca9a8221185c870c9b839777a495",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1181,7 +1182,7 @@
       "choiceCount": 6872,
       "generalRationaleCount": 1718,
       "choiceSpecificRationaleCount": 6872,
-      "questionSetSha256": "84a483b7ed5370a066db2f15568358522e300c65e4a7935d707368a7235ad01d",
+      "questionSetSha256": "631e7357e142d371236aa8b2b75f48ae20c051bff96e37a4323a6c885911a010",
       "result": "pass",
       "failureCount": 0,
       "failures": []

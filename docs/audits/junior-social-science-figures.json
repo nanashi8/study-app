@@ -1,6 +1,6 @@
 {
   "readMe": "社会・理科の全要点と全演習を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断した記録。figure＝図と図の読み方（要点）・図の読み取り方（演習）を付けた、none＝付けない（要点は理由を noFigure に書く）。sha256 は判断したときの中身の指紋。確認は node scripts/checks/junior-social-science-figures.mjs、押し直しは --stamp <単元ID>。",
-  "reviewedOn": "2026-10-22",
+  "reviewedOn": "2026-11-04",
   "points": {
     "civ-01#1": {
       "decision": "figure",
@@ -856,7 +856,7 @@
     },
     "gso-07#2": {
       "decision": "figure",
-      "sha256": "730b157a32efe58603f27488d97b2f6f706aed2c4234c9a777665a5e79e024bf"
+      "sha256": "73978882bae84c83e50e9a4bf4fae8e3b077ab3a5360dd9217e972e0721b5290"
     },
     "gso-07#3": {
       "decision": "figure",
@@ -888,7 +888,7 @@
     },
     "gso-09#2": {
       "decision": "figure",
-      "sha256": "f6b5c1e6e8bd122965d975511ffbfb4f4c64d4c6c54df1e9a2dc22f129e4e4be"
+      "sha256": "a13fd9287338547481edcff7574f3a809d57c65ddb6649b2845dec20b503ae3f"
     },
     "gso-09#3": {
       "decision": "figure",
@@ -1964,7 +1964,7 @@
     },
     "hso-29#2": {
       "decision": "figure",
-      "sha256": "0f3e2edc9cefd44e68bceca68c770671c6f1e63286dcf88c5522368ff1f7c69d"
+      "sha256": "c3814ea8e4605efb0c42a452a0510ff9f133f209b8877c9a64d0f89b2aac9212"
     },
     "hso-29#3": {
       "decision": "figure",
@@ -1996,7 +1996,7 @@
     },
     "hso-31#2": {
       "decision": "figure",
-      "sha256": "20b00c9552235ae2be27dd57b3c4324f254acf5742585482b90d17388c7b0c7a"
+      "sha256": "50543d72a1a243bfe04c0fef46e142e495f909bf70fde02b778a4eada8a380fa"
     },
     "hso-31#3": {
       "decision": "figure",
@@ -2064,7 +2064,7 @@
     },
     "hso-35#3": {
       "decision": "figure",
-      "sha256": "0004bf2d0487f750ac0dc7288373945d0ce3200b6d27e378f3aa5a301e301ea9"
+      "sha256": "0cd9fb15f1ffff4dc5cd0a6053cae608d7b0605bd417d5590f985a20d7a31006"
     },
     "hso-35#4": {
       "decision": "figure",
@@ -3402,7 +3402,7 @@
     },
     "civ-09-q08": {
       "decision": "figure",
-      "sha256": "2edeb5fe74e4bc7e62ff3e98418f8b5bc7b791eceeaf87a04a978235cfbbdee9"
+      "sha256": "bcc231bbbb006a0e25ff914d3e4f38ccd40ea6fce5922514bc2a8705ec446e60"
     },
     "civ-09-q09": {
       "decision": "none",
@@ -4150,7 +4150,7 @@
     },
     "geo-12-q06": {
       "decision": "figure",
-      "sha256": "a618b20cb7fa0bc799dbcdda6e5b60f37da9afc45f8e609dd49264424f74d916"
+      "sha256": "49efad0cf43b6b77752be6c498db770c96c79a37515dc02ad9cd9f1dd3539870"
     },
     "geo-12-q07": {
       "decision": "none",

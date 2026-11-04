@@ -1177,7 +1177,7 @@
     "gso-07#2": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
-      "sha256": "d3aceb88e339d297bd879265044f932e67039d0001058832804bd5fec78dbc47"
+      "sha256": "9bde46941dec2c97299345de90d51df23fbc0c1bacb91d479ce048664989a200"
     },
     "gso-07#3": {
       "decision": "visual",
@@ -1213,7 +1213,7 @@
     },
     "gso-09#2": {
       "decision": "visual",
-      "sha256": "773ff1561f29a7264669e3cf9e26daad843dd5f2d97c576f965a58e2897a1634"
+      "sha256": "c2d56b5291ad37f03c704a48a3de547db02850b89d4d9194fb885112ab064730"
     },
     "gso-09#3": {
       "decision": "visual",
@@ -2408,7 +2408,7 @@
     },
     "hso-29#2": {
       "decision": "visual",
-      "sha256": "4054f76367073b5a82a0e760395249d940a5ce890a6c560dc838a74fa7cf38c9"
+      "sha256": "4040f241cae966a03766aa1f6decc02407fe7328dfdb0c906640e365505799ae"
     },
     "hso-29#3": {
       "decision": "text",
@@ -2447,7 +2447,7 @@
     "hso-31#2": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
-      "sha256": "aa592036d2c0ada14c06977ffcb1b741c8c8e07a4719b141b8cf010f5f464474"
+      "sha256": "00c46ef81d7b1e59c1af249b1d753d3711d0ac7744de225e03fc3e668992b5f8"
     },
     "hso-31#3": {
       "decision": "text",
@@ -2532,7 +2532,7 @@
     "hso-35#3": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
-      "sha256": "8ff7ce68bdcc1a3fa50b05b539e0afddb8f2afac282139bd6dc3974c7bb28292"
+      "sha256": "508edceb2e8fa7144a8db753f2f8737791692da66010ca38d8e56e05faaeefda"
     },
     "hso-35#4": {
       "decision": "text",
@@ -3568,7 +3568,7 @@
       "sha256": "d2a5e072c7842e559e6754bf261d348843ed3b66c88c653493172b5f000d95cc"
     },
     "civ-09-q08": {
-      "sha256": "16afaabcb4f15e44a1e17866be2039b743951b93f79ff0f4196ec2a63431dd63"
+      "sha256": "1584f81414dd3360477b8418dee94b244bc53bcf0f04de2ab38989b8489daf3c"
     },
     "civ-12-q04": {
       "sha256": "ffe9df39e09497303af53af82c4b218c54eecd924448adb9d8a0aea2cef512ce"
@@ -3622,7 +3622,7 @@
       "sha256": "f41008131c82ca87423876e5b409b6ea3dac1f08648c019229a6b2acdd9e46cb"
     },
     "geo-12-q06": {
-      "sha256": "6365030af6681393628193592a88a23e4ec8938fc92810b6ba4008bcdd53ffcc"
+      "sha256": "001562094aae422e7b345ba60c9eb6964262fad911890b781b2c46b6bcea47b0"
     },
     "geo-13-q04": {
       "sha256": "e220cf897a123387450dfc60e385d639823ea7ea69377636aca5a1b373303163"

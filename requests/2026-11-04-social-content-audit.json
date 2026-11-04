@@ -1,0 +1,46 @@
+{
+  "id": "2026-11-04-social-content-audit",
+  "title": "社会の教材（中学の地理・歴史・公民、高校の地理総合・歴史総合）の内容に誤りがないか全件を監査し、見つけた誤りを直す",
+  "asked": [
+    "社会のコンテンツに誤りがないか監査しなさい。"
+  ],
+  "sessions": [
+    "1cc485b7-211a-4477-814d-280b7968e030"
+  ],
+  "status": "open",
+  "decisions": [
+    "母集団は社会アプリの全5冊・116単元（地理19・歴史21・公民18・地理総合20・歴史総合38）の、めあて・共通テストでの出方・要点の本文・図の文字と図の読み方・重要語句の意味と補足・演習の問題文・選択肢とその説明・並べる理由・解き方・解説のすべて（書き出して約172万字）。",
+    "読むときに見ること：事実・年代・数値・人名・地名・用語の誤り、正解が1つに決まるか、誤答が本当に誤りか、同じ事がらを単元ごとに違う年・数で書いていないか、要点・図・語句・演習の食いちがい。",
+    "別のセッション（requests/2026-11-04-high-school-social-tankyu.json）が地理総合・歴史総合を充実させる作業中。この監査は今の main の中身を読み、直すのは誤りの所だけにする。"
+  ],
+  "criteria": [
+    {
+      "id": "all-units-read",
+      "text": "社会の全116単元を1単元ずつ読み、読んだ単元の中身の指紋を監査の台帳 docs/audits/social-truth-audit-2026-11-04.json に記録する。直した単元は直したあとの指紋",
+      "population": "社会アプリの全116単元（geo-01〜19・his-01〜21・civ-01〜18・gso-01〜20・hso-01〜38）の全文",
+      "check": "node scripts/checks/social-truth-audit.mjs",
+      "status": "done"
+    },
+    {
+      "id": "cross-unit-consistency",
+      "text": "単元をまたいで、同じ出来事・制度の年（西暦）と同じ統計の数が食いちがっていないかを機械で全件洗い出し、食いちがいはすべて読んで判断する",
+      "population": "社会の全116単元の文に出る「西暦の年＋語」の組の全件",
+      "check": "node scripts/checks/social-truth-audit.mjs --years",
+      "status": "done"
+    },
+    {
+      "id": "errors-fixed",
+      "text": "見つけた誤りをすべて直し、台帳の fixes に単元・誤り・直し方を書き、テスト tests/social-truth-audit.test.mjs で再発を止める。直した問題は答えの台帳、直した単元は精査・図・用語集などの台帳を読み直して押し直す",
+      "population": "監査で見つけた誤りの全件",
+      "check": "node --test tests/social-truth-audit.test.mjs tests/junior-social-science.test.mjs tests/junior-social-science-answers.test.mjs tests/junior-social-science-review.test.mjs tests/junior-social-science-glossary.test.mjs tests/junior-social-science-figures.test.mjs tests/high-school-social.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "直した中身を npm run audit:all-content に通し、クリーンな clone で確かめて main へ push し、公開版に出たことを確かめる",
+      "population": "この依頼の変更の全部",
+      "check": "git fetch -q origin main && test -z \"$(git log origin/main..HEAD --oneline)\" && node --test tests/social-truth-audit.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
