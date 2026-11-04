@@ -72,6 +72,19 @@ const candidates = () => page.locator('[data-custom-photo-candidate]').evaluateA
 })))
 const candidate = (front) => page.locator('[data-custom-photo-candidate]', { has: page.locator(`[data-custom-photo-front][value="${front}"]`) })
 
+// 入れる単語帳にもうある候補（前のテストで同じ語を入れた）を表示する。tick なら、その候補も選ぶ（別の分類へ登録し直す）。
+async function revealInBook({ tick = false } = {}) {
+  const toggle = page.locator('[data-custom-photo-in-book-toggle]')
+  if (!(await toggle.count()) || (await toggle.getAttribute('aria-pressed')) === 'true') return
+  await toggle.click()
+  if (!tick) return
+  const rows = page.locator('[data-custom-photo-candidate]', { hasText: /単語帳「.+」にもうあります。/ })
+  for (let at = 0; at < await rows.count(); at += 1) {
+    const check = rows.nth(at).locator('[data-custom-photo-check]')
+    if (!(await check.isChecked()) && !(await check.isDisabled())) await check.check()
+  }
+}
+
 const library = () => ui.state(['customWords', 'customCards', 'customCategories', 'learningNotebook'])
 
 test('自作カードのホーム（メニューから・6教科のアプリから）の「写真から作る」は、その教科の分類と、分類の最初のテンプレートで開く', async () => {
@@ -227,6 +240,8 @@ test('5つのテンプレート × 分類3種（教科・作ったカテゴリ�
         await page.locator('[data-custom-photo-new-category]').fill(`新しい${item.template}`)
       }
       await readPhoto(item.items)
+      // 2つ目の分類からは、同じ語が入れる単語帳にもうあるので隠れる。表示して選び、この分類にも登録する。
+      await revealInBook({ tick: true })
       const rows = await candidates()
       assert.deepEqual(rows.map(({ front, back, checked }) => ({ front, back, checked })), item.expected, `${label}：候補`)
       await ui.checkWidth(`写真から作る（${label}の候補）`)
@@ -298,6 +313,7 @@ test('英単語：英文の中の語は選ばずに出し、意味のない語�
     ...table([['library', '名図書館'], ['apple', 'りんご・リンゴの木・赤い実・果物・食べ物']]),
     { text: 'Emi saw a walrus at the zoo.', score: 0.95, poly: [[40, 200], [700, 200], [700, 230], [40, 230]] },
   ])
+  await revealInBook()
   // 分類にもうある語（前のテストで登録した library）は、知らせて選ばない。
   const libraryRow = await candidate('library').innerText()
   assert.match(libraryRow, /この分類にもうあります。/)
@@ -339,6 +355,8 @@ test('テンプレートを替えると候補を作り直し、読み取った�
   await ui.open('customWords', { view: 'photo', category: 'subject:science' })
   await waitPhotoView()
   await readPhoto(table([['光合成', '植物が光を使って養分をつくるはたらき'], ['呼吸 酸素を使ってエネルギーを取り出すはたらき']]))
+  // 光合成は前のテストで入れる単語帳に入れたので隠れる。表示して確かめる。
+  await revealInBook()
   assert.deepEqual((await candidates()).map((row) => row.front), ['光合成', '呼吸'])
   await photoView().locator('[data-custom-card-template="qa"]').click()
   assert.deepEqual((await candidates()).map((row) => [row.front, row.back]), [
@@ -359,6 +377,7 @@ test('この画面で新しいカテゴリーを作って登録できる（教�
   await page.locator('[data-custom-photo-open]').click()
   await waitPhotoView()
   await readPhoto(table([['光合成', '植物が光を使って養分をつくるはたらき']]))
+  await revealInBook()
   // 理科の分類には前のテストで登録した「光合成」があるので、知らせて選ばない。新しいカテゴリーへ替えると選ぶ。
   assert.match(await candidate('光合成').innerText(), /この分類にもうあります。/)
   assert.equal(await candidate('光合成').locator('[data-custom-photo-check]').isChecked(), false)
@@ -453,4 +472,49 @@ test('読み取りの途中でページごと落ちても（端末が読み直�
   assert.deepEqual(await engineLog(), { lowMemory: [false, true], mark: null })
   await setStub({ hold: false })
   await page.evaluate(([key]) => localStorage.removeItem(key), [OCR_LOW_UNTIL])
+})
+
+// 依頼 requests/2026-11-03-ocr-forms-and-phrases.json の in-book-toggle：同じ写真を読み直すと、入れる単語帳にもうある候補は
+// はじめは隠し、ボタンで表示・非表示を切り替える。入れる単語帳を替えると、隠す候補をその単語帳で作り直す。
+test('入れる単語帳にもうある候補は隠し、ボタンで表示・非表示を切り替え、入れる単語帳を替えると作り直す', async () => {
+  await ui.open('customWords', { view: 'photo', category: 'subject:english' })
+  await waitPhotoView()
+  const book = page.locator('[data-custom-photo-book]')
+  const bookId = await book.inputValue()
+  assert.notEqual(bookId, '', '入れる単語帳がはじめから選ばれている')
+  const rows = [['giraffe', 'キリン'], ['pumpkin', 'カボチャ']]
+  await readPhoto(table(rows))
+  assert.equal(await page.locator('[data-custom-photo-in-book-toggle]').count(), 0)
+  await page.locator('[data-custom-photo-save]').click()
+  await page.locator('[data-custom-photo-notice]').waitFor()
+  // 登録した候補はこの画面では隠さない。
+  assert.deepEqual((await candidates()).map((row) => row.front), ['giraffe', 'pumpkin'])
+
+  // 同じ写真（と新しい1行）を読み直す：単語帳にある2枚は隠す。
+  await readPhoto(table([...rows, ['tomato', 'トマト']]))
+  assert.deepEqual((await candidates()).map((row) => row.front), ['tomato'])
+  const toggle = page.locator('[data-custom-photo-in-book-toggle]')
+  assert.match(await toggle.innerText(), /にもうある2枚を隠しています/)
+  assert.match(await page.locator('[data-custom-photo-count]').innerText(), /候補 1枚・選択中 1枚/)
+  await toggle.click()
+  const shown = await candidates()
+  assert.deepEqual(shown.map((row) => row.front), ['giraffe', 'pumpkin', 'tomato'])
+  for (const row of shown.slice(0, 2)) {
+    assert.equal(row.checked, false, row.front)
+    assert.ok(row.notes.some((note) => /^単語帳「.+」にもうあります。$/.test(note)), row.front)
+  }
+  assert.match(await toggle.innerText(), /表示中/)
+  await toggle.click()
+  assert.deepEqual((await candidates()).map((row) => row.front), ['tomato'])
+
+  // 入れる単語帳を「入れない」に替えると隠す候補はなくなり、元の単語帳へ戻すとまた隠す。
+  await book.selectOption('')
+  assert.equal(await toggle.count(), 0)
+  assert.deepEqual((await candidates()).map((row) => row.front), ['giraffe', 'pumpkin', 'tomato'])
+  await book.selectOption(bookId)
+  assert.deepEqual((await candidates()).map((row) => row.front), ['tomato'])
+  // 隠した候補は登録しない。
+  await page.locator('[data-custom-photo-save]').click()
+  await page.locator('[data-custom-photo-notice]').waitFor()
+  assert.match(await page.locator('[data-custom-photo-notice] p').innerText(), /^1枚を「英語」に登録しました。/)
 })

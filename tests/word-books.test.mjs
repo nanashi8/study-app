@@ -271,7 +271,7 @@ test('長文・辞書・名作・写真の読み取り・英作文・自作カ�
   }
   // まとめて入れる画面は、語の一覧をそのまま登録先へ入れる。
   assert.match(read('../src/screens/ReadingPrep.jsx'), /useWordBookSlot\(prepWordIds\.map\(wordBookRef\)/)
-  assert.match(read('../src/screens/VocabCamera.jsx'), /useWordBookSlot\(pendingIds\.map\(wordBookRef\)/)
+  assert.match(read('../src/screens/VocabCamera.jsx'), /useWordBookSlot\(\[\.\.\.pendingIds\.map\(wordBookRef\)/)
   const store = read('../src/store/useStore.js')
   assert.doesNotMatch(store, /toggleMyList|addManyToMyList|myList: \[\]/)
   assert.match(store, /setNotebookSetItems: \(setId, domain, itemIds, included\) =>/)

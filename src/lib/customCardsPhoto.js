@@ -5,6 +5,8 @@
 // 英単語のテンプレートは、英語と日本語が並ぶ行を単語と意味（品詞・発音記号も）に、英文の中の語を辞書の意味つきの候補にする。
 // 候補は捨てない。最初は選ばない候補（意味がない・読み取りが不確か・英文の中の語など）は、画面で理由を添えて出す。
 import { OCR_LOW_CONFIDENCE, matchOcrTextToWords } from './vocabOcr.js'
+import { matchOcrTextToPhrases } from './ocrPhrases.js'
+import { PHRASES } from '../data/phrases.js'
 import { CUSTOM_CARD_LIMITS, ENGLISH_TEMPLATE_ID, templateFor } from './customCards.js'
 import { CUSTOM_WORD_FIELDS, CUSTOM_WORD_LIMITS, CUSTOM_WORD_POS } from './customWords.js'
 import { emptyEntryValues, missingEntryFields } from './customEntryForm.js'
@@ -267,6 +269,25 @@ export function existingPhotoKeys({ words = [], cards = [] } = {}, category, tem
   return new Set(entries.map((front) => photoFrontKey(template, front)))
 }
 
+/**
+ * 単語帳 book にもう入っている候補の表の文字（photoFrontKey）。英単語のテンプレートは、単語帳の英単語（自作単語と辞書の語）の
+ * つづり、ほかのテンプレートは単語帳の自作カードの表。dictionary は辞書の語（ALL_WORDS）。
+ */
+export function photoKeysInBook({ words = [], cards = [] } = {}, book, template, dictionary = []) {
+  const refs = new Set(Array.isArray(book?.refs) ? book.refs : [])
+  const keys = new Set()
+  if (!refs.size) return keys
+  if (template === ENGLISH_TEMPLATE_ID) {
+    for (const word of [...words, ...dictionary]) {
+      if (refs.has(`vocab:${word.id}`)) keys.add(photoFrontKey(template, word.word))
+    }
+  } else {
+    for (const card of cards) if (refs.has(`customCards:${card.id}`)) keys.add(photoFrontKey(template, card.front))
+  }
+  keys.delete('')
+  return keys
+}
+
 function headwordIndex(words) {
   const index = new Map()
   for (const word of words) {
@@ -298,7 +319,8 @@ function dictionaryDetails(word) {
  *   contextReading    (text) → vocabOcr.js の contextReading（saw → see などの読み分け）。なければ null
  * 戻り値 { candidates, rowCount, japaneseOnlyRows }。
  * 候補：{ key, front, back, posId, level, field, phonetic, pos, kind: 'row' | 'word', meaningFrom: 'photo' | 'dictionary' | null,
- *        uncertain, corrected, split, listed, rejected, observed, occurrences, suggested（最初に選ぶ） }
+ *        uncertain, corrected, split, alternative（ほかの語の変化形かもしれない語）, phrase（英文の中の熟語）, listed, rejected,
+ *        observed, occurrences, suggested（最初に選ぶ） }
  */
 export function buildPhotoCardCandidates(text, {
   template,
@@ -485,11 +507,32 @@ export function buildPhotoCardCandidates(text, {
         uncertain: item.uncertain,
         corrected: item.corrected,
         split: item.split,
+        alternative: item.alternative,
         observed: item.observed,
         occurrences: item.occurrences,
-        // 単語だけの行の語は最初から選ぶ。英文の中の語は、登録する語を選んでもらう。
-        suggested: kind === 'row' && !item.uncertain && !item.corrected && !item.split,
+        // 単語だけの行の語は最初から選ぶ（ほかの語の変化形かもしれない語は選ばない）。英文の中の語は、登録する語を選んでもらう。
+        suggested: kind === 'row' && !item.uncertain && !item.corrected && !item.split && !item.alternative,
       })
+    }
+    // 英文の中の熟語・構文（took part in → take part in）。意味は熟語の教材から入れる。
+    if (kind === 'word') {
+      for (const item of matchOcrTextToPhrases(joined, PHRASES, words, { confidences: tokenConfidences })) {
+        add({
+          front: item.phrase,
+          back: item.meaning,
+          posId: null,
+          level: item.level ?? null,
+          field: null,
+          phonetic: '',
+          kind,
+          meaningFrom: 'dictionary',
+          phrase: true,
+          uncertain: item.uncertain,
+          observed: item.observed,
+          occurrences: item.occurrences,
+          suggested: false,
+        })
+      }
     }
     for (const item of summary.unmatched) {
       add({ front: item.token, kind, listed: true, split: item.split, observed: item.observed, occurrences: item.occurrences, suggested: false })

@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ALL_WORDS } from '../data/vocab.js'
+import { PHRASES } from '../data/phrases.js'
 import { getLevel } from '../data/levels.js'
 import { matchOcrTextToWords, normalizeOcrToken, ocrTokenConfidences } from '../lib/vocabOcr.js'
 import { createContextReading } from '../lib/ocrContext.js'
+import { matchOcrTextToPhrases } from '../lib/ocrPhrases.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -14,6 +16,12 @@ import { Button, Card, Chip } from '../components/ui.jsx'
 import { Check, Close, Refresh } from '../components/Icons.jsx'
 
 const NO_REFS = Object.freeze([])
+const phraseRef = (phraseId) => `phrases:${phraseId}`
+
+// 「選んだ3語・2熟語を」のように、0 の方は書かない。
+function pickedText(words, phrases) {
+  return [words ? `${words}語` : '', phrases ? `${phrases}熟語` : ''].filter(Boolean).join('・') || '0語'
+}
 
 export function VocabCameraScreen() {
   const navigate = useStore((state) => state.navigate)
@@ -33,38 +41,51 @@ export function VocabCameraScreen() {
   const [textChanged, setTextChanged] = useState(false)
   const [summary, setSummary] = useState(null)
   const [selected, setSelected] = useState(() => new Set())
+  const [selectedPhrases, setSelectedPhrases] = useState(() => new Set())
   const [selectedRequests, setSelectedRequests] = useState(() => new Set())
   const [requestedWords, setRequestedWords] = useState(() => new Set())
   const [requesting, setRequesting] = useState(false)
   const [requestError, setRequestError] = useState('')
   const [requestedCount, setRequestedCount] = useState(0)
   const [addedCount, setAddedCount] = useState(0)
+  const [addedPhraseCount, setAddedPhraseCount] = useState(0)
+  // 登録先の単語帳にもうある候補を見せるか（はじめは隠す）と、この画面で入れた項目（入れた後も隠さず「単語帳にある」と示す）。
+  const [showInBook, setShowInBook] = useState(false)
+  const [addedHere, setAddedHere] = useState(() => new Set())
   // 登録先の単語帳に入っている語は、候補のなかで「入っている」と示して選べなくする。
   const inWordBook = (id, refs = activeBookRefs) => refs.includes(wordBookRef(id))
-  // 選んだ語は、登録先の単語帳にまとめて入れる。
+  const phraseInWordBook = (id, refs = activeBookRefs) => refs.includes(phraseRef(id))
+  // 選んだ語と熟語は、登録先の単語帳にまとめて入れる（熟語は熟語の教材の項目として入る）。
   const pendingIds = [...selected].filter((id) => !inWordBook(id))
-  const wordBook = useWordBookSlot(pendingIds.map(wordBookRef), {
-    label: `読み取った${pendingIds.length}語`,
+  const pendingPhraseIds = [...selectedPhrases].filter((id) => !phraseInWordBook(id))
+  const wordBook = useWordBookSlot([...pendingIds.map(wordBookRef), ...pendingPhraseIds.map(phraseRef)], {
+    label: `読み取った${pickedText(pendingIds.length, pendingPhraseIds.length)}`,
     present: true,
   })
 
-  // 読み取りが不確かな語と、読み違いを直した語は、最初は選ばない（写真で確かめてから選ぶ）。
+  // 読み取りが不確かな語・読み違いを直した語・ほかの語の変化形かもしれない語（found → find）は、最初は選ばない
+  // （写真で確かめてから選ぶ）。熟語は、語を間に入れずに当たったものだけ最初に選ぶ。
   const applyMatches = (text) => {
     const next = matchOcrTextToWords(text, ALL_WORDS, {
       englishWords: englishWordsRef.current,
       confidences: confidencesRef.current,
       contextReading: taggerRef.current ? createContextReading(taggerRef.current, text, ALL_WORDS) : null,
     })
+    next.phrases = matchOcrTextToPhrases(text, PHRASES, ALL_WORDS, { confidences: confidencesRef.current })
     setSummary(next)
     setSelected(new Set(next.candidates
-      .filter((item) => !inWordBook(item.id) && !item.uncertain && !item.corrected && !item.split)
+      .filter((item) => !inWordBook(item.id) && !item.uncertain && !item.corrected && !item.split && !item.alternative)
       .map((item) => item.id)))
+    setSelectedPhrases(new Set(next.phrases.filter((item) => item.suggested && !phraseInWordBook(item.id)).map((item) => item.id)))
     setSelectedRequests(new Set(next.unmatched.map((item) => item.token)))
     setRequestedWords(new Set())
     setRequestedCount(0)
     setRequestError('')
     setTextChanged(false)
     setAddedCount(0)
+    setAddedPhraseCount(0)
+    // 読み直したら、前に入れた項目も「単語帳にもうある」側に数える（同じ写真を読み直すと隠れる）。
+    setAddedHere(new Set())
   }
 
   // 新しい写真を選んだら、前の写真の結果を消す。
@@ -72,11 +93,13 @@ export function VocabCameraScreen() {
     setOcrText('')
     setSummary(null)
     setSelected(new Set())
+    setSelectedPhrases(new Set())
     setSelectedRequests(new Set())
     setRequestedWords(new Set())
     setRequestedCount(0)
     setRequestError('')
     setAddedCount(0)
+    setAddedPhraseCount(0)
   }
 
   const scanImage = () => {
@@ -84,6 +107,7 @@ export function VocabCameraScreen() {
     setOcrText('')
     setSummary(null)
     setAddedCount(0)
+    setAddedPhraseCount(0)
     ocr.scan()
   }
 
@@ -106,25 +130,44 @@ export function VocabCameraScreen() {
     })
   }
 
+  const togglePhrase = (id) => {
+    if (phraseInWordBook(id)) return
+    setSelectedPhrases((current) => {
+      const next = new Set(current)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
   const selectAllNew = () => {
     if (!summary) return
     setSelected(new Set(summary.candidates.filter((item) => !inWordBook(item.id)).map((item) => item.id)))
+    setSelectedPhrases(new Set(summary.phrases.filter((item) => !phraseInWordBook(item.id)).map((item) => item.id)))
   }
 
   // 入れた語は選択から外し、入れた数を示す（入らなかったときは画面下部で知らせ、単語帳の設定を開く）。
   const addSelected = () => {
-    if (!pendingIds.length) return
+    if (!pendingIds.length && !pendingPhraseIds.length) return
     wordBook.press()
     const { learningNotebook } = useStore.getState()
     const refs = learningNotebook.sets.find((set) => set.id === activeNotebookSetId(learningNotebook))?.refs ?? NO_REFS
     const added = pendingIds.filter((id) => inWordBook(id, refs))
-    if (!added.length) return
+    const addedPhrases = pendingPhraseIds.filter((id) => phraseInWordBook(id, refs))
+    if (!added.length && !addedPhrases.length) return
     setSelected((current) => {
       const next = new Set(current)
       for (const id of added) next.delete(id)
       return next
     })
+    setSelectedPhrases((current) => {
+      const next = new Set(current)
+      for (const id of addedPhrases) next.delete(id)
+      return next
+    })
     setAddedCount(added.length)
+    setAddedPhraseCount(addedPhrases.length)
+    setAddedHere((current) => new Set([...current, ...added.map(wordBookRef), ...addedPhrases.map(phraseRef)]))
   }
 
   const toggleRequest = (token) => {
@@ -167,6 +210,14 @@ export function VocabCameraScreen() {
   }
 
   const newCandidateCount = summary?.candidates.filter((item) => !inWordBook(item.id)).length ?? 0
+  // 登録先を替えると activeBookRefs が変わり、隠す候補もそれに合わせて作り直す。
+  const hiddenWord = (item) => !showInBook && inWordBook(item.id) && !addedHere.has(wordBookRef(item.id))
+  const hiddenPhrase = (item) => !showInBook && phraseInWordBook(item.id) && !addedHere.has(phraseRef(item.id))
+  const inBookWordCount = summary?.candidates.filter((item) => inWordBook(item.id) && !addedHere.has(wordBookRef(item.id))).length ?? 0
+  const inBookPhraseCount = summary?.phrases.filter((item) => phraseInWordBook(item.id) && !addedHere.has(phraseRef(item.id))).length ?? 0
+  const visibleCandidates = summary?.candidates.filter((item) => !hiddenWord(item)) ?? []
+  const visiblePhrases = summary?.phrases.filter((item) => !hiddenPhrase(item)) ?? []
+  const newPhraseCount = summary?.phrases.filter((item) => !phraseInWordBook(item.id)).length ?? 0
   const pendingRequestCount = summary?.unmatched.filter((item) => !requestedWords.has(item.token)).length ?? 0
 
   return (
@@ -207,9 +258,11 @@ export function VocabCameraScreen() {
                 <div className="min-w-0 flex-1">
                   <h2 className="font-display font-extrabold text-ink">
                     {summary.candidates.length}語が辞書と一致
+                    {summary.phrases.length > 0 && `・熟語${summary.phrases.length}`}
                   </h2>
                   <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
                     {`読み取った英語 ${summary.tokenCount} 語のうち、辞書にある単語を候補にしました。`}
+                    {'過去形や複数形などの変化形は元の語にし、文の中の熟語・構文も候補にしました。'}
                     {'意味を確認して追加する語を選んでください。'}
                   </p>
                 </div>
@@ -249,7 +302,7 @@ export function VocabCameraScreen() {
                       追加する単語
                     </h2>
                     <p className="text-xs font-bold text-ink/45">
-                      新規 {newCandidateCount}語・選択中 {selected.size}語
+                      新規 {pickedText(newCandidateCount, newPhraseCount)}・選択中 {pickedText(selected.size, selectedPhrases.size)}
                     </p>
                   </div>
                   <div className="flex gap-1">
@@ -262,7 +315,10 @@ export function VocabCameraScreen() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelected(new Set())}
+                      onClick={() => {
+                        setSelected(new Set())
+                        setSelectedPhrases(new Set())
+                      }}
                       className="rounded-xl px-2.5 py-2 text-xs font-extrabold text-ink/45 active:bg-ink/5"
                     >
                       解除
@@ -270,8 +326,23 @@ export function VocabCameraScreen() {
                   </div>
                 </div>
 
+                {inBookWordCount + inBookPhraseCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowInBook((current) => !current)}
+                    aria-pressed={showInBook}
+                    className="mb-2 flex min-h-11 w-full items-center justify-between gap-2 rounded-2xl bg-amber-50 px-3 py-2 text-left text-xs font-extrabold text-amber-800 ring-1 ring-amber-100 active:bg-amber-100"
+                    data-ocr-in-book-toggle
+                  >
+                    <span>
+                      {`単語帳「${wordBook.bookTitle ?? ''}」にもうある${pickedText(inBookWordCount, inBookPhraseCount)}を${showInBook ? '表示中' : '隠しています'}`}
+                    </span>
+                    <span className="shrink-0 text-amber-700">{showInBook ? '隠す' : '表示する'}</span>
+                  </button>
+                )}
+
                 <div className="space-y-2">
-                  {summary.candidates.map((item) => {
+                  {visibleCandidates.map((item) => {
                     const level = getLevel(item.level)
                     const saved = inWordBook(item.id)
                     const checked = saved || selected.has(item.id)
@@ -311,7 +382,12 @@ export function VocabCameraScreen() {
                           <span className="mt-0.5 block text-xs font-bold text-ink/55">
                             {item.meaning}
                           </span>
-                          {observed && (
+                          {observed && item.alternative && (
+                            <span className="mt-0.5 block text-[11px] font-bold text-ink/50" data-ocr-alternative>
+                              {`${observed} は ${item.headword} の変化形のこともあります`}
+                            </span>
+                          )}
+                          {observed && !item.alternative && (
                             <span className="mt-0.5 block text-[11px] font-bold text-brand-600">
                               {observed} → {item.headword}
                               {item.corrected ? '（読み違いを直しました）' : item.split ? '（続けて読まれた語を分けました）' : ''}
@@ -333,9 +409,72 @@ export function VocabCameraScreen() {
                   })}
                 </div>
 
+                {visiblePhrases.length > 0 && (
+                  <div className="mt-5" data-ocr-phrases>
+                    <h3 id="ocr-phrases-title" className="mb-2 px-1 font-display text-base font-extrabold text-ink">
+                      追加する熟語・構文
+                    </h3>
+                    <div className="space-y-2">
+                      {visiblePhrases.map((item) => {
+                        const level = getLevel(item.level)
+                        const saved = phraseInWordBook(item.id)
+                        const checked = saved || selectedPhrases.has(item.id)
+                        return (
+                          <label
+                            key={item.id}
+                            data-ocr-phrase={item.id}
+                            className={`flex min-h-16 items-center gap-3 rounded-2xl p-3 shadow-sm ring-1 ${
+                              saved
+                                ? 'bg-amber-50/80 ring-amber-100'
+                                : checked
+                                  ? 'bg-white ring-brand-200'
+                                  : 'bg-white/60 ring-ink/5'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              disabled={saved}
+                              onChange={() => togglePhrase(item.id)}
+                              className="h-5 w-5 shrink-0 accent-indigo-600"
+                            />
+                            <span className="min-w-0 flex-1">
+                              <span className="flex flex-wrap items-center gap-2">
+                                <span className="font-display text-base font-extrabold text-ink">{item.phrase}</span>
+                                <Chip color={level.color}>{level.label}</Chip>
+                                {item.occurrences > 1 && (
+                                  <span className="text-[11px] font-extrabold text-ink/35">{item.occurrences}回</span>
+                                )}
+                              </span>
+                              <span className="mt-0.5 block text-xs font-bold text-ink/55">{item.meaning}</span>
+                              <span className="mt-0.5 block text-[11px] font-bold text-brand-600">
+                                {`写真の文：${item.observed.join('・')}`}
+                              </span>
+                              {item.uncertain && !saved && (
+                                <span className="mt-0.5 block text-[11px] font-bold text-amber-700" data-ocr-uncertain>
+                                  {'読み取りが不確かです。写真で確かめてから選んでください。'}
+                                </span>
+                              )}
+                            </span>
+                            {saved && (
+                              <span className="shrink-0 text-[11px] font-extrabold text-amber-700">
+                                単語帳にある
+                              </span>
+                            )}
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="sticky bottom-3 z-10 mt-4 rounded-3xl bg-paper/90 p-2 shadow-xl backdrop-blur">
-                  <Button full disabled={!pendingIds.length} onClick={addSelected} data-ocr-word-book>
-                    <Check size={18} /> {wordBookSlotButtonText({ bookTitle: wordBook.bookTitle, inBook: false, what: `選んだ${pendingIds.length}語を` })}
+                  <Button full disabled={!pendingIds.length && !pendingPhraseIds.length} onClick={addSelected} data-ocr-word-book>
+                    <Check size={18} /> {wordBookSlotButtonText({
+                      bookTitle: wordBook.bookTitle,
+                      inBook: false,
+                      what: `選んだ${pickedText(pendingIds.length, pendingPhraseIds.length)}を`,
+                    })}
                   </Button>
                 </div>
               </section>
@@ -487,7 +626,7 @@ export function VocabCameraScreen() {
           </>
         )}
 
-        {addedCount > 0 && (
+        {(addedCount > 0 || addedPhraseCount > 0) && (
           <Card className="border-2 border-emerald-200 bg-emerald-50 p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
@@ -495,7 +634,7 @@ export function VocabCameraScreen() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-display font-extrabold text-emerald-800">
-                  {addedCount}語を単語帳に入れました
+                  {pickedText(addedCount, addedPhraseCount)}を単語帳に入れました
                 </p>
                 <p className="text-xs font-bold text-emerald-700/70">
                   単語画面の「単語帳」から、その冊で暗記とテストができます。

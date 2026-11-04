@@ -169,7 +169,8 @@ test('開発版（StrictMode）でも、PaddleOCR で読み、辞書と一致し
     await scanSentence(page)
     await page.locator('#ocr-candidates-title').waitFor({ timeout: 15_000 })
     const main = await page.locator('main').innerText()
-    assert.match(main, /8語が辞書と一致/)
+    // saw は文脈から see を選び、同じつづりの saw（のこぎり）も選ばない候補に出す（2026-11-03）。
+    assert.match(main, /9語が辞書と一致/)
     assert.match(main, /読み取った英語 11 語のうち、辞書にある単語を候補にしました。/)
     assert.doesNotMatch(main, /写真を読み込んでいます…/)
     // 読み取った文字の欄には、日本語は日本語のまま出る。
@@ -179,6 +180,7 @@ test('開発版（StrictMode）でも、PaddleOCR で読み、辞書と一致し
     const row = (headword) => candidates.locator('label', { hasText: new RegExp(`^${headword}(?![a-z])`) })
     for (const headword of ['see', 'at', 'the', 'zoo', 'we', 'like', 'tea']) assert.equal(await row(headword).locator('input').isChecked(), true, headword)
     assert.match(await row('see').innerText(), /saw → see/)
+    assert.equal(await row('saw').locator('input').isChecked(), false)
     assert.equal(await row('hot').locator('input').isChecked(), false)
     assert.equal(await row('hot').locator('[data-ocr-uncertain]').count(), 1)
     const requests = await page.locator('section', { has: page.locator('#ocr-requests-title') }).innerText()
@@ -210,6 +212,94 @@ test('読み取りの途中で「やめる」を押すと、元の画面へ戻�
     await page.getByText('撮影した写真から英単語を読み取る').waitFor({ timeout: 30_000 })
     await page.locator('main img[src^="blob:"]').first().waitFor()
     assert.equal(await page.locator('#ocr-candidates-title').count(), 0)
+    assert.deepEqual(errors, [])
+  } finally {
+    await context.close()
+  }
+})
+
+// 依頼 requests/2026-11-03-ocr-forms-and-phrases.json の screens：変化形は元の語（took → take）にし、別の見出し語と同じつづりの
+// 変化形（turned left の left）は、文脈で選んだ語（左の left）と元の語（leave）を両方出して、選ばなかった方は最初は選ばない。文の中の熟語（took part in）は熟語の候補にして、
+// 単語帳へ熟語の教材の項目として入れる。
+test('変化形は元の語の候補に、文の中の熟語は熟語の候補にして、単語帳へ熟語のまま入れる', async () => {
+  const { context, page, errors } = await openCamera()
+  try {
+    await setStub(page, { items: [{ text: 'She took part in the race and turned left.', score: 0.95, poly: [[10, 0], [400, 0], [400, 30], [10, 30]] }] })
+    await scanSentence(page)
+    await page.locator('#ocr-candidates-title').waitFor({ timeout: 15_000 })
+    const candidates = page.locator('section', { has: page.locator('#ocr-candidates-title') })
+    const row = (headword) => candidates.locator('label:not([data-ocr-phrase])', { hasText: new RegExp(`^${headword}(?![a-z])`) })
+    assert.match(await row('take').innerText(), /took → take/)
+    assert.equal(await row('take').locator('input').isChecked(), true)
+    assert.match(await row('turn').innerText(), /turned → turn/)
+    assert.equal(await row('left').locator('input').isChecked(), true)
+    assert.equal(await row('leave').locator('input').isChecked(), false)
+    assert.match(await row('leave').locator('[data-ocr-alternative]').innerText(), /left は leave の変化形のこともあります/)
+    const phrase = candidates.locator('[data-ocr-phrase="idm_take_part_in"]')
+    assert.match(await phrase.innerText(), /take part in/)
+    assert.match(await phrase.innerText(), /〜に参加する/)
+    assert.match(await phrase.innerText(), /写真の文：took part in/)
+    assert.equal(await phrase.locator('input').isChecked(), true)
+    await page.locator('[data-ocr-word-book]').click()
+    await page.getByText(/熟語を単語帳に入れました/).waitFor({ timeout: 10_000 })
+    assert.match(await phrase.innerText(), /単語帳にある/)
+    assert.deepEqual(errors, [])
+  } finally {
+    await context.close()
+  }
+})
+
+// 依頼 requests/2026-11-03-ocr-forms-and-phrases.json の in-book-toggle：同じ写真を読み直すと、登録先の単語帳にもうある語・熟語は
+// はじめは隠し、ボタンで表示・非表示を切り替える。登録先を替えると、隠す候補をその単語帳で作り直す。
+test('登録先の単語帳にもうある語・熟語は隠し、ボタンで表示・非表示を切り替え、登録先を替えると作り直す', async () => {
+  const { context, page, errors } = await openCamera()
+  try {
+    await setStub(page, { items: [{ text: 'She took part in the race.', score: 0.95, poly: [[10, 0], [400, 0], [400, 30], [10, 30]] }] })
+    await scanSentence(page)
+    await page.locator('#ocr-candidates-title').waitFor({ timeout: 15_000 })
+    assert.equal(await page.locator('[data-ocr-in-book-toggle]').count(), 0)
+    await page.locator('[data-ocr-word-book]').click()
+    await page.getByText(/を単語帳に入れました/).waitFor({ timeout: 10_000 })
+    const candidates = page.locator('section', { has: page.locator('#ocr-candidates-title') })
+    const row = (headword) => candidates.locator('label:not([data-ocr-phrase])', { hasText: new RegExp(`^${headword}(?![a-z])`) })
+    const phrase = candidates.locator('[data-ocr-phrase="idm_take_part_in"]')
+    // 入れた直後は隠さず「単語帳にある」と示す。
+    assert.match(await row('take').innerText(), /単語帳にある/)
+
+    // 同じ写真を読み直す：入れた語と熟語は隠す。
+    await page.getByRole('button', { name: '撮り直す' }).waitFor()
+    await scanSentence(page)
+    await page.locator('#ocr-candidates-title').waitFor({ timeout: 15_000 })
+    const toggle = page.locator('[data-ocr-in-book-toggle]')
+    assert.match(await toggle.innerText(), /にもうある\d+語・1熟語を隠しています/)
+    assert.equal(await row('take').count(), 0)
+    assert.equal(await phrase.count(), 0)
+    await toggle.click()
+    assert.match(await row('take').innerText(), /単語帳にある/)
+    assert.match(await phrase.innerText(), /単語帳にある/)
+    assert.match(await toggle.innerText(), /表示中/)
+    await toggle.click()
+    assert.equal(await row('take').count(), 0)
+
+    // 登録先を新しい単語帳に替えると、隠す候補はなくなる。元の単語帳へ戻すとまた隠す。
+    const books = await page.evaluate(async () => {
+      const { useStore } = await import('/src/store/useStore.js')
+      const state = useStore.getState()
+      const first = state.learningNotebook.activeSetId ?? state.learningNotebook.sets[0].id
+      const created = state.createNotebookSet('写真の単語帳')
+      useStore.getState().selectNotebookSet(created)
+      return { first, created }
+    })
+    await toggle.waitFor({ state: 'detached' })
+    assert.equal(await row('take').locator('input').isChecked(), false)
+    assert.doesNotMatch(await row('take').innerText(), /単語帳にある/)
+    assert.equal(await phrase.count(), 1)
+    await page.evaluate(async (id) => {
+      const { useStore } = await import('/src/store/useStore.js')
+      useStore.getState().selectNotebookSet(id)
+    }, books.first)
+    await toggle.waitFor()
+    assert.equal(await row('take').count(), 0)
     assert.deepEqual(errors, [])
   } finally {
     await context.close()

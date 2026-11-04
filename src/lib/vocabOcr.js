@@ -1,3 +1,5 @@
+import { wordFormIndex } from './ocrWordForms.js'
+
 const IRREGULAR_BASES = {
   am: 'be',
   are: 'be',
@@ -264,17 +266,32 @@ function edgeTrimmedVariants(token) {
 //   rejected    英単語として確かめられない並び（日本語や図の読み違い・人名・地名など）
 function createClassifier(words, englishWords) {
   const index = buildHeadwordIndex(words)
+  const forms = wordFormIndex(words)
   const listed = englishWords ?? new Set()
   const cache = new Map()
 
+  // 変化形の表（ocrWordForms.js）で元の語を引き、なければ語尾の決まり（possibleBaseForms）で引く。
   const lookupDictionary = (token) => {
     const word = index.get(token)
     if (word) return word
-    for (const base of possibleBaseForms(token)) {
-      const found = index.get(base)
+    const base = forms.basesOf(token)[0]?.word
+    if (base) return base
+    for (const form of possibleBaseForms(token)) {
+      const found = index.get(form)
       if (found) return found
     }
     return null
+  }
+
+  // 読んだ並びが、ほかの見出し語の変化形にもなるとき（found ＝ find の過去形、leaves ＝ leaf の複数形・leave の3単現）の、
+  // その元の語。最初は選ばない候補として並べる。見出し語そのものの並びには、その語の品詞の変化形と不規則な形だけを見る
+  // （evening を even の ing 形として出さない）。
+  const alternativesOf = (token, chosen) => {
+    const own = index.has(token)
+    return forms.basesOf(token)
+      .filter((entry) => !own || entry.kind !== 'loose')
+      .map((entry) => entry.word)
+      .filter((word, i, all) => word.id !== chosen?.id && all.findIndex((other) => other.id === word.id) === i)
   }
 
   const isListed = (token) => token.length >= MIN_LISTED_WORD_LENGTH && listed.has(token)
@@ -320,7 +337,7 @@ function createClassifier(words, englishWords) {
     let result
     const word = /^[a-z'-]+$/.test(token) ? lookupDictionary(token) : null
     if (word) {
-      result = { kind: 'dictionary', word }
+      result = { kind: 'dictionary', word, alternatives: alternativesOf(token, word) }
     } else if (isListed(token)) {
       result = { kind: 'listed' }
     } else if (token.includes('-') && !token.includes('--')) {
@@ -355,7 +372,7 @@ function createClassifier(words, englishWords) {
     return result
   }
 
-  return { classify }
+  return { classify, alternativesOf }
 }
 
 function compareScores(a, b) {
@@ -372,7 +389,7 @@ function compareScores(a, b) {
 //   options.contextReading (index, token) → カードの id。文の中の位置 index の並びを、前後の語から読み分けたカード
 //                         （ocrContext.js の createContextReading の結果。saw → see など）。null ならふつうに読む
 export function matchOcrTextToWords(text, words, options = {}) {
-  const { classify } = createClassifier(words, options.englishWords)
+  const { classify, alternativesOf } = createClassifier(words, options.englishWords)
   const confidences = options.confidences ?? new Map()
   const tokens = extractEnglishTokenMatches(text)
   const byId = options.contextReading ? new Map(words.map((word) => [word.id, word])) : null
@@ -388,8 +405,8 @@ export function matchOcrTextToWords(text, words, options = {}) {
     return confidence != null && confidence < OCR_LOW_CONFIDENCE
   }
 
-  const addCandidate = (word, surface, { uncertain = false, corrected = false, split = false } = {}) => {
-    matchedTokenCount += 1
+  const addCandidate = (word, surface, { uncertain = false, corrected = false, split = false, alternative = false } = {}) => {
+    if (!alternative) matchedTokenCount += 1
     const current = matches.get(word.id) ?? {
       id: word.id,
       headword: word.word,
@@ -400,12 +417,14 @@ export function matchOcrTextToWords(text, words, options = {}) {
       uncertain: true,
       corrected: true,
       split: true,
+      alternative: true,
     }
     current.occurrences += 1
-    // 1回でも確かに・そのまま読めていれば、不確か・直した・分けたの印は外す。
+    // 1回でも確かに・そのまま読めていれば、不確か・直した・分けた・ほかの語の変化形の印は外す。
     current.uncertain &&= uncertain
     current.corrected &&= corrected
     current.split &&= split
+    current.alternative &&= alternative
     if (!current.observed.includes(surface)) current.observed.push(surface)
     matches.set(word.id, current)
   }
@@ -435,6 +454,7 @@ export function matchOcrTextToWords(text, words, options = {}) {
     const result = classify(token)
     if (result.kind === 'dictionary') {
       addCandidate(result.word, surface, flags)
+      for (const word of result.alternatives) addCandidate(word, surface, { ...flags, alternative: true })
     } else if (result.kind === 'corrected') {
       addCandidate(result.word, surface, { ...flags, corrected: true })
     } else if (result.kind === 'listed') {
@@ -465,8 +485,13 @@ export function matchOcrTextToWords(text, words, options = {}) {
     tokenCount += 1
     const flags = { uncertain: isUncertain(normalized), split: false }
     const contextual = byId?.get(options.contextReading(index, normalized))
-    if (contextual) addCandidate(contextual, surface, flags)
-    else place(normalized, surface, flags)
+    if (contextual) {
+      // 前後の語で読み分けた語のほかに、同じつづりのほかの語（saw のこぎり／see の過去形）も、選ばない候補として並べる。
+      addCandidate(contextual, surface, flags)
+      const result = classify(normalized)
+      const others = result.kind === 'dictionary' ? [result.word, ...result.alternatives] : alternativesOf(normalized, contextual)
+      for (const word of others) if (word.id !== contextual.id) addCandidate(word, surface, { ...flags, alternative: true })
+    } else place(normalized, surface, flags)
   }
 
   return {

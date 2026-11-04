@@ -26,6 +26,7 @@ import { CUSTOM_WORD_LIMITS, CUSTOM_WORD_POS } from '../lib/customWords.js'
 import {
   buildPhotoCardCandidates,
   existingPhotoKeys,
+  photoKeysInBook,
   photoCandidateIssues,
   photoEntryValues,
   photoFieldLabels,
@@ -73,9 +74,10 @@ function candidateDetails(candidate, template) {
 }
 
 /** 最初は選ばない理由や、候補の出どころの知らせ。 */
-function candidateNotes(candidate, { issues, existing }) {
+function candidateNotes(candidate, { issues, existing, inBookTitle }) {
   const notes = []
   if (candidate.saved) return [{ tone: 'saved', text: '登録しました' }]
+  if (inBookTitle) notes.push({ tone: 'warn', text: `単語帳「${inBookTitle}」にもうあります。` })
   if (issues.overflow.length) notes.push({ tone: 'error', text: `${issues.overflow.join('、')}です。直すと登録できます。` })
   if (issues.missing.length) notes.push({ tone: 'warn', text: `${issues.missing.join('と')}を入れると登録できます。` })
   if (existing) notes.push({ tone: 'warn', text: 'この分類にもうあります。' })
@@ -85,7 +87,9 @@ function candidateNotes(candidate, { issues, existing }) {
   const observed = candidate.observed
     .filter((surface) => photoFrontKey(ENGLISH_TEMPLATE_ID, surface) !== photoFrontKey(ENGLISH_TEMPLATE_ID, candidate.front))
     .join('・')
-  if (observed && !candidate.rejected) {
+  if (observed && candidate.alternative) {
+    notes.push({ tone: 'info', text: `${observed} は ${candidate.front} の変化形のこともあります。` })
+  } else if (observed && !candidate.rejected) {
     notes.push({
       tone: 'info',
       text: `${observed} → ${candidate.front}${candidate.corrected ? '（読み違いを直しました）' : candidate.split ? '（続けて読まれた語を分けました）' : ''}`,
@@ -103,10 +107,10 @@ const NOTE_TONE = Object.freeze({
   muted: 'text-ink/45',
 })
 
-function PhotoCandidateRow({ candidate, number, template, labels, checked, existing, onToggle, onChange }) {
+function PhotoCandidateRow({ candidate, number, template, labels, checked, existing, inBookTitle, onToggle, onChange }) {
   const issues = photoCandidateIssues(candidate, template)
   const details = candidateDetails(candidate, template)
-  const notes = candidateNotes(candidate, { issues, existing })
+  const notes = candidateNotes(candidate, { issues, existing, inBookTitle })
   const frontLimit = template === ENGLISH_TEMPLATE_ID ? CUSTOM_WORD_LIMITS.word : CUSTOM_CARD_LIMITS.front
   return (
     <li
@@ -182,6 +186,8 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
   const [templateTouched, setTemplateTouched] = useState(CUSTOM_CARD_TEMPLATE_IDS.includes(templateId))
   const [newCategoryTitle, setNewCategoryTitle] = useState('')
   const [chosenBookId, setChosenBookId] = useState(null)
+  // 入れる単語帳にもうある候補を見せるか（はじめは隠す）。
+  const [showInBook, setShowInBook] = useState(false)
   // 読み取った文字（1行が1枚）と、候補を作るのに使う読み取りの情報（行と語の確からしさ・英単語の表・品詞の道具）。
   const [text, setText] = useState('')
   const [textChanged, setTextChanged] = useState(false)
@@ -194,7 +200,13 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
   const labels = photoFieldLabels(template)
   const existingKeys = existingPhotoKeys(library, category, template)
   const isExisting = (candidate) => existingKeys.has(photoFrontKey(template, candidate.front))
-  const candidates = result?.candidates ?? []
+  // 入れる単語帳にもうある候補。単語帳を替えると作り直す。この画面で登録した候補（saved）は隠さない。
+  const book = wordBookSets.find((set) => set.id === bookId) ?? null
+  const inBookKeys = photoKeysInBook(library, book, template, ALL_WORDS)
+  const isInBook = (candidate) => !candidate.saved && inBookKeys.has(photoFrontKey(template, candidate.front))
+  const allCandidates = result?.candidates ?? []
+  const inBookCount = allCandidates.filter(isInBook).length
+  const candidates = showInBook ? allCandidates : allCandidates.filter((candidate) => !isInBook(candidate))
 
   const rebuild = (nextText, nextTemplate, nextCategory, info) => {
     const built = buildPhotoCardCandidates(nextText, {
@@ -206,10 +218,12 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
       contextReading: info?.tagger ? (joined) => createContextReading(info.tagger, joined, ALL_WORDS) : null,
     })
     const existing = existingPhotoKeys(library, nextCategory, nextTemplate)
+    const inBook = photoKeysInBook(library, book, nextTemplate, ALL_WORDS)
     setResult(built)
     setSelected(new Set(built.candidates
       .filter((candidate) => candidate.suggested
         && !existing.has(photoFrontKey(nextTemplate, candidate.front))
+        && !inBook.has(photoFrontKey(nextTemplate, candidate.front))
         && !photoCandidateIssues(candidate, nextTemplate).blocked)
       .map((candidate) => candidate.key)))
     setTextChanged(false)
@@ -247,6 +261,17 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
       }
       return selection
     })
+  }
+
+  // 入れる単語帳を替えた：移し先にもうある候補は選びを外す（隠すかどうかは、移し先で作り直す）。
+  const changeBook = (next) => {
+    setChosenBookId(next)
+    if (!result) return
+    const nextKeys = photoKeysInBook(library, wordBookSets.find((set) => set.id === next) ?? null, template, ALL_WORDS)
+    setSelected((current) => new Set([...current].filter((key) => {
+      const candidate = allCandidates.find((item) => item.key === key)
+      return !candidate || candidate.saved || !nextKeys.has(photoFrontKey(template, candidate.front))
+    })))
   }
 
   const clearResults = () => {
@@ -314,7 +339,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
     selected.has(candidate.key) && !candidate.saved && !photoCandidateIssues(candidate, template).blocked
   ))
   const selectable = candidates.filter((candidate) => (
-    !candidate.saved && !isExisting(candidate) && !photoCandidateIssues(candidate, template).blocked
+    !candidate.saved && !isExisting(candidate) && !isInBook(candidate) && !photoCandidateIssues(candidate, template).blocked
   ))
   const newCategoryMissing = category === NEW_CATEGORY_OPTION && !newCategoryTitle.trim()
 
@@ -418,7 +443,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
           )}
           <label className="block">
             <span className="text-[11px] font-extrabold text-ink/60">入れる単語帳</span>
-            <select value={bookId} onChange={(event) => setChosenBookId(event.target.value)} className={selectClass} data-custom-photo-book>
+            <select value={bookId} onChange={(event) => changeBook(event.target.value)} className={selectClass} data-custom-photo-book>
               <option value="">入れない</option>
               {wordBookSets.map((book) => <option key={book.id} value={book.id}>{book.title}</option>)}
             </select>
@@ -428,7 +453,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
         {result && (
           <Card className="p-4" data-custom-photo-text-card>
             <h2 className="font-display font-extrabold text-ink" data-custom-photo-summary>
-              {`${result.rowCount}行から${candidates.length}枚の候補`}
+              {`${result.rowCount}行から${allCandidates.length}枚の候補`}
             </h2>
             <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
               {TEMPLATE_HINT[template] ?? TEMPLATE_HINT.other}
@@ -459,7 +484,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
           </Card>
         )}
 
-        {result && (candidates.length > 0 ? (
+        {result && (allCandidates.length > 0 ? (
           <section aria-labelledby="custom-photo-candidates-title">
             <div className="mb-2 flex items-end justify-between gap-3 px-1">
               <div>
@@ -489,6 +514,19 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
               </div>
             </div>
 
+            {inBookCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowInBook((current) => !current)}
+                aria-pressed={showInBook}
+                className="mb-2 flex min-h-11 w-full items-center justify-between gap-2 rounded-2xl bg-amber-50 px-3 py-2 text-left text-xs font-extrabold text-amber-800 ring-1 ring-amber-100 active:bg-amber-100"
+                data-custom-photo-in-book-toggle
+              >
+                <span>{`単語帳「${book?.title ?? ''}」にもうある${inBookCount}枚を${showInBook ? '表示中' : '隠しています'}`}</span>
+                <span className="shrink-0 text-amber-700">{showInBook ? '隠す' : '表示する'}</span>
+              </button>
+            )}
+
             <ul className="space-y-2" data-custom-photo-candidates>
               {candidates.map((candidate, at) => (
                 <PhotoCandidateGroup key={candidate.key} heading={at === firstWordIndex}>
@@ -499,6 +537,7 @@ export function CustomCardPhotoView({ subject, categoryId, templateId }) {
                     labels={labels}
                     checked={!candidate.saved && selected.has(candidate.key)}
                     existing={isExisting(candidate)}
+                    inBookTitle={isInBook(candidate) ? book?.title : null}
                     onToggle={() => toggle(candidate.key)}
                     onChange={(patch) => updateCandidate(candidate.key, patch)}
                   />
