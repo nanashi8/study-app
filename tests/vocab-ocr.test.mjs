@@ -2,7 +2,6 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { CREDIT_SECTIONS } from '../src/data/credits.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import { ENGLISH_WORD_LIST_FILES } from '../src/lib/englishWordList.js'
 import { englishWordSetForTests, screenLoaderFiles } from './english-word-set.mjs'
@@ -206,11 +205,9 @@ test('英語の単語表は、小文字の英字の語だけを持ち、語形�
   assert.ok([...words].every((word) => /^[a-z]+(?:['-][a-z]+)*$/.test(word)))
 })
 
-test('英語の単語表の著作権と利用許諾の文を、メニューの「出典」ページに載せる', () => {
-  const section = CREDIT_SECTIONS.find((item) => item.items.some((credit) => credit.id === 'scowl-wordlist'))
-  assert.ok(section, '出典に英語の単語表がない')
-  assert.match(section.note, /^Copyright 2000-2016 by Kevin Atkinson\. Permission to use, copy, modify, distribute and sell these word lists/)
-  assert.match(section.note, /this permission notice appear in supporting documentation/)
+test('英語の単語表の著作権と利用許諾の文を、公開版に入る権利表示のファイルに載せる（画面には出さない）', () => {
+  const notices = readFileSync(new URL('../public/third-party-notices.txt', import.meta.url), 'utf8')
+  assert.ok(notices.includes(readFileSync(new URL('../node_modules/wordlist-english/Copyright', import.meta.url), 'utf8')), '単語表の Copyright の全文がない')
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.ok(packageJson.dependencies['wordlist-english'], '単語表のパッケージが dependencies にない')
 })

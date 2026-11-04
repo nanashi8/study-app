@@ -149,7 +149,6 @@ const SocialQuizScreen = lazyScreen(() => import('./screens/SubjectQuiz.jsx'), '
 const ScienceQuizScreen = lazyScreen(() => import('./screens/SubjectQuiz.jsx'), 'ScienceQuizScreen')
 const SocialPracticeScreen = lazyScreen(() => import('./screens/SubjectPractice.jsx'), 'SocialPracticeScreen')
 const SciencePracticeScreen = lazyScreen(() => import('./screens/SubjectPractice.jsx'), 'SciencePracticeScreen')
-const CreditsScreen = lazyScreen(() => import('./screens/Credits.jsx'), 'CreditsScreen')
 const KanbunKundokuQuizScreen = lazyScreen(
   () => import('./screens/KanbunKundokuQuiz.jsx'),
   'KanbunKundokuQuizScreen',
@@ -246,7 +245,6 @@ const SCREENS = {
   scienceStudy: ScienceStudyScreen,
   scienceQuiz: ScienceQuizScreen,
   sciencePractice: SciencePracticeScreen,
-  credits: CreditsScreen,
 }
 
 // 全公開画面はAppShell上部の戻る・メニュー入口を共有する。

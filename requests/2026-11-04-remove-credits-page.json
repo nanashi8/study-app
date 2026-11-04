@@ -1,0 +1,44 @@
+{
+  "id": "2026-11-04-remove-credits-page",
+  "title": "アプリの出典の表示（メニューの「出典」ページ）を削除し、許諾なく使っていると誤解されないようにする",
+  "asked": [
+    "出典の表示を削除しなさい。著作者の許諾なく使用していると勘違いしないようにしなさい。"
+  ],
+  "sessions": [
+    "45825834-7c3b-4113-8d83-813aa0680cb4"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "no-credits-on-screen",
+      "text": "アプリのどの画面にも出典の表示がない。メニューの「このアプリについて → 出典」の行・出典の画面・出典のデータ（src/data/credits.js）を消し、src/ に出典の画面へ行く道が残らない",
+      "population": "src/ の全ファイル（画面・メニュー・データ）と、メニューの全区切り",
+      "check": "node --test tests/no-credits-page.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-04: メニューの区切り「このアプリについて」と行「出典」（1区切り・1行）、出典の画面 src/screens/Credits.jsx、出典のデータ src/data/credits.js を消した。メニューは31行→30行・7区切り→6区切り、公開画面は91→90。src/ の全ファイルに出典の画面・データを使う所が0件、公開版のビルド（dist/assets）にも出典のページの文が0件であることを確かめた。学習の画面にはもともと出典を出していない（社会・理科の画面テストが全102単元で確かめ続ける）。"
+    },
+    {
+      "id": "license-notices-kept-off-screen",
+      "text": "利用条件で著作権表示が求められるもの（SCOWL の単語表・PaddleOCR のモデル（Apache-2.0）・世界銀行のデータ（CC BY 4.0））は、画面には出さず、配布物に入る第三者の権利表示のファイル（public/third-party-notices.txt）に条件どおり載せる。許諾の条件を満たさずに使っている状態にしない",
+      "population": "出典ページに載っていた全件のうち、利用条件で表示が要る3件（SCOWL・PP-OCRv6・World Development Indicators）",
+      "check": "node --test tests/no-credits-page.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-04: 出典ページの36件のうち、利用条件で著作権表示が要る3件（SCOWL の単語表＝著作権表示と許諾の文をすべての写しと付属の文書に／PP-OCRv6 のモデル＝Apache-2.0 の写しと著作権表示／世界銀行 World Development Indicators＝CC BY 4.0 の出どころの表示）を public/third-party-notices.txt に載せた（SCOWL は Copyright の全文、Apache-2.0 は全文）。公開版の dist/third-party-notices.txt に入り、画面からはつながない。残る33件は東京書籍の単元の並び（参考）・Natural Earth（パブリックドメイン）・国などの数値（公共データ利用規約で数値は自由に利用できる）などで、利用条件に表示の義務はない。秘密情報の検査は、このファイルの中の単語表の Copyright にある連絡先6つだけを許す。"
+    },
+    {
+      "id": "figure-sources-still-recorded",
+      "text": "図・数値の元の資料の記録は、画面に出さない管理用の台帳（docs/audits/subject-data-sources.json）に残し、図の figure.source がすべて台帳にあることをテストで守る",
+      "population": "社会・理科の図の figure.source の全件と、出典ページに載っていた全件",
+      "check": "node --test tests/no-credits-page.test.mjs tests/junior-social-science.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-04: 出典ページの15区切り・36件を管理用の台帳 docs/audits/subject-data-sources.json にそのまま移した（画面には出さない）。社会・理科の図の figure.source（48件）・地図・雨温図が使う資料の id がすべて台帳にあることを tests/junior-social-science.test.mjs が確かめる。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版のメニューに「出典」が無いことを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版のメニュー",
+      "check": "node --test tests/no-credits-page.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

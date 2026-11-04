@@ -1,4 +1,4 @@
-// 中学の社会・理科の画面の確認（依頼台帳 requests/2026-09-29-junior-social-science.json の screens-work・learn-every-unit・credits-page、
+// 中学の社会・理科の画面の確認（依頼台帳 requests/2026-09-29-junior-social-science.json の screens-work・learn-every-unit、
 // requests/2026-09-30-subject-figures-glossary.json の screens-and-audits）。
 // 375px の幅の Chromium で動かし、次を確かめる。
 //   入口   … ポータルのタイルとメニューの教材の行から社会・理科へ入れる。全単元に「暗記」「演習」「要点を読む」の入口があり、
@@ -10,7 +10,7 @@
 //   演習   … 選ぶ・数を入れる・並べるの3つの形で答え合わせができ、正解・解説・説明が出て、結果の画面と記録まで進む。
 //            まちがえた問題は、入口の「解き直し」に入る。図を使う全問は、問題に図が出て、答え合わせのあとに図の読み取り方
 //            （数を入れる問題は解き方）がすべて出る。
-//   出典   … メニューのいちばん下の区切りから出典のページが開き、出典をすべて並べる。学習の画面には出典の文字を出さない。
+//   出典   … 出典はどの画面にも出さない（2026-11-04 利用者の指示で出典のページも削除）。学習の画面に出典の文字がない。
 //   読み   … 社会・理科の語句と問題は、一覧・単語帳・学習の記録の画面でも、常用漢字にない字をふくむ語に読みがなが出る。
 //   幅     … 開いたどの画面も、375px の幅で横にはみ出さない（表などの横に送る欄の中は除く）。
 import test, { after, before } from 'node:test'
@@ -27,7 +27,6 @@ import {
   getSubjectQuestion,
   subjectUnits,
 } from '../src/data/subjects/index.js'
-import { CREDIT_IDS } from '../src/data/credits.js'
 import { SUBJECT_READINGS } from '../src/data/subjects/readings.js'
 import { tokenizeSubjectText } from '../src/lib/subjectText.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
@@ -484,17 +483,12 @@ test('図を使う全問：問題に図が出て、答え合わせのあとに�
   }
 })
 
-test('出典のページは、メニューのいちばん下の区切りから開き、出典をすべて並べる', async () => {
+test('メニューに出典の行がなく、出典の画面へ行けない', async () => {
   await open('portal')
   await page.evaluate(() => window.__subjectTest.store.getState().openSpeechSettings())
   await page.waitForSelector('[data-menu-section]')
-  const lastSection = await page.locator('[data-menu-section]').evaluateAll((sections) => sections.at(-1).getAttribute('data-menu-section'))
-  assert.equal(lastSection, 'about')
-  await page.click('[data-menu-section="about"] [data-menu-destination="credits"]')
-  await waitScreen('credits')
-  const credits = await page.locator('[data-credits-page] [data-credit]').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-credit')))
-  assert.deepEqual(credits, [...CREDIT_IDS])
-  await checkWidth('出典のページ')
+  assert.equal(await page.locator('[data-menu-section="about"], [data-menu-destination="credits"]').count(), 0)
+  await checkNoCredits('メニュー')
 })
 
 test('一覧・単語帳・学習の記録の画面でも、社会・理科の語句と問題に読みがなが出る', async () => {

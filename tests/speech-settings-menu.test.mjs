@@ -140,8 +140,6 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     // 自作カードは、区切り「カード自作」に置く（2026-09-30 利用者「カード自作のセクションを作るか？」）。
     'customWords',
     'myList', 'myLearning', 'myGrammar', 'progress',
-    // 出典のページは、メニューのいちばん下の区切り「このアプリについて」に置く（2026-09-29 利用者の指示）。
-    'credits',
   ]
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
     ['apps', 'スタディアプリ'],
@@ -150,13 +148,12 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     ['cards', 'カード自作'],
     ['records', '保存・記録'],
     ['settings', '設定'],
-    ['about', 'このアプリについて'],
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [8, 9, 6, 1, 4, 2, 1],
+    [8, 9, 6, 1, 4, 2],
   )
-  assert.equal(APP_MENU_ITEMS.length, 31)
+  assert.equal(APP_MENU_ITEMS.length, 30)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)

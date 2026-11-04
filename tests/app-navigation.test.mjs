@@ -26,9 +26,9 @@ const ROUTED_SCREENS = (() => {
 })()
 
 // どのアプリにも属さない共通画面。入口（スタディアプリ）へ戻す。
-// どのアプリにも属さない画面（メニューのいちばん下の出典のページもここ）。
+// どのアプリにも属さない画面。
 // 自作カードの画面は、開いた教科のアプリ（params.subject）に属し、メニューから開いたときは入口に属する。
-const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning', 'credits', ...CUSTOM_CARD_SCREENS])
+const SHARED_SCREENS = new Set(['portal', 'settings', 'progress', 'myLearning', ...CUSTOM_CARD_SCREENS])
 
 test('自作カードの画面は、教科のアプリから開くとそのアプリ、メニューから開くと入口のスタディアプリに属する', () => {
   assert.deepEqual([...CUSTOM_CARD_SCREENS], ['customWords', 'customCardStudy', 'customCardQuiz'])

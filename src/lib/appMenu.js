@@ -147,10 +147,6 @@ export const APP_MENU_SECTIONS = Object.freeze([
     actionItem('settings', '設定', 'すべての教材の設定をまとめて変える・ホームの表示'),
     actionItem('reset', '学習履歴を選んでリセット', 'すべて、または項目を選択', 'danger'),
   ]),
-  // 教材づくりで参考にしたもの・使った資料は、メニューの最後の出典のページにまとめる（学習の画面には出さない）。
-  section('about', 'このアプリについて', [
-    screenItem('credits', '出典', '参考にした教科書の単元と、図・数値に使った資料'),
-  ]),
 ])
 
 export const APP_MENU_ITEMS = Object.freeze(

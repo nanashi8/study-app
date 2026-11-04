@@ -1,8 +1,9 @@
 // 中学の社会・理科（東京書籍の教科書の単元の順）の教材が、全単元そろっているかを確かめる。
 // 依頼台帳 requests/2026-09-29-junior-social-science.json の条件 units-match-textbooks・learn-every-unit・
-// practice-every-unit-levels・all-choices-explained・credits-page の確認。
+// practice-every-unit-levels・all-choices-explained の確認と、図の元の資料の台帳。
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   ALL_SUBJECT_QUESTIONS,
@@ -17,9 +18,7 @@ import {
 } from '../src/data/subjects/index.js'
 import { JAPAN_MAP, WORLD_MAP } from '../src/data/subjects/maps.js'
 import { CLIMATE_STATIONS } from '../src/data/subjects/climate.js'
-import { CREDIT_IDS, CREDIT_SECTIONS } from '../src/data/credits.js'
 import { SUBJECT_FIGURE_KINDS } from '../src/data/subjects/figureKinds.js'
-import { APP_MENU_SECTIONS } from '../src/lib/appMenu.js'
 import { limitQuizChoices } from '../src/lib/quizChoices.js'
 import { tokenizeSubjectText } from '../src/lib/subjectText.js'
 import { SUBJECT_READINGS } from '../src/data/subjects/readings.js'
@@ -221,12 +220,11 @@ test('図の指定は描ける形で、地図の印は実在する県・国、�
   assert.deepEqual(failures, [])
 })
 
-// ── credits-page ──
-test('出典のページはメニューのいちばん下の区切りにあり、図に使った資料をすべて載せている', () => {
-  const last = APP_MENU_SECTIONS.at(-1)
-  assert.deepEqual(last.items.map((item) => item.screen), ['credits'])
-  assert.equal(last.items[0].label, '出典')
-
+// ── 図の元の資料 ──
+// 出典は画面に出さない（2026-11-04 利用者の指示）。図に使った資料は管理用の台帳 docs/audits/subject-data-sources.json に残す。
+test('図に使った資料は、すべて管理用の資料の台帳にある', () => {
+  const { sections } = JSON.parse(readFileSync(new URL('../docs/audits/subject-data-sources.json', import.meta.url), 'utf8'))
+  const ids = sections.flatMap((section) => section.items.map((item) => item.id))
   const needed = new Set(['tosho-social', 'tosho-science'])
   for (const { figure } of figuresOf()) {
     // 地図の形と、地球儀・世界全図の陸の形は Natural Earth から作る。
@@ -234,9 +232,9 @@ test('出典のページはメニューのいちばん下の区切りにあり�
     if (figure.type === 'climate') needed.add(CLIMATE_STATIONS[figure.station]?.country === '日本' ? 'jma-normals-japan' : 'jma-normals-world')
     if (figure.source) needed.add(figure.source)
   }
-  const missing = [...needed].filter((id) => !CREDIT_IDS.includes(id))
+  const missing = [...needed].filter((id) => !ids.includes(id))
   assert.deepEqual(missing, [])
-  for (const section of CREDIT_SECTIONS) {
+  for (const section of sections) {
     for (const item of section.items) {
       assert.ok(item.name?.trim() && item.use?.trim(), `${item.id}: 名前と使い道`)
     }

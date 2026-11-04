@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
@@ -115,6 +115,20 @@ const ALLOWED_EMAIL_DOMAINS = new Set([
   'users.noreply.github.com',
 ])
 
+// 第三者の権利表示のファイルは、単語表（SCOWL）の Copyright の全文をそのまま載せる（利用条件）。
+// 全文に書かれた作者・資料の提供者の連絡先は、元の配布物で公開されている文なので、このファイルの中で、
+// 単語表のパッケージの Copyright にあるアドレスだけを許す。
+const THIRD_PARTY_NOTICE_FILES = new Set(['public/third-party-notices.txt', 'dist/third-party-notices.txt'])
+let thirdPartyNoticeEmails = null
+function isThirdPartyNoticeEmail(address) {
+  if (!thirdPartyNoticeEmails) {
+    const copyright = new URL('../node_modules/wordlist-english/Copyright', import.meta.url)
+    const text = existsSync(copyright) ? readFileSync(copyright, 'utf8') : ''
+    thirdPartyNoticeEmails = new Set([...text.matchAll(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g)].map((match) => match[0].toLowerCase()))
+  }
+  return thirdPartyNoticeEmails.has(address)
+}
+
 function normalizePath(filePath) {
   return filePath.replaceAll('\\', '/').replace(/^\.\//, '')
 }
@@ -154,6 +168,7 @@ function isAllowedMatch(ruleId, filePath, match) {
     const local = match[1]?.toLowerCase()
     const domain = match[2]?.toLowerCase()
     return ALLOWED_EMAIL_DOMAINS.has(domain)
+      || (THIRD_PARTY_NOTICE_FILES.has(normalized) && isThirdPartyNoticeEmail(`${local}@${domain}`))
       || /(?:^|\.)(?:invalid|local|localhost|test)$/.test(domain)
       || /^(?:no-?reply)$/.test(local)
   }

@@ -32,6 +32,7 @@ export const KEEP_DIRS = {
 export const KEEP_FILES = {
   '.gitignore': 'git が読む',
   '.firebaserc': 'firebase のコマンドが読む（.github/workflows/firebase-rules.yml の公開）',
+  'public/third-party-notices.txt': '公開版に入れる第三者の権利表示（単語表・読み取りのモデル・世界銀行のデータの利用条件）。画面からはつながない',
 }
 
 /** 2026-10-20 に消したファイル。どこからも使われておらず、消してもアプリ・テスト・道具に何も起きないことを確かめた。 */
