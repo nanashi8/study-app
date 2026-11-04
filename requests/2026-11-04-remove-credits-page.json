@@ -7,7 +7,7 @@
   "sessions": [
     "45825834-7c3b-4113-8d83-813aa0680cb4"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "no-credits-on-screen",
@@ -38,7 +38,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版のメニューに「出典」が無いことを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版のメニュー",
       "check": "node --test tests/no-credits-page.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-11-04: クリーンな clone（main b1559bc0 の上に載せ直し）で npm run audit:all-content が全段通った（テスト失敗0・check:content・build・audit:dist）。1b37059f を main へ push し、デプロイ（GitHub Actions run 41776522102）が success。公開版 https://nanashi8.github.io/study-app/ のメニューは6区切り（apps・english・support・cards・records・settings）で「このアプリについて」「出典」の文字がなく、公開版の JS に出典のページの文が0件、/third-party-notices.txt が配信されていることを確かめた。"
     }
   ]
 }
