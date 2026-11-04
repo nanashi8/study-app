@@ -232,9 +232,9 @@ const run = (command, args) => {
     return ''
   }
 }
-const processes = () => run('ps', ['-axo', 'pid=,rss=,command='])
-  .split('\n').map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/)).filter(Boolean)
-  .map(([, pid, rss, command]) => ({ pid: Number(pid), rssMB: Number(rss) / 1024, command }))
+const processes = () => run('ps', ['-axo', 'pid=,ppid=,rss=,command='])
+  .split('\n').map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(\d+)\s+(.*)$/)).filter(Boolean)
+  .map(([, pid, ppid, rss, command]) => ({ pid: Number(pid), ppid: Number(ppid), rssMB: Number(rss) / 1024, command }))
 
 // WebKit：ページを動かすプロセス（WebContent）の本当の使用量。macOS の footprint で測る。
 function webkitFootprintMB(before) {
@@ -246,9 +246,21 @@ function webkitFootprintMB(before) {
   }
   return peak
 }
-// Chromium：ページを動かすプロセス（renderer）の使用量（RSS）。
+// Chromium：このテストが開いたブラウザの、ページを動かすプロセス（renderer）の使用量（RSS）。
+// renderer は親をたどると、このテストの node に着く（ブラウザの本体 → このテスト）。全監査の重い段では、本番のビルドで
+// 写真を読むテスト（vocab-ocr-build。どちらも毎回流れる）が同時に流れ、そのページ（約940MB）も「測り始めのあとに起きた
+// renderer」になる。このテストのページは約500MB なのに 921MB と出て落ちたので、このテストのものだけを測る（2026-11-05）。
+// WebKit のページ（WebContent）は XPC で起き、親が launchd（1）なので、この方法ではたどれない。
 function chromiumRendererMB(before) {
-  return Math.max(0, ...processes().filter((item) => /ms-playwright\/chromium.*--type=renderer/.test(item.command) && !before.has(item.pid)).map((item) => item.rssMB))
+  const items = processes()
+  const parents = new Map(items.map((item) => [item.pid, item.ppid]))
+  const mine = (pid) => {
+    for (let up = parents.get(pid), depth = 0; up > 1 && depth < 8; up = parents.get(up), depth += 1) {
+      if (up === process.pid) return true
+    }
+    return false
+  }
+  return Math.max(0, ...items.filter((item) => /ms-playwright\/chromium.*--type=renderer/.test(item.command) && !before.has(item.pid) && mine(item.pid)).map((item) => item.rssMB))
 }
 
 async function measure(engine, sample) {

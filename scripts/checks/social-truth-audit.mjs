@@ -19,7 +19,12 @@ const ROOT = new URL('../../', import.meta.url)
 export const SOCIAL_AUDIT_PATH = new URL('docs/audits/social-truth-audit-2026-11-04.json', ROOT)
 export const SOCIAL_UNIT_COUNT = 116
 
-export const socialUnits = () => subjectUnits('social')
+// 監査で1単元ずつ読んだのは、中学の3冊と高校の地理総合・歴史総合の116単元。2026-11-04 に足した地理探究・日本史探究
+// （requests/2026-11-04-high-school-social-tankyu.json）は、その依頼で読んだので、この監査の母数に入れない。
+export const AUDITED_BOOKS = Object.freeze(['geography', 'history', 'civics', 'geoSogo', 'hisSogo'])
+export const socialUnits = () => subjectUnits('social').filter((unit) => AUDITED_BOOKS.includes(unit.book))
+// 単元をまたぐ年の食いちがいは、地理探究・日本史探究もふくむ社会の全冊で見る（同じ出来事の年が冊ごとにずれないように）。
+export const yearConflictUnits = () => subjectUnits('social')
 export const readSocialAudit = () => JSON.parse(readFileSync(SOCIAL_AUDIT_PATH, 'utf8'))
 
 const unitTexts = (unit) => {
@@ -82,7 +87,7 @@ export function socialAuditProblems(audit = readSocialAudit(), units = socialUni
   return problems
 }
 
-export function yearConflictProblems(audit = readSocialAudit(), units = socialUnits()) {
+export function yearConflictProblems(audit = readSocialAudit(), units = yearConflictUnits()) {
   const reviewed = new Set((audit.yearConflicts?.reviewed ?? []))
   return yearConflicts(units).filter((key) => !reviewed.has(key)).map((key) => `${key}: 単元をまたいで年が違う組を、まだ読んで判断していない`)
 }
@@ -93,12 +98,12 @@ if (runDirectly) {
   const units = socialUnits()
   if (process.argv.includes('--stamp')) {
     audit.units = Object.fromEntries(units.map((unit) => [unit.id, unitFingerprint(unit)]).sort(([a], [b]) => a.localeCompare(b)))
-    audit.yearConflicts = { ...(audit.yearConflicts ?? {}), reviewed: yearConflicts(units) }
+    audit.yearConflicts = { ...(audit.yearConflicts ?? {}), reviewed: yearConflicts(yearConflictUnits()) }
     writeFileSync(SOCIAL_AUDIT_PATH, `${JSON.stringify(audit, null, 2)}\n`)
     console.log(`押した: ${units.length}単元・年の組 ${audit.yearConflicts.reviewed.length}件`)
   } else if (process.argv.includes('--years')) {
-    const all = yearConflicts(units)
-    const problems = yearConflictProblems(audit, units)
+    const all = yearConflicts(yearConflictUnits())
+    const problems = yearConflictProblems(audit)
     for (const problem of problems.slice(0, 30)) console.log(`  - ${problem}`)
     console.log(problems.length ? `❌ ${problems.length}件` : `✅ 単元をまたいで年が違う組 ${all.length}件をすべて読んで判断した記録と一致`)
     process.exit(problems.length ? 1 : 0)

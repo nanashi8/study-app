@@ -1078,6 +1078,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "a0280af7a8b8a74264c641ccc76243f0a8a67a44136e3ec09594649dd038e265"
     },
+    "gso-01#5": {
+      "decision": "text",
+      "reason": "「地球の大きさと対せき点」の項目ごとの内容を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "5da3e3157207a5f4d01adacd9b9f3739bdb035ff6ab071382863ccdb7b530c20"
+    },
+    "gso-01#6": {
+      "decision": "text",
+      "reason": "時期・太陽が真上にくる緯線・北半球・南半球を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "650da487858ddae21c326828e79f30434989434d212461aa5eedbfb664f18725"
+    },
     "gso-02#1": {
       "decision": "visual",
       "sha256": "e02457f182883896a6e03a477551fcff35e382abfc9c421139668d11436ef0b1"
@@ -1095,6 +1105,16 @@
       "decision": "text",
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "c63743418f08953302c5089ca031b32c85cd310e29a2b62bcd86ee8acc23c96d"
+    },
+    "gso-02#5": {
+      "decision": "text",
+      "reason": "国境の種類・もとにしたもの・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6661a5044df5a85dcddd5b7d64dfb97984ab200a186d200a147596c2517a9932"
+    },
+    "gso-02#6": {
+      "decision": "text",
+      "reason": "海の区分・範囲（基線から）・沿岸国のおもな権利を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a82bb94e52e81597ca61a2b5ef8d641c78ae15d63408189be5b56ba3c44d3afd"
     },
     "gso-03#1": {
       "decision": "text",
@@ -1116,6 +1136,15 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "8e64070cede11884d4e4e65a28ad9dfb551588870f741f372d8ff485fcae0d63"
     },
+    "gso-03#5": {
+      "decision": "text",
+      "reason": "時期・東京と大阪の間の移動・かかる時間（およそ）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "aa233bfaf89bc23ddb702f20be0aec60dc40069e36e52d1d264e1b43bbcc711c"
+    },
+    "gso-03#6": {
+      "decision": "visual",
+      "sha256": "d13ded558b72c23891e7203d92d2298b6c813c61ac8146e9e8647df70a015c0b"
+    },
     "gso-04#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -1133,6 +1162,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "4443f4528aa597c3345fea9a1d1fa912a1b4b23941874e2998e84feb29cede3a"
+    },
+    "gso-04#5": {
+      "decision": "text",
+      "reason": "年・加えられたおもな地図記号・背景を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "cc6d3d4440fe4d7599d8f148a61d37e97c459d4ecc6e181b9a93d7bf26c50ca3"
+    },
+    "gso-04#6": {
+      "decision": "text",
+      "reason": "「断面図のつくり方」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8aa59737db166f92835a126945f48f67b75292c8dbda580dd50bed5df9255782"
     },
     "gso-05#1": {
       "decision": "visual",
@@ -1152,6 +1191,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "bfd8d280118797e7ae7100ca0fa30a41daeb45d7d4c762abbbcd0cbb7f16ba39"
     },
+    "gso-05#5": {
+      "decision": "text",
+      "reason": "微地形・土地のようす・おもな土地利用・洪水のときを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3c1126de9996fdbca6bcc1eeec822a4b79151bc8cf071a84a8dd1c0aa729c6af"
+    },
+    "gso-05#6": {
+      "decision": "text",
+      "reason": "地形・でき方・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "aaa8d7cd4f348550d21cfc39324bc557acf005d8a58d224af8a69ff3db102270"
+    },
     "gso-06#1": {
       "decision": "visual",
       "sha256": "2aadaaa3f3c9f7abfb7df5e8aa02be24305b83dad9f54b2c425be310b3dcfd34"
@@ -1168,6 +1217,14 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "c2d1da905d2bf5d0a9541b340bd25c8ec2912a15ba35465dbf63c58f5a766c84"
+    },
+    "gso-06#5": {
+      "decision": "visual",
+      "sha256": "c43d8099f6c3ba350eaf6906c446978d6a1d51046a540f3bd185757e57bb4fd1"
+    },
+    "gso-06#6": {
+      "decision": "visual",
+      "sha256": "f81ce31bb896850a72df14e8e64369aa3333d2d9b7b34f9b21df4adf238534f1"
     },
     "gso-07#1": {
       "decision": "text",
@@ -1188,6 +1245,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "e760f9b53cda9e7ff475d9099d28bf31a2062a0378e006ad02b9e012004f1189"
     },
+    "gso-07#5": {
+      "decision": "text",
+      "reason": "立地の型・工場が集まりやすい所・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d4554eb4eabff1ab61c30c78a401df9e54a6f8e33bc596d7dd2283430eab4423"
+    },
+    "gso-07#6": {
+      "decision": "text",
+      "reason": "分野・変化・取り組み・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "1d385fdc34121f0754ba95c70f5516c62a3a1187e00cf50083cbe18c354aeeab"
+    },
     "gso-08#1": {
       "decision": "visual",
       "sha256": "034acd0edd67007156a07d43f72f8f45544b1b160c3818fb811cfe355d2b1f8f"
@@ -1207,6 +1274,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "239aed45a133be082b28436c05701418531080d0b49991a79a3456d69b2d8ad3"
     },
+    "gso-08#5": {
+      "decision": "text",
+      "reason": "宗教・食の決まりの例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "c327033478e9099d85197fb45f37be600bd6f01bf8b666dd7f843f11f6e96c03"
+    },
+    "gso-08#6": {
+      "decision": "text",
+      "reason": "国・おもな公用語・国の言葉を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b928eeeca5d00709ffc0973bbe04ad926cfe6699317d859d028b1e4f6709c232"
+    },
     "gso-09#1": {
       "decision": "visual",
       "sha256": "46d2ed85ccc365922a440119f285c9bb42494b4a36e4ec074fa82bcf5fe05b13"
@@ -1224,6 +1301,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "9a6895c527a40d6e1ce2433e38deebd2d0794a408c49355d7eab09ddb5d67547"
     },
+    "gso-09#5": {
+      "decision": "text",
+      "reason": "沿海部・内陸部を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d8a8449650d8d686032763284b07bff7676093d00811a9962397fc7ebae3b867"
+    },
+    "gso-09#6": {
+      "decision": "text",
+      "reason": "シンガポールの民族・人口にしめる割合（およそ）・おもな宗教を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "eaf80581c35437af5cde2f731f8780a14727b3c634d3b2a1d5cd5015c1595061"
+    },
     "gso-10#1": {
       "decision": "visual",
       "sha256": "421982abbda889872b654b9e0b60d644540ba0990d68f501bfec866d928c2bf2"
@@ -1240,6 +1327,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "cf769dd6426220ebca582825efcbe0a7d837f730fc46163a07b0c83ff2c6583f"
+    },
+    "gso-10#5": {
+      "decision": "text",
+      "reason": "工夫・しくみ・おもな地域を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "37b8e283872d3080ccd4661dcfab1b9a0a57b0461b8814a6243971f35302445e"
+    },
+    "gso-10#6": {
+      "decision": "text",
+      "reason": "「南アフリカ共和国の変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "37ef68eb8a9ad0fc053395ce1a9f2deb6a898315a2e2ee01bfa2db3c8d1e3a75"
     },
     "gso-11#1": {
       "decision": "visual",
@@ -1259,6 +1356,15 @@
       "decision": "visual",
       "sha256": "4ba0ca24943ab14bfd2c94aa5bd2e9fc3f709ad058b67a2e9efbf31b4cf7ec14"
     },
+    "gso-11#5": {
+      "decision": "text",
+      "reason": "「EUの拡大と人や工場の移動」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "5ec4571a5c457175141ab33bf6e54f2311a54892baa13348cecc92033d3ef301"
+    },
+    "gso-11#6": {
+      "decision": "visual",
+      "sha256": "a7fba25f4aa0864598780384281456a065e1709fa5b6674724dee548542cbee0"
+    },
     "gso-12#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -1277,6 +1383,15 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "b028236e359144dfda9ceaaab15c047c5a7ea1f57a1aca0439d1bf79b22e7e34"
     },
+    "gso-12#5": {
+      "decision": "visual",
+      "sha256": "56292439448c201fcbbe1fa330a6fc7523ced04f00719beebded49b6d806953f"
+    },
+    "gso-12#6": {
+      "decision": "text",
+      "reason": "地域・おもな特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "5518a40613fc40798a4b9817eb5f0fb70bb4102d3276a0b11c8fcd9309bbbfc2"
+    },
     "gso-13#1": {
       "decision": "visual",
       "sha256": "32899e7e07873f0a5e33e93995167cfa86cbfba55870c8ec311f0266fea15c52"
@@ -1293,6 +1408,16 @@
     "gso-13#4": {
       "decision": "visual",
       "sha256": "665dd528c304d66f906198ffde5d9b3465895c93a384a844b4389b381d732539"
+    },
+    "gso-13#5": {
+      "decision": "text",
+      "reason": "「日本の公害と環境への取り組み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "21cee02ae128e8e06bbe63bfe78ae9b418948232dfc650be2fb5a6460d1dbabd"
+    },
+    "gso-13#6": {
+      "decision": "text",
+      "reason": "対策・ねらい・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b0b840976c09d61c3b9df929cc70dd3c5d11f149c5d958b60a5166b85d087920"
     },
     "gso-14#1": {
       "decision": "text",
@@ -1313,6 +1438,15 @@
       "decision": "visual",
       "sha256": "dc0d3f75aa84f6648ede76846a5a043f19fa8cedd3c5e36fb23cc9d9f8ce7000"
     },
+    "gso-14#5": {
+      "decision": "visual",
+      "sha256": "dd0702e98926d3701336946495036171c467690fecba44548972ea51eb9873e1"
+    },
+    "gso-14#6": {
+      "decision": "text",
+      "reason": "「シェール革命」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "cde2872e56c6fea467a822eb6c6e028231a714e7882033921e90aca4e946f6cf"
+    },
     "gso-15#1": {
       "decision": "visual",
       "sha256": "26085cbb5c6fb780d6f59a68ca62b2dbf6f84c0f817e42024cd21202b1038dcd"
@@ -1330,6 +1464,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "9f835a6753ce2dfba7f47060076be3f95ec904d07b91bd4fc7cd8ab375aaa6d7"
+    },
+    "gso-15#5": {
+      "decision": "text",
+      "reason": "要因・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "f02f83c8f17d0d65a714b3b3285ae142dc4c870a426ce0ab4717875aeda68838"
+    },
+    "gso-15#6": {
+      "decision": "text",
+      "reason": "穀物・おもな生産国・おもな輸出国・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6921ee0b37ac1be6cd4ff1d4959267934a25663cc837016a3918434acaeba033"
     },
     "gso-16#1": {
       "decision": "text",
@@ -1350,6 +1494,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "58d1bab98a3bac2ccc3f2082ddd0ba7652a70894c9b5619082db37b920643c5b"
     },
+    "gso-16#5": {
+      "decision": "text",
+      "reason": "都心の区・郊外の住宅地の市を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e4d255aa54957c871d620061bd2a46eb5ab9346da08f41db8d9a556029d83a24"
+    },
+    "gso-16#6": {
+      "decision": "text",
+      "reason": "村落の形・ようす・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "687bdf7f3ab4d35c450febe1482a27ca7da8cbaa425a7d7419a3ca97f0b92b3b"
+    },
     "gso-17#1": {
       "decision": "visual",
       "sha256": "8b00759a38d43880e914abf997990144ef90d99a033dc46db664bd74d85f5e88"
@@ -1367,6 +1521,15 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "5bb49f9d9ccc1a6d7ec3565594feaa35de19fc73accd75864f4ce794981158c0"
+    },
+    "gso-17#5": {
+      "decision": "text",
+      "reason": "治水の工夫・しくみを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a8ce286ff8415aa4953475e9a97f143727574ee0fc9404d10b57802d7557609e"
+    },
+    "gso-17#6": {
+      "decision": "visual",
+      "sha256": "4b4139ced7b90f0cda2a7563d2705896e88151ca4b83ec77d2f992e71495fa33"
     },
     "gso-18#1": {
       "decision": "text",
@@ -1388,6 +1551,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "6fe34f167a7cce28958a3b61a48c6da0c7bec9039e425d7913c2406097b88493"
     },
+    "gso-18#5": {
+      "decision": "text",
+      "reason": "土砂災害・ようす・おもな前ぶれを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6cf6f8fdc9b5041b75e9660bb3fd205851041fbe4a627811b3c676335bc0b077"
+    },
+    "gso-18#6": {
+      "decision": "text",
+      "reason": "災害・原因・ようす・対策の例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6840b7dc1e2e0b402181b2fd3f77d61733f835d0fc1d9b42db5e764836eeab0b"
+    },
     "gso-19#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -1407,6 +1580,15 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "73d8af4bd0bea4932d44da8bb09220eaf19e45486350084978a554db37d264fe"
     },
+    "gso-19#5": {
+      "decision": "text",
+      "reason": "警戒レベル・出される情報・とるべき行動を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "1aa7c2ef936e1964abf07521f32541b63e1a7a882cb75e9bbefe6e142d52837b"
+    },
+    "gso-19#6": {
+      "decision": "visual",
+      "sha256": "728a8eb6b24d40aa5010a32d174c211b50af9e17fd0965e86166f6c72ea01225"
+    },
     "gso-20#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -1425,6 +1607,664 @@
     "gso-20#4": {
       "decision": "visual",
       "sha256": "225b4335a767c0d675fa74e30f344393f7d3aa081d53bccbe3bc545ebed8195c"
+    },
+    "gso-20#5": {
+      "decision": "visual",
+      "sha256": "9f25693cd3508668f85aea4f6c1b1aab640dd0dd8c1b533b152961ed12ed4c08"
+    },
+    "gso-20#6": {
+      "decision": "text",
+      "reason": "「レポートのまとめ方」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "4f7e524ae66839fa26a2659805fb468b541d3e9ce32834e17023b02eeb5b3223"
+    },
+    "gtk-01#1": {
+      "decision": "visual",
+      "sha256": "29a7da999622c5ac4f2458c8085474299b6f4bade7278dcda4385dc679b72641"
+    },
+    "gtk-01#2": {
+      "decision": "visual",
+      "sha256": "e2794850cc52381137ae98e4f0663e02fd1387aea8ec3b5290c53979a0a8ac5c"
+    },
+    "gtk-01#3": {
+      "decision": "visual",
+      "sha256": "6c4a8647ff06f3bc55b872a6f7d485d8abcb3aba511ba00bcfdb0bc39b4dfb73"
+    },
+    "gtk-01#4": {
+      "decision": "visual",
+      "sha256": "84c7bc1605cc3473c2c676f98a1f37867a24833da7163f3295676e28006657dd"
+    },
+    "gtk-01#5": {
+      "decision": "visual",
+      "sha256": "3322fb723d3deda6f63cd5b85dc76c729c2b0dd6c0d85229d2de75b53a9f99ea"
+    },
+    "gtk-01#6": {
+      "decision": "visual",
+      "sha256": "6ab2de091dc8b9bce3fc16c6e22d75e36e5217fc84979e985dc7ade41ef86ba0"
+    },
+    "gtk-01#7": {
+      "decision": "visual",
+      "sha256": "60cba957d1b918c3a4a4eb8d3d4d1342550e370161ecb54c2d8d6aa2f0fc9b45"
+    },
+    "gtk-02#1": {
+      "decision": "visual",
+      "sha256": "a6325ef6a40f291a39057c6a729eb98122d5b79629505e65e91f389c2f519dc8"
+    },
+    "gtk-02#2": {
+      "decision": "visual",
+      "sha256": "27ed4ffbea355beb3b5cc80884ef1bf81c9f6a76e4946d952d3aad96ecedcb1c"
+    },
+    "gtk-02#3": {
+      "decision": "visual",
+      "sha256": "19d974c0cec3231f2d308d16e2d5546310a44b1be261e46c7a79c96354407d1c"
+    },
+    "gtk-02#4": {
+      "decision": "visual",
+      "sha256": "8f41c9749e3f067e652b8b057d80ad1b783c472332af3acbeece8a69667bcdae"
+    },
+    "gtk-02#5": {
+      "decision": "visual",
+      "sha256": "2f99decfc9145050e3b992e06747f7ab071b86dc5ea3f5b1d8ae5649e423b96e"
+    },
+    "gtk-03#1": {
+      "decision": "visual",
+      "sha256": "56173341308e58a4bec2ff1a3e9706e2d35e699c4bbbc2b92764357cfb2b8e9c"
+    },
+    "gtk-03#2": {
+      "decision": "visual",
+      "sha256": "dff392b02f78cdc6dd49f59ab99b22f52d3e156155a506e1bbf58918b26c31d9"
+    },
+    "gtk-03#3": {
+      "decision": "visual",
+      "sha256": "d16f93e97e9dba347b222c614511766eccd031716e217f0d41019a47332a2271"
+    },
+    "gtk-03#4": {
+      "decision": "visual",
+      "sha256": "5e92bcf058b4a3a020bdb38092fcdf1e3400f72f4ef5cc612859d9f884b35186"
+    },
+    "gtk-03#5": {
+      "decision": "visual",
+      "sha256": "9f71d69449db4eafee5ec70114fc1f47f0248ed8bf7c48cc6eff7c96cadfbb06"
+    },
+    "gtk-04#1": {
+      "decision": "visual",
+      "sha256": "d404c9e2f1a61ecf425c1035ffa102814cac4509130658765a8d590ccc78b5de"
+    },
+    "gtk-04#2": {
+      "decision": "visual",
+      "sha256": "ca864c24f77ab1fe6d0eaa3962e1b75ce749580e9d6af203af52a7f85de561f9"
+    },
+    "gtk-04#3": {
+      "decision": "visual",
+      "sha256": "ce0abedc65c57d515e29ed503505b6308bcdfed7a96a786eb5e69da6649571fa"
+    },
+    "gtk-04#4": {
+      "decision": "visual",
+      "sha256": "2b145e973c5b2df466a37da312fa738d933630de7509847322896538b4a40ad7"
+    },
+    "gtk-04#5": {
+      "decision": "visual",
+      "sha256": "5a9e70b4ee68e6a03fcd5a9f2f8f03343f698441ac59c62edc91c2807a3c1903"
+    },
+    "gtk-05#1": {
+      "decision": "text",
+      "reason": "「環境問題への国際的な取り組み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "06ead0bba7aa88ac3a408bb615e64ee805b23cc0fbd6803b4207614bbaedbbad"
+    },
+    "gtk-05#2": {
+      "decision": "visual",
+      "sha256": "7e281019c69a75d3769f335fb372fdff25cbff64b06d542ea4bdc77b3e7fb3d1"
+    },
+    "gtk-05#3": {
+      "decision": "visual",
+      "sha256": "28102bb27b2bae0bc6b3768f14ec0f778899c65669c0d07555cdf2b7bf28b056"
+    },
+    "gtk-05#4": {
+      "decision": "visual",
+      "sha256": "fc8039ee9a94baf8cad2e631324ecaf04629ad6d56086f2b99c540f8b5162b31"
+    },
+    "gtk-05#5": {
+      "decision": "visual",
+      "sha256": "8e2fa0a2a31c0506cee45a537edb6a2733e32bcbb97c8cdf9517e39115d39b0c"
+    },
+    "gtk-06#1": {
+      "decision": "visual",
+      "sha256": "d795b30e28b6bb6bdaa59a17bfa227c29d93f273a6ccf09ef48c993c0eeb5861"
+    },
+    "gtk-06#2": {
+      "decision": "visual",
+      "sha256": "3545f37c8416f425a6c2f4acc3089d74f3a9c72f2e25d82f147bb09d23f97caf"
+    },
+    "gtk-06#3": {
+      "decision": "text",
+      "reason": "「農業の技術の変化」を順にたどる流れ図と、変化・良い面・課題を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "ca38faf37afc711d939e3f01a4e633a1c84e0796686a17adb9ae99177417a243"
+    },
+    "gtk-06#4": {
+      "decision": "visual",
+      "sha256": "8224e5d21afd45fa8104f65b1df5ea283f4837f4788ab97e6e88995ab8aaa3a0"
+    },
+    "gtk-06#5": {
+      "decision": "visual",
+      "sha256": "f8e5ab9affc1de4e18adca9ddf83d270a80bd24f6b1b190b466121d1b9499e22"
+    },
+    "gtk-06#6": {
+      "decision": "visual",
+      "sha256": "7b8ade8c14f1ab92fd180dd8428cc7be10893d184b1bdf9b60cfd76c102c8d13"
+    },
+    "gtk-07#1": {
+      "decision": "text",
+      "reason": "「エネルギーと資源をめぐるおもな出来事」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "045afb00836669fdd091df98d05a781491850b996f7cc23a30be916eb61ee259"
+    },
+    "gtk-07#2": {
+      "decision": "visual",
+      "sha256": "e83b5ca3b96cf78c300f2e6930606f4e77d2d6b802ee677ba989fd04517caee7"
+    },
+    "gtk-07#3": {
+      "decision": "visual",
+      "sha256": "a26b066cea51246d3c28416a076a86f1525b6a47726c8e02eecc74c1da9202ec"
+    },
+    "gtk-07#4": {
+      "decision": "visual",
+      "sha256": "a86e0a7231332e3c3c47501e9fa73a4c224b5d695b5cfc9ff2f3ec9259e011b5"
+    },
+    "gtk-07#5": {
+      "decision": "text",
+      "reason": "「日本のエネルギーの流れ」を順にたどる流れ図と、考える点・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "3f682b04124b86d4f3744b7052ed6db33dac2c5ae1e0ad41ee2bd25bb0663608"
+    },
+    "gtk-08#1": {
+      "decision": "text",
+      "reason": "「工業化の広がり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "0a697504307caddc378518cf79e5944a986b48a955fbbc93e3ad98b777cf539a"
+    },
+    "gtk-08#2": {
+      "decision": "visual",
+      "sha256": "bda2e62fed9050d0f0f284fdc59efdf2c9cadb7633c5b538f832f09b02b887ca"
+    },
+    "gtk-08#3": {
+      "decision": "visual",
+      "sha256": "56db6f4ec0d66f08dab48dac88d818e7d7c1971079e5a56dd5058bd0f0f2915c"
+    },
+    "gtk-08#4": {
+      "decision": "visual",
+      "sha256": "dadb840b5ff15e81b213f818ea805c1cd9a09db6ddb29c4bdd59ebde37e7a75b"
+    },
+    "gtk-08#5": {
+      "decision": "visual",
+      "sha256": "208304efee87b60188b17c513d38d15a20d7208d5921c9023e697458ff020788"
+    },
+    "gtk-08#6": {
+      "decision": "text",
+      "reason": "課題・起こること・対応の例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "47182f837c146abb7c87dfa160fdf68fdff1a49aede90b7dbc4e1091e8b4ae90"
+    },
+    "gtk-09#1": {
+      "decision": "text",
+      "reason": "「経済の発展と産業の中心の移り変わり」を順にたどる流れ図と、産業・おもな業種を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "338731b75bd7cc28ac019e2dd1daf20f17171be220b7e971cf2509b124074947"
+    },
+    "gtk-09#2": {
+      "decision": "text",
+      "reason": "店の形・立地・特徴を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "794e687bae0d2a690bba1addee47c6c3c126606cd940a4542ec3a66c48b33b82"
+    },
+    "gtk-09#3": {
+      "decision": "visual",
+      "sha256": "0d836f3bd598b45f269aa183c72030255d725e31111b09b07991a4f8c7792e85"
+    },
+    "gtk-09#4": {
+      "decision": "visual",
+      "sha256": "a3168fe5ba96873b1db7c2d601d996a7f2e654dcece6cdc4ac476c2c496d05ef"
+    },
+    "gtk-09#5": {
+      "decision": "text",
+      "reason": "変化・良い面・課題を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "79898736937392b5651b45a1dc4ec3a26d58b046942b2c6b53993b0b3410b389"
+    },
+    "gtk-10#1": {
+      "decision": "text",
+      "reason": "交通手段・得意なこと・苦手なことを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6d9ec007dcba5027032cad716b692ff54d03ed39d7844d69d9d42b7054b6028d"
+    },
+    "gtk-10#2": {
+      "decision": "visual",
+      "sha256": "76075f3dd09d8487bc5c76136ebc359f79c67b6b0c4d5c34e1ee721d269170fa"
+    },
+    "gtk-10#3": {
+      "decision": "visual",
+      "sha256": "93d5012badab5e1d240fc542c3265cd711d6287640e09b1745a1305508c579fa"
+    },
+    "gtk-10#4": {
+      "decision": "text",
+      "reason": "「通信の発達」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "627ec020932e1dc4fdb39a4b8336f3cb8bf6d2c8fd6cc4414a3a216058f726e3"
+    },
+    "gtk-10#5": {
+      "decision": "text",
+      "reason": "課題・内容・取り組みを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "acfba076e68cdb0e49bd622872af5fc6c06dddd498e0946e71c146e0aa65fbe0"
+    },
+    "gtk-11#1": {
+      "decision": "text",
+      "reason": "地域統合・協定・おもな加盟国・特徴を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "741be683adcf3ee8bddf8db8e9df6c3f33709fba8e456e1783839bf3d744d4ef"
+    },
+    "gtk-11#2": {
+      "decision": "text",
+      "reason": "「輸出品の移り変わり」を順にたどる流れ図と、かつて・現在を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "569f8aa607dac28dfa91147f0022f12d6700963d9fa6ebba518ca91b569e395b"
+    },
+    "gtk-11#3": {
+      "decision": "visual",
+      "sha256": "75d6ea5c328fddc4bbcaf43b2d7d7674058141b44a3190799b1dcc12a4bd4d59"
+    },
+    "gtk-11#4": {
+      "decision": "visual",
+      "sha256": "16c322a7253eb885e455473918fd236f1502827202bbd30ff4f243661d0da2f4"
+    },
+    "gtk-11#5": {
+      "decision": "text",
+      "reason": "ことがら・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "17417c4f763b1e2b2d3e5900acc6dc9c6291ea34b343bd7949add51f0c71ff1c"
+    },
+    "gtk-12#1": {
+      "decision": "visual",
+      "sha256": "dcc7dc04012eea19811108b086a0e695b7df55a549304d28642a711520ca3d13"
+    },
+    "gtk-12#2": {
+      "decision": "visual",
+      "sha256": "579770e1e943ad64a9eb02f042cc49e3b2a1c51abab51bc22dcd76195b389297"
+    },
+    "gtk-12#3": {
+      "decision": "visual",
+      "sha256": "f6f47d9fc2255cc819d22bea4375c2c5bdb97dfbf50f3dcfc52c0777555dab53"
+    },
+    "gtk-12#4": {
+      "decision": "text",
+      "reason": "国・地域・人口の動き・課題と政策を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "76060326b41f72acb3db6a0269a7581ff9a9056f199eaf112bd257fc4ccbe6b2"
+    },
+    "gtk-12#5": {
+      "decision": "text",
+      "reason": "「少子高齢化の流れと対策」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "a912b5632679aabb89b55238735e1244418182eafd8add89f1fa5c67eb3070b7"
+    },
+    "gtk-13#1": {
+      "decision": "visual",
+      "sha256": "377b7c4c129bb626182ef484a23603087813d18a1cf0e1b4511c80ac1df7efb7"
+    },
+    "gtk-13#2": {
+      "decision": "visual",
+      "sha256": "444d727bd454b792c76459def6070fce13750a3aad670622fe89437fc84953dd"
+    },
+    "gtk-13#3": {
+      "decision": "text",
+      "reason": "「都市化と都市圏の広がり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "4458cfc462a34960335e0034c8ad9bc863e131785e31263d4c8e594ef63eecec"
+    },
+    "gtk-13#4": {
+      "decision": "visual",
+      "sha256": "4054297216c4a1da41a6b67ff877e38d5ad542bcac6bc5e2bbb47b0f2717cc0f"
+    },
+    "gtk-13#5": {
+      "decision": "text",
+      "reason": "問題・内容・取り組みの例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d267b60317169d43d1fa638466643ae44d685300ce9f5897abaa372716ff0ab2"
+    },
+    "gtk-14#1": {
+      "decision": "visual",
+      "sha256": "9110564e93168fad80d0a5c1cbf0e7d33a83dfc873f1cb2ab77e93729e3f0a9a"
+    },
+    "gtk-14#2": {
+      "decision": "text",
+      "reason": "地域・文化・衣服の例・くふう・理由を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "1cec1745bccf70e53c4933915a0b1c9b948e30b2396fa8ef8b25d94dae185644"
+    },
+    "gtk-14#3": {
+      "decision": "visual",
+      "sha256": "594a3bd4e726b1235bc1a0cc48eed666203aeb26dd2c30730c87a77a16dda15e"
+    },
+    "gtk-14#4": {
+      "decision": "text",
+      "reason": "地域・住居の材料・形・理由を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3aa0b4d27f0000c1d5377be08cd6fcfe3238ac34158de6f2be40f29cb6a0b79e"
+    },
+    "gtk-14#5": {
+      "decision": "visual",
+      "sha256": "339ff8f462bbe1b7a52039fff27810c44df20df594d9d49871e550abecf10849"
+    },
+    "gtk-14#6": {
+      "decision": "visual",
+      "sha256": "9dd4e3cc6caf7743d2a868ebf2794ff943230bb2c2c8b85c4dc41439fe0a0c41"
+    },
+    "gtk-15#1": {
+      "decision": "visual",
+      "sha256": "9f9e121236d086f12882eab4bfeb3b2d842c10624a1ccd70d3f2c5661a41c2a3"
+    },
+    "gtk-15#2": {
+      "decision": "visual",
+      "sha256": "95e14eab9029400c553395d6cdd4a2149863c3f3ca41244392d373d1983fffe9"
+    },
+    "gtk-15#3": {
+      "decision": "visual",
+      "sha256": "91b8a2f65bb72118846ceb6819304d94cec4777ee2a93dc487aabbeddd278db5"
+    },
+    "gtk-15#4": {
+      "decision": "visual",
+      "sha256": "736d466e8e12968bbeeaec3fc72736ef899ba34d08064ac0e9ccbe6d54800e6b"
+    },
+    "gtk-15#5": {
+      "decision": "visual",
+      "sha256": "b178c410f65f91325349604a440d0d8f72e8b46e417eb86e6cf1b938a3d82735"
+    },
+    "gtk-16#1": {
+      "decision": "visual",
+      "sha256": "b355dfab1340eb431fb5df6a51135091b92cd4fb73912fd60c1a82eabae1c43b"
+    },
+    "gtk-16#2": {
+      "decision": "visual",
+      "sha256": "cbf4c495a76dbe10b5af601f2d1ec2b602445379adf4b23819802be985409d51"
+    },
+    "gtk-16#3": {
+      "decision": "visual",
+      "sha256": "5b9724232df3d1f5351f692f600e15d0c0cd59aea8f3d15c1ba66d389a9b3051"
+    },
+    "gtk-16#4": {
+      "decision": "text",
+      "reason": "ヨーロッパの地域・言語（語派）・宗教（キリスト教の宗派）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9f5d33fc890173554e408e7edad2df602719d6ff71c77890657c2fdba1050fbe"
+    },
+    "gtk-16#5": {
+      "decision": "visual",
+      "sha256": "2e273266eb5b763402cb6c00a076fae2d5178d6eaffb863b0a0bfd40fa7ed26a"
+    },
+    "gtk-17#1": {
+      "decision": "visual",
+      "sha256": "df90b106c5e23df257cadef543038504367db27ac5df01b97cf82584cfe42007"
+    },
+    "gtk-17#2": {
+      "decision": "text",
+      "reason": "ことがら・内容・影響を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "8fb98fe81bb38771888cd0c5af2ab31b4691f8906516a66b035da23647da8443"
+    },
+    "gtk-17#3": {
+      "decision": "visual",
+      "sha256": "770cdba9b6ff2e706295a04646ac08e98a5f413887ec65291874d19a5cbef936"
+    },
+    "gtk-17#4": {
+      "decision": "text",
+      "reason": "「中国の産業と暮らしの変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "718d976e8c074f0b2f16719c03c1bca6159f44f7215ccf99825d2db786cd2a4c"
+    },
+    "gtk-17#5": {
+      "decision": "visual",
+      "sha256": "c6f374b732cbf45e97ea4dec89e0a51fea4c375deb112f35299869b679bcd513"
+    },
+    "gtk-18#1": {
+      "decision": "visual",
+      "sha256": "133ff9fd3c136d8194b3c0918f2a3317e87409b617bf1d79a5dbe350f0ce57e7"
+    },
+    "gtk-18#2": {
+      "decision": "text",
+      "reason": "文化・内容・背景を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "034c9231b472e069b192bdbcfb43da81e101e45fb7089272ddcc0ced154a6fcf"
+    },
+    "gtk-18#3": {
+      "decision": "text",
+      "reason": "「韓国の工業の移り変わり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "4888fec86513485315249e1597d706d09d145559ce4452c4a6763f19754b0a2d"
+    },
+    "gtk-18#4": {
+      "decision": "visual",
+      "sha256": "511dd8f5b1083cc2a17ea2eb77a1aa10cdcea24a4386981d8f9b1de1d35001a2"
+    },
+    "gtk-18#5": {
+      "decision": "text",
+      "reason": "関係・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0e9727b260d08b4d80eac25cf5a3c5ce8a99b0ecf90eb074414999c7e87eb1cd"
+    },
+    "gtk-19#1": {
+      "decision": "visual",
+      "sha256": "416c9df7902dea83f9f6a6799d10e86d0121b581f27a3826f4510eb3fb597f88"
+    },
+    "gtk-19#2": {
+      "decision": "visual",
+      "sha256": "e30ad0f7a732e2d3016d28dec11da0975b71989fc1a80d57452d14f1ae77f76a"
+    },
+    "gtk-19#3": {
+      "decision": "text",
+      "reason": "作物・おもな国・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7b0e80cb6b2918f74e63b0aa84a18cfb277157bf3ae699b371b6eea613a29b88"
+    },
+    "gtk-19#4": {
+      "decision": "text",
+      "reason": "「工業化の流れ」を順にたどる流れ図と、変化・暮らしへの影響を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "5a8fe96ae48206c3130b477a912f963c0ce4cec09722f4f72ea88fa6bb9440db"
+    },
+    "gtk-19#5": {
+      "decision": "visual",
+      "sha256": "8ab0f1ec45a37d35b5b5efb4d2f256d1ce73e9cfb7ead5cbdab11e222055598c"
+    },
+    "gtk-20#1": {
+      "decision": "visual",
+      "sha256": "12976520ba44dbee5947dd07d05764880c8ea28217fe931605cb38596e62a55a"
+    },
+    "gtk-20#2": {
+      "decision": "visual",
+      "sha256": "942daa1a52cd18c05c6a7af6241f1a5feaa987f445e13bf2b44f45aa649a6129"
+    },
+    "gtk-20#3": {
+      "decision": "text",
+      "reason": "作物・おもな地域・条件を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "588c0755951f7b9174dc45c28853a3393a12a0cf33c4b1c00b3e3a1d8d91550a"
+    },
+    "gtk-20#4": {
+      "decision": "text",
+      "reason": "「インドの産業の変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "6c8e24d06775edc30a49dca2a74b35a0b014d6a128413fd79df1c3757f005174"
+    },
+    "gtk-20#5": {
+      "decision": "visual",
+      "sha256": "8bd5ea293fe67b0f45ac3ac66e96cd76c6916b2c65194e73e9b70bb2d028bfe3"
+    },
+    "gtk-21#1": {
+      "decision": "visual",
+      "sha256": "a4b438b970af294bb3e03f5fdf26108b283470168e54c246ddaf0c228606d5aa"
+    },
+    "gtk-21#2": {
+      "decision": "text",
+      "reason": "国・地域・おもな民族と言語・おもな宗教を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "4f4db54030388918fbf7f4085f1b931669306e4553be3a3a45ed7e4e56c1a884"
+    },
+    "gtk-21#3": {
+      "decision": "visual",
+      "sha256": "866642497614f46958ff0651cbc6d4f82e00a64a627def511d02460e02b68c3e"
+    },
+    "gtk-21#4": {
+      "decision": "text",
+      "reason": "「西アジアのおもな紛争」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "1d5c39b8eec6219fbf30d41df8a716348ea085afacee08695ef6407376d9a79b"
+    },
+    "gtk-21#5": {
+      "decision": "text",
+      "reason": "西アジア・中央アジアを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6f30a747657982c3ec5363bda4aa5380333e8b27821bba904402c0871009e636"
+    },
+    "gtk-22#1": {
+      "decision": "visual",
+      "sha256": "fe65ded34c70f6dbe0b44797748cb336ef43a0df567ab5a60a6d0ac47f4796b1"
+    },
+    "gtk-22#2": {
+      "decision": "visual",
+      "sha256": "74a94ee9b2540edaeead8078c75878063f34a9cdd06ff929663dde44271b066b"
+    },
+    "gtk-22#3": {
+      "decision": "visual",
+      "sha256": "be9211bea4e7c13549dfbd45c93e001c08ed8546913cb2be4ad5d04c96412345"
+    },
+    "gtk-22#4": {
+      "decision": "text",
+      "reason": "「アフリカの紛争の背景と取り組み」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "05cbdaf3d6367c8f67f70fe42f7dd90b7aa0ded3d70719aa288cabc4107da8d8"
+    },
+    "gtk-22#5": {
+      "decision": "text",
+      "reason": "北アフリカ・サブサハラアフリカを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "38d707a621ac5ce1796476fc5d541ca3470b97d5605ea639e43d55fc849f1853"
+    },
+    "gtk-23#1": {
+      "decision": "text",
+      "reason": "「ヨーロッパ統合の歩み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "db38cfb4b45addb35f6c270bf821644ef05dc9adc41969216433ef6e85b78c8e"
+    },
+    "gtk-23#2": {
+      "decision": "visual",
+      "sha256": "7462246e4bd2c90671c068cb4db4abc2322814b9898d696a3691d2fd89d8bd7e"
+    },
+    "gtk-23#3": {
+      "decision": "visual",
+      "sha256": "ea71cf5660bab8ec401e9991c669ad4486cfff4f2ab65df096fe391213577d5c"
+    },
+    "gtk-23#4": {
+      "decision": "visual",
+      "sha256": "bc7a7128a4e7e68dadf0fabedee0bb26710bdce8d43ab390c18d52c89e1e758b"
+    },
+    "gtk-23#5": {
+      "decision": "text",
+      "reason": "課題・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "ffba106f9c36840787d5a13e63ed22088a652520a2295de949ca816cbf491493"
+    },
+    "gtk-24#1": {
+      "decision": "visual",
+      "sha256": "da00c7603819a7f09cb63407a128c71a99655ce5e3629b1f8ecdfe0bb37cce9e"
+    },
+    "gtk-24#2": {
+      "decision": "text",
+      "reason": "ことがら・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "78c0d5e80b1996319fcd66ebbb32eb6796f41486fc9c0726c8d1e6ed7f64638c"
+    },
+    "gtk-24#3": {
+      "decision": "text",
+      "reason": "「ロシアの体制転換と経済」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "af168737615ee7795cd43de505344060d1778a6df19e83c502c5487fb08aec84"
+    },
+    "gtk-24#4": {
+      "decision": "visual",
+      "sha256": "169bc1f7f2f57d873cedd38b39a8bcf0c13621f37e1f65225fc71abf2f5ca169"
+    },
+    "gtk-24#5": {
+      "decision": "visual",
+      "sha256": "d334840aa3e7dae06fdc91c5c13556e0f261bf5cb2089671b4591385f1bb8b68"
+    },
+    "gtk-25#1": {
+      "decision": "visual",
+      "sha256": "34ee72ff1a837bd65498cab6718d50be6c494472098d1089ae59d6d258b7667a"
+    },
+    "gtk-25#2": {
+      "decision": "text",
+      "reason": "人々・歴史・多く住む地域を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d195928b3c1896ec1c2652360a0bc554b17c1a2b824e8d74d96855bd4cea5be4"
+    },
+    "gtk-25#3": {
+      "decision": "visual",
+      "sha256": "54e0bee482b79b5f644bff2f36789c3d99d49fff031e6e363ddb28b56d016a7d"
+    },
+    "gtk-25#4": {
+      "decision": "visual",
+      "sha256": "ad402d82d24d7a07eb0b0c7cb61ff1e6706fb8779ef89b9920274651d0876eb6"
+    },
+    "gtk-25#5": {
+      "decision": "visual",
+      "sha256": "302168ae8dd83e13cc74400fef9dad03b6813048c8026b17e8bfddff6f58cb81"
+    },
+    "gtk-26#1": {
+      "decision": "visual",
+      "sha256": "5f5139269f1befb455c90f2c3653d16b8eebbf6109e492567fefc5c75360e293"
+    },
+    "gtk-26#2": {
+      "decision": "text",
+      "reason": "国・地域・おもな農産物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b977a04d98df772482ef4a71ce6bad426884e3d7c5b55a5bad1acab6cf5075b1"
+    },
+    "gtk-26#3": {
+      "decision": "visual",
+      "sha256": "81641e3a60a96f059636eb81a4e6e9c06e353a32c58223055ff083922c9563df"
+    },
+    "gtk-26#4": {
+      "decision": "visual",
+      "sha256": "4affbc22b3040549d82c1f22f0a1445fe6f6c75639bcbb94e0f79c843802b86c"
+    },
+    "gtk-26#5": {
+      "decision": "text",
+      "reason": "「ラテンアメリカの国々と世界の結びつき」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "c9329618033a64f5a41c855fdea84dcd18d850eaccb2f740444b51e28cbc01b4"
+    },
+    "gtk-27#1": {
+      "decision": "visual",
+      "sha256": "ccc8ac43acfc29ba3616636f1db87c3af3a2127458fd70bbef06284c842218f1"
+    },
+    "gtk-27#2": {
+      "decision": "visual",
+      "sha256": "c872261e7ce9bb2e078bfc0218bd172ed12e3ca763b4657b1195cf99972d471d"
+    },
+    "gtk-27#3": {
+      "decision": "visual",
+      "sha256": "978f1ea64f3259afd0821e690f45f0cb3de4255e65a6891743cb1956c98154b2"
+    },
+    "gtk-27#4": {
+      "decision": "text",
+      "reason": "「オーストラリアの社会の変化」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "dd51e4237a6410097620bfef269a534b7b93597b6469dab078c138bde223aea0"
+    },
+    "gtk-27#5": {
+      "decision": "text",
+      "reason": "「オーストラリアの結びつきの変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "903ede762cd35278127576bb0df1bd23c73fee8e61feea03ff8519d5e2c9a8d6"
+    },
+    "gtk-28#1": {
+      "decision": "visual",
+      "sha256": "3c9be1b8f1e2af66def9312b82b7607054e9ab06b3a7683e9f7e157f34677275"
+    },
+    "gtk-28#2": {
+      "decision": "text",
+      "reason": "ことがら・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6de65f1a76fcc4423b4a8f22feb3cece80d1a492d480fb244d36c006d3022e6f"
+    },
+    "gtk-28#3": {
+      "decision": "visual",
+      "sha256": "a4e424ffa43feb295d3d8c43d1c1bc45af8d5151f50f3a7105f973e73df58fcc"
+    },
+    "gtk-28#4": {
+      "decision": "text",
+      "reason": "「海面の上昇が島嶼国にもたらす影響」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "f756b39ef8f44382e4171e7bcb95446af64d0a8d9ae7af58742dfcea37335cb7"
+    },
+    "gtk-28#5": {
+      "decision": "visual",
+      "sha256": "1512458c6fd9b5d8ba9910522622c3316b9af81261c2f6de03af62a07d85a4b8"
+    },
+    "gtk-29#1": {
+      "decision": "text",
+      "reason": "分野・2050年ごろに予測される姿を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "224cea9e4ac5cfbda6e054b636ae1ea97aa74a9d4deaa067d14030eb7251a7fb"
+    },
+    "gtk-29#2": {
+      "decision": "visual",
+      "sha256": "c5a08081817afaf7515431945ed21760e340b3320d3d9b466032add9f912a942"
+    },
+    "gtk-29#3": {
+      "decision": "visual",
+      "sha256": "fafd1ad62d7214fc0607a5429277c1938702d722f77a66b7a5de179cee2e8a8c"
+    },
+    "gtk-29#4": {
+      "decision": "text",
+      "reason": "課題・取り組みの例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "2a314464551f8b10f7f63c1f2f84e56b6ce3c0137b959281d6a647a216ef1675"
+    },
+    "gtk-29#5": {
+      "decision": "visual",
+      "sha256": "7c3075bea5cc4e9c02f9ee119df166a76c60398a28d3b6e05752c84c90a2add8"
     },
     "his-01#1": {
       "decision": "visual",
@@ -1886,6 +2726,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "e5cfb6fcccaa7fe52939dc180c3b2a75d3501ae453a34a41f5522873f5231807"
     },
+    "hso-01#5": {
+      "decision": "text",
+      "reason": "「茶がつないだ世界」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "0baec16b170005ecf68d95917fb8b99c6d37368f2ca8099e2cb8ab5374f13a97"
+    },
+    "hso-01#6": {
+      "decision": "text",
+      "reason": "時代・おもな特色（日本の例）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d4ee703e0490e4d0df42d1ada1bebfc928d91c47be5685f10f4aff4ec210c8df"
+    },
     "hso-02#1": {
       "decision": "visual",
       "sha256": "282ee91b8f82a1f165abb30826613b144e70ecff286f51c41e4343eceeba43a5"
@@ -1903,6 +2753,16 @@
       "decision": "text",
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "bbd9e4832adbd5d884906c0139e0be6b45f2e33f9c3f03e8e4b6c366998ea699"
+    },
+    "hso-02#5": {
+      "decision": "text",
+      "reason": "資料・例・読むときの注意を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "580a512ad30895cf93d2842fbc245535f3da07ae72354d74396794c6745537d3"
+    },
+    "hso-02#6": {
+      "decision": "text",
+      "reason": "「聞き取りと記録の保存」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8d8825dcd7eebf3429d756eca7df9dce40463f3025ae7e4523b6a5abdb27140b"
     },
     "hso-03#1": {
       "decision": "text",
@@ -1924,6 +2784,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "924fa18a9528c3497f33875a18792caa43ced71332df9101ce9ec491ecf75faa"
     },
+    "hso-03#5": {
+      "decision": "text",
+      "reason": "「時刻の統一と標準時」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "dd01bc825b13148d8ccb0bb6b85140770cb8fd2d97c5e1a39c29410678158202"
+    },
+    "hso-03#6": {
+      "decision": "text",
+      "reason": "変化・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d27174d439c184e38c62ace1994fb659b1a12d09489a9953a43ba3579e5c2d1d"
+    },
     "hso-04#1": {
       "decision": "visual",
       "sha256": "101c55135d5a7dd025c89a1db797d8821286a167ac22047971e275e62a80f712"
@@ -1941,6 +2811,15 @@
     "hso-04#4": {
       "decision": "visual",
       "sha256": "faa63a401feb04ad5238aff8b4644b2320bd1087be4bd25b1e5abb32b2a6c96e"
+    },
+    "hso-04#5": {
+      "decision": "visual",
+      "sha256": "75caedfd3883cb3e79495a28e83980773e4300fef3a393a367eef3d3f50eda80"
+    },
+    "hso-04#6": {
+      "decision": "text",
+      "reason": "「銀の流れ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "d0cb5497ed40e2bec258a539dcd6514c9d6e9508fa3862ae31a776688009563c"
     },
     "hso-05#1": {
       "decision": "text",
@@ -1960,6 +2839,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "7bd890d571c07fa6d1b57494d9ce2495deec93ec6cc416323aea362dc7e4884a"
+    },
+    "hso-05#5": {
+      "decision": "text",
+      "reason": "「綿工業の技術革新」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "3faf242c4e78ed52743adbfb2dadb0404e385c38bd1c25c9cfb0fb7d0fb64c3f"
+    },
+    "hso-05#6": {
+      "decision": "text",
+      "reason": "「交通革命」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "b4d61f0b319eda2f9d0bdd4a8545fc0dc95a2fb62ce94adcea5f35f49372953f"
     },
     "hso-06#1": {
       "decision": "text",
@@ -1981,6 +2870,15 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "a43c173de5a88177e167e23a2855badc5eaef6a42916692ac0a3f73f9ce06afc"
     },
+    "hso-06#5": {
+      "decision": "text",
+      "reason": "人権宣言の理念・実際のすがたを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "11fba6a26ffc28056e00d142a0692493474178113fcebc8b6308841b5fcb54a8"
+    },
+    "hso-06#6": {
+      "decision": "visual",
+      "sha256": "415770fd134b4cd3fc3add8cd67049eca600c5e3772563efcd7485ca452585bb"
+    },
     "hso-07#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2001,6 +2899,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "b4f0b9cc6ef6b4a8b02f68864556f503ce3db6411c9e550999b8220eb1e92209"
     },
+    "hso-07#5": {
+      "decision": "text",
+      "reason": "「労働者の運動と選挙権の広がり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "7b4b11f0b9ef4f12afc669eff19f9f6abab01417a75682f4cdc7910d2f233a0b"
+    },
+    "hso-07#6": {
+      "decision": "text",
+      "reason": "年・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7f907c0b23c54d42746ed01ab8d4b46cab039c10f73c29b9e9b801efe34b8ceb"
+    },
     "hso-08#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2019,6 +2927,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "c06fa5fd5ee37c74843176d3175514fede19a2ef6c918e607ea5c1b98314d860"
+    },
+    "hso-08#5": {
+      "decision": "text",
+      "reason": "「西アジアの民族の目覚め」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "1d7c0ae60fd79fd0dd86c4d921631ccbff2398ea3c0bd7c30cf22170f87ce97d"
+    },
+    "hso-08#6": {
+      "decision": "text",
+      "reason": "地域・おもな産物・支配した国を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3fa45d49ce3d4b1b3e53e7d46188c23df19a030a6be578ec6cfbe8a328d3109f"
     },
     "hso-09#1": {
       "decision": "visual",
@@ -2039,6 +2957,15 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "d5013b718b14c1ebdfde7e8627c7f3e866b009b85954af5fe1658d65f1f45285"
     },
+    "hso-09#5": {
+      "decision": "visual",
+      "sha256": "7718b435f7abc15e0d2a338ed77f4c9b9b95a4cec20630fe72dc2a52be8067c6"
+    },
+    "hso-09#6": {
+      "decision": "text",
+      "reason": "「アヘン戦争の情報と幕府の対応」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "7208976e81cbccc2bc1a74ada4a185698288454d13cbfc6ee6af634fe80498c0"
+    },
     "hso-10#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2058,6 +2985,16 @@
       "decision": "visual",
       "sha256": "eeb3d616e4f5ec837f52574fa117a9d02e9913986bf3a0c755479c1e74090269"
     },
+    "hso-10#5": {
+      "decision": "text",
+      "reason": "「北海道の開拓とアイヌの人々」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "054a92b1bd8b09ca13f278d4682be8b3a33cababdbf1d8064b62bc20a83a602b"
+    },
+    "hso-10#6": {
+      "decision": "text",
+      "reason": "政策・人々の反応・その後を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "76d9db43647ec9cf1450ea0981fa1ed5a5ef2a29e52190271c3a604302fedb31"
+    },
     "hso-11#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2075,6 +3012,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "f38c09bc63ec9b3c816619cfaf8995855c5b135628db6fd27937eff122579388"
+    },
+    "hso-11#5": {
+      "decision": "text",
+      "reason": "「民権運動の広がり」の項目ごとの内容を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "cc01be557492454c61b2170dfbc407fe73b47b8aff1a10ad8f644cee0835f262"
+    },
+    "hso-11#6": {
+      "decision": "text",
+      "reason": "「アジアの立憲制の試み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "a5cf3917702e9b1d1b12c98cacb9025760f6a07754d76eeb46ce3960e3eea1ee"
     },
     "hso-12#1": {
       "decision": "text",
@@ -2095,6 +3042,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "1f3d6b7e60487490af6ecf3d8109e7b917eb5ca24569f60a39460bba803b34e0"
     },
+    "hso-12#5": {
+      "decision": "text",
+      "reason": "「日清戦争後の東アジア」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "1119358b250382bc4c34decd8bc4d6c5cb8c1af12881bed9814989d2c24eeb79"
+    },
+    "hso-12#6": {
+      "decision": "text",
+      "reason": "問題・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9f251265e57736cf26abe73458a31e9f3c3e36e81c36b50e261d6295a3a1a0a7"
+    },
     "hso-13#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2111,6 +3068,15 @@
     "hso-13#4": {
       "decision": "visual",
       "sha256": "af738e4bcf00d2f1531f28df766ddf0d65212fce372c5bbaaab0944719ba5632"
+    },
+    "hso-13#5": {
+      "decision": "text",
+      "reason": "「帝国主義を支えた考え方」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "686b98cf7284d533c5eefb0a7a8ddb85ab8ee6caf23d1ff73deeb073c8f13db0"
+    },
+    "hso-13#6": {
+      "decision": "visual",
+      "sha256": "e5a1cc39a08a52cfca162c1d92345f48444d8501b68319a810cb6ad35c0bf336"
     },
     "hso-14#1": {
       "decision": "text",
@@ -2130,6 +3096,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "79434b3e6356699e5686e619e398070fd20464e65c9d0c30e461e58ddd0b6298"
+    },
+    "hso-14#5": {
+      "decision": "text",
+      "reason": "地域・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "10fcb90f4ba9b04078b5edf811384101c7ba6a9c8df6fb88800d2d8e933df53e"
+    },
+    "hso-14#6": {
+      "decision": "text",
+      "reason": "「日露戦争後の国際関係」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "937a4f321001b2d6dd112026a6e9bace82a3ce029b9f072cdc9e95a9cc5843c2"
     },
     "hso-15#1": {
       "decision": "text",
@@ -2151,6 +3127,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "fbf2d5c4da79ede622a0fc5056104c9bc970d83e9aecb9b4dd491a25f1f3a94f"
     },
+    "hso-15#5": {
+      "decision": "text",
+      "reason": "年・取り決め・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6f662a27c3b5463c2ecca6c4688f844b48545e14555bf87e3d9cdf6550683191"
+    },
+    "hso-15#6": {
+      "decision": "text",
+      "reason": "「革命への干渉とソ連の成立」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "aed58cbf9613ce8574e90bd9ba29c7ee5165318e012ea4c5e91ceeb365787d61"
+    },
     "hso-16#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2170,6 +3156,16 @@
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "1edba73d5a2b3e3e29bef16e7ffa909d8f0b09a9619b7b03964e3a7451acffcc"
     },
+    "hso-16#5": {
+      "decision": "text",
+      "reason": "しくみ・できた年・おもな役割を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "f9bd18164c7f0e9ffdbfd36093867f42a3de593f11bcd2594dc9ad99d8137e77"
+    },
+    "hso-16#6": {
+      "decision": "text",
+      "reason": "「軍縮の取り組み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "6d7462d3ea1d82bf11e3293907331d146460eab7ca412640d314ca9a0cba0261"
+    },
     "hso-17#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2188,6 +3184,16 @@
     "hso-17#4": {
       "decision": "visual",
       "sha256": "66d47df27e46c07598cda9132924bd10dec0b5afa3c6e57537b4a500f8b98f72"
+    },
+    "hso-17#5": {
+      "decision": "text",
+      "reason": "地域・支配した国・おもな運動を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "947c107821aa48609328350b2fe2068fd01c3a4f19bcc00bdc5ab9ac2688a798"
+    },
+    "hso-17#6": {
+      "decision": "text",
+      "reason": "「アフリカの民族運動」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "3aff716acfe8a319277265706c258bd8d9513962caed6e4941446fd531c90a51"
     },
     "hso-18#1": {
       "decision": "text",
@@ -2209,6 +3215,15 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "3454ea12b69dd129bc213594824537dab295d0eceef6655e8fc6976bd3382c4a"
     },
+    "hso-18#5": {
+      "decision": "text",
+      "reason": "出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "390c00af5d0f6a95ddbb058e58c08cc6b6fa3695628fdf734e413328e90f5e3e"
+    },
+    "hso-18#6": {
+      "decision": "visual",
+      "sha256": "ad6ec168cf7b4c9dfd57c81f8886ce290ebde5598080180bebfdfb2afa1efb3f"
+    },
     "hso-19#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2229,6 +3244,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "a4c346b03152a8a80e614d2032fe69064cc81d5cc9c9576c56b7755105c527b9"
     },
+    "hso-19#5": {
+      "decision": "text",
+      "reason": "選挙法の改正・選挙権をもつ人・人口にしめる割合（およそ）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "f7f0da4d22cf17d0b2015b85c7e7035a969b321be056708b98d242170dc82161"
+    },
+    "hso-19#6": {
+      "decision": "text",
+      "reason": "地域・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "829abd11d94ee051714b54d212e6db5d4905b424d324027480ad731978df6b6e"
+    },
     "hso-20#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2247,6 +3272,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "028168e38c8858b3be6df657f735ea6de91600d16cbc758245a2065ddcaa90f8"
+    },
+    "hso-20#5": {
+      "decision": "text",
+      "reason": "「恐慌と国際協調のくずれ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "dba1c74b875bd15773ec88b6d837b99ad299d72971dccc9a61216b671feaba03"
+    },
+    "hso-20#6": {
+      "decision": "text",
+      "reason": "国・おもな対応を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "bdf212e70f5faada7b4233b404393ca753e2bf92a052f7c1a4be368074826de8"
     },
     "hso-21#1": {
       "decision": "text",
@@ -2268,6 +3303,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "37986b977e343250d8f556c35706aef65f60892709373ba2c0fe07f2ffdcf873"
     },
+    "hso-21#5": {
+      "decision": "text",
+      "reason": "選挙の年・ナチ党の得票率・できごとを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "828c3a14c077322123653a093bdef5f978c2254f3f791a273b57dabb52857f8c"
+    },
+    "hso-21#6": {
+      "decision": "text",
+      "reason": "「ファシズムへの抵抗」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "228b4e2bfe08448a97bfbba5914a1cb6c8902c9d8e6a7189fc6a8c1d426598e0"
+    },
     "hso-22#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2286,6 +3331,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "cd1b2394ae26637910523209172c8a4f44ede63c00dddd94cb78bba67366bd77"
+    },
+    "hso-22#5": {
+      "decision": "text",
+      "reason": "「恐慌の中の不満と国家改造の動き」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "23f5e68bcd901254485cb3e070a5ff26f9330edabacd0a50c64fd0861a28f664"
+    },
+    "hso-22#6": {
+      "decision": "text",
+      "reason": "年・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "2bb134870c005a9ce9078cdb2eac66613eedff76c87ead4da7e3219583f26f0b"
     },
     "hso-23#1": {
       "decision": "visual",
@@ -2306,6 +3361,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "eadd11ff160c0f77f49b85de6556b7e123276774e47351b62bf55f9b7535269f"
     },
+    "hso-23#5": {
+      "decision": "text",
+      "reason": "分野・戦時下のようすを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "2ca78b7999a2863a9ec299c3ef47fb3df7ccd567a7fde7de995b3754ececee97"
+    },
+    "hso-23#6": {
+      "decision": "text",
+      "reason": "「日中戦争の泥沼化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "0f4bfa0b54e6a0559056d5c1faa1461d6117e1128102664280e07b9d842e4749"
+    },
     "hso-24#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2324,6 +3389,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "dfc89f479161192ed5939df8c21ec98f7682bce0e1cbcbe5a67059f343253ffa"
+    },
+    "hso-24#5": {
+      "decision": "text",
+      "reason": "年・会談・宣言・おもな内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "336aeaefce5f25232968436d8a7bb1ea8c588de395f0405d272ad179749b61a4"
+    },
+    "hso-24#6": {
+      "decision": "text",
+      "reason": "日本のとなえたこと・占領地の実際を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9ceb2493dc3c9b3024eba86f33679f381dd0ac2a183b8b383d48690e1c3a86fa"
     },
     "hso-25#1": {
       "decision": "visual",
@@ -2344,6 +3419,15 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "e3ce796d8ba872e7ab10c4023833dac0b28e165001f473a75b126a963b001b93"
     },
+    "hso-25#5": {
+      "decision": "text",
+      "reason": "人の移動・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6c3d75438ba4ef0078e6f1069221c34c6ed8ffb47cec4807a1815d2d7dbdcf81"
+    },
+    "hso-25#6": {
+      "decision": "visual",
+      "sha256": "8b48228598cbbc025f7841d54f52c12068631b95d3d845bd95a2b4050e15faab"
+    },
     "hso-26#1": {
       "decision": "visual",
       "sha256": "229a01a478ef67d2044673b1eff71625cb8877c0bd2109f3388c8c3a1c353401"
@@ -2361,6 +3445,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "3fc9b71afb75ab5361ee9b1eb5e18152b110b336eadd207a73d5bfe85fca1746"
+    },
+    "hso-26#5": {
+      "decision": "text",
+      "reason": "年・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "eea6d271238a88c95daf7e5d899c4052e3d08fefafdc4d593fb8336d6c9773c4"
+    },
+    "hso-26#6": {
+      "decision": "text",
+      "reason": "「台湾の戦後」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "26ad53cfdfb199b7fbf68ca6c2a163d653040abad40d443fd5e1703f3c65d1f5"
     },
     "hso-27#1": {
       "decision": "visual",
@@ -2380,6 +3474,16 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "4e65a94170370d07f75c9d437c9af85a3d3b3c5b37147a8af417274b897f6784"
+    },
+    "hso-27#5": {
+      "decision": "text",
+      "reason": "「敗戦直後の暮らし」の項目ごとの戦後の暮らしのようすを見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3f0a4f73f746f481abef603fde8e10575f109a6eaa30b6cfb46814313ef7cba3"
+    },
+    "hso-27#6": {
+      "decision": "text",
+      "reason": "「政党の復活と新しい政治」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "2f1eb20cb848d5b2ad74ac7f9ba5a62f3db2f54fea737ba7e95a55085f508ed4"
     },
     "hso-28#1": {
       "decision": "text",
@@ -2401,6 +3505,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "69f07766b5cc0da068a44f71c2ae1f37795c9912fd5ba3c6e55b6b4133f9e7f4"
     },
+    "hso-28#5": {
+      "decision": "text",
+      "reason": "「アメリカの統治下の沖縄」の項目ごとのアメリカの統治下の沖縄を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3186a2ec48a41d63342958bb68f968d2a1d4ebff57210d08487e224e6dca572c"
+    },
+    "hso-28#6": {
+      "decision": "text",
+      "reason": "「国際社会への復帰」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "53769a7cac3681d1df30ccc0418ca8c7e070e0b447e2835981b39fbffcbc27b0"
+    },
     "hso-29#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2418,6 +3532,16 @@
     "hso-29#4": {
       "decision": "visual",
       "sha256": "c4c1ec3c0ce946d87a4ad60060515dc8c008ef05b5fa092f938217ed848b7395"
+    },
+    "hso-29#5": {
+      "decision": "text",
+      "reason": "「核兵器に反対する声」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "a699d3191636aa677ac7be0e6c5173ccf45bcb696950d5f091d6789785be9fee"
+    },
+    "hso-29#6": {
+      "decision": "text",
+      "reason": "「冷戦と日本の再軍備」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "dae9959bcd71c55c911d0c97d0a3f145e4278943546ef33546e55a4fd3bf1ce5"
     },
     "hso-30#1": {
       "decision": "text",
@@ -2439,6 +3563,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "71af315b70bacd0df32d8d7521d2b2fbdeb270ddab12a737bdaa890e0a54483b"
     },
+    "hso-30#5": {
+      "decision": "text",
+      "reason": "「イギリスの福祉国家への歩み」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "45916b730a7d2839772191a231fc7175084ed4f175b88ed20b2b82c551c04591"
+    },
+    "hso-30#6": {
+      "decision": "text",
+      "reason": "「1950年代のアメリカ社会」の項目ごとの1950年代のアメリカを見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "c30c11b2bed54b5a77eb26a7cd8af23db0043de2728427ae13924903f71593d9"
+    },
     "hso-31#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2458,6 +3592,15 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "b904c77aa7e322e2b85158a67bc21009a75c69a3fdb77e777650f9fec5f22b27"
+    },
+    "hso-31#5": {
+      "decision": "text",
+      "reason": "「南北問題と資源ナショナリズム」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "126e386ca95176b02a73e073a2231bbaac48be3f840c7ab40b921dc038fe246a"
+    },
+    "hso-31#6": {
+      "decision": "visual",
+      "sha256": "2b61e1e5fb72a65f2c1ab1533fecf5e644535acbebad7d51ce048f9719e15733"
     },
     "hso-32#1": {
       "decision": "text",
@@ -2479,6 +3622,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "d1f6e6b0ff44b259f4c8a9db86d3f62dad5be3d15526ca17ac60ed943c5c0f66"
     },
+    "hso-32#5": {
+      "decision": "text",
+      "reason": "分野・高度経済成長期のようすを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7801534551ba470345b8dfb157890d0c1d5066dc4bd283991c3f7604ad137960"
+    },
+    "hso-32#6": {
+      "decision": "text",
+      "reason": "「公害への対策」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "f45d2b2693bc18166315e6399ef900f0d7abeb0f84bf2e3a05b44a5dbd7a6041"
+    },
     "hso-33#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2498,6 +3651,16 @@
       "decision": "text",
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "60a2de6474f27938ca92d2821e1e863df209e5f2c11c9aec09b729521285e49c"
+    },
+    "hso-33#5": {
+      "decision": "text",
+      "reason": "「被爆者の訴えと日本」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "723b98e46f849d5ffee80cfca872162295c61c6ba2740ba023dec9b414ea3216"
+    },
+    "hso-33#6": {
+      "decision": "text",
+      "reason": "条約・採択・内容・現状を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "60931be7d8262c0258b245485413327386dd3b9bdb677b056e2491098261bb85"
     },
     "hso-34#1": {
       "decision": "text",
@@ -2519,6 +3682,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "eef6bb1b3e9f61ac9d38fe43abf7d188c6201ea43337f6d59d00e7e2ef748441"
     },
+    "hso-34#5": {
+      "decision": "text",
+      "reason": "高度経済成長期・石油危機のあと（安定成長）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6179e7e1a1b11674c5777ff4112517dd174aa1cdb258747aaeb1220f94d58f61"
+    },
+    "hso-34#6": {
+      "decision": "text",
+      "reason": "国・指導者・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "adce9521c8cd712c4471b03be727662d9d8401eedb9fbe4f4ad494eb53f75e75"
+    },
     "hso-35#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2539,6 +3712,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "45843f2df991b1c81f4c4969394e29a59a6217e334a3cba6bc10f64368ae33a2"
     },
+    "hso-35#5": {
+      "decision": "text",
+      "reason": "「冷戦後のヨーロッパの拡大」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "c4e96968c61f2bf94bae9991072e1c904d46de0db77436d53600cbbb68e8109b"
+    },
+    "hso-35#6": {
+      "decision": "text",
+      "reason": "国・政策・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7e334e6f40647804726ae3e347803deb7d7e7e0209c8dda8ef1ec5f05b74c318"
+    },
     "hso-36#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2557,6 +3740,16 @@
       "decision": "text",
       "reason": "手順やしくみを順につなぐ内容なので、矢印でつなぐ流れ図がいちばんわかりやすい。位置や量を表す図には置きかえられない。",
       "sha256": "cc37fe353b2dcdcdb5c64ad1861f083ca04d07ba48ba959bbcc5921994a149dd"
+    },
+    "hso-36#5": {
+      "decision": "text",
+      "reason": "国・年・出来事を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "dec9bb059f1b34512450161211bfb6e26f1b92c16ad7beb6fd062d84cd0705b5"
+    },
+    "hso-36#6": {
+      "decision": "text",
+      "reason": "「紛争の中の人々を守るしくみ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "d0fb013561ab33f6c63c5df6db527d6c7f4ae4f1ffeec07e1af5e391100d2125"
     },
     "hso-37#1": {
       "decision": "text",
@@ -2578,6 +3771,16 @@
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "87735bfc92ce40ebcab833e5476e7ead21fe99a49933722b4e831977f72b7d3e"
     },
+    "hso-37#5": {
+      "decision": "text",
+      "reason": "「冷戦後の日本の安全保障」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "800a1f8d1d4a0b44959aa875609ff403f28cd9e681b55a71d43654de132005ab"
+    },
+    "hso-37#6": {
+      "decision": "text",
+      "reason": "「グローバル化と外国人の受け入れ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "df6d05a0d3a14dec37019215ae68165b2f948658213a7c0cd133c5de8674a484"
+    },
     "hso-38#1": {
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
@@ -2597,6 +3800,1243 @@
       "decision": "text",
       "reason": "数値や特徴を項目ごとに並べて見くらべる内容なので、表がいちばん読みやすい。地図やグラフにすると項目の関係が見えなくなる。",
       "sha256": "d3fdc49ee2bf89ee04609184a47f116998be7a99a98ddf00a83575c0a3c4a2f3"
+    },
+    "hso-38#5": {
+      "decision": "text",
+      "reason": "年・取り決め・法律・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7e8b85110e5b4047eaea4397fff5c524b31e5c37fa5ca34b65c21f8330dee7b0"
+    },
+    "hso-38#6": {
+      "decision": "text",
+      "reason": "「歴史から学び、社会に参加する」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "abad042f36494f902265cda7216503c0c53462ae49a3849f49db6e7e9277280f"
+    },
+    "jtk-01#1": {
+      "decision": "visual",
+      "sha256": "60d3c695b5ef8e65f6f0ee1483220735d7af4c7af9fab7fb358a877272ac133b"
+    },
+    "jtk-01#2": {
+      "decision": "text",
+      "reason": "「自然環境の変化と縄文文化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "9c11fe9559193b7e4440a3db23064f41e99a7fd559022290cb91b241a9e60c0f"
+    },
+    "jtk-01#3": {
+      "decision": "visual",
+      "sha256": "6b4b37f4879dc5557e1e7be158446276d47499156d2a62e49940bbf723cec09f"
+    },
+    "jtk-01#4": {
+      "decision": "text",
+      "reason": "ことがら・内容・考えられる意味を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d389040770c8dd75d84b8e48780c726e1910b6acc3295a934b7dcde18c4674bb"
+    },
+    "jtk-01#5": {
+      "decision": "visual",
+      "sha256": "f98367bfda7e7746bf69745d567d54308d3c487e804244aa74dcd1fe671de547"
+    },
+    "jtk-02#1": {
+      "decision": "visual",
+      "sha256": "0351e99a5b6595e13b133da04afb1218d6f6b13fdf1347ebcdea1b3d728d438e"
+    },
+    "jtk-02#2": {
+      "decision": "visual",
+      "sha256": "711cccc86cd2f439d1e8e6bf8efa393f98aa60b2a4a30706310abc18df121444"
+    },
+    "jtk-02#3": {
+      "decision": "text",
+      "reason": "「稲作の広がりと社会の変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "39bf128a9f39d2ff091b2264bb54c5acc5e3c6d589ce8576f53d161f14dd9680"
+    },
+    "jtk-02#4": {
+      "decision": "text",
+      "reason": "歴史書・時期・おもな内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "da6fa11aca04f465e10213635f51e02a6fb58e7ec0d27bfb1c529df33a36f76d"
+    },
+    "jtk-02#5": {
+      "decision": "visual",
+      "sha256": "0cff6c3fc9b846df24418c801a3059d821e04143a33db3882a2d277c5befeab7"
+    },
+    "jtk-03#1": {
+      "decision": "visual",
+      "sha256": "9370c9ed80c8d60547012034b781075fe9bc98ba32e68872e69cf9d9527b1a04"
+    },
+    "jtk-03#2": {
+      "decision": "visual",
+      "sha256": "0b0d6e7998a67208d51851665e63e046dfe34b6d2196bfb2305a19af09a7907c"
+    },
+    "jtk-03#3": {
+      "decision": "visual",
+      "sha256": "91aff085f1717fcff7e177c6c9129ce59fa88cda3d9d95e45b4567cec7da84a6"
+    },
+    "jtk-03#4": {
+      "decision": "text",
+      "reason": "「古墳の移り変わり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "afc1c0e1ad5214b3453ea7af2addbbb55c34feeb7d80c4388c118ab29e0d53be"
+    },
+    "jtk-03#5": {
+      "decision": "visual",
+      "sha256": "3f389dc0a571b4f26a17dd4e4887dc9c242bd24383bb256ddd56215e6b777b46"
+    },
+    "jtk-04#1": {
+      "decision": "text",
+      "reason": "「6世紀の東アジアとヤマト政権」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "5b982bd9ddc049e854c61e227ba672d6e5dbf115b7780ef411359e8b9754785c"
+    },
+    "jtk-04#2": {
+      "decision": "visual",
+      "sha256": "613f284aab43a8cf1acef9a01c55947129a04433b9725343d148c29c192644f4"
+    },
+    "jtk-04#3": {
+      "decision": "text",
+      "reason": "政策・年・内容・ねらいを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e8284cd36c7927048a1a8c4fdb28617555f06e9ba75fa92b0ef619e465beff8f"
+    },
+    "jtk-04#4": {
+      "decision": "text",
+      "reason": "「遣隋使と国づくり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "6f8b51c9b02cb771340244488e75931c8f5f599e2435e71f2e0a045d28230867"
+    },
+    "jtk-04#5": {
+      "decision": "visual",
+      "sha256": "1f2f7b6e250f4f740ed0ff767a30d9722ba43556c11d98267a557dbcfdc49705"
+    },
+    "jtk-05#1": {
+      "decision": "text",
+      "reason": "「大化の改新の年表」を年代の順に並べた年表と、改新の詔の方針・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "32e8bdd98c414457587dece9361e579d5d1ccea2358425a0c9a93561167b28c8"
+    },
+    "jtk-05#2": {
+      "decision": "visual",
+      "sha256": "9eea51eb4151bf84c3def52d5024aa95679448d9b6ced5ce5c8b312740b1e2c0"
+    },
+    "jtk-05#3": {
+      "decision": "text",
+      "reason": "「天武・持統朝の国づくり」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "d1280e7e44b0e7d390d3b65ae60e554713de920681d1fe84694441e78001558e"
+    },
+    "jtk-05#4": {
+      "decision": "visual",
+      "sha256": "8fb9a5379ad1aab50af6c2485fea08823e7c9b35be86a4df9556163841466a4e"
+    },
+    "jtk-05#5": {
+      "decision": "text",
+      "reason": "負担・内容・納める所を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "bade4924fe472a486e0ae504ca4b77fabd3dc7e7cd94fbd70cd1dcb5ebabbf16"
+    },
+    "jtk-06#1": {
+      "decision": "visual",
+      "sha256": "d61f60a3ca197c087b4d831eadd7b0ca64e7cf0b12d8a9b2db6b4f1dd63f82ef"
+    },
+    "jtk-06#2": {
+      "decision": "visual",
+      "sha256": "ffd7063f58dc95cdc4bd468f3c41fa0c5ef47181640876698f48b76b1b522552"
+    },
+    "jtk-06#3": {
+      "decision": "visual",
+      "sha256": "76608a7d8c3667b3224ffc8585149bf8b47b86617445ff47726f4750e4a0d000"
+    },
+    "jtk-06#4": {
+      "decision": "text",
+      "reason": "「奈良時代のおもな政争」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "6a93387c37d75ee2c98407c1ab43b89d656ab611e5a3602e565dfbab3e1e06b6"
+    },
+    "jtk-06#5": {
+      "decision": "text",
+      "reason": "「土地政策の変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "9ec1a06000c3a15e3856a27375eaba47f964f0751b837750262c05a9ba7a3146"
+    },
+    "jtk-07#1": {
+      "decision": "text",
+      "reason": "分野・おもな作品・人物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b533821527700cf41c85af2b74642736fc225a5cb437008d36a9ba45032ddce1"
+    },
+    "jtk-07#2": {
+      "decision": "text",
+      "reason": "「鎮護国家と大仏の造立」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "90ccd261cbaa1ca6ffb56d495ac8a9b17482aff36227646292b0b31ca42fa09e"
+    },
+    "jtk-07#3": {
+      "decision": "text",
+      "reason": "作品・技法・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6e2d7b4cd35a26b315b641a5b4296bee2809e4cba8e94fc28041be0495325e92"
+    },
+    "jtk-07#4": {
+      "decision": "text",
+      "reason": "書物・成立・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "76c22e08a09f653b8b23b5a6f80bec8ecc7ea3169d4cfcd1a90376ee2c3998b4"
+    },
+    "jtk-07#5": {
+      "decision": "visual",
+      "sha256": "b4002e6d95f32f1c14c73474403f8e0fb15602ee4e7f9d9418c5d02863aff30f"
+    },
+    "jtk-08#1": {
+      "decision": "text",
+      "reason": "政策・内容・ねらいを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "ada89bc6eca7798f6d8fb4989e17cd56c51a06f67b8937e03c78bce6481eb286"
+    },
+    "jtk-08#2": {
+      "decision": "visual",
+      "sha256": "ba79d42c95a5f928e07b9e89ba0d8bb16ffad3a67637c92db3ed036062c77fe1"
+    },
+    "jtk-08#3": {
+      "decision": "text",
+      "reason": "令外官・置いた天皇・役割を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "42fbe81a33ca69080181af3c0bd8333665b2ac4369c123ab26bb1adf9a174f1d"
+    },
+    "jtk-08#4": {
+      "decision": "text",
+      "reason": "最澄・空海を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "5cf3eb166f4c43d3e38f2b81d97972aa4f799aff79ee498f5fbbf2f3d2d8cb12"
+    },
+    "jtk-08#5": {
+      "decision": "text",
+      "reason": "分野・おもな作品・人物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "22a6b2fc7494d63e4f9ed7caf2110d4f86a3b66b66c95488a86e1f170b547a0d"
+    },
+    "jtk-09#1": {
+      "decision": "text",
+      "reason": "「藤原北家の台頭」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "d89f5ba09ea68896b084e70a99800dbbe73c088eb857adb0ddf0cf28c236122d"
+    },
+    "jtk-09#2": {
+      "decision": "text",
+      "reason": "天皇・おもな出来事・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7947b200e4d96f0f33fc0ef94bec5daaae9943cae3b46bce0558e8a2d8cf55a6"
+    },
+    "jtk-09#3": {
+      "decision": "visual",
+      "sha256": "df1a70e12981a37b84366babffd75da6c68d0cee78ef48300e0d7d54a2ee9a2e"
+    },
+    "jtk-09#4": {
+      "decision": "visual",
+      "sha256": "a1f940d4ac812f5d5300e1fc34387dc7e14f4a1f86e4ef8676ed154047e79471"
+    },
+    "jtk-09#5": {
+      "decision": "text",
+      "reason": "「10世紀前後の東アジアの変化」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "a4449ac83c6509250878db5c79e26f849465b1189466b86708651f827edd96df"
+    },
+    "jtk-10#1": {
+      "decision": "visual",
+      "sha256": "43fee8689ddc9fcc5d526b8fc8d328109b22587bfd5f525c3c8bd039e9815dfe"
+    },
+    "jtk-10#2": {
+      "decision": "text",
+      "reason": "分野・作品・作者・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a98360570c83d7b0ab4d18b66f5ffac5ffea7fa7128b20a106e665b567f220ac"
+    },
+    "jtk-10#3": {
+      "decision": "text",
+      "reason": "「浄土教の広がり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "85fc4de9330213bed82e41606f2573dba21cf6d5d04a2cecaf63b423b7a6eee9"
+    },
+    "jtk-10#4": {
+      "decision": "text",
+      "reason": "ことがら・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b1dc3210090201f6adb706d61e48fee0a229a9258a1459797e1ae3a80f877537"
+    },
+    "jtk-10#5": {
+      "decision": "visual",
+      "sha256": "47663e857fa7a4fa25e4f3fdf27ae02a79b1b027ecfa503a6c0ce147203d0dc0"
+    },
+    "jtk-11#1": {
+      "decision": "visual",
+      "sha256": "a7a8f6c8478d2c17489b952c9e4778f05e939341db7914643a4feb1c6c31a63e"
+    },
+    "jtk-11#2": {
+      "decision": "visual",
+      "sha256": "8a214a9b52ad3472d13718cb69484f25edeb126fede7950ea06c4377b70c298a"
+    },
+    "jtk-11#3": {
+      "decision": "visual",
+      "sha256": "e89cde4a7d3857c53acab437623e5ce3f8e2e1abff7c4dac98055f69426fbdb2"
+    },
+    "jtk-11#4": {
+      "decision": "visual",
+      "sha256": "b95aa94806b7e4d3ca527a148fc0237c81addf0c9f56f12d02d0e7617cfd8b31"
+    },
+    "jtk-11#5": {
+      "decision": "visual",
+      "sha256": "53482140d5df6d30f059b05b853e2a99d1cd6cb31ae2dde70b768c08d149667e"
+    },
+    "jtk-12#1": {
+      "decision": "text",
+      "reason": "政策・内容・ねらい・結果を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "acbb226d7eeec7a3292aeb4a201a3015826beaed78189237ae1c33e45cf15075"
+    },
+    "jtk-12#2": {
+      "decision": "visual",
+      "sha256": "e31519919fec3928a7ce93786ef2ca598809138e84e43e7e76024d28f2474a40"
+    },
+    "jtk-12#3": {
+      "decision": "visual",
+      "sha256": "d8e3199d5bc4883ac12e5b4d51444ee7423288e0f923b96afeab990423cef3ac"
+    },
+    "jtk-12#4": {
+      "decision": "text",
+      "reason": "分野・おもな作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "95f4c0b3b5a3961ea5e320286ae74e2c10ed286f8c6e881a71d7a7c997303cbc"
+    },
+    "jtk-12#5": {
+      "decision": "visual",
+      "sha256": "ed383bd380ae4e1bda63975dfc48e80801ca6655c231f2b809ffa01d96ba2ef8"
+    },
+    "jtk-13#1": {
+      "decision": "text",
+      "reason": "「平氏の台頭」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "00f9d31bf2e5673f64fbb2ba3344c484f7cb37a9f8b1e259acf62cd6ad98208e"
+    },
+    "jtk-13#2": {
+      "decision": "text",
+      "reason": "勝った側・敗れた側を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "8e55425402d3c797516995062435959378a8e9b7db8a4efbc6c045b9b610e828"
+    },
+    "jtk-13#3": {
+      "decision": "visual",
+      "sha256": "4b1a8803afab5fc3a251baf7d06a7585ac36081252c7505741c83f12281c37d7"
+    },
+    "jtk-13#4": {
+      "decision": "visual",
+      "sha256": "a9a0da35902496ced281941d59e8e6f4221342535884904fcce508104e0386b5"
+    },
+    "jtk-13#5": {
+      "decision": "visual",
+      "sha256": "7e6c5f569f7e9513a427520371e0f350891eaa36c770a48730b7d401a4ae96ea"
+    },
+    "jtk-14#1": {
+      "decision": "visual",
+      "sha256": "70a01ca2d408733f167ff1c1760fa044b682783fae30f8fbe322b4c7d09c93f2"
+    },
+    "jtk-14#2": {
+      "decision": "visual",
+      "sha256": "ef0e7faa386c6147968542e1d78609d80abdd0ee825cbfeea890d7aab701eab1"
+    },
+    "jtk-14#3": {
+      "decision": "visual",
+      "sha256": "33175b24a3180cb2a75f873597b69f9d895bb327a9e970853e64dc0e1b245631"
+    },
+    "jtk-14#4": {
+      "decision": "text",
+      "reason": "朝廷・幕府を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "55887c53830b3d60389e167b9495c975188a697390986a7af0e370c252315972"
+    },
+    "jtk-14#5": {
+      "decision": "text",
+      "reason": "「北条氏の台頭」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "bc3a99b54a1cc8a8fee9d0f42a9ac06339ae752efa297bdc84a199c2020ef864"
+    },
+    "jtk-15#1": {
+      "decision": "text",
+      "reason": "「承久の乱の流れ」を順にたどる流れ図と、結果・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "893207ba0341c2f9802a4068d3855d07b0fb874f0ebb8f484ac8803d3e178628"
+    },
+    "jtk-15#2": {
+      "decision": "visual",
+      "sha256": "0f2398f2f63598a1c1ef9a498dfe823078c6232598638cc2bc24ef011adce1b5"
+    },
+    "jtk-15#3": {
+      "decision": "visual",
+      "sha256": "9357100e8cf576f27cc166dd0dba5d1525a032abf02129f184f032008943f942"
+    },
+    "jtk-15#4": {
+      "decision": "text",
+      "reason": "しくみ・内容・結果を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "c16e3afc5bd529e5ce6868dcc85804138e63a719c3be309980df49e4e92bc1da"
+    },
+    "jtk-15#5": {
+      "decision": "text",
+      "reason": "「生産の増加と商業の発達」を順にたどる流れ図と、ことがら・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "e8d8f07aeaab1e958f260735a024524c0346138b80e49e4bda28c56576a4dfc4"
+    },
+    "jtk-16#1": {
+      "decision": "visual",
+      "sha256": "ed721d9f397d91b352892401f5bff82982d884e6bd0d45e1ff5eace2457d43b6"
+    },
+    "jtk-16#2": {
+      "decision": "text",
+      "reason": "文永の役（1274年）・弘安の役（1281年）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "457975bb726368fe8e7d55654a96a89c4722326404eed879a521c388e478e022"
+    },
+    "jtk-16#3": {
+      "decision": "text",
+      "reason": "「モンゴル襲来後の幕府の政治」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "2298fa1e8bb29abd8247ad29269bf32d0c91bfe140b820a2f0faf4f709cda668"
+    },
+    "jtk-16#4": {
+      "decision": "visual",
+      "sha256": "e9ffff9e34a28907ebbc0b4c256790beb7216cc26bea122d81087783b2aa5d59"
+    },
+    "jtk-16#5": {
+      "decision": "visual",
+      "sha256": "45d7121cb80cfd74670a85f60bc8dd262dc74cdd41c29a0dcf8cd4f92c7d66f0"
+    },
+    "jtk-17#1": {
+      "decision": "text",
+      "reason": "宗派・開祖・教え・主著などを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e753d187009d6c532026353d0f98276f1cd3d5ea6be2e49b9f12f8ab550c929d"
+    },
+    "jtk-17#2": {
+      "decision": "text",
+      "reason": "宗派・開祖・教え・広がりを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "f348c9a6cc1ea01eed12d804b16b3462f216a4076d3ec436dd206989dc944e62"
+    },
+    "jtk-17#3": {
+      "decision": "visual",
+      "sha256": "fbdd941dfd13061b2b85e7390948f7274069409ede87e6241c2563cb8468b45e"
+    },
+    "jtk-17#4": {
+      "decision": "text",
+      "reason": "分野・作品・作者・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "d506affe7d019ccd3cfd570bb092f75963948e97680ea33f2d3125facb89c5d0"
+    },
+    "jtk-17#5": {
+      "decision": "text",
+      "reason": "分野・おもな作品・人物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "61d1e436b79c4cfa43c9b7a17417f58eb48d39f5905a55f564200f8d6f7bdfa2"
+    },
+    "jtk-18#1": {
+      "decision": "text",
+      "reason": "「鎌倉幕府の滅亡から建武の新政へ」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "57d5ccfbfbcae0218aa48ca83d133e194d5dc777c1cc2118f777fceb8cf3cd84"
+    },
+    "jtk-18#2": {
+      "decision": "text",
+      "reason": "北朝・南朝を行ごとに見比べる表と、「動乱が長引いた理由」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "5075fb363440f90138bcb094047f0775160b3e0bd9142d10dcd44ff9866cf48f"
+    },
+    "jtk-18#3": {
+      "decision": "visual",
+      "sha256": "5b9bef877356a7aa4c6a80ecc5c973a37a1e9ce8456dafd966f7e3af5698525c"
+    },
+    "jtk-18#4": {
+      "decision": "text",
+      "reason": "「足利義満の政治」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "fef847a9d40f94f36be5085df666090fa3197732aa1012c05abf6c99516ea2b3"
+    },
+    "jtk-18#5": {
+      "decision": "visual",
+      "sha256": "686a5d2bcfc52eca47347843253c76dc6cefbd16013adbe22a985260483d2caf"
+    },
+    "jtk-19#1": {
+      "decision": "visual",
+      "sha256": "5ecedc702b90330a3187d29ccc25baeb7a85d87cc746bedbf28ff58e4c56d376"
+    },
+    "jtk-19#2": {
+      "decision": "text",
+      "reason": "一揆・年・担い手・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "67b975d332f9b787897c908114fe4c59725b94414c24b8624a5cb8d067baaffe"
+    },
+    "jtk-19#3": {
+      "decision": "text",
+      "reason": "「将軍の専制と幕府の動揺」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "3472e605214f6d86e0f2b42c0ec75b170635aca0495178d6ba959b42a54f2b37"
+    },
+    "jtk-19#4": {
+      "decision": "text",
+      "reason": "対立・東軍（細川方）・西軍（山名方）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "77a877e9913bff60f32783305603d4dda5b96d9c6aeefad85cd4605fe303bce6"
+    },
+    "jtk-19#5": {
+      "decision": "text",
+      "reason": "「生産・流通・金融の発達」を順にたどる流れ図と、ことがら・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "a25ba9adc68ef1ae1796c42d59b1d68007853674f451b792d79e3113563971b4"
+    },
+    "jtk-20#1": {
+      "decision": "text",
+      "reason": "分野・おもな作品・人物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "1f666f6332a11d15f91d30a922065855b723a115e5ca137af71fc9a8fe017b3d"
+    },
+    "jtk-20#2": {
+      "decision": "text",
+      "reason": "分野・おもな作品・人物・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "357f57f0cbffa3b3d59b0193dbea6842454f0a61a3cd813e0460f368ae924f6a"
+    },
+    "jtk-20#3": {
+      "decision": "text",
+      "reason": "分野・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6b5efad0c26d85045daa68dbea626b4036f3fab4b67fe6d66b7f91451fe53454"
+    },
+    "jtk-20#4": {
+      "decision": "visual",
+      "sha256": "c1febef7d2140d1e5f18e86c83f02e2abb7f01b1d794c3c21bd46456a0540079"
+    },
+    "jtk-20#5": {
+      "decision": "text",
+      "reason": "宗派・おもな人物・寺院・広まった人々を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "765e08a1d4739dabb9fc4fea4494d88ccf7fa2045ad9f54e3a973415d640802c"
+    },
+    "jtk-21#1": {
+      "decision": "text",
+      "reason": "「戦国時代の始まり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "a71cc53abe64ba7fa75abbfde88d6652cf0b2c09598cb577f6b27a1fe6f50761"
+    },
+    "jtk-21#2": {
+      "decision": "visual",
+      "sha256": "de1873e4be2f6976637b7bd4186fe66c188d04f6847b05aac9f31c7411edc2d5"
+    },
+    "jtk-21#3": {
+      "decision": "visual",
+      "sha256": "9a231209104a7c7e949b3add2642788c55d3219baaf66153a6089f023a451b29"
+    },
+    "jtk-21#4": {
+      "decision": "text",
+      "reason": "分国法・戦国大名・おもな内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3310d5890c30a7de86566af0d9be5896efa9e7b0bc013d5fe5cfaff5c364e35c"
+    },
+    "jtk-21#5": {
+      "decision": "visual",
+      "sha256": "368268383cfaa559e4e0bad40468759547d70aa89ea5e0993145a499df0eed07"
+    },
+    "jtk-22#1": {
+      "decision": "visual",
+      "sha256": "d14f307690b1ada68e430ad1aa364a0171dc6895c42d32c505268e50925d117c"
+    },
+    "jtk-22#2": {
+      "decision": "text",
+      "reason": "「キリスト教の広まり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "b2bbe036398f4c6fa84d862ba937ce255ecd2650447cf0321ad8b0962aa54b79"
+    },
+    "jtk-22#3": {
+      "decision": "text",
+      "reason": "「織田信長の統一事業」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "f7488ea3d6de13922a6fdfc19b234eba9c80bf651ba05d3d513000feff0ebdb7"
+    },
+    "jtk-22#4": {
+      "decision": "text",
+      "reason": "政策・内容・結果を行ごとに見比べる表と、「兵農分離への流れ」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "1b1c8ea633caaf6a806b27fcbb7e22117eaa642c1a4b96abb64a2d45080d9d39"
+    },
+    "jtk-22#5": {
+      "decision": "visual",
+      "sha256": "d21eb7e6f1cb095fefa72ebaaadebc88a7fd2953e172d9ff1feb14cbaa601991"
+    },
+    "jtk-23#1": {
+      "decision": "visual",
+      "sha256": "30aa0451fbb40a26e5aebbac8531104abbee54915eaea1e39a5b331d7bbbde43"
+    },
+    "jtk-23#2": {
+      "decision": "text",
+      "reason": "画家・おもな作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0d4fd698d3901560a80f398e6a6ffe49d8cd0ac039a34990ae9fa93913739bc2"
+    },
+    "jtk-23#3": {
+      "decision": "text",
+      "reason": "「侘び茶の流れ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "555c2490c19c7e271d97a90181c3ab371031b785ad2698cb5bb632b3ef35e66d"
+    },
+    "jtk-23#4": {
+      "decision": "text",
+      "reason": "分野・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7be07a0ea217e876b75cb4436eaea2877aacc0b78534d471c628484bb8af250c"
+    },
+    "jtk-23#5": {
+      "decision": "visual",
+      "sha256": "8bd05e164516f42c2bb90c29cd3e1ce7aaf1a7844d419661a4d58925d60f8ae4"
+    },
+    "jtk-24#1": {
+      "decision": "text",
+      "reason": "「江戸幕府の成立」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "4a5e3148ac675b77560db7078784bf1f83b91549ddc948ed38d7cd6dd86211c2"
+    },
+    "jtk-24#2": {
+      "decision": "text",
+      "reason": "大名の種類・内容・配置を行ごとに見比べる表と、「大名を統制する法」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "1b9ffa136c41ba03a38c781a91f5e8cb11c33769c9fce150d8f3eda5081b89d1"
+    },
+    "jtk-24#3": {
+      "decision": "visual",
+      "sha256": "b0fa9eae20b21196eb226e4a5eb65f594e53772243f20f3372b82ca0d56bd0c9"
+    },
+    "jtk-24#4": {
+      "decision": "visual",
+      "sha256": "3284188c2da0e9f226d49ec99f79940fca8d04b719c8a092cda463422b4c5a8d"
+    },
+    "jtk-24#5": {
+      "decision": "visual",
+      "sha256": "dcd361093441fcb2bb3c13579cef928ebac00a0806373acfdddbe2274962589d"
+    },
+    "jtk-25#1": {
+      "decision": "text",
+      "reason": "身分・住む所・おもな仕事・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a8c4b28a147039614033c5dba9353e9bfc29062f4ea6530556eeb93a850cf2d0"
+    },
+    "jtk-25#2": {
+      "decision": "visual",
+      "sha256": "8294187881b23db9c8bc6e822d202cdd1312cc2f74c90efe184f64a980a9a02f"
+    },
+    "jtk-25#3": {
+      "decision": "text",
+      "reason": "負担・法令・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9021226a09d135e07e30a52e173f5bf365fd0ae87a09b8af343ca5611a6827f8"
+    },
+    "jtk-25#4": {
+      "decision": "text",
+      "reason": "土地の種類・江戸の土地にしめる割合（およそ）を行ごとに見比べる表と、町人・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "33b6903fd4fd6b03dc0c71c001a311681766af8d2d0df479bed42bb4dcd7eb69"
+    },
+    "jtk-25#5": {
+      "decision": "text",
+      "reason": "「地方知行制から俸禄制へ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "4b678fbb27d38c88d09e21ac15d4385e172bb6ad4d300d8522544139c101800d"
+    },
+    "jtk-26#1": {
+      "decision": "text",
+      "reason": "「武断政治から文治政治へ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "2ab7b08c38c7485c5fb71faca7c8767f37c1081a6be23d79bad8e76840eb3ee1"
+    },
+    "jtk-26#2": {
+      "decision": "visual",
+      "sha256": "fb06cbe42d0c7ca790f6474c237950f6efe4768e5adbb11764ae843538e1776a"
+    },
+    "jtk-26#3": {
+      "decision": "text",
+      "reason": "政策・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "75644f3229f5132c20ecc07000e899b7879561417b82371c3b10d8e9b5bc61d4"
+    },
+    "jtk-26#4": {
+      "decision": "text",
+      "reason": "「元禄の貨幣改鋳」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "515d421ed85c73083d0fcec160ac8d04518dc4e7d3080e22e035bf2255b44a26"
+    },
+    "jtk-26#5": {
+      "decision": "text",
+      "reason": "政策・内容・ねらいを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "636e7c86d47e5e8e64bbfb40d8d17d076615ce4a902a79fb9f8fae271fd9704f"
+    },
+    "jtk-27#1": {
+      "decision": "text",
+      "reason": "時期・全国の耕地（およそ）を行ごとに見比べる表と、分野・例・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "0467fd2977ecc5ba4acf58605bd1b855ba2721a17801065e8238afc026f31224"
+    },
+    "jtk-27#2": {
+      "decision": "visual",
+      "sha256": "806beb9792549bc023ed8fa9c58b6befeeec0996e9b1c1d3b3f14512428d7de8"
+    },
+    "jtk-27#3": {
+      "decision": "visual",
+      "sha256": "39f949ba2bf88d6e88c3a98dee728a05d83f8655e7b73b3ffb9fd29db056e414"
+    },
+    "jtk-27#4": {
+      "decision": "text",
+      "reason": "都市・よび名・特色・おもなことを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6f40519e2c414a82817e868bd17f91fa736edf2e925806158071f397ab7a3e3b"
+    },
+    "jtk-27#5": {
+      "decision": "visual",
+      "sha256": "3b7dcbcc8a59924d1c7ff8496ab56d07c2971da30983f9b2a0343d28d51d0689"
+    },
+    "jtk-28#1": {
+      "decision": "visual",
+      "sha256": "aa2fc4bd7957083e5eae6351fdc3aa179332a7205950eee855aa3cac46b948cb"
+    },
+    "jtk-28#2": {
+      "decision": "text",
+      "reason": "人物・分野・おもな作品を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "026c254445eda172ced2be575b7a412dd232569b2e55ddb911afceafa0ec1304"
+    },
+    "jtk-28#3": {
+      "decision": "text",
+      "reason": "人物・分野・おもな作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0a32d196e768fd47bb68ab40c71a3d73baed6aef87b4a9908adf4a4b0e57b8b2"
+    },
+    "jtk-28#4": {
+      "decision": "visual",
+      "sha256": "ece6fca4bbce12993022775cd2c48327737ad3f294674a44ce74dec22d51bc22"
+    },
+    "jtk-28#5": {
+      "decision": "text",
+      "reason": "分野・人物・おもな業績を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "864bb35bd32cfec679402ea7690f39b0ada2ecb8d2ef24c6f8fd12481ad74fe2"
+    },
+    "jtk-29#1": {
+      "decision": "text",
+      "reason": "政策・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "4291272cb0ee2dc4f56f315df93d27aa371e27248d2e7b4569235cea58d813f8"
+    },
+    "jtk-29#2": {
+      "decision": "text",
+      "reason": "「米の値段と吉宗の政策」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "dddf005c7c0eefda126a2bf129662e578f55a1f9f14147aebe24fced59f5e455"
+    },
+    "jtk-29#3": {
+      "decision": "text",
+      "reason": "「百姓一揆の形の変化」を順にたどる流れ図と、「民衆の運動」の項目ごとの内容を見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "333698ae1549049e1019ee8778e6d104de0699de7e539a1af7a08307e90a1932"
+    },
+    "jtk-29#4": {
+      "decision": "visual",
+      "sha256": "b602ccc755fb9c3fa10219764c5bbcae6aa1805af31f651cda28bd7e6f6737b0"
+    },
+    "jtk-29#5": {
+      "decision": "text",
+      "reason": "政策・内容を行ごとに見比べる表と、享保の改革・田沼時代・寛政の改革を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "6f62942c836706e12932cc229552e0640778677c98a29d64cd966bd90cd15a79"
+    },
+    "jtk-30#1": {
+      "decision": "text",
+      "reason": "人物・おもな業績を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "6da7190e372958d63f1732b440282c39b602e6430328e6f9d300a3f4e3d5702a"
+    },
+    "jtk-30#2": {
+      "decision": "text",
+      "reason": "「国学の流れ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "ad078bef73d7e8634e88a602df33d1f14ddf8506ac6f2171ad25267ee7001abe"
+    },
+    "jtk-30#3": {
+      "decision": "text",
+      "reason": "人物・思想・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "58a695e3796edaf9a9175a6ee5e24b64d56fa84473d1e1e5f6330e4a45611d21"
+    },
+    "jtk-30#4": {
+      "decision": "text",
+      "reason": "教育の場・学ぶ人・内容・例を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a83ed63eea0e644be135ca2e810971d74b6a7aaee19fcab776778e079ab393e6"
+    },
+    "jtk-30#5": {
+      "decision": "text",
+      "reason": "分野・人物・作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "983caf657607d7b866cd9ed25db89b58bc9c7d7fb48b3768eea8761d71c5cb15"
+    },
+    "jtk-31#1": {
+      "decision": "visual",
+      "sha256": "a5d63d4e8f3702a6fcb9955c8c4897a6ebb1cd44595d8408b398d2112605e799"
+    },
+    "jtk-31#2": {
+      "decision": "text",
+      "reason": "「異国船打払令と蛮社の獄」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "0a3af6812562d19bdbca95df858767e2fee763958cff7d0c651cb033a710bccb"
+    },
+    "jtk-31#3": {
+      "decision": "text",
+      "reason": "「大御所時代と大塩の乱」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "fdde4d5c9832acc283eef080839a7cc02185e6a75b93b336b988ecffd89680d5"
+    },
+    "jtk-31#4": {
+      "decision": "text",
+      "reason": "政策・内容・結果を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "639350f506e8ab3557ce2400f0be598981c0efc319da7e05db0ba671d512f4ac"
+    },
+    "jtk-31#5": {
+      "decision": "text",
+      "reason": "藩・人物・おもな改革を行ごとに見比べる表と、「工業の生産のしくみの変化」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "bcf6fe95562ea42fa0fd1927bfb1a9b6180e81217b806cda228427bf33d39a55"
+    },
+    "jtk-32#1": {
+      "decision": "text",
+      "reason": "元禄文化・化政文化を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "07fdcc9d82b86dc07c45ed0d42607189bf7a1a7b26ca014e173c5b53eb6b8a28"
+    },
+    "jtk-32#2": {
+      "decision": "text",
+      "reason": "人物・分野・おもな作品を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "c971050db21bbfc88766f37a245a0c94e3b528d445d1be5a2cbda5514f5742b7"
+    },
+    "jtk-32#3": {
+      "decision": "text",
+      "reason": "人物・分野・おもな作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "dccf78f7a29efad364ea3ca3cdc40de32ec14bde7c07e1c0dfec748d7cb5f22e"
+    },
+    "jtk-32#4": {
+      "decision": "visual",
+      "sha256": "3c8d673c07a84bd87774ac7514e33b085286568617b141000766268afb85d9eb"
+    },
+    "jtk-32#5": {
+      "decision": "visual",
+      "sha256": "42690ea2a2c0b51b98d3a498f9bd11a242b5c244b803fb3167848b838ab12d45"
+    },
+    "jtk-33#1": {
+      "decision": "visual",
+      "sha256": "9ce6acea7981c34c575f5a5992b9f19ed3cb0872b246d4f2087c3fdf794ee11f"
+    },
+    "jtk-33#2": {
+      "decision": "visual",
+      "sha256": "c82e9b45c8d1df26ae9f9aa991d386f10ab210c5e70edc7496f3738be8fb5c74"
+    },
+    "jtk-33#3": {
+      "decision": "text",
+      "reason": "「開港後の貿易」の項目ごとの内容を見比べる表と、「金の流出」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "245e61dfc120e97886a5eb5062ade569ed8cabe02ac2eddb9ec2bb0c27bab1f6"
+    },
+    "jtk-33#4": {
+      "decision": "text",
+      "reason": "「政局の動揺」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "2d8d48dd771c3836a1c6fc2e1038983cb0ca4857e938617c6ca91f8b58adb9a8"
+    },
+    "jtk-33#5": {
+      "decision": "text",
+      "reason": "「尊王攘夷運動の展開」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "fc621e080056e5a24d2b8baa931a05c65da37046cba9fc78a4fef471a1d28947"
+    },
+    "jtk-34#1": {
+      "decision": "text",
+      "reason": "「倒幕運動の高まり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "6fd7762259bb254a7cd7bf7143e7036ae6bd3adee8c439522828b1d727c6ec2c"
+    },
+    "jtk-34#2": {
+      "decision": "text",
+      "reason": "「大政奉還から王政復古へ」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "478a8a5fbd514343e455a839bc8d5b48488558b2924d785f7b4a2e6ce2ee6900"
+    },
+    "jtk-34#3": {
+      "decision": "visual",
+      "sha256": "e57d8de5cf3ef1d01b04e59c24ecaad52c815acfc562281cf9af07042f2f3409"
+    },
+    "jtk-34#4": {
+      "decision": "text",
+      "reason": "五箇条の誓文・五榜の掲示を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "001d6f870647bafedb7d20e0ca3e2be47723b651b51b5c500d3c31bb62e7a882"
+    },
+    "jtk-34#5": {
+      "decision": "visual",
+      "sha256": "1131f7a018a9eb78ac9f0b5a074fcefe3716bac3ee037a88644a8d84ffc94179"
+    },
+    "jtk-35#1": {
+      "decision": "text",
+      "reason": "「中央集権体制の確立」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "b9a40b4f6818d2c5f35181851dc621b07563580b8d90b412c0ecf19ae3187d9f"
+    },
+    "jtk-35#2": {
+      "decision": "text",
+      "reason": "改革・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "bd13d4e7de0a3285e9847b8c7b7ccc605670fedee17793631e014b3caaec979e"
+    },
+    "jtk-35#3": {
+      "decision": "text",
+      "reason": "江戸時代の年貢・地租改正後の地租を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "bcc8ee9a38d80cda170be43fdf49da5ad0f6424ad842d36c3aff9e0d66ecac28"
+    },
+    "jtk-35#4": {
+      "decision": "visual",
+      "sha256": "c9837ff84417e5f63876713208de4cf91c17bab05fef08d337f6e08e76924c44"
+    },
+    "jtk-35#5": {
+      "decision": "text",
+      "reason": "分野・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9e4c70692179a8d52cff178929a17adfaf318e3a7eb1895200eacbb0206e71ef"
+    },
+    "jtk-35#6": {
+      "decision": "visual",
+      "sha256": "78c59546a09cf175adc53e7205b151e50a6d9a9456ced2f6f5519fd7834a0784"
+    },
+    "jtk-36#1": {
+      "decision": "text",
+      "reason": "「自由民権運動の始まりと士族の反乱」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "a72f2e61b3675e2caaf4c188a07b4ddaf56434cc80960e21366f917186a10a16"
+    },
+    "jtk-36#2": {
+      "decision": "text",
+      "reason": "「国会開設の勅諭までの流れ」を順にたどる流れ図と、政党・中心の人物・特色を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "6338f6e7074deb4b560fb972abbd32478055540dfdfc71062c4cd9848f745a52"
+    },
+    "jtk-36#3": {
+      "decision": "text",
+      "reason": "「松方財政と民権運動の激化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "aefb34a08234718a08484e0554f06db7c7ebebbc12aab83201b400e0e02e49ed"
+    },
+    "jtk-36#4": {
+      "decision": "visual",
+      "sha256": "4a99a375dbe782394244493421e15de8705f9dc49e278c8eb5edf6b3de5268ad"
+    },
+    "jtk-36#5": {
+      "decision": "visual",
+      "sha256": "ec88e3e40e657b5f8a6222d1f7bba673ddf36a02206711832580d64d743b05c9"
+    },
+    "jtk-37#1": {
+      "decision": "text",
+      "reason": "「条約改正の歩み」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "bb35f2c1cb3e9fe21db7a76dd85752538c3ca4eeace331a295af87e686cc436b"
+    },
+    "jtk-37#2": {
+      "decision": "visual",
+      "sha256": "281b6bb66eda900067cc1c9f8258efd2092e81ee052c489526b88877863386e5"
+    },
+    "jtk-37#3": {
+      "decision": "text",
+      "reason": "「日清戦争後の政党と政府」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "76151a74ab3b39dfbbafccff57dc2910ee5c1fe69d1bf661a55f6b13f1870f09"
+    },
+    "jtk-37#4": {
+      "decision": "text",
+      "reason": "「中国分割と日英同盟」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "aff3e02cb7974a26db01c104331ef4e024c27e31b5dbdc1b1eccbfd2d3e755d7"
+    },
+    "jtk-37#5": {
+      "decision": "text",
+      "reason": "日清戦争・日露戦争を行ごとに見比べる表と、ポーツマス条約（1905年）・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "5ed9274c3ea8c60b8c0d3865d68d1b83c0a6c5d0a652fca73031f5dabf30471e"
+    },
+    "jtk-37#6": {
+      "decision": "text",
+      "reason": "「韓国併合までの流れ」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "7776a79e69bd9b29da49ff744a7b597b21ae21eff56753b475c02b6107972fd1"
+    },
+    "jtk-38#1": {
+      "decision": "text",
+      "reason": "「大正政変」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8220d44135a8279f503d63f7468ae49899fc5c23aff8c2a58d0a4a2ff03a8f53"
+    },
+    "jtk-38#2": {
+      "decision": "visual",
+      "sha256": "fff491d9d39583b7f3ae925bd739ac8e8b34ec9db7039db195b0311ef94fcf0c"
+    },
+    "jtk-38#3": {
+      "decision": "text",
+      "reason": "輸出先・おもな輸出品を行ごとに見比べる表と、「大戦景気による変化」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "24c43627597faab10291952f95f8c10e5e3bcb71701a3b3477974920cf14aa3d"
+    },
+    "jtk-38#4": {
+      "decision": "text",
+      "reason": "「シベリア出兵と米騒動」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "7f49a7ff00b689c30fdab10c0c589f5087259d755b2183722455d7e5e76d1d2c"
+    },
+    "jtk-38#5": {
+      "decision": "text",
+      "reason": "「パリ講和会議と東アジア」の項目ごとの内容を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "7915e6a898c76daf10404732b2fdc380cbb6913c11d36902d4e9c0e44665e6be"
+    },
+    "jtk-39#1": {
+      "decision": "visual",
+      "sha256": "4921f36f2deee49aba5a1ab1ab4c4863047f811b3985f81f8345f09878080a67"
+    },
+    "jtk-39#2": {
+      "decision": "text",
+      "reason": "「協調外交とその変化」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "d6e357b236a4a8cfcee85dd6c1fbeebd0689ad1c33ce103fa85b644870593011"
+    },
+    "jtk-39#3": {
+      "decision": "text",
+      "reason": "人物・考え・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "50735eb5b1ce3df00a476d9fa2e25a073c9e75961f33e9d3f05c3b3dd7fbde63"
+    },
+    "jtk-39#4": {
+      "decision": "text",
+      "reason": "「第二次護憲運動と政党内閣」を順にたどる流れ図と、選挙法の改正・選挙権をもつ人・人口にしめる割合（およそ）を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "081c5173aea624ace94c7bf302fdb29ff85ca572223a9a529eda08111f354d33"
+    },
+    "jtk-39#5": {
+      "decision": "text",
+      "reason": "運動・組織・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "de9cf0a3b6022edd8ab4b1b39f87d265be49bc75d4600e92b3c36055fa748871"
+    },
+    "jtk-40#1": {
+      "decision": "text",
+      "reason": "「紡績業の発展」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "7188326e912a8f1bfff32590d8ca4e3924bccf3ea489da03880aa1f943b2ca92"
+    },
+    "jtk-40#2": {
+      "decision": "text",
+      "reason": "紡績業・製糸業を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "ca2b4ae506839133a9c839c808f40765ce9b3c4e4b05e8ab66b7f6141abe00a3"
+    },
+    "jtk-40#3": {
+      "decision": "visual",
+      "sha256": "c4b9c942cd3cd57231394a8c5bb59a26154728ee823433a5af6d38b7bf63cb68"
+    },
+    "jtk-40#4": {
+      "decision": "text",
+      "reason": "「寄生地主制」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "69eec5b9f120d99159d7917a5fac06848a4d24e326a66cc7df7195c97210c7d8"
+    },
+    "jtk-40#5": {
+      "decision": "text",
+      "reason": "問題・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "5cdc44693a1ddf42baa312e7b6b4db55f4016dd9e0755002c25118bd84fd064a"
+    },
+    "jtk-41#1": {
+      "decision": "text",
+      "reason": "分野・人物・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "594013a5d523bf19fc886b173cdee29db4dde502535f8d7f025e943c88f1d9c4"
+    },
+    "jtk-41#2": {
+      "decision": "text",
+      "reason": "年・小学校の就学率（およそ）を行ごとに見比べる表と、「教育制度の整備」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "d777e1bcdd92d9817fc12ac1e46dd85a6cc881470b20f69686377aa039400245"
+    },
+    "jtk-41#3": {
+      "decision": "text",
+      "reason": "分野・人物・おもな業績を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9cd6f6ce42e556c2ee6657c79fbeea36cf295b09f8efde8d83e0d8151be858ec"
+    },
+    "jtk-41#4": {
+      "decision": "text",
+      "reason": "流れ・人物・おもな作品を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0fd991c71bd96e334bb05e03f7563d186c3f91e06f59b1a74eb2128237bea14d"
+    },
+    "jtk-41#5": {
+      "decision": "text",
+      "reason": "分野・人物・おもなことを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "03e1f50f348395548fbe5e6e1f3cef377725381fad3eb0ceeafe2437d1055081"
+    },
+    "jtk-42#1": {
+      "decision": "visual",
+      "sha256": "4ccacfec50843839b31809b66c8a242f1ad03f71b10596c49ac472d5baf730d9"
+    },
+    "jtk-42#2": {
+      "decision": "text",
+      "reason": "メディア・おもなことを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "fd748d7524bfae2607ce61a3befa4dd3fceb036088f0401d76435965b020af43"
+    },
+    "jtk-42#3": {
+      "decision": "text",
+      "reason": "分野・人物・おもな業績を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3f93c0514eb121bd871f439591d17506e9ede4dfd036d5b8703b2a313a246e7e"
+    },
+    "jtk-42#4": {
+      "decision": "text",
+      "reason": "流れ・人物・おもな作品・特色を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "bc05536bb3527b0e40c37a52a9a4f1df530b05922b60035051fee795d0e8130c"
+    },
+    "jtk-42#5": {
+      "decision": "text",
+      "reason": "「関東大震災とその影響」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "93145046cdb680c98fa448a7d046f7f4c6c28620578726d4a58235e163e3bf62"
+    },
+    "jtk-43#1": {
+      "decision": "text",
+      "reason": "「戦後恐慌と震災恐慌」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "1b931e07de0ff725e420be8b6e42cb4a9df473361a45ed2d772dd7884a0370a3"
+    },
+    "jtk-43#2": {
+      "decision": "text",
+      "reason": "「金融恐慌」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8b05f8316271994dc82f340f6a40d7eca5a22f489158fc28539099514a116571"
+    },
+    "jtk-43#3": {
+      "decision": "text",
+      "reason": "「金解禁と昭和恐慌」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "26574df5d5c5678ef5e5e3adaa478062148acc8d9dc5fd976f104ddf6a96b90b"
+    },
+    "jtk-43#4": {
+      "decision": "text",
+      "reason": "「農業恐慌の流れ」を順にたどる流れ図と、「農村の窮乏」の項目ごとの内容を見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "cce6d5d3cc6dc14755fa54c3660710d4fb2e191bb57cdc73c6359d9549f34296"
+    },
+    "jtk-43#5": {
+      "decision": "text",
+      "reason": "政策・内容・結果を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "746c04a5556905f594c02f715250fa3db197196298883b6b9fe3c2289edb4513"
+    },
+    "jtk-44#1": {
+      "decision": "visual",
+      "sha256": "c3b69482e8a2e6d016f56f28bc9f8d9d3978d4f3488c4f50a4f79d560b22e95c"
+    },
+    "jtk-44#2": {
+      "decision": "text",
+      "reason": "「国際連盟からの脱退」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "e830a426277f866081040a2071397b24809eecd0fc1421bd670797f5490e1fab"
+    },
+    "jtk-44#3": {
+      "decision": "text",
+      "reason": "「政党政治の終わり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "492446fc94c60de4beaef1ecbffc9f637e45c86fc68bd52fb308e9c367fda311"
+    },
+    "jtk-44#4": {
+      "decision": "text",
+      "reason": "年・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "5288249aafa49e4744a6d87f3b843867ccf3d0543016414ca4751ab85d63e8bf"
+    },
+    "jtk-44#5": {
+      "decision": "text",
+      "reason": "陸軍の派閥・考え方を行ごとに見比べる表と、「軍部の台頭」を年代の順に並べた年表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "cf1ca79d35a9221241626dd261715e8cdec158c4fd5b613f6f51944f48f9a01b"
+    },
+    "jtk-45#1": {
+      "decision": "visual",
+      "sha256": "1b9211381b5e353c17de75bc3bbb72dcee7261aa873d888ca3faccb135283793"
+    },
+    "jtk-45#2": {
+      "decision": "text",
+      "reason": "政策・組織・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "a3f22e49d2c2ba0ed0ef66c61e79adbb05a175ea23588754b3d5a80c9a9d52c8"
+    },
+    "jtk-45#3": {
+      "decision": "text",
+      "reason": "「日本の南進と日米関係の悪化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "659796c8dc45f21ebe95573f6129631135e140aec1ac06a95d1f4d03f4fdaaf7"
+    },
+    "jtk-45#4": {
+      "decision": "visual",
+      "sha256": "ff97dc44c3ec5732adbdae4bb9039464f31c08d7d8924213041d17639d2b7ce3"
+    },
+    "jtk-45#5": {
+      "decision": "text",
+      "reason": "「戦時下の生活と植民地・占領地」の項目ごとの内容を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e0b203808fbc94601979ea4a633b849390f4ab13bc97df04c10dbd1b36d5d65a"
+    },
+    "jtk-45#6": {
+      "decision": "text",
+      "reason": "「敗戦までの経過」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "851279eccbf8b1421014ea695d9686d3149a750524e8fa2943ddcd5408ba9636"
+    },
+    "jtk-46#1": {
+      "decision": "visual",
+      "sha256": "54f3cdd94d15254d486faed89c458199e67b211080c55cc3ad5d2df7bf8b058d"
+    },
+    "jtk-46#2": {
+      "decision": "text",
+      "reason": "政策・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "edfd641a5648fdaace40a4ef662f8a533d4904bea6ce31a29e5bed8d35b18f29"
+    },
+    "jtk-46#3": {
+      "decision": "text",
+      "reason": "年・耕地にしめる小作地の割合（およそ）を行ごとに見比べる表と、改革・内容・結果を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "9719d2481f3538b659d5363480311859473fc8a7e919ca7a3688c3fcf93eb8ae"
+    },
+    "jtk-46#4": {
+      "decision": "text",
+      "reason": "分野・法律・制度・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "429ff41bb66010c2a8c88bc17da45380c99d80ab8acba0c3e5f12348957333d4"
+    },
+    "jtk-46#5": {
+      "decision": "text",
+      "reason": "大日本帝国憲法・日本国憲法を行ごとに見比べる表と、選挙法・選挙権をもつ人・人口にしめる割合（およそ）を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "cf62ed3ee77c4d895a29821d9f8bfd520efbed4d519b5feb9823d2940482b7ad"
+    },
+    "jtk-47#1": {
+      "decision": "text",
+      "reason": "「冷戦の始まり」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "36296719dc2867700ab4d979c79d17e992f507dc114a37c3086323cdac0adddd"
+    },
+    "jtk-47#2": {
+      "decision": "text",
+      "reason": "政策・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "b47a267a401d9cfee7b1c61ca00938972900d8774bdd63c2f64877d22e74d054"
+    },
+    "jtk-47#3": {
+      "decision": "text",
+      "reason": "「朝鮮戦争と日本」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8fb89f2694a24141e4bee85ea5feb4e3fb18736ed26d2c5c64b7a714990c8f53"
+    },
+    "jtk-47#4": {
+      "decision": "text",
+      "reason": "「サンフランシスコ平和条約と日米安全保障条約」の項目ごとの内容を見比べる表と、講和の考え方・内容を行ごとに見比べる表が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "936c2ae3b436effea64d25839f30c5e2c41b68cf26579fd9a63e3821ebf10c28"
+    },
+    "jtk-47#5": {
+      "decision": "text",
+      "reason": "「独立後の外交と返還」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "9eda7634b9d32b8edd600c6c45528f14683ec8e450c8c362d3a5faafba3ffb1f"
+    },
+    "jtk-48#1": {
+      "decision": "text",
+      "reason": "「55年体制の成立」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "8c379ded6a5846ac35099847ca8ad95297dbaefb203a520dc8c4c2e1ee1d1abf"
+    },
+    "jtk-48#2": {
+      "decision": "visual",
+      "sha256": "6c68a5ba4492dfd42e97e8daecb4ee74a90f9aa7da1c97f9f86953d3786969a9"
+    },
+    "jtk-48#3": {
+      "decision": "text",
+      "reason": "日米安全保障条約（1951年）・新安保条約（1960年）を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "0b138075dc97aa28735c21bfd5c34934125bc17477b6d3cc35f7e896cd902dbb"
+    },
+    "jtk-48#4": {
+      "decision": "text",
+      "reason": "「池田・佐藤内閣の政治」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "7df09f72e1f75c4a71c45f23e66b8d79cd4024d926bb0754ecd361c7545a9643"
+    },
+    "jtk-48#5": {
+      "decision": "text",
+      "reason": "運動・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "8bf89a16a5c5cb1b94ed7bcb06acd5848161e81e7f6ebb170c8a6c99067686a6"
+    },
+    "jtk-49#1": {
+      "decision": "text",
+      "reason": "好景気・時期を行ごとに見比べる表と、「高度経済成長の流れ」を順にたどる流れ図が中身で、2つを並べて読むのがいちばん伝わる",
+      "sha256": "18dcc62b5cef9d2b68be0c00f7b52cb4d3178decb8280fefcd2bdd17836b41b1"
+    },
+    "jtk-49#2": {
+      "decision": "visual",
+      "sha256": "0eed33dd64e2622c575d85ca81db348b6f35e661559e1f8c0713e1a3847ea0db"
+    },
+    "jtk-49#3": {
+      "decision": "text",
+      "reason": "時期・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9525e49987e3281cce244a4101c800d7c0c64d19b3d01b97c41afdcf4ff0af8a"
+    },
+    "jtk-49#4": {
+      "decision": "text",
+      "reason": "「農業の変化と過疎・過密」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "2da38c70ff23b37b565885e9f4edd912f82576be84ecc19fec6b82aebcbf70ce"
+    },
+    "jtk-49#5": {
+      "decision": "visual",
+      "sha256": "c3641e7eef5da697d137005688d52e76a03ca89ef48bb4a7d0c29a7aedd2c5c9"
+    },
+    "jtk-50#1": {
+      "decision": "text",
+      "reason": "「ドル危機と石油危機」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "c76e541fa593e34890328e4496b2e1ecdfe57ebb4e40517920904655d19416f4"
+    },
+    "jtk-50#2": {
+      "decision": "text",
+      "reason": "「1970年代の外交と政治」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "7785d8a653aa437429956cbe79cda3357b937dc9f7f2c0225cc2c6114285e805"
+    },
+    "jtk-50#3": {
+      "decision": "text",
+      "reason": "高度経済成長の時期・石油危機のあとを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e93243c93ce134e54c09a547326310d0a41b7ad2f3453c8c6a35aef075c8261e"
+    },
+    "jtk-50#4": {
+      "decision": "text",
+      "reason": "年・改革・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "9838e88350bf847894c5e4237c1f2503593fe148056987083578fc2d041374ce"
+    },
+    "jtk-50#5": {
+      "decision": "text",
+      "reason": "「プラザ合意とバブル経済」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "2009ee1e31256ecac1493e4a1eb41ecdd7d2a1a30f7266f2aa7ae91d8385aa98"
+    },
+    "jtk-51#1": {
+      "decision": "text",
+      "reason": "「冷戦の終結と日本」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "7a65c957b98b26799922434c801f233b9d05074ee9f622a632942c391b9dcf95"
+    },
+    "jtk-51#2": {
+      "decision": "text",
+      "reason": "「55年体制の崩壊と政治の変化」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "262e1d62ef7af6bb55c7ea1329e6151c2aedfcc9dc83aa10ec8734f251286854"
+    },
+    "jtk-51#3": {
+      "decision": "text",
+      "reason": "年・出来事を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "fb4cfa38ecdf5f8c9f0442fda0a29521a8015141b55427c73c4b9733ba671c5a"
+    },
+    "jtk-51#4": {
+      "decision": "text",
+      "reason": "「社会の変化と大きな災害」の項目ごとの内容を見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "e957dcc976363d181e4d3fd85e2c0726306c0a62d07c19962a343c0e736b924d"
+    },
+    "jtk-51#5": {
+      "decision": "text",
+      "reason": "「国際社会の中の日本」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "f0c78f18984265f0a33ffb1ebd7a2e0d70560d783a01bc1abac5e20732cbf0ea"
+    },
+    "jtk-52#1": {
+      "decision": "text",
+      "reason": "「探究の進め方」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
+      "sha256": "91b1ab43699a00a129f81c8233d9e2d9965aaccd57e1393d8d3a0ff552e89999"
+    },
+    "jtk-52#2": {
+      "decision": "text",
+      "reason": "資料の種類・例・読むときの注意を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "535a8fe46ccd8a14eb8926529823c442a102dd6c494aeead7cd6e58cc159da43"
+    },
+    "jtk-52#3": {
+      "decision": "text",
+      "reason": "年・日本の人口（およそ）・ようすを行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "3c343e73d267002c2c07eeb7c297f4f267f07dc9d1d09a540b03725e027f628a"
+    },
+    "jtk-52#4": {
+      "decision": "text",
+      "reason": "「おもな災害と防災のしくみ」を年代の順に並べた年表が中身で、前後関係を追うのがいちばん伝わる",
+      "sha256": "d7c3d68a954d0d6bcf77214b95caceb2a85ebef67f33b07e57b716b96e8ce239"
+    },
+    "jtk-52#5": {
+      "decision": "text",
+      "reason": "年・法律・出来事・内容を行ごとに見比べる表が中身で、表で見比べるのがいちばん伝わる",
+      "sha256": "4e3422c0caab3792120e12a5459fa2ae4d24a46b1f7073f4addc65e48dd10551"
     },
     "sc1-01#1": {
       "decision": "visual",
@@ -3651,8 +6091,14 @@
     "gso-02-q09": {
       "sha256": "c42ad6b71b777085b7a59639e7d6142f3c6c60cb5654efc9b88446760e562a48"
     },
+    "gso-02-q12": {
+      "sha256": "fd7fac69d2f7de24729e45c4c6cea88494a6f76a98029e78787afdfd47c47b3a"
+    },
     "gso-03-q08": {
       "sha256": "3f5a9102e64df02ba67a83f90000fd9e304822dccd66bd679b78bf1569a7bdc0"
+    },
+    "gso-03-q12": {
+      "sha256": "7f130cd3fd1b8e479f629b2dfdf46c0964a925c5d09c3dbad2d4bc6960d52c61"
     },
     "gso-04-q01": {
       "sha256": "e55b897502ff16a9f9b510b6728d23f276c1ff74b24da50ac60e850b57bf2309"
@@ -3660,11 +6106,17 @@
     "gso-05-q04": {
       "sha256": "f11b760acb024ca535732832dfe9f10ad7626f08929c0e2d2d0058776d396bc4"
     },
+    "gso-05-q12": {
+      "sha256": "08c3b4d601f56503f98bc9e74d93cb6a3fae6b72393ed5a931d1bf4434a90d15"
+    },
     "gso-06-q04": {
       "sha256": "11b10d73b2ec95196f8235c86a02eb282e1aeea8f6bf3c55ed44970a72920bc1"
     },
     "gso-06-q07": {
       "sha256": "8eb6b4e7320094e8ceacdd1d6add4a56241abc7f1554c92e083e77bfd66dfc2b"
+    },
+    "gso-06-q12": {
+      "sha256": "732e4cb24c13fed0ea7603ab203207d4d40d50cbf67e3c9683f8c119cdb3b7a4"
     },
     "gso-07-q05": {
       "sha256": "abb7f8201a06c59cf5f90bcaad9c69cdccbd0a675038fdd64d74220cc95493b4"
@@ -3678,6 +6130,9 @@
     "gso-09-q07": {
       "sha256": "b497701f4b76fbf40f29f7330ca4a151d477baab27a5892ed863e72922dc1bae"
     },
+    "gso-09-q12": {
+      "sha256": "3980bd20b087d0644b8d7fd8e92aa546b9a8f0ec98fe053fde462048bea72932"
+    },
     "gso-10-q04": {
       "sha256": "313cc4e91e8fdd56f4869cbd5873abd2af98577ce9f557db98b651c70f910acb"
     },
@@ -3687,8 +6142,14 @@
     "gso-12-q07": {
       "sha256": "3b78f2223ef40bbc1ce9b8739f14fda20e22626234687ac995f84b97fd4c53dd"
     },
+    "gso-12-q12": {
+      "sha256": "fef5fde2b0a9a221d320c9fb5a378f17f7e6bdc52c0e071d608c8bc5981592cd"
+    },
     "gso-13-q07": {
       "sha256": "3f5250a7bc0b2387f12edcbfa25293509e0feb2f3c43c2f9c1791d2edf3301c4"
+    },
+    "gso-14-q12": {
+      "sha256": "ab91c616328fb35a31183f8a704f9afcc056c24f7bc043e71f18db70ae30722d"
     },
     "gso-15-q01": {
       "sha256": "67b9caf4f939520e251034bbcb175b7fddf295692f11e936830021ac7aecc265"
@@ -3696,20 +6157,221 @@
     "gso-15-q07": {
       "sha256": "34c9f352d4c43a0927bb37a4c1fd5f1ca1dcd3172d609f0c2c86ab0f01b0d43c"
     },
+    "gso-15-q12": {
+      "sha256": "2461963b7d0f4ec087b6f28b7bfaae3e5622832e894344d0e1705a5f78727e73"
+    },
     "gso-16-q08": {
       "sha256": "4d541f010050025ef1be54e85cf072a5d7abbc2989a2ba4cc4d52edeeaa0084c"
+    },
+    "gso-16-q12": {
+      "sha256": "d4b65fb3b93d3b2dced87666ea70bae5ad0ff5b0c3479e580fdd0a4868e36dcf"
     },
     "gso-17-q04": {
       "sha256": "e94738594f8cad48156309f89f17fb2d25b28654e0cc0134e57fd24b6eb287b6"
     },
+    "gso-17-q12": {
+      "sha256": "e32acbbf4c740f4e21ca94397fee981f0427cfbfb66d6a6d6ac8478c2e7389e8"
+    },
     "gso-18-q09": {
       "sha256": "7f08d3f12e0860244702868504561aa4860a3d40d3dd0bdd80bb07ed8bc44acb"
+    },
+    "gso-18-q12": {
+      "sha256": "22d04e9a1af3a21aa4fe16149330ce5b344b3eed228cc74329f05d34b5cd961b"
     },
     "gso-19-q08": {
       "sha256": "10b3c0130580c47f06eef0dde365fc8bcc9fc68cfef8d08e0905cc7159dfd248"
     },
     "gso-20-q08": {
       "sha256": "d3e033013dcfb6e7b27a40d42d0604c85dfe4c50d6ff4c21823990e8314148aa"
+    },
+    "gtk-01-q09": {
+      "sha256": "26c973878afee77c26bfc5d007649bf7eb32792d102bd28137c3d7195c20829a"
+    },
+    "gtk-01-q11": {
+      "sha256": "cfb9415fd1967f2c861610b855dcbd92f7dbf521edd049276819bcf845be54f6"
+    },
+    "gtk-02-q09": {
+      "sha256": "488dd838160c9ae76f26e9f8d19d20aa1d73835977e1d2f83fe34280300508be"
+    },
+    "gtk-02-q10": {
+      "sha256": "5f7efa0243f23b8c69700ead6b35c4a237c95d0c820466130c3f235a860ae836"
+    },
+    "gtk-02-q12": {
+      "sha256": "61983e6b9c1932f4756148d72cd1c26edee4b7e9cb6e59ead912ea8dd7c86a46"
+    },
+    "gtk-03-q09": {
+      "sha256": "13a4f30a6100b3c9603ad0034e0bd27b8684adeca9489746c640488fbe483f7b"
+    },
+    "gtk-03-q10": {
+      "sha256": "b9038b58fc6ba0675d83a8b57b577217869399ef575a587b3f85e29c18fe00f7"
+    },
+    "gtk-04-q09": {
+      "sha256": "c597bf6b1ef0a0e4886429c238e5dd395f712c030c40c935a18816ab42861712"
+    },
+    "gtk-04-q10": {
+      "sha256": "ee102bdbd8326a1721dad57f23b0c442f5c232cf07f7cda2578f360afe88ec3a"
+    },
+    "gtk-05-q09": {
+      "sha256": "bf20005a8e68002ef42da4aae630cec32f4911e88a1907b0d1ff0663232bcfd6"
+    },
+    "gtk-05-q11": {
+      "sha256": "87c4fa1e1d1792a1bc3e656219abdb081fae0da5bad349d48201ae2bd3b1fef8"
+    },
+    "gtk-06-q09": {
+      "sha256": "255348fb34be4baf56dd6ddd2f9a9d66146ae2c6d78768740fd967d1b7ca2862"
+    },
+    "gtk-06-q11": {
+      "sha256": "51c0fdef45090ba54b461ab58dbd441ab4408159bc12bfccfe3e38ac9cbea5b3"
+    },
+    "gtk-07-q09": {
+      "sha256": "7ed05daad55e5c3b1815cb06810f431a21ed6a32831b98ae83f1138c322c9791"
+    },
+    "gtk-07-q10": {
+      "sha256": "426e74cb96d354f54958c2e9717bb6f585e9dc462309d2f524bdc9a1c1db91c5"
+    },
+    "gtk-07-q11": {
+      "sha256": "b98187dbc0ef04c79f56445a7b4249ab185cc7af5b80453a9679e7001b5a56bd"
+    },
+    "gtk-08-q09": {
+      "sha256": "2be4b02db9bd83358b8506080ea9edcb9085eee700cf8b4d01ba1cfa2a4bc3cc"
+    },
+    "gtk-08-q10": {
+      "sha256": "6111d2417c145a6acfa2f86713cd46adb9ca723dbc993d245260c1fd27f5c8e4"
+    },
+    "gtk-09-q09": {
+      "sha256": "7664fbc0f541cff44f8c148d1734d1970627d928838bc4105b09775ce0e445d2"
+    },
+    "gtk-09-q11": {
+      "sha256": "e07651f5ee03baa26bd42da06b2a68fdb5d3ebb26a5525e427717cf470999e83"
+    },
+    "gtk-10-q09": {
+      "sha256": "2d8a55b1c2f707dc9c0e0dac902f83a1edfd98da207292a13d3d11d90e55c7ab"
+    },
+    "gtk-10-q10": {
+      "sha256": "340ec2682ce9ccd3fac8c6e1b052aeaa974dc76a5f62560d8e2b4fabcd82d85a"
+    },
+    "gtk-11-q09": {
+      "sha256": "f0d2806b4fab14dd32c61932da3230705e9a69a990c0d5cf71dc9c884bc7bddd"
+    },
+    "gtk-11-q10": {
+      "sha256": "01304658776f34316d3b5c3069cab19a68b472f7a431d949a27aa55ee7bc8b1e"
+    },
+    "gtk-12-q09": {
+      "sha256": "197a869f10769e0177f1da8d9ad2c56c1a566aa70848507d557f40de82058414"
+    },
+    "gtk-12-q10": {
+      "sha256": "6a68b89def6ebfe2207ca0c56a7d8961c46ef70952b3b8db9eb24b5801cff8ea"
+    },
+    "gtk-13-q09": {
+      "sha256": "8d6a1de3e246a1c97e7b3e1e8ba2f64ca84b16e8fa2704d43b289d31746c5db9"
+    },
+    "gtk-13-q10": {
+      "sha256": "a76939b1b1f4fdd798417770f48c460060287e3b505b1953217127648fdda250"
+    },
+    "gtk-14-q09": {
+      "sha256": "ddb15ea80a5e9a58f9d750dd80811a43c21a07da63814de8d77d83d1ba874310"
+    },
+    "gtk-14-q11": {
+      "sha256": "7cc7f83d0221c4df2dc41f14890eef5461e2a13733832f31c05feb08916f3b00"
+    },
+    "gtk-15-q09": {
+      "sha256": "357425f6a0c169d6daeb780964a9a52878d6aeeb6b262da6afde33ef4d3a653f"
+    },
+    "gtk-15-q10": {
+      "sha256": "e08a877f4e735c36e6a72b0081be9dcdafaf64e63576be7c05046624b0b18cef"
+    },
+    "gtk-16-q09": {
+      "sha256": "1bb7edeb927deb3fdda764cf09c36e344b8ae688f057a82c7c8a57770f991631"
+    },
+    "gtk-16-q10": {
+      "sha256": "795181221322fdd6835766843b70d54838acf0e56178cdd13bc61663a995c3e7"
+    },
+    "gtk-16-q12": {
+      "sha256": "2587518378765a56d3e1a5afea5695adad854ee9b3de2ab975c468625420a18e"
+    },
+    "gtk-17-q09": {
+      "sha256": "ac727a1a2885b1e1a204097741494734cb0f561d573f57a83e2d0bd52793d1fb"
+    },
+    "gtk-17-q10": {
+      "sha256": "fcc7754888d9d685e37493a69845a4fc945c42b407cfefcc523fdcfd7a8738c2"
+    },
+    "gtk-18-q09": {
+      "sha256": "ee422d91ac36ba3091fc756fbf1849daaca3c3f935f6837e7e7c5e8931d5fe7a"
+    },
+    "gtk-18-q11": {
+      "sha256": "b4ca81af68e5afd2284489c02729eeb0fba42d733c59a07801736fe4887cbf74"
+    },
+    "gtk-19-q09": {
+      "sha256": "9489543065d88ebb09b7291b4c81afe7bae06160dcd1c88f9f822cb33aa61dc4"
+    },
+    "gtk-19-q10": {
+      "sha256": "d33f2d4a187359f6ce6d04aea704cfd4340d9d2e721c54448aa15cd16c434a33"
+    },
+    "gtk-20-q09": {
+      "sha256": "0131fb942c3d2807394847de6ce11ad3decff25e28121a13d2b5b4a363804d7d"
+    },
+    "gtk-20-q10": {
+      "sha256": "7511151af3b67df7283e8c40910655007a6e8e6d7fcfc732b5ba29b1c4e41d93"
+    },
+    "gtk-20-q11": {
+      "sha256": "b626407118e648c05d01a1d5d37797a109a70a726ca860165ad073c663557bdc"
+    },
+    "gtk-21-q09": {
+      "sha256": "305a5a8a9b59b29d6b7fbf39807bc81621936f9723efaee3d50a6db5b943da28"
+    },
+    "gtk-21-q10": {
+      "sha256": "71a292443b7f5f7fc1ea904b34b2a111674d5d8bc857029dc3682ed1d7fa935f"
+    },
+    "gtk-22-q09": {
+      "sha256": "1b756e8a0ea4572b690ec322e10dec87d8fb74c17165ee028040f71a71e06008"
+    },
+    "gtk-22-q10": {
+      "sha256": "4565723a13c0e2b6b11bf929a74143895f77eb557d837b8bcb363e07cc6e931e"
+    },
+    "gtk-22-q12": {
+      "sha256": "4da2595f976c2849ffaed8d0b02c216c928e3c0e880189506c4532d19a4f1b10"
+    },
+    "gtk-23-q09": {
+      "sha256": "1a1d462c527514c98e2524bebf880928a0a97dc79e2ac8a74cf6e1722ab51425"
+    },
+    "gtk-23-q10": {
+      "sha256": "c66c905bc55b9db12ca94810b1433adc16a46fbc31a8ad76c743ab533825933b"
+    },
+    "gtk-24-q09": {
+      "sha256": "ce6b2ad6401dc2d86d506101ceef41fef4dbad547d784818b96f255a46b6e1d7"
+    },
+    "gtk-24-q10": {
+      "sha256": "f68e00381b7e0da3abf6faac8b0e77876695d0c13d5875c5f8fc14f1fe3bd435"
+    },
+    "gtk-25-q09": {
+      "sha256": "f165ae2e51bb4855b553686837a7d187cd1ca6a3ef67164eba913a5893e381c6"
+    },
+    "gtk-25-q10": {
+      "sha256": "cfc42eb2d11bc22526708eda2f209f12e8040dd9b6f33d11ce976351ccd31015"
+    },
+    "gtk-25-q12": {
+      "sha256": "c72b492cd5104ca0e268337ef1e02d1a270c9b6839a0fb5791a9f4d35dc58beb"
+    },
+    "gtk-26-q09": {
+      "sha256": "84dffb0035b8889d43626115e16bef9e5c21035ab8c3392cb0fc8add07fe2421"
+    },
+    "gtk-26-q10": {
+      "sha256": "ed7c96a6aefccd0a7b935f3c778e7068d956c6c7d6ead74f216ce8fde6899abf"
+    },
+    "gtk-27-q09": {
+      "sha256": "149521259e095420a6d6e57112091431cac5d38c0e78c5b8f079d26ade32e7ce"
+    },
+    "gtk-27-q10": {
+      "sha256": "281902ea57d31f9aaad8702b3d4135242c9803fbc27e63289a9e3da3bf25afb5"
+    },
+    "gtk-28-q09": {
+      "sha256": "56b3e9e06531f2ed413d6194c46507919bca6777a163600443c45297fd003baf"
+    },
+    "gtk-28-q11": {
+      "sha256": "10de769ccb1791b4f6d2b9aa7ec19a4f76be5b867e1775e0b6b0e6f17bd3f0da"
+    },
+    "gtk-29-q10": {
+      "sha256": "e607c15f9b5f46dadb935e06799063c5b4db66c2b92168a8d7d91bc7906a3b38"
     },
     "hso-01-q05": {
       "sha256": "9cdaa7c15ad470cc1cef38c9d7d3474b05ca117adbc7980c6831be7212c6c375"
@@ -3723,8 +6385,14 @@
     "hso-03-q07": {
       "sha256": "ab17d221fad63ae157d5eb6135a0d7ce557b1ef06950604daa1c69a9e0f7d3f0"
     },
+    "hso-03-q12": {
+      "sha256": "50f66458a613301aa7cec619fdb16fd1db936c42747b6058c6df09f0369d234f"
+    },
     "hso-04-q07": {
       "sha256": "e159b2e2f85eef0895e7d5a01840749591a2d0251f05a6c6c46350ce7e2b6c43"
+    },
+    "hso-04-q12": {
+      "sha256": "ce358e26175545fb46fe31c6e04ea2f0d0003e46805fd6bff191c9fd7a3cfade"
     },
     "hso-05-q07": {
       "sha256": "696c2962a6cc4bccf1c36bef58ecef3bb003e1a4b3ffbd3ba9c91bb8e86be2d9"
@@ -3735,8 +6403,14 @@
     "hso-07-q07": {
       "sha256": "7543568135f2b087a1ede7f97076f98da60f825d879d879368894414d8c97af1"
     },
+    "hso-07-q12": {
+      "sha256": "cd3468196052a150cf104f8e56a924e5f0af63270cbabaac6e2214ff1b32a3e6"
+    },
     "hso-08-q07": {
       "sha256": "e8997a7b9a0276fb31bd5b7f18e24d31a541b272c559dc2103b20cf7066285bf"
+    },
+    "hso-08-q12": {
+      "sha256": "42f044fcacdc27d705cfba59c826f2a617cce31c234d4acc8149c4c0c06a5956"
     },
     "hso-09-q07": {
       "sha256": "73f751f577726aed2f1a29879dcc8973ef00e7a8b0d8202c342dca7c8b82af02"
@@ -3744,8 +6418,14 @@
     "hso-10-q07": {
       "sha256": "d3dbfb8c982c4baeced61c5b26f7594d7244fc4f7f0cda508cff709039cb0aa8"
     },
+    "hso-10-q12": {
+      "sha256": "5cab6d7343e0c197c4deb9462c580f191357fd6113217ff36ef0276e5b3e9997"
+    },
     "hso-11-q07": {
       "sha256": "ddaa9f6d775ac3777ab768e9c9184fe2c5490ccb51f4247909a2332eb63c9dec"
+    },
+    "hso-11-q12": {
+      "sha256": "eea8f7ca117e9a537910e6655eddb6b5309b85b07f79eff3f0cc5f11ea3c3f02"
     },
     "hso-12-q07": {
       "sha256": "54551127452d025b2f44b5ef2b76c02bcecbe0e2334ba5805f09672f424ac26e"
@@ -3753,17 +6433,29 @@
     "hso-13-q07": {
       "sha256": "02a0bf7175c000e8565d5f0d582635c76d861156a86bb39534fb7c39f377743f"
     },
+    "hso-13-q12": {
+      "sha256": "bba0b0dd8b170aaa59e1e5b780b520b2223146289ea2b09b82c649afe2cfeb0c"
+    },
     "hso-14-q07": {
       "sha256": "d57224be493e5034d3ed395c5d2c539c5a9f1ddfc2d09d20398184ab471d5edd"
     },
     "hso-15-q07": {
       "sha256": "8d6e38bca2e561a7210875c71bb3a2d707a12a45e94d28b5544ad2c8af74b862"
     },
+    "hso-15-q12": {
+      "sha256": "bafb6e3157048bc7645539b2a068782a76608253ed751dccc40e2bcb6a07c15f"
+    },
     "hso-16-q07": {
       "sha256": "fe1c8811c77a9f52ae66bb09482d499c439184301dc589ee625eab3b47cfcca8"
     },
+    "hso-16-q12": {
+      "sha256": "2bff1472aed097db4d4916a40964e972537757093e0fedefd1074812bb10032b"
+    },
     "hso-17-q07": {
       "sha256": "c38074d7bbb4ed86767b5cbe316792a1bbcb687e8f7aea7a815825e57564881d"
+    },
+    "hso-17-q12": {
+      "sha256": "38d87d4772698e34cda85d680b316302ea7ae60a5ba9b19b4961a2216c70f224"
     },
     "hso-18-q07": {
       "sha256": "93f8dadae5e2ac54f312b6e646f273bb8c07b841a2fa0aef2fc5332e4645cd01"
@@ -3771,11 +6463,20 @@
     "hso-19-q07": {
       "sha256": "473f2c98ec81079da98f6ec74dd37bb7b4867d470d42a0702e43a146808b022c"
     },
+    "hso-19-q12": {
+      "sha256": "e8476bf953ced116309d84ade46a21b68a5b895f0c52bba4abe86d26c4e744b4"
+    },
     "hso-20-q07": {
       "sha256": "a766e29d15322c0192243552513dc187c555bfdde414bc3e020a869856b4b028"
     },
+    "hso-20-q12": {
+      "sha256": "c0350b7d4dd7acf7daa866d6288c0366711681bef54a4063d9e1ef48c668e3e7"
+    },
     "hso-21-q07": {
       "sha256": "4f2ee54b8fee5430179ec084fd4187db4eb0dc53e7e2cb91b0909e45d7d1e345"
+    },
+    "hso-21-q12": {
+      "sha256": "688f74c37e74c25280613b8f81072c3c318bef89a0899c2b473778d947cf0879"
     },
     "hso-22-q07": {
       "sha256": "3b5219021a98e74e57bf3b55b9ea3e0ee4fc3306626bbdc8621e5f35ff418d17"
@@ -3786,8 +6487,14 @@
     "hso-24-q07": {
       "sha256": "915155d95c173e3e66e4f9489124a44112888ee0f5627c71cf46e8932c383dc4"
     },
+    "hso-24-q12": {
+      "sha256": "a276a3fd8f94536400c8938cd28f788397c660cb583ec369a08bf44e65774e19"
+    },
     "hso-25-q07": {
       "sha256": "11009905278434dcfa12512796282f39cf82ff6248c38dfd7ba6e6bdeaa744b4"
+    },
+    "hso-25-q12": {
+      "sha256": "dd35907fb75b3fa14d18f77a19be79553a8a94f0b73f16419b7156965b6a3aaa"
     },
     "hso-26-q07": {
       "sha256": "e125113d5db4e6a77fb7235d065dae0ca7ac8797e47ed8d569e4b719b531e2d5"
@@ -3795,8 +6502,14 @@
     "hso-27-q07": {
       "sha256": "f79273032c576fe04aac40e5c626f8edea982bd3bb29f597c491a748566e365a"
     },
+    "hso-27-q12": {
+      "sha256": "f67608c0594513eef1bff1f3a3f318fd68cd5ad64cd2bfcc59cb3a36738f9983"
+    },
     "hso-28-q07": {
       "sha256": "96528c8a8dfae6f19c42d2f1bf4733b7a80f75c5e96b15fa8d591ebb1558befc"
+    },
+    "hso-28-q12": {
+      "sha256": "ba909eb2aa6019ed4f85a20a379e00cf5b579ff9259227e70e7522966f5e5ac9"
     },
     "hso-29-q07": {
       "sha256": "0a669f7d065f6151bddb07f4653b313bca42e8624dd2e882379ac586dd64c9c8"
@@ -3810,8 +6523,14 @@
     "hso-32-q07": {
       "sha256": "38cdb8e0eb725a638c6bf424b6dada795f2c3a12c16712ed88df7084d9c96ef9"
     },
+    "hso-32-q12": {
+      "sha256": "13356d896e8ad8659450fd0e683b21c08259996ec4cec58c50e42b7c58d7a458"
+    },
     "hso-33-q07": {
       "sha256": "6f75e356199dda4542a23b6c1c8d8a208cee24ef2f75359f4957279d15786cfa"
+    },
+    "hso-33-q12": {
+      "sha256": "b435d8decdd2dfe8446af2936115269bc2b8b0b66862117030d4e0d3d06de7fc"
     },
     "hso-34-q07": {
       "sha256": "2cc88bb3c02d2bd15c2ee575d93e5bb3e450ce1ce517784f16f9e4adc32eb936"
@@ -3819,14 +6538,209 @@
     "hso-35-q07": {
       "sha256": "107731f14cd0d201b073c935fb4076237c53e7b0c85dd755fc5b0b91c73c6181"
     },
+    "hso-35-q12": {
+      "sha256": "45e37298d956657f4c52b5602e3e62388e3365c2252eff5e930fb148c9b17ca2"
+    },
     "hso-36-q07": {
       "sha256": "de8baba7c88ae3eb10d2a7bf22b9d6d3874d7775056e8f29df2b64bf4283b3b2"
+    },
+    "hso-36-q12": {
+      "sha256": "333cc9f5954e875dce9f82819c3376cedd2646e55219a7a5a9886f27c88da3b3"
     },
     "hso-37-q07": {
       "sha256": "dbbd3584b4cfeecdf602b1ef37b8490df518ce5d435a03d6923dd3588a43204e"
     },
     "hso-38-q07": {
       "sha256": "f9043478094efc605308b41deadba0cd4640e57310d530d0a554de5308a6a223"
+    },
+    "hso-38-q12": {
+      "sha256": "6e247cacea913aed215b268f7cd95e19d55270017e709f3ca9419f3419b9f4d7"
+    },
+    "jtk-01-q09": {
+      "sha256": "c62faad5c2c089a00a1983fed22ba1ffc9fd6ef5916ae180b64c7e6f324f0838"
+    },
+    "jtk-01-q11": {
+      "sha256": "d3105ea8141815386a89ffe382622ad099fe7c3bcfa6f0f1f18e3df1dcfbe08e"
+    },
+    "jtk-03-q09": {
+      "sha256": "6ee79252b02a9ee729ace69094884f2670205a450abdace0efe66033165446b5"
+    },
+    "jtk-05-q10": {
+      "sha256": "f17da93fe0db474b9c2b7a8ab4f355f45493471d57435eae9de3fe3175eff533"
+    },
+    "jtk-06-q10": {
+      "sha256": "501a12d086e5f942c58c110c6b48d3a5852a37401301635e788e1322edf21baf"
+    },
+    "jtk-07-q10": {
+      "sha256": "3cf14e47ab7f1c35b1fb12a8bc7e3967f2474b0441f0d9a92eb33abce4ae2b6f"
+    },
+    "jtk-08-q10": {
+      "sha256": "52fc1dd4907dc512750cd2deb497458b0d8432eddcad96037a1b558256901fc2"
+    },
+    "jtk-09-q10": {
+      "sha256": "f19bc6b71ed1b261592bad3d2106b85816ecc2063369399ee36ab2bddd646960"
+    },
+    "jtk-10-q10": {
+      "sha256": "0e937c4f0f1a97607b52e08c081938933db5196d81a29b3e253195449d1d79eb"
+    },
+    "jtk-11-q10": {
+      "sha256": "8be370da3800d3340a6ff8d30c0ca5cc8c70c0e875231f7b9c8310b673f663ab"
+    },
+    "jtk-12-q10": {
+      "sha256": "b13b6d76065c763158a18ac55467a35313951f1c450f1613990e4ea4a6a553b9"
+    },
+    "jtk-13-q10": {
+      "sha256": "cecdccd15f1c5a1178985e3b89f67e494c444b68baa57c1641abc3c1df6d4d06"
+    },
+    "jtk-14-q10": {
+      "sha256": "897996764dcba9c7cfe45234e18d6fd281d4568e2886779b16a12f66e11d7cea"
+    },
+    "jtk-16-q11": {
+      "sha256": "5840ce1c94e17c95b697385cb1cc769515b4b3ebc37d06b7fcf50b3d020d9655"
+    },
+    "jtk-17-q10": {
+      "sha256": "11c848469e11e7e28618c0b730a7f7271a87a177e4ea485e6eab2912889bc285"
+    },
+    "jtk-18-q10": {
+      "sha256": "05ba3028da73fd0465da76addfe07f5bf69612ba992f267471bb0af03273e74c"
+    },
+    "jtk-19-q10": {
+      "sha256": "e62926aa1f9a1983e897efb64037aaaa7baafce08b2bc75040d134f19ace9728"
+    },
+    "jtk-20-q09": {
+      "sha256": "a3fca50d24fd87ceec84699cf471105d31b4da04dd116587931bb7346401d102"
+    },
+    "jtk-21-q10": {
+      "sha256": "73ed2962f06e4e058502780d90fa06581d7666875d97df54e1b0d2b455a441d1"
+    },
+    "jtk-22-q10": {
+      "sha256": "83b00a78be0e37e050131e8e440c0ddac434e6196a500bb19580649f44e48f1f"
+    },
+    "jtk-23-q09": {
+      "sha256": "f5c2f74082100d32abe527d29d5fec73fbdfd2566e1ac9b535f413119437d416"
+    },
+    "jtk-23-q10": {
+      "sha256": "d8e7a8a0820c1e91ebf97b761b1e05a601ac1cbb4fec48ff658ad22f3831013d"
+    },
+    "jtk-24-q10": {
+      "sha256": "1ae4132efd9754a45d3f61cee6650ad4f0501630b5df1796605f1344e4dfd4dd"
+    },
+    "jtk-25-q10": {
+      "sha256": "2beada2e37d3be9ba53aa1512b5402c0c65dc90a21413dafddc7c0426fc8e7d9"
+    },
+    "jtk-26-q10": {
+      "sha256": "28f2c758229fd122186e368d431585d7220b7691aa48eb065157c5569559fa7b"
+    },
+    "jtk-27-q09": {
+      "sha256": "9cc04b43334f40b4f21c3b3d9116cf0d44d74374b9f8f958b097efdeb7f82e27"
+    },
+    "jtk-27-q10": {
+      "sha256": "b51d265abca7e07800060a7ac01b166777c8f7ba0ebd165c2442bd43c97da820"
+    },
+    "jtk-28-q09": {
+      "sha256": "598f1b889673b6ae076f8a45d0971b8d31c8510e065b9868fca698dac0f428e6"
+    },
+    "jtk-29-q10": {
+      "sha256": "eee6814407d8c5099edb37bf81cc35ab623e9f581c88d6aea2ba2c2a0d26dfe1"
+    },
+    "jtk-30-q10": {
+      "sha256": "5fe10944f1c70e0dddb76996eea478053ce5dc4d20e25e480ee015db8388b36c"
+    },
+    "jtk-31-q09": {
+      "sha256": "2877de59c77359e041a9ef2164d39cb96042ce818088eac19619bb6fe5fedab7"
+    },
+    "jtk-32-q09": {
+      "sha256": "aedcd9f82d0298ff19eff53719fb269d234e6402fc25c219b473b75c133049f2"
+    },
+    "jtk-32-q10": {
+      "sha256": "81f6b9aa5588535b61bf20008860ca2b76f65e08dadb4194e71d5a822980c5c5"
+    },
+    "jtk-33-q09": {
+      "sha256": "adee9eb6cf164ec243f4f8a1e280e35c67eff0293103832d6d3996fc761807ec"
+    },
+    "jtk-34-q10": {
+      "sha256": "ee08c19a7de19676e0a2cddd52509f5d9e3408cc3f24dbb885ab8a96cee8dd77"
+    },
+    "jtk-35-q09": {
+      "sha256": "3c58e55e4b6203ff44e5293be5f37fa2be6c5eef38840812d6e25f6180092840"
+    },
+    "jtk-35-q10": {
+      "sha256": "b89ed2e16ba15dfb282532a65089642e0cbe4e88619170686f4953dabe1772b9"
+    },
+    "jtk-36-q09": {
+      "sha256": "a93de4d968bfbf088f487458590ab6e3c13e9abf0c9b49765fadf4e070998dfe"
+    },
+    "jtk-37-q09": {
+      "sha256": "df85f7af9ed459a88223d48d07f39cc864e9a9f3849668ee7739ef73d9005a1d"
+    },
+    "jtk-37-q10": {
+      "sha256": "22944d79def013e16d085d969d5c2061b690f9e668e4cbbd633dfb1a14634715"
+    },
+    "jtk-38-q10": {
+      "sha256": "0efdba64bf33f97e90ecc8c83e60104324125be37583f1b667ff05ba6cdd1a6c"
+    },
+    "jtk-39-q09": {
+      "sha256": "b10bfaf9b9871b7d06abb2fe523c229958a30713de56edac6f6f494e0de99a22"
+    },
+    "jtk-39-q10": {
+      "sha256": "a7dadf3b076bde59cf658d62408df06a1dfed26baf96de3b8c63f6a97e96ab82"
+    },
+    "jtk-40-q09": {
+      "sha256": "6c00f072b97fda17cedcc4fc3dcb345300c8cb979e8228ab1986d5e5ba0b18c1"
+    },
+    "jtk-40-q10": {
+      "sha256": "e5beec91b86dcac35180e1393e7fb65f5c1922fe87458e8dc05b94d9baf84c64"
+    },
+    "jtk-41-q09": {
+      "sha256": "42ebb76ebc86083eb9400bfa1093d3148257178fc7393df968e35cd9a75828ab"
+    },
+    "jtk-41-q10": {
+      "sha256": "7a39795c77688107e2659cf37620112fb4a038224b4165c5bc8d80e48fbaed65"
+    },
+    "jtk-42-q09": {
+      "sha256": "7d69f0fe5f509649d4eee3cb52ae3735e390264453776692cb13ab0029fd76f5"
+    },
+    "jtk-43-q09": {
+      "sha256": "16b1985dddd0ad1983916fdae30b03dc20cf5aa715012a09e3e40e75be986aab"
+    },
+    "jtk-44-q09": {
+      "sha256": "ef2ac90cf992a0c79202f03bd2bcdf5f0f5682fd91abb470db51b9b498a783a5"
+    },
+    "jtk-45-q09": {
+      "sha256": "ee6b20473bf7461d2da08c744ea80ee1a1b45e987b9c971beb4c0f17a3bcef38"
+    },
+    "jtk-46-q09": {
+      "sha256": "50dbfd27a329333576fc3eb8ba1b57009860cae92cf6fde6c172ae01cc40f645"
+    },
+    "jtk-46-q10": {
+      "sha256": "8656c2158e165662bae41a755e72f897cb788fcb76e6027361925cadfe622198"
+    },
+    "jtk-47-q10": {
+      "sha256": "9c28162055b5c285dce370f2552f8c37e90ff176c2cd2ceef271fee1c50dd9e0"
+    },
+    "jtk-48-q09": {
+      "sha256": "3d5c5605196451fae2ce1be0119e1772d604386ddca59c40209815f096ea31dd"
+    },
+    "jtk-48-q10": {
+      "sha256": "f45aea5d979bfb151323b02c6ddd3da69285a7a6dd1461e8d1974325a80b9996"
+    },
+    "jtk-49-q09": {
+      "sha256": "e559adca96097c6e33b18ab4dc36d473a2dd6e426ee01c9b9fc0a02da8b80808"
+    },
+    "jtk-49-q10": {
+      "sha256": "0d53d08225837e939984cfce4b50c986e9bcfb0d92491eb014a9da8cba26faf3"
+    },
+    "jtk-50-q09": {
+      "sha256": "41e433e3e79cb8713295e8de288845901be080741eeccf43253fe6f6ded66edf"
+    },
+    "jtk-51-q09": {
+      "sha256": "fc1805ff79991a6ce94cafe85d1cdba15ebcc5d0dc01af17b375f9124c13c5f3"
+    },
+    "jtk-52-q09": {
+      "sha256": "b64ee43c8e889107e9acc4ee5c9feca5f1ac8d1bea87fba52aa15a035910f68e"
+    },
+    "jtk-52-q11": {
+      "sha256": "653c4b12bc933c2f934979537f8992a9eb3aaddb01bce6fd1d055ff0bc050b4f"
     },
     "sc1-03-q07": {
       "sha256": "8c842cd06205fb0bf46baa5a882b5daa7db9fc02cb02f2110e9891a6fe9b0fb7"
@@ -4043,6 +6957,29 @@
       "sha256": "f1703389a60a611ad01e0a584ff80a3ba080e0098d3b37d1aa0ab4f6c5d9aa69",
       "checked": "ワシントン海軍軍縮条約の主力艦の保有比率（5：5：3）と照らし合わせた。",
       "illustrative": "条約で決められた比率そのものを図にした。統計の数値ではないので、出典の記録はない。"
+    },
+    "gso-14#5 図 日本の発電電力量の割合（%）": {
+      "sha256": "de2587f42c8838e3351031f97708ff863a5db031231bb1b8c498f54ac61b72e8",
+      "source": "enecho-energy-2024",
+      "checked": "中学の地理の geo-11#5 と同じ値で、資源エネルギー庁「令和6年度エネルギー需給実績（確報）」の『電源構成と最終電力消費』の発電電力量（億kWh）から計算した割合と照らし合わせた（2010年度は石炭27.8・天然ガス29.0・石油など8.6・原子力25.1・水力7.3・太陽光や風力など2.2％、2024年度は28.1・32.2・7.2・9.4・7.4・15.6％）"
+    },
+    "gso-14-q12 演習の図": {
+      "sha256": "cb096394779ec55b7962ef186c8c0abcc035c3f4d3b459f2e6548ee7abe80bb3",
+      "source": "enecho-energy-2024",
+      "checked": "要点の gso-14#5 の図と同じ値（資源エネルギー庁「令和6年度エネルギー需給実績（確報）」の発電電力量から計算した割合）。読み取り方の数値（原子力25.1→9.4％、太陽光・風力など2.2→15.6％、火力は両年度とも6割超）も同じ表から確かめた"
+    },
+    "jtk-36-q09 演習の図": {
+      "sha256": "f10b82e383101f72c5bcf0fbc386ccba5d611e3b99619bdb9afe99a4cbc836e8",
+      "source": "soumu-senkyo-ayumi",
+      "checked": "要点の jtk-36#5 と歴史総合の hso-11#3 と同じ値で、総務省の選挙の歩みの資料の1890年の有権者の割合（約1.1％）と照らし合わせた"
+    },
+    "jtk-39#1 図2 ワシントン海軍軍縮条約の主力艦の比率": {
+      "sha256": "8df3f1cad795d03c7582475c02ce0d098743eb6a436635b0f6517f97b8841e2f",
+      "illustrative": "統計の資料からとった数値ではなく、1922年のワシントン海軍軍縮条約で決められた主力艦の保有量の上限の比率（米5・英5・日3・仏1.67・伊1.67）をそのまま帯にした"
+    },
+    "jtk-39-q10 演習の図": {
+      "sha256": "3aeea7ab22553b4ed0a9f7eb8a322e4c15345ce2696a04e2042f61070d6b91cc",
+      "illustrative": "要点の jtk-39#1 と同じく、条約で決められた主力艦の保有量の上限の比率（5：5：3：1.67：1.67）をそのまま帯にしたもので、統計の数値ではない"
     }
   }
 }

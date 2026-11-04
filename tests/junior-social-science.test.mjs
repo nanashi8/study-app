@@ -10,10 +10,10 @@ import {
   ALL_SUBJECT_TERMS,
   ALL_SUBJECT_UNITS,
   PRACTICE_LEVEL_IDS,
-  QUESTIONS_PER_LEVEL,
   SUBJECTS,
   subjectTerms,
   subjectUnits,
+  questionsPerLevel,
   termQuestion,
 } from '../src/data/subjects/index.js'
 import { JAPAN_MAP, WORLD_MAP } from '../src/data/subjects/maps.js'
@@ -82,9 +82,9 @@ test('社会3冊・理科3冊の全102単元が、教科書の単元の順と名
     total += units.length
   }
   assert.equal(total, 102)
-  // 高校の地理総合・歴史総合の単元は tests/high-school-social.test.mjs が確かめる。
-  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id)).length, 102)
-  assert.deepEqual(SUBJECTS.social.books.map((book) => book.id), ['geography', 'history', 'civics', 'geoSogo', 'hisSogo'])
+  // 高校の4冊（地理総合・歴史総合・地理探究・日本史探究）の単元は tests/high-school-social.test.mjs が確かめる。
+  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso|gtk|jtk)-/.test(unit.id)).length, 102)
+  assert.deepEqual(SUBJECTS.social.books.map((book) => book.id), ['geography', 'history', 'civics', 'geoSogo', 'hisSogo', 'geoTankyu', 'jhsTankyu'])
   assert.deepEqual(SUBJECTS.science.books.map((book) => book.id), ['science1', 'science2', 'science3'])
 })
 
@@ -107,11 +107,13 @@ test('全単元に、めあて・要点（4つ以上）・重要語句（8つ以
 
 test('重要語句は教科の中で重ならず、意味の文に語句そのものを書かない（語句テストの答えが見えない）', () => {
   const failures = []
-  // 中学の教材と高校の教材（地理総合・歴史総合）は別の冊として持つので、同じ語を両方に載せてよい。重なりは、それぞれの中で見る。
+  // 中学の教材と高校の4冊（地理総合・歴史総合・地理探究・日本史探究）は別の冊として持つので、同じ語を両方に載せてよい。重なりは、それぞれの中で見る。
   const stages = [
-    ...Object.keys(SUBJECTS).map((subject) => [subject, (term) => !/^(gso|hso)-/.test(term.unitId)]),
+    ...Object.keys(SUBJECTS).map((subject) => [subject, (term) => !/^(gso|hso|gtk|jtk)-/.test(term.unitId)]),
     ['social', (term) => /^gso-/.test(term.unitId)],
     ['social', (term) => /^hso-/.test(term.unitId)],
+    ['social', (term) => /^gtk-/.test(term.unitId)],
+    ['social', (term) => /^jtk-/.test(term.unitId)],
   ]
   for (const [subject, inStage] of stages) {
     const seen = new Map()
@@ -147,13 +149,13 @@ test('全単元に、基礎・標準・入試の演習がそれぞれ決まっ�
   for (const unit of ALL_SUBJECT_UNITS) {
     for (const level of PRACTICE_LEVEL_IDS) {
       const count = unit.questions.filter((question) => question.level === level).length
-      if (count !== QUESTIONS_PER_LEVEL[level]) failures.push(`${unit.id}: ${level} が ${count}問`)
+      if (count !== questionsPerLevel(unit.book)[level]) failures.push(`${unit.id}: ${level} が ${count}問`)
     }
     if (unit.questions.some((question) => !PRACTICE_LEVEL_IDS.includes(question.level))) failures.push(`${unit.id}: 段階の値が不正`)
   }
   assert.deepEqual(failures, [])
-  const perUnit = Object.values(QUESTIONS_PER_LEVEL).reduce((sum, count) => sum + count, 0)
-  assert.equal(ALL_SUBJECT_QUESTIONS.length, ALL_SUBJECT_UNITS.length * perUnit)
+  const perUnit = (unit) => Object.values(questionsPerLevel(unit.book)).reduce((sum, count) => sum + count, 0)
+  assert.equal(ALL_SUBJECT_QUESTIONS.length, ALL_SUBJECT_UNITS.reduce((sum, unit) => sum + perUnit(unit), 0))
 })
 
 // ── all-choices-explained ──

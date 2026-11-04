@@ -14,7 +14,7 @@ const NOTE_MIN = 50
 const ENTRY_MIN = 80
 
 test('全1,151語句（社会649・理科502）に、用語集の程度の解説がある', () => {
-  const junior = ALL_SUBJECT_TERMS.filter((term) => !/^(gso|hso)-/.test(term.unitId))
+  const junior = ALL_SUBJECT_TERMS.filter((term) => !/^(gso|hso|gtk|jtk)-/.test(term.unitId))
   assert.equal(junior.length, 1151)
   assert.equal(junior.filter((term) => term.subject === 'social').length, 649)
   const problems = []

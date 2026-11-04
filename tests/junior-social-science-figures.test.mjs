@@ -128,7 +128,7 @@ function figureProblems(figure, where) {
 }
 
 test('全538の要点と全918問を、図表で説明できるか1件ずつ判断した記録と、今の中身が一致する', () => {
-  const junior = ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id))
+  const junior = ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso|gtk|jtk)-/.test(unit.id))
   assert.equal(junior.reduce((sum, unit) => sum + unit.points.length, 0), 538)
   assert.equal(junior.reduce((sum, unit) => sum + unit.questions.length, 0), 918)
   assert.deepEqual(figuresLedgerProblems(), [])

@@ -25,6 +25,7 @@ import {
   ALL_SUBJECT_UNITS,
   SUBJECTS,
   getSubjectQuestion,
+  questionsPerLevel,
   subjectUnits,
 } from '../src/data/subjects/index.js'
 import { SUBJECT_READINGS } from '../src/data/subjects/readings.js'
@@ -185,6 +186,16 @@ test('全単元に「暗記」「演習」「要点を読む」の入口があ�
       const cards = await page.locator(`[data-subject-units="${book.id}"] [data-subject-unit]`).evaluateAll((elements) => elements.map((element) => element.getAttribute('data-subject-unit')))
       assert.deepEqual(cards, units.map((unit) => unit.id), `${meta.label}・${book.label}の単元の入口が教科書の順にそろう`)
       await checkWidth(`${meta.label}・${book.label}の単元の一覧`)
+      // 冊の切り替えに教科の全冊が並び、開いた冊が押されている。高校の4冊は、冊のトップに共通テストの出題傾向がある。
+      const options = await page.locator(`[data-subject-book-switch="${subject}"] [data-subject-book-option]`)
+        .evaluateAll((elements) => elements.map((element) => [element.getAttribute('data-subject-book-option'), element.getAttribute('aria-pressed')]))
+      assert.deepEqual(options, meta.books.map((item) => [item.id, String(item.id === book.id)]), `${meta.label}・${book.label}の冊の切り替え`)
+      if (book.examTrend) {
+        const trend = page.locator(`[data-subject-exam-trend="${book.id}"]`)
+        await trend.locator('summary').click()
+        assert.deepEqual(await trend.locator('dt').allTextContents(), book.examTrend.map((item) => item.heading), `${book.label}の出題傾向`)
+        await checkWidth(`${meta.label}・${book.label}の出題傾向`)
+      }
       for (const unit of units) {
         const card = page.locator(`[data-subject-unit="${unit.id}"]`)
         await card.getByRole('button', { name: `${unit.title}の重要語句${unit.terms.length}語句を暗記` }).click()
@@ -211,8 +222,8 @@ test('全単元に「暗記」「演習」「要点を読む」の入口があ�
     }
   }
   assert.equal(checked, ALL_SUBJECT_UNITS.length)
-  // 中学の102単元と、高校の地理総合・歴史総合の単元（tests/high-school-social.test.mjs）。
-  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso)-/.test(unit.id)).length, 102)
+  // 中学の102単元と、高校の地理総合・歴史総合・地理探究・日本史探究の139単元（tests/high-school-social.test.mjs）。
+  assert.equal(ALL_SUBJECT_UNITS.filter((unit) => !/^(gso|hso|gtk|jtk)-/.test(unit.id)).length, 102)
 })
 
 test('全単元のページに、めあて・要点（図）・重要語句・基礎／標準／入試の演習がそろい、横にはみ出さない', async () => {
@@ -251,7 +262,8 @@ test('全単元のページに、めあて・要点（図）・重要語句・�
     assert.deepEqual(diagrams.filter((name) => !shape.diagrams.includes(name)), [], `${unit.id}: 出ない図解`)
     assert.equal(shape.notes, unit.terms.filter((term) => term.note).length, `${unit.id}: 重要語句の解説`)
     assert.deepEqual(shape.terms, unit.terms.map((term) => term.id), `${unit.id}: 重要語句`)
-    assert.deepEqual(shape.levels, [['basic', 3], ['standard', 3], ['exam', 3]], `${unit.id}: 基礎・標準・入試の演習`)
+    // 中学の冊は各段階3問、高校の4冊は各段階4問（meta.js の questionsPerLevel）。
+    assert.deepEqual(shape.levels, Object.entries(questionsPerLevel(unit.book)), `${unit.id}: 基礎・標準・入試の演習`)
     await checkWidth(`${unit.id}のページ`)
     await checkNoCredits(`${unit.id}のページ`)
   }

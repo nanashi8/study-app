@@ -22,6 +22,9 @@ export const inspectSubjectFigures = ([selector, label, minPx = 8]) => {
   }
   for (const svg of scope.querySelectorAll('svg')) {
     if (svg.parentElement.closest('svg')) continue
+    // 測る前に図を画面の真ん中へ出し、文字・点の印・図の枠をすべて同じ位置で測る（途中で動かすと、先に測った文字と
+    // あとで測った印の位置がずれ、離れた文字が印にかかると判定される。2026-11-04 に日本史探究の図で見つけた）。
+    svg.scrollIntoView({ block: 'center' })
     const frame = svg.getBoundingClientRect()
     if (frame.width < 40 || frame.height < 40) continue
     const texts = []
@@ -48,7 +51,6 @@ export const inspectSubjectFigures = ([selector, label, minPx = 8]) => {
     // 文字が、あとからかいた図形（箱・帯・印など）の下にかくれていないか。文字の真ん中にいちばん上にある要素を調べる
     // （SVG の文字は字の枠で当たりを取るので、文字が見えていれば、いちばん上はその文字になる）。
     // 透明な図形や、塗りのない線、半透明の図形は、下の文字が見えるので数えない。
-    svg.scrollIntoView({ block: 'center' })
     for (const element of svg.querySelectorAll('text')) {
       const text = (element.textContent ?? '').trim()
       if (!text || element.getAttribute('fill') === 'none') continue

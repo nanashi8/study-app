@@ -54,8 +54,9 @@ const EXPECTED_COUNTS = Object.freeze({
   math: 274,
   'math-history': 71,
   'math-exam': 360,
-  'social-terms': 1216,
-  'social-practice': 1044,
+  // 社会は 2026-11-04 に地理総合・歴史総合を充実させ、地理探究・日本史探究を加えて、語句 1,216→2,633・演習 1,044→2,190。
+  'social-terms': 2633,
+  'social-practice': 2190,
   'science-terms': 502,
   'science-practice': 396,
 })
@@ -104,9 +105,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全25教材・21,632項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全25教材・24,195項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 25)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 21_632)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 24_195)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
@@ -322,12 +323,12 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   )
 })
 
-test('英単語と指定11カテゴリの全14,563項目を学習・テストの連続スワイプ対象にする', () => {
+test('英単語と指定11カテゴリの全15,980項目を学習・テストの連続スワイプ対象にする', () => {
   assert.deepEqual(LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS, EXPECTED_REVIEWABLE_CONTENT_IDS)
   const contents = EXPECTED_REVIEWABLE_CONTENT_IDS.map(contentById)
   assert.ok(contents.every(Boolean))
-  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 14_563)
-  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 5_634)
+  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 15_980)
+  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 7_051)
 
   const usageKinds = Object.fromEntries(
     [...new Set(contentById('usage').items.map((item) => item.kind))]

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import {
+  HIGH_SCHOOL_BOOK_IDS,
   SUBJECTS,
   bookMeta,
   getSubjectUnit,
@@ -51,18 +52,23 @@ export function subjectStatus({ terms, questions, srs, quizResults, practiceDoma
   return { ...learning, quiz: practice.counts, quizTotal: practice.total }
 }
 
-/** 冊（地理・歴史・公民・地理総合・歴史総合、1年・2年・3年）の切り替え。 */
+// 冊の切り替えの1段目（中学の冊と「すべて」）の幅。12列のうち、1段に並ぶ数で等分する。
+const FIRST_ROW_SPAN = Object.freeze({ 1: 'col-span-12', 2: 'col-span-6', 3: 'col-span-4', 4: 'col-span-3' })
+
+/** 冊（地理・歴史・公民と高校の4冊、1年・2年・3年）の切り替え。 */
 export function BookSwitch({ subject, value, onChange, label = '冊を選ぶ', allLabel = null }) {
   const books = SUBJECTS[subject].books
   const items = allLabel ? [{ id: 'all', label: allLabel }, ...books] : books
+  // 中学の冊（と「すべて」）は1段目にまとめ、高校の冊（地理総合・歴史総合・地理探究・日本史探究）は1段に2つずつ並べる。
+  const firstRow = items.filter((item) => !HIGH_SCHOOL_BOOK_IDS.includes(item.id)).length
   return (
     <div
-      className={cx('grid gap-1 rounded-2xl bg-brand-50 p-1', items.length === 4 ? 'grid-cols-4' : items.length === 5 ? 'grid-cols-6' : 'grid-cols-3')}
+      className="grid grid-cols-12 gap-1 rounded-2xl bg-brand-50 p-1"
       role="group"
       aria-label={label}
       data-subject-book-switch={subject}
     >
-      {items.map((item, index) => {
+      {items.map((item) => {
         const on = value === item.id
         return (
           <button
@@ -72,8 +78,7 @@ export function BookSwitch({ subject, value, onChange, label = '冊を選ぶ', a
             aria-pressed={on}
             className={cx(
               'min-h-11 rounded-xl px-1 py-1.5 font-display text-sm font-extrabold transition-colors',
-              // 5冊（社会：中学の3冊＋高校の2冊）は上の段に3つ、下の段に2つ並べる。
-              items.length === 5 ? (index < 3 ? 'col-span-2' : 'col-span-3') : '',
+              HIGH_SCHOOL_BOOK_IDS.includes(item.id) ? 'col-span-6' : FIRST_ROW_SPAN[firstRow] ?? 'col-span-4',
               on ? 'bg-white text-brand-700 shadow-sm' : 'text-ink/55 active:bg-white/70',
             )}
             data-subject-book-option={item.id}
@@ -249,7 +254,7 @@ function SubjectHomeScreen({ subject }) {
           onCatalog={() => openCatalog(bookId)}
         />
 
-        {/* 高校の地理総合・歴史総合：共通テストの出題傾向（読みたいときだけ開く）。 */}
+        {/* 高校の4冊：共通テストの出題傾向（読みたいときだけ開く）。 */}
         {book.examTrend && (
           <details className="rounded-2xl bg-white p-4 shadow-sm" data-subject-exam-trend={bookId}>
             <summary className="cursor-pointer font-display text-sm font-extrabold text-ink/80">共通テストの出題傾向と、この冊の学び方</summary>

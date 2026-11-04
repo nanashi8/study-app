@@ -22,13 +22,14 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-vocab': 293,
   'kanbun-grammar': 131,
   'kanbun-culture': 95,
-  'social-terms': 1216,
+  // 社会は 2026-11-04 に地理総合・歴史総合の語句を足し、地理探究・日本史探究の語句を加えて 1,216 から 2,633。
+  'social-terms': 2633,
   'science-terms': 502,
 })
 
-test('指定11カテゴリの通常入口5,634項目を欠落なくスワイプ記録へ接続する', () => {
+test('指定11カテゴリの通常入口7,051項目を欠落なくスワイプ記録へ接続する', () => {
   assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 11)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_634)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 7_051)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,

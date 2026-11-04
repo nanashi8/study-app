@@ -27,7 +27,8 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-vocab': 293,
   'kanbun-grammar': 131,
   'kanbun-culture': 95,
-  'social-terms': 1216,
+  // 社会は 2026-11-04 に地理総合・歴史総合の語句を足し、地理探究・日本史探究の語句を加えて 1,216 から 2,633。
+  'social-terms': 2633,
   'science-terms': 502,
 })
 const EXPECTED_RESULTS = Object.freeze(['remembered', 'forgot', 'correct', 'wrong'])
@@ -38,7 +39,7 @@ assert.deepEqual(
   Object.keys(EXPECTED_COUNTS),
   '通常入口の11一覧が監査台帳と一致しません',
 )
-assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 5_634, '通常入口の監査母数が変わりました')
+assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 7_051, '通常入口の監査母数が変わりました')
 
 for (const entry of NORMAL_LEARNING_RECORD_ENTRIES) {
   assert.equal(entry.items.length, EXPECTED_COUNTS[entry.id], `${entry.label}: 項目数`)

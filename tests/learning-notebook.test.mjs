@@ -46,7 +46,7 @@ import {
   updateLearningContentPlan,
 } from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは英語・古典・漢文・社会・理科の18教材・全20,809項目と自作カードを安定IDで解決する', () => {
+test('マイ学習ノートは英語・古典・漢文・社会・理科の18教材・全23,372項目と自作カードを安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -83,14 +83,15 @@ test('マイ学習ノートは英語・古典・漢文・社会・理科の18教
     kanbunGrammar: 131,
     kanbunCulture: 95,
     kanbunKundoku: 40,
-    socialTerms: 1216,
-    socialPractice: 1044,
+    // 社会は 2026-11-04 に地理総合・歴史総合を充実させ、地理探究・日本史探究を加えた（語句 1,216→2,633・演習 1,044→2,190）。
+    socialTerms: 2633,
+    socialPractice: 2190,
     scienceTerms: 502,
     sciencePractice: 396,
     // 自作カードは利用者が作るので、固定の件数には入れない（引き当ては登録したカードから）。
     customCards: 0,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 20809)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 23372)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     if (domain === 'customCards') continue

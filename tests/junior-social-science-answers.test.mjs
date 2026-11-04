@@ -122,7 +122,7 @@ const RECOMPUTE = {
   'sc3-12-q09': { given: ['約139万km', '約1万2700km'], value: () => Math.round(1390000 / 12700) },
   'sc3-15-q07': { given: ['40％', '2500J'], value: () => 2500 * 0.4 },
   'sc3-16-q08': { given: ['60W', '8W', '5時間', '30日間'], value: () => ((60 - 8) * 5 * 30) / 1000 },
-  // 高校の地理総合・歴史総合（requests/2026-10-22-high-school-social.json）。
+  // 高校の地理総合（requests/2026-10-22-high-school-social.json）。地理探究・日本史探究と、地理総合・歴史総合に足した問題には、数を入れる問題はない。
   'gso-01-q03': { given: ['経度0度', '正午', '東経135度'], value: () => 12 + 135 / 15 },
   'gso-02-q03': { given: ['1852m', '200海里'], value: () => Math.round((1852 * 200) / 1000) },
   'gso-04-q01': { given: ['2万5千分の1', '4cm'], value: () => (4 * 25000) / 100 },
@@ -148,7 +148,7 @@ test('数を入れる問題はすべて、問題文の数から計算し直し�
     }
   }
   assert.deepEqual(failures, [])
-  const junior = (question) => !/^(gso|hso)-/.test(question.id)
+  const junior = (question) => !/^(gso|hso|gtk|jtk)-/.test(question.id)
   assert.equal(numberQuestions.filter(junior).length, 92)
 })
 
@@ -156,7 +156,9 @@ test('知識の問題（選ぶ・並べる）はすべて、1問ずつ読み直�
   assert.deepEqual(answersLedgerProblems(), [])
   const ledger = readAnswersLedger()
   assert.equal(Object.keys(ledger.questions).length, reviewedQuestions().length)
-  assert.equal(reviewedQuestions().filter((question) => !/^(gso|hso)-/.test(question.id)).length, 826)
+  assert.equal(reviewedQuestions().filter((question) => !/^(gso|hso|gtk|jtk)-/.test(question.id)).length, 826)
+  // 高校の4冊（地理総合・歴史総合 58単元×12問、地理探究・日本史探究 81単元×12問。数を入れる5問は上のテストで計算し直す）。
+  assert.equal(reviewedQuestions().filter((question) => /^(gso|hso|gtk|jtk)-/.test(question.id)).length, (58 + 81) * 12 - 5)
 })
 
 test('読み直しの記録は、問題が1字でも変わると一致しなくなる', () => {

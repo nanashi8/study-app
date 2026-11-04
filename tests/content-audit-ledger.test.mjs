@@ -13,9 +13,11 @@ test('全教材監査台帳は25カテゴリの母数・ゲート・ハッシュ
   // 2026-10-28、基礎長文（50本・ルールの問題150問）で25カテゴリになった（requests/2026-10-28-basic-reading.json）。
   assert.equal(ledger.scope.categoryCount, 25)
   assert.equal(ledger.categories.length, 25)
-  assert.equal(ledger.scope.learningItemCount, 21_632)
+  // 2026-11-04、地理総合・歴史総合の語句と問題を足し、地理探究・日本史探究を加えて 21,632 から 24,195 項目になった。
+  assert.equal(ledger.scope.learningItemCount, 24_195)
   // 2026-10-25、数学の歴史のテスト252問を削除した。2026-10-28、基礎長文のルールの問題150問を足した。
-  assert.equal(ledger.scope.quizItemCount, 21_851)
+  // 2026-11-04、社会の語句（1,417）と演習（1,146）を足して 21,851 から 24,414 問になった。
+  assert.equal(ledger.scope.quizItemCount, 24_414)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -45,18 +47,19 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
     assert.equal(bank.failureCount, 0, id)
   }
   assert.equal(ledger.questionBanks.some((bank) => ['math-fill', 'math-choice', 'math-exam-choices', 'math-guided-approach', 'math-exam-approach'].includes(bank.id)), false)
-  // 社会・理科の演習の選ぶ問題（1,236問・4,944択）と語句テスト（1,718問・6,872択）は、どの選択肢にも説明がある。
+  // 社会・理科の演習の選ぶ問題（2,317問・9,268択）と語句テスト（3,135問・12,540択）は、どの選択肢にも説明がある。
+  // 2026-11-04、地理総合・歴史総合を充実させ、地理探究・日本史探究を加えて、選ぶ問題 1,236→2,317、語句テスト 1,718→3,135。
   const subjectPractice = ledger.questionBanks.find((bank) => bank.id === 'subject-practice-choices')
-  assert.equal(subjectPractice.questionCount, 1_236)
-  assert.equal(subjectPractice.choiceCount, 4_944)
-  assert.equal(subjectPractice.generalRationaleCount, 1_236)
-  assert.equal(subjectPractice.choiceSpecificRationaleCount, 4_944)
+  assert.equal(subjectPractice.questionCount, 2_317)
+  assert.equal(subjectPractice.choiceCount, 9_268)
+  assert.equal(subjectPractice.generalRationaleCount, 2_317)
+  assert.equal(subjectPractice.choiceSpecificRationaleCount, 9_268)
   assert.equal(subjectPractice.failureCount, 0)
   const subjectTerms = ledger.questionBanks.find((bank) => bank.id === 'subject-terms')
-  assert.equal(subjectTerms.questionCount, 1_718)
-  assert.equal(subjectTerms.choiceCount, 6_872)
-  assert.equal(subjectTerms.generalRationaleCount, 1_718)
-  assert.equal(subjectTerms.choiceSpecificRationaleCount, 6_872)
+  assert.equal(subjectTerms.questionCount, 3_135)
+  assert.equal(subjectTerms.choiceCount, 12_540)
+  assert.equal(subjectTerms.generalRationaleCount, 3_135)
+  assert.equal(subjectTerms.choiceSpecificRationaleCount, 12_540)
   assert.equal(subjectTerms.failureCount, 0)
   assert.equal(grammar.questionCount, 3_450)
   assert.equal(grammar.choiceCount, 13_800)

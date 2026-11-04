@@ -4,8 +4,9 @@
 // 本文・図・問題はこのアプリで書いたもので、教科書の文や図は使わない。
 //
 //   単元 = {
-//     id: 'geo-01',                         // 冊の略号（geo・his・civ・gso・hso・sc1・sc2・sc3）＋2けたの番号。並べ替えない
-//                                           // gso＝高校の地理総合（geoSogo）、hso＝高校の歴史総合（hisSogo）
+//     id: 'geo-01',                         // 冊の略号（geo・his・civ・gso・hso・gtk・jtk・sc1・sc2・sc3）＋2けたの番号。並べ替えない
+//                                           // gso＝高校の地理総合（geoSogo）、hso＝高校の歴史総合（hisSogo）、
+//                                           // gtk＝高校の地理探究（geoTankyu）、jtk＝高校の日本史探究（jhsTankyu）
 //     book: 'geography',
 //     part: '第1編 世界と日本の地域構成',     // 教科書の編・章・単元（見出しに出す）
 //     chapter: '第1章 世界の姿',              // 教科書の章・節（単元の名前の前に出す）
@@ -19,7 +20,7 @@
 //   問題（選ぶ）   = { level, text, figure?, choices: [[選択肢, その選択肢の説明], …4つ。先頭が正解], explanation }
 //   問題（数を入れる）= { level, kind: 'number', text, figure?, answer: 2.7, unit: 'g/cm³', steps: [解き方の文], explanation }
 //   問題（並べる） = { level, kind: 'order', text, items: [[並べるもの, そこに置く理由], …正しい順], explanation }
-//   単元には、高校の地理総合・歴史総合だけ exam（共通テストでの出方、1〜2文）を足す。冊には examTrend（出題傾向）を持たせる。
+//   単元には、高校の4冊（地理総合・歴史総合・地理探究・日本史探究）だけ exam（共通テストでの出方、1〜2文）を足す。冊には examTrend（出題傾向）を持たせる。
 //   level は 'basic'（基礎）・'standard'（標準）・'exam'（入試）。
 
 export const SUBJECT_IDS = Object.freeze(['social', 'science'])
@@ -65,6 +66,19 @@ export const SUBJECTS = Object.freeze({
         Object.freeze({ heading: '問われ方', body: '史料文・図版・地図・表・グラフなどの資料を読み取り、知識と結びつけて判断する問題が中心になる。会話文やレポートの形で、複数の資料や仮説を比べる問題も多い。単純な暗記だけで解ける問題は少ない。' }),
         Object.freeze({ heading: '出題の中心', body: '近代化・大衆化・グローバル化の3つの視点から、日本と世界の出来事のつながりを問う。年代の暗記より、出来事の原因・結果・順序・影響が問われる。近代の比重が大きい。' }),
         Object.freeze({ heading: 'この冊の学び方', body: '出来事を「いつ・どこで・なぜ・何をもたらしたか」で整理し、年表で前後関係を確かめる。「入試」の演習で、史料や統計を読んで答える練習をする。' }),
+      ])),
+      // 高校の選択科目（地理探究・日本史探究）。単元は出版社の教科書の目次の順。
+      book('geoTankyu', '地理探究', '地探', '🗺️', '#047857', '高校の選択科目：自然・産業・人口と都市・生活文化の系統地理、世界の諸地域の地誌、これからの日本の国土像', Object.freeze([
+        Object.freeze({ heading: '試験の形', body: '共通テストでは「地理総合，地理探究」として出題される（100点・60分）。地理探究の範囲に加えて、地理総合の範囲からも出題されるので、地理総合の内容もあわせて学ぶ必要がある。国公立大学の二次試験でも、地理探究が出題範囲になる大学が多い。' }),
+        Object.freeze({ heading: '問われ方', body: '統計表・グラフ・主題図・地形図・衛星画像などの資料をもとに、自然・産業・人口・都市などの系統地理の知識と、地域の特色を結びつけて判断する問題が中心になる。複数の資料から、ある国や地域を見分ける問題も多い。' }),
+        Object.freeze({ heading: '出題の柱', body: '学習指導要領の3つの柱に沿う。A 現代世界の系統地理的考察（自然環境・資源と産業・交通と通信・人口と都市・生活文化と民族・宗教）、B 現代世界の地誌的考察（世界の諸地域）、C 現代世界におけるこれからの日本の国土像。' }),
+        Object.freeze({ heading: 'この冊の学び方', body: '系統地理の単元で、気候・農業・工業などの分布のしくみを図とあわせてつかみ、地誌の単元で、それらを1つの地域にまとめて確かめる。「入試」の演習で、統計や地図から国や地域を見分ける練習をする。' }),
+      ])),
+      book('jhsTankyu', '日本史探究', '日探', '⛩️', '#7f1d1d', '高校の選択科目：原始・古代から現代までの日本の歴史と、資料から考える現代日本の課題', Object.freeze([
+        Object.freeze({ heading: '試験の形', body: '共通テストでは「歴史総合，日本史探究」として出題される（100点・60分）。日本史探究の範囲に加えて、歴史総合の範囲からも出題される。国公立大学の二次試験や私立大学でも、日本史探究が出題範囲になる大学が多い。' }),
+        Object.freeze({ heading: '問われ方', body: '史料文・図版・地図・年表・統計などの資料を読み取り、知識と結びつけて判断する問題が中心になる。会話文やレポートの形で、出来事の背景や影響、時代のちがいを比べる問題が多い。出来事を年代の順に並べる問題もよく出る。' }),
+        Object.freeze({ heading: '出題の柱', body: '原始・古代、中世、近世、近代・現代の各時代の政治・社会・経済・文化と、東アジアや世界との関係が問われる。1つの時代だけでなく、土地の制度の移り変わりのように、時代をまたいだ変化を問う問題も多い。' }),
+        Object.freeze({ heading: 'この冊の学び方', body: '単元の要点で、出来事を「いつ・だれが・なぜ・何をもたらしたか」で整理し、図や年表で前後関係を確かめる。「入試」の演習で、史料や資料を読んで答える練習をする。' }),
       ])),
     ]),
   }),
@@ -117,5 +131,10 @@ export const PRACTICE_KINDS = Object.freeze({
   order: Object.freeze({ id: 'order', label: '並べる' }),
 })
 
-// 1つの単元に置く問題の数（段階ごと）。tests/junior-social-science.test.mjs が全単元で確かめる。
+// 1つの単元に置く問題の数（段階ごと）。中学の冊は各3問、高校の4冊は各4問。tests/junior-social-science.test.mjs が全単元で確かめる。
 export const QUESTIONS_PER_LEVEL = Object.freeze({ basic: 3, standard: 3, exam: 3 })
+export const HIGH_SCHOOL_QUESTIONS_PER_LEVEL = Object.freeze({ basic: 4, standard: 4, exam: 4 })
+export const HIGH_SCHOOL_BOOK_IDS = Object.freeze(['geoSogo', 'hisSogo', 'geoTankyu', 'jhsTankyu'])
+
+/** 冊の1単元あたりの問題の数（段階ごと）。 */
+export const questionsPerLevel = (bookId) => (HIGH_SCHOOL_BOOK_IDS.includes(bookId) ? HIGH_SCHOOL_QUESTIONS_PER_LEVEL : QUESTIONS_PER_LEVEL)

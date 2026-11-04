@@ -212,7 +212,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-03、写真の読み取りを組み直した部品（src/lib/ocrPipeline.js）で 898 ファイルになった。
   // 2026-11-04、読み取りで変化形・熟語を引く部品2つで 900 ファイルになった。
   // 2026-11-04、出典のページ（src/screens/Credits.jsx・src/data/credits.js）を消して（利用者の指示「出典の表示を削除しなさい」）、ソース全体が 900 から 898 ファイルになった。
-  assert.equal(result.sourceFiles, 898)
+  // 2026-11-04、地理探究・日本史探究の教材（src/data/subjects の geoTankyu・jhsTankyu の23本）で 898 から 921 ファイルになった
+  // （requests/2026-11-04-high-school-social-tankyu.json）。
+  assert.equal(result.sourceFiles, 921)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
@@ -226,7 +228,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 同じ日、基礎長文の全611文の語順訳と解説で 255344 から 258107 になった。
   // 2026-10-29、基礎長文の読み方50本と準備の画面で 258417 になった。
   // 2026-11-04、出典のページ（src/screens/Credits.jsx・src/data/credits.js）を消して（利用者の指示「出典の表示を削除しなさい」）、ソース全体の日本語が 258473 から 258378 になった。
-  assert.equal(result.sourceJapaneseEntries, 258378)
+  // 2026-11-04、地理総合・歴史総合に足した要点・語句・問題と、地理探究・日本史探究の81単元・社会の読みの辞書で、
+  // ソース全体の日本語が 258378 から 286567 になった（学習者画面の日本語は変わらない。requests/2026-11-04-high-school-social-tankyu.json）。
+  assert.equal(result.sourceJapaneseEntries, 286567)
   assert.equal(result.issues.length, 0)
 })
 
