@@ -1,0 +1,88 @@
+{
+  "id": "2026-11-05-exam-reading-a3",
+  "title": "中3の高校受験生向けに、茨城の私立高校の入試の長文（大問1つ分）に似せた頻出テーマの長文問題を、長文コンテンツと同じ解説（語順訳・文の構造・読解ルール・全選択肢の説明）つきで何本か作り、読み方のルールの参考書ページとあわせて A3 横の PDF にして見せる。ウェブアプリには公開せず、資料は非公開の教材に転用できるように手元に残す",
+  "asked": [
+    "茨城県内の私立高校で過去問を公開している高校はあるか？",
+    "英語の長文の実際の過去問や傾向を似せた頻出テーマの長文問題を、長文コンテンツと同じ解説方法で、大問1程度の量の問題をいくつか作成してpdfやコンテンツとして使えるように作成しなさい。過去問や傾向を似せた長文問題により、中三の受験生に長文の読み方のコツやルールを習得してもらいたいので、簡単なものから長文読解のルールや直訳等の分かりやすく参考にできる参考書ページを入念に分かりやすく作成し、長文問題と詳細解説のついたpdfやコンテンツを作成しなさい。参考書ページはA3用紙横1枚、長文問題は大問1についきA3用紙横左側が長文問題、右側が設問、詳細解説や直訳でA3用紙横1枚を想定しているが、詳細解説した結果その量を超えてもよいとする。",
+    "ウェブアプリのコンテンツとしては公開せずに、pdfファイルで見せなさい。非公開コンテンツに転用できるように資料は残しなさい。"
+  ],
+  "sessions": [
+    "68272fc1-6427-4fa9-a4d1-f56e88a47155"
+  ],
+  "status": "open",
+  "notes": [
+    "入試の英文・設問は写さない。見られる過去問は、大問の形（文章の種類・語数・設問の型）を調べるためだけに見て、本文と設問はすべて新しく書く。",
+    "調べた学校名・出どころはリポジトリに書かない（リポジトリには型の一覧だけを置く）。",
+    "大問は6本（易→難）：対話文＋案内の図、物語、スピーチ＋グラフ、説明文（動物）、人物の体験談、歴史の物語（長め・4択だけの型）。",
+    "2026-11-05 の追加の指示で、アプリへの組み込み（画面・メニュー・教材の一覧）と public/ の PDF をやめた。資料（本文・設問・構造台帳・参考書・部品・画面・PDF の道具・検査・テスト・組み込みの差分 app-integration.patch・PDF）は git に入らない private.local/exam-reading/ に置き、GitHub へは push しない（公開リポジトリのため）。",
+    "資料の条件の check は private.local/exam-reading のテストで、この端末でだけ流せる（公開リポジトリの npm test では守れない）。公開リポジトリでは tests/exam-reading-not-published.test.mjs が「公開していないこと」を守る。"
+  ],
+  "criteria": [
+    {
+      "id": "trend-survey",
+      "text": "茨城の私立高校の英語の入試で、長文の大問の形（文章の種類・語数・設問の型）を見られる過去問から調べ、型の一覧（文章の種類と設問の型）を資料のデータに置く。作る6本の大問の文章の種類・語数・全設問の型は、一覧のどれかに当たる（一覧にない型を作らない）。一覧の設問の型は、6本のどこかで必ず1回以上出す",
+      "population": "型の一覧の文章の種類・設問の型すべてと、6本の大問の全設問",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-content.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: 見られる過去問4校分（2021〜2025年度、学校名はリポジトリに書かない）の英語の大問の形を調べ、型の一覧（文章の種類6・設問の型18）を private.local/exam-reading/data/index.js に置いた。private.local/exam-reading/tests/exam-reading-content.test.mjs で、6本の文章の種類（6種を1本ずつ）・語数（283〜485語、種類ごとのめやすの中）・全46問の型が一覧に当たり、一覧の18の型がどれも1回以上出ることを確かめた。"
+    },
+    {
+      "id": "passages-and-questions",
+      "text": "大問を6本、易しい順に作る。各本は本文（入試の大問1つ分の語数）・注・設問（入試の型、6問以上）を持ち、どの設問にも答え・本文の根拠の文・使う読解ルール・この本文での解き方・全選択肢の説明（記述・並べかえは模範解答と採点の観点）がある。本文の語は、その本の級以下の見出し語か、注・固有名詞に挙げた語だけ",
+      "population": "6本の大問の全設問・全選択肢と、本文の全文の全語",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-content.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: 大問6本を易しい順（3級の語の2本→準2級の語の4本、最後がいちばん長い485語）に作った。全46問（選び方34問・選択肢142・1語ずつ書く7問・何語か書く2問・語の並べかえ2問・文の並べかえ1問）に答え・根拠の文・読解ルール（20種）・解き方・全選択肢の説明・模範解答と採点の観点があり、解説で「第N文 英語」と引いた英語がその文にあること、本文と図表の全語2,346語が級以下の見出し語か注（41件）・固有名詞であることを private.local/exam-reading/tests/exam-reading-content.test.mjs（private.local/exam-reading/scripts/check.mjs の問題0件）で確かめた。どの設問も正しい答えで正解・ほかの答えで不正解になることも確かめた。"
+    },
+    {
+      "id": "sentence-ledger",
+      "text": "6本の本文の全文に、長文コンテンツと同じ構造台帳（S・V・O・C・M の要素、節の ( ) と句の < >、並列、語順訳のまとまり、自然な訳）を手で書き、長文コンテンツと同じ部品で一文の構文解説を組み立てられる",
+      "population": "6本の大問の本文の全文",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-structures.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: 6本の本文の全211文に構造台帳（文の要素・節 ( ) と句 < >・並列・語順訳529まとまり・自然な訳）を手で書き、基礎長文と同じ検査（structureEntryProblems）で問題0件、全211文の一文の構文解説が台帳から組み立てられることを private.local/exam-reading/tests/exam-reading-structures.test.mjs で確かめた。"
+    },
+    {
+      "id": "reference-page",
+      "text": "長文の読み方の参考書ページを、易しいものから順に（直訳＝語順訳のしかた、S・V・O・C・M、( ) と < > の付け方、つなぐ語、設問の解き方）作る。PDF は A3 横1枚。6本の設問で使う読解ルールはすべて参考書ページに載る",
+      "population": "参考書ページの PDF と、6本の全設問で使う読解ルール",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-pdf.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: 参考書ページ（解く順番→直訳（語順訳）→S・V・O・C・Mと5文型→( ) と < >→つなぐ語→指示語→設問の型18の解き方→使う読解ルール20を基礎・標準・発展の順）を作り、A3 横1枚に 8.5pt で収まること、6項目・18の型・20のルールがすべて載り、例文と表が本文と合うことを private.local/exam-reading/tests/exam-reading-pdf.test.mjs と exam-reading-content.test.mjs で確かめた。"
+    },
+    {
+      "id": "pdf-sheets",
+      "text": "大問ごとに、A3 横1枚の問題（左が本文、右が設問）と、A3 横の解説（全文の直訳・構造・自然な訳、全設問の答えと解説。1枚を超えてよい）の PDF を作り、参考書ページの PDF とあわせて利用者に PDF ファイルで見せる。問題は1枚に収まり、本文の全文・全設問・全選択肢が載り、解説には全文と全設問の解説が載る",
+      "population": "6本の大問の問題 PDF と解説 PDF の全ページ",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-pdf.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: private.local/exam-reading/pdf/ に PDF 7つ（参考書1枚・大問6本は問題1枚＋解説3〜4枚、計26ページ、すべて A3 横）を作り、利用者に PDF ファイルで送った。問題は全6枚が1枚に 10.5〜11pt で収まり、左に本文（抜いた文以外の全文）・右に全46問・全選択肢・図があり、解説に全46問の解き方・全選択肢の説明・採点の観点と全211文の語順訳・訳があること、PDF を作ったときの中身の指紋が今の中身と同じことを private.local/exam-reading/tests/exam-reading-pdf.test.mjs で確かめた。"
+    },
+    {
+      "id": "not-published",
+      "text": "ウェブアプリの教材としては公開しない。アプリの画面・英語ホーム・メニュー・教材の一覧・公開のフォルダ（public）に入試長文の教材・PDF・登録を入れず、資料の置き場所（private.local）は git に入らない",
+      "population": "公開リポジトリの全追跡ファイルと、画面・ホーム・メニュー・設定・教材の一覧のファイル",
+      "check": "node --test tests/exam-reading-not-published.test.mjs",
+      "status": "done",
+      "replaces": "app-content（いったんアプリの教材として作り clone で全テストを通したが、利用者の指示で公開をやめた。画面と組み込みは資料に残した）",
+      "verifiedBy": "2026-11-05: アプリへの組み込み（画面3つ・英語ホーム・メニューの行・設定・教材の一覧と進み具合・監査台帳・固定の数のテスト）と public/exam-reading の PDF を外した。tests/exam-reading-not-published.test.mjs で、公開リポジトリの全追跡ファイルに入試長文の教材・画面・PDF がなく、画面・ホーム・メニュー・設定・教材の一覧の7ファイルに登録がなく、private.local が .gitignore の *.local で git に入らないことを確かめた。"
+    },
+    {
+      "id": "keep-materials",
+      "text": "非公開の教材に転用できるように資料を残す。private.local/exam-reading に本文・設問・構造台帳・参考書・部品・画面3つ・PDF の道具・検査・テスト・アプリへの組み込みの差分（app-integration.patch）・PDF・使い方（README.md）を置き、そこから検査と PDF の作り直しが通る",
+      "population": "資料のフォルダの全ファイル（大問6本・211文の台帳・参考書・PDF 7つ）",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-content.test.mjs private.local/exam-reading/tests/exam-reading-structures.test.mjs private.local/exam-reading/tests/exam-reading-pdf.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05: private.local/exam-reading/ に、data（大問6本・型の一覧・参考書・211文の構造台帳）、lib・components（部品）、screens（画面3つ）、print と scripts（PDF の道具・検査）、tests（4本）、app-integration.patch（共通の28ファイルへの組み込みの差分、main 3ec8e518 に対して）、pdf（7つと指紋）、README.md（中身・作り直し方・転用のしかた）の計45ファイルを置いた。そこから検査（6本・46問・211文で問題0件）と PDF の作り直し（参考書 8.5pt・問題 10.5〜11pt で1枚）が通り、テスト3本・11件が通ることを確かめた。"
+    },
+    {
+      "id": "public-commit",
+      "text": "公開リポジトリには、依頼台帳と、公開しないことを守るテストだけを入れる。npm run audit:all-content を通し、クリーンな clone で確かめて main へ push する。検証用の clone は消す",
+      "population": "全テスト・全監査と、push するコミットの中身",
+      "check": "node --test tests/exam-reading-not-published.test.mjs tests/requests-ledger.test.mjs",
+      "status": "waiting",
+      "replaces": "all-content-audit-and-deploy（公開版で大問を開く確かめは、公開しないので外した）",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と、push・公開の処理の結果"
+    }
+  ]
+}
