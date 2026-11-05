@@ -8,7 +8,7 @@
   "sessions": [
     "fdd13876-b563-4384-b219-6beeef989f42"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-05 の調べ：検証用の clone の全監査の2回目・3回目で、中身の変わっていない画面のテストが約27本流れ直していた。監査の vite build が clone に dist/ を作り、いちばん上のフォルダの一覧（list .）が変わったため。ほかに、読んだものが分からないテスト13本（git・ps などのコマンドや vite build を使う）は全監査・commit・push のたびに流れ、一時フォルダのテストは一時フォルダを使うテストを子として流し直していた（約160秒）。",
   "criteria": [
     {
@@ -56,8 +56,8 @@
       "text": "クリーンな clone で npm run audit:all-content を2回流し、2回目に流れるテストが変わっていないのに流れたものだけになっていないか（流し直した理由）を確かめてから main へ push し、公開を確かめる。検証用の clone は消す",
       "population": "リポジトリ全体と公開版",
       "check": "node --test tests/audit-speed.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "waiting",
-      "waitingFor": "clone の全監査の1回目（裏の処理 bh0xx1vkh、道具が変わったので全テストが流れる）"
+      "status": "done",
+      "verifiedBy": "2026-11-05、クリーンな clone で npm run audit:all-content を流した。1回目は道具が変わったので全258本（901秒）。2回目は13本・59秒で、流れたのは、1回目の最後に全教材監査台帳が書き直されたためのもの（読んだものが分からないテスト11本・台帳のテスト1本）と、audit-speed の1本（環境が変わった）。3回目は0本・4秒。直す前の clone の2回目・3回目は49本・760秒と40本・652秒だった。commit の前の確認で本番ビルドのテストが43秒流れたので、全教材監査台帳を作業ツリーの指紋から外した（1fdf761）。その全監査（258本・904秒）のあと、commit の前の確認も push の前の確認も24秒（流れたのは git を読む audit-speed の1本だけ）。ac0b672・1fdf761 を main へ push し、GitHub Pages の公開が成功した（run 41982417584）。公開版は 200 で開く（画面は変えていない）。検証用の clone は、この記録を push したあとに消す。"
     }
   ]
 }
