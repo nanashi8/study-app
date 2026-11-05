@@ -8,7 +8,7 @@
   "sessions": [
     "fdd13876-b563-4384-b219-6beeef989f42"
   ],
-  "status": "open",
+  "status": "done",
   "note": "11-04 の指示「出典の表示を削除しなさい。著作者の許諾なく使用していると勘違いしないようにしなさい。」（requests/2026-11-04-remove-credits-page.json）は、アプリが使った資料を並べる表示を消す指示。画面のテストの CREDIT_WORDS が学習の本文の「出典」の2文字まで止めていたため、11-04 の高校の社会の依頼で、レポートの書き方の教材の「出典」を「使った資料」「出どころ」「引用」に言い換えていた。",
   "criteria": [
     {
@@ -40,7 +40,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の gso-20 に「出典」の用語が戻り、メニューに出典の行がないことを確かめる。検証用の clone は消す",
       "population": "リポジトリ全体と公開版",
       "check": "node --test tests/citation-term-in-lessons.test.mjs tests/no-credits-page.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-11-05、クリーンな clone で npm run audit:all-content が exit 0（1回目は項目の重複のテストの固定値 781→780 で落ち、直して2回目で通過）。5278d17 を main へ push し、GitHub Pages の build・deploy が成功（run 41962105639）。公開版の JS に「出典（何から引用したか）を必ず書く」「数値の出典・年・単位を確かめ」があり、言い換えた形はない。公開版を Chromium の 375px で開き、地理総合 gso-20 の単元ページに本文・図・語句の「出典」があり、出典の表示（「出典：」・Natural Earth・東京書籍）がなく、メニュー（66行）に出典の行がなく、横にはみ出さないことを確かめた。検証用の clone は、この記録を push して公開を確かめたあとに消す。"
     }
   ]
 }
