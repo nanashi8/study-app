@@ -6,11 +6,12 @@ import {
 } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { needsGitState } from './tree.mjs'
 
 // 合格の控えを使える長さ。日付で変わるテストや、たまに落ちるテストを見逃し続けないよう、1日で流し直す。
 export const RECORD_TTL_MS = 24 * 60 * 60 * 1000
 // 控えの形や道具を変えたら、前の控えを使わない。
-const TOOL_FILES = ['store.mjs', 'preload.mjs'].map((name) => fileURLToPath(new URL(name, import.meta.url)))
+const TOOL_FILES = ['store.mjs', 'preload.mjs', 'tree.mjs'].map((name) => fileURLToPath(new URL(name, import.meta.url)))
 
 const sha = (value) => createHash('sha256').update(value).digest('hex').slice(0, 32)
 export const keyFor = (owner) => sha(owner)
@@ -45,9 +46,14 @@ const fileHash = (root, rel) => {
   }
 }
 const existence = (root, rel) => (existsSync(join(root, rel)) ? 'exists' : 'missing')
+// 作られるもの・道具が置くもの。テストの結果に関わらないので、読んだファイルにもフォルダの一覧にも入れない。
+// 2026-11-05、全監査の vite build が検証用の clone に dist/ を作り、いちばん上のフォルダの一覧を読む画面のテスト
+// 約27本が、中身は同じなのに次の全監査で流し直しになっていた。
+export const GENERATED = /^(node_modules|\.git|dist|dist-ssr)(\/|$)|(^|\/)(node_modules|\.DS_Store)(\/|$)/
 const listing = (root, rel, recursive) => {
   try {
-    return sha(readdirSync(join(root, rel), { recursive }).map(String).sort().join('\n'))
+    const entries = readdirSync(join(root, rel), { recursive }).map(String)
+    return sha(entries.filter((entry) => !GENERATED.test(rel === '.' ? entry : `${rel}/${entry}`)).sort().join('\n'))
   } catch {
     return 'missing'
   }
@@ -59,19 +65,27 @@ const READERS = {
   rlist: (root, rel) => listing(root, rel, true),
 }
 
-/** 控えが今も使えるか。使えないときは、どのファイルが変わったかを返す。 */
-export function evaluateRecord({ root, record, signature, now, runId }) {
+/**
+ * 控えが今も使えるか。使えないときは、どのファイルが変わったかを返す。
+ * state：今の作業ツリーの指紋を返す関数（tree.mjs の treeState。読んだものが分からないテストの控えを比べるときだけ呼ぶ）。
+ */
+export function evaluateRecord({ root, record, signature, now, state = () => null }) {
   // 控えの並びを渡されたら、どれか1件が使えれば使う。
   if (Array.isArray(record)) {
     if (!record.length) return { hit: false, reason: '控えなし' }
-    const verdicts = record.map((item) => evaluateRecord({ root, record: item, signature, now, runId }))
+    const verdicts = record.map((item) => evaluateRecord({ root, record: item, signature, now, state }))
     return verdicts.find((verdict) => verdict.hit) ?? verdicts[0]
   }
   if (!record) return { hit: false, reason: '控えなし' }
-  // 読んだものが分からないテストの控えは、同じ1回の確認（commit・push の前の確認）の中でだけ使う。
-  if (record.runId) return record.runId === runId ? { hit: true } : { hit: false, reason: '別の回の確認' }
   if (record.signature !== signature) return { hit: false, reason: '環境が変わった' }
   if (now - record.passedAt > RECORD_TTL_MS) return { hit: false, reason: '1日たった' }
+  // 読んだものが分からないテストの控えは、作業ツリーの中身（git を使うテストは HEAD と index も）が同じときだけ使う。
+  if (record.tree) {
+    const current = state()
+    if (!current || current.tree !== record.tree) return { hit: false, reason: '読んだものが分からないテストで、作業ツリーの中身が前回の合格と違う' }
+    if (record.git && current.git !== record.git) return { hit: false, reason: 'git を読むテストで、HEAD か index が前回の合格と違う' }
+    return { hit: true }
+  }
   for (const [kind, entries] of Object.entries(record.deps)) {
     for (const [rel, expected] of Object.entries(entries)) {
       if (READERS[kind](root, rel) !== expected) return { hit: false, reason: `${rel} が変わった` }
@@ -82,20 +96,27 @@ export function evaluateRecord({ root, record, signature, now, runId }) {
 
 // 控えを足す（同じ中身の古い控えと、使えなくなった控えは外す）。
 function addRecord(cacheDir, owner, record) {
-  const key = JSON.stringify([record.runId ?? null, record.deps])
+  const key = JSON.stringify([record.tree ?? null, record.git ?? null, record.deps])
   const kept = currentRecord(cacheDir, owner)
     .filter((item) => item.signature === record.signature && record.passedAt - item.passedAt <= RECORD_TTL_MS)
-    .filter((item) => JSON.stringify([item.runId ?? null, item.deps]) !== key)
+    .filter((item) => JSON.stringify([item.tree ?? null, item.git ?? null, item.deps]) !== key)
   writeAtomic(recordPath(cacheDir, owner), JSON.stringify({ owner, records: [record, ...kept].slice(0, RECORDS_PER_TEST) }))
 }
 
-export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt, runId }) {
-  // 控えないテスト：node 以外のコマンドを使った・ビルドは Rust の中で読むので読んだものが分からない。
-  // ただし commit・push の前の確認は、作業ツリーが変わらない1回の中で同じテストを何度も呼ぶ（いくつもの条件の check が
-  // 同じテストを流す）ので、その回の中でだけ使う控えを残す（2026-11-03、本番ビルドのテストを1回の commit で何度も流していた）。
+/**
+ * state：流し始めたときと終わったときの作業ツリーの指紋（tree.mjs の treeState）。読んだものが分からないテストは、
+ * 2つが同じとき（流している間に誰も中身を変えなかったとき）だけ、その指紋で控える。
+ */
+export function saveRecord({ root, cacheDir, owner, signature, trace, startedAt, state }) {
+  // 読んだものが分からないテスト：node 以外のコマンドを使った・ビルドは Rust の中で読む。読んだファイルで比べられないので、
+  // 作業ツリーの中身の指紋で控える（全監査で通ったものを commit・push の前の確認で流し直さない。2026-11-05）。
   if (trace.uncacheable.size) {
-    saveUncacheable(cacheDir, owner, [...trace.uncacheable])
-    if (runId) addRecord(cacheDir, owner, { owner, signature, passedAt: Date.now(), runId, deps: {} })
+    const reasons = [...trace.uncacheable]
+    saveUncacheable(cacheDir, owner, reasons)
+    const before = state?.before
+    const after = state?.after?.()
+    if (!before || !after || before.tree !== after.tree || before.git !== after.git) return
+    addRecord(cacheDir, owner, { owner, signature, passedAt: Date.now(), tree: before.tree, git: needsGitState(reasons) ? before.git : undefined, deps: {} })
     return
   }
   const deps = {}
@@ -155,3 +176,30 @@ export function loadTraces(dir, trace) {
 export const appendHit = (path, owner) => {
   if (path) appendFileSync(path, `${owner}\n`)
 }
+
+/** 控えが使えずに流したテストと、その理由（scripts/run-tests.mjs と commit・push の前の確認が最後にまとめて出す）。 */
+export const appendMiss = (path, owner, reason) => {
+  if (path) appendFileSync(path, `${owner}\t${reason}\n`)
+}
+
+/** 流し直した理由ごとに、テストの数と名前をまとめた行。 */
+export function missSummary(path, { limit = 6 } = {}) {
+  let lines = []
+  try {
+    lines = readFileSync(path, 'utf8').trim().split('\n').filter(Boolean)
+  } catch {
+    return []
+  }
+  const byReason = new Map()
+  for (const line of lines) {
+    const [owner, reason] = line.split('\t')
+    if (!byReason.has(reason)) byReason.set(reason, [])
+    byReason.get(reason).push(owner.replace(/^tests\//, '').replace(/\.test\.mjs$/, ''))
+  }
+  return [...byReason].sort((a, b) => b[1].length - a[1].length)
+    .map(([reason, owners]) => `  ${owners.length}本 ${reason}：${owners.slice(0, limit).join('・')}${owners.length > limit ? ` ほか${owners.length - limit}本` : ''}`)
+}
+
+// 一時フォルダを使うテスト：tmpdir() か mkdtemp を呼ぶファイル。preload.mjs が空の一時フォルダで流し、後始末を確かめる。
+export const USES_TEMP = /\btmpdir\(\)|\bmkdtemp(?:Sync)?\(/
+export const usesTemp = (source) => USES_TEMP.test(source)

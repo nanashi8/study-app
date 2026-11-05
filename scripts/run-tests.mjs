@@ -8,6 +8,7 @@ import { homedir, tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { acquireTestLock } from './test-cache/lock.mjs'
+import { missSummary } from './test-cache/store.mjs'
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const PRELOAD = join(ROOT, 'scripts/test-cache/preload.mjs')
@@ -34,6 +35,7 @@ function main() {
   const { light, heavy } = testGroups()
   const logDir = mkdtempSync(join(tmpdir(), 'study-app-test-run-'))
   const hitLog = join(logDir, 'hits')
+  const missLog = join(logDir, 'misses')
   // ほかのセッションのテストと重ねない（メモリが足りなくなって両方遅れる）。全監査の中から呼ばれたときは待たない。
   // 子に渡す環境を作る前に取る（子のテストが呼ぶ run-tests が、この順番を待たないように）。
   acquireTestLock('テスト')
@@ -44,14 +46,18 @@ function main() {
     AUDIT_TEST_CACHE_DIR: CACHE_DIR,
     AUDIT_TEST_USE_CACHE: full ? '0' : '1',
     AUDIT_TEST_HIT_LOG: hitLog,
+    AUDIT_TEST_MISS_LOG: missLog,
   }
   const startedAt = Date.now()
   let status = run(light, LIGHT_CONCURRENCY, env)
   if (status === 0) status = run(heavy, HEAVY_CONCURRENCY, env)
   const hits = existsSync(hitLog) ? readFileSync(hitLog, 'utf8').trim().split('\n').filter(Boolean).length : 0
+  const misses = missSummary(missLog)
   rmSync(logDir, { recursive: true, force: true })
   const total = light.length + heavy.length
   console.log(`\nテスト ${total} ファイルのうち ${total - hits} ファイルを流した（${hits} ファイルは前回の合格から読むファイルが変わっていない）・${Math.round((Date.now() - startedAt) / 1000)}秒${status === 0 ? '' : '・失敗あり'}`)
+  // 流し直した理由（変わっていないのに流れたテストを見つけるため。2026-11-05）。
+  if (misses.length) console.log(`流し直した理由：\n${misses.join('\n')}`)
   process.exit(status)
 }
 

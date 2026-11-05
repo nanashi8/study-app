@@ -159,7 +159,11 @@ const cleanEnv = () => Object.fromEntries(Object.entries(process.env).filter(([k
 
 // 確認コマンドの node --test にテストの結果の控えを使わせる（読むファイルが前回の合格から変わっていないテストは流さない。scripts/run-tests.mjs と同じ）。
 const TEST_CACHE_PRELOAD = join(ROOT, 'scripts/test-cache/preload.mjs')
-const CHECK_RUN_ID = `${process.pid}-${Date.now()}`
+const TEST_CACHE_STORE = join(ROOT, 'scripts/test-cache/store.mjs')
+// テストの使い捨てのリポジトリには道具がないので、あるときだけ読む（git のフックの確認の始めに読み込む）。
+let storeModule = null
+// 控えが使えずに流したテストと理由（最後に「⏱ done の確認」と一緒に出す）。
+const CHECK_MISS_LOG = join(tmpdir(), `study-app-check-misses-${process.pid}-${Date.now()}`)
 const checkEnv = () => {
   const env = cleanEnv()
   if (!existsSync(TEST_CACHE_PRELOAD)) return env
@@ -169,8 +173,8 @@ const checkEnv = () => {
     AUDIT_TEST_ROOT: ROOT,
     AUDIT_TEST_CACHE_DIR: env.AUDIT_TEST_CACHE_DIR ?? join(homedir(), '.cache', 'study-app-test-cache'),
     AUDIT_TEST_USE_CACHE: '1',
-    // 読んだものが分からないテスト（本番ビルドなど）も、この1回の確認の中では1度だけ流す（store.mjs の runId）。
-    AUDIT_TEST_RUN_ID: CHECK_RUN_ID,
+    // 読んだものが分からないテスト（本番ビルドなど）も、作業ツリーの中身が全監査のときと同じなら流さない（store.mjs・tree.mjs）。
+    AUDIT_TEST_MISS_LOG: CHECK_MISS_LOG,
   }
 }
 
@@ -193,6 +197,9 @@ function doneCheckFailures(requests) {
     const total = timings.reduce((sum, [ms]) => sum + ms, 0)
     const slow = timings.filter(([ms]) => ms >= 30_000).sort((a, b) => b[0] - a[0])
     console.error(`⏱ done の確認 ${timings.length}件・${Math.round(total / 1000)}秒${slow.length ? `（30秒以上：${slow.map(([ms, name]) => `${name} ${Math.round(ms / 1000)}秒`).join('・')}）` : ''}`)
+    const misses = storeModule?.missSummary(CHECK_MISS_LOG) ?? []
+    rmSync(CHECK_MISS_LOG, { force: true })
+    if (misses.length) console.error(`流し直したテストと理由：\n${misses.join('\n')}`)
   })
   for (const request of openRequests(requests)) {
     for (const criterion of request.criteria.filter((c) => c.status === 'done')) {
@@ -364,6 +371,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // ほかのセッションのテストと重ねない（scripts/test-cache/lock.mjs）。テストの使い捨てのリポジトリには道具がないので待たない。
     const lock = join(ROOT, 'scripts/test-cache/lock.mjs')
     if (existsSync(lock)) (await import(pathToFileURL(lock).href)).acquireTestLock(mode('git-commit') ? 'commit の前の確認' : 'push の前の確認')
+    if (existsSync(TEST_CACHE_STORE)) storeModule = await import(pathToFileURL(TEST_CACHE_STORE).href)
     const failures = problems.map((problem) => `台帳の誤り: ${problem}`)
     failures.push(...doneCheckFailures(requests))
     const identity = projectIdentity()

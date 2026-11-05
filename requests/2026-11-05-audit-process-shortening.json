@@ -1,0 +1,63 @@
+{
+  "id": "2026-11-05-audit-process-shortening",
+  "title": "変更に関係しない確認を流し直さないよう、全監査と commit・push の前の確認の工程を直す",
+  "asked": [
+    "作業によっては全監査が必要ない場合があると思われるが、作業工程に問題はないか監査しなさい。",
+    "進めて"
+  ],
+  "sessions": [
+    "fdd13876-b563-4384-b219-6beeef989f42"
+  ],
+  "status": "open",
+  "note": "2026-11-05 の調べ：検証用の clone の全監査の2回目・3回目で、中身の変わっていない画面のテストが約27本流れ直していた。監査の vite build が clone に dist/ を作り、いちばん上のフォルダの一覧（list .）が変わったため。ほかに、読んだものが分からないテスト13本（git・ps などのコマンドや vite build を使う）は全監査・commit・push のたびに流れ、一時フォルダのテストは一時フォルダを使うテストを子として流し直していた（約160秒）。",
+  "criteria": [
+    {
+      "id": "listings-ignore-generated",
+      "text": "テストの控えが見るフォルダの一覧から、作られるもの（dist・node_modules・.git など）を外し、ビルドで dist/ ができても控えが使えなくならない",
+      "population": "フォルダの一覧を控えに持つ全テスト（2026-11-05 の控えでいちばん上のフォルダを見るもの29本を含む）",
+      "check": "node --test tests/audit-speed.test.mjs",
+      "status": "done",
+      "verifiedBy": "store.mjs の GENERATED（dist・dist-ssr・node_modules・.git・.DS_Store）を、フォルダの一覧と読んだファイルの両方から外した。tests/audit-speed.test.mjs で、dist/・node_modules/・listed/node_modules・.DS_Store を作っても、いちばん上の一覧を読むテストも listed を読むテストも流れず、いちばん上にふつうのファイルを足すと流れることを確かめた（2026-11-05 の控えで、いちばん上の一覧を読むテストは29本）。"
+    },
+    {
+      "id": "rerun-reasons-shown",
+      "text": "テストを流したとき、流し直した理由（どのファイルが変わったか・控えがない・読んだものが分からない）をテストごとに残し、最後に理由ごとの数を出す",
+      "population": "scripts/run-tests.mjs と commit・push の前の確認で流れる全テスト",
+      "check": "node --test tests/audit-speed.test.mjs",
+      "status": "done",
+      "verifiedBy": "preload.mjs が、控えを使えなかったテストと理由を AUDIT_TEST_MISS_LOG に書く。run-tests.mjs は最後に「流し直した理由」を理由ごとの本数とテストの名前で出し、check-requests.mjs も commit・push の前の確認の最後に出す。tests/audit-speed.test.mjs で「1本 data/a.txt が変わった：reads-file」「1本 . が変わった：lists-root」「2本 読んだものが分からないテストで、作業ツリーの中身が前回の合格と違う」が出ることを確かめた。"
+    },
+    {
+      "id": "same-tree-reuse",
+      "text": "読んだものが分からないテストの合格を、作業ツリーの中身が同じ間は使い回す（全監査→commit の前の確認→push の前の確認）。git の履歴を読むテストは、HEAD も同じときだけ使い回す",
+      "population": "読んだものが分からない全テスト（2026-11-05 の時点で13本）",
+      "check": "node --test tests/audit-speed.test.mjs",
+      "status": "done",
+      "verifiedBy": "scripts/test-cache/tree.mjs が、一時の index に git add -A して write-tree した中身の指紋と、HEAD と git ls-files -s を返す。読んだものが分からないテストは、流す前と終わったときの指紋が同じなら控え、中身が同じ間は使い回す。git などのコマンドを使うテストは HEAD と index も同じときだけ使う（ビルドと ps・footprint などは中身だけ）。古い AUDIT_TEST_RUN_ID はやめた。tests/audit-speed.test.mjs で、同じ中身なら0本、読まないファイルを変えると2本、git add のあとと commit のあとは git のテストの1本だけ、流している間に中身を変えるテストは毎回流れることを確かめた。"
+    },
+    {
+      "id": "temp-cleanup-in-runner",
+      "text": "一時フォルダの後始末の確かめを、テストを流すときの仕組みに移し、一時フォルダを使うテストを子として流し直さない。後始末をしないテストは今までどおり落ちる",
+      "population": "一時フォルダを使う全テスト（tmpdir() か mkdtemp を呼ぶテストのファイル）",
+      "check": "node --test tests/test-temp-cleanup.test.mjs",
+      "status": "done",
+      "verifiedBy": "preload.mjs が、tmpdir()・mkdtemp を使うテストのファイル（store.mjs の USES_TEMP）を空の TMPDIR で流し、終わったときに何か残っていれば名前を出してそのファイルを落とし、控えない。tests/test-temp-cleanup.test.mjs は子として流し直すのをやめ、小さなリポジトリで「残すテストは落ち、2回目も落ちる」「消すテストは通る」「外の一時フォルダに残さない」、2026-09-28 の3本とこのファイル自身が対象に入ること、run-tests と commit・push の前の確認がこの仕組みを読み込むことを確かめた。"
+    },
+    {
+      "id": "process-rules-written",
+      "text": "工程の決まりを CLAUDE.md に書く（全監査の前に、変えたものに関係するテストと台帳の書き直しを先に流す。全監査は変わったものだけを流すので、台帳だけの変更でも省かずに流す）",
+      "population": "CLAUDE.md の「そのほかの決まり」の全監査の項",
+      "check": "node --test tests/audit-speed.test.mjs",
+      "status": "done",
+      "verifiedBy": "CLAUDE.md の全監査の項に4行を書いた：読んだものが分からないテストは中身が同じなら流さない／台帳や文書だけの変更でも全監査を省かない／全監査の前に関係するテストと台帳の書き直しを先に流す／最後の「流し直した理由」を見る。古い「git など node 以外のコマンドを使うテストは毎回流す」は消した。tests/audit-speed.test.mjs が文を確かめる。"
+    },
+    {
+      "id": "audits-pass-deploy",
+      "text": "クリーンな clone で npm run audit:all-content を2回流し、2回目に流れるテストが変わっていないのに流れたものだけになっていないか（流し直した理由）を確かめてから main へ push し、公開を確かめる。検証用の clone は消す",
+      "population": "リポジトリ全体と公開版",
+      "check": "node --test tests/audit-speed.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "waiting",
+      "waitingFor": "clone の全監査の1回目（裏の処理 bh0xx1vkh、道具が変わったので全テストが流れる）"
+    }
+  ]
+}

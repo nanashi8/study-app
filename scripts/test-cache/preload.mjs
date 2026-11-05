@@ -3,22 +3,28 @@
 // 次に流すとき、読んだファイルが1つも変わっていなければ、前回の合格をそのまま使って流さない。
 // 外から入るもの（git などのコマンド）を使ったテストは、読んだものが分からないので控えない（毎回流す）。
 import { createRequire, registerHooks, syncBuiltinESMExports } from 'node:module'
-import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  appendHit, currentRecord, envSignature, evaluateRecord, loadTraces, removeRecord, saveRecord, saveTrace,
+  appendHit, appendMiss, currentRecord, envSignature, evaluateRecord, GENERATED, loadTraces, removeRecord, saveRecord, saveTrace,
+  usesTemp,
 } from './store.mjs'
+import { treeState } from './tree.mjs'
 
 const require = createRequire(import.meta.url)
 const fs = require('node:fs')
 const childProcess = require('node:child_process')
 
-const ROOT = process.env.AUDIT_TEST_ROOT
+// node はテストのファイルの場所を本当の場所（/var → /private/var など）で渡すので、ROOT もそろえる。
+const ROOT = process.env.AUDIT_TEST_ROOT && fs.realpathSync(process.env.AUDIT_TEST_ROOT)
 const CACHE_DIR = process.env.AUDIT_TEST_CACHE_DIR
 const USE_CACHE = process.env.AUDIT_TEST_USE_CACHE === '1'
 const HIT_LOG = process.env.AUDIT_TEST_HIT_LOG
+const MISS_LOG = process.env.AUDIT_TEST_MISS_LOG
+// 作業ツリーの指紋を取る git は、テストの記録（読んだものが分からない印）に入れない。包む前の関数を取っておく。
+const rawSpawnSync = childProcess.spawnSync
+const { mkdtempSync, readdirSync, rmSync } = fs
 
 const isTestChild = !process.env.AUDIT_TEST_OWNER
   && process.env.NODE_TEST_CONTEXT === 'child-v8'
@@ -32,25 +38,50 @@ function start() {
   if (isTestChild) {
     const owner = relative(ROOT, resolve(process.argv[1])).split('\\').join('/')
     const signature = envSignature(ROOT)
+    let before
+    const state = () => (before ??= treeState(ROOT, rawSpawnSync))
     if (USE_CACHE) {
-      const verdict = evaluateRecord({ root: ROOT, record: currentRecord(CACHE_DIR, owner), signature, now: startedAt, runId: process.env.AUDIT_TEST_RUN_ID })
+      const verdict = evaluateRecord({ root: ROOT, record: currentRecord(CACHE_DIR, owner), signature, now: startedAt, state })
       if (verdict.hit) {
         appendHit(HIT_LOG, owner)
         process.exit(0)
       }
+      appendMiss(MISS_LOG, owner, verdict.reason)
     }
+    const source = fs.readFileSync(process.argv[1], 'utf8')
+    // 流す前の作業ツリーの指紋（読んだものが分からないテストは、終わったときの指紋と同じなら控える）。包む前に取る。
+    state()
     process.env.AUDIT_TEST_OWNER = owner
     process.env.AUDIT_TEST_TRACE_DIR = mkdtempSync(join(tmpdir(), 'study-app-test-trace-'))
+    // 一時フォルダを使うテストは、空の一時フォルダ（TMPDIR）で流し、終わったときに何も残っていないことを確かめる。
+    // 2026-09-28、使い捨てのリポジトリ 112個・台帳のフォルダ 169個がたまっていた。前は tests/test-temp-cleanup.test.mjs が
+    // そのテストを子としてもう一度流していた（約160秒。2026-11-05 にこちらへ移した）。
+    const realTmp = process.env.TMPDIR
+    const privateTmp = usesTemp(source) ? mkdtempSync(join(tmpdir(), 'study-app-test-tmp-')) : null
+    if (privateTmp) process.env.TMPDIR = `${privateTmp}/`
     const trace = installTrace()
     // vite の build は Rust の中でファイルを読むので、読んだものが分からない。
-    if (/\bbuild\(\{/.test(fs.readFileSync(process.argv[1], 'utf8'))) trace.uncacheable.add('vite build')
+    if (/\bbuild\(\{/.test(source)) trace.uncacheable.add('vite build')
     process.on('exit', (code) => {
+      if (privateTmp) {
+        const left = readdirSync(privateTmp)
+        rmSync(privateTmp, { recursive: true, force: true })
+        if (realTmp === undefined) delete process.env.TMPDIR
+        else process.env.TMPDIR = realTmp
+        if (left.length) {
+          console.error(`\n${owner} が一時フォルダに作ったものを消さずに終わった：${left.slice(0, 10).join('、')}${left.length > 10 ? ` ほか${left.length - 10}件` : ''}`)
+          process.exitCode = 1
+        }
+      }
       const merged = loadTraces(process.env.AUDIT_TEST_TRACE_DIR, trace)
       if (code !== 0 || process.exitCode) {
         removeRecord(CACHE_DIR, owner)
         return
       }
-      saveRecord({ root: ROOT, cacheDir: CACHE_DIR, owner, signature, trace: merged, startedAt, runId: process.env.AUDIT_TEST_RUN_ID })
+      saveRecord({
+        root: ROOT, cacheDir: CACHE_DIR, owner, signature, trace: merged, startedAt,
+        state: { before, after: () => treeState(ROOT, rawSpawnSync) },
+      })
     })
     return
   }
@@ -71,7 +102,7 @@ function installTrace() {
       return null
     }
     const rel = relative(ROOT, resolve(text))
-    if (rel.startsWith('..') || /^(node_modules|\.git|dist)(\/|$)/.test(rel)) return null
+    if (rel.startsWith('..') || GENERATED.test(rel)) return null
     return rel === '' ? '.' : rel
   }
   const note = (set, value) => {

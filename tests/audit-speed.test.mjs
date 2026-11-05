@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { spawn, spawnSync } from 'node:child_process'
+import { execFileSync, spawn, spawnSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -14,6 +14,7 @@ const TESTS = {
   'reads-file.test.mjs': `import { readFileSync } from 'node:fs'; import { test } from 'node:test'; test('a', () => { readFileSync('data/a.txt') })`,
   'imports-module.test.mjs': `import { b } from '../data/b.mjs'; import { test } from 'node:test'; test('b', () => { if (!b) throw new Error('b') })`,
   'lists-dir.test.mjs': `import { readdirSync } from 'node:fs'; import { test } from 'node:test'; test('c', () => { readdirSync('listed') })`,
+  'lists-root.test.mjs': `import { readdirSync } from 'node:fs'; import { test } from 'node:test'; test('i', () => { readdirSync('.') })`,
   'runs-script.test.mjs': `import { execFileSync } from 'node:child_process'; import { test } from 'node:test'; test('d', () => { execFileSync(process.execPath, ['data/script.mjs']) })`,
   'runs-git.test.mjs': `import { execFileSync } from 'node:child_process'; import { test } from 'node:test'; test('e', () => { execFileSync('git', ['--version']) })`,
   'runs-build.test.mjs': `import { test } from 'node:test'; const build = () => {}; test('h', () => { build({ }) })`,
@@ -23,7 +24,7 @@ const TESTS = {
 
 function makeRepo() {
   const dir = mkdtempSync(join(tmpdir(), 'study-app-audit-speed-'))
-  made.push(dir)
+  made.push(dir, `${dir}-cache`, `${dir}-lock`)
   for (const path of ['tests', 'data', 'listed', 'scripts/test-cache']) mkdirSync(join(dir, path), { recursive: true })
   copyFileSync('scripts/run-tests.mjs', join(dir, 'scripts/run-tests.mjs'))
   for (const name of readdirSync('scripts/test-cache')) copyFileSync(`scripts/test-cache/${name}`, join(dir, 'scripts/test-cache', name))
@@ -58,9 +59,10 @@ function run(dir, ...args) {
 
 function runWith(dir, extraEnv, ...args) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(AUDIT_TEST_|NODE_OPTIONS$|NODE_TEST_)/.test(key)))
-  env.AUDIT_TEST_CACHE_DIR = join(dir, '.test-cache')
+  // 控えと順番待ちは、作ったリポジトリの外に置く（中に置くと、いちばん上のフォルダの一覧と作業ツリーの指紋が変わる）。
+  env.AUDIT_TEST_CACHE_DIR = `${dir}-cache`
   // 機械全体の順番待ちは、このテストの中だけのものにする（ほかのセッションの全監査を待たない）。
-  env.STUDY_APP_TEST_LOCK_DIR = join(dir, '.test-lock')
+  env.STUDY_APP_TEST_LOCK_DIR = `${dir}-lock`
   delete env.STUDY_APP_TEST_LOCK_HELD
   Object.assign(env, extraEnv)
   const result = spawnSync(process.execPath, ['scripts/run-tests.mjs', ...args], { cwd: dir, env, encoding: 'utf8' })
@@ -70,8 +72,17 @@ function runWith(dir, extraEnv, ...args) {
 }
 
 const ALL = Object.keys(TESTS).length
-// git を使うテストと vite の build を使うテストは、読んだものが分からないので毎回流す。
+// git を使うテストと vite の build を使うテストは、読んだものが分からない。git のリポジトリでなければ毎回流す。
 const ALWAYS = 2
+
+const git = (dir, ...args) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@example.invalid', ...args], { cwd: dir, encoding: 'utf8', env: Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_'))) })
+function makeGitRepo() {
+  const dir = makeRepo()
+  git(dir, 'init', '-q')
+  git(dir, 'add', '-A')
+  git(dir, 'commit', '-q', '-m', 'start')
+  return dir
+}
 
 test('全テストファイルがどちらかの組に入り、並列で流れる', () => {
   const { light, heavy } = testGroups()
@@ -108,18 +119,63 @@ test('読むファイルが変わったテストだけ流し直す', () => {
     const path = join(dir, file)
     writeFileSync(path, `${readFileSync(path, 'utf8')}\n// changed`)
     settle(dir)
-    assert.equal(run(dir).ran, ALWAYS + expected, why)
+    const changed = run(dir)
+    assert.equal(changed.ran, ALWAYS + expected, why)
+    if (file === 'data/a.txt') assert.match(changed.output, /1本 data\/a\.txt が変わった：reads-file/, '流し直した理由を出す')
     assert.equal(run(dir).ran, ALWAYS, `${why}：流した後はまた控えが効く`)
   }
 })
 
-test('読んだものが分からないテストは、commit・push の前の1回の確認の中でだけ1度にまとめる', () => {
+// 2026-11-05、全監査で通った本番ビルドや git を読むテストを、commit・push の前の確認で毎回流し直していた。
+test('読んだものが分からないテストは、作業ツリーの中身が前回の合格と同じなら流さない', () => {
+  const dir = makeGitRepo()
+  assert.equal(run(dir).ran, ALL)
+  assert.equal(run(dir).ran, 0, '中身も HEAD も同じなら、git やビルドを使うテストも流さない（全監査→commit の前の確認）')
+
+  writeFileSync(join(dir, 'docs.txt'), 'changed')
+  settle(dir)
+  const changed = run(dir)
+  assert.equal(changed.ran, ALWAYS, 'どのテストも読まないファイルでも、読んだものが分からないテストは流し直す')
+  assert.match(changed.output, /2本 読んだものが分からないテストで、作業ツリーの中身が前回の合格と違う：runs-build・runs-git|2本 読んだものが分からないテストで、作業ツリーの中身が前回の合格と違う：runs-git・runs-build/)
+  assert.equal(run(dir).ran, 0)
+
+  git(dir, 'add', '-A')
+  assert.equal(run(dir).ran, 1, 'git add で index が変わったら、git を使うテストだけ流す（ビルドは中身が同じ）')
+  git(dir, 'commit', '-q', '-m', 'docs')
+  const committed = run(dir)
+  assert.equal(committed.ran, 1, 'commit したら、git を使うテストだけ流す（push の前の確認）')
+  assert.match(committed.output, /1本 git を読むテストで、HEAD か index が前回の合格と違う：runs-git/)
+
+  writeFileSync(join(dir, 'new-untracked.txt'), 'x')
+  settle(dir)
+  assert.equal(run(dir).ran, ALWAYS + 1, '新しいファイル（無視していないもの）も中身に入る（いちばん上の一覧を読むテストも流れる）')
+})
+
+test('流している間に作業ツリーが変わったら、読んだものが分からないテストは控えない', () => {
+  const dir = makeGitRepo()
+  writeFileSync(join(dir, 'tests', 'runs-git.test.mjs'), `${TESTS['runs-git.test.mjs']}\nimport { writeFileSync } from 'node:fs'; writeFileSync('docs.txt', String(Math.random()))`)
+  git(dir, 'add', '-A')
+  git(dir, 'commit', '-q', '-m', 'edit while running')
+  settle(dir)
+  run(dir)
+  // 同時に流れるビルドのテストは、書き換えの前後どちらで始まったかで控えが残ることがあるので、git のテストだけを見る。
+  assert.match(run(dir).output, /runs-git/, '自分が中身を変えたテストは、毎回流す')
+})
+
+test('ビルドが作る dist/ や node_modules/ ができても、フォルダの一覧を読むテストは流し直さない', () => {
   const dir = makeRepo()
   run(dir)
-  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-1' }).ran, ALWAYS, '1回目の確認では流す')
-  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-1' }).ran, 0, '同じ確認の中の2回目は流さない')
-  assert.equal(runWith(dir, { AUDIT_TEST_RUN_ID: 'check-2' }).ran, ALWAYS, '次の確認ではまた流す')
-  assert.equal(run(dir).ran, ALWAYS, '全監査ではいつも流す')
+  for (const path of ['dist/assets', 'node_modules/.vite', 'listed/node_modules']) mkdirSync(join(dir, path), { recursive: true })
+  writeFileSync(join(dir, 'dist/index.html'), 'built')
+  writeFileSync(join(dir, 'listed/.DS_Store'), 'finder')
+  settle(dir)
+  const after = run(dir)
+  assert.equal(after.ran, ALWAYS, after.output)
+  writeFileSync(join(dir, 'new-at-root.txt'), 'x')
+  settle(dir)
+  const added = run(dir)
+  assert.equal(added.ran, ALWAYS + 1, 'いちばん上にふつうのファイルが増えたら流す')
+  assert.match(added.output, /1本 \. が変わった：lists-root/)
 })
 
 test('中身の違う2つの所（作業ツリーと clone）で交互に流しても、どちらの控えも使える', () => {
@@ -175,7 +231,7 @@ test('依存パッケージが変わったら全部を流す', () => {
 test('1日たった控えは使わない', () => {
   const dir = makeRepo()
   run(dir)
-  const cache = join(dir, '.test-cache')
+  const cache = `${dir}-cache`
   for (const name of readdirSync(cache).filter((file) => file.endsWith('.json'))) {
     const stored = JSON.parse(readFileSync(join(cache, name), 'utf8'))
     const records = stored.records.map((record) => ({ ...record, passedAt: Date.now() - RECORD_TTL_MS - 1000 }))
@@ -233,4 +289,13 @@ test('全監査は段ごとの時間を出し、全監査・テスト・commit �
   assert.match(readFileSync('scripts/record-content-audit.mjs', 'utf8'), /acquireTestLock\('全教材監査'\)[\s\S]*⏱ 全教材監査の時間/)
   assert.match(readFileSync('scripts/run-tests.mjs', 'utf8'), /acquireTestLock\('テスト'\)\n  const env = \{/)
   assert.match(readFileSync('scripts/check-requests.mjs', 'utf8'), /acquireTestLock\(mode\('git-commit'\)/)
+})
+
+test('CLAUDE.md に工程の決まり（関係するテストを先に・全監査は省かない・流し直した理由を見る）がある', () => {
+  const rules = readFileSync('CLAUDE.md', 'utf8')
+  assert.match(rules, /全監査の前に、変えたものに関係するテストと台帳の書き直しを先に流す/)
+  assert.match(rules, /台帳や文書だけの変更でも全監査を省かない/)
+  assert.match(rules, /流し直した理由/)
+  assert.match(rules, /作業ツリーの中身が前回の合格と同じなら流さない/)
+  assert.doesNotMatch(rules, /git など node 以外のコマンドを使うテストは毎回流す/)
 })
