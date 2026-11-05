@@ -146,6 +146,18 @@ test('読んだものが分からないテストは、作業ツリーの中身�
   assert.equal(committed.ran, 1, 'commit したら、git を使うテストだけ流す（push の前の確認）')
   assert.match(committed.output, /1本 git を読むテストで、HEAD か index が前回の合格と違う：runs-git/)
 
+  // 全監査がテストの後に書き直す全教材監査台帳は、指紋に入れない（commit の前の確認で流し直さない）。
+  mkdirSync(join(dir, 'docs/audits'), { recursive: true })
+  writeFileSync(join(dir, 'docs/audits/content-audit-ledger.json'), '{"auditedAt":"1"}')
+  settle(dir)
+  const added = run(dir)
+  assert.equal(added.ran, 1, '全教材監査台帳を足しても、git やビルドのテストは流さない（流れるのは、いちばん上に docs/ が増えて一覧が変わったテストだけ）')
+  assert.match(added.output, /1本 \. が変わった：lists-root/)
+  writeFileSync(join(dir, 'docs/audits/content-audit-ledger.json'), '{"auditedAt":"2"}')
+  git(dir, 'add', '-A')
+  settle(dir)
+  assert.equal(run(dir).ran, 0, '全教材監査台帳を書き直して git add しても流さない')
+
   writeFileSync(join(dir, 'new-untracked.txt'), 'x')
   settle(dir)
   assert.equal(run(dir).ran, ALWAYS + 1, '新しいファイル（無視していないもの）も中身に入る（いちばん上の一覧を読むテストも流れる）')

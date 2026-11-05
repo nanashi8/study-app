@@ -9,6 +9,11 @@ import { copyFileSync, existsSync, mkdtempSync, realpathSync, rmSync } from 'nod
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
+// 指紋に入れないファイル。全教材監査台帳は全監査がテストの後に書き直す（auditedAt も変わる）ので、入れると全監査で通った
+// テストを commit の前の確認で流し直す（2026-11-05、本番ビルドのテストが43秒）。台帳は tests/content-audit-ledger.test.mjs
+// （読んだファイルで控える）と push の前の確認（check-requests.mjs の ledgerProblemsAt）が別に確かめる。
+export const OUTSIDE_FINGERPRINT = Object.freeze(['docs/audits/content-audit-ledger.json'])
+
 /**
  * @param {string} root リポジトリの一番上
  * @param {typeof defaultSpawnSync} [spawnSync] テストの記録に入れない spawnSync（preload.mjs が包む前のもの）を渡す
@@ -32,10 +37,12 @@ export function treeState(root, spawnSync = defaultSpawnSync) {
     const real = resolve(root, git(['rev-parse', '--git-path', 'index']).stdout.trim())
     if (existsSync(real)) copyFileSync(real, index)
     if (git(['add', '-A'], { GIT_INDEX_FILE: index }).status !== 0) return null
+    if (git(['rm', '-q', '--cached', '--ignore-unmatch', '--', ...OUTSIDE_FINGERPRINT], { GIT_INDEX_FILE: index }).status !== 0) return null
     const tree = git(['write-tree'], { GIT_INDEX_FILE: index })
     if (tree.status !== 0) return null
     const head = git(['rev-parse', '--verify', '-q', 'HEAD']).stdout.trim() || 'no-commit'
-    const staged = createHash('sha256').update(git(['ls-files', '-s', '-z']).stdout ?? '').digest('hex').slice(0, 32)
+    const entries = (git(['ls-files', '-s', '-z']).stdout ?? '').split('\0').filter((entry) => !OUTSIDE_FINGERPRINT.includes(entry.split('\t')[1]))
+    const staged = createHash('sha256').update(entries.join('\0')).digest('hex').slice(0, 32)
     return { tree: tree.stdout.trim(), git: `${head}:${staged}` }
   } finally {
     rmSync(dir, { recursive: true, force: true })
