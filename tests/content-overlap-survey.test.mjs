@@ -9,6 +9,8 @@
 // 2026-11-04、地理総合・歴史総合の語句と問題を足し、地理探究・日本史探究の81単元を加えて、社会は116単元から197単元、
 //    全体は20,239件から22,802件になった。中学と高校の社会の冊、高校の社会の冊どうしで学ぶ語句は199組から781組、
 //    高校の社会の冊と理科の両方で学ぶ語句は40組から50組（requests/2026-11-04-high-school-social-tankyu.json）。
+// 2026-11-05、地理総合 gso-20 の語句を「引用」から元の「出典」に戻し（requests/2026-11-05-citation-term-in-lessons.json）、
+//    高校の社会の冊どうしで学ぶ「引用」の1組がなくなって、781組から780組（候補は1070組から1069組）。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -48,7 +50,7 @@ test('段の作り：17教材22,802件が、どの軸でもちょうど1つの�
   )
 })
 
-test('項目の重複：候補1070組をすべて分けてあり、二重登録3組・別の形11組・社会と理科の両方で学ぶ語句50組・中学と高校の社会の冊、高校の社会の冊どうしで学ぶ語句781組', () => {
+test('項目の重複：候補1069組をすべて分けてあり、二重登録3組・別の形11組・社会と理科の両方で学ぶ語句50組・中学と高校の社会の冊、高校の社会の冊どうしで学ぶ語句780組', () => {
   const rows = result.overlaps.sets.filter((set) => set.candidates)
     .map((set) => [set.label, set.candidates, set.duplicate.length, set.form.length, set.same.length, set.different])
   assert.deepEqual(rows, [
@@ -56,7 +58,7 @@ test('項目の重複：候補1070組をすべて分けてあり、二重登録3
     ['熟語・構文', 23, 1, 3, 0, 19],
     ['英文法', 5, 2, 1, 0, 2],
     ['語源', 12, 0, 0, 0, 12],
-    ['社会の重要語句', 781, 0, 0, 781, 0],
+    ['社会の重要語句', 780, 0, 0, 780, 0],
     ['社会の語句 × 理科の語句', 50, 0, 0, 50, 0],
   ])
   const keys = (kind) => result.overlaps.sets.flatMap((set) => set[kind].map((pair) => pair.key)).sort()

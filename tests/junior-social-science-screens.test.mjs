@@ -31,12 +31,11 @@ import {
 import { SUBJECT_READINGS } from '../src/data/subjects/readings.js'
 import { tokenizeSubjectText } from '../src/lib/subjectText.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
+import { creditDisplays } from './credit-display.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const WIDTH = 375
 const HEIGHT = 740
-// 学習の画面に出さない、出典のページだけの言葉。
-const CREDIT_WORDS = ['出典', 'Natural Earth', '東京書籍']
 
 let vite
 let browser
@@ -123,10 +122,11 @@ async function checkWidth(where) {
 
 const mainText = () => page.evaluate(() => document.querySelector('.study-app-content').innerText)
 
-async function checkNoCredits(where) {
+// 出典の表示（「出典：」の形・資料の名前。メニューは「出典」の語）がないこと。学習の本文や語句の用語としての「出典」は止めない
+// （tests/credit-display.mjs、requests/2026-11-05-citation-term-in-lessons.json）。
+async function checkNoCredits(where, options) {
   const text = await mainText()
-  const words = CREDIT_WORDS.filter((word) => text.includes(word))
-  assert.deepEqual(words, [], `${where}: 学習の画面に出典の言葉がある`)
+  assert.deepEqual(creditDisplays(text, options), [], `${where}: 出典の表示がある`)
 }
 
 before(async () => {
@@ -500,7 +500,7 @@ test('メニューに出典の行がなく、出典の画面へ行けない', as
   await page.evaluate(() => window.__subjectTest.store.getState().openSpeechSettings())
   await page.waitForSelector('[data-menu-section]')
   assert.equal(await page.locator('[data-menu-section="about"], [data-menu-destination="credits"]').count(), 0)
-  await checkNoCredits('メニュー')
+  await checkNoCredits('メニュー', { menu: true })
 })
 
 test('一覧・単語帳・学習の記録の画面でも、社会・理科の語句と問題に読みがなが出る', async () => {

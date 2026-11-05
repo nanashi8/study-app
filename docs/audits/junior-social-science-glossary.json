@@ -1,6 +1,6 @@
 {
   "readMe": "社会・理科の重要語句の解説を、中学生向けの用語集の程度（意味に、背景・特徴・関連する語句・まちがえやすい語との見分け方を添える）に書き、1語ずつ読み直した記録。値は語句・意味・解説の指紋。確認は node scripts/checks/junior-social-science-glossary.mjs、押し直しは --stamp <単元ID>。",
-  "reviewedOn": "2026-11-04",
+  "reviewedOn": "2026-11-05",
   "terms": {
     "civ-01-t01": "93124de02abe9d5d8562b6ab8773ec64c9e4c1aff9beff4c5baa5b53561d7f50",
     "civ-01-t02": "85f1958ea525fa4c51509c802181f57f620452410c62741c122343ebf308a52b",
@@ -679,7 +679,7 @@
     "gso-20-t11": "57ed6fb18d484f9aea5f0f242cf4f39043cdafd3015dc90432d59568be943221",
     "gso-20-t12": "37a77fc1f866b402091d8139e5d0d4294dcb0ff4635ab4b9137890bc07d7f765",
     "gso-20-t13": "1d10026d1fef31c1c11128215f470924cd2d987b9ad0f5fd3d5aff80606f6eef",
-    "gso-20-t14": "639ed946c33ee686cb89b886d230f59fd5de2ebecc2eaaaf0f72d88264293a42",
+    "gso-20-t14": "f299256a67b6bb2724019ef414abe2ddb9b4450f674b6c68746edfb6cb0d0bff",
     "gtk-01-t01": "a2819c284e80021408743f2953ed8dcf3984815b72626d6baa0bc6f6a6731434",
     "gtk-01-t02": "04e802f47de83c3d8433194c80481f11e0f16bfb127a7cceeae8327b56baa497",
     "gtk-01-t03": "cced0caebd299009d15df229a2e9bad47ba65a59bd997b30f9a0a6f91060cad9",

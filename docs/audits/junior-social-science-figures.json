@@ -1,6 +1,6 @@
 {
   "readMe": "社会・理科の全要点と全演習を1件ずつ読み、図表（表・グラフ・地図・年表・流れ図・図解・雨温図）で詳しく説明できるかを判断した記録。figure＝図と図の読み方（要点）・図の読み取り方（演習）を付けた、none＝付けない（要点は理由を noFigure に書く）。sha256 は判断したときの中身の指紋。確認は node scripts/checks/junior-social-science-figures.mjs、押し直しは --stamp <単元ID>。",
-  "reviewedOn": "2026-11-04",
+  "reviewedOn": "2026-11-05",
   "points": {
     "civ-01#1": {
       "decision": "figure",
@@ -1232,7 +1232,7 @@
     },
     "gso-20#6": {
       "decision": "figure",
-      "sha256": "dd012c4341176be856dda285643564129de9050d7d1df4a7d8e7256ed0e256ef"
+      "sha256": "85ada182764668868575a1c504b50f30987f7bf664733754dc54d9c3b82fbdb3"
     },
     "gtk-01#1": {
       "decision": "figure",
@@ -1832,7 +1832,7 @@
     },
     "gtk-29#5": {
       "decision": "figure",
-      "sha256": "fa426d2365c224d4cd801f0d1306ffc7536961cf5e743a7489a79dd52b7376ec"
+      "sha256": "1c2e52ee3c7a730f11ec46d84884f1d094b1d2d00675a5cedf7f6435609989e7"
     },
     "his-01#1": {
       "decision": "figure",
@@ -7486,7 +7486,7 @@
     },
     "gso-20-q11": {
       "decision": "none",
-      "sha256": "3dc07831024a7655158dd691bb38e7be4328114e340bde81d22e67f14f6949d4"
+      "sha256": "80fde5bac6458110c38744b278d65fa20173a99c3ee3895ae98eac8d3e55a142"
     },
     "gso-20-q12": {
       "decision": "none",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-04T16:56:59.577Z",
+  "auditedAt": "2026-11-05T03:20:38.266Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 24414,
     "storedAndGeneratedQuestionPathCount": 11199,
     "storedAndGeneratedChoicePathCount": 43477,
-    "overallContentSha256": "71539de683d20deca74232b24d8848bb2622a7b714c41877cd7448126b0fc034"
+    "overallContentSha256": "b3ac5b981db6010f578340d2c656bf834d728330187bff02006e3661668c901b"
   },
   "completionCriteria": [
     "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "74769aef39843b3b643fcc320e3eb3c26adfc5e8e6ccde4fa9167382b52fc35d",
+    "sha256": "2f649899daf3c0f111450a10dfa888850b8bab67591c193c6260dd3da6c24b98",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -192,6 +192,7 @@
       "tests/catalog-return-state.test.mjs",
       "tests/character-talk.test.mjs",
       "tests/character-visual-continuity.test.mjs",
+      "tests/citation-term-in-lessons.test.mjs",
       "tests/classics-kanbun-grammar-master.test.mjs",
       "tests/classics-kanbun-groups-tables.test.mjs",
       "tests/classics-kanbun-usage-background.test.mjs",
@@ -935,7 +936,7 @@
       "quizItemCount": 2633,
       "learningIdOrderSha256": "9c0813f69f7e187c57605fef5a23fd88988440822f7ee8311ec1d9e4d23deae1",
       "quizIdOrderSha256": "9c0813f69f7e187c57605fef5a23fd88988440822f7ee8311ec1d9e4d23deae1",
-      "contentSha256": "194d58041f32c3006fa3009d330a40054a60e64d8bdd84b331b38a5f7a56c504",
+      "contentSha256": "2b59450299b9d48d1a8094d854c56f04720128dd99a0226ff81bca3711dc5d1d",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -958,7 +959,7 @@
       "quizItemCount": 2190,
       "learningIdOrderSha256": "50c68ff61ba8689619d18f50910bbab1918e0c8a61ed3510b2fb0e00fc82a752",
       "quizIdOrderSha256": "50c68ff61ba8689619d18f50910bbab1918e0c8a61ed3510b2fb0e00fc82a752",
-      "contentSha256": "244d86ad81f3908cfdd4cc347b565b0e6ca2dc6d6f6fb2adfc3b781081d0fc03",
+      "contentSha256": "cb7eabdaa4153d24bb05cf7f237de502ea576832c4139f159a533a3d8e2200ae",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1170,7 +1171,7 @@
       "choiceCount": 9268,
       "generalRationaleCount": 2317,
       "choiceSpecificRationaleCount": 9268,
-      "questionSetSha256": "528af4dcb7cfa7f73bdadf1513cee69491789818d0440b964761e5c70162b456",
+      "questionSetSha256": "19dfe9043b0bcda8315a5f928b18e4abcee773044555526f429a782998c245df",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -1182,7 +1183,7 @@
       "choiceCount": 12540,
       "generalRationaleCount": 3135,
       "choiceSpecificRationaleCount": 12540,
-      "questionSetSha256": "aaf81e11707a8f84c91fca7079749f69197bd3336a452da79b9f854c6cca32e1",
+      "questionSetSha256": "20f183adca28a40baa26b17d2ec7b3f182944d3bf82b9b1fcaa1327e73085698",
       "result": "pass",
       "failureCount": 0,
       "failures": []

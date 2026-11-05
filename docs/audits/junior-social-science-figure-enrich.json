@@ -1615,7 +1615,7 @@
     "gso-20#6": {
       "decision": "text",
       "reason": "「レポートのまとめ方」を順にたどる流れ図が中身で、順を追って読むのがいちばん伝わる",
-      "sha256": "4f7e524ae66839fa26a2659805fb468b541d3e9ce32834e17023b02eeb5b3223"
+      "sha256": "0ec84d67490143e85cac84742642360e232fee5ad83daeef4cb92a8e2de0a596"
     },
     "gtk-01#1": {
       "decision": "visual",
@@ -2264,7 +2264,7 @@
     },
     "gtk-29#5": {
       "decision": "visual",
-      "sha256": "7c3075bea5cc4e9c02f9ee119df166a76c60398a28d3b6e05752c84c90a2add8"
+      "sha256": "26ea6a4f7ecf83fb92ce711b808ebfd204d2d6ddaa7088e181602a290e7e9878"
     },
     "his-01#1": {
       "decision": "visual",

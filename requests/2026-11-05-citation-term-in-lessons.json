@@ -1,0 +1,46 @@
+{
+  "id": "2026-11-05-citation-term-in-lessons",
+  "title": "学習の本文で言い換えた「出典」を戻し、画面の検査を出典の一覧の表示だけに絞る",
+  "asked": [
+    "学習の画面に「出典」の語は出すなと指示した覚えはないが誤っていないか？",
+    "出典の扱いから"
+  ],
+  "sessions": [
+    "fdd13876-b563-4384-b219-6beeef989f42"
+  ],
+  "status": "open",
+  "note": "11-04 の指示「出典の表示を削除しなさい。著作者の許諾なく使用していると勘違いしないようにしなさい。」（requests/2026-11-04-remove-credits-page.json）は、アプリが使った資料を並べる表示を消す指示。画面のテストの CREDIT_WORDS が学習の本文の「出典」の2文字まで止めていたため、11-04 の高校の社会の依頼で、レポートの書き方の教材の「出典」を「使った資料」「出どころ」「引用」に言い換えていた。",
+  "criteria": [
+    {
+      "id": "citation-term-restored",
+      "text": "検査に合わせて言い換えた学習の本文を、すべて「出典」の用語に戻す（地理総合 gso-20 の要点・図・図の読み方・語句・演習と、地理探究 gtk-29 の図の読み方）。言い換えた形は残らない",
+      "population": "11-04 に言い換えた全10か所（geoSogo5.js の gso-20 の8か所、答えの台帳の根拠1か所、geoTankyu8.js の gtk-29 の1か所）",
+      "check": "node --test tests/citation-term-in-lessons.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-05、11-04 の言い換え（drafts.local/review/source-word-fixes.py の表）を逆にあてる道具で10か所すべてを戻した（geoSogo5.js の gso-20 8か所・答えの台帳の根拠1か所・geoTankyu8.js の gtk-29 1か所）。tests/citation-term-in-lessons.test.mjs が、10か所の元の形があり、言い換えた形が社会の全単元に残らず、語句「出典」があり「引用」がないことを確かめて通った。"
+    },
+    {
+      "id": "credit-display-gate-narrowed",
+      "text": "社会・理科の画面のテストは、出典の表示（学習の画面では「出典：」「出典:」の書き方と資料の名前の Natural Earth・東京書籍、メニューでは「出典」の語）を止め続け、学習の本文や語句の用語としての「出典」は止めない。判定の関数は、表示の形を止め、本文の言い回しと語句の見出しを通すことをテストで確かめる",
+      "population": "社会・理科の全241単元の画面（中学102単元・高校139単元）と、判定の関数の止める例・通す例",
+      "check": "node --test tests/citation-term-in-lessons.test.mjs tests/junior-social-science-screens.test.mjs tests/no-credits-page.test.mjs",
+      "status": "done",
+      "verifiedBy": "判定の関数 tests/credit-display.mjs を作り、社会・理科の画面のテストは学習の画面で「出典：」「出典:」と Natural Earth・東京書籍を、メニューで「出典」の語を止めるようにした。関数のテストで、表示の4例を止め、本文・語句・図の読み方の3例を通し、メニューの行を止めることを確かめた。tests/junior-social-science-screens.test.mjs（社会・理科の全241単元の入口・単元ページ・暗記・語句テスト・演習・メニュー）11件と tests/no-credits-page.test.mjs が通った。"
+    },
+    {
+      "id": "ledgers-restamped",
+      "text": "直した gso-20・gtk-29 を、答え・図・図の充実・用語集・精査・学習者の日本語・社会の内容の監査の台帳で読み直して押し、すべて今の中身と一致する",
+      "population": "社会・理科の全241単元の台帳の記録",
+      "check": "node --test tests/junior-social-science-answers.test.mjs tests/junior-social-science-figures.test.mjs tests/junior-social-science-figure-enrich.test.mjs tests/junior-social-science-glossary.test.mjs tests/junior-social-science-review.test.mjs tests/social-truth-audit.test.mjs tests/high-school-social.test.mjs",
+      "status": "done",
+      "verifiedBy": "gso-20 の6つ目の要点（本文・図・図の読み方）・語句「出典」・問題 q11、gtk-29 の5つ目の要点の図の読み方を読み直し（q11 の正解は「出典を書く」の1つに決まる）、答え（gso-20-q11）・図・図の充実・用語集・精査に押し直した。カタカナの読みの台帳は新しい漢字のかたまり「出典」「書名」「発行者」（どれもカタカナで読む外国の名前ではない）を見て書き直した（14,270件）。精査の台帳の fixes に2件書いた（20件）。社会の内容の監査（116単元・年の組204件）・学習者の日本語の台帳も一致。関係するテスト55件が通った。"
+    },
+    {
+      "id": "audits-pass-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の gso-20 に「出典」の用語が戻り、メニューに出典の行がないことを確かめる。検証用の clone は消す",
+      "population": "リポジトリ全体と公開版",
+      "check": "node --test tests/citation-term-in-lessons.test.mjs tests/no-credits-page.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
