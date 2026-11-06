@@ -12,7 +12,7 @@
   "sessions": [
     "68272fc1-6427-4fa9-a4d1-f56e88a47155"
   ],
-  "status": "open",
+  "status": "done",
   "notes": [
     "入試の英文・設問は写さない。見られる過去問は、大問の形（文章の種類・語数・設問の型）を調べるためだけに見て、本文と設問はすべて新しく書く。",
     "調べた学校名・出どころはリポジトリに書かない（リポジトリには型の一覧だけを置く）。",
@@ -83,9 +83,9 @@
       "text": "公開リポジトリには、依頼台帳と、公開しないことを守るテストと、誤りの確認で見つけた共通の部品の表示の誤りの直し（src/lib/reading-role-annotations.js・src/lib/structure-parallel-layout.js と tests/reading-role-annotations.test.mjs）だけを入れる。入試長文の資料（private.local）は入れない。npm run audit:all-content を通し、クリーンな clone で確かめて main へ push する。検証用の clone は消す（追加の指示のたびに、台帳だけをこの手順で記録する）",
       "population": "全テスト・全監査と、push するコミットの中身",
       "check": "node --test tests/exam-reading-not-published.test.mjs tests/requests-ledger.test.mjs",
-      "status": "waiting",
+      "status": "done",
       "replaces": "all-content-audit-and-deploy（公開版で大問を開く確かめは、公開しないので外した）",
-      "waitingFor": "クリーンな clone で npm run audit:all-content を通し、main へ push して公開版の更新を確かめる"
+      "verifiedBy": "2026-11-06: 公開リポジトリに入れたのは、依頼台帳・tests/exam-reading-not-published.test.mjs（11-05 に push 済み）と、誤りの確認で見つけた共通の部品の直し（src/lib/reading-role-annotations.js・src/lib/structure-parallel-layout.js・tests/reading-role-annotations.test.mjs）と全教材監査台帳だけで、入試長文の資料（private.local）は入れていない（公開するテストの例文も資料の本文と重ならない文にした）。クリーンな clone で npm run audit:all-content を通し（テスト失敗0・全25カテゴリ・教材24,195件・問題経路11,199件で失敗0件）、fcf7a614 を main へ push、GitHub Pages のデプロイ 42135500044 の成功を確かめた。公開版のスクリプト（ReadingSentenceDetail の分割ファイル）に3つの直しが入っていること、https://nanashi8.github.io/study-app/exam-reading/exam-reading-1.pdf と exam-reading-guide.pdf が 404 であることを確かめた。検証用の clone は消した。"
     },
     {
       "id": "clause-elements",
