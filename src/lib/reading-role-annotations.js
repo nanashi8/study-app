@@ -36,6 +36,22 @@ function englishWordMatches(text = '') {
   })
 }
 
+// 2つの要素の間の文字（boundary）のうち、次の語の前に付く開きの記号がどこから始まるか（なければ -1）。
+// 開きの記号：構造図の「(」「<」と、開きの引用符「“」「‘」と、空白や開きの記号のあとの「"」。
+// 例：says, "Please … → 「says,」と「"Please …」に分ける（「says, "」と切らない）。
+// 前の語のすぐ後ろの「"」（bag." の "）は閉じの引用符なので、前の要素に残す。
+function openingMarkStart(boundary = '') {
+  let start = -1
+  for (let at = boundary.length - 1; at >= 0; at--) {
+    const mark = boundary[at]
+    if (/\s/.test(mark)) continue
+    const opens = '(<“‘'.includes(mark) || (mark === '"' && at > 0 && /[\s(<“‘]/.test(boundary[at - 1]))
+    if (!opens) break
+    start = at
+  }
+  return start
+}
+
 function normalizedEnglishWord(word = '') {
   return normalizeToken(word)
     .replaceAll('’', "'")
@@ -95,10 +111,12 @@ export function buildReadingRoleAnnotation(sentence = '', parts = [], options = 
     const previous = sourceWords[wordCursor - 1]
     const lastWordEnd = previous ? (previous.index ?? 0) + previous[0].length : characterCursor
     const nextWordStart = sourceWords[wordCursor]?.index ?? source.length
-    // 構造図の括弧つきで表示するとき、次の語の前に付く「(」「<」は次の役割の側に入れる。
+    // 構造図の括弧つきで表示するとき、次の語の前に付く「(」「<」と開きの引用符は次の役割の側に入れる。
     const boundary = source.slice(lastWordEnd, nextWordStart)
-    const opening = /[(<][\s(<]*$/.exec(boundary)
-    const cut = opening ? lastWordEnd + (opening.index ?? 0) : nextWordStart
+    const opening = openingMarkStart(boundary)
+    // 2つの要素に分けた短縮形（It’s → It ／ ’s、let’s → let ／ ’s）は、アポストロフィを後ろの要素に入れる（「It’ ／ s」と切らない）。
+    const contraction = /^['’]$/.test(boundary)
+    const cut = opening >= 0 ? lastWordEnd + opening : contraction ? lastWordEnd : nextWordStart
     const sourceText = source.slice(characterCursor, Math.max(characterCursor, cut))
     characterCursor = Math.max(characterCursor, cut)
     segments.push(Object.freeze({

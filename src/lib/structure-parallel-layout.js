@@ -70,8 +70,18 @@ export function tokenPieces(tokens = []) {
   return numberWords(pieces)
 }
 
-// 並列の語の範囲を、小片の範囲に置く。語の直前の開き括弧はその並ぶものの行へ、
+// 開きの引用符：“ ‘ と、文の始めか空白・開き括弧のあとの "（語のすぐ後ろの " は閉じの引用符）。
+const OPENING_QUOTES = new Set(['“', '‘'])
+function openingQuoteAt(pieces, index) {
+  const piece = pieces[index]
+  if (piece?.type !== 'punct') return false
+  if (OPENING_QUOTES.has(piece.text)) return true
+  return piece.text === '"' && (index === 0 || ['space', 'open'].includes(pieces[index - 1].type))
+}
+
+// 並列の語の範囲を、小片の範囲に置く。語の直前の開き括弧と開きの引用符はその並ぶものの行へ、
 // 直後の閉じ括弧・コンマ・句点もその並ぶものの行へ入れる。
+// （“You want to tell me, and I have no objection …” の “ を並びの枠の外に残すと、“ だけの列に下線が付く。2026-11-05）
 function placeGroup(pieces, wordPiece, group) {
   const conjuncts = []
   for (const conjunct of group.conjuncts) {
@@ -84,7 +94,7 @@ function placeGroup(pieces, wordPiece, group) {
     while (leadEnd !== null && pieces[leadEnd]?.type === 'punct') leadEnd++
     let contentStart = wordPiece[firstWord]
     for (let probe = contentStart - 1; probe >= (leadEnd ?? 0); probe--) {
-      if (pieces[probe].type === 'open') contentStart = probe
+      if (pieces[probe].type === 'open' || openingQuoteAt(pieces, probe)) contentStart = probe
       else if (pieces[probe].type !== 'space') break
     }
     let contentEnd = wordPiece[lastWord] + 1
