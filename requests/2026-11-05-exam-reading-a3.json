@@ -7,12 +7,13 @@
     "ウェブアプリのコンテンツとしては公開せずに、pdfファイルで見せなさい。非公開コンテンツに転用できるように資料は残しなさい。",
     "that節や関係代名詞節等の節内の文の要素についてもSVOCMや入れ子を構造を示しなさい。",
     "誤りがないか確認しなさい。",
-    "参考書ページ内容が問題を参照しているならば問題番号等の表記が漏れないようにしなさい。"
+    "参考書ページ内容が問題を参照しているならば問題番号等の表記が漏れないようにしなさい。",
+    "内容に誤りがないか再監査しなさい。問題と選択肢と正解の組み合わせや設問と正解の数や内容が合っているか入念に監査しなさい。"
   ],
   "sessions": [
     "68272fc1-6427-4fa9-a4d1-f56e88a47155"
   ],
-  "status": "done",
+  "status": "open",
   "notes": [
     "入試の英文・設問は写さない。見られる過去問は、大問の形（文章の種類・語数・設問の型）を調べるためだけに見て、本文と設問はすべて新しく書く。",
     "調べた学校名・出どころはリポジトリに書かない（リポジトリには型の一覧だけを置く）。",
@@ -83,9 +84,10 @@
       "text": "公開リポジトリには、依頼台帳と、公開しないことを守るテストと、誤りの確認で見つけた共通の部品の表示の誤りの直し（src/lib/reading-role-annotations.js・src/lib/structure-parallel-layout.js と tests/reading-role-annotations.test.mjs）だけを入れる。入試長文の資料（private.local）は入れない。npm run audit:all-content を通し、クリーンな clone で確かめて main へ push する。検証用の clone は消す（追加の指示のたびに、台帳だけをこの手順で記録する）",
       "population": "全テスト・全監査と、push するコミットの中身",
       "check": "node --test tests/exam-reading-not-published.test.mjs tests/requests-ledger.test.mjs",
-      "status": "done",
+      "status": "waiting",
       "replaces": "all-content-audit-and-deploy（公開版で大問を開く確かめは、公開しないので外した）",
-      "verifiedBy": "2026-11-06: 公開リポジトリに入れたのは、依頼台帳・tests/exam-reading-not-published.test.mjs（11-05 に push 済み）と、誤りの確認で見つけた共通の部品の直し（src/lib/reading-role-annotations.js・src/lib/structure-parallel-layout.js・tests/reading-role-annotations.test.mjs）と全教材監査台帳だけで、入試長文の資料（private.local）は入れていない（公開するテストの例文も資料の本文と重ならない文にした）。クリーンな clone で npm run audit:all-content を通し（テスト失敗0・全25カテゴリ・教材24,195件・問題経路11,199件で失敗0件）、fcf7a614 を main へ push、GitHub Pages のデプロイ 42135500044 の成功を確かめた。公開版のスクリプト（ReadingSentenceDetail の分割ファイル）に3つの直しが入っていること、https://nanashi8.github.io/study-app/exam-reading/exam-reading-1.pdf と exam-reading-guide.pdf が 404 であることを確かめた。検証用の clone は消した。"
+      "verifiedBy": "2026-11-06: 公開リポジトリに入れたのは、依頼台帳・tests/exam-reading-not-published.test.mjs（11-05 に push 済み）と、誤りの確認で見つけた共通の部品の直し（src/lib/reading-role-annotations.js・src/lib/structure-parallel-layout.js・tests/reading-role-annotations.test.mjs）と全教材監査台帳だけで、入試長文の資料（private.local）は入れていない（公開するテストの例文も資料の本文と重ならない文にした）。クリーンな clone で npm run audit:all-content を通し（テスト失敗0・全25カテゴリ・教材24,195件・問題経路11,199件で失敗0件）、fcf7a614 を main へ push、GitHub Pages のデプロイ 42135500044 の成功を確かめた。公開版のスクリプト（ReadingSentenceDetail の分割ファイル）に3つの直しが入っていること、https://nanashi8.github.io/study-app/exam-reading/exam-reading-1.pdf と exam-reading-guide.pdf が 404 であることを確かめた。検証用の clone は消した。",
+      "waitingFor": "再監査の記録を、クリーンな clone で npm run audit:all-content を通して main へ push し、公開版の更新を確かめる"
     },
     {
       "id": "clause-elements",
@@ -126,6 +128,14 @@
       "check": "node --test tests/reading-role-annotations.test.mjs private.local/exam-reading/tests/exam-reading-structures.test.mjs",
       "status": "done",
       "verifiedBy": "2026-11-05: src/lib/reading-role-annotations.js で、要素の間にある開きの引用符（“ ‘ と、空白のあとの \"）を後ろの要素の側に入れ、閉じの引用符は前の要素に残すようにした。src/lib/structure-parallel-layout.js で、並ぶものの直前の開きの引用符も枠の行に入れるようにした。全構造台帳（名作624文・基礎長文611文・長文1,518文・入試長文211文）で、前の要素に開きの引用符が残る所0件・閉じの引用符を後ろへ動かした所0件・並列の枠の外に残る所0件（並列のある行は名作442・基礎長文287・長文889・入試長文66行）。直す前は前の要素に付いていたのが名作81・基礎長文7・入試長文14か所、枠の外が名作32・基礎長文6・入試長文1か所。tests/reading-role-annotations.test.mjs と private.local/exam-reading/tests/exam-reading-structures.test.mjs で守り、直す前の切り方・配置ではどちらも落ちることを確かめた。PDF を作り直し、大問1 第27文・大問2 第27文・大問5 第12文などで引用符が引用の側に出ることを目で確かめた。"
+    },
+    {
+      "id": "question-answer-reaudit",
+      "text": "再監査：全設問について、指示文（選ぶ数・書く語数・記号の種類・下線部や空所の番号）と、問題の本文の印・選択肢・正解の数と内容・答え合わせの判定・解説（答えの文・根拠の文・全選択肢の説明・模範解答）が組み合わせとして合っているかを1問ずつ読み、本文に照らして正解がただ1つ（複数選択は指示どおりの数）に決まり、誤答が本文に照らして確かに誤りであることを確かめる。機械で照合できる形（選ぶ数と正解の数、記号と選択肢の数、空所・下線の番号と本文の印、語数の指定と模範解答の語数、並べかえの語と正解の語）は検査にして止める。見つけた誤りは直し、読んだ記録を台帳に残す",
+      "population": "6本の大問の全46問・全選択肢142と、書く問題・並べかえ問題の全模範解答・認める答え、問題 PDF と解説 PDF の設問の部分",
+      "check": "node --test private.local/exam-reading/tests/exam-reading-content.test.mjs private.local/exam-reading/tests/exam-reading-answer-audit.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-06: 全46問・選択肢142を、問題の本文（印つき）と並べて1問ずつ読み、正解がただ1つ（大問1(8)は2つ・大問3(1)は3つ）に決まること、誤答がどれも本文・図表に照らして誤りであること、答え・根拠・解き方・全選択肢の説明・模範解答が組み合わせとして合うことを確かめた。直したのは7件：大問1と大問2の本文の印の番号が本文の順でなかった（③①②・②①）のを本文の順にして設問の順もそろえた、大問2(4)の語数の指定「3〜6語」に3語の答えがなかったので「4〜6語」に、大問5(3)の「2〜3語」に3語の答えがなかったので「2語」に、大問3 第17文 because it is bad が根拠の文（味が好きでない3人）と合わず解説の「悪くなったから」とも食い違ったので because it tastes bad にして下線部の設問(4)の選択肢4つ・説明と(1)オの説明・構造台帳を直した、大問6(10)の誤答1（47歳で made）が本文から誤りと言い切れなかったので went on sale にした。機械で照合できる組み合わせは private.local/exam-reading/tests/exam-reading-answer-audit.test.mjs（13件）で全46問を止める：選ぶ数と正解の数、記号の範囲と選択肢の数、指示文の番号と本文の印（本文の順）、空所の正解の選択肢と本文の語、書く問題の空所の数・1語・抜き出す語・頭文字・もとの語、語数の指定と認める答え、並べかえの語、文の入る位置と並べかえの正しい順、根拠の文、解説が引く英語（第N文 English）、正解以外の選び方・並べ方がすべて不正解になること。直した記録は review/review.json（41件）、PDF 7つを作り直し、直したページ（大問1・2・3の問題と解説、大問5・6の該当箇所、参考書の出る問題の番号）を確かめた。"
     }
   ]
 }
