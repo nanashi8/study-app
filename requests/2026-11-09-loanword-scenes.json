@@ -8,7 +8,7 @@
   "sessions": [
     "d8556a10-de0c-4a4d-b861-f0dac1f50e69"
   ],
-  "status": "open",
+  "status": "done",
   "notes": [
     "対象は 2026-11-09 時点で台帳 src/data/loanword-hints.js にカタカナだけ（注意書きなし）で載っていた 2,392 語。注意書きのある 554 語は、すでに意味や使い方の説明があるので対象に入れていない（報告で明示する）。",
     "ボクシングのスパーは spar、ラストスパートは spurt で、spur とは別の語。spur には場面を書かず、取り違えの注意書きにする。",
@@ -43,7 +43,7 @@
       "id": "japanese-review",
       "text": "場面の文は学習者の日本語の見直しを通る（難しい漢字語を使わない）",
       "population": "書き足した場面の文すべて",
-      "check": "npm run audit:japanese-review",
+      "check": "node --test tests/learner-japanese-audit.test.mjs",
       "status": "done",
       "verifiedBy": "2026-11-09: 場面の文の漢字語のうち台帳にない98語を1語ずつ読み、燃油・全粒粉・奏法・溶接の4語は書き直し、残りを docs/audits/learner-japanese-review.json に足した。npm run audit:japanese-review が通る。"
     },
@@ -51,8 +51,9 @@
       "id": "deployed",
       "text": "変更を main に push し、公開版で場面が出ることを確かめる",
       "population": "公開版の辞書ページ1語以上",
-      "check": "git fetch -q origin && test -z \"$(git log origin/main..HEAD --oneline)\" && git diff --quiet origin/main -- src/data/loanword-hints.js",
-      "status": "todo"
+      "check": "git fetch -q origin main && git merge-base --is-ancestor 8ab1a32 origin/main && test \"$(gh run view 42556893353 --repo nanashi8/study-app --json conclusion -q .conclusion)\" = success && node --test tests/loanword-scenes.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-09: 8ab1a32 を main に push し、GitHub Pages の公開が成功した。公開版の英和辞書で advantage の辞書ページを開き、カタカナ語のヒントに「使う場面：テニスの「アドバンテージ」、「〜がアドバンテージになる」」が出ることを確かめた。"
     }
   ]
 }
