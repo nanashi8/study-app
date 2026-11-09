@@ -305,8 +305,8 @@ export function loanwordHintFor(word) {
   const hint = LOANWORD_HINTS[word.id]
   if (!hint) return null
   const shownInMeaning = (word.meanings ?? []).some((meaning) => meaning.includes(hint.kana))
-  if (shownInMeaning && !hint.note) return null
-  return { kana: hint.kana, note: hint.note ?? '' }
+  if (shownInMeaning && !hint.note && !hint.scene) return null
+  return { kana: hint.kana, scene: hint.scene ?? '', note: hint.note ?? '' }
 }
 
 /** 意味がずれた語自身の、もとの語からの筋道（party なら「part（部分）から、分かれた一団→…」）。 */

@@ -228,6 +228,7 @@ if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
     if (!wordIds.has(wordId)) errors.push(`カタカナ語: 見出し語 ${wordId} が辞書にない`)
     if (!/^[ァ-ヺー・]+$/u.test(hint.kana ?? '')) errors.push(`カタカナ語: ${wordId} の表記がカタカナだけではない (${hint.kana})`)
     if ('note' in hint && !String(hint.note).trim()) errors.push(`カタカナ語: ${wordId} の注意書きが空`)
+    if ('scene' in hint && /[A-Za-z]/.test(hint.scene)) errors.push(`カタカナ語: ${wordId} の使う場面に英字がある`)
   }
 }
 

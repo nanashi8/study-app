@@ -96,10 +96,10 @@ test('依頼のきっかけの barrister と barista、日本語になってい�
   assert.match(loanwordHintFor(getWord('clash')).note, /crash/)
 })
 
-test('意味欄に同じカタカナがあり注意書きもない語は出さない（ほかの欄とだぶらない）', () => {
+test('意味欄に同じカタカナがあり注意書きも使う場面もない語は出さない（ほかの欄とだぶらない）', () => {
   for (const [id, hint] of Object.entries(LOANWORD_HINTS)) {
     const word = getWord(id)
     const inMeaning = word.meanings.some((meaning) => meaning.includes(hint.kana))
-    assert.equal(Boolean(loanwordHintFor(word)), !inMeaning || Boolean(hint.note), id)
+    assert.equal(Boolean(loanwordHintFor(word)), !inMeaning || Boolean(hint.note) || Boolean(hint.scene), id)
   }
 })

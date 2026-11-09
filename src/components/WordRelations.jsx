@@ -451,6 +451,7 @@ export function LoanwordHint({ hint, className }) {
         <span className="text-xs font-extrabold text-amber-700">カタカナ語のヒント</span>
         <span className="font-display text-base font-extrabold text-ink">{hint.kana}</span>
       </div>
+      {hint.scene && <p className="mt-1 text-xs font-bold leading-relaxed text-amber-900/80" data-word-loanword-scene>{'使う場面：'}{hint.scene}</p>}
       {hint.note && <p className="mt-1 text-xs font-bold leading-relaxed text-amber-900/80"><ExplainedText>{hint.note}</ExplainedText></p>}
     </div>
   )

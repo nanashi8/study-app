@@ -543,6 +543,8 @@ export const EXPLANATION_WORD_DECISIONS = {
   "2ccea5878a|singular": "単数の・類のない",
   "2cedfe881a|excess baggage": "超過手荷物",
   "2cefdafe9c|substantive": "名詞（古い言い方）",
+  "2d227b87d0|spar": "（ボクシングで）練習の打ち合いをする",
+  "2d227b87d0|spurt": "急に力を出すこと・ほとばしる",
   "2d529eb3dc|dilatory tactics": "引き延ばし戦術",
   "2d6670aa53|assoc.": "x",
   "2d71d48bc7|looks": "見た目・容貌",

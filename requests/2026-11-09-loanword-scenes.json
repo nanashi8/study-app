@@ -1,0 +1,58 @@
+{
+  "id": "2026-11-09-loanword-scenes",
+  "title": "英単語のカタカナ語のヒントで、カタカナだけの語に、日本語で使われる場面の例（ボクシングのスパー のような）を書き足して分かりやすくする",
+  "asked": [
+    "英単語のカタカナ語　spurだったら、ボクシングのスパー、というふうに分かりやすくならないか？",
+    "全語に書き足す"
+  ],
+  "sessions": [
+    "d8556a10-de0c-4a4d-b861-f0dac1f50e69"
+  ],
+  "status": "open",
+  "notes": [
+    "対象は 2026-11-09 時点で台帳 src/data/loanword-hints.js にカタカナだけ（注意書きなし）で載っていた 2,392 語。注意書きのある 554 語は、すでに意味や使い方の説明があるので対象に入れていない（報告で明示する）。",
+    "ボクシングのスパーは spar、ラストスパートは spurt で、spur とは別の語。spur には場面を書かず、取り違えの注意書きにする。",
+    "場面の文は日本語だけで書く（英単語を入れない）。日本語でほとんど使わないカタカナの語は、場面の代わりに注意書きにする。"
+  ],
+  "criteria": [
+    {
+      "id": "scene-all-kana-only",
+      "text": "カタカナだけだった語の一つ一つに、日本語でそのカタカナが使われる場面の例（scene）を書く。場面の文にはそのカタカナが入る。日本語でほとんど使わない・別の語と取り違えるカタカナの語は、場面の代わりに理由を書いた注意書き（note）にする",
+      "population": "2026-11-09 時点でカタカナだけだった 2,392 語（docs/audits/loanword-scenes.json の targets）",
+      "check": "node --test tests/loanword-scenes.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-09: 2,392語を1語ずつ読み、2,391語に使う場面（scene）を書き、spur の1語は場面の代わりに注意書きにした（2,392語中2,392語）。場面の文はどれも日本語だけで、そのカタカナを含む（tests/loanword-scenes.test.mjs）。"
+    },
+    {
+      "id": "spur-not-boxing",
+      "text": "spur のヒントは、ボクシングのスパー（spar）・ラストスパート（spurt）が別の語であることを名指しし、spur をボクシングのスパーと結びつけない",
+      "population": "spur の1語",
+      "check": "node --test tests/loanword-scenes.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-09: spur は場面を書かず、注意書きで「ボクシングのスパー（スパーリング）」は spar、「ラストスパート」は spurt で別の語、spur は馬の拍車と書いた（tests/loanword-scenes.test.mjs）。"
+    },
+    {
+      "id": "shown-on-card-and-detail",
+      "text": "場面は単語の暗記カードの裏と辞書ページの「カタカナ語のヒント」に出る。意味欄に同じカタカナがある語でも、場面があればヒントを出す",
+      "population": "台帳の全語（2,946語）と、ヒントを出す2画面（暗記カード・辞書ページ）",
+      "check": "node --test tests/word-relations.test.mjs tests/loanword-scenes.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-09: loanwordHintFor が scene を返し、共通部品 LoanwordHint が「使う場面：」の行（data-word-loanword-scene）を出す。暗記カードの裏（VocabStudy）と辞書ページ（WordDetail）はどちらもこの部品を使う。意味欄に同じカタカナがあっても場面があればヒントを出すことを台帳の全2,946語で確かめた（tests/word-relations.test.mjs・tests/loanword-survey.test.mjs）。"
+    },
+    {
+      "id": "japanese-review",
+      "text": "場面の文は学習者の日本語の見直しを通る（難しい漢字語を使わない）",
+      "population": "書き足した場面の文すべて",
+      "check": "npm run audit:japanese-review",
+      "status": "done",
+      "verifiedBy": "2026-11-09: 場面の文の漢字語のうち台帳にない98語を1語ずつ読み、燃油・全粒粉・奏法・溶接の4語は書き直し、残りを docs/audits/learner-japanese-review.json に足した。npm run audit:japanese-review が通る。"
+    },
+    {
+      "id": "deployed",
+      "text": "変更を main に push し、公開版で場面が出ることを確かめる",
+      "population": "公開版の辞書ページ1語以上",
+      "check": "git fetch -q origin && test -z \"$(git log origin/main..HEAD --oneline)\" && git diff --quiet origin/main -- src/data/loanword-hints.js",
+      "status": "todo"
+    }
+  ]
+}

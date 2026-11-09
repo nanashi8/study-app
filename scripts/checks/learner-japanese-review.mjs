@@ -89,7 +89,10 @@ export function learnerJapaneseTexts() {
   // 類義語・反対語・同じ意味の熟語の行の解説も、使い分けと同じく <MeaningText> を通して出す。
   for (const [id, note] of Object.entries(WORD_RELATION_NOTES)) push(note, 'note', `relation:${id}`)
   for (const [id, note] of Object.entries(WORD_IDIOM_NOTES)) push(note, 'note', `idiomNote:${id}`)
-  for (const [id, hint] of Object.entries(LOANWORD_HINTS)) push(hint?.note, 'note', `loan:${id}`)
+  for (const [id, hint] of Object.entries(LOANWORD_HINTS)) {
+    push(hint?.note, 'note', `loan:${id}`)
+    push(hint?.scene, 'note', `loanScene:${id}`)
+  }
   for (const phrase of PHRASES) {
     for (const t of phrase.meanings ?? [phrase.meaning]) push(t, 'phraseMeaning', phrase.id)
     push(phrase.example?.ja, 'example', phrase.id)

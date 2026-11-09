@@ -50,14 +50,14 @@ test('同じ意味の熟語に選んだ熟語は、意味が同じ・近い語�
   assert.ok(checked > 300)
 })
 
-test('カタカナ語は、意味欄に同じ表記があり注意書きもない語では出さない', () => {
+test('カタカナ語は、意味欄に同じ表記があり注意書きも使う場面もない語では出さない', () => {
   const tension = loanwordHintFor(getWord('tension'))
   assert.equal(tension.kana, 'テンション')
   assert.match(tension.note, /excited/)
   for (const [wordId, hint] of Object.entries(LOANWORD_HINTS)) {
     const word = getWord(wordId)
     const inMeaning = word.meanings.some((meaning) => meaning.includes(hint.kana))
-    assert.equal(Boolean(loanwordHintFor(word)), !inMeaning || Boolean(hint.note), wordId)
+    assert.equal(Boolean(loanwordHintFor(word)), !inMeaning || Boolean(hint.note) || Boolean(hint.scene), wordId)
   }
 })
 
@@ -113,7 +113,7 @@ test('単語カードの裏と辞書ページは同じ部品で関連語を出�
   // カードの裏から語へ移るときは、途中のカードを保存してから辞書ページへ行く。
   assert.match(study, /const openRelatedWord = \(id\) => saveBeforeReference\('wordDetail', \{ id \}\)/)
   const component = read('src/components/WordRelations.jsx')
-  for (const marker of ['data-word-synonyms', 'data-word-idiom-equivalents', 'data-word-confusables', 'data-word-loanword']) {
+  for (const marker of ['data-word-synonyms', 'data-word-idiom-equivalents', 'data-word-confusables', 'data-word-loanword', 'data-word-loanword-scene']) {
     assert.match(component, new RegExp(marker))
   }
 })
