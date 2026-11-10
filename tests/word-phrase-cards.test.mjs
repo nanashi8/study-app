@@ -134,7 +134,10 @@ test('カードを押すとその熟語・構文の詳細シートを開き、�
   assert.match(component, /<PhraseDetailSheet\s+phrase=\{detail\}/)
   assert.match(read('src/screens/Phrases.jsx'), /<PhraseDetailSheet\s+phrase=\{detail\}/)
   // 暗記の途中から同じ形の仲間を学ぶときは、記録を残してから移る。
+  // 暗記カードの中身は部品（WordStudyCard）。暗記画面は記録を残してから移る方法を部品へ渡す。
   const study = read('src/screens/VocabStudy.jsx')
-  assert.match(study, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\} navigateTo=\{saveBeforeReference\}/)
-  assert.match(study, /<IdiomEquivalentSection phrases=\{relations\.idioms\} navigateTo=\{saveBeforeReference\}/)
+  assert.match(study, /<WordStudyCard[\s\S]*?navigateTo=\{saveBeforeReference\}/)
+  const card = read('src/components/WordStudyCard.jsx')
+  assert.match(card, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\} navigateTo=\{navigateTo\}/)
+  assert.match(card, /<IdiomEquivalentSection phrases=\{relations\.idioms\} navigateTo=\{navigateTo\}/)
 })

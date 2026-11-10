@@ -121,8 +121,10 @@ test('長文の語注は、同じつづりの別の語の意味も続けて並�
 
 test('単語カードと辞書ページは、同じつづりの別の語へのリンクを出す', () => {
   assert.match(read('src/components/WordBits.jsx'), /data-homograph-words/)
-  assert.match(read('src/screens/WordDetail.jsx'), /<HomographWords word=\{word\} onWord=\{openWord\} \/>/)
+  // 単語カードと辞書ページは同じカードの部品（WordStudyCard）。リンクは辞書ページ・暗記の途中ならそれぞれの移り方で開く。
+  assert.match(read('src/components/WordStudyCard.jsx'), /<HomographWords word=\{word\} onWord=\{openWord\} \/>/)
+  assert.match(read('src/screens/WordDetail.jsx'), /<WordStudyCard[\s\S]*?openWord=\{openWord\}/)
   const study = read('src/screens/VocabStudy.jsx')
-  assert.match(study, /<HomographWords word=\{word\} onWord=\{openRelatedWord\} \/>/)
-  assert.match(study, /data-vocab-homograph-note/)
+  assert.match(study, /<WordStudyCard[\s\S]*?openWord=\{openRelatedWord\}/)
+  assert.match(read('src/components/WordStudyCard.jsx'), /data-vocab-homograph-note/)
 })

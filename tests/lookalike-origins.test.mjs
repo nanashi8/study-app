@@ -176,12 +176,12 @@ test('単語の画面：辞書ページ・暗記カードの裏・テストの�
   assert.match(read('src/components/WordRelations.jsx'), /<OriginNote origin=\{item\.origin\} \/>/)
   // 属性の中に => があるので、EtymologyBlock の開きから閉じ（/>）までを見る。
   const blockOf = (file) => read(file).match(/<EtymologyBlock\b[\s\S]*?\/>/)?.[0] ?? ''
-  assert.match(blockOf('src/screens/WordDetail.jsx'), /onWord=\{openWord\}/)
-  assert.match(blockOf('src/screens/VocabStudy.jsx'), /onWord=\{openRelatedWord\}/)
+  // 辞書ページと暗記カードは同じカードの部品（WordStudyCard）。語へ移る方法は画面が部品へ渡す。
+  assert.match(blockOf('src/components/WordStudyCard.jsx'), /onWord=\{openWord\}/)
+  assert.match(read('src/screens/WordDetail.jsx'), /<WordStudyCard[\s\S]*?openWord=\{openWord\}/)
+  assert.match(read('src/screens/VocabStudy.jsx'), /<WordStudyCard[\s\S]*?openWord=\{openRelatedWord\}/)
   assert.match(read('src/screens/VocabQuiz.jsx'), /<EtymologyBlock word=\{word\} lookalikeCollapsed \/>/)
-  for (const file of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx']) {
-    assert.match(read(file), /<ConfusableSection /, file)
-  }
+  assert.match(read('src/components/WordStudyCard.jsx'), /<ConfusableSection /)
 })
 
 test('語源カードの画面：同じ語根の単語・カード・カードの暗記・カードのテストに、似た語と語根とのつながりが出る', () => {

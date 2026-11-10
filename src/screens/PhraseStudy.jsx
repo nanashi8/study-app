@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
-import { MeaningText } from '../components/MeaningText.jsx'
 import {
   answeredSessionIndexes,
   buildPhraseDeck,
@@ -10,21 +9,12 @@ import {
   restartSessionCount,
   reviseStudyAnswer,
 } from '../lib/session.js'
-import { getLevel } from '../data/levels.js'
-import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { cardSpeechItems } from '../lib/cardSpeech.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
-import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
-import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
-import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
-import { UsageGuideSection } from '../components/UsageGuideCards.jsx'
-import { usageGuidesForPhrase } from '../lib/usageGuides.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { Button, Chip } from '../components/ui.jsx'
-import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
+import { Button } from '../components/ui.jsx'
+import { PhraseStudyCard, phraseCardKind } from '../components/PhraseStudyCard.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { StudyMixEmptyNotice, currentStudyMixShare, useStudyMixRebuild } from '../components/StudyMix.jsx'
 import {
@@ -49,10 +39,7 @@ import {
   useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
-const itemKind = (p) =>
-  p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
-  : p.kind === 'syntax' ? { label: '構文', color: '#8b5cf6' }
-  : { label: '熟語', color: '#0ea5e9' }
+const itemKind = phraseCardKind
 
 export function PhraseStudyScreen() {
   const params = useStore((s) => s.params)
@@ -225,9 +212,7 @@ export function PhraseStudyScreen() {
   // 残っているカードだけを回り、末尾まで行ったら先頭へ戻る。
   const turnRing = (direction) => moveToCard(ringIndexAfter(i, deck.length, recordedAnswers, direction))
 
-  const level = getLevel(item.level)
   const kind = itemKind(item)
-  const longSentenceTranslation = longSentenceTranslationFor(item)
 
   return (
     <div className="flex h-full flex-col">
@@ -289,104 +274,18 @@ export function PhraseStudyScreen() {
         onIndexChange={moveToCard}
         className="flex-1 overflow-y-auto px-4 pb-4"
       >
-        <div key={item.id} onClick={() => setFlipped((f) => !f)} className="animate-pop-in rounded-[2rem] bg-white p-6 shadow-card">
-          <div className="flex justify-between">
-            <Chip color={level.color}>英検{level.label}</Chip>
-            <Chip color={kind.color}>{kind.label}</Chip>
-          </div>
-          <div className="mt-3 flex flex-col items-center text-center">
-            {spellingHidden ? (
-              // 英語を隠すモード：意味から英語を思い出す。英語と読み上げはカードを開くまで出さない。
-              <>
-                <p className="text-[11px] font-extrabold text-brand-400">意味</p>
-                <h2 className="mt-1 font-display text-2xl font-extrabold leading-snug text-ink" data-phrase-english-hidden>
-                  <MeaningText>{item.meanings.join('・')}</MeaningText>
-                </h2>
-              </>
-            ) : (
-              <>
-                <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-                <div className="mt-3">
-                  <SpeakButton
-                    text={phraseSpeechText(item)}
-                    phrases={phraseSpeechItems}
-                    phraseIndex={0}
-                    speechKey={speechKey}
-                    title="熟語・構文カード"
-                    size="lg"
-                  />
-                </div>
-              </>
-            )}
-            {/* この項目をいつ答えたか・次にいつ復習するか。英単語のカードと同じ並べ方。 */}
-            <StudyReviewHistory entry={entry} className="mt-2" />
-          </div>
-
-          {!flipped ? (
-            <div className="mt-6 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-brand-200 py-8 text-brand-400">
-              <span className="text-sm font-extrabold">
-                {spellingHidden
-                  ? 'タップして英語と発音を確かめる'
-                  : `タップして${item.kind === 'syntax' ? '意味とポイント' : '意味と成り立ち'}を見る`}
-              </span>
-              <ArrowRight size={20} className="rotate-90" />
-            </div>
-          ) : (
-            <div className="mt-5 space-y-4 animate-slide-up">
-              <div className="rounded-2xl bg-brand-50 p-4">
-                <div className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">意味</div>
-                <div className="mt-0.5 font-display text-xl font-extrabold text-ink"><MeaningText>{item.meanings.join('・')}</MeaningText></div>
-              </div>
-
-              {/* 成り立ち（語源・部品の意味から組み立てる）＝単語の語源にあたる */}
-              {item.origin && (
-                <div className="rounded-2xl bg-violet-50 p-4 ring-1 ring-violet-100">
-                  <div className="mb-1.5 flex items-center gap-1.5 text-violet-600">
-                    <Link size={16} />
-                    <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                      {item.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
-                    </span>
-                  </div>
-                  <p className="text-sm font-bold leading-relaxed text-violet-900/90">{item.origin}</p>
-                </div>
-              )}
-
-              <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
-                <div className="flex items-start gap-2">
-                  <SpeakButton
-                    text={item.example.en}
-                    phrases={phraseSpeechItems}
-                    phraseIndex={1}
-                    speechKey={speechKey}
-                    title="熟語・構文カード"
-                    size="sm"
-                  />
-                  <div>
-                    <p className="font-bold text-ink">{item.example.en}</p>
-                    <p className="mt-0.5 text-sm font-bold text-ink/55">
-                      {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
-                      <MeaningText>{item.example.ja}</MeaningText>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <LongSentenceTranslation guide={longSentenceTranslation} />
-              {item.note && (
-                <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
-                  <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>
-                  <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.note}</p>
-                </div>
-              )}
-              {/* 使い分けカード（辞書ページ・熟語の詳細と同じ中身）。 */}
-              <UsageGuideSection guides={usageGuidesForPhrase(item)} self={{ phraseId: item.id }} returnTo={params.returnTo} />
-              <SyntaxFamilyGuide item={item} />
-              <IdiomFormGuide item={item}
-                familyId={params.idiomFormFamilyId}
-                returnTo={params.returnTo}
-              />
-            </div>
-          )}
-        </div>
+        <PhraseStudyCard
+          key={item.id}
+          item={item}
+          entry={entry}
+          flipped={flipped}
+          onToggle={() => setFlipped((f) => !f)}
+          spellingHidden={spellingHidden}
+          speechItems={phraseSpeechItems}
+          speechKey={speechKey}
+          returnTo={params.returnTo}
+          familyId={params.idiomFormFamilyId}
+        />
       </CardSwipeRegion>
 
       {/* フッター操作。意味・成り立ちを開いたかに関わらず「まだ／覚えた」だけを置く。

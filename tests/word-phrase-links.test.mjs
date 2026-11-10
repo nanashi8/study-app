@@ -15,12 +15,22 @@ import {
 import { wordFormsFor } from '../src/lib/wordRelations.js'
 import { phraseLinksReviewGap } from '../scripts/checks/phrase-links-review.mjs'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const phraseNames = (id) => phrasesForWord(getWord(id)).map((phrase) => phrase.phrase)
 
 test('辞書ページにも、暗記カードの裏と同じ熟語・構文の欄を出す', () => {
   for (const screen of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx']) {
-    const source = read(screen)
+    const source = cardScreen(screen)
     assert.match(source, /phraseGroupsForWord\(word\)/, screen)
     assert.match(source, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\}[ />]/, screen)
   }

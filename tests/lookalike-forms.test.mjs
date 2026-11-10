@@ -220,8 +220,10 @@ test('単語の画面：まとまりに入る 1,666語の辞書ページ・暗�
   assert.match(read('src/components/WordBits.jsx'), /<LookalikeWordSection word=\{word\} onWord=\{onWord\} collapsible=\{lookalikeCollapsed\} \/>/)
   assert.match(read('src/components/LookalikeOrigins.jsx'), /lookalikeFormSectionsForWord\(word\)/)
   const blockOf = (file) => read(file).match(/<EtymologyBlock\b[\s\S]*?\/>/)?.[0] ?? ''
-  assert.match(blockOf('src/screens/WordDetail.jsx'), /onWord=\{openWord\}/)
-  assert.match(blockOf('src/screens/VocabStudy.jsx'), /onWord=\{openRelatedWord\}/)
+  // 辞書ページと暗記カードは同じカードの部品（WordStudyCard）。語へ移る方法は画面が部品へ渡す。
+  assert.match(blockOf('src/components/WordStudyCard.jsx'), /onWord=\{openWord\}/)
+  assert.match(read('src/screens/WordDetail.jsx'), /<WordStudyCard[\s\S]*?openWord=\{openWord\}/)
+  assert.match(read('src/screens/VocabStudy.jsx'), /<WordStudyCard[\s\S]*?openWord=\{openRelatedWord\}/)
   assert.match(read('src/screens/VocabQuiz.jsx'), /<EtymologyBlock word=\{word\} lookalikeCollapsed \/>/)
 })
 

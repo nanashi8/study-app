@@ -114,9 +114,10 @@ test('haveの使役カードからmake・let・get・help・知覚・受動・�
 test('一覧・暗記・テストの全構文導線でファミリー解説を直接表示する', () => {
   const files = [
     ['Phrases.jsx', [/PhraseDetailSheet/, /data-syntax-family-filter/, /syntaxFamilySearchText/]],
-    ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
+    // 暗記（PhraseStudy）と英和辞書（VocabSearch）は、熟語・構文のカード（PhraseStudyCard）でファミリー解説を出す。
+    ['PhraseStudy.jsx', [/<PhraseStudyCard\b/, /item=\{item\}/]],
     ['PhraseQuiz.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
-    ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
+    ['VocabSearch.jsx', [/<PhraseDetailSheet\b/, /phrase=\{phraseDetail\}/]],
   ]
 
   for (const [filename, patterns] of files) {
@@ -124,8 +125,11 @@ test('一覧・暗記・テストの全構文導線でファミリー解説を�
     for (const pattern of patterns) assert.match(source, pattern, filename)
   }
 
-  // 一覧の詳細は共有のシートが出す。
-  assert.match(readFileSync(new URL('../src/components/PhraseDetailSheet.jsx', import.meta.url), 'utf8'), /<SyntaxFamilyGuide item=\{phrase\}/)
+  // 一覧・辞書の詳細は共有のシートが、暗記と同じカードで出す。
+  assert.match(readFileSync(new URL('../src/components/PhraseDetailSheet.jsx', import.meta.url), 'utf8'), /<PhraseStudyCard\b/)
+  const card = readFileSync(new URL('../src/components/PhraseStudyCard.jsx', import.meta.url), 'utf8')
+  assert.match(card, /<SyntaxFamilyGuide item=\{item\}/)
+  assert.match(card, /この文のポイント/)
 
   const component = readFileSync(
     new URL('../src/components/SyntaxFamilyGuide.jsx', import.meta.url),

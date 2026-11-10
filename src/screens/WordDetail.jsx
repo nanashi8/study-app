@@ -1,44 +1,28 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import {
   etymologyCardsForWord,
-  etymologyStoryForWord,
   getWord,
   neighborWords,
   vocabFieldFor,
 } from '../data/vocab.js'
-import { getLevel, levelChipText } from '../data/levels.js'
+import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
-import { GrammarRoles } from '../components/GrammarRoles.jsx'
-import { PronunciationNote } from '../components/PronunciationNote.jsx'
-import { exampleSpeechAllowed } from '../lib/speechGuard.js'
-import { UsageGuideSection } from '../components/UsageGuideCards.jsx'
-import { UsageGuideProvider } from '../components/UsageGuideLink.jsx'
+import { RelatedWords } from '../components/WordBits.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
-import { ExplainedText, ExplanationScope } from '../components/ExplainedText.jsx'
-import {
-  AntonymSection,
-  ConfusableSection,
-  CustomPhraseSection,
-  IdiomEquivalentSection,
-  LoanwordHint,
-  RelatedWordList,
-  SynonymSection,
-  UsagePartnerSection,
-  WordFormSection,
-  WordPhraseSection,
-} from '../components/WordRelations.jsx'
+import { ExplanationScope } from '../components/ExplainedText.jsx'
+import { RelatedWordList } from '../components/WordRelations.jsx'
+import { WordStudyCard } from '../components/WordStudyCard.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.jsx'
+import { Bookmark, BookmarkFilled, Link } from '../components/Icons.jsx'
 import { useWordBookSlot, wordBookSlotButtonText, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
-import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
+import { cardSpeechItems } from '../lib/cardSpeech.js'
+import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 
 // 辞書の前後（アルファベット順で隣り合う見出し語）。ページをめくる感覚で移動。
 function NeighborList({ word, navigate }) {
@@ -80,10 +64,13 @@ export function WordDetailScreen() {
   const navigate = useStore((s) => s.navigate)
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const entry = useStore((s) => s.srs[id])
+  const settings = useContentSettings()
   const word = getWord(id)
   // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる・外す。
   const wordBook = useWordBookSlot(word ? [wordBookRef(word.id)] : [], { label: word?.word })
   const inWordBook = wordBook.inBook
+  const relations = useMemo(() => (word ? wordRelationsFor(word) : null), [word?.id])
+  const relatedPhrases = useMemo(() => (word ? phraseGroupsForWord(word) : null), [word?.id])
 
   useEffect(() => {
     if (word) recordVocabHistory(word.id)
@@ -106,15 +93,24 @@ export function WordDetailScreen() {
   const level = getLevel(word.level)
   const progress = summarizeVocabularySrsItems([word], entry ? { [word.id]: entry } : {})
   const etymologyCards = etymologyCardsForWord(word)
-  const etymologyStory = etymologyStoryForWord(word)
-  const relations = wordRelationsFor(word)
-  const relatedPhrases = phraseGroupsForWord(word)
-  // 派生語欄は、形の欄に出す語を除いたもの（wordRelationsFor）。
-  const derivatives = relations.derivatives
+  // 派生語欄は、形の欄に出す語を除いたもの（wordRelationsFor）。自作単語の派生語はカードの中に出る。
+  const derivatives = word.custom ? [] : relations.derivatives
   const openWord = (wordId) => navigate('wordDetail', { id: wordId })
+  const returnTo = { screen: 'wordDetail', params: { id: word.id } }
+  // 暗記カードと同じ読み上げ列。辞書ページでは開いた面を見ているので、意味・例文まで範囲どおりに読む。
+  const speechKey = `detail:${word.id}`
+  const speechItems = cardSpeechItems({
+    id: word.id,
+    head: word.word,
+    meanings: word.meanings,
+    meaningReadings: true,
+    example: word.example,
+    exampleSpeech: exampleSpeechAllowed(word),
+    range: settings.speechRange,
+    answerOpen: true,
+  })
 
   return (
-    <ExplanationScope selfId={word.id} onWord={openWord}>
     <div className="flex h-full flex-col">
       <div ref={screenRef} className="min-h-0 flex-1 overflow-y-auto pb-4" data-return-scroll="word-detail">
         <ScreenHeader
@@ -134,144 +130,48 @@ export function WordDetailScreen() {
         />
 
         <div className="space-y-4 px-4">
-          {/* ヒーロー */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <PosBadge pos={word.pos} />
-                <Chip color={level.color}>{levelChipText(level)}</Chip>
-                {word.field && (
-                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
-                    {vocabFieldFor(word)}
-                  </span>
-                )}
+          {/* 暗記カードと同じカード（WordStudyCard）を、開いた面で出す。見慣れた並びで確かめられるように。
+              辞書ページは調べる画面なので、発音記号はいつも出す（部品の既定）。 */}
+          <WordStudyCard
+            key={word.id}
+            word={word}
+            entry={entry}
+            flipped
+            speechItems={speechItems}
+            speechKey={speechKey}
+            relations={relations}
+            relatedPhrases={relatedPhrases}
+            openWord={openWord}
+            navigateTo={navigate}
+            returnTo={returnTo}
+            onPack={(packId) => navigate('etymologyPack', { packId })}
+          />
+
+          <ExplanationScope selfId={word.id} onWord={openWord}>
+          {/* この語の分野（暗記カードには出さない）と、学習とテストの進み具合 */}
+          <Card className="p-4">
+            {word.field && (
+              <div className="mb-3 flex items-center gap-2" data-word-detail-field>
+                <span className="text-[11px] font-extrabold text-ink/40">分野</span>
+                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
+                  {vocabFieldFor(word)}
+                </span>
               </div>
-            </div>
-            <div className="mt-3 flex items-end gap-3">
-              <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h1>
-              <SpeakButton text={word.word} size="md" className="mb-1" />
-            </div>
-            {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>}
-            {/* 使い方で発音が変わる語の読み分け（この語は音声を出さない） */}
-            <PronunciationNote word={word} className="mt-2" />
-            <div className="mt-3 rounded-2xl bg-brand-50 p-3">
-              <div className="font-display text-xl font-extrabold text-ink"><MeaningText>{word.meanings.join('・')}</MeaningText></div>
-            </div>
-            {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
-            <LoanwordHint hint={relations.loanword} className="mt-2" />
-            <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
-            <StudyReviewHistory entry={entry} className="mt-3 justify-start" />
+            )}
+            <LearningStatusBars progress={progress} compact units={{ learning: '語', quiz: '問' }} />
           </Card>
 
-          {/* 疑問詞・関係詞の語は、働き（疑問詞・関係代名詞など）ごとの意味と解説。参考書の単元へ移れる。 */}
-          <GrammarRoles word={word} onGrammarRef={(unitId) => navigate('grammarReference', { unitId })} />
-
-          {/* 例文 */}
-          {word.example && (
-            <Card className="p-4">
-              <div className="mb-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">例文</div>
-              <div className="flex items-start gap-2">
-                {exampleSpeechAllowed(word) && <SpeakButton text={word.example.en} size="sm" />}
-                <div className="flex-1">
-                  <p className="font-bold text-ink" data-explain-exempt="例文">{word.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55" data-explain-exempt="例文"><MeaningText>{word.example.ja}</MeaningText></p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* 使い方・使い分け＋派生語 */}
-          {(word.usage || derivatives.length > 0) && (
-            <Card className="space-y-3 p-4">
-              {word.usage && (
-                <div>
-                  <div className="mb-2 flex items-center gap-1.5 text-amber-600">
-                    <Lightbulb size={16} />
-                    <span className="text-[11px] font-extrabold uppercase tracking-wide">使い方・使い分け</span>
-                  </div>
-                  <p className="text-sm font-bold leading-relaxed text-amber-900/90"><ExplainedText>{word.usage}</ExplainedText></p>
-                </div>
-              )}
-              {derivatives.length > 0 && (
-                <div>
-                  <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
-                  <RelatedWordList items={derivatives} tone="der" onWord={openWord} />
-                </div>
-              )}
-            </Card>
-          )}
-
-          {/* 代表義以外の意味を、品詞と習う級つきで並べる */}
-          <OtherSenses senses={word.otherSenses} level={word.level} />
-
-          {/* 由来のちがう、同じつづりの別の語。それぞれの見出し語へ移れる。 */}
-          <HomographWords word={word} onWord={openWord} />
-
-          {/* 使い分けカード（混同しやすい語・熟語を例文で比べる）と、カードで比べる相手の語。
-              下の関連語の行の相手が同じカードに入っていれば、行のボタンからこのカードへ移る。 */}
-          <UsageGuideProvider guides={word.usageGuides}>
-          <UsageGuideSection guides={word.usageGuides} self={{ wordId: word.id }} onWord={openWord} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
-
-          {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
-          {(relations.forms.length > 0 || relations.sameForms.length > 0) && (
-            <Card className="p-4">
-              <WordFormSection items={relations.forms} sameItems={relations.sameForms} ownNote={relations.formOwnNote} onWord={openWord} />
-            </Card>
-          )}
-
-          {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語 */}
-          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0 || relations.usagePartners.length > 0) && (
-            <Card className="space-y-3 p-4">
-              <SynonymSection items={relations.synonyms} onWord={openWord} />
-              <IdiomEquivalentSection phrases={relations.idioms} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
-              <AntonymSection items={relations.antonyms} onWord={openWord} />
-              <UsagePartnerSection items={relations.usagePartners} onWord={openWord} />
-            </Card>
-          )}
-
-          {/* つづりが似ていて間違えやすい語。ちがう文字に色をつける。 */}
-          {relations.confusables.length > 0 && (
-            <Card className="p-4">
-              <ConfusableSection word={word} items={relations.confusables} onWord={openWord} />
-            </Card>
-          )}
-
-          {/* その語を含む熟語・構文と、ほかの品詞の形を使う熟語・構文。暗記カードの裏と同じ中身。 */}
-          {(relatedPhrases.all.length > 0 || relatedPhrases.viaForms.length > 0) && (
-            <Card className="p-4">
-              <WordPhraseSection word={word} groups={relatedPhrases} returnTo={{ screen: 'wordDetail', params: { id: word.id } }} />
-            </Card>
-          )}
-          </UsageGuideProvider>
-
-          {/* 自作単語（英単語のカード）に自分で書いた熟語・構文と語の成り立ち。 */}
-          {word.custom && word.customPhrases?.length > 0 && (
-            <Card className="p-4">
-              <CustomPhraseSection word={word} />
-            </Card>
-          )}
-          {word.custom && word.customEtymology && (
-            <Card className="p-4">
-              <CustomEtymology word={word} />
-            </Card>
-          )}
-
-          {/* 手動監査を通った語源だけを表示する。語根カードが無い語も成り立ちは出す。 */}
-          {(etymologyCards.length > 0 || etymologyStory) && (
-            <Card className="p-4">
-              <div className="mb-3 text-sm font-extrabold text-brand-600" data-etymology-heading>語の成り立ち</div>
-              <EtymologyBlock
-                word={word}
-                onRoot={(rootId) => navigate('rootDetail', { rootId })}
-                onPack={(packId) => navigate('etymologyPack', { packId })}
-                onWord={openWord}
-              />
+          {/* 同じ語から作られた派生語（形の欄に出す語を除く） */}
+          {derivatives.length > 0 && (
+            <Card className="mt-4 p-4">
+              <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
+              <RelatedWordList items={derivatives} tone="der" onWord={openWord} />
             </Card>
           )}
 
           {/* 監査済みカードに明記された関連語だけを表示する。 */}
           {etymologyCards.length > 0 && (
-            <Card className="p-4">
+            <Card className="mt-4 p-4">
               <div className="mb-3 flex items-center gap-1.5 text-brand-600">
                 <Link size={16} />
                 <span className="text-[11px] font-extrabold uppercase tracking-wide">この語源から増やせる単語</span>
@@ -283,6 +183,7 @@ export function WordDetailScreen() {
               />
             </Card>
           )}
+          </ExplanationScope>
 
           {/* 辞書の前後（隣の見出し語へ）。自作単語は辞書の並びに入らないので出さない。 */}
           {!word.custom && <NeighborList word={word} navigate={navigate} />}
@@ -304,6 +205,5 @@ export function WordDetailScreen() {
       </div>
 
     </div>
-    </ExplanationScope>
   )
 }

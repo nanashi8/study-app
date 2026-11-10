@@ -77,12 +77,13 @@ for (const word of ALL_WORDS) {
 if (wordsWithPhrases < 700) {
   errors.push(`熟語が付く単語が${wordsWithPhrases}語しかない`)
 }
-// 暗記カードの裏と辞書ページは同じ部品（WordPhraseSection）で、その語を含む熟語を省略せず並べる。
-const studySource = read('src/screens/VocabStudy.jsx')
+// 暗記カードの裏と辞書ページは同じカードの部品（WordStudyCard）を使い、その中の WordPhraseSection で
+// その語を含む熟語を省略せず並べる（requests/2026-11-10-detail-uses-study-card.json）。
 const phraseSectionSource = read('src/components/WordRelations.jsx')
 if (
-  !studySource.includes('<WordPhraseSection word={word} groups={relatedPhrases} ')
-  || !read('src/screens/WordDetail.jsx').includes('<WordPhraseSection word={word} groups={relatedPhrases} ')
+  !read('src/screens/VocabStudy.jsx').includes('<WordStudyCard')
+  || !read('src/screens/WordDetail.jsx').includes('<WordStudyCard')
+  || !read('src/components/WordStudyCard.jsx').includes('<WordPhraseSection word={word} groups={relatedPhrases} ')
   || !phraseSectionSource.includes('data-word-phrases')
   || !phraseSectionSource.includes('<PhraseCardList phrases={groups.all} ')
 ) {

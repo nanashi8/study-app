@@ -5,15 +5,11 @@ import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
 import { getReadingRulePhase, readingApproachForPassage } from '../data/reading-rules.js'
 import { readingPrepRulesForPassage } from '../lib/readingPrepRules.js'
-import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
-import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { Sheet } from '../components/Sheet.jsx'
+import { PhraseDetailSheet } from '../components/PhraseDetailSheet.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
-import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { useWordBookSlot, wordBookSlotButtonText } from '../components/WordBookSlot.jsx'
 import { SceneBundleRows, SceneBundleSheet } from '../components/SceneBundles.jsx'
@@ -33,11 +29,7 @@ import {
   Bookmark,
   Cards,
   Check,
-  Link,
 } from '../components/Icons.jsx'
-
-const phraseLabel = (item) =>
-  item.category === 'expression' ? '表現' : item.kind === 'syntax' ? '構文' : '熟語'
 
 const readPrepView = (value) => (value === 'list' ? 'list' : 'prep')
 const readListTab = (value) => (['phrases', 'cases'].includes(value) ? value : 'words')
@@ -102,7 +94,6 @@ export function ReadingPrepScreen() {
   const phraseStatus = summarizeSrsItems(phrases, srs)
   // どの語も、登録先の単語帳に入っているか。
   const allSaved = wordsBook.inBook
-  const detailTranslation = detail ? longSentenceTranslationFor(detail) : null
   const continueTo = {
     screen: 'readingPrep',
     params: { passageId },
@@ -486,61 +477,23 @@ export function ReadingPrepScreen() {
         }}
       />
 
-      <Sheet open={!!detail} onClose={() => setDetail(null)} title="くわしく">
-        {detail && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <SpeakButton text={phraseSpeechText(detail)} size="md" />
-              <div className="min-w-0">
-                <div className="font-display text-2xl font-extrabold text-ink">{detail.phrase}</div>
-                <Chip color={phraseLabel(detail) === '構文' ? '#8b5cf6' : '#0ea5e9'}>
-                  {phraseLabel(detail)}
-                </Chip>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-brand-50 p-3">
-              <div className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">意味</div>
-              <div className="font-display text-lg font-extrabold text-ink">
-                {(detail.meanings ?? [detail.meaning]).join('・')}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
-              <div className="flex items-start gap-2">
-                <SpeakButton text={detail.example.en} size="sm" />
-                <div className="min-w-0">
-                  <p className="font-bold text-ink">{detail.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55">
-                    {detailTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
-                    {detail.example.ja}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <LongSentenceTranslation guide={detailTranslation} />
-            {detail.origin && (
-              <div className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100">
-                <div className="mb-1 flex items-center gap-1.5 text-violet-600">
-                  <Link size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                    {detail.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
-                  </span>
-                </div>
-                <p className="text-sm font-bold leading-relaxed text-violet-900/90">{detail.origin}</p>
-              </div>
-            )}
-            <Button
-              full
-              onClick={() => {
-                const item = detail
-                setDetail(null)
-                studyPhrases(false, [item])
-              }}
-            >
-              <Cards size={17} /> この項目を暗記
-            </Button>
-          </div>
+      {/* 熟語・表現の詳細は、暗記カードと同じカードを開いた面で出す。 */}
+      <PhraseDetailSheet
+        phrase={detail}
+        onClose={() => setDetail(null)}
+        footer={detail && (
+          <Button
+            full
+            onClick={() => {
+              const item = detail
+              setDetail(null)
+              studyPhrases(false, [item])
+            }}
+          >
+            <Cards size={17} /> この項目を暗記
+          </Button>
         )}
-      </Sheet>
+      />
     </div>
   )
 }

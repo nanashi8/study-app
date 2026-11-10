@@ -5,6 +5,15 @@ import { readFileSync } from 'node:fs'
 import { normalizeSettings, useStore } from '../src/store/useStore.js'
 import { planCardAutoSpeech } from '../src/lib/cardSpeech.js'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(path, 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(file, 'utf8'))].join('\n')
+}
+
 // 「タップして意味を見る」を毎回タップしなくて済むカード上の切り替えは、
 // 一度ヘッダー整理で消えたことがある。カード画面から消えないよう固定する。
 const CARD_SCREENS = [
@@ -68,10 +77,12 @@ test('全暗記カードは、意味や答えを開かないままでも「ま�
     assert.match(footer, /onClick=\{\(\) => answer\(false\)\}/, `${path}: 「まだ」が答えを記録しない`)
     assert.match(footer, /onClick=\{\(\) => answer\(true\)\}/, `${path}: 「覚えた」が答えを記録しない`)
     // カードそのもののタップは、これまでどおり意味・答えを開く道として残す。
-    assert.match(source, /タップ/, `${path}: カードのタップ案内が消えている`)
+    // 英単語・熟語のカードは共通の部品が押されたことを受け、画面が開く（onOpen・onToggle）。
+    const card = cardScreen(path)
+    assert.match(card, /タップ/, `${path}: カードのタップ案内が消えている`)
     assert.match(
-      source,
-      /onClick=\{\(\) => [^}]*set(?:Flipped|Revealed)\(/,
+      card,
+      /(?:onClick|onOpen|onToggle)=\{\(\) => [^}]*set(?:Flipped|Revealed)\(/,
       `${path}: カードのタップで開けない`,
     )
   }
@@ -103,7 +114,7 @@ test('英単語・熟語のカードは目のボタンでスペルも隠し、�
     ['src/screens/VocabStudy.jsx', 'スペル', '{word.word}'],
     ['src/screens/PhraseStudy.jsx', '英語', '{item.phrase}'],
   ]) {
-    const source = readFileSync(path, 'utf8')
+    const source = cardScreen(path)
     assert.match(
       source,
       new RegExp(`<RevealAnswersToggle[\\s\\S]*?spellingLabel="${spellingLabel}"`),

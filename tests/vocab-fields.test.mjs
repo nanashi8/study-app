@@ -17,6 +17,16 @@ import {
 } from '../src/data/decks.js'
 import { wordsForSource } from '../src/lib/session.js'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 test('全英単語を重複なく中高生向け10分野へまとめる', () => {
   assert.equal(VOCAB_FIELD_GROUPS.length, 10)
   assert.deepEqual(VOCAB_FIELDS, VOCAB_FIELD_GROUPS.map((group) => group.label))
@@ -69,7 +79,7 @@ test('級別目次も20語チャンクを作らず、最大10分野で全単語�
 })
 
 test('単語カードは左上に英検の級を出す', () => {
-  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
+  const study = cardScreen('src/screens/VocabStudy.jsx')
 
   assert.match(study, /const level = getLevel\(word\.level\)/)
   assert.match(study, /data-vocab-card-level/)

@@ -135,11 +135,14 @@ test('辞書ページ・暗記カード・答え合わせは、英単語のカ�
   const detail = read('../src/screens/WordDetail.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const quiz = read('../src/screens/VocabQuiz.jsx')
-  assert.match(detail, /<CustomPhraseSection word=\{word\} \/>/)
-  assert.match(detail, /<CustomEtymology word=\{word\} \/>/)
-  assert.match(study, /<CustomPhraseSection word=\{word\} \/>/)
-  assert.match(study, /<CustomEtymology word=\{word\} \/>/)
-  assert.match(study, /<CustomDerivativeSection items=\{relations\.derivatives\}/)
+  // 辞書ページと暗記カードは同じカードの部品（WordStudyCard）で自作単語の欄を出す。
+  const card = read('../src/components/WordStudyCard.jsx')
+  for (const screen of [detail, study]) assert.match(screen, /<WordStudyCard\b/)
+  assert.match(card, /<CustomPhraseSection word=\{word\} \/>/)
+  assert.match(card, /<CustomEtymology word=\{word\} \/>/)
+  assert.match(card, /<CustomDerivativeSection items=\{relations\.derivatives\}/)
+  // 分野は暗記カードに出さないので、辞書ページはカードの下の欄に出す。
+  assert.match(detail, /data-word-detail-field/)
   assert.match(quiz, /<CustomEtymology word=\{word\} \/>/)
 })
 
@@ -164,7 +167,8 @@ test('辞書ページに16欄すべてが出る', async () => {
   const text = await ui.mainText()
   for (const [key, value] of Object.entries(SHOWN)) assert.ok(text.includes(value), `辞書ページの ${key}：${value}`)
   assert.ok(text.includes('形'), '品詞')
-  for (const heading of ['例文', '使い方・使い分け', '派生語', 'ほかの意味', '意味が同じ・近い語', '意味が反対・対照の語', 'つづりが似ていて間違えやすい語', 'カードに書いた熟語・構文', '語の成り立ち']) {
+  // 辞書ページのカードは暗記カードと同じ部品（WordStudyCard）。例文は暗記カードと同じく見出しを付けない（本文は SHOWN で確かめる）。
+  for (const heading of ['使い方・使い分け', '派生語', 'ほかの意味', '意味が同じ・近い語', '意味が反対・対照の語', 'つづりが似ていて間違えやすい語', 'カードに書いた熟語・構文', '語の成り立ち']) {
     assert.ok(text.includes(heading), `辞書ページの欄の見出し：${heading}`)
   }
   await ui.checkWidth('英単語のカードの辞書ページ')

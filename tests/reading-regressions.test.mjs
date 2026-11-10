@@ -119,8 +119,8 @@ test('全熟語・長文表現の主音声は熟語なら見出し、構文な�
 })
 
 test('熟語の一覧・暗記・テストは共通の主音声判定を使う', () => {
-  // 一覧の詳細は共有のシート（components/PhraseDetailSheet.jsx）が読む。
-  for (const filename of ['components/PhraseDetailSheet.jsx', 'screens/PhraseStudy.jsx', 'screens/PhraseQuiz.jsx', 'screens/ReadingPrep.jsx']) {
+  // 一覧・読解の準備の詳細は共有のシート（components/PhraseDetailSheet.jsx）で、暗記と同じカード（PhraseStudyCard）を出す。
+  for (const filename of ['components/PhraseDetailSheet.jsx', 'components/PhraseStudyCard.jsx', 'screens/PhraseStudy.jsx', 'screens/PhraseQuiz.jsx']) {
     const source = readFileSync(new URL(`../src/${filename}`, import.meta.url), 'utf8')
     assert.match(source, /phraseSpeechText\(/, filename)
   }

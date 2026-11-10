@@ -7,6 +7,16 @@ import { posSensesFor, sameFormsFor, wordFormsFor, wordRelationsFor } from '../s
 import { samePosUsageGap } from '../scripts/checks/same-pos-usage.mjs'
 import { phraseSensesGap } from '../scripts/checks/phrase-senses.mjs'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('類義語・反対語の欄に、品詞がちがうだけの同じ語の形を出さない', () => {
@@ -36,7 +46,7 @@ test('辞書ページの派生語欄は、形の欄に出す語を重ねない',
   // popular の popularity は、ほかの品詞の形の欄にだけ出す。
   assert.deepEqual(wordRelationsFor(getWord('popular')).derivatives, [])
   const detail = read('src/screens/WordDetail.jsx')
-  assert.match(detail, /const derivatives = relations\.derivatives/)
+  assert.match(detail, /const derivatives = word\.custom \? \[\] : relations\.derivatives/)
   assert.doesNotMatch(detail, /items=\{word\.derivatives\}/)
 })
 
@@ -58,7 +68,7 @@ test('同じ品詞の派生語を、ほかの品詞の形と分けて暗記カ�
   assert.match(component, /同じ品詞の派生語/)
   assert.match(component, /data-word-same-forms/)
   for (const screen of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
-    assert.match(read(screen), /sameItems=\{relations\.sameForms\}/, screen)
+    assert.match(cardScreen(screen), /sameItems=\{relations\.sameForms\}/, screen)
   }
 })
 

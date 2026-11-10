@@ -84,8 +84,12 @@ test('-ate で終わる動詞の発音記号は /eɪt/ で終わる', () => {
 test('読み上げボタンと再生パネルは判定を通し、単語カード・テスト・辞書ページは読み分けを出す', () => {
   assert.match(read('src/components/SpeakButton.jsx'), /isAmbiguousSpeechText\(text, lang\)/)
   assert.match(read('src/lib/speech-player.js'), /isAmbiguousSpeechText\(segment\.text, segment\.lang\)/)
-  for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx', 'src/screens/VocabQuiz.jsx']) {
+  // 単語カードと辞書ページは同じカードの部品（WordStudyCard）で読み分けを出す。
+  for (const path of ['src/components/WordStudyCard.jsx', 'src/screens/VocabQuiz.jsx']) {
     assert.match(read(path), /<PronunciationNote word=\{word\}/, path)
+  }
+  for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
+    assert.match(read(path), /<WordStudyCard\b/, path)
   }
   for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
     assert.match(read(path), /exampleSpeechAllowed\(word\)/, path)

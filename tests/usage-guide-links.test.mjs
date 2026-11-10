@@ -119,15 +119,18 @@ test('see と watch のように類義語の欄にない相手も、see のカ�
 })
 
 test('4つの画面と熟語の欄が、使い分けカードとボタンを出す', () => {
-  for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
+  // 単語の2画面と熟語の2か所は、同じカードの部品（WordStudyCard・PhraseStudyCard）で使い分けカードを出す。
+  for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) assert.match(read(path), /<WordStudyCard\b/, path)
+  for (const path of ['src/screens/PhraseStudy.jsx', 'src/components/PhraseDetailSheet.jsx']) assert.match(read(path), /<PhraseStudyCard\b/, path)
+  for (const path of ['src/components/WordStudyCard.jsx']) {
     const source = read(path)
     assert.match(source, /<UsageGuideProvider guides=\{word\.usageGuides\}>/, path)
     assert.match(source, /<UsageGuideSection guides=\{word\.usageGuides\} self=\{\{ wordId: word\.id \}\}/, path)
   }
-  assert.match(read('src/screens/PhraseStudy.jsx'), /<UsageGuideSection guides=\{usageGuidesForPhrase\(item\)\} self=\{\{ phraseId: item\.id \}\}/)
+  assert.match(read('src/components/PhraseStudyCard.jsx'), /<UsageGuideSection guides=\{usageGuidesForPhrase\(item\)\} self=\{\{ phraseId: item\.id \}\}/)
   // 熟語の暗記カードは裏を押すとめくれる。カードの中の相手を押したときにめくれて詳細シートが閉じないよう、押下を外へ伝えない。
   assert.match(read('src/components/UsageGuideCards.jsx'), /data-usage-guide-section onClick=\{\(event\) => event\.stopPropagation\(\)\}/)
-  assert.match(read('src/components/PhraseDetailSheet.jsx'), /<UsageGuideSection guides=\{usageGuidesForPhrase\(phrase\)\} self=\{\{ phraseId: phrase\.id \}\}/)
+
   const relations = read('src/components/WordRelations.jsx')
   assert.match(relations, /<UsageGuideLink text=\{row\.text\} wordId=\{row\.entry\?\.id \?\? null\} \/>/)
   assert.match(relations, /<UsageGuideLink phraseId=\{phrase\.id\} \/>/)

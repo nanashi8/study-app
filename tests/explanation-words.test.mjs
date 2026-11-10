@@ -96,9 +96,13 @@ test('意味：すぐ後に意味がない語には見出しの意味を添え�
 })
 
 test('部品：辞書ページ・暗記カードの裏・テストの答え合わせは、いま見ている語を伝える ExplanationScope の中で同じ部品を使う', () => {
-  for (const file of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx', 'src/screens/VocabQuiz.jsx']) {
+  // 辞書ページと暗記カードは同じカードの部品（WordStudyCard）で出す。
+  for (const file of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx']) {
+    assert.match(read(file), /<WordStudyCard\b/u, file)
+  }
+  for (const file of ['src/components/WordStudyCard.jsx', 'src/screens/VocabQuiz.jsx']) {
     const source = read(file)
-    assert.match(source, /import \{[^}]*ExplanationScope[^}]*\} from '..\/components\/ExplainedText.jsx'/u, file)
+    assert.match(source, /import \{[^}]*ExplanationScope[^}]*\} from '(?:\.\.\/components|\.)\/ExplainedText.jsx'/u, file)
     assert.match(source, /<ExplanationScope selfId=\{word\.id\} onWord=\{\w+\}>/u, file)
     assert.match(source, /<EtymologyBlock\b/u, file)
   }
@@ -107,8 +111,7 @@ test('部品：辞書ページ・暗記カードの裏・テストの答え合�
     assert.match(read(`src/components/${file}.jsx`), /<ExplainedText>/u, file)
   }
   // 語の使い方の文（usage）も同じ部品で出す。
-  assert.match(read('src/screens/WordDetail.jsx'), /<ExplainedText>\{word\.usage\}<\/ExplainedText>/u)
-  assert.match(read('src/screens/VocabStudy.jsx'), /<ExplainedText>\{word\.usage\}<\/ExplainedText>/u)
+  assert.match(read('src/components/WordStudyCard.jsx'), /<ExplainedText>\{word\.usage\}<\/ExplainedText>/u)
 })
 
 test('見た目：リンクの付いた語は WordLink 1つで描き、どの欄でも同じ見た目。いま見ている語はリンクにしない', () => {

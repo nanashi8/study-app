@@ -63,9 +63,13 @@ test('語の成り立ち・使い方の欄が名指しした語は、関連語�
 })
 
 test('暗記カードの裏と辞書ページは、同じ関連語の部品で欄を出す', () => {
+  // 2画面は同じカードの部品（WordStudyCard）で欄を出し、関連語は画面が wordRelationsFor で求めて渡す。
   for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
+    assert.match(read(path), /wordRelationsFor\(word\)/, path)
+    assert.match(read(path), /<WordStudyCard[\s\S]*?relations=\{relations\}/, path)
+  }
+  for (const path of ['src/components/WordStudyCard.jsx']) {
     const source = read(path)
-    assert.match(source, /wordRelationsFor\(word\)/, path)
     assert.match(source, /<SynonymSection items=\{relations\.synonyms\}/, path)
     assert.match(source, /<IdiomEquivalentSection phrases=\{relations\.idioms\}/, path)
     assert.match(source, /<AntonymSection items=\{relations\.antonyms\}/, path)

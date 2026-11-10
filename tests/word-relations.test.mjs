@@ -11,6 +11,16 @@ import {
   wordRelationsFor,
 } from '../src/lib/wordRelations.js'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('つづりの違いは、見ている語にない文字だけに印をつける', () => {
@@ -103,8 +113,8 @@ test('自作単語には辞書の台帳を当てない', () => {
 })
 
 test('単語カードの裏と辞書ページは同じ部品で関連語を出す', () => {
-  const study = read('src/screens/VocabStudy.jsx')
-  const detail = read('src/screens/WordDetail.jsx')
+  const study = cardScreen('src/screens/VocabStudy.jsx')
+  const detail = cardScreen('src/screens/WordDetail.jsx')
   for (const source of [study, detail]) {
     for (const part of ['wordRelationsFor', 'LoanwordHint', 'SynonymSection', 'IdiomEquivalentSection', 'ConfusableSection']) {
       assert.match(source, new RegExp(part))

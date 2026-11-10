@@ -39,7 +39,12 @@ test('作り：本文の箱には見出しを付けず、語の成り立ちを�
   assert.ok(!block.includes('>語の成り立ち<'), 'EtymologyBlock の本文の箱に見出しを付けない')
   const custom = bits.slice(bits.indexOf('export function CustomEtymology'), bits.indexOf('export function OtherSenses'))
   assert.equal(custom.match(/data-etymology-heading/gu)?.length, 1, '自作単語の欄の見出し')
-  for (const screen of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx', 'src/screens/VocabQuiz.jsx']) {
+  // 辞書ページと暗記カードは同じカードの部品（WordStudyCard）で語の成り立ちを出す。
+  for (const screen of ['src/screens/WordDetail.jsx', 'src/screens/VocabStudy.jsx']) {
+    assert.match(source(screen), /<WordStudyCard\b/, screen)
+    assert.ok(!source(screen).includes('data-etymology-heading'), `${screen}: カードの外に語の成り立ちの見出しを置かない`)
+  }
+  for (const screen of ['src/components/WordStudyCard.jsx', 'src/screens/VocabQuiz.jsx']) {
     const text = source(screen)
     assert.equal(text.match(/data-etymology-heading>語の成り立ち</gu)?.length, 1, `${screen}: 欄の見出しは1つ`)
     assert.ok(text.includes('<EtymologyBlock'), `${screen}: 語の成り立ちの欄`)

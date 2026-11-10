@@ -30,6 +30,16 @@ import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { INTERVALS, todayIndex, useStore } from '../src/store/useStore.js'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 test('語彙ごとの正解履歴と経過時間で期限を伸縮し、同日連打では段階を上げない', () => {
   const original = useStore.getState()
   const originalNow = Date.now
@@ -468,16 +478,18 @@ test('全級の暗記は復習中→未学習を先に出し、今日の候補�
 })
 
 test('単語暗記とテストは参考画面を往復しても同じ問題・解答状態を復元する', () => {
-  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
+  const study = cardScreen('src/screens/VocabStudy.jsx')
   const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
-  const detail = readFileSync(new URL('../src/screens/WordDetail.jsx', import.meta.url), 'utf8')
+  const detail = cardScreen('src/screens/WordDetail.jsx')
   const history = readFileSync(new URL('../src/components/StudyReviewHistory.jsx', import.meta.url), 'utf8')
 
   assert.match(study, /restore\?\.deck \?\? buildFor/)
   assert.match(study, /restore\?\.i \?\? 0/)
   assert.match(study, /restore\?\.flipped \?\? revealAll/)
   assert.match(study, /purpose: 'study'/)
-  assert.match(study, /saveBeforeReference\('rootDetail'/)
+  // 語根の画面へは、カードの部品へ渡した移り方（記録を残してから移る）で行く。
+  assert.match(study, /navigateTo=\{saveBeforeReference\}/)
+  assert.match(study, /navigateTo\('rootDetail'/)
   assert.match(study, /saveBeforeReference\('wordDetail'/)
   assert.match(quiz, /restore\?\.deck \?\? buildFor/)
   assert.match(quiz, /saveBeforeDetail/)

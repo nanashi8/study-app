@@ -1,0 +1,57 @@
+{
+  "id": "2026-11-10-detail-uses-study-card",
+  "title": "英和辞書や一覧から開く英単語・熟語・構文のカードを、暗記で使うカードと同じものにする",
+  "asked": [
+    "英和辞書や一覧から確認、から開く英単語や英熟語のカードは、英単語や英熟語の暗記で使う画面と同一のものにしなさい。別のレイアウトで見づらい意味が全く分からない。見慣れた画面で確認できたほうが学習効率が高いのではないか。"
+  ],
+  "sessions": [
+    "e2b3236b-26ee-488f-9c83-d0b8bab396b8"
+  ],
+  "status": "open",
+  "notes": [
+    "英単語の詳細は、どこから開いても1つの画面 wordDetail（WordDetail.jsx）を通る。その画面のカードを、暗記カード（VocabStudy）と同じ部品 WordStudyCard にする。詳細では開いた面（意味・例文・語源…）を最初から出す。",
+    "熟語・構文の詳細は、PhraseDetailSheet（熟語・構文の一覧、辞書ページとカード裏の熟語の欄、基礎長文の準備）・読解の準備のシート・英和辞書の熟語の行の3通りで別々に描いていた。3つとも暗記カード（PhraseStudy）と同じ部品 PhraseStudyCard にする。",
+    "辞書ページにだけあった欄（学習の記録のバー・派生語・この語源から増やせる単語・辞書の前後）は捨てずに、カードの下に残す。"
+  ],
+  "criteria": [
+    {
+      "id": "word-card-shared",
+      "text": "英単語の暗記カードと、辞書・一覧から開く英単語の詳細が、同じ部品（WordStudyCard）でカードを描く。詳細の画面に独自のカード（ヒーロー・意味・例文などの別レイアウト）を残さない",
+      "population": "英単語の詳細を開く画面 wordDetail（src のすべての navigate('wordDetail') の入口が通る1画面）と暗記画面 VocabStudy",
+      "check": "node --test tests/detail-uses-study-card.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 共通の部品 src/components/WordStudyCard.jsx を作り、暗記（VocabStudy）と英単語の詳細（WordDetail）の2画面がこれでカードを描く。詳細は開いた面で出す。src の navigate('wordDetail') の入口（ファイル単位で15か所以上）はすべて1つの画面 WordDetail へ行く。辞書ページにだけあった欄（学習とテストの記録のバー・派生語・この語源から増やせる単語・辞書の前後）はカードの下に残した（tests/detail-uses-study-card.test.mjs）。"
+    },
+    {
+      "id": "phrase-card-shared",
+      "text": "熟語・構文の暗記カードと、辞書・一覧・読解の準備などから開く熟語・構文の詳細が、同じ部品（PhraseStudyCard）でカードを描く。熟語・構文の詳細を別のレイアウトで描く所を残さない",
+      "population": "熟語・構文の詳細を出す全か所：PhraseDetailSheet（熟語・構文の一覧・辞書ページとカード裏の熟語の欄・基礎長文の準備）、読解の準備のシート、英和辞書の熟語・構文の行、と暗記画面 PhraseStudy",
+      "check": "node --test tests/detail-uses-study-card.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 共通の部品 src/components/PhraseStudyCard.jsx を作り、暗記（PhraseStudy）と PhraseDetailSheet（熟語・構文の一覧・辞書ページとカード裏の熟語の欄・基礎長文の準備）がこれでカードを描く。読解の準備の独自のシートと、英和辞書の熟語の行の中で開く独自の詳細をやめて PhraseDetailSheet にした（5か所中5か所）。成り立ちの見出しを描くのは部品とテストの答え合わせ（PhraseQuiz）だけ（tests/detail-uses-study-card.test.mjs）。"
+    },
+    {
+      "id": "all-items-render",
+      "text": "すべての英単語・熟語・構文で、詳細のカードが暗記カードと同じ中身（意味・例文・成り立ちなど）で描ける（落ちる・欠ける語がない）",
+      "population": "辞書の全見出し語と全熟語・構文",
+      "check": "node --test tests/detail-uses-study-card.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 辞書の全見出し語（ALL_WORDS 全件）を WordStudyCard の開いた面で、全熟語・構文（PHRASES 全件）と全長文の読解の準備の熟語を PhraseDetail で描き、全件が描けて意味の欄・見出しがあることを確かめた（tests/detail-uses-study-card.test.mjs）。"
+    },
+    {
+      "id": "seen-in-browser",
+      "text": "英和辞書（単語・熟語）・熟語の一覧・学習コンテンツの一覧・読解の準備から開いた詳細を実際の画面で開き、暗記カードと同じ見た目であることを確かめる",
+      "population": "入口5種（英和辞書の単語・英和辞書の熟語・熟語の一覧・一覧から確認の単語・読解の準備の熟語）",
+      "check": "node --test tests/detail-uses-study-card.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 開発版を 375px の画面で開き、英和辞書の単語（abandon）・英和辞書の熟語（take part in）・熟語の一覧（get up）・読解の準備の熟語（go to school）の詳細が暗記カードと同じカード（同じ級・種類の札、意味の箱、成り立ち、例文の並び）で出ることを確かめ、熟語の暗記カード（take part in）と並べて同じ見た目であることを見た。一覧から確認の単語は WordDetail を開く（同じ画面）。コンソールのエラーなし（5種中5種）。"
+    },
+    {
+      "id": "deployed",
+      "text": "テストと監査を通して main へ push し、公開版で詳細が暗記カードと同じになっていることを確かめる",
+      "population": "公開版の英単語の詳細と熟語の詳細",
+      "check": "node --test tests/detail-uses-study-card.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

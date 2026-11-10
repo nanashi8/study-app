@@ -344,14 +344,16 @@ for (const [label, file, rowsPattern] of [
     errors.push(`${label}の答え合わせに、出題した選択肢それぞれの中身がない`)
   }
 }
-if (!vocabStudySource.includes('<EtymologyBlock')) {
+// 単語カードは、暗記と辞書・一覧の詳細で同じ部品（components/WordStudyCard.jsx）を使う（requests/2026-11-10-detail-uses-study-card.json）。
+const wordStudyCardSource = await readProjectFile('src/components/WordStudyCard.jsx')
+if (!vocabStudySource.includes('<WordStudyCard') || !wordStudyCardSource.includes('<EtymologyBlock')) {
   errors.push('単語カードの答えに語源本文がない')
 }
 if (!vocabQuizSource.includes('etymologyCardsForWord(word).length') ||
-    !vocabStudySource.includes('etymologyCardsForWord(word).length')) {
+    !wordStudyCardSource.includes('etymologyCardsForWord(word).length')) {
   errors.push('単語の暗記・テストが確認済みカードの有無で語源表示を制限していない')
 }
-if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}`)) {
+if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}\n${wordStudyCardSource}`)) {
   errors.push('単語の語源本文が「くわしく見る」操作を必須にしている')
 }
 for (const [name, source] of [
@@ -600,6 +602,17 @@ for (const file of files) {
   const relative = path.relative(projectRoot, file)
   // カード裏面の案内（「タップして◯◯を見る」）だけを対象にする。
   if (!/タップして[^「」]{0,12}(?:意味|答え)[^「」]{0,12}を見る/.test(source)) continue
+  // 英単語・熟語のカードの部品は、閉じた面を出す暗記の画面が切り替えを持つ（辞書・一覧の詳細は開いた面だけを出す）。
+  const cardPartScreen = {
+    'src/components/WordStudyCard.jsx': 'src/screens/VocabStudy.jsx',
+    'src/components/PhraseStudyCard.jsx': 'src/screens/PhraseStudy.jsx',
+  }[relative.split(path.sep).join('/')]
+  if (cardPartScreen) {
+    if (!(await readProjectFile(cardPartScreen)).includes('RevealAnswersToggle')) {
+      errors.push(`${cardPartScreen}: 「タップして見る」の切り替えが画面上にない`)
+    }
+    continue
+  }
   if (!source.includes('RevealAnswersToggle')) {
     errors.push(`${relative}: 「タップして見る」の切り替えが画面上にない`)
   }

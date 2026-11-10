@@ -15,6 +15,16 @@ import { antonymWordsFor, confusablesFor, sameFormsFor, wordFormsFor, wordRelati
 import { wordFormCandidatePairs, wordFormExtraCandidates } from '../scripts/word-form-candidates.mjs'
 import { arpaToIPA } from '../scripts/arpa-ipa.mjs'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const formsOf = (id) => wordFormsFor(getWord(id)).map((word) => `${word.word}:${word.pos}`)
 const pairKey = (a, b) => [a, b].sort().join('|')
@@ -116,7 +126,7 @@ test('ほかの品詞の形・意味が同じ・近い語・意味が反対の�
   }
   // 暗記カードの裏と辞書ページの両方に出す。
   for (const screen of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
-    const source = read(screen)
+    const source = cardScreen(screen)
     for (const name of ['WordFormSection', 'SynonymSection', 'AntonymSection']) {
       assert.match(source, new RegExp(`<${name} items=\\{relations\\.`), `${screen}: ${name}`)
     }
@@ -140,11 +150,11 @@ test('使い分けの区別がある関連語には、使い分けを参考に�
   assert.match(component, /export function UsagePartnerSection/)
   assert.match(component, /data-word-usage-note/)
   // 暗記カードの裏にも、辞書ページと同じ使い方・使い分けを出す。
-  const card = read('src/screens/VocabStudy.jsx')
+  const card = cardScreen('src/screens/VocabStudy.jsx')
   assert.match(card, /<UsageGuideSection guides=\{word\.usageGuides\}/)
   assert.match(card, /data-word-usage>/)
   for (const screen of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
-    assert.match(read(screen), /<UsagePartnerSection items=\{relations\.usagePartners\}/, screen)
+    assert.match(cardScreen(screen), /<UsagePartnerSection items=\{relations\.usagePartners\}/, screen)
   }
 })
 

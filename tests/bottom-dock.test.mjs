@@ -311,8 +311,11 @@ test('例文を読み上げない：単語を発音しないカードと辞書�
   for (const word of ALL_WORDS.filter((item) => heteronymFor(item))) assert.equal(exampleSpeechAllowed(word), false, word.id)
 
   // 画面：例文の読み上げボタンは exampleSpeechAllowed を通したときだけ出す。
+  // 単語カードと辞書ページは同じカードの部品（WordStudyCard）で例文を出す。
+  assert.match(read('src/components/WordStudyCard.jsx'), /\{exampleSpeechAllowed\(word\) && /)
   for (const path of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
-    assert.match(read(path), /\{exampleSpeechAllowed\(word\) && /, path)
+    assert.match(read(path), /<WordStudyCard\b/, path)
+    assert.match(read(path), /exampleSpeech: exampleSpeechAllowed\(word\)/, path)
   }
   assert.match(read('src/lib/speechGuard.js'), /export const exampleSpeechAllowed = \(word\) => !heteronymFor\(word\)/)
   assert.match(read('src/components/PronunciationNote.jsx'), /この語と例文の音声はありません/)

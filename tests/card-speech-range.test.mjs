@@ -411,12 +411,18 @@ test('英単語・熟語・構文の暗記カードは、見出しのボタン�
     assert.match(source, new RegExp(`const ${items} = (?:word|item)\\n\\s*\\? cardSpeechItems\\(\\{`), path)
     assert.match(source, /range: settings\.speechRange,\n\s*answerOpen: flipped,/, path)
     assert.match(source, new RegExp(`useCardAutoSpeech\\(\\{[\\s\\S]*?items: ${items},[\\s\\S]*?title: '${title}',`), path)
-    // 見出しのボタンは1つめ、例文のボタンは2つめから読む。どちらもカードの読み上げ列の持ち主を渡す。
-    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{0\\}\\n\\s*speechKey=\\{speechKey\\}`), path)
-    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{1\\}\\n\\s*speechKey=\\{speechKey\\}`), path)
+    // カードは共通の部品（暗記と辞書・一覧の詳細で同じもの）。読み上げ列とその持ち主を部品へ渡す。
+    assert.match(source, new RegExp(`speechItems=\\{${items}\\}\\n\\s*speechKey=\\{speechKey\\}`), path)
     assert.match(source, /const speechKey = (?:word|item) \? `\$\{i\}:\$\{(?:word|item)\.id\}` : null/, path)
     assert.match(source, /useCardAutoSpeech\(\{\n\s*speechKey,/, path)
     assert.doesNotMatch(source, /playSpeechItems|dismissSpeechPlayer/, path)
+  }
+  // 見出しのボタンは1つめ、例文のボタンは2つめから読む。どちらもカードの読み上げ列の持ち主を渡す。
+  for (const path of ['src/components/WordStudyCard.jsx', 'src/components/PhraseStudyCard.jsx']) {
+    const card = read(path)
+    assert.match(card, /phrases=\{speechItems\}\n\s*phraseIndex=\{0\}\n\s*speechKey=\{speechKey\}/, path)
+    assert.match(card, /phrases=\{speechItems\}\n\s*phraseIndex=\{1\}\n\s*speechKey=\{speechKey\}/, path)
+    assert.doesNotMatch(card, /playSpeechItems|dismissSpeechPlayer/, path)
   }
   // 英単語の意味だけ、画面で（よみ）を添える語を読みで読む。どちらも id で読みの台帳を引く。
   assert.match(read('src/screens/VocabStudy.jsx'), /meaningReadings: true,/)

@@ -16,10 +16,11 @@ import {
 import { customWordDraftFromQuery, customWordToStudyWord } from '../lib/customWords.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
+import { PhraseDetailSheet } from '../components/PhraseDetailSheet.jsx'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { PosBadge } from '../components/WordBits.jsx'
 import { useWordBookSlot, wordBookSlotLabel } from '../components/WordBookSlot.jsx'
-import { Chip, IconButton } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { Search, Close, ArrowRight, Bookmark, BookmarkFilled, Plus } from '../components/Icons.jsx'
 import { LoadMoreButton } from '../components/LoadMoreButton.jsx'
@@ -197,88 +198,41 @@ function WordRow({ word, custom = false, sense = null, onOpen }) {
   )
 }
 
-// 熟語・構文はその場で開いて意味・例文・解説まで読める（単語詳細に当たる表示）。
-function PhraseRow({ phrase, onStudy }) {
-  const [open, setOpen] = useState(false)
+// 熟語・構文の行。押すと、熟語・構文の暗記カードと同じカードを開いた面で出す（単語の行と同じ並び）。
+function PhraseRow({ phrase, onOpen }) {
   // 単語帳ボタンは、画面下部の「単語帳」で選んだ登録先に入れる（もう一度押すと外す）。
   const wordBook = useWordBookSlot([`phrases:${phrase.id}`], { label: phrase.phrase })
   const inBook = wordBook.inBook
   const level = getLevel(phrase.level)
-  const meanings = phrase.meanings?.length ? phrase.meanings : [phrase.meaning]
   return (
-    <div className="rounded-2xl bg-white p-2.5 shadow-sm">
-      <div className="flex items-center gap-2">
-        <SpeakButton text={phrase.phrase} size="sm" />
-        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-          <KindBadge type={phrase.kind} />
-          <div className="min-w-0 flex-1">
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate font-display font-extrabold text-ink">{phrase.phrase}</span>
-              <Chip color={level.color}>{level.label}</Chip>
-              {inBook && (
-                <span className="inline-flex shrink-0 items-center gap-0.5 text-[10px] font-extrabold text-amber-600">
-                  <BookmarkFilled size={13} /> 単語帳
-                </span>
-              )}
-            </div>
-            <div className="truncate text-xs font-bold text-ink/55">{phrase.meaning}</div>
+    <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm" data-dictionary-phrase={phrase.id}>
+      <SpeakButton text={phraseSpeechText(phrase)} size="sm" />
+      <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-label={`${phrase.phrase}のカードを見る`}>
+        <KindBadge type={phrase.kind} />
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="truncate font-display font-extrabold text-ink">{phrase.phrase}</span>
+            <Chip color={level.color}>{level.label}</Chip>
           </div>
-          <span className="text-brand-300">{open ? '▲' : '▼'}</span>
-        </button>
-      </div>
-
-      {open && (
-        <div className="mt-2 space-y-2 border-t border-brand-50 pt-2 text-sm">
-          <div>
-            <p className="text-[11px] font-extrabold text-ink/40">意味</p>
-            <p className="font-bold text-ink">{meanings.join('／')}</p>
-          </div>
-          {phrase.example && (
-            <div>
-              <p className="text-[11px] font-extrabold text-ink/40">例文</p>
-              <div className="flex items-start gap-2">
-                <SpeakButton text={phrase.example.en} size="sm" />
-                <div className="min-w-0">
-                  <p className="font-bold text-ink">{phrase.example.en}</p>
-                  <p className="text-xs font-bold text-ink/55">{phrase.example.ja}</p>
-                </div>
-              </div>
-            </div>
-          )}
-          {phrase.origin && (
-            <div>
-              <p className="text-[11px] font-extrabold text-ink/40">
-                {phrase.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
-              </p>
-              <p className="text-xs font-bold leading-relaxed text-ink/70">{phrase.origin}</p>
-            </div>
-          )}
-          {phrase.note && (
-            <div>
-              <p className="text-[11px] font-extrabold text-ink/40">使い方メモ</p>
-              <p className="text-xs font-bold leading-relaxed text-ink/70">{phrase.note}</p>
-            </div>
-          )}
-          <SyntaxFamilyGuide item={phrase} />
-          <div className="flex flex-wrap gap-2 pt-1">
-            <button
-              onClick={onStudy}
-              className="rounded-full px-3 py-1.5 text-xs font-extrabold text-brand-500 ring-1 ring-brand-100 active:bg-brand-50"
-            >
-              ▶ この項目で学習
-            </button>
-            <button
-              onClick={wordBook.press}
-              aria-pressed={inBook}
-              aria-label={wordBookSlotLabel({ itemLabel: phrase.phrase, bookTitle: wordBook.bookTitle, inBook })}
-              data-dictionary-phrase-word-book
-              className="rounded-full px-3 py-1.5 text-xs font-extrabold text-amber-600 ring-1 ring-amber-100 active:bg-amber-50"
-            >
-              {inBook ? '★ 単語帳から外す' : '☆ 単語帳に入れる'}
-            </button>
-          </div>
+          <div className="truncate text-xs font-bold text-ink/55"><MeaningText>{phrase.meaning}</MeaningText></div>
         </div>
-      )}
+        <span className="text-brand-300"><ArrowRight size={16} /></span>
+      </button>
+      <button
+        type="button"
+        onClick={wordBook.press}
+        aria-pressed={inBook}
+        aria-label={wordBookSlotLabel({ itemLabel: phrase.phrase, bookTitle: wordBook.bookTitle, inBook })}
+        data-dictionary-phrase-word-book
+        className={`inline-flex min-h-12 shrink-0 items-center gap-1 rounded-xl px-2 text-[10px] font-extrabold ring-1 active:scale-[0.98] ${
+          inBook
+            ? 'bg-amber-50 text-amber-700 ring-amber-200'
+            : 'bg-white text-brand-600 ring-brand-200'
+        }`}
+      >
+        {inBook ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
+        単語帳
+      </button>
     </div>
   )
 }
@@ -298,6 +252,8 @@ export function VocabSearchScreen() {
   const params = useStore((s) => s.params)
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
+  // 開いている熟語・構文のカード。
+  const [phraseDetail, setPhraseDetail] = useState(null)
   const customWords = useStore((s) => s.customWords)
   // 語の詳細・学習・自作カードの登録から戻ったときは、引いていた語と種類の絞り込みから続ける。
   const [q, setQ] = useState(() => (typeof params.q === 'string' ? params.q : ''))
@@ -389,7 +345,7 @@ export function VocabSearchScreen() {
       <PhraseRow
         key={entry.id}
         phrase={entry.phrase}
-        onStudy={() => studyPhrase(entry.phrase)}
+        onOpen={() => setPhraseDetail(entry.phrase)}
       />
     )
 
@@ -549,6 +505,25 @@ export function VocabSearchScreen() {
         )}
       </div>
 
+      {/* 熟語・構文は、暗記カードと同じカードを開いた面で出す。 */}
+      <PhraseDetailSheet
+        phrase={phraseDetail}
+        onClose={() => setPhraseDetail(null)}
+        returnTo={{ screen: 'vocabSearch', params: { q, type, shown } }}
+        footer={phraseDetail && (
+          <Button
+            full
+            onClick={() => {
+              const phrase = phraseDetail
+              setPhraseDetail(null)
+              studyPhrase(phrase)
+            }}
+            data-dictionary-phrase-study
+          >
+            この項目で学習
+          </Button>
+        )}
+      />
     </div>
   )
 }

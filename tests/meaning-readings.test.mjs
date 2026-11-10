@@ -35,7 +35,9 @@ test('台帳の読みはひらがなで、同じ語を2回載せない', () => {
 
 test('英単語の意味を出す画面は、読みを添える部品を通して表示する', () => {
   for (const file of [
-    'src/screens/VocabStudy.jsx',
+    // 暗記カードと辞書ページは同じカードの部品（WordStudyCard）。熟語・構文のカードも同じ。
+    'src/components/WordStudyCard.jsx',
+    'src/components/PhraseStudyCard.jsx',
     'src/screens/WordDetail.jsx',
     'src/screens/VocabQuiz.jsx',
     'src/screens/VocabSearch.jsx',

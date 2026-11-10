@@ -521,11 +521,14 @@ const sourceChecks = [
   ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<EtymologyBlock word=\{word\}[^>]*\/>/, /<ChoiceExplanations/]],
   ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /grammarRuleExplanationFor\(item\)/, /patternExamples/]],
   ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<ChoiceExplanations/, /\{item\.origin\}/, /SyntaxFamilyGuide/]],
-  ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
-  // 熟語・構文の一覧の詳細は、単語の熟語・構文カードと共有のシート（components/PhraseDetailSheet.jsx）で出す。
+  // 熟語・構文のカードは、暗記と辞書・一覧の詳細で同じ部品（components/PhraseStudyCard.jsx）を使う
+  // （requests/2026-11-10-detail-uses-study-card.json）。ファミリー解説・同形比較・ポイントはカードの部品が出す。
+  ['components/PhraseStudyCard.jsx', [/<SyntaxFamilyGuide item=\{item\}/, /<IdiomFormGuide item=\{item\}/, /この文のポイント/]],
+  ['PhraseStudy.jsx', [/<PhraseStudyCard\b/, /item=\{item\}/]],
+  // 熟語・構文の一覧・英和辞書の詳細は、共有のシート（components/PhraseDetailSheet.jsx）で暗記と同じカードを出す。
   ['Phrases.jsx', [/<PhraseDetailSheet/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],
-  ['components/PhraseDetailSheet.jsx', [/<SyntaxFamilyGuide item=\{phrase\}/, /<IdiomFormGuide item=\{phrase\}/]],
-  ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
+  ['components/PhraseDetailSheet.jsx', [/<PhraseStudyCard\b/, /item=\{phrase\}/]],
+  ['VocabSearch.jsx', [/<PhraseDetailSheet\b/, /phrase=\{phraseDetail\}/]],
   ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /listeningChoiceNoteFor/]],
   ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /dictationExplanationFor/]],
   ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /data-reading-explanation/, /<ReadingChoiceExplanations/]],

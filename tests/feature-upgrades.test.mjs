@@ -119,7 +119,9 @@ test('単語テストは解答直後に語源を表示し、詳細遷移を必�
   // 語の成り立ちの欄は、似た語の欄を畳んで出す（lookalikeCollapsed）などの属性がついてもよい。
   assert.match(quiz, /answered && \([\s\S]*<EtymologyBlock word=\{word\}[^>]*\/>/)
   assert.match(quiz, /辞書ページで関連語も見る/)
-  assert.match(study, /<EtymologyBlock/)
+  // 暗記カードの中身は辞書ページと同じ部品（WordStudyCard）。語源はカードの部品が出す。
+  assert.match(study, /<WordStudyCard\b/)
+  assert.match(read('../src/components/WordStudyCard.jsx'), /<EtymologyBlock/)
   assert.match(study, /辞書ページで関連語も見る/)
   assert.match(detail, /screenRef\.current\?\.scrollTo\(\{ top: 0 \}\)/)
   assert.match(detail, /\[word\?\.id\]/)

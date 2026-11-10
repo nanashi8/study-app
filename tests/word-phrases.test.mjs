@@ -11,6 +11,16 @@ import {
   phrasesForWord,
 } from '../src/lib/wordPhrases.js'
 
+// 単語・熟語のカードは、暗記と辞書・一覧の詳細で同じ部品（WordStudyCard・PhraseStudyCard）を使う。
+// 画面が出す中身は、画面のファイルとその画面が描くカードの部品を合わせて見る。
+const CARD_PARTS = { WordStudyCard: 'src/components/WordStudyCard.jsx', PhraseStudyCard: 'src/components/PhraseStudyCard.jsx' }
+const cardScreen = (path) => {
+  const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const parts = Object.entries(CARD_PARTS).filter(([name]) => new RegExp(`<${name}\\b`).test(source))
+  return [source, ...parts.map(([, file]) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))].join('\n')
+}
+
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const wordNamed = (name) => ALL_WORDS.find((word) => word.word === name)
 
@@ -66,7 +76,7 @@ test('熟語と構文に分けて数えられる', () => {
 })
 
 test('単語カードは、その語を含む熟語を省略せず全部並べる', () => {
-  const source = read('src/screens/VocabStudy.jsx')
+  const source = cardScreen('src/screens/VocabStudy.jsx')
   assert.match(source, /phraseGroupsForWord/)
   assert.match(source, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\}[ />]/)
   const component = read('src/components/WordRelations.jsx')
