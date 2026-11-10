@@ -51,6 +51,20 @@ function writeDraft(passageId, draft) {
   }
 }
 
+// 文の番号（問題の「第N文」の目印）。押せる文の中に置き、文の書き出しの左上に重ねて幅をとらない。
+// 行の幅をとると、行の頭から始まる文がどれも少し右へずれ、段落の第1文の字下げと見分けにくくなる。
+function SentenceNumber({ number }) {
+  return (
+    <span
+      className="pointer-events-none absolute -left-1 -top-1 select-none text-[10px] font-black leading-none text-ink/30"
+      aria-hidden="true"
+      data-sentence-number
+    >
+      {number}
+    </span>
+  )
+}
+
 function StepTitle({ step, children }) {
   return (
     <h2 className="flex items-center gap-2 px-1 font-display text-base font-extrabold text-ink">
@@ -338,8 +352,8 @@ function BasicReadingLesson({ passageId }) {
                           className={sentenceIndex === 0 ? 'indent-[1.5em]' : undefined}
                           data-reading-paragraph-first={sentenceIndex === 0 ? '' : undefined}
                         >
-                          <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                          <SentenceTap onOpen={() => openSentence(index)} data-basic-reading-sentence={index + 1}>
+                          <SentenceTap onOpen={() => openSentence(index)} className="relative" data-basic-reading-sentence={index + 1}>
+                            <SentenceNumber number={index + 1} />
                             {item.en}
                           </SentenceTap>
                         </p>
@@ -356,8 +370,8 @@ function BasicReadingLesson({ passageId }) {
                   <p className="indent-[1.5em]" data-reading-paragraph-first>
                     {paragraph.map(({ item, index }) => (
                       <span key={index}>
-                        <span className="mr-0.5 align-super text-[10px] font-black text-ink/30">{index + 1}</span>
-                        <SentenceTap onOpen={() => openSentence(index)} data-basic-reading-sentence={index + 1}>
+                        <SentenceTap onOpen={() => openSentence(index)} className="relative" data-basic-reading-sentence={index + 1}>
+                          <SentenceNumber number={index + 1} />
                           {item.en}
                         </SentenceTap>{' '}
                       </span>

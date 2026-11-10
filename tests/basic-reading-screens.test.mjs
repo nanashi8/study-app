@@ -25,6 +25,20 @@ import { analyzeBasicReadingSentence } from '../src/lib/basicReadingSentence.js'
 import { contentQuizKey } from '../src/lib/contentProgress.js'
 import { limitQuizChoices } from '../src/lib/quizChoices.js'
 
+// 本文の1文を、1行目の真ん中を押して開く。文は行をまたいで流れるので、文の箱全体の真ん中は
+// 隣の文の上に当たることがある（人は文の語そのものを押す）。
+async function tapSentence(target) {
+  const locator = typeof target === 'string' ? (() => page)().locator(target).first() : target
+  await locator.scrollIntoViewIfNeeded()
+  const position = await locator.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    const first = element.getClientRects()[0]
+    return { x: first.left - box.left + first.width / 2, y: first.top - box.top + first.height / 2 }
+  })
+  await locator.click({ position })
+}
+
+
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const WIDTH = 375
 const HEIGHT = 740
@@ -223,7 +237,7 @@ test('全611文で、文を押すと一文の構文解説（文の要素・語�
   let opened = 0
   for (const passage of BASIC_READING_PASSAGES) {
     await open('basicReadingLesson', { passageId: passage.id })
-    await page.click('[data-basic-reading-sentence="1"]')
+    await tapSentence('[data-basic-reading-sentence="1"]')
     for (const [index, sentence] of passage.sentences.entries()) {
       const analysis = analyzeBasicReadingSentence(passage, index)
       await page.waitForFunction(([count, en]) => {
@@ -257,7 +271,7 @@ test('全611文で、文を押すと一文の構文解説（文の要素・語�
 test('一文の構文解説で単語を押すと、その語の意味が出る', async () => {
   const passage = BASIC_READING_PASSAGES.find((item) => item.id === 'br4_elephants')
   await open('basicReadingLesson', { passageId: passage.id })
-  await page.click('[data-basic-reading-sentence="1"]')
+  await tapSentence('[data-basic-reading-sentence="1"]')
   await page.waitForSelector('[data-reading-role-card="direct-labels"]')
   await page.locator('[data-reading-role-card="direct-labels"] button', { hasText: /^Elephants$/ }).first().click()
   await page.waitForFunction(() => document.body.innerText.includes('ゾウ'))

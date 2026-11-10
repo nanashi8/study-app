@@ -10,6 +10,20 @@ import assert from 'node:assert/strict'
 import { WORD_GRAMMAR_ROLES } from '../src/data/word-grammar-roles.js'
 import { startCustomCardBrowser } from './custom-cards-browser.mjs'
 
+// 本文の1文を、1行目の真ん中を押して開く。文は行をまたいで流れるので、文の箱全体の真ん中は
+// 隣の文の上に当たることがある（人は文の語そのものを押す）。
+async function tapSentence(target) {
+  const locator = typeof target === 'string' ? (() => ui.page)().locator(target).first() : target
+  await locator.scrollIntoViewIfNeeded()
+  const position = await locator.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    const first = element.getClientRects()[0]
+    return { x: first.left - box.left + first.width / 2, y: first.top - box.top + first.height / 2 }
+  })
+  await locator.click({ position })
+}
+
+
 const HEADWORDS = Object.keys(WORD_GRAMMAR_ROLES)
 let ui
 
@@ -114,7 +128,7 @@ test('参考書へのリンクを押すと単元のページが開き、戻る�
 test('長文と参考書の本文で語を押すと、関係詞の意味が働きつきで出る', async () => {
   // 長文：older people who knew … の who
   await ui.open('reader', { passageId: 'p_3_school_garden' })
-  await ui.page.locator('.study-app-content [data-reading-sentence-tap]', { hasText: 'older people who knew many useful farming tips' }).first().click()
+  await tapSentence(ui.page.locator('.study-app-content [data-reading-sentence-tap]', { hasText: 'older people who knew many useful farming tips' }).first())
   await ui.page.locator('[data-reading-role-sentence] button', { hasText: /^who$/u }).first().click()
   await ui.page.waitForFunction(() => document.body.innerText.includes('（関係代名詞）〜する(人)'))
   assert.ok((await ui.page.evaluate(() => document.body.innerText)).includes('（疑問詞）誰が・誰'))

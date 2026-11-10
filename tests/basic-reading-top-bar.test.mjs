@@ -15,6 +15,20 @@ import {
   basicReadingQuestionId,
 } from '../src/data/basic-reading/index.js'
 
+// 本文の1文を、1行目の真ん中を押して開く。文は行をまたいで流れるので、文の箱全体の真ん中は
+// 隣の文の上に当たることがある（人は文の語そのものを押す）。
+async function tapSentence(target) {
+  const locator = typeof target === 'string' ? (() => page)().locator(target).first() : target
+  await locator.scrollIntoViewIfNeeded()
+  const position = await locator.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    const first = element.getClientRects()[0]
+    return { x: first.left - box.left + first.width / 2, y: first.top - box.top + first.height / 2 }
+  })
+  await locator.click({ position })
+}
+
+
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const WIDTH = 375
 const HEIGHT = 740
@@ -183,7 +197,7 @@ test('全50本で、スクロール・ルールの問題へ・答え合わせ・
 
     // 文は1つずつ押して開き（押す前に文が見える位置までスクロールする）、閉じてから次の文を押す。
     for (const index of passage.sentences.keys()) {
-      await page.click(`[data-basic-reading-sentence="${index + 1}"]`)
+      await tapSentence(`[data-basic-reading-sentence="${index + 1}"]`)
       await page.waitForSelector('[data-basic-reading-sentence-navigation]')
       await checkBar(`${id}の第${index + 1}文の解説`)
       await page.keyboard.press('Escape')
@@ -193,7 +207,7 @@ test('全50本で、スクロール・ルールの問題へ・答え合わせ・
     await checkBar(`${id}の解説を閉じたあと`, { lessonHeader: true })
 
     // 解説の中で前後の文へ移っても動かない。
-    await page.click('[data-basic-reading-sentence="1"]')
+    await tapSentence('[data-basic-reading-sentence="1"]')
     await page.locator('[data-basic-reading-sentence-navigation] button', { hasText: '次の文' }).click()
     await checkBar(`${id}の解説で次の文へ`)
     await page.keyboard.press('Escape')

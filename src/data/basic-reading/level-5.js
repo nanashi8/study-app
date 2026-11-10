@@ -31,13 +31,13 @@ export const BASIC_READING_LEVEL_5 = Object.freeze([
       {
         rule: 'svoc-core',
         sentences: [3],
-        how: '第4文は、He（S）＋teaches（V）＋English（O）の文です。at a high school は「どこで」を足す修飾語なので、最後に付け足して読みます。',
+        how: '第4文は、He（S）＋teaches（V）＋English（O）の文です。at a high school は「どこで」を足す修飾句なので、最後に付け足して読みます。',
         question: '第4文 He teaches English at a high school. で、O（目的語・「何を」）にあたる語はどれですか。',
         choices: [
           ['English', '「何を教えるか」に答える語で、teaches の目的語です。'],
           ['He', '「誰が」にあたる主語（S）です。'],
           ['teaches', '「どうする」にあたる動詞（V）です。'],
-          ['high school', 'at a high school は「どこで」を表す修飾語のかたまりで、目的語ではありません。'],
+          ['high school', 'at a high school は「どこで」を表す修飾句で、目的語ではありません。'],
         ],
         answer: 0,
       },

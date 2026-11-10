@@ -25,6 +25,7 @@
 //   | で区切って書く（区切りは表示の改行だけに使い、括弧・語の並び・役割には影響しない）。
 
 import { parseStructureMarkers } from './structure-markers.js'
+import { MODIFIER_NAMES } from './translation-roles.js'
 import {
   describeLinkElement,
   describeUnitConnector,
@@ -70,6 +71,28 @@ const ROLE_NAMES = Object.freeze({
   仮O: '形式目的語（仮O）',
   真O: '真目的語（真O）',
 })
+
+// M（修飾する要素）の大きさ。呼び名（修飾語・修飾句・修飾節）は translation-roles.js の MODIFIER_NAMES。
+// 句の中に節が入れ子になっていても（in the house which … ）、まとまり全体は句。
+function directClauseUnit(nodes) {
+  return nodes.some((child) => child.kind === 'unit' && (
+    CLAUSE_TYPES.has(child.base) ||
+    // {並列| A | and B} は、並んだもののどれかが節なら節。
+    (child.base === PARALLEL_UNIT && directClauseUnit(child.children))
+  ))
+}
+
+/** 文の要素の大きさ（'word'・'phrase'・'clause'）。 */
+export function structureElementSize(element) {
+  if (directClauseUnit(element.children ?? [])) return 'clause'
+  return structureWords(rawText(element.children ?? [])).length <= 1 ? 'word' : 'phrase'
+}
+
+// 説明の文に使う要素の名前。M は大きさで修飾語M・修飾句M・修飾節M と呼び分ける。
+function roleName(element) {
+  if (element?.role === 'M') return `${MODIFIER_NAMES[structureElementSize(element)]}M`
+  return ROLE_NAMES[element?.role] ?? element?.role
+}
 
 export const PATTERN_NAMES = Object.freeze({
   SV: '第1文型（SV）',
@@ -723,13 +746,13 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit, parent = co
   const preposition = prepositionBeforeUnit(parent, unit)
   if (preposition) {
     if (/^(?:rather than|than|as)$/i.test(preposition)) {
-      return `${inside}${preposition} の後ろに置かれた、比べる相手です（${ROLE_NAMES[container.role]}「${nodeText(container)}」の一部）。`
+      return `${inside}${preposition} の後ろに置かれた、比べる相手です（${roleName(container)}「${nodeText(container)}」の一部）。`
     }
     const containerText = nodeText(container)
     const startsWithPreposition = containerText.toLowerCase().startsWith(preposition.toLowerCase())
     return startsWithPreposition
-      ? `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${ROLE_NAMES[container.role]}）。`
-      : `${inside}前置詞 ${preposition} の目的語です（${ROLE_NAMES[container.role]}「${containerText}」の一部）。`
+      ? `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${roleName(container)}）。`
+      : `${inside}前置詞 ${preposition} の目的語です（${roleName(container)}「${containerText}」の一部）。`
   }
   switch (container.role) {
     case 'S':
@@ -752,14 +775,14 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit, parent = co
     case '真O':
       return `${inside}形式目的語 it が指す中身（真目的語）です。`
     default:
-      return `${inside}${ROLE_NAMES[container.role]}として働きます。`
+      return `${inside}${roleName(container)}として働きます。`
   }
 }
 
 function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = container) {
   const inside = scopeUnit ? `${structureUnitLabel(scopeUnit)}の中で、` : ''
   const containerText = container ? nodeText(container) : ''
-  const containerRole = container ? ROLE_NAMES[container.role] : ''
+  const containerRole = container ? roleName(container) : ''
   const partOf = container && !['M', '接'].includes(container.role) && containerText !== unitText(unit)
     ? `（${containerRole}「${containerText}」の一部）`
     : ''
@@ -844,11 +867,11 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
           : `${inside}be動詞のあとの補語Cになり、${kind}を表します。`
       }
       return scopeUnit
-        ? `${inside}${kind}を表す修飾語Mとして働きます。`
-        : `${kind}を表す修飾語Mとして働きます。`
+        ? `${inside}${kind}を表す修飾節Mとして働きます。`
+        : `${kind}を表す修飾節Mとして働きます。`
     }
     case '分詞構文':
-      return `${inside}${PARTICIPIAL_CONSTRUCTION_KINDS[unit.detail]}を表し、修飾語Mとして働きます。`
+      return `${inside}${PARTICIPIAL_CONSTRUCTION_KINDS[unit.detail]}を表し、修飾句Mとして働きます。`
     case '挿入':
       return `${inside}文の途中に補足を差し込みます。`
     case 'ing限定':
@@ -883,7 +906,7 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
         if (unit.adverbKind === '程度' && container && container.role !== 'M') {
           return `${inside}enough や too と組んで、どのくらいかという程度を表します${partOf}。${semanticSubject}`
         }
-        return `${inside}${kind}を表し、修飾語Mとして働きます。${semanticSubject}`
+        return `${inside}${kind}を表し、修飾句Mとして働きます。${semanticSubject}`
       }
       if (unit.usage === '補語') {
         // depend on A to 〜 のように、前置詞の目的語 A が意味の上の主語になる形。
@@ -892,7 +915,7 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
           const preposition = words[0] ?? ''
           const noun = words.slice(1).join(' ')
           if (preposition && noun) {
-            return `${inside}前置詞 ${preposition} の目的語 ${noun} が何をするかを表します（修飾語M「${containerText}」の一部）。`
+            return `${inside}前置詞 ${preposition} の目的語 ${noun} が何をするかを表します（${roleName(container)}「${containerText}」の一部）。`
           }
         }
         const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
@@ -1762,6 +1785,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
       text: normalizeStructureText(rawText(element.children)),
       trimmed: nodeText(element),
       hasUnit: element.children.some((child) => child.kind === 'unit'),
+      size: structureElementSize(element),
       connector: chipByElement.get(element) ?? '',
     }))),
     // 「文の要素」の下線と英語順の役割に使う並び。主節の要素に、語り手が文の途中に差し込んだ文（挿入文）を
@@ -1775,6 +1799,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
             text: normalizeStructureText(rawText(node.children)),
             trimmed: nodeText(node),
             hasUnit: node.children.some((child) => child.kind === 'unit'),
+            size: structureElementSize(node),
             connector: chipByElement.get(node) ?? '',
           }
         : {
@@ -1801,6 +1826,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
         .map((element) => Object.freeze({
           role: element.role,
           text: nodeText(element),
+          size: structureElementSize(element),
           connector: chipByElement.get(element) ?? '',
         }))),
     }))),
@@ -1974,7 +2000,7 @@ function scopeDepthForWords(words) {
 }
 
 function partDescription(part, scopeInfo) {
-  const name = ROLE_NAMES[part.role] ?? part.role
+  const name = part.role === 'M' && part.size ? `${MODIFIER_NAMES[part.size]}M` : (ROLE_NAMES[part.role] ?? part.role)
   if (scopeInfo && !scopeInfo.parts.length) {
     if (scopeInfo.base === '同格') {
       return `${part.text} は ${scopeInfo.antecedent} を言いかえる同格の語句で、${name}の一部`
@@ -2005,7 +2031,9 @@ function describeParts(parts, scopeInfo) {
         verbs.push(parts[cursor + 2].text)
         cursor += 2
       }
-      pieces.push(`${verbs.join(' … ')} が動詞V（間の ${modifiers.join(' と ')} は修飾語M）`)
+      // 間の語句は、1語なら修飾語M、2語以上なら修飾句M。
+      const modifierNames = [...new Set(modifiers.map((text) => (structureWords(text).length > 1 ? '修飾句M' : '修飾語M')))]
+      pieces.push(`${verbs.join(' … ')} が動詞V（間の ${modifiers.join(' と ')} は${modifierNames.join('・')}）`)
       index = cursor
       continue
     }
@@ -2058,6 +2086,8 @@ export function structureRolesForWordSpan(structure, start, end) {
       displayRole: STRUCTURE_DISPLAY_ROLE[part.role],
       text: part.text || part.words.join(' '),
       elementText,
+      // M の名前（修飾語・修飾句・修飾節）は、部分ではなく要素全体の大きさで決める。
+      size: part.element ? structureElementSize(part.element) : null,
       coversElement: Boolean(covers),
       startsElement: Boolean(startsElement),
     })

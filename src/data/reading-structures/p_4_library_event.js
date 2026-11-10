@@ -18,7 +18,7 @@ export default Object.freeze([
   }),
   st('[M This month], [S the topic] [V is] [C local history].', {
     notes: {
-      'This month': '前置詞を付けずに「いつ」を表す修飾語で、主語ではありません。',
+      'This month': '前置詞を付けずに「いつ」を表す修飾句で、主語ではありません。',
     },
   }),
   st('[S Ms. Brown, {同格>Ms. Brown| one {前| of the librarians}},] [V will show] [O old pictures {前| of the town}].'),

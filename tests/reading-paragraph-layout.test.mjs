@@ -2,6 +2,8 @@
 // 375px の Chromium で、基礎長文50本と長文読解42本（通常38本・語彙強化4本の全節）を和訳OFF・ONの両方で開き、次を確かめる。
 //   OFF … 段落の中の文は改行されずに続けて流れ（文の箱がすべて inline）、段落の間は文の行よりはっきり空き、段落の第1文が字下げされる。
 //   ON  … 英文と和訳の組を一文ごとに並べたまま、段落の間が段落の中の組の間よりはっきり空き、段落の第1文の英文が字下げされる。
+// 字下げは画面に出た英文の1文字目の位置で測る。段落の第1行だけが行頭から20px以上右にあり、ほかの行は行頭（4px以内）から始まる
+// （2026-10-29、文の番号が行の幅をとり、行頭から始まる文がどれも少し右へずれて字下げが見分けにくかったのを止める）。
 import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import net from 'node:net'
@@ -18,8 +20,8 @@ const HEIGHT = 740
 // 段落の間の空白の下限と、ONで段落の中の組の間の空白との差の下限（px）。
 const PARAGRAPH_GAP = 28
 const GAP_MARGIN = 12
-// 字下げの下限（px）。
-const INDENT = 12
+// 字下げの下限（px）。画面に出た1文字目が、行頭からこれだけ右にあること。
+const INDENT = 20
 
 let vite
 let browser
@@ -68,6 +70,39 @@ const groupSizes = (sentences) => {
 async function measure(where, expectedSizes, showJa) {
   const found = await page.evaluate(([label, sizes, ja, gapMin, margin, indentMin]) => {
     const out = []
+    // 画面に出た英文の行ごとの書き出しの位置（文の番号など aria-hidden の字は数えない）。
+    const lineStarts = (element) => {
+      const lines = []
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT)
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (!node.textContent.trim() || node.parentElement.closest('[aria-hidden="true"]')) continue
+        // 押せる文のある本文は、文の字だけを測る（文の番号は文の外にあっても数えない）。
+        if (element.querySelector('[data-reading-sentence-tap]') && !node.parentElement.closest('[data-reading-sentence-tap]')) continue
+        const range = document.createRange()
+        range.selectNodeContents(node)
+        for (const rect of range.getClientRects()) {
+          if (!rect.width) continue
+          const line = lines.find((item) => Math.abs(item.top - rect.top) < 8)
+          if (line) line.left = Math.min(line.left, rect.left)
+          else lines.push({ top: rect.top, left: rect.left })
+        }
+      }
+      return lines.sort((a, b) => a.top - b.top)
+    }
+    const contentLeft = (element) => element.getBoundingClientRect().left + parseFloat(getComputedStyle(element).paddingLeft)
+    // 第1行だけが字下げされ、ほかの行は行頭から始まる（文の番号などで少しずつずれていない）。
+    const checkLines = (element, indented, name) => {
+      const base = contentLeft(element)
+      const lines = lineStarts(element)
+      lines.forEach((line, lineIndex) => {
+        const offset = line.left - base
+        if (indented && lineIndex === 0) {
+          if (offset < indentMin) out.push(`${name}: 第1文の書き出しが${Math.round(offset)}pxしか字下げされて見えない`)
+        } else if (offset > 4) {
+          out.push(`${name} ${lineIndex + 1}行目: 書き出しが行頭から${Math.round(offset)}px ずれ、字下げと見分けにくい`)
+        }
+      })
+    }
     const paragraphs = [...document.querySelectorAll('[data-reading-paragraph]')]
     if (paragraphs.length !== sizes.length) return [`${label}: 段落が${paragraphs.length}個（本文は${sizes.length}段落）`]
     const pairGaps = []
@@ -76,6 +111,13 @@ async function measure(where, expectedSizes, showJa) {
       if (firsts.length !== 1) out.push(`${label} 第${index + 1}段落: 字下げする所が${firsts.length}か所`)
       const first = firsts[0]
       if (first && parseFloat(getComputedStyle(first).textIndent) < indentMin) out.push(`${label} 第${index + 1}段落: 第1文が字下げされていない`)
+      if (ja) {
+        paragraph.querySelectorAll('[data-sentence-translation-pair] > p:first-child').forEach((english, pairIndex) => {
+          checkLines(english, pairIndex === 0, `${label} 第${index + 1}段落 第${pairIndex + 1}文`)
+        })
+      } else if (first) {
+        checkLines(first, true, `${label} 第${index + 1}段落`)
+      }
       if (ja) {
         const pairs = [...paragraph.querySelectorAll('[data-sentence-translation-pair]')]
         if (pairs.length !== sizes[index]) out.push(`${label} 第${index + 1}段落: 組が${pairs.length}（文は${sizes[index]}）`)

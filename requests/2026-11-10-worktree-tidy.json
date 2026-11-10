@@ -1,0 +1,47 @@
+{
+  "id": "2026-11-10-worktree-tidy",
+  "title": "公開版から31コミット遅れ、未コミットの変更が118件残った作業ツリーを整理する",
+  "asked": [
+    "study-appの修正時の監査等のフローに問題や負担がないか確認しなさい。",
+    "作業ツリーを整理"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-10 の調べ：手元の main は 616aee0c で origin/main（2f452401）より31コミット古い。未コミット118件（変更94・削除2・未追跡22）。中身のあるファイルのうち、公開版と同じ70件、過去の版と同じ（古い写し）23件、どの版とも違う25件。25件のうち22件は 10-29 の2依頼（修飾語・修飾句・修飾節の呼び分け／段落の字下げ）の未公開の作業で、公開側はこの22件に触れていない。残り3件（tests/learner-japanese-audit.test.mjs・docs/audits/learner-japanese-review.json・tests/word-relations.test.mjs）は公開版より古い途中の版。",
+  "criteria": [
+    {
+      "id": "backup-before-tidy",
+      "text": "整理の前に、作業ツリーの中身すべて（変更・削除・未追跡）を控えの ref（refs/backup/2026-11-10/worktree-before-tidy）に取る。push しない",
+      "population": "未コミットの118件すべて（変更94・削除2・未追跡22）",
+      "check": "git cat-file -e refs/backup/2026-11-10/worktree-before-tidy^{commit}",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 一時の index に git add -A して作った木を 00fd2fbf として refs/backup/2026-11-10/worktree-before-tidy に置いた（119件＝未コミット118件とこの台帳）。控えと作業ツリーの差は0件。push していない。"
+    },
+    {
+      "id": "main-at-published",
+      "text": "手元の main を公開版（origin/main）まで進める。公開版と同じ中身・過去の版と同じ中身のファイルは公開版の中身にする",
+      "population": "公開版と同じ70件・古い写し23件・途中の版3件と、遅れていた31コミット",
+      "check": "git fetch -q origin main && git merge-base --is-ancestor origin/main HEAD",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 未公開の作業22件とこの台帳を除く96件（追跡77件を HEAD へ戻し、公開版にある未追跡19件を消した。公開版にない未追跡は0件）を片付け、git merge --ff-only origin/main で 616aee0c から 2f452401 へ31コミット進めた。"
+    },
+    {
+      "id": "unpublished-work-kept",
+      "text": "未公開の作業（10-29 の2依頼の22件）を捨てずに、新しい版の上に載せる。途中の版3件に入っていたこの作業の分（学習者向け日本語の固定値・漢字語の台帳の「修飾節」）も新しい版に合わせて入れ直す",
+      "population": "どの公開版とも違う25件（22件の未公開の作業＋途中の版3件のうちこの作業の分）",
+      "check": "node --test tests/modifier-word-phrase-clause.test.mjs tests/reading-paragraph-layout.test.mjs tests/learner-japanese-audit.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-10: 22件（追跡19件・未追跡3件）はそのまま公開版 2f452401 の上に残った（公開側はこの22件に触れていなかった）。途中の版3件は公開版の中身に戻し、この作業の分だけ入れ直した：tests/learner-japanese-audit.test.mjs の固定値3つ（18605→18611・13829→13833・288935→288941）と docs/audits/learner-japanese-review.json の「修飾節」。tests/word-relations.test.mjs は公開版のほうが新しく、この作業の分はなかった。作業ツリーの npm run audit:all-content は、全テスト261本が通ったあと、check:content の audit:secrets が git の管理外の下書き（drafts.local の3ファイル・9か所の利用者のパス）で止まった。残りの監査はクリーンな clone で確かめる。"
+    },
+    {
+      "id": "nothing-left-uncommitted",
+      "text": "未公開の作業を npm run audit:all-content とクリーンな clone で確かめて main へ push し、作業ツリーに未コミットの変更を残さない。検証用の clone は消す",
+      "population": "作業ツリーの全ファイル（git status の全行）",
+      "check": "test -z \"$(git status --porcelain)\" && git fetch -q origin main && test \"$(git rev-parse HEAD)\" = \"$(git rev-parse origin/main)\"",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開版の確認"
+    }
+  ]
+}

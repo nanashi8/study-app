@@ -1,0 +1,31 @@
+{
+  "id": "2026-10-29-paragraph-indent-fix",
+  "title": "基礎長文の My Family などで段落の第1文が字下げされて見えない所を直し、ほかの長文もすべて確かめる",
+  "asked": [
+    "基礎長文のMy Familyの第一文とかパラグラフの字下げがないのではないか？適切に修正しなさい。",
+    "その他の長文もすべて確認しなさい。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1",
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "indent-visible-every-paragraph",
+      "text": "段落の第1文の書き出しが、段落の2行目以降の行頭や、ほかの段落の続きの行より、目で見て分かるだけ右から始まる（字下げが見える）。本文の第1文（第1段落）も同じ。和訳OFF・ONの両方。測るのは字下げの設定値ではなく、画面に出た英文の1文字目の位置",
+      "population": "基礎長文の全50本の全段落（全611文）と、長文（長文読解）の全42本（通常の長文38本・語彙強化ロングリーディング4本の全節）の全段落。和訳OFF・ONの両方",
+      "check": "node --test tests/reading-paragraph-layout.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-29: 原因は基礎長文の文の番号（上付きの小さな数字）が行の幅をとっていたこと。行頭から始まる文がどれも11pxずつ右へずれ、段落の第1文の字下げ（28.5px）と見分けにくかった（My Family の第1段落では5行目・和訳ONの第2文以降の行頭が11pxずれていた）。番号を押せる文の中に入れ、文の書き出しの左上に重ねて幅をとらないようにした。tests/reading-paragraph-layout.test.mjs に、画面に出た英文の1文字目の位置を行ごとに測る検査を足し（段落の第1行だけが行頭から20px以上右、ほかの行は4px以内）、直す前のコードで My Family が落ちることを確かめたうえで、基礎長文の全50本（611文）と長文の全42本（通常38本・語彙強化4本の全節）の全段落が和訳OFF・ONの両方で通ることを確かめた。長文（長文読解）には文の番号がなく、もともと字下げは見えていた。 文の押せる範囲も、行間の広い本文で行と行の間を押しても文に当たるよう上下に広げた（基礎長文3本の全文で、どの行の真ん中を押しても文に当たることを確かめた）。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文 My Family と、ほかの長文で、段落の第1文の字下げが見えることを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の基礎長文・長文の本文",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-paragraph-layout.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 bd2t8u5ek）の終了"
+    }
+  ]
+}

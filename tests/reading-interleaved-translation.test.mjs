@@ -11,6 +11,20 @@ import { chromium } from 'playwright'
 import { BASIC_READING_PASSAGES } from '../src/data/basic-reading/index.js'
 import { ALL_PASSAGES } from '../src/data/passages.js'
 
+// 本文の1文を、1行目の真ん中を押して開く。文は行をまたいで流れるので、文の箱全体の真ん中は
+// 隣の文の上に当たることがある（人は文の語そのものを押す）。
+async function tapSentence(target) {
+  const locator = typeof target === 'string' ? (() => page)().locator(target).first() : target
+  await locator.scrollIntoViewIfNeeded()
+  const position = await locator.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    const first = element.getClientRects()[0]
+    return { x: first.left - box.left + first.width / 2, y: first.top - box.top + first.height / 2 }
+  })
+  await locator.click({ position })
+}
+
+
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const WIDTH = 375
 const HEIGHT = 740
@@ -146,7 +160,7 @@ test('基礎長文50本の全611文：和訳ONで英文と和訳が一文ごと�
     await checkWidth(`${passage.id}の和訳ON`)
   }
   assert.equal(checked, 611)
-  await page.click('[data-basic-reading-sentence="2"]')
+  await tapSentence('[data-basic-reading-sentence="2"]')
   await page.waitForSelector('[data-reading-role-card="direct-labels"]')
   await open('basicReadingLesson', { passageId: BASIC_READING_PASSAGES[0].id, showJa: false })
   assert.equal((await pairs()).length, 0, '和訳OFFでは英文だけ')
@@ -189,7 +203,7 @@ test('長文読解42本の全文：和訳ONで英文と和訳が一文ごとに�
   assert.equal(checked, total)
   // 通常の長文は、交互に並べた英文を押すと一文の構文解説が開く。和訳OFFでは英文だけ。
   await open('reader', { passageId: ALL_PASSAGES[0].id, showJa: true })
-  await page.locator('[data-sentence-translation-pair] [data-reading-sentence-tap]').first().click()
+  await tapSentence('[data-sentence-translation-pair] [data-reading-sentence-tap]')
   await page.waitForSelector('[data-reading-role-card="direct-labels"]')
   await open('reader', { passageId: ALL_PASSAGES[0].id, showJa: false })
   assert.equal((await pairs()).length, 0, '和訳OFFでは英文だけ')

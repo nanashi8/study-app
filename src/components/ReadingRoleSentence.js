@@ -194,7 +194,8 @@ function roleColumn(segment, text, {
   showLabel,
   align,
 }) {
-  const meta = translationRoleMeta(segment.role)
+  // M の札は、その要素の大きさで修飾語・修飾句・修飾節と呼び分ける。
+  const meta = translationRoleMeta(segment.role, parts[segment.index]?.size)
   // 接続詞・関係代名詞・同格の that など、つなぐ語の種類を役割の下に並べる。
   const connector = parts[segment.index]?.connector ?? ''
   // 接続語は、種類（接続詞・等位接続詞・接続副詞など）が分かるときは種類だけを出し、「接続 接続詞」と重ねない。

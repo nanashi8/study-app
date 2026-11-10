@@ -40,7 +40,7 @@ function SvocFlow({ parts }) {
   return (
     <ol className="space-y-1.5" aria-label="SVOCMを英語順に読む型">
       {parts.map((part, index) => {
-        const meta = translationRoleMeta(part.role)
+        const meta = translationRoleMeta(part.role, part.size)
         return (
           <li
             key={`${part.role}-${index}`}
@@ -85,6 +85,7 @@ function structureDisplayParts(parts = []) {
   return parts.map((part) => ({
     role: STRUCTURE_DISPLAY_ROLE[part.role] ?? part.role,
     text: part.text,
+    size: part.size ?? null,
     connector: part.connector ?? '',
   }))
 }
@@ -323,6 +324,7 @@ export function ReadingSentenceDetail({
                   ? structure.displayElements.map((element) => ({
                     role: element.displayRole,
                     text: element.trimmed,
+                    size: element.size,
                   }))
                   : sentenceFlowParts(sentenceAnalysis)} />
               </div>

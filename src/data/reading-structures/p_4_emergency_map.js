@@ -101,7 +101,7 @@ export default Object.freeze([
       ['larger letters and simple pictures', 'もっと大きな文字と簡単な絵を'],
     ],
     notes: {
-      'They also asked for': 'ask for 〜 で「〜を求める」。for 以下は修飾語Mなので、この文は第1文型です。',
+      'They also asked for': 'ask for 〜 で「〜を求める」。for 以下は修飾句Mなので、この文は第1文型です。',
     },
   }),
   st('[S Families] [V suggested] [O {動名詞| [V marking] [O places {関係>places| [M where] [S people] [V could wait] [M safely] [M {副詞節:条件| [接 if] [S the rain] [V grew] [C stronger]}]}]}].', {

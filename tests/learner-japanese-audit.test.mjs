@@ -195,7 +195,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-09、カタカナ語のヒントに「使う場面：」の行を足して（requests/2026-11-09-loanword-scenes.json）、18631 から 18632 になった。
   // 2026-11-10、暗記カードと辞書ページ・熟語の詳細で別々に書いていたカードの文を共通の部品1つにまとめ、
   // 辞書ページの分野の欄に見出し「分野」を足して 18605 になった（requests/2026-11-10-detail-uses-study-card.json）。
-  assert.equal(result.learnerJapaneseEntries, 18605)
+  // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
+  // 学習者画面の日本語が 18605 から 18611 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
+  assert.equal(result.learnerJapaneseEntries, 18611)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
@@ -204,7 +206,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-04、出典のページ（src/screens/Credits.jsx・src/data/credits.js）を消して（利用者の指示「出典の表示を削除しなさい」）、重複なしが 13834 から 13830 になった。
   // 2026-11-09、カタカナ語のヒントの「使う場面：」で、重複なしが 13830 から 13831 になった（requests/2026-11-09-loanword-scenes.json）。
   // 2026-11-10、英和辞書の熟語の行をその場で開く詳細（使い方メモ・★ 単語帳から外す など）をやめ、暗記と同じカードを開く形にして 13829 になった。
-  assert.equal(result.learnerUniqueJapaneseEntries, 13829)
+  // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
+  // 重複なしが 13829 から 13833 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
+  assert.equal(result.learnerUniqueJapaneseEntries, 13833)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -241,7 +245,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-09、カタカナだけだった 2,392語に使う場面（scene）を書き、spur を注意書きにして、286567 から 288960 になった
   // （requests/2026-11-09-loanword-scenes.json）。spur の注意書きに出る spar・spurt の意味2つで 288962。
   // 2026-11-10、暗記と辞書・一覧の詳細で別々に書いていた英単語・熟語のカードを共通の部品にまとめ、辞書ページの分野の見出しを足して 288935 になった。
-  assert.equal(result.sourceJapaneseEntries, 288935)
+  // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
+  // ソース全体の日本語が 288935 から 288941 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
+  assert.equal(result.sourceJapaneseEntries, 288941)
   assert.equal(result.issues.length, 0)
 })
 

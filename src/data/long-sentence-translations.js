@@ -599,7 +599,7 @@ const RAW_LONG_SENTENCE_TRANSLATIONS = Object.freeze({
     step('S', 'My mother', '私の母は', '文全体の主語です。'),
     step('V', 'had been cooking', 'ずっと料理していました（対象は次へ）', '過去完了進行形 had been＋ing で、過去のある時点まで継続していた動作を表します。'),
     step('O', 'dinner', '夕食を', 'cooking の対象です。'),
-    step('M', 'for over an hour', '1時間以上', '継続した時間の長さを表す修飾語です。'),
+    step('M', 'for over an hour', '1時間以上', '継続した時間の長さを表す修飾句です。'),
     step('M', 'when the guests arrived early.', '客たちが早く到着したとき', '動作が続いていた基準となる過去の時点を示す時の副詞節です。'),
   ),
 })

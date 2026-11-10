@@ -1,0 +1,30 @@
+{
+  "id": "2026-10-29-modifier-word-phrase-clause",
+  "title": "一文の構文解説で、M を「修飾語（1語）・修飾句（2語以上で主語と動詞の組がない）・修飾節（主語と動詞の組がある）」に使い分けて表示する",
+  "asked": [
+    "一文の構文解説のMの修飾語と修飾句等を使い分けて表示しなさい。Mが1語なら修飾語で、Mが2語以上なら修飾句とかになるのではないか。"
+  ],
+  "sessions": [
+    "104af697-4c42-4c15-b776-a37a8a3122d1",
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "m-label-by-size",
+      "text": "一文の構文解説で M と示す要素の名前を、その要素の語数と形で使い分ける：1語なら「修飾語」、2語以上で主語と動詞の組を持たないまとまり（前置詞のまとまり・to不定詞・分詞のまとまりなど）なら「修飾句」、主語と動詞の組を持つまとまり（副詞節・関係詞節など）なら「修飾節」。文の要素の札・役割の説明の文（「〜として働きます」など）の両方で同じ名前にする",
+      "population": "一文の構文解説を出す全文（基礎長文の全611文、長文の全42本の全文、名作の英語の構造台帳の全文）の、M の要素すべて",
+      "check": "node --test tests/modifier-word-phrase-clause.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-10-29: 要素の大きさを構造台帳から決める structureElementSize（節のまとまりを要素が直接持てば節、句の中に入れ子の節は句のまま、2語以上は句、1語は語）を足し、文の要素の札・英語順の型・節や句の中の要素の札（translationRoleMeta）と、説明の文（「時を表す修飾節Mとして働きます」「目的を表し、修飾句Mとして働きます」「（修飾句M「…」の一部）」「間の … は修飾語M」、関係詞の「前置詞＋関係代名詞 … 修飾句M」）を呼び分けた。手で書いた解説の8か所（This month・for 以下・at a high school ×2・for over an hour・場所を表す修飾節・読解ルールの2か所）も直した。tests/modifier-word-phrase-clause.test.mjs で、一文の構文解説をそのまま描き、基礎長文611文（修飾語299・修飾句589・修飾節76）・長文1,518文（修飾語1,076・修飾句1,351・修飾節342）・名作の英語624文（修飾語517・修飾句999・修飾節172）のすべての M の札・説明の文が、画面の語の数と括弧に合うことを確かめた（括弧だけで決まらない形は、構造台帳の形で決める決まりを別のテストで確かめた）。"
+    },
+    {
+      "id": "all-content-audit-and-deploy",
+      "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の一文の構文解説で、修飾語・修飾句・修飾節の使い分けを確かめる。検証用の clone は消す",
+      "population": "全テスト・全監査と公開版の一文の構文解説",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/modifier-word-phrase-clause.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 bd2t8u5ek）の終了"
+    }
+  ]
+}

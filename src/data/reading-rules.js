@@ -137,10 +137,10 @@ export const READING_RULES = freeze([
     'S・V・O・Cで文の中心をつかむ',
     '「誰が（S）」「どうする（V）」「何を（O）」「どんな状態に（C）」の順に、文の中心になる語を当てはめる。',
     '名詞＋動詞、be動詞、make・call・findなど',
-    ['最初に、SとVを決める', 'Vの後ろが目的語（O）か補語（C）かを見分ける', '修飾語は、最後に付け足す'],
+    ['最初に、SとVを決める', 'Vの後ろが目的語（O）か補語（C）かを見分ける', '修飾語・修飾句・修飾節（M）は、最後に付け足す'],
     'The experiment made the rule clearer.',
     'その実験は、規則をより明確にした。',
-    'すべての語をS・V・O・Cに当てはめようとしない。前置詞句や副詞は、修飾語として外に置く。',
+    'すべての語をS・V・O・Cに当てはめようとしない。前置詞句や副詞は、修飾句・修飾語（M）として外に置く。',
     { diagram: { type: 'roles', nodes: ['S：The experiment', 'V：made', 'O：the rule', 'C：clearer'] } },
   ),
   makeRule(

@@ -87,8 +87,18 @@ export const TRANSLATION_ROLE_META = Object.freeze({
   }),
 })
 
-export function translationRoleMeta(role) {
-  return TRANSLATION_ROLE_META[role] ?? TRANSLATION_ROLE_META.M
+// M（修飾する要素）は大きさで呼び分ける：1語は修飾語、2語以上で主語と動詞の組がないまとまりは修飾句、
+// 主語と動詞の組があるまとまりは修飾節。大きさ（'word'・'phrase'・'clause'）は構造台帳から決める。
+export const MODIFIER_NAMES = Object.freeze({
+  word: '修飾語',
+  phrase: '修飾句',
+  clause: '修飾節',
+})
+
+export function translationRoleMeta(role, size = null) {
+  const meta = TRANSLATION_ROLE_META[role] ?? TRANSLATION_ROLE_META.M
+  if (meta.code !== 'M' || !MODIFIER_NAMES[size]) return meta
+  return { ...meta, label: MODIFIER_NAMES[size] }
 }
 
 export function translationRoleHeading(roles, scope = '') {

@@ -65,6 +65,12 @@ const ROLE_IN_CLAUSE = Object.freeze({
   M: '修飾語M',
 })
 
+// 関係詞のまとまりの先頭（whose ＋名詞など）が節の中で何になるか。M は1語なら修飾語M、2語以上なら修飾句M。
+function roleInClause(lead) {
+  if (lead?.role === 'M' && plain(lead).split(/\s+/).filter(Boolean).length > 1) return '修飾句M'
+  return ROLE_IN_CLAUSE[lead?.role] ?? '主語S'
+}
+
 // 文の途中へ先行詞を戻すときは、文頭で大文字になっていた冠詞などを小文字へ戻す。
 const SENTENCE_HEAD_WORDS = new Set([
   'A', 'An', 'The', 'This', 'That', 'These', 'Those', 'Some', 'Every', 'No', 'Each', 'Any', 'One',
@@ -277,7 +283,7 @@ function relativeExplanation(unit) {
       word: leadText,
       chip: '関係代名詞',
       kind: '前の節の内容を受ける関係代名詞',
-      explanation: `コンマの後ろの ${leadText} は、前の節の内容全体を受ける関係代名詞です。節の中で${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}になり、「そしてそのことが〜」と前から順に読みます。`,
+      explanation: `コンマの後ろの ${leadText} は、前の節の内容全体を受ける関係代名詞です。節の中で${roleInClause(lead)}になり、「そしてそのことが〜」と前から順に読みます。`,
     }
   }
   if (/^(?:where|when|why)$/.test(leadLower)) {
@@ -305,7 +311,7 @@ function relativeExplanation(unit) {
       word: leadText,
       chip: '前置詞＋関係代名詞',
       kind: '前置詞＋関係代名詞',
-      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${lowerAntecedent(antecedent, unit.antecedentAtSentenceStart)}」の意味で節の中の修飾語Mになります。${rest}`,
+      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${lowerAntecedent(antecedent, unit.antecedentAtSentenceStart)}」の意味で節の中の修飾句Mになります。${rest}`,
     }
   }
   if (leadLower.startsWith('whose ')) {
@@ -314,7 +320,7 @@ function relativeExplanation(unit) {
       word: 'whose',
       chip: '関係代名詞',
       kind: '関係代名詞（所有格）',
-      explanation: `whose は所有格の関係代名詞です。直前の ${antecedent}（先行詞）を受けて、whose ${noun} で「${antecedent} の ${noun}」を表します。後ろに冠詞のない名詞 ${noun} が続く点で見分けます。節の中では whose ${noun} が${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}です。`,
+      explanation: `whose は所有格の関係代名詞です。直前の ${antecedent}（先行詞）を受けて、whose ${noun} で「${antecedent} の ${noun}」を表します。後ろに冠詞のない名詞 ${noun} が続く点で見分けます。節の中では whose ${noun} が${roleInClause(lead)}です。`,
     }
   }
   const use = RELATIVE_PRONOUN_USE[leadLower] ?? `${leadText} は`
@@ -701,14 +707,14 @@ function nounClauseExplanation(unit) {
           word: leadText,
           chip: '複合関係代名詞',
           kind: `複合関係代名詞 ${leadText.toLowerCase()}`,
-          explanation: `${leadText} は「${compound}」という名詞のまとまりを作る複合関係代名詞です。前に先行詞がなく、節の中で${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}になっています。`,
+          explanation: `${leadText} は「${compound}」という名詞のまとまりを作る複合関係代名詞です。前に先行詞がなく、節の中で${roleInClause(lead)}になっています。`,
         }
       }
       return {
         word: leadText,
         chip: '関係代名詞 what',
         kind: '関係代名詞 what',
-        explanation: `${leadText} は先行詞を中に含む関係代名詞で、「〜すること・〜するもの」という名詞のまとまりを作ります。前に先行詞がなく、節の中で${ROLE_IN_CLAUSE[lead?.role] ?? '主語S'}になっています。`,
+        explanation: `${leadText} は先行詞を中に含む関係代名詞で、「〜すること・〜するもの」という名詞のまとまりを作ります。前に先行詞がなく、節の中で${roleInClause(lead)}になっています。`,
       }
     }
     case '強調':
