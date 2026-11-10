@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-10T05:14:19.728Z",
+  "auditedAt": "2026-11-10T21:35:03.067Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 24414,
     "storedAndGeneratedQuestionPathCount": 11199,
     "storedAndGeneratedChoicePathCount": 43477,
-    "overallContentSha256": "b3ac5b981db6010f578340d2c656bf834d728330187bff02006e3661668c901b"
+    "overallContentSha256": "ddffdd70c9e6d44aa3da1c8651c2fdb84a5bc21f0fc38c76831b4ef5d9e5ce4b"
   },
   "completionCriteria": [
     "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "0e17b2636b86649da91454cae0099d56fe33f17e6566d9797dd223ef626aedf0",
+    "sha256": "022f73c5b82fb78b62e0b6f82c23d9d563c391de09fed6a43b2ff65ce9014227",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -336,6 +336,7 @@
       "tests/meaning-pos-marks.test.mjs",
       "tests/meaning-readable.test.mjs",
       "tests/meaning-readings.test.mjs",
+      "tests/modifier-word-phrase-clause.test.mjs",
       "tests/no-background-music.test.mjs",
       "tests/no-credits-page.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
@@ -617,7 +618,7 @@
       "quizItemCount": 150,
       "learningIdOrderSha256": "a23b635e58417276ffc536d0098b73135e34dd5bef19042e5496eedc8a75d58a",
       "quizIdOrderSha256": "c9f34a4224b78c40809acf8548dd9bfa3e6f05970f0d01f19bc5dea3d10633be",
-      "contentSha256": "92e02f8eb79ac2a7d6d98644fcc05fc25d3ad45b9f4aa8eeb82403a51ed230e2",
+      "contentSha256": "5b2edc5ff749dfb6dbb8fdbeb0deaa7c348dacb2c82e103089a5a567d9ac27de",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -15,9 +15,9 @@
       "id": "backup-before-tidy",
       "text": "整理の前に、作業ツリーの中身すべて（変更・削除・未追跡）を控えの ref（refs/backup/2026-11-10/worktree-before-tidy）に取る。push しない",
       "population": "未コミットの118件すべて（変更94・削除2・未追跡22）",
-      "check": "git cat-file -e refs/backup/2026-11-10/worktree-before-tidy^{commit}",
+      "check": "node --test tests/leftover-changes.test.mjs",
       "status": "done",
-      "verifiedBy": "2026-11-10: 一時の index に git add -A して作った木を 00fd2fbf として refs/backup/2026-11-10/worktree-before-tidy に置いた（119件＝未コミット118件とこの台帳）。控えと作業ツリーの差は0件。push していない。"
+      "verifiedBy": "2026-11-10: 一時の index に git add -A して作った木を 00fd2fbf として refs/backup/2026-11-10/worktree-before-tidy に置いた（119件＝未コミット118件とこの台帳）。控えと作業ツリーの差は0件。push していない。 控えの ref は手元のリポジトリだけにあり、検証用の clone にはないので、確認コマンドを ref の有無（git cat-file -e refs/backup/2026-11-10/worktree-before-tidy^{commit}。手元で通ることを確かめた）から、残った変更を洗い出す道具のテストに替えた。"
     },
     {
       "id": "main-at-published",
