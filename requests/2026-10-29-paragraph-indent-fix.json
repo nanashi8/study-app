@@ -9,7 +9,7 @@
     "104af697-4c42-4c15-b776-a37a8a3122d1",
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "indent-visible-every-paragraph",
@@ -24,8 +24,8 @@
       "text": "npm run audit:all-content をクリーンな clone で通して main へ push し、公開版の基礎長文 My Family と、ほかの長文で、段落の第1文の字下げが見えることを確かめる。検証用の clone は消す",
       "population": "全テスト・全監査と公開版の基礎長文・長文の本文",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/reading-paragraph-layout.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content（裏の処理 bd2t8u5ek）の終了"
+      "status": "done",
+      "verifiedBy": "2026-11-11: 公開版 2f452401 の上に載せ直し、クリーンな clone の npm run audit:all-content が通った（テスト261本・check:content・ビルド・台帳、326秒）。0c379bdc を main へ push し、GitHub Pages の公開（run 42906715139）が成功。公開版のスクリプトに変更が入っていることを確かめた（BasicReadingLesson の部品に文の番号の目印 data-sentence-number）。公開版の画面を開いての目視はしていない（画面の描画は check のテストが全文で確かめている）。検証用の clone は消した。"
     }
   ]
 }

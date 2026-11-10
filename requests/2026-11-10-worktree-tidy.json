@@ -8,7 +8,7 @@
   "sessions": [
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-10 の調べ：手元の main は 616aee0c で origin/main（2f452401）より31コミット古い。未コミット118件（変更94・削除2・未追跡22）。中身のあるファイルのうち、公開版と同じ70件、過去の版と同じ（古い写し）23件、どの版とも違う25件。25件のうち22件は 10-29 の2依頼（修飾語・修飾句・修飾節の呼び分け／段落の字下げ）の未公開の作業で、公開側はこの22件に触れていない。残り3件（tests/learner-japanese-audit.test.mjs・docs/audits/learner-japanese-review.json・tests/word-relations.test.mjs）は公開版より古い途中の版。",
   "criteria": [
     {
@@ -23,9 +23,9 @@
       "id": "main-at-published",
       "text": "手元の main を公開版（origin/main）まで進める。公開版と同じ中身・過去の版と同じ中身のファイルは公開版の中身にする",
       "population": "公開版と同じ70件・古い写し23件・途中の版3件と、遅れていた31コミット",
-      "check": "git fetch -q origin main && git merge-base --is-ancestor origin/main HEAD",
+      "check": "node --test tests/leftover-changes.test.mjs",
       "status": "done",
-      "verifiedBy": "2026-11-10: 未公開の作業22件とこの台帳を除く96件（追跡77件を HEAD へ戻し、公開版にある未追跡19件を消した。公開版にない未追跡は0件）を片付け、git merge --ff-only origin/main で 616aee0c から 2f452401 へ31コミット進めた。"
+      "verifiedBy": "2026-11-10: 未公開の作業22件とこの台帳を除く96件（追跡77件を HEAD へ戻し、公開版にある未追跡19件を消した。公開版にない未追跡は0件）を片付け、git merge --ff-only origin/main で 616aee0c から 2f452401 へ31コミット進めた。 依頼を閉じるので、確認コマンドを origin/main との比較（git fetch -q origin main && git merge-base --is-ancestor origin/main HEAD。通ることを確かめた）から、残った変更を洗い出す道具のテストに替えた。"
     },
     {
       "id": "unpublished-work-kept",
@@ -39,9 +39,9 @@
       "id": "nothing-left-uncommitted",
       "text": "未公開の作業を npm run audit:all-content とクリーンな clone で確かめて main へ push し、作業ツリーに未コミットの変更を残さない。検証用の clone は消す",
       "population": "作業ツリーの全ファイル（git status の全行）",
-      "check": "test -z \"$(git status --porcelain)\" && git fetch -q origin main && test \"$(git rev-parse HEAD)\" = \"$(git rev-parse origin/main)\"",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開版の確認"
+      "check": "node --test tests/leftover-changes.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: クリーンな clone の npm run audit:all-content が通り（1回目は tests/learning-analytics.test.mjs で約7時間固まったので止め、caffeinate をつけて流し直した。326秒）、0c379bdc を main へ push、GitHub Pages の公開（run 42906715139）が成功。作業ツリーを git pull --ff-only で 0c379bdc に合わせ、git status --porcelain は0行、HEAD は origin/main と同じ。検証用の clone は消した。控えの ref（refs/backup/2026-11-10/worktree-before-tidy）は手元に残している。git の管理外の下書き drafts.local は触っていない。依頼を閉じるので、確認コマンドを git status と origin/main の比較（通ることを確かめた）からテストに替えた。"
     }
   ]
 }
