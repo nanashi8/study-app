@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
@@ -304,13 +304,40 @@ function walkCurrentTree(directory = ROOT) {
   return files
 }
 
-function scanDirectory(directory, { publicBuild = false } = {}) {
+// git のフックの中では、git がリポジトリの場所を環境変数で渡す。ほかのフォルダの git を取り違えないよう外す。
+const GIT_REPOSITORY_ENV = /^GIT_(?:DIR|WORK_TREE|INDEX_FILE|PREFIX|OBJECT_DIRECTORY|ALTERNATE_OBJECT_DIRECTORIES|COMMON_DIR|NAMESPACE|QUARANTINE_PATH)$/
+
+/**
+ * 今のツリーの検査で読むファイル。公開されうるファイル＝git が追跡するファイルと、まだ追跡していないが無視もしていないファイル。
+ * git が無視するファイル（.gitignore の *.local の下書きなど）は commit も push もされないので読まない
+ * （2026-11-10、drafts.local の下書きにある利用者のパスで、作業ツリーの全教材監査が必ず止まっていた）。
+ * そのフォルダが git のリポジトリのいちばん上でなければ（push の前に取り出したコミットの中身など）、フォルダを歩いて全部読む。
+ */
+export function publishableFiles(directory = ROOT) {
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !GIT_REPOSITORY_ENV.test(key)))
+  const git = (args) => spawnSync('git', ['-C', directory, ...args], { encoding: 'utf8', env, maxBuffer: 128 * 1024 * 1024 })
+  const top = git(['rev-parse', '--show-toplevel'])
+  if (top.status !== 0 || realpathSync(top.stdout.trim()) !== realpathSync(directory)) return walkCurrentTree(directory)
+  const listed = git(['ls-files', '-z', '--cached', '--others', '--exclude-standard'])
+  if (listed.status !== 0) return walkCurrentTree(directory)
+  const files = []
+  for (const name of new Set(listed.stdout.split('\0').filter(Boolean))) {
+    if (name.split('/').some((part) => SKIP_DIRS.has(part))) continue
+    const absolutePath = join(directory, name)
+    // 消したがまだ commit していないファイルと、リンクは読まない（フォルダを歩くときと同じ）。
+    if (!existsSync(absolutePath) || !lstatSync(absolutePath).isFile()) continue
+    files.push(absolutePath)
+  }
+  return files.sort()
+}
+
+function scanDirectory(directory, { publicBuild = false, files = walkCurrentTree(directory) } = {}) {
   const findings = []
   let binaryFiles = 0
   let scannedFiles = 0
   let oversizedFiles = 0
 
-  for (const absolutePath of walkCurrentTree(directory)) {
+  for (const absolutePath of files) {
     const filePath = normalizePath(relative(ROOT, absolutePath))
     if (isSensitivePath(filePath)) {
       findings.push({ file: filePath, line: 1, rule: 'sensitive-filename' })
@@ -338,7 +365,7 @@ function scanDirectory(directory, { publicBuild = false } = {}) {
 }
 
 function scanCurrentTree() {
-  return scanDirectory(ROOT)
+  return scanDirectory(ROOT, { files: publishableFiles(ROOT) })
 }
 
 function runGit(args, options = {}) {
