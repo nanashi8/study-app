@@ -51,7 +51,8 @@
       "text": "テストと監査を通して main へ push し、公開版で詳細が暗記カードと同じになっていることを確かめる",
       "population": "公開版の英単語の詳細と熟語の詳細",
       "check": "node --test tests/detail-uses-study-card.test.mjs",
-      "status": "todo"
+      "status": "waiting",
+      "waitingFor": "2026-11-10: main へ push した（8ecceccb、GitHub の最新の main の上に載せ直し、clone で全監査260ファイルと内容検査を通した）。公開の処理（Deploy to GitHub Pages）は build が成功したが、deploy の段が GitHub Pages 側で5回続けて時間切れ（syncing_files・finished_file_sync・状態なしのまま10分）になり、公開版はまだ前の版。成果物は 137,517,891 バイトで前回の成功（137,512,936 バイト、deploy 16秒）とほぼ同じなので、GitHub Pages 側の不調を待つ。公開されたら公開版の辞書ページ（WordDetail の JS に data-word-study-card）と熟語の詳細を開いて確かめ、done にする。"
     }
   ]
 }
