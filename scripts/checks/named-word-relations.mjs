@@ -136,5 +136,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (gap.badCodes.length) console.log(`  略号ちがい: ${gap.badCodes.join(' ')}`)
     if (gap.missing.length || gap.stale.length || gap.shownButReasoned.length || gap.badCodes.length) failed = true
   }
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

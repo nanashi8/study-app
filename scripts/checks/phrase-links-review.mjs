@@ -54,5 +54,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   if (gap.staleExcluded.length) console.log(`つながりでなくなった外した行: ${gap.staleExcluded.join(' ')}`)
   if (gap.noReason.length) console.log(`理由のない行: ${gap.noReason.join(' ')}`)
   if (gap.unmoved.length) console.log(`同じつづりの別の語へまだ移していないつながり: ${gap.unmoved.join(' ')}`)
-  process.exit(gap.missing.length || gap.staleReviewed.length || gap.staleExcluded.length || gap.noReason.length || gap.unmoved.length ? 1 : 0)
+  process.exitCode = gap.missing.length || gap.staleReviewed.length || gap.staleExcluded.length || gap.noReason.length || gap.unmoved.length ? 1 : 0
 }

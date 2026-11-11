@@ -16,6 +16,7 @@ import { existsSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { stop } from '../stop.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 // git のフックの中から呼ばれても、ほかの複製を見るときに共有の作業ツリーを取り違えないよう、リポジトリの場所を渡す環境変数は外す。
@@ -272,8 +273,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const args = process.argv.slice(2)
   const rootsAt = args.indexOf('--roots')
   const roots = rootsAt >= 0 ? args[rootsAt + 1].split(',') : [homedir(), '/private/tmp', tmpdir()]
-  if (args.includes('--clones')) process.exit(runClones(roots))
-  if (args.includes('--codex-snapshots')) process.exit(runSnapshots())
+  if (args.includes('--clones')) stop(runClones(roots))
+  if (args.includes('--codex-snapshots')) stop(runSnapshots())
   console.log('使い方: node scripts/checks/leftover-changes.mjs --clones [--roots <フォルダ>,…] | --codex-snapshots')
-  process.exit(2)
+  process.exitCode = 2
 }

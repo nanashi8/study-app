@@ -17,6 +17,7 @@ import {
   shuffledWritingTokens,
   writingWordTokens,
 } from '../src/lib/writing.js'
+import { stop } from './stop.mjs'
 
 const FORMATS = Object.freeze(['word-order', 'usage'])
 const hasJapanese = (value = '') => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(value)
@@ -124,7 +125,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const shown = short ? audit.issues.slice(0, 40) : audit.issues
     for (const issue of shown) console.error(`❌ ${issue.kind}: ${issue.where} ${issue.detail}`)
     console.error(`\n${audit.issues.length}件の問題があります。`)
-    process.exit(1)
+    stop(1)
   }
   console.log(
     `✅ 単元別の出題形式OK: 参考書${audit.unitCount}単元すべてに並び替え・語法が各${audit.minimum}問以上`

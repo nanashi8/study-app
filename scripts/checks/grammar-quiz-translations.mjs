@@ -16,6 +16,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { GRAMMAR_PRACTICE } from '../../src/data/grammar.js'
 import { grammarQuizSentences, pairKey, translationClues } from './grammar-reference-translations.mjs'
+import { stop } from '../stop.mjs'
 
 export const GRAMMAR_QUIZ_TRANSLATION_REVIEW_PATH = new URL('../../docs/audits/grammar-quiz-translations.json', import.meta.url)
 
@@ -94,7 +95,7 @@ if (runDirectly) {
     ledger.groups = review.fingerprints
     writeFileSync(GRAMMAR_QUIZ_TRANSLATION_REVIEW_PATH, `${JSON.stringify(ledger, null, 2)}\n`)
     console.error(`指紋を書き直した: ${review.changedGroups.length}単元（全${review.counts.groups}単元・${review.counts.items}問）`)
-    process.exit(0)
+    stop(0)
   }
   for (const item of review.unexplained) console.log(['和訳', item.key, item.id, item.en, item.ja, item.clues.join(' / ')].join('\t'))
   for (const group of review.changedGroups) console.log(['読み直し', group].join('\t'))
@@ -104,5 +105,5 @@ if (runDirectly) {
     `読んだ記録: 全${review.counts.groups}単元のうち読み直しが要るもの${review.changedGroups.length}・なくなったもの${review.removedGroups.length}`,
   ].join('\n'))
   const failed = review.unexplained.length || review.stale.length || review.changedGroups.length || review.removedGroups.length
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

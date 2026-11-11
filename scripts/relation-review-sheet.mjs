@@ -11,6 +11,7 @@
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { wordRelationsFor } from '../src/lib/wordRelations.js'
 import { namedWordGaps } from './checks/named-word-relations.mjs'
+import { stop } from './stop.mjs'
 
 const ORDER = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
 const [mode, arg, countArg] = process.argv.slice(2)
@@ -29,7 +30,7 @@ if (mode === 'named') {
     console.log([mention.key, describe(word), named ? describe(named) : `${mention.token}（辞書にない）`, sentence].join('\t'))
   }
   console.error(`未決 ${gap.missing.length}件のうち ${Math.min(limit, gap.missing.length)}件を出した`)
-  process.exit(0)
+  stop(0)
 }
 
 if (mode === 'notes') {
@@ -82,8 +83,8 @@ if (mode === 'notes') {
   }
   console.log(out.join('\n'))
   console.error(`解説のない行が残る見出し語 ${headwords}語（${pending}行）のうち ${Math.min(limit, headwords)}語を出した`)
-  process.exit(0)
+  stop(0)
 }
 
 console.error('使い方: node scripts/relation-review-sheet.mjs named etymology|usage [件数] ／ notes [見出し語の数]')
-process.exit(1)
+process.exitCode = 1

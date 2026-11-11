@@ -87,5 +87,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
   for (const line of [...gaps.stale, ...gaps.ledgerProblems]) console.log(`  ${line}`)
   if (gaps.stale.length || gaps.ledgerProblems.length) failed = true
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

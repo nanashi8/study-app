@@ -14,6 +14,7 @@ import {
   exampleSenseItems,
   reviewEntryProblem,
 } from './checks/example-learned-sense.mjs'
+import { stop } from './stop.mjs'
 
 const DATA_DIR = new URL('../src/data/', import.meta.url)
 // 例文を写しているだけのファイル（元の例文を直したあとで、写しを合わせる）。
@@ -29,11 +30,11 @@ if (process.argv.includes('--prune')) {
   for (const key of dropped) console.log(`候補でなくなった: ${key}（${current.reviewed[key]}）`)
   if (!dryRun) writeFileSync(EXAMPLE_SENSE_REVIEW_PATH, `${JSON.stringify({ ...current, reviewed: Object.fromEntries(kept) }, null, 2)}\n`)
   console.log(`${dryRun ? '（試し）' : ''}台帳から ${dropped.length} 行を外した`)
-  process.exit(0)
+  stop(0)
 }
 if (!files.length) {
   console.error('使い方: node scripts/example-sense-apply.mjs [--dry-run] <決めたことのファイル>...')
-  process.exit(1)
+  stop(1)
 }
 
 const itemsByKey = new Map(exampleSenseItems().map((item) => [item.key, item]))
@@ -159,7 +160,7 @@ for (const file of files) {
 
 if (errors.length) {
   for (const error of errors) console.error(error)
-  process.exit(1)
+  stop(1)
 }
 if (!dryRun) {
   for (const name of changed) writeFileSync(new URL(name, DATA_DIR), sources.get(name))

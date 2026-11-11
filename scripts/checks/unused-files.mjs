@@ -218,5 +218,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (removedBack.length) console.log(`消したのに戻ったファイル:\n  ${removedBack.join('\n  ')}`)
     if (removedNamed.length) console.log(`消したのに名指しされている:\n  ${removedNamed.join('\n  ')}`)
   }
-  process.exit(unused.length || removedBack.length || removedNamed.length ? 1 : 0)
+  process.exitCode = unused.length || removedBack.length || removedNamed.length ? 1 : 0
 }

@@ -24,5 +24,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`同じ品詞の組: ${gap.pairs - gap.missing.length}/${gap.pairs} 組（使い分けか、書かない理由がある）`)
   if (gap.missing.length) console.log(`まだ決めていない組（先頭30）: ${gap.missing.slice(0, 30).join(' ')}`)
   if (gap.stale.length) console.log(`同じ品詞の組でなくなった理由の行: ${gap.stale.join(' ')}`)
-  process.exit(gap.missing.length || gap.stale.length ? 1 : 0)
+  process.exitCode = gap.missing.length || gap.stale.length ? 1 : 0
 }

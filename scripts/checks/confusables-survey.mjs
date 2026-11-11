@@ -9,6 +9,7 @@ import { dictionary } from 'cmu-pronouncing-dictionary'
 import { ALL_WORDS } from '../../src/data/vocab.js'
 import { WORD_FORM_GROUPS } from '../../src/data/word-forms.js'
 import { SPELLING_CONFUSABLE_PAIRS } from '../../src/data/spelling-confusables.js'
+import { stop } from '../stop.mjs'
 
 export const CONFUSABLES_SURVEY_PATH = new URL('../../docs/audits/confusables-survey.json', import.meta.url)
 
@@ -137,11 +138,11 @@ export function confusablesSurveyGap() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   if (process.argv.includes('--list')) {
     for (const [key, whys] of confusableSurveyPairs()) console.log(`${key}\t${whys.join('・')}`)
-    process.exit(0)
+    stop(0)
   }
   const gap = confusablesSurveyGap()
   console.log(`つづりが似た組・同じ発音の組: ${gap.pairs} 組（載せた ${gap.listed}・理由のない組 ${gap.undecided.length}・古い理由の行 ${gap.stale.length}・略号ちがい ${gap.badCodes.length}）`)
   for (const key of gap.undecided.slice(0, 20)) console.log(`  決めていない: ${key}`)
   for (const key of gap.stale.slice(0, 20)) console.log(`  古い理由の行: ${key}`)
-  process.exit(gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0)
+  process.exitCode = gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0
 }

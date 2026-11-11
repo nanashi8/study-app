@@ -4,11 +4,12 @@
 // で、指定語を全 words*.js の der 配列から一括除去する（fam は重複可なので触らない）。
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import { stop } from './stop.mjs'
 
 const targets = process.argv.slice(2)
 if (!targets.length) {
   console.error('usage: node scripts/strip-der.mjs <word> [word...]')
-  process.exit(1)
+  stop(1)
 }
 const dir = 'src/data'
 let changed = 0

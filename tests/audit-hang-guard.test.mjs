@@ -120,10 +120,10 @@ test('CPU を使い続けて終わらないテストのファイルも、時間�
   const dir = makeRepo({ 'busy.test.mjs': busy })
   const byFile = runTool(dir, 'scripts/run-tests.mjs', { STUDY_APP_TEST_FILE_MAX_MS: '1500', STUDY_APP_STALL_POLL_MS: '300' })
   assert.notEqual(byFile.status, 0, byFile.output)
-  assert.match(byFile.output, /❌ tests\/busy\.test\.mjs が固まった（\d+分 たっても終わらない）ので止めた/)
+  assert.match(byFile.output, /❌ tests\/busy\.test\.mjs が固まった（\d+(?:分|秒) たっても終わらない）ので止めた/)
   const byGroup = runTool(dir, 'scripts/run-tests.mjs', { STUDY_APP_TEST_GROUP_TIMEOUT_MS: '1500', STUDY_APP_STALL_POLL_MS: '300' })
   assert.notEqual(byGroup.status, 0, byGroup.output)
-  assert.match(byGroup.output, /❌ 軽いテストの組 が \d+分 たっても終わらない（固まった）ので止めた。残っていたプロセス：[\s\S]*tests\/busy\.test\.mjs/)
+  assert.match(byGroup.output, /❌ 軽いテストの組 が \d+(?:分|秒) たっても終わらない（固まった）ので止めた。残っていたプロセス：[\s\S]*tests\/busy\.test\.mjs/)
   assert.ok(!existsSync(`${dir}-lock`), '順番を持ったまま')
 })
 
@@ -153,7 +153,7 @@ test('時間切れになったコマンドは、子・孫ごと止めて 124 を
   assert.ok(Date.now() - startedAt < 30_000)
   const [child, grandchild] = readFileSync(pidFile, 'utf8').split(' ').map(Number)
   assert.ok(await waitGone(child) && await waitGone(grandchild), '子か孫が残っている')
-  assert.match(lines.join('\n'), /❌ 止まる段 が \d+分 たっても終わらない（固まった）ので止めた。残っていたプロセス：\n\s+pid \d+・CPU [\d.]+秒・sleep 600/)
+  assert.match(lines.join('\n'), /❌ 止まる段 が \d+(?:分|秒) たっても終わらない（固まった）ので止めた。残っていたプロセス：\n\s+pid \d+・CPU [\d.]+秒・sleep 600/)
 
   const fine = await runWithDeadline(process.execPath, ['-e', 'process.exitCode = 3'], { timeoutMs: 60_000, pollMs: 300, env: { ...process.env, NODE_OPTIONS: '' } })
   assert.deepEqual(fine, { status: 3, timedOut: false, stalled: [] })
@@ -179,7 +179,7 @@ test('全教材監査の全工程に時間切れがあり、固まった段で�
   writeFileSync(join(dir, 'scripts/run-tests.mjs'), HANG)
   const result = runTool(dir, 'scripts/record-content-audit.mjs', { STUDY_APP_AUDIT_STEP_TIMEOUT_MS: '1500', STUDY_APP_STALL_POLL_MS: '300' })
   assert.equal(result.status, TIMED_OUT_STATUS, result.output)
-  assert.match(result.output, /❌ node scripts\/run-tests\.mjs が \d+分 たっても終わらない（固まった）ので止めた/)
+  assert.match(result.output, /❌ node scripts\/run-tests\.mjs が \d+(?:分|秒) たっても終わらない（固まった）ので止めた/)
   assert.match(result.output, /❌ 全教材監査を中止: node scripts\/run-tests\.mjs \(時間切れ・exit 124\)/)
   assert.doesNotMatch(result.output, /✅ 全教材監査と台帳記録が完了しました/)
   assert.ok(result.ms < 60_000)
@@ -194,6 +194,34 @@ test('commit・push の前の確認が流すコマンドにも時間切れがあ
   const without = calls.filter((call) => !/timeout:/.test(call) && !/spawnSync\('tar'/.test(call))
   assert.deepEqual(without, [])
   assert.ok(calls.length >= 3)
+})
+
+test('commit・push の前の確認は、固まった確認コマンドを孫ごと止め、どの確認かを出す', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'study-app-audit-hang-'))
+  made.push(dir, `${dir}-lock`)
+  mkdirSync(join(dir, 'scripts/test-cache'), { recursive: true })
+  mkdirSync(join(dir, 'requests'))
+  copyFileSync('scripts/check-requests.mjs', join(dir, 'scripts/check-requests.mjs'))
+  for (const name of readdirSync('scripts/test-cache')) copyFileSync(`scripts/test-cache/${name}`, join(dir, 'scripts/test-cache', name))
+  writeFileSync(join(dir, 'package-lock.json'), '{}')
+  const pidFile = join(dir, 'pids')
+  writeFileSync(join(dir, 'hang.mjs'), HANG.replace('process.env.HANG_PID_FILE', JSON.stringify(pidFile)))
+  writeFileSync(join(dir, 'requests', 'r.json'), JSON.stringify({
+    id: 'r', title: '依頼', asked: ['原文'], sessions: ['s'], status: 'open',
+    criteria: [{ id: 'c', text: '満たすこと', population: '全件', check: 'node hang.mjs', status: 'done' }],
+  }))
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(AUDIT_TEST_|NODE_OPTIONS$|NODE_TEST_|STUDY_APP_)/.test(key)))
+  Object.assign(env, { STUDY_APP_TEST_LOCK_DIR: `${dir}-lock`, STUDY_APP_CHECK_TIMEOUT_MS: '1500', STUDY_APP_STALL_POLL_MS: '300', AUDIT_TEST_CACHE_DIR: `${dir}-cache` })
+  made.push(`${dir}-cache`)
+  const startedAt = Date.now()
+  const result = spawnSync(process.execPath, ['scripts/check-requests.mjs', '--git-commit'], { cwd: dir, env, encoding: 'utf8', timeout: 120_000 })
+  assert.equal(result.status, 1, result.stdout + result.stderr)
+  assert.match(result.stderr, /done にしたが確認が通らない/)
+  assert.match(result.stderr, /❌ 確認コマンド「node hang\.mjs」 が \d+(?:分|秒) たっても終わらない（固まった）ので止めた。残っていたプロセス：[\s\S]*sleep 600/)
+  assert.ok(Date.now() - startedAt < 60_000)
+  const [child, grandchild] = readFileSync(pidFile, 'utf8').split(' ').map(Number)
+  assert.ok(await waitGone(child) && await waitGone(grandchild), '確認コマンドの子か孫が残っている')
+  assert.ok(!existsSync(`${dir}-lock`), '順番を持ったまま')
 })
 
 test('裏で流した監査の見張り方・固まったときの調べ方が、作業の決まりに書いてある', () => {

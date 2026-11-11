@@ -25,6 +25,7 @@ import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import * as F from '../src/data/word-forms.js'
 import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
 import { WORD_USAGE_NOTES, WORD_USAGE_NOT_NEEDED } from '../src/data/word-usage-notes.js'
+import { stop } from './stop.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 const POS = ['名', '動', '形', '副']
@@ -32,7 +33,7 @@ const PASS2 = process.argv.includes('--pass2')
 const [reviewedFile, additionsFile] = process.argv.slice(2).filter((arg) => !arg.startsWith('--'))
 if (!reviewedFile) {
   console.error('使い方: node scripts/word-forms-review-apply.mjs <見直した語の id 一覧> [<足す形>]')
-  process.exit(1)
+  stop(1)
 }
 
 // N 行の理由の略号。台帳には展開した文を書く。
@@ -150,7 +151,7 @@ for (const line of lines) {
 }
 if (errors.length) {
   console.error(errors.join('\n'))
-  process.exit(1)
+  stop(1)
 }
 
 // まとまりを作り直す。succeed のように意味の筋ごとに分けたまとまりは、そのまま残す。
@@ -253,7 +254,7 @@ const [keyA, keyB] = PASS2 ? ['derivativesReviewed', 'secondaryReviewed'] : ['re
 const setA = new Set(review[keyA] ?? [])
 const setB = new Set(review[keyB] ?? [])
 for (const id of readFileSync(reviewedFile, 'utf8').split('\n').map((line) => line.trim()).filter(Boolean)) {
-  if (!getWord(id)) { console.error(`見直した語の id が辞書にない: ${id}`); process.exit(1) }
+  if (!getWord(id)) { console.error(`見直した語の id が辞書にない: ${id}`); stop(1) }
   setA.add(id)
   setB.add(id)
 }

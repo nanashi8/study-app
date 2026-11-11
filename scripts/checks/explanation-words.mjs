@@ -13,6 +13,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
+import { stop } from '../stop.mjs'
 
 const ROOT = new URL('../../', import.meta.url)
 export const REVIEW_PATH = new URL('docs/audits/explanation-words-review.json', ROOT)
@@ -238,7 +239,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const word = data.vocab.WORDS_BY_ID[item.link]
       console.log([item.key, item.wordId, item.reason, item.kind, item.text ? '' : '', item.link ?? '', word ? data.lib.defaultMeaningOf(word) : '', item.text?.length ? '' : ''].join('\t').replace(/\t+$/, '') + `\t${item.text}`)
     }
-    process.exit(0)
+    stop(0)
   }
   console.log(`解説の段落: ${result.paragraphs}（全見出し語の辞書ページと語根カードの「つづりが似た語」の欄）`)
   for (const [name, count] of Object.entries(result.counts).sort((a, b) => b[1] - a[1])) console.log(`  ${name}: ${count}`)
@@ -247,7 +248,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`意味のない語・句: ${noMeaning.length}件`)
   console.log(`読んでいない所: ${problems.unread.length}件`)
   console.log(`どこにも出ない台帳の行: ${problems.stale.length}件・どこにも出ない読んだ記録: ${result.staleReviews.length}件`)
-  if (flags.has('--summary')) process.exit(0)
+  if (flags.has('--summary')) stop(0)
   const checks = flags.size ? flags : new Set(['--links', '--meanings', '--ledger'])
   const show = (label, items, format) => {
     if (!items.length) return false
@@ -270,5 +271,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     failed = show('どこにも出ない台帳の行', problems.stale, (item) => item) || failed
     failed = show('どこにも出ない読んだ記録', result.staleReviews, (item) => item) || failed
   }
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

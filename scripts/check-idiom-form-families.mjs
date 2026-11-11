@@ -10,6 +10,7 @@ import {
   idiomFormFamilyFor,
   relatedIdiomForms,
 } from '../src/data/idiom-form-families.js'
+import { stop } from './stop.mjs'
 
 const errors = []
 const idioms = PHRASES.filter((item) => item.kind === 'idiom')
@@ -152,7 +153,7 @@ if (errors.length) {
   console.error(`❌ 熟語同形グループ監査 失敗（${errors.length}件）`)
   errors.slice(0, 40).forEach((error) => console.error(`  - ${error}`))
   if (errors.length > 40) console.error(`  … 他 ${errors.length - 40}件`)
-  process.exit(1)
+  stop(1)
 }
 
 const requestedSummary = requestedFamilies

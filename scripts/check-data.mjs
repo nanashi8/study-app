@@ -186,6 +186,7 @@ import { MEANING_READINGS, MEANING_READING_KANJI } from '../src/data/meaning-rea
 import { meaningSegments } from '../src/lib/meaningReadings.js'
 import { SCENE_BUNDLE_LEDGER } from '../src/data/scene-bundles.js'
 import { SCENE_BUNDLE_SIZE, findSceneWordInPassage } from '../src/lib/sceneBundles.js'
+import { stop } from './stop.mjs'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -2877,7 +2878,7 @@ if (errors.length) {
   if (errors.length > 40) console.error(`  … 他 ${errors.length - 40} 件`)
   console.error('\n【単語の必須項目】id, word, pos, level, meaning, meanings, example(en/ja), etymology, phonetic(IPA)')
   console.error('単語を足したら: npm run phonetics（IPA生成）→ npm run check。これらを満たすまでビルドできません。\n')
-  process.exit(1)
+  stop(1)
 }
 
 console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${ALL_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSentenceCount}文・${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSentenceCount}文・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

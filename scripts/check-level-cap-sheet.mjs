@@ -5,11 +5,12 @@
 import crypto from 'node:crypto'
 import { spawnSync } from 'node:child_process'
 import { LEVEL_CAP_LISTS } from './data/level-cap-review.js'
+import { stop } from './stop.mjs'
 
 const file = process.argv[2]
 if (!file) {
   console.error('使い方: node scripts/check-level-cap-sheet.mjs <Excel のパス>')
-  process.exit(2)
+  stop(2)
 }
 
 const readPart = (part) => {
@@ -64,4 +65,4 @@ for (const list of LEVEL_CAP_LISTS) {
     `（台帳に無い行${added.length}・シートに無い台帳の行${removed.length}）`)
   for (const row of added) console.log(`  台帳に無い行: ${row}`)
 }
-process.exit(failed ? 1 : 0)
+process.exitCode = failed ? 1 : 0

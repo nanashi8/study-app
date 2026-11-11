@@ -16,7 +16,7 @@ const criterion = (overrides = {}) => ({
   id: 'c1',
   text: '満たすこと',
   population: '全件',
-  check: 'node -e "process.exit(0)"',
+  check: 'node -e "process.exitCode = 0"',
   status: 'todo',
   ...overrides,
 })
@@ -50,7 +50,8 @@ function run(mode, dir, input = {}, env = {}) {
   return spawnSync('node', [SCRIPT, `--${mode}`], {
     input: JSON.stringify(input),
     encoding: 'utf8',
-    env: { ...process.env, ...SESSION_ENV, CHECK_REQUESTS_DIR: dir, ...env },
+    // 公開の自動処理の結果は GitHub に聞かない（tests/deploy-status-notice.test.mjs が確かめる）。
+    env: { ...process.env, ...SESSION_ENV, STUDY_APP_DEPLOY_STATUS: 'off', CHECK_REQUESTS_DIR: dir, ...env },
   })
 }
 
@@ -181,7 +182,7 @@ test('--owners は、開いている依頼ごとに sessions を見せ、書い�
 })
 
 test('done にした条件の確認が通らなければ、git のフックが commit・push を止める', () => {
-  const lying = ledger(request([criterion({ status: 'done', check: 'node -e "process.exit(1)"' })]))
+  const lying = ledger(request([criterion({ status: 'done', check: 'node -e "process.exitCode = 1"' })]))
   for (const hook of ['git-commit', 'git-pre-push']) {
     const blocked = run(hook, lying)
     assert.equal(blocked.status, 1, hook)

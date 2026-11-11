@@ -53,7 +53,7 @@ const LEDGER_CHECK = [
   "import { readFileSync } from 'node:fs'",
   "if (readFileSync('content.txt', 'utf8') !== readFileSync('ledger.txt', 'utf8')) {",
   "  console.error('全教材監査台帳が現在のデータより古い')",
-  '  process.exit(1)',
+  '  process.exitCode = 1',
   '}',
 ].join('\n')
 
@@ -188,13 +188,13 @@ test('done にした条件の check が通らなければ、commit も push も�
     id: 'r', title: '依頼', asked: ['原文'], sessions: ['s'], status: 'open',
     criteria: [{ id: 'c', text: '満たすこと', population: '全件', check, status: 'done' }],
   }))
-  write('node -e "process.exit(1)"')
+  write('node -e "process.exitCode = 1"')
   const commit = sh('git add -A && git commit -q -m ledger', dir)
   assert.notEqual(commit.status, 0)
   assert.match(commit.stderr, /done にしたが確認が通らない/)
-  write('node -e "process.exit(0)"')
+  write('node -e "process.exitCode = 0"')
   assert.equal(sh('git add -A && git commit -q -m ledger', dir).status, 0)
-  write('node -e "process.exit(1)"')
+  write('node -e "process.exitCode = 1"')
   const push = sh('git push -q origin main', dir)
   assert.notEqual(push.status, 0)
   assert.match(push.stderr, /done にしたが確認が通らない/)
@@ -205,7 +205,7 @@ test('commit の確認は、--no-verify・-n を付けても飛ばない（prepa
   const start = git(dir, ['rev-parse', 'HEAD'])
   writeFileSync(join(dir, 'requests', 'r.json'), JSON.stringify({
     id: 'r', title: '依頼', asked: ['原文'], sessions: ['s'], status: 'open',
-    criteria: [{ id: 'c', text: '満たすこと', population: '全件', check: 'node -e "process.exit(1)"', status: 'done' }],
+    criteria: [{ id: 'c', text: '満たすこと', population: '全件', check: 'node -e "process.exitCode = 1"', status: 'done' }],
   }))
   for (const flag of ['--no-verify', '-n']) {
     const result = sh(`git add -A && git commit -q ${flag} -m ledger`, dir)

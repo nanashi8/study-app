@@ -67,6 +67,6 @@ if (runDirectly) {
     for (const problem of problems.slice(0, 30)) console.log(`  - ${problem}`)
     if (problems.length > 30) console.log(`  - ほか ${problems.length - 30}件`)
     console.log(problems.length ? `❌ ${problems.length}件` : `✅ 全${ALL_SUBJECT_UNITS.length}単元を読み直した記録と一致（見つけて直した誤り ${ledger.fixes.length}件）`)
-    process.exit(problems.length ? 1 : 0)
+    process.exitCode = problems.length ? 1 : 0
   }
 }

@@ -14,6 +14,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import { ALL_SUBJECT_UNITS, getSubjectUnit } from '../../src/data/subjects/index.js'
+import { stop } from '../stop.mjs'
 
 const ROOT = new URL('../../', import.meta.url)
 export const FIGURES_LEDGER_PATH = new URL('docs/audits/junior-social-science-figures.json', ROOT)
@@ -98,7 +99,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     if (problems.length) {
       console.log(`食いちがい ${problems.length}件`)
       for (const problem of problems.slice(0, 40)) console.log(`  - ${problem}`)
-      process.exit(1)
+      stop(1)
     }
     console.log('全要点・全演習が、判断した記録と一致')
   }

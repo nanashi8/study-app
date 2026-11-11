@@ -10,6 +10,7 @@ import {
   etymologyCardsForWord,
   getWord,
 } from '../src/data/vocab.js'
+import { stop } from './stop.mjs'
 
 const raw = {
   total: ALL_WORDS.length,
@@ -80,7 +81,7 @@ line('旧割当を保持する単語', ETYMOLOGY_LEGACY_SUMMARY.total, '語')
 if (problems.length) {
   console.error(`\n❌ 語源教材レポート: ${problems.length}件の構造違反`)
   for (const problem of problems) console.error(`- ${problem}`)
-  process.exit(1)
+  stop(1)
 }
 
 console.log('\n✅ 生データ、非公開アーカイブ、公開カードの母数を分離して確認しました。\n')

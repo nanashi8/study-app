@@ -10,6 +10,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { stop } from '../stop.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const git = (...args) => execFileSync('git', ['-C', ROOT, ...args], { encoding: 'utf8', maxBuffer: 1 << 28 })
@@ -107,17 +108,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const extra = extraBranches()
     console.log(`main のほかに残っている枝・参照・作業ツリーの登録: ${extra.length}件`)
     for (const line of extra) console.log(`  ${line}`)
-    process.exit(extra.length ? 1 : 0)
+    stop(extra.length ? 1 : 0)
   }
   if (process.argv.includes('--references')) {
     const { files, messages, memories, stale } = staleReferences()
     console.log(`コミットの番号の名指し: 追跡しているファイル ${files}件・コミットの文 ${messages}件・記憶 ${memories}件を読み、書き換える前の番号 ${stale.length}か所`)
     for (const line of stale.slice(0, 40)) console.log(`  ${line}`)
-    process.exit(stale.length ? 1 : 0)
+    stop(stale.length ? 1 : 0)
   }
   const { total, wrong } = wrongIdentityCommits()
   const identity = projectIdentity()
   console.log(`今の枝の全コミット ${total}件のうち、作者・コミッターが ${identity.name} <${identity.email}> でないもの ${wrong.length}件`)
   for (const [hash, author, committer] of wrong.slice(0, 40)) console.log(`  ${hash} 作者 ${author}・コミッター ${committer}`)
-  process.exit(wrong.length ? 1 : 0)
+  process.exitCode = wrong.length ? 1 : 0
 }

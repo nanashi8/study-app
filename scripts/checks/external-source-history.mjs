@@ -245,5 +245,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     for (const hit of hits.slice(0, 20)) console.log(`  ${hit}`)
     if (hits.length) failed = true
   }
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

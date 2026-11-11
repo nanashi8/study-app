@@ -14,6 +14,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import { subjectUnits } from '../../src/data/subjects/index.js'
 import { readReviewLedger, unitFingerprint } from './junior-social-science-review.mjs'
+import { stop } from '../stop.mjs'
 
 const ROOT = new URL('../../', import.meta.url)
 export const SOCIAL_AUDIT_PATH = new URL('docs/audits/social-truth-audit-2026-11-04.json', ROOT)
@@ -106,11 +107,11 @@ if (runDirectly) {
     const problems = yearConflictProblems(audit)
     for (const problem of problems.slice(0, 30)) console.log(`  - ${problem}`)
     console.log(problems.length ? `❌ ${problems.length}件` : `✅ 単元をまたいで年が違う組 ${all.length}件をすべて読んで判断した記録と一致`)
-    process.exit(problems.length ? 1 : 0)
+    stop(problems.length ? 1 : 0)
   } else {
     const problems = socialAuditProblems(audit, units)
     for (const problem of problems.slice(0, 30)) console.log(`  - ${problem}`)
     console.log(problems.length ? `❌ ${problems.length}件` : `✅ 社会の全${units.length}単元を監査で読んだ記録と一致（見つけて直した誤り ${audit.fixes.length}件）`)
-    process.exit(problems.length ? 1 : 0)
+    process.exitCode = problems.length ? 1 : 0
   }
 }

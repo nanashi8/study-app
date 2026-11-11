@@ -6,11 +6,12 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
+import { stop } from './stop.mjs'
 
 const [idsPath, addPath] = process.argv.slice(2)
 if (!idsPath) {
   console.error('使い方: node scripts/loanword-survey-apply.mjs ids.txt [add.tsv]')
-  process.exit(1)
+  stop(1)
 }
 const wordIds = new Set(ALL_WORDS.map((word) => word.id))
 const ids = readFileSync(idsPath, 'utf8').split('\n').map((line) => line.trim()).filter(Boolean)
@@ -44,7 +45,7 @@ if (addPath) {
 
 if (conflicts.length) {
   console.error(conflicts.join('\n'))
-  process.exit(1)
+  stop(1)
 }
 const quote = (text) => `'${text.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 const keyOf = (id) => (/^[A-Za-z_][A-Za-z0-9_]*$/.test(id) ? id : quote(id))

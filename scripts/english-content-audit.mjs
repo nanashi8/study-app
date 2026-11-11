@@ -52,6 +52,7 @@ import {
   DIAGNOSTIC_READING_BANK,
 } from '../src/data/diagnostic.js'
 import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
+import { stop } from './stop.mjs'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const LEVEL_ORDER = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
@@ -602,7 +603,7 @@ if (errors.length) {
   console.error(`\n❌ 英語問題 全件監査 失敗（${errors.length}件）`)
   errors.slice(0, 60).forEach((error) => console.error(`  - ${error}`))
   if (errors.length > 60) console.error(`  …ほか${errors.length - 60}件`)
-  process.exit(1)
+  stop(1)
 }
 
 console.log(`\n✅ 英語問題 全件監査OK: ${totalQuestionUnits}件 / エラー0件`)

@@ -10,6 +10,7 @@ import { PHRASES } from '../src/data/phrases.js'
 import { DICTATION_ITEMS } from '../src/data/dictation.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
+import { stop } from './stop.mjs'
 
 const LEVELS = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
 const LABEL = { 5: '5級', 4: '4級', 3: '3級', pre2: '準2級', 2: '2級', pre1: '準1級', 1: '1級' }
@@ -105,7 +106,7 @@ for (const word of ALL_WORDS) {
 if (errors.length) {
   console.error(`❌ 単語の級: ${errors.length}件の食い違い`)
   for (const error of errors) console.error(`- ${error}`)
-  process.exit(1)
+  stop(1)
 }
 const spread = LEVELS.map((level) => `${LABEL[level]}${ALL_WORDS.filter((word) => word.level === level).length}`)
 console.log(`✅ 単語の級OK: ${ALL_WORDS.length}語（${spread.join(' / ')}）／補完データの級と一致・教材と3段以上の食い違いなし`)

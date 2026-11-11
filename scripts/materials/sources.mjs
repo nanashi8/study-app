@@ -436,30 +436,30 @@ const SNIPPETS = {
 const date = new Date('2026-09-29T00:00:00Z')
 const phase = Astronomy.MoonPhase(date)
 const age = (phase / 360) * 29.530588
-if (!(age >= 0 && age < 29.6)) process.exit(1)
+if (!(age >= 0 && age < 29.6)) throw new Error('動かない')
 console.log('月の位相角 ' + phase.toFixed(1) + '°、月齢 ' + age.toFixed(1))`,
   // 3×3 の格子で 1.5 の等高線を引き、閉じた線が1本できれば動いている。
   contour: `import { contours } from 'd3-contour'
 import { geoPath, geoMercator } from 'd3-geo'
 const values = [0, 0, 0, 0, 2, 0, 0, 0, 0]
 const [line] = contours().size([3, 3]).thresholds([1])(values)
-if (!line || line.coordinates.length !== 1) process.exit(1)
+if (!line || line.coordinates.length !== 1) throw new Error('動かない')
 const d = geoPath(geoMercator())({ type: 'Point', coordinates: [139.7, 35.7] })
-if (!d) process.exit(1)
+if (!d) throw new Error('動かない')
 console.log('等高線 ' + line.coordinates.length + ' 本、地図の投影 OK')`,
   // 東京駅が「東京都のおおまかな四角」の中、大阪が外と判定できれば動いている。
   'point-in-polygon': `import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 const tokyo = { type: 'Polygon', coordinates: [[[138.9, 35.5], [139.95, 35.5], [139.95, 35.9], [138.9, 35.9], [138.9, 35.5]]] }
 const inside = booleanPointInPolygon([139.767, 35.681], tokyo)
 const outside = booleanPointInPolygon([135.5, 34.7], tokyo)
-if (!inside || outside) process.exit(1)
+if (!inside || outside) throw new Error('動かない')
 console.log('点が形の中か外かの判定 OK')`,
   // 手描き風の線（rough.js）が SVG の path として作れれば動いている。
   'rough-svg': `import rough from 'roughjs'
 const generator = rough.generator()
 const drawable = generator.rectangle(10, 10, 80, 40, { roughness: 1.5, seed: 7 })
 const paths = generator.toPaths(drawable)
-if (!paths.length || !paths[0].d.startsWith('M')) process.exit(1)
+if (!paths.length || !paths[0].d.startsWith('M')) throw new Error('動かない')
 console.log('手描き風の四角 ' + paths.length + ' 本の線、最初の線 ' + paths[0].d.length + ' 文字')`,
 }
 

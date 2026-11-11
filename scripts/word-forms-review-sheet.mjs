@@ -13,6 +13,7 @@ import { ALL_WORDS } from '../src/data/vocab.js'
 import { WORD_USAGE_NOTES, WORD_USAGE_NOT_NEEDED } from '../src/data/word-usage-notes.js'
 import { posSensesFor, wordFamilyFor, wordRelationsFor } from '../src/lib/wordRelations.js'
 import { derivativeCandidates } from './derivative-candidates.mjs'
+import { stop } from './stop.mjs'
 
 const POS = new Set(['名', '動', '形', '副'])
 const ORDER = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
@@ -29,7 +30,7 @@ if (!process.argv.includes('--pass2')) {
     const existing = [word.usage ? '使い方文' : '', ...(word.usageGuides ?? []).map((guide) => guide.title)].filter(Boolean).join('／')
     console.log([word.id, word.level, word.pos, word.meaning, forms, synonyms, antonyms, confusables, existing].join('\t'))
   }
-  process.exit(0)
+  stop(0)
 }
 
 // ── 2回目の見直し ──

@@ -31,6 +31,7 @@ import { WORD_IDIOM_NOTES, WORD_RELATION_NOTES } from '../../src/data/word-relat
 import { LOANWORD_HINTS } from '../../src/data/loanword-hints.js'
 import { MEANING_READINGS } from '../../src/data/meaning-readings.js'
 import { meaningSegments } from '../../src/lib/meaningReadings.js'
+import { stop } from '../stop.mjs'
 
 const require = createRequire(import.meta.url)
 const { kanji: JOYO_KANJI } = require('joyo-kanji')
@@ -245,7 +246,7 @@ if (runDirectly) {
     }
     writeFileSync(LEARNER_JAPANESE_REVIEW_PATH, `${JSON.stringify(ledger, null, 2)}\n`)
     console.log('台帳を書き直した', ledger.counts)
-    process.exit(0)
+    stop(0)
   }
 
   const problems = []
@@ -304,7 +305,7 @@ if (runDirectly) {
     console.log('  直し方: 1件ずつ読み、中高生がそのまま読めて意味が分かるなら docs/audits/learner-japanese-review.json に足す。')
     console.log('          読めないなら訳語・本文を書き直すか、意味の欄なら src/data/meaning-readings.js に読みを載せる。')
     console.log('          常用漢字表にない字は、読みを添えるか、joyoExceptions に理由を書く。')
-    process.exit(1)
+    stop(1)
   }
   console.log(`✅ 学習者向け日本語: 訳語${glosses.size}件・漢字語${runs.size}件すべて見直し済み`
     + `（読みを添えた語 ${ledger.decisions.reading.length}件・本文に読みを書いた語 ${ledger.decisions.inline.length}件`

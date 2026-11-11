@@ -10,12 +10,13 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { getWord } from '../src/data/vocab.js'
 import { PHRASE_LINK_EXCLUDED } from '../src/data/phrase-link-exclusions.js'
 import { phraseLinkCandidates } from '../src/lib/wordPhrases.js'
+import { stop } from './stop.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 const [reviewedFile, decisionsFile] = process.argv.slice(2)
 if (!reviewedFile) {
   console.error('使い方: node scripts/phrase-links-review-apply.mjs <見直した語の id 一覧> [<決めたこと>]')
-  process.exit(1)
+  stop(1)
 }
 const q = (value) => `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 const excluded = { ...PHRASE_LINK_EXCLUDED }
@@ -36,14 +37,14 @@ for (const line of lines) {
 }
 if (errors.length) {
   console.error(errors.join('\n'))
-  process.exit(1)
+  stop(1)
 }
 const body = Object.keys(excluded).sort().map((key) => `  ${q(key)}: ${q(excluded[key])},\n`).join('')
 writeFileSync(new URL('src/data/phrase-link-exclusions.js', ROOT), readFileSync(new URL('src/data/phrase-link-exclusions.js', ROOT), 'utf8')
   .replace(/export const PHRASE_LINK_EXCLUDED = Object\.freeze\(\{\n[\s\S]*?\}\)\n/, `export const PHRASE_LINK_EXCLUDED = Object.freeze({\n${body}})\n`))
 const reviewed = new Set(review.reviewed ?? [])
 for (const id of readFileSync(reviewedFile, 'utf8').split('\n').map((line) => line.trim()).filter(Boolean)) {
-  if (!getWord(id)) { console.error(`見直した語の id が辞書にない: ${id}`); process.exit(1) }
+  if (!getWord(id)) { console.error(`見直した語の id が辞書にない: ${id}`); stop(1) }
   reviewed.add(id)
 }
 review.reviewed = [...reviewed].sort()

@@ -1,0 +1,62 @@
+{
+  "id": "2026-11-11-audit-leftovers-fix",
+  "title": "監査の固まり・公開の失敗の対策で「やっていない」と報告した残りのうち、直すべきものを直す",
+  "asked": [
+    "やっていないことで、直すべきところを直しなさい。"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-11 の前の報告の「やっていないこと」は6つ。(1) check:content の検査やテストの中など60ファイルあまりの process.exit（固まれば時間切れで止まるだけ）、(2) commit・push の前の確認の時間切れが孫のプロセスを止めない、(3) テスト以外の段の「動かない処理」の見張りをやめた、(4) Node 本体を更新していない、(5) 公開版の画面を見ていない、(6) 最初の調べの残り（公開の失敗に気づけない・commit と push のたびに開いた全依頼の check が流れる）。直すもの：(1)(2) と (6) の公開の失敗。直さないもの：(3) は (1) で固まりの元をなくし、段の時間切れも残るので不要。(4) は (1) で process.exit を使わなくなれば要らず、Node の更新は利用者の機械の設定を変える（brew の node 25.2.1 → 26.13.0）。--no-maglev は直す前の終わり方で 4,200回に1回まで減ったが0にならなかったので使わない。(5) は道具だけの変更でアプリの中身が変わらない。(6) の全依頼の check は、テストの控えで1回3〜14秒になっていて、done の確かめを減らすと偽りの done を止める仕組みが弱くなる。そのほか最初の調べで挙げた「1依頼に3コミット」「監査台帳に変更が集中」は作りの性質で不具合ではなく、返事待ちの 10-14 の依頼はほかのセッションの利用者の判断待ち。",
+  "criteria": [
+    {
+      "id": "no-process-exit-anywhere",
+      "text": "scripts/ と tests/ のどのファイルも process.exit を呼ばない（Node 25 は process.exit の途中で固まることがある）。最後に終わるところは process.exitCode、途中で止めるところは scripts/stop.mjs の stop()（終了コードを保ち、ふつうに終わる）か、関数から return する。止められたとき（SIGINT・SIGTERM・SIGHUP）に順番を手放す scripts/test-cache/lock.mjs も、手放してから同じ合図で自分を止め直す形にする",
+      "population": "scripts/・tests/ の全ファイルの process.exit 116か所（2026-11-11 の時点。tests/audit-hang-guard.test.mjs の中の検査の文字を除く）",
+      "check": "node --test tests/no-process-exit.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/・tests/ の process.exit 116か所を0か所にした。機械で書き換えた93か所（後ろに閉じかっこしかない31か所は process.exitCode、途中で止める62か所は scripts/stop.mjs の stop()）と、手で直した23か所（scripts/check-requests.mjs の11か所は main() が終了コードを返す形、scripts/materials/sources.mjs の文字列の中の小さなスクリプト5か所は throw、tests/ の文字列の中の7か所は process.exitCode、scripts/test-cache/lock.mjs の1か所は順番を手放してから同じ合図で止め直す形）。try の中で止める scripts/checks/deployed-matches-head.mjs は、catch で isStop なら投げ直す。tests/no-process-exit.test.mjs が scripts/・tests/ の全ファイル（300本あまり）に呼び出しがないこと、stop() の終了コード・表示・try の中・本物の例外、止められた順番待ちが順番を手放すことを確かめる。"
+    },
+    {
+      "id": "exit-codes-unchanged",
+      "text": "書き換えたスクリプトの終了コードと出す文は、今までと同じ（通るときは0、見つけたときは1、使い方の誤りは1か2、フックの止める合図は2）",
+      "population": "書き換えた全スクリプト（監査・テストで流れるものは全監査で、手で使う道具は使い方の誤りと通る場合を流して確かめる）",
+      "check": "node --test tests/no-process-exit.test.mjs tests/requests-gate.test.mjs tests/requests-ledger.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: 書き換えた scripts/ の57本を、検証用の clone で直す前と直した後に引数なしで流して比べ、57本すべてで終了コード（0 が42本・1 が13本・2 が2本）と出した文（時間・一時フォルダの名前を除く）が同じ、どれも300秒以内に終わった。監査で流れる検査は、直した後の作業ツリーの npm run audit:all-content が通った（テスト 265本のうち225本を流して全部合格・check:content・ビルド・台帳、327秒）。tests/no-process-exit.test.mjs が、使い方の誤り（2・1）・通るとき（0）・フックの止める合図（2）を流して確かめ、tests/requests-gate.test.mjs・tests/requests-ledger.test.mjs も通る。確かめていないこと：手で使う道具（apply・sheet の22本ほど）の、引数を渡してファイルを書き直す場合は流していない（書き換えたのは止め方だけで、書き直す処理には触れていない）。"
+    },
+    {
+      "id": "pre-commit-checks-kill-tree",
+      "text": "commit・push の前の確認が流す確認コマンドが時間切れになったら、孫のプロセスまで止め、どの確認が時間切れになったかを出す",
+      "population": "scripts/check-requests.mjs が流す確認コマンドすべて（done にした条件の check）",
+      "check": "node --test tests/audit-hang-guard.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/check-requests.mjs の確認コマンドを、scripts/test-cache/deadline.mjs をコマンドとして通して流す形にした（--timeout-ms・--label。時間切れなら残っていたプロセスを出し、子・孫ごと止めて 124）。道具がない使い捨てのリポジトリでは今までどおり execSync の timeout。tests/audit-hang-guard.test.mjs で、孫（sleep）を残して止まる確認コマンドの done の条件を持つ台帳を使い捨てのリポジトリに置いて commit の前の確認を流し、「確認コマンド「node hang.mjs」 が 2秒 たっても終わらない」と出して子と孫を止め、順番を手放して exit 1 になることを確かめた。"
+    },
+    {
+      "id": "deploy-fetch-retries",
+      "text": "公開のビルドが、写真の読み取りのモデルの取り寄せの一時的な失敗（2026-11-10 の run 42768524753 の fetch failed・ETIMEDOUT）で落ちない：時間を区切って取り寄せ、失敗したら間をあけてやり直す",
+      "population": "scripts/ocr-models.mjs が取り寄せるモデルの全ファイル（det・rec の2つ）",
+      "check": "node --test tests/ocr-models-fetch-retry.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/ocr-models.mjs の取り寄せを fetchWithRetry にした（1回3分で区切り、つながらない・時間切れ・200 以外なら 5秒・20秒・60秒あけて4回まで。だめなら理由を全部つけて失敗）。モデルの全ファイル（det・rec の2つ）がこれを通る。tests/ocr-models-fetch-retry.test.mjs が、時間切れ（ETIMEDOUT）と 503 のあとに取り込めること、4回だめなら失敗にすること、じかに取り寄せる所がほかにないことを確かめる。実際の取り込み（node scripts/ocr-models.mjs）も動いた（取り込み済みの控えを使った）。"
+    },
+    {
+      "id": "deploy-failure-noticed",
+      "text": "公開の自動処理（main の Deploy to GitHub Pages）の最新が失敗していたら、利用者の発言ごとのフックが作業者に知らせる（どの run・どのコミット・いつ）。GitHub に問い合わせるのは数分に1回にし、問い合わせられないときは黙って進む",
+      "population": "main への push で動く公開の自動処理の最新の run",
+      "check": "node --test tests/deploy-status-notice.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/checks/deploy-status.mjs を足し、scripts/check-requests.mjs --prompt（利用者の発言ごとのフック）が、main の公開の自動処理の最新の終わった run が成功でなければ「【公開の失敗】… run・コミット・日本時間・直し方」を見せる。失敗のあとに新しい公開が進んでいればそれを待つように知らせ、成功のあとの古い失敗は知らせない。gh には5分に1回だけ聞き（控えは ~/.cache/study-app-deploy-status.json）、聞けなければ前の控え、控えもなければ黙る。公開する GitHub のリポジトリが origin のときだけ動く。tests/deploy-status-notice.test.mjs が、知らせる文・控えの使い方・origin の判定・フックに知らせが出ることを確かめる。いまの公開の状態は「最新の公開は成功（run 42980204124）」。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "全テスト・全監査と公開の自動処理",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/no-process-exit.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+    }
+  ]
+}

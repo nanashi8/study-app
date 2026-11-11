@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { CURATED_IDS } from '../src/data/vocab.js'
 import { splitMeanings } from '../src/data/compact.js'
+import { stop } from './stop.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
@@ -56,18 +57,18 @@ try {
   console.error(`❌ CSV が読めません: ${csvPath}`)
   console.error('   使い方: npm run import path/to/file.csv')
   console.error('   列: word,level,meaning,example_en,example_ja,pos,note')
-  process.exit(1)
+  stop(1)
 }
 
 const rows = parseCSV(raw)
-if (!rows.length) { console.error('❌ 行がありません'); process.exit(1) }
+if (!rows.length) { console.error('❌ 行がありません'); stop(1) }
 const header = rows[0].map((h) => h.trim().toLowerCase())
 const idx = (name) => header.indexOf(name)
 const col = { word: idx('word'), level: idx('level'), meaning: idx('meaning'),
   en: idx('example_en'), ja: idx('example_ja'), pos: idx('pos'), note: idx('note') }
 if (col.word < 0 || col.meaning < 0) {
   console.error('❌ ヘッダーに word と meaning が必要です。実際:', header.join(','))
-  process.exit(1)
+  stop(1)
 }
 
 const out = []

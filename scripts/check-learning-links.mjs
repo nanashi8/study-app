@@ -16,6 +16,7 @@ import {
 import { PHRASES } from '../src/data/phrases.js'
 import { phrasesForWord } from '../src/lib/wordPhrases.js'
 import { APP_HOMES, CUSTOM_CARD_SCREENS, appHomeForScreen, fallbackDestination } from '../src/lib/appHome.js'
+import { stop } from './stop.mjs'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (relative) => readFileSync(path.join(projectRoot, relative), 'utf8')
@@ -131,6 +132,6 @@ console.log(`語源カードの帰り先: ${appHomeForScreen('etymologyPack').la
 if (errors.length) {
   console.error(`\n学習のつながり監査: ${errors.length}件の違反`)
   for (const error of errors.slice(0, 20)) console.error(`- ${error}`)
-  process.exit(1)
+  stop(1)
 }
 console.log('\n✅ 確認済み語源リンク・熟語・画面の行き来はすべて条件を満たしています。')

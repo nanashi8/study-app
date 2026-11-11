@@ -70,7 +70,13 @@ export function acquireTestLock(label, { log = (line) => console.error(line) } =
     if (readOwner(dir)?.pid === process.pid) rmSync(dir, { recursive: true, force: true })
   }
   process.on('exit', release)
-  // 止められたとき（Ctrl+C・kill）も手放す。
-  for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.once(signal, () => process.exit(128 + 2))
+  // 止められたとき（Ctrl+C・kill）も手放す。手放したら、同じ合図で自分をもう一度止める（受け口は once なので、2回目は
+  // ふつうの止まり方になる）。process.exit は呼ばない（Node 25 は process.exit の途中で固まることがある。scripts/stop.mjs）。
+  for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+    process.once(signal, () => {
+      release()
+      process.kill(process.pid, signal)
+    })
+  }
   return release
 }

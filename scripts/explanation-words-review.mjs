@@ -12,6 +12,7 @@
 //       文が書き換わってどこにも出なくなった読んだ記録を消す。
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { analyze, collectExplanationParagraphs, loadReview, REVIEW_PATH } from './checks/explanation-words.mjs'
+import { stop } from './stop.mjs'
 
 const LEDGER_PATH = new URL('../src/data/explanation-words.js', import.meta.url)
 const NEEDS_VALUE = new Set(['句の意味', '見出しのない語の意味'])
@@ -62,7 +63,7 @@ if (command === 'sheet') {
       count += 1
     }
   }
-  process.exit(0)
+  stop(0)
 }
 
 if (command === 'apply') {
@@ -90,7 +91,7 @@ if (command === 'apply') {
   if (missing.length) {
     console.error(`値の要る行に決定がない: ${missing.length}件`)
     for (const [key, reason] of missing.slice(0, 30)) console.error(`  ${key} ${reason}`)
-    process.exit(1)
+    stop(1)
   }
   const { head, entries } = readLedger()
   const review = loadReview()
@@ -105,7 +106,7 @@ if (command === 'apply') {
   const sorted = Object.fromEntries(Object.keys(review.reviewed).sort().map((key) => [key, 1]))
   writeFileSync(REVIEW_PATH, `${JSON.stringify({ ...review, reviewed: sorted }, null, 1)}\n`)
   console.log(`読んだ所 ${sheetKeys.size}件（台帳に書いた決定 ${[...decisions.values()].filter((value) => value !== '.').length}件）。読んだ記録は全部で ${Object.keys(sorted).length}件`)
-  process.exit(0)
+  stop(0)
 }
 
 if (command === 'prune') {
@@ -115,8 +116,8 @@ if (command === 'prune') {
   for (const key of staleReviews) delete review.reviewed[key]
   writeFileSync(REVIEW_PATH, `${JSON.stringify(review, null, 1)}\n`)
   console.log(`どこにも出ない読んだ記録を ${staleReviews.length}件消した: ${staleReviews.map((key) => JSON.stringify(key)).join(' ')}`)
-  process.exit(0)
+  stop(0)
 }
 
 console.error('使い方: sheet [件数] | apply シート.txt 決定.tsv | prune')
-process.exit(1)
+process.exitCode = 1

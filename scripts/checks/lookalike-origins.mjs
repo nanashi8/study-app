@@ -25,6 +25,7 @@ import {
   rootLookalikeCandidates,
 } from '../../src/lib/lookalikeOrigins.js'
 import { lookalikeFormRelation } from '../../src/lib/lookalikeForms.js'
+import { stop } from '../stop.mjs'
 
 const pairKey = (a, b) => [String(a), String(b)].sort().join('|')
 
@@ -268,7 +269,7 @@ if (runDirectly) {
     for (const [rootId, found] of rootLookalikeCandidates(ALL_WORDS)) {
       for (const [id, matches] of found) console.log(`${rootId}\t${id}\t${matches.join(',')}`)
     }
-    process.exit(0)
+    stop(0)
   }
   const gaps = lookalikeOriginGaps()
   const stories = storyClaimConflicts()
@@ -282,5 +283,5 @@ if (runDirectly) {
     for (const row of gaps[key].slice(0, 30)) console.log(`  ${key}: ${row}`)
     if (gaps[key].length > 30) console.log(`  ${key}: ほか ${gaps[key].length - 30}件`)
   }
-  process.exit(total ? 1 : 0)
+  process.exitCode = total ? 1 : 0
 }

@@ -36,6 +36,7 @@ import {
   RESET_PRESERVED_PROGRESS_FIELDS,
   RESETTABLE_PROGRESS_FIELDS,
 } from '../src/lib/progressReset.js'
+import { stop } from './stop.mjs'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceRoot = path.join(projectRoot, 'src')
@@ -627,7 +628,7 @@ if (GRAMMAR.length !== 3450 || grammarChoicePaths !== 13800 || grammarWrongChoic
 if (errors.length) {
   console.error(`学習者向け品質契約: ${errors.length}件の違反`)
   errors.slice(0, 80).forEach((error) => console.error(`- ${error}`))
-  process.exit(1)
+  stop(1)
 }
 
 console.log(

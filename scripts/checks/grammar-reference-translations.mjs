@@ -26,6 +26,7 @@ import {
 } from '../../src/data/grammar-reference/index.js'
 import { GRAMMAR_PRACTICE } from '../../src/data/grammar.js'
 import { grammarQuestionType } from '../../src/data/grammar-format-expansion.js'
+import { stop } from '../stop.mjs'
 
 export const GRAMMAR_REFERENCE_TRANSLATION_REVIEW_PATH = new URL('../../docs/audits/grammar-reference-translations.json', import.meta.url)
 
@@ -348,7 +349,7 @@ if (runDirectly) {
     ledger.pages = review.fingerprints
     writeFileSync(GRAMMAR_REFERENCE_TRANSLATION_REVIEW_PATH, `${JSON.stringify(ledger, null, 2)}\n`)
     console.error(`指紋を書き直した: ${review.changedPages.length}ページ（全${ledger.counts.pages}ページ）`)
-    process.exit(0)
+    stop(0)
   }
   const all = process.argv.includes('--all')
   for (const group of all ? review.candidates : review.unexplained) {
@@ -365,5 +366,5 @@ if (runDirectly) {
     `読んだ記録: 全${Object.keys(review.fingerprints).length}ページのうち読み直しが要るもの${review.changedPages.length}・なくなったもの${review.removedPages.length}`,
   ].join('\n'))
   const failed = review.unexplained.length || review.stale.length || review.unexplainedFocus.length || review.staleFocus.length || review.changedPages.length || review.removedPages.length
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

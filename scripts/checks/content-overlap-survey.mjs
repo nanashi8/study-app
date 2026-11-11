@@ -494,5 +494,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const result = surveyContentOverlaps()
   if (process.argv.includes('--json')) console.log(JSON.stringify(result, null, 2))
   else printReport(result)
-  if (result.problems.length) process.exit(1)
+  if (result.problems.length) process.exitCode = 1
 }

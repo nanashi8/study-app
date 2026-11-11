@@ -397,5 +397,5 @@ export function printEtymologyLearningQuality(report) {
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 if (isMain) {
   const report = auditEtymologyLearningQuality()
-  if (!printEtymologyLearningQuality(report)) process.exit(1)
+  if (!printEtymologyLearningQuality(report)) process.exitCode = 1
 }

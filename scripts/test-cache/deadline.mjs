@@ -4,6 +4,8 @@
 // ここでは (1) 段ごとの時間切れ、(2) 子・孫のうち CPU が動かないまま残っているものの見張り、の2つで止める。
 // 止めるときは、何が残っていたか（プロセスの一覧）を出してから、子・孫をまとめて止める。
 import { spawn, spawnSync } from 'node:child_process'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export const TIMED_OUT_STATUS = 124
 const POLL_MS = 5000
@@ -58,6 +60,9 @@ export function killTree(pid, table = processTable()) {
   kill(pid)
 }
 
+/** 時間を「◯分」か、1分未満なら「◯秒」で。 */
+export const duration = (ms) => (ms >= 60_000 ? `${Math.round(ms / 60_000)}分` : `${Math.round(ms / 1000)}秒`)
+
 const brief = (command) => (command.length > 200 ? `${command.slice(0, 80)} … ${command.slice(-110)}` : command)
 
 /**
@@ -84,7 +89,7 @@ export function stallWatcher({ pick, idleMs, maxMs }) {
       if (cpu !== state.cpu) Object.assign(state, { cpu, cpuChangedAt: now })
       seen.set(row.pid, state)
       if (now - state.cpuChangedAt >= idleMs) stalled.push({ pid: row.pid, name, reason: `CPU が ${Math.round((now - state.cpuChangedAt) / 1000)}秒 動かない` })
-      else if (now - state.firstSeen >= maxMs) stalled.push({ pid: row.pid, name, reason: `${Math.round((now - state.firstSeen) / 60000)}分 たっても終わらない` })
+      else if (now - state.firstSeen >= maxMs) stalled.push({ pid: row.pid, name, reason: `${duration(now - state.firstSeen)} たっても終わらない` })
     }
     for (const found of stalled) reported.add(found.pid)
     for (const pid of seen.keys()) if (!alive.has(pid)) seen.delete(pid)
@@ -108,7 +113,7 @@ export function runWithDeadline(command, args, { label = command, timeoutMs, wat
       if (timeoutMs && Date.now() - startedAt >= timeoutMs) {
         timedOut = true
         clearInterval(timer)
-        log(`\n❌ ${label} が ${Math.round(timeoutMs / 60000)}分 たっても終わらない（固まった）ので止めた。残っていたプロセス：`)
+        log(`\n❌ ${label} が ${duration(timeoutMs)} たっても終わらない（固まった）ので止めた。残っていたプロセス：`)
         for (const row of descendants(table ?? [], child.pid)) log(`   pid ${row.pid}・CPU ${row.cpu}秒・${brief(row.command)}`)
         killTree(child.pid, table)
         return
@@ -135,4 +140,28 @@ export function runWithDeadline(command, args, { label = command, timeoutMs, wat
 export const envMs = (name, fallback) => {
   const value = Number(process.env[name])
   return Number.isFinite(value) && value > 0 ? value : fallback
+}
+
+// コマンドとして使う（同期で子を流す道具が、孫まで止める時間切れを使うため。scripts/check-requests.mjs の確認コマンド）。
+//   node scripts/test-cache/deadline.mjs --timeout-ms <ミリ秒> --label <名前> -- <コマンド> [引数…]
+// 時間切れなら、残っていたプロセスを出して子・孫ごと止め、終了コード 124。そうでなければコマンドの終了コード。
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const args = process.argv.slice(2)
+  const at = args.indexOf('--')
+  const option = (name) => {
+    const index = args.indexOf(name)
+    return index >= 0 && index < at ? args[index + 1] : undefined
+  }
+  if (at < 0 || at === args.length - 1) {
+    console.error('使い方: node scripts/test-cache/deadline.mjs --timeout-ms <ミリ秒> --label <名前> -- <コマンド> [引数…]')
+    process.exitCode = 2
+  } else {
+    const [command, ...rest] = args.slice(at + 1)
+    const { status } = await runWithDeadline(command, rest, {
+      label: option('--label') ?? command,
+      timeoutMs: Number(option('--timeout-ms')) || undefined,
+      pollMs: envMs('STUDY_APP_STALL_POLL_MS', undefined),
+    })
+    process.exitCode = status
+  }
 }

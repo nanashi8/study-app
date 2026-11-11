@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs'
 import { ALL_WORDS } from '../../src/data/vocab.js'
 import { phrasesForWord } from '../../src/lib/wordPhrases.js'
 import { posSensesFor } from '../../src/lib/wordRelations.js'
+import { stop } from '../stop.mjs'
 
 export const PHRASE_SENSES_REVIEW_PATH = new URL('../../docs/audits/phrase-senses-review.json', import.meta.url)
 
@@ -65,11 +66,11 @@ export function phraseSensesGap() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   if (process.argv.includes('--list')) {
     for (const [key, pos] of phraseSenseHits()) console.log(`${key}\t${pos}`)
-    process.exit(0)
+    stop(0)
   }
   const gap = phraseSensesGap()
   console.log(`熟語の中の品詞の洗い出し: ${gap.hits} 行（理由のない行 ${gap.undecided.length}・拾われなくなった理由の行 ${gap.stale.length}・略号ちがい ${gap.badCodes.length}）`)
   for (const key of gap.undecided.slice(0, 30)) console.log(`  理由がない: ${key}`)
   for (const key of gap.stale) console.log(`  拾われなくなった: ${key}`)
-  process.exit(gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0)
+  process.exitCode = gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0
 }

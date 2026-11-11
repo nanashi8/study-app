@@ -330,5 +330,5 @@ export function surveyWideOverlap() {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const result = surveyWideOverlap()
   console.log(JSON.stringify(result, null, 2))
-  if (result.problems.length) process.exit(1)
+  if (result.problems.length) process.exitCode = 1
 }

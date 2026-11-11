@@ -17,12 +17,13 @@ import { WORD_IDIOM_NOTES, WORD_RELATION_NOTES } from '../src/data/word-relation
 import { RELATION_ADDITIONS, RELATION_MEANING_FIXES, RELATION_REMOVALS } from '../src/data/word-relation-edits.js'
 import { NAMED_WORD_LEDGER_PATH, NAMED_WORD_REASONS } from './checks/named-word-relations.mjs'
 import { createSourceEditor } from './relation-source-edit.mjs'
+import { stop } from './stop.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 const files = process.argv.slice(2)
 if (!files.length) {
   console.error('使い方: node scripts/relation-review-apply.mjs <決めたことのファイル>...')
-  process.exit(1)
+  stop(1)
 }
 const q = (value) => `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 const lower = (text) => String(text ?? '').trim().toLowerCase()
@@ -119,7 +120,7 @@ for (const file of files) {
 }
 if (errors.length) {
   console.error(errors.join('\n'))
-  process.exit(1)
+  stop(1)
 }
 
 const replaceBlock = (source, start, end, body) => {

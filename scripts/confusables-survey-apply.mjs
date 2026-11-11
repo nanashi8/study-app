@@ -10,12 +10,13 @@ import { ALL_WORDS } from '../src/data/vocab.js'
 import { WORD_USAGE_NOTES } from '../src/data/word-usage-notes.js'
 import { SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
 import { confusableSurveyPairs, CONFUSABLE_SKIP_REASONS, CONFUSABLES_SURVEY_PATH } from './checks/confusables-survey.mjs'
+import { stop } from './stop.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 const [decisionsFile] = process.argv.slice(2)
 if (!decisionsFile) {
   console.error('使い方: node scripts/confusables-survey-apply.mjs <決めたことのファイル>')
-  process.exit(1)
+  stop(1)
 }
 const q = (value) => `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 const spellings = new Set(ALL_WORDS.map((word) => word.word.toLowerCase()))
@@ -42,7 +43,7 @@ for (const line of readFileSync(decisionsFile, 'utf8').split('\n')) {
 }
 if (errors.length) {
   console.error(errors.join('\n'))
-  process.exit(1)
+  stop(1)
 }
 if (added.length) {
   const path = new URL('src/data/spelling-confusables.js', ROOT)

@@ -20,6 +20,7 @@ import { LOOKALIKE_LINKS, LOOKALIKE_NOTES } from '../../src/data/lookalike-forms
 import { lookalikeForms, relationInForm } from '../../src/lib/lookalikeForms.js'
 import { confusableSurveyPairs } from './confusables-survey.mjs'
 import { lookalikeNoteProblems, lookalikeVerdicts } from './lookalike-origins.mjs'
+import { stop } from '../stop.mjs'
 
 export const LOOKALIKE_FORMS_SURVEY_PATH = new URL('../../docs/audits/lookalike-forms-survey.json', import.meta.url)
 
@@ -249,7 +250,7 @@ if (runDirectly) {
   const pairs = lookalikeFormPairs()
   if (process.argv.includes('--list')) {
     for (const [key, whys] of pairs) console.log(`${key}\t${whys.join('・')}`)
-    process.exit(0)
+    stop(0)
   }
   const gaps = lookalikeFormGaps({ pairs })
   const { checked, conflicts } = lookalikeFormConflicts()
@@ -262,5 +263,5 @@ if (runDirectly) {
     for (const row of gaps[key].slice(0, 20)) console.log(`  ${key}: ${row}`)
     if (gaps[key].length > 20) console.log(`  ${key}: ほか ${gaps[key].length - 20}件`)
   }
-  process.exit(lists.some((key) => gaps[key].length) ? 1 : 0)
+  process.exitCode = lists.some((key) => gaps[key].length) ? 1 : 0
 }

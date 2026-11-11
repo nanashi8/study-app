@@ -57,5 +57,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (gap.staleSkips.length) console.log(`候補でなくなった理由の行: ${gap.staleSkips.join(' ')}`)
     if (gap.badCodes.length) console.log(`略号がちがう行: ${gap.badCodes.join(' ')}`)
   }
-  process.exit(gap.missing.length || gap.stale.length || candidateProblems.length ? 1 : 0)
+  process.exitCode = gap.missing.length || gap.stale.length || candidateProblems.length ? 1 : 0
 }

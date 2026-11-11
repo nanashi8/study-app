@@ -18,6 +18,7 @@ import {
   MATH_HISTORY_THEME_COLORS,
 } from '../../src/data/math-history.js'
 import { MATH_UNITS } from '../../src/data/math.js'
+import { stop } from '../stop.mjs'
 
 const ROOT = new URL('../../', import.meta.url)
 export const FACTS_PATH = new URL('docs/audits/math-history-facts.json', ROOT)
@@ -249,7 +250,7 @@ if (runDirectly) {
     )
     writeFileSync(FACTS_PATH, `${JSON.stringify(ledger, null, 2)}\n`)
     console.log(`押し直した: ${targets.join(', ')}`)
-    process.exit(0)
+    stop(0)
   }
   const modes = args.length ? args : Object.keys(MODES)
   let failed = 0
@@ -272,6 +273,6 @@ if (runDirectly) {
       console.log(`✅ ${mode}: ${counts[mode]}`)
     }
   }
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }
 

@@ -178,9 +178,26 @@ const checkEnv = () => {
   }
 }
 
+// 確認コマンドの時間切れ。scripts/test-cache/deadline.mjs を通して、時間切れなら孫のプロセスまで止める
+// （execSync の timeout は、コマンドを流すシェルしか止めない。2026-11-11）。テストの使い捨てのリポジトリには道具がないので、
+// ないときは execSync の timeout で止める。
+export const CHECK_TIMEOUT_MS = 15 * 60 * 1000
+const DEADLINE = join(ROOT, 'scripts/test-cache/deadline.mjs')
+
 function runCheck(command) {
+  const timeoutMs = Number(process.env.STUDY_APP_CHECK_TIMEOUT_MS) || CHECK_TIMEOUT_MS
+  if (existsSync(DEADLINE)) {
+    const result = spawnSync(process.execPath, [DEADLINE, '--timeout-ms', String(timeoutMs), '--label', `確認コマンド「${command}」`, '--', '/bin/sh', '-c', command], {
+      cwd: ROOT, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8', maxBuffer: 1 << 28,
+      // 道具そのものが止まったときの最後の砦（道具は timeoutMs で子・孫を止めて終わる）。
+      timeout: timeoutMs + 60 * 1000,
+    })
+    if (result.status === 0) return { ok: true, output: '' }
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`.trim().split('\n').slice(-15).join('\n')
+    return { ok: false, output: output || (result.error ? String(result.error.message) : `終了コード ${result.status}`) }
+  }
   try {
-    execSync(command, { cwd: ROOT, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: 15 * 60 * 1000 })
+    execSync(command, { cwd: ROOT, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: timeoutMs })
     return { ok: true, output: '' }
   } catch (error) {
     const output = `${error.stdout ?? ''}${error.stderr ?? ''}`.trim().split('\n').slice(-15).join('\n')
@@ -312,13 +329,14 @@ function mode(name) {
   return process.argv.includes(`--${name}`)
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// 終了コードを返す（process.exit は呼ばない。Node 25 は process.exit の途中で固まることがある。scripts/stop.mjs）。
+async function main() {
   const { requests, problems } = loadRequests()
 
   if (mode('report')) {
     console.log(describe(requests) || '開いている依頼はない')
     if (problems.length) console.log(`\n台帳の誤り:\n${problems.join('\n')}`)
-    process.exit(problems.length ? 1 : 0)
+    return problems.length ? 1 : 0
   }
 
   if (mode('owners')) {
@@ -329,13 +347,23 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.log(`■ requests/${request.file}: ${sessions.length ? sessions.join(' ') : '持ち主のセッション（sessions）が書かれていない'}`)
     }
     if (!open.length) console.log('開いている依頼はない')
-    process.exit(orphans.length ? 1 : 0)
+    return orphans.length ? 1 : 0
   }
 
   if (mode('prompt')) {
     // このセッションの id を見せ、このセッションの依頼は条件まで全部、ほかのセッションの依頼は1行に畳んで見せる。
     const input = readInput()
     const open = describe(requests, input.session_id ?? null)
+    // 公開の自動処理の最新が失敗していたら知らせる（scripts/checks/deploy-status.mjs。テストの使い捨てのリポジトリには道具がない）。
+    const deployStatus = join(ROOT, 'scripts/checks/deploy-status.mjs')
+    let deployNotice = ''
+    if (existsSync(deployStatus)) {
+      try {
+        deployNotice = (await import(pathToFileURL(deployStatus).href)).deployStatusNotice({ root: ROOT })
+      } catch {
+        deployNotice = ''
+      }
+    }
     const context = [
       RULES,
       // commit・push の前の確認は git のフックがする。フックの場所が env で届いていなければ、確認が動かない。
@@ -344,9 +372,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       input.session_id ? `\n【このセッションの id】${input.session_id}（依頼台帳の sessions に書く）` : '',
       open ? `\n【開いている依頼】\n${open}` : '\n【開いている依頼】なし（新しい依頼なら、作業の前に requests/ へ書く）',
       problems.length ? `\n【台帳の誤り】\n${problems.join('\n')}` : '',
+      deployNotice ? `\n${deployNotice}` : '',
     ].filter(Boolean).join('\n')
     console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'UserPromptSubmit', additionalContext: context } }))
-    process.exit(0)
+    return 0
   }
 
   if (mode('edit')) {
@@ -354,17 +383,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const filePath = input.tool_input?.file_path ?? input.tool_input?.notebook_path ?? ''
     const rel = filePath ? relative(ROOT, resolve(filePath)) : ''
     const guarded = /^(src|tests|scripts)\//.test(rel)
-    if (!guarded) process.exit(0)
+    if (!guarded) return 0
     if (problems.length) {
       console.error(`依頼台帳に誤りがある。直してから変更すること。\n${problems.join('\n')}`)
-      process.exit(2)
+      return 2
     }
     if (!ownRequests(requests, input.session_id).length) {
       const who = input.session_id ? `、sessions にこのセッションの id（${input.session_id}）を入れること` : 'こと'
       console.error(`${rel} を変更する前に、requests/ に依頼の原文と受け入れ条件（母集団・確認コマンドつき）を書き${who}。\n${RULES}`)
-      process.exit(2)
+      return 2
     }
-    process.exit(0)
+    return 0
   }
 
   if (mode('git-commit') || mode('git-pre-push')) {
@@ -390,9 +419,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (failures.length) {
       const where = mode('git-commit') ? 'commit の前の確認（prepare-commit-msg）' : 'push の前の確認（pre-push）'
       console.error(`${where}が通らないので止めた（${HOOKS_PATH}）。\n\n${failures.join('\n\n')}`)
-      process.exit(1)
+      return 1
     }
-    process.exit(0)
+    return 0
   }
 
   if (mode('stop')) {
@@ -416,8 +445,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       ].join('\n')
       console.log(JSON.stringify({ decision: 'block', reason }))
     }
-    process.exit(0)
+    return 0
   }
 
   console.log('使い方: node scripts/check-requests.mjs --report | --owners | --prompt | --edit | --stop | --git-commit | --git-pre-push')
+  return 0
 }
+
+if (import.meta.url === `file://${process.argv[1]}`) process.exitCode = await main()

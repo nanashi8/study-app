@@ -107,6 +107,6 @@ if (runDirectly) {
     for (const problem of problems.slice(0, 40)) console.log(`  - ${problem}`)
     if (problems.length > 40) console.log(`  - ほか ${problems.length - 40}件`)
     console.log(problems.length ? `❌ ${problems.length}件` : `✅ 漢字のかたまり ${ledger.runs.length}件を見た記録と一致（カタカナの読み ${Object.keys(ledger.katakana).length}語）`)
-    process.exit(problems.length ? 1 : 0)
+    process.exitCode = problems.length ? 1 : 0
   }
 }

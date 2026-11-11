@@ -19,6 +19,7 @@ import {
   LOOKALIKE_FORM_SKIP_REASONS,
   lookalikeFormPairs,
 } from './checks/lookalike-forms.mjs'
+import { stop } from './stop.mjs'
 
 const DATA_PATH = new URL('../src/data/lookalike-forms.js', import.meta.url)
 const DECISIONS_DIR = new URL('../docs/audits/lookalike-forms/', import.meta.url)
@@ -102,7 +103,7 @@ for (const key of Object.keys(reviewed)) {
 }
 if (errors.length) {
   for (const error of errors) console.error(error)
-  process.exit(1)
+  stop(1)
 }
 
 const quote = (text) => `'${String(text).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
@@ -138,7 +139,7 @@ if (process.argv.includes('--check')) {
   const stale = outputs.filter(([path, text]) => readFileSync(path, 'utf8') !== text).map(([path]) => path.pathname.split('/').slice(-2).join('/'))
   if (stale.length) {
     console.error(`決めた中身（docs/audits/lookalike-forms/dec-*.tsv）と合わない: ${stale.join('・')}。node scripts/lookalike-forms-apply.mjs で書き直す`)
-    process.exit(1)
+    stop(1)
   }
 } else {
   for (const [path, text] of outputs) writeFileSync(path, text)

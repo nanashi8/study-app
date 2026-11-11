@@ -413,5 +413,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     for (const problem of problems.slice(0, 20)) console.log(`    ${problem}`)
     if (problems.length) failed = true
   }
-  process.exit(failed ? 1 : 0)
+  process.exitCode = failed ? 1 : 0
 }

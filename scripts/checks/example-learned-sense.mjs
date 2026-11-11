@@ -11,6 +11,7 @@ import { readFileSync } from 'node:fs'
 import { ALL_WORDS } from '../../src/data/vocab.js'
 import { PHRASES } from '../../src/data/phrases.js'
 import { splitMeanings } from '../../src/data/compact.js'
+import { stop } from '../stop.mjs'
 
 export const EXAMPLE_SENSE_REVIEW_PATH = new URL('../../docs/audits/example-sense-review.json', import.meta.url)
 
@@ -133,12 +134,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (onlyUndecided && ledger.reviewed?.[item.key]) continue
       console.log([item.key, item.meaning, item.example?.en, item.example?.ja, item.level, item.pos].join('\t'))
     }
-    process.exit(0)
+    stop(0)
   }
   const gap = exampleSenseGap()
   console.log(`例文が学ぶ意味で使われているか: 例文 ${gap.items} 件のうち和訳に意味の訳語がない ${gap.candidates} 件（読んだもの ${gap.reviewed}・未読 ${gap.undecided.length}・拾われなくなった台帳の行 ${gap.stale.length}・合わない行 ${gap.wrong.length}）`)
   for (const key of gap.undecided.slice(0, 30)) console.log(`  未読: ${key}`)
   for (const key of gap.stale.slice(0, 30)) console.log(`  拾われなくなった: ${key}`)
   for (const line of gap.wrong.slice(0, 30)) console.log(`  合わない: ${line}`)
-  process.exit(gap.undecided.length || gap.stale.length || gap.wrong.length ? 1 : 0)
+  process.exitCode = gap.undecided.length || gap.stale.length || gap.wrong.length ? 1 : 0
 }

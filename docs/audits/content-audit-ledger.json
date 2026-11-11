@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-11T07:29:36.262Z",
+  "auditedAt": "2026-11-11T09:58:25.664Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c74b7625415201dc55f3ed46fc9658722f58d3f14f646002fa6f2ac94c743550",
+    "sha256": "db6855fb4bf80eb064fb91234b32dbfc942be7c01e812b99725721b34d6da2f1",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -240,6 +240,7 @@
       "tests/custom-cards-subjects.test.mjs",
       "tests/custom-cards.test.mjs",
       "tests/custom-words.test.mjs",
+      "tests/deploy-status-notice.test.mjs",
       "tests/deploy-workflow.test.mjs",
       "tests/detail-uses-study-card.test.mjs",
       "tests/diagnostic.test.mjs",
@@ -340,8 +341,10 @@
       "tests/modifier-word-phrase-clause.test.mjs",
       "tests/no-background-music.test.mjs",
       "tests/no-credits-page.test.mjs",
+      "tests/no-process-exit.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
       "tests/ocr-forms-phrases.test.mjs",
+      "tests/ocr-models-fetch-retry.test.mjs",
       "tests/ocr-pipeline.test.mjs",
       "tests/passage-sense-glosses.test.mjs",
       "tests/phonetic-stress.test.mjs",

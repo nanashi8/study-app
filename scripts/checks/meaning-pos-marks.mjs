@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { ALL_WORDS } from '../../src/data/vocab.js'
 import { splitMeanings } from '../../src/data/compact.js'
+import { stop } from '../stop.mjs'
 
 export const MEANING_POS_MARKS_PATH = new URL('../../docs/audits/meaning-pos-marks.json', import.meta.url)
 
@@ -65,11 +66,11 @@ export function meaningPosMarksGap() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   if (process.argv.includes('--list')) {
     for (const key of meaningPosMarkHits()) console.log(key)
-    process.exit(0)
+    stop(0)
   }
   const gap = meaningPosMarksGap()
   console.log(`意味欄の品詞の印: 拾った訳語 ${gap.hits} 件（印も理由もないもの ${gap.undecided.length}・拾われなくなった理由の行 ${gap.stale.length}・略号ちがい ${gap.badCodes.length}）`)
   for (const key of gap.undecided.slice(0, 30)) console.log(`  印も理由もない: ${key}`)
   for (const key of gap.stale.slice(0, 30)) console.log(`  拾われなくなった: ${key}`)
-  process.exit(gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0)
+  process.exitCode = gap.undecided.length || gap.stale.length || gap.badCodes.length ? 1 : 0
 }

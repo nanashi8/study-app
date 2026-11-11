@@ -18,11 +18,12 @@ import {
   projectJapanMain,
   projectWorldShifted,
 } from '../../src/data/subjects/projection.js'
+import { stop } from '../stop.mjs'
 
 const folder = process.argv[2]
 if (!folder) {
   console.error('使い方：node scripts/subjects/build-maps.mjs <japan.json のあるフォルダ>')
-  process.exit(1)
+  stop(1)
 }
 const OUT = path.resolve(import.meta.dirname, '../../src/data/subjects/maps.js')
 const WORLD_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson'

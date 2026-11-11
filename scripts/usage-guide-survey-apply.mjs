@@ -7,11 +7,12 @@
 // 決めたことは表のファイルにも「組<TAB>略号」で書き戻す。
 import { readFileSync, writeFileSync } from 'node:fs'
 import { USAGE_GUIDE_SKIP_REASONS, USAGE_GUIDE_SURVEY_PATH, readUsageGuideSurvey, usageGuidePairCards, usageGuideSurveyPairs } from './checks/usage-guide-survey.mjs'
+import { stop } from './stop.mjs'
 
 const [batch, codesArg = ''] = process.argv.slice(2)
 if (!batch) {
   console.error('使い方: node scripts/usage-guide-survey-apply.mjs <batch-NNNN.tsv> <略号の並び>')
-  process.exit(1)
+  stop(1)
 }
 const path = new URL(`../docs/audits/usage-guide-survey/${batch.replace(/^.*\//, '')}`, import.meta.url)
 const keys = readFileSync(path, 'utf8').split('\n').map((line) => line.split('\t')[0]).filter(Boolean)
@@ -25,7 +26,7 @@ const codes = numbered
   : [...codesArg.replace(/\s+/g, '')]
 if (codes.length !== keys.length) {
   console.error(`行の数 ${keys.length} と略号の数 ${codes.length} がちがう`)
-  process.exit(1)
+  stop(1)
 }
 const pairs = usageGuideSurveyPairs()
 const ledger = readUsageGuideSurvey()

@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import { ALL_SUBJECT_TERMS, getSubjectUnit } from '../../src/data/subjects/index.js'
+import { stop } from '../stop.mjs'
 
 const ROOT = new URL('../../', import.meta.url)
 export const GLOSSARY_LEDGER_PATH = new URL('docs/audits/junior-social-science-glossary.json', ROOT)
@@ -68,7 +69,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     if (problems.length) {
       console.log(`食いちがい ${problems.length}件`)
       for (const problem of problems.slice(0, 40)) console.log(`  - ${problem}`)
-      process.exit(1)
+      stop(1)
     }
     console.log('全語句の解説が、読み直した記録と一致')
   }
