@@ -7,7 +7,7 @@
   "sessions": [
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-11 の精査。前の報告で直さなかった・確かめていないとしたものと、精査で新しく見つけたもの。直す：(1) 公開の失敗の知らせが deploy.yml しか見ていない。main への push で動く公開の自動処理はもう1つ、データベースの規則を本番へ出す firebase-rules.yml がある（最近5回は成功）。(2) 手で使う道具の引数つきの道筋を流していない。前の直しで変えたのは止め方だけだが、stop() は try の中で呼ぶと catch に捕まり、止まらずに進む（前の直しでは1ファイルを手で見つけて直した）。人の目で見つけるのでなく、全ファイルを構文で読んで止める。直さない：(3) テスト以外の段の「動かない処理」の見張り：scripts/・tests/ の process.exit はなくなり、段の時間切れも残る。(4) Node の更新：要らなくなった。(5) 公開版の画面：道具だけの変更。(6) commit・push のたびの全依頼の確認：1回3〜21秒で、減らすと偽りの done を止める仕組みが弱くなる。精査で確かめて問題がなかったもの：scripts/・tests/ の外に process.exit はない（文書の中の文字だけ）。書き換えたスクリプトのうち終わりを妨げうるもの（開発サーバー・通信・タイマー）は、閉じてから終わるか、終わりを妨げない（AbortSignal.timeout のタイマーは終わりを待たせない）。引数なしの道筋で57本すべてが300秒以内に終わった（読み込むだけで開いたままになるものはない）。時間切れのない同期の子プロセスの呼び出し（git・tar など）は、どれも全教材監査の段・テストの組・フックの時間切れの内側で流れる。ビルドの道具（vite）が process.exit を呼ぶのは失敗したときだけで、段の時間切れ（10分）で止まる。",
   "criteria": [
     {
@@ -31,8 +31,8 @@
       "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "全テスト・全監査と公開の自動処理",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/deploy-status-notice.test.mjs tests/no-process-exit.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+      "status": "done",
+      "verifiedBy": "2026-11-11: 作業ツリーの npm run audit:all-content が通り（175秒）、クリーンな clone（npm ci したての node_modules）の npm run audit:all-content が通った（212秒）。4201bfbc を main へ push し、GitHub Pages の公開（run 43029266580）が成功。作業ツリーは git pull --ff-only で 4201bfbc に合わせ、未コミットの変更は0件。検証用の clone は、この記録の commit を push したあとに消す。"
     }
   ]
 }
