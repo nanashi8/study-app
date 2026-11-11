@@ -7,7 +7,7 @@
   "sessions": [
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-12。前の依頼（requests/2026-11-11-audit-flow-recheck.json）の報告の問い「公開の手順（deploy.yml）に時間切れを入れますか？」への返事。前の依頼では、push の権限に workflow がなく入れられなかった。権限の確かめ：git の push が使う認証（osxkeychain）の範囲は gist・read:org・repo・workflow で、ワークフローのファイルを変える push ができる（gh のコマンドのトークンは gist・read:org・repo のままだが、push には使われない）。長さの決め方：直近100回の公開（deploy.yml・main）の job ごとの時間を調べた。build は成功99回で中央263秒・最長328秒、deploy は成功97回で中央18秒・最長118秒。deploy の失敗2回は 619秒・626秒（公開の部品 actions/deploy-pages が自分の時間切れ10分で止めたもの）。build は15分（最長の約2.7倍）、deploy は12分（部品の時間切れ10分が先に理由つきで止められる長さ）。合わせて27分で、公開の知らせ「【公開が終わらない】」の30分より短い（動いている job は知らせの前に必ず終わり、知らせは順番待ちのまま進まない公開を拾う）。firebase-rules.yml の job は前から10分。",
   "criteria": [
     {
@@ -23,7 +23,8 @@
       "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、時間切れの入ったワークフローで公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "全テスト・全監査と公開の自動処理",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/workflow-timeouts.test.mjs tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-11-12: 作業ツリーの npm run audit:all-content が通り（104秒）、クリーンな clone（npm ci したての node_modules）の npm run audit:all-content が通った（93秒・監査のあとの未コミットの変更は0件）。9fa42b94 を main へ push でき（ワークフローのファイルを変える push が断られなかった）、時間切れの入った deploy.yml で GitHub Pages の公開（run 43053492780）が成功（全体125秒・build 104秒・deploy 10秒）。origin/main の deploy.yml に timeout-minutes が2つある。作業ツリーは git pull --ff-only で 9fa42b94 に合わせ、未コミットの変更は0件。検証用の clone は、この記録の commit を push したあとに消す。確かめていないこと：時間切れが実際に job を止めるところ（固まった公開を作って試してはいない。GitHub の仕組みに任せる）。"
     }
   ]
 }
