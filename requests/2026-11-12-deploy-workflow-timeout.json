@@ -1,0 +1,29 @@
+{
+  "id": "2026-11-12-deploy-workflow-timeout",
+  "title": "公開の手順（deploy.yml）の job に時間切れを入れ、固まった公開が最長6時間そのままにならないようにする",
+  "asked": [
+    "権限を足したので入れて"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-12。前の依頼（requests/2026-11-11-audit-flow-recheck.json）の報告の問い「公開の手順（deploy.yml）に時間切れを入れますか？」への返事。前の依頼では、push の権限に workflow がなく入れられなかった。権限の確かめ：git の push が使う認証（osxkeychain）の範囲は gist・read:org・repo・workflow で、ワークフローのファイルを変える push ができる（gh のコマンドのトークンは gist・read:org・repo のままだが、push には使われない）。長さの決め方：直近100回の公開（deploy.yml・main）の job ごとの時間を調べた。build は成功99回で中央263秒・最長328秒、deploy は成功97回で中央18秒・最長118秒。deploy の失敗2回は 619秒・626秒（公開の部品 actions/deploy-pages が自分の時間切れ10分で止めたもの）。build は15分（最長の約2.7倍）、deploy は12分（部品の時間切れ10分が先に理由つきで止められる長さ）。合わせて27分で、公開の知らせ「【公開が終わらない】」の30分より短い（動いている job は知らせの前に必ず終わり、知らせは順番待ちのまま進まない公開を拾う）。firebase-rules.yml の job は前から10分。",
+  "criteria": [
+    {
+      "id": "workflow-jobs-have-timeout",
+      "text": ".github/workflows/ の全ワークフローの全 job に timeout-minutes がある（既定の6時間に任せない）。main への push で動くワークフローは、job の時間切れの合計が、公開の知らせの「終わらない」の時間（30分）より短い",
+      "population": ".github/workflows/ の全ワークフローの全 job（2026-11-12 の時点で2ファイル・3 job：deploy.yml の build・deploy、firebase-rules.yml の deploy-rules）",
+      "check": "node --test tests/workflow-timeouts.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-12: .github/workflows/deploy.yml の build に timeout-minutes: 15、deploy に timeout-minutes: 12 を入れた（firebase-rules.yml の deploy-rules は前から10）。全ワークフロー2ファイルの全 job 3つのうち3つに時間切れがある。tests/workflow-timeouts.test.mjs が、.github/workflows/ の全ファイルの全 job（読んだ job の数が runs-on の数と同じこと）に 1〜20分の timeout-minutes があること、main への push で動くワークフローの job の時間切れの合計（deploy.yml は27分・firebase-rules.yml は10分）が知らせの30分より短いこと、時間切れを抜いた写し・step だけに書いた写し・数でない値・360分の写しを検査が見つけることを確かめる。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、時間切れの入ったワークフローで公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "全テスト・全監査と公開の自動処理",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/workflow-timeouts.test.mjs tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

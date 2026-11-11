@@ -15,7 +15,8 @@ export const DEPLOY_STATUS_CACHE = process.env.STUDY_APP_DEPLOY_STATUS_CACHE ?? 
 export const REFRESH_MS = 5 * 60 * 1000
 export const QUERY_TIMEOUT_MS = 8000
 // 公開の自動処理はふだん4〜5分で終わる。これより長く終わらなければ、固まったとみなして知らせる
-// （deploy.yml の job には時間切れがなく、固まると最長6時間そのままで、後の公開も待たされる）。
+// 動いている job は自分の時間切れ（deploy.yml は build 15分＋deploy 12分、firebase-rules.yml は10分。tests/workflow-timeouts.test.mjs）で
+// 先に止まるので、この知らせが拾うのは、順番待ちのまま進まない公開と、時間切れが効かなかった公開。
 export const STUCK_MS = 30 * 60 * 1000
 const FIELDS = 'databaseId,headSha,status,conclusion,displayTitle,createdAt,workflowName'
 

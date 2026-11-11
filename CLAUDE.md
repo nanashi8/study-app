@@ -70,7 +70,7 @@
 | 1回目に原因を調べず「スリープの疑い」と書き、同じ固まりを繰り返した | 止めて流し直したら通ったので、調べなかった | 固まった処理は、**止める前に** `sample <pid> 2` で何を待っているかを見て、原因を台帳に書く。流し直して通っても、原因が分かるまで「直った」としない |
 
 - scripts/・tests/ のどこでも `process.exit` を呼ばない（`tests/no-process-exit.test.mjs` が止める）。最後に終わるところは `process.exitCode` を入れてふつうに終わらせ、途中で止めるところは `scripts/stop.mjs` の `stop(終了コード)`（try の中で呼ぶなら catch で `if (isStop(error)) throw error`。構文で読んで確かめる）、関数の中なら `return`。子を流すときは `runWithDeadline`（同期で流す道具は `node scripts/test-cache/deadline.mjs --timeout-ms … -- コマンド`）を使い、時間切れのない `spawnSync` を足さない。
-- 公開の自動処理（main への push で動く全ワークフロー）の最新が失敗していたら、利用者の発言ごとのフックが「【公開の失敗】」で、30分たっても終わらなければ「【公開が終わらない】」で知らせる（`scripts/checks/deploy-status.mjs`）。出ていたら、ほかの作業より先に理由を見て直す。
+- 公開の自動処理（main への push で動く全ワークフロー）の最新が失敗していたら、利用者の発言ごとのフックが「【公開の失敗】」で、30分たっても終わらなければ「【公開が終わらない】」で知らせる（`scripts/checks/deploy-status.mjs`）。出ていたら、ほかの作業より先に理由を見て直す。ワークフローの job には必ず `timeout-minutes` を書く（書かないと既定は6時間。`tests/workflow-timeouts.test.mjs` が止める）。
 - 裏で流すときは、記録の最後に終了コードを書く（`…; echo "audit exit $?" >> 記録`）。裏の処理の通知の「exit code 0」は最後のコマンド（tail など）のもので、監査の成否ではない。記録の `audit exit 0` と「✅ 全教材監査と台帳記録が完了しました」を見る。
 - 時間切れで止まったら（`❌ … が固まった`・exit 124）、同じことをもう一度流す前に、出た名前とプロセスの一覧から原因を調べる。
 
