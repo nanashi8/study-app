@@ -8,7 +8,7 @@
   "sessions": [
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-11 の調べ：検証用の clone の npm run audit:all-content が、開始3秒で固まり7時間そのままだった（前日も tests/learning-analytics.test.mjs で約7時間）。固まった子プロセスを sample で見ると、scripts/test-cache/preload.mjs の「前回の合格を使う」経路の process.exit(0) の中で、Node 25.2.1 が裏のコンパイル用スレッド（Maglev）の終了を待ったまま止まっていた（node::Environment::Exit → DisposePlatform → WorkerThreadsTaskRunner::Shutdown → uv_thread_join）。同じ日に見張りつきで流し直した2回も同じ形で固まった。監査の道具には時間切れがなく、固まると失敗にも終了にもならず、順番（~/.cache/study-app-test-lock）も持ち続ける。作業者（Claude）は終了の通知を待つだけで見張りを置かず、前日は原因を調べずに「スリープの疑い」と書いた。11-04 にも同じ固まりがメモに残っていたが、仕組みは直していなかった。",
   "criteria": [
     {
@@ -48,8 +48,8 @@
       "text": "直したあと、固まらずに終わることを繰り返し流して確かめ、クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "全テスト・全監査と公開の自動処理",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/audit-hang-guard.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+      "status": "done",
+      "verifiedBy": "2026-11-11: 直したあと、作業ツリーの npm run audit:all-content が3回続けて固まらずに通った（道具を変えた直後で全テストが流れた回 879秒、157秒、テストの段だけ10回）。クリーンな clone の npm run audit:all-content が通り（168秒。直す前は同じ clone で3回続けて固まった）、e7c13a9b を main へ push、GitHub Pages の公開（run 42979105391、e7c13a9b）が成功。作業ツリーは git pull --ff-only で e7c13a9b に合わせ、未コミットの変更は0件。検証用の clone は、この記録の commit を確かめて push したあとに消す。確かめていないこと：公開版の画面（道具だけの変更で、アプリの中身は変えていない）。"
     }
   ]
 }
