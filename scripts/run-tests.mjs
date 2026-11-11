@@ -2,11 +2,11 @@
 // 全テストを並列で流す。軽いテストを先に流して早く落とし、ブラウザや開発サーバーを使う重いテストは本数をしぼる。
 //   node scripts/run-tests.mjs          : 変更に関係するテストだけ流す（前回の合格から読むファイルが変わっていないテストは流さない）
 //   node scripts/run-tests.mjs --full   : 全部流す（控えは書き直す）
-import { spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { envMs, runWithDeadline, stallWatcher } from './test-cache/deadline.mjs'
 import { acquireTestLock } from './test-cache/lock.mjs'
 import { missSummary } from './test-cache/store.mjs'
 
@@ -23,14 +23,34 @@ export function testGroups(root = ROOT) {
   return { light: files.filter((file) => !heavy.includes(file)), heavy }
 }
 
-function run(files, concurrency, env) {
+// 固まったテストを時間切れで失敗にする（scripts/test-cache/deadline.mjs）。
+// テストのファイル1つ：CPU が5分動かない、または30分たっても終わらないなら、そのファイルだけ止めて失敗にする。
+// 組の全体：軽いテスト20分・重いテスト35分（合わせて、全教材監査のテストの段の60分より短い）を過ぎたら、残りをまとめて止める。
+export const FILE_IDLE_MS = 5 * 60 * 1000
+export const FILE_MAX_MS = 30 * 60 * 1000
+export const GROUP_TIMEOUT_MS = { light: 20 * 60 * 1000, heavy: 35 * 60 * 1000 }
+const TEST_FILE = /(?:^|\s)(tests\/[^\s/]+\.test\.mjs)\s*$/
+
+async function run(group, files, concurrency, env) {
   if (!files.length) return 0
-  const result = spawnSync(process.execPath, ['--test', `--test-concurrency=${concurrency}`, ...files], { cwd: ROOT, env, stdio: 'inherit' })
-  if (result.error) throw result.error
-  return result.status ?? 1
+  const { status, timedOut, stalled } = await runWithDeadline(process.execPath, ['--test', `--test-concurrency=${concurrency}`, ...files], {
+    cwd: ROOT,
+    env,
+    label: group === 'light' ? '軽いテストの組' : '重いテストの組',
+    timeoutMs: envMs('STUDY_APP_TEST_GROUP_TIMEOUT_MS', GROUP_TIMEOUT_MS[group]),
+    pollMs: envMs('STUDY_APP_STALL_POLL_MS', undefined),
+    watch: stallWatcher({
+      // node --test がテストのファイルごとに起こす子（コマンドの最後がテストのファイル）。
+      pick: (row) => row.command.match(TEST_FILE)?.[1] ?? null,
+      idleMs: envMs('STUDY_APP_STALL_IDLE_MS', FILE_IDLE_MS),
+      maxMs: envMs('STUDY_APP_TEST_FILE_MAX_MS', FILE_MAX_MS),
+    }),
+  })
+  // 固まった子を止めても node --test が失敗にしなかったときのために、ここでも失敗にする。
+  return (timedOut || stalled.length) && status === 0 ? 1 : status
 }
 
-function main() {
+async function main() {
   const full = process.argv.includes('--full')
   const { light, heavy } = testGroups()
   const logDir = mkdtempSync(join(tmpdir(), 'study-app-test-run-'))
@@ -49,8 +69,8 @@ function main() {
     AUDIT_TEST_MISS_LOG: missLog,
   }
   const startedAt = Date.now()
-  let status = run(light, LIGHT_CONCURRENCY, env)
-  if (status === 0) status = run(heavy, HEAVY_CONCURRENCY, env)
+  let status = await run('light', light, LIGHT_CONCURRENCY, env)
+  if (status === 0) status = await run('heavy', heavy, HEAVY_CONCURRENCY, env)
   const hits = existsSync(hitLog) ? readFileSync(hitLog, 'utf8').trim().split('\n').filter(Boolean).length : 0
   const misses = missSummary(missLog)
   rmSync(logDir, { recursive: true, force: true })
@@ -58,7 +78,8 @@ function main() {
   console.log(`\nテスト ${total} ファイルのうち ${total - hits} ファイルを流した（${hits} ファイルは前回の合格から読むファイルが変わっていない）・${Math.round((Date.now() - startedAt) / 1000)}秒${status === 0 ? '' : '・失敗あり'}`)
   // 流し直した理由（変わっていないのに流れたテストを見つけるため。2026-11-05）。
   if (misses.length) console.log(`流し直した理由：\n${misses.join('\n')}`)
-  process.exit(status)
+  // process.exit は呼ばない（Node 25 は終了の途中で固まることがある。2026-11-11）。ふつうに終わらせる。
+  process.exitCode = status
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main()
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main()

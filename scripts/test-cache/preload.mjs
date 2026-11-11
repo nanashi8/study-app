@@ -5,7 +5,7 @@
 import { createRequire, registerHooks, syncBuiltinESMExports } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
   appendHit, appendMiss, currentRecord, envSignature, evaluateRecord, GENERATED, loadTraces, removeRecord, saveRecord, saveTrace,
   usesTemp,
@@ -44,7 +44,11 @@ function start() {
       const verdict = evaluateRecord({ root: ROOT, record: currentRecord(CACHE_DIR, owner), signature, now: startedAt, state })
       if (verdict.hit) {
         appendHit(HIT_LOG, owner)
-        process.exit(0)
+        // process.exit は呼ばない。Node 25 は、裏のコンパイル用スレッドが動いている間に process.exit すると、
+        // 終了の途中で止まったまま終わらないことがある（2026-11-11、全教材監査が開始3秒で固まり7時間そのままだった。
+        // 836回に6回）。テストの本体を空のモジュールに差し替えて、ふつうに終わらせる。
+        skipTestBody(process.argv[1])
+        return
       }
       appendMiss(MISS_LOG, owner, verdict.reason)
     }
@@ -87,6 +91,20 @@ function start() {
   }
   const trace = installTrace()
   process.on('exit', () => saveTrace(process.env.AUDIT_TEST_TRACE_DIR, trace))
+}
+
+/** テストの本体（最初に読むファイル）を空のモジュールに差し替える。前回の合格を使うときに、流さずにふつうに終わらせる。 */
+function skipTestBody(entry) {
+  const target = fs.realpathSync(resolve(entry))
+  const fallback = pathToFileURL(resolve(entry)).href
+  registerHooks({
+    load(url, context, next) {
+      if (url.startsWith('file:') && (url === fallback || fileURLToPath(url) === target)) {
+        return { format: 'module', source: '', shortCircuit: true }
+      }
+      return next(url, context)
+    },
+  })
 }
 
 function installTrace() {

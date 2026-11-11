@@ -1,0 +1,55 @@
+{
+  "id": "2026-11-11-audit-hang-fix",
+  "title": "全教材監査が固まったまま何時間も終わらない不具合を直し、固まっても気づける仕組みと決まりにする",
+  "asked": [
+    "まだ終わらないんですか？7時間経ってますよ！おかしくないですか？",
+    "不具合を修正して二度と同じ誤りを繰り返さないように対策しなさい。"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-11 の調べ：検証用の clone の npm run audit:all-content が、開始3秒で固まり7時間そのままだった（前日も tests/learning-analytics.test.mjs で約7時間）。固まった子プロセスを sample で見ると、scripts/test-cache/preload.mjs の「前回の合格を使う」経路の process.exit(0) の中で、Node 25.2.1 が裏のコンパイル用スレッド（Maglev）の終了を待ったまま止まっていた（node::Environment::Exit → DisposePlatform → WorkerThreadsTaskRunner::Shutdown → uv_thread_join）。同じ日に見張りつきで流し直した2回も同じ形で固まった。監査の道具には時間切れがなく、固まると失敗にも終了にもならず、順番（~/.cache/study-app-test-lock）も持ち続ける。作業者（Claude）は終了の通知を待つだけで見張りを置かず、前日は原因を調べずに「スリープの疑い」と書いた。11-04 にも同じ固まりがメモに残っていたが、仕組みは直していなかった。",
+  "criteria": [
+    {
+      "id": "cached-test-ends-without-exit",
+      "text": "原因を直す：前回の合格を使うテストの子プロセスは、process.exit を呼ばずに終わる（テストの本体を空のモジュールに差し替えて、ふつうに終わらせる）。テストを流す道具と全教材監査の道具も、ふつうに終わる経路では process.exit を呼ばない",
+      "population": "tests/*.test.mjs の全ファイルが通る「前回の合格を使う」経路（scripts/test-cache/preload.mjs）と、scripts/run-tests.mjs・scripts/record-content-audit.mjs の終わり方の全経路",
+      "check": "node --test tests/audit-hang-guard.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/test-cache/preload.mjs の控えが当たった経路を、process.exit(0) から「テストの本体を空のモジュールに差し替えて戻る」（skipTestBody）に替えた。直す前は、控えが当たる軽いテスト 209 ファイルを4周（836回）流して6回固まった。直したあとは同じ計りで10周（2,090回）流して0回。テストの段（scripts/run-tests.mjs）を続けて10回流し、262 ファイル×10回のうち控えが当たった 2,619回で固まり0回・どれも exit 0。scripts/run-tests.mjs・scripts/record-content-audit.mjs・scripts/test-cache/deadline.mjs から process.exit をなくした（process.exitCode で終わる）。tests/audit-hang-guard.test.mjs が、preload がプロセスを自分で終わらせないこと・2回目は本体を読み込まないこと・3つの道具に process.exit がないことを確かめる。残したもの：scripts/test-cache/lock.mjs の、止められたとき（SIGINT・SIGTERM・SIGHUP）に順番を手放すための process.exit と、check:content の検査・テストの中の process.exit（60ファイルあまり）は変えていない。これらが固まったときは、下の時間切れで止まる。"
+    },
+    {
+      "id": "hung-test-file-fails-with-name",
+      "text": "テストのファイルが固まったら、時間切れで失敗になり、固まったファイルの名前が出る。固まったプロセスを残さない",
+      "population": "tests/*.test.mjs の全ファイル（軽いテストの組・重いテストの組の両方）",
+      "check": "node --test tests/audit-hang-guard.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/run-tests.mjs がテストの組を runWithDeadline で流し、テストのファイルごとの子を見張る（子・孫を合わせた CPU が5分動かない、または30分たったら、名前を出してその子・孫を止める。組は軽いテスト20分・重いテスト35分）。Node の --test-timeout はファイルの子を止めないことを試して確かめたので、自前の見張りにした。tests/audit-hang-guard.test.mjs が、使い捨てのリポジトリで、止まったまま CPU を使わないテスト・CPU を使い続けるテスト・組の時間切れの3つを流し、名前つきの失敗になること、子と孫（sleep）が残らないこと、順番を手放すこと、固まったテストを合格として控えないことを確かめる。全ファイル（262）が軽い組か重い組のどちらかで流れることも確かめる。"
+    },
+    {
+      "id": "audit-steps-have-deadline",
+      "text": "全教材監査のどの段が固まっても、時間切れで失敗になり、固まった段と残っていたプロセスが出て、子・孫のプロセスを止め、順番を手放す",
+      "population": "scripts/record-content-audit.mjs の全工程（テスト・check:content・ビルド・audit:dist・git diff --check・台帳の書き直し・台帳の検証の7つ）と、commit・push の前の確認（scripts/check-requests.mjs）が流す全コマンド",
+      "check": "node --test tests/audit-hang-guard.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/record-content-audit.mjs の7工程すべてを runWithDeadline で流す（テスト60分・check:content 20分・ビルド10分・audit:dist 10分・git diff --check 5分・台帳の書き直し10分・台帳の検証10分）。時間切れで、残っていたプロセスの一覧を出し、子・孫を止め、exit 124 で中止して順番を手放す。tests/audit-hang-guard.test.mjs が、最初の段が固まる全教材監査を流して確かめ、7工程すべてに時間切れがあること・時間切れのない spawnSync が残っていないことを確かめる。commit・push の前の確認（scripts/check-requests.mjs）は、もとから各コマンドに時間切れがあった（check は15分、台帳の検証は10分、git は1分。tar の取り出しだけ時間切れなし）ので、変えずにテストで固定した。やらなかったこと：check-requests.mjs の時間切れは子の孫までは止めない。段の中の動かない処理を5〜10分で止める見張りは、正しく止まっている処理まで止めたので、テストのファイルだけにした（ほかの段は段の時間切れで止まる）。"
+    },
+    {
+      "id": "rules-for-background-audit",
+      "text": "作業者の誤りを繰り返さない決まりを CLAUDE.md とメモに残す：裏で流した監査は時間を決めて見に行く／固まったら流し直す前に原因を調べる（sample）／通知の終了コードではなく記録の終了コードを見る",
+      "population": "CLAUDE.md の監査の項と、メモ（audit-speed-test-cache・feedback）",
+      "check": "node --test tests/audit-hang-guard.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: CLAUDE.md に「監査が固まったとき・裏で流すとき」の項を足した（起きた失敗3つと対策の表、10分たっても終わらなければ見に行く、止める前に sample で原因を見る、記録の audit exit を見る、道具で process.exit と時間切れのない spawnSync を使わない）。メモは feedback-watch-background-audit（新しく書いた）と audit-speed-test-cache（原因と直しを追記）、MEMORY.md の索引。tests/audit-hang-guard.test.mjs が CLAUDE.md の項を確かめる（メモはリポジトリの外なのでテストでは確かめていない）。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "直したあと、固まらずに終わることを繰り返し流して確かめ、クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "全テスト・全監査と公開の自動処理",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/audit-hang-guard.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+    }
+  ]
+}
