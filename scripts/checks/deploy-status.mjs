@@ -1,10 +1,11 @@
-// 公開の自動処理（main の Deploy to GitHub Pages）の最新が失敗していたら知らせる。
+// 公開の自動処理（main への push で動くワークフローすべて。GitHub Pages の deploy.yml・データベースの規則の firebase-rules.yml）の
+// それぞれの最新が失敗していたら知らせる。
 // 2026-11-10、公開（run 42768524753）がビルド中の取り寄せの時間切れで落ち、次の push まで誰も気づかなかった。
 // 利用者の発言ごとのフック（scripts/check-requests.mjs --prompt）が、この知らせを作業者に見せる。
 // GitHub への問い合わせは REFRESH_MS に1回（控えは ~/.cache）。問い合わせられないときは前の控えを使い、控えもなければ黙る。
 //   node scripts/checks/deploy-status.mjs   いまの知らせを出す（なければ「最新の公開は成功」）
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -15,35 +16,69 @@ export const REFRESH_MS = 5 * 60 * 1000
 export const QUERY_TIMEOUT_MS = 8000
 const FIELDS = 'databaseId,headSha,status,conclusion,displayTitle,createdAt,workflowName'
 
-/** GitHub に、main の公開の自動処理の新しい順の run を聞く。聞けなければ null。 */
-export function queryDeployRuns(root = ROOT) {
-  const result = spawnSync('gh', ['run', 'list', '--workflow', 'deploy.yml', '--branch', 'main', '--limit', '5', '--json', FIELDS], {
-    cwd: root, encoding: 'utf8', timeout: QUERY_TIMEOUT_MS,
-  })
-  if (result.status !== 0 || !result.stdout) return null
+/** main への push で動くワークフローのファイル名（.github/workflows/ の on.push.branches に main があるもの）。 */
+export function mainPushWorkflows(root = ROOT) {
+  const dir = join(root, '.github', 'workflows')
+  let names = []
   try {
-    const runs = JSON.parse(result.stdout)
-    return Array.isArray(runs) ? runs : null
+    names = readdirSync(dir).filter((name) => /\.ya?ml$/.test(name)).sort()
   } catch {
-    return null
+    return []
   }
+  return names.filter((name) => {
+    const text = readFileSync(join(dir, name), 'utf8')
+    const push = text.match(/^on:[\s\S]*?^ {2}push:\s*\n((?: {4,}.*\n?)*)/m)?.[1] ?? ''
+    return /branches:\s*\[[^\]]*\bmain\b[^\]]*\]|branches:\s*\n\s*-\s*main\b/.test(push)
+  })
+}
+
+/** GitHub に、main の公開の自動処理の新しい順の run を、ワークフローごとに聞く。1つも聞けなければ null。 */
+export function queryDeployRuns(root = ROOT) {
+  const runs = []
+  let answered = 0
+  for (const workflow of mainPushWorkflows(root)) {
+    const result = spawnSync('gh', ['run', 'list', '--workflow', workflow, '--branch', 'main', '--limit', '3', '--json', FIELDS], {
+      cwd: root, encoding: 'utf8', timeout: QUERY_TIMEOUT_MS,
+    })
+    if (result.status !== 0 || !result.stdout) continue
+    try {
+      const listed = JSON.parse(result.stdout)
+      if (!Array.isArray(listed)) continue
+      answered++
+      runs.push(...listed.map((run) => ({ ...run, workflowName: run.workflowName ?? workflow })))
+    } catch {
+      // 読めない答えは、聞けなかったのと同じに扱う。
+    }
+  }
+  return answered ? runs : null
 }
 
 const jst = (iso) => new Date(new Date(iso).getTime() + 9 * 3600 * 1000).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/')
 
-/** 新しい順の run の並びから、知らせる文を作る（最新の終わった run が成功なら空）。 */
+/** ワークフローごとの新しい順の run から、知らせる文を作る（どのワークフローも最新の終わった run が成功なら空）。 */
 export function deployNotice(runs) {
   if (!Array.isArray(runs) || !runs.length) return ''
-  const latest = runs.find((run) => run.status === 'completed')
-  if (!latest || latest.conclusion === 'success') return ''
-  const running = runs.find((run) => run.status !== 'completed' && new Date(run.createdAt) > new Date(latest.createdAt))
-  return [
-    `【公開の失敗】main の公開の自動処理（${latest.workflowName ?? 'deploy.yml'}）の最新が ${latest.conclusion} で終わっている：`
-      + `run ${latest.databaseId}・コミット ${String(latest.headSha).slice(0, 7)}「${latest.displayTitle}」・${jst(latest.createdAt)}（日本時間）。`,
-    running
-      ? `いま新しい公開（run ${running.databaseId}・コミット ${String(running.headSha).slice(0, 7)}）が進んでいる。終わったら成否を確かめる。`
-      : `公開版は古いまま。gh run view ${latest.databaseId} --log-failed で理由を見て直し、公開し直す（直せないなら利用者に知らせる）。`,
-  ].join('\n')
+  const byWorkflow = new Map()
+  for (const run of runs) {
+    const name = run.workflowName ?? 'deploy.yml'
+    if (!byWorkflow.has(name)) byWorkflow.set(name, [])
+    byWorkflow.get(name).push(run)
+  }
+  const notices = []
+  for (const [name, list] of byWorkflow) {
+    const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    const latest = sorted.find((run) => run.status === 'completed')
+    if (!latest || latest.conclusion === 'success') continue
+    const running = sorted.find((run) => run.status !== 'completed' && new Date(run.createdAt) > new Date(latest.createdAt))
+    notices.push([
+      `【公開の失敗】main の公開の自動処理（${name}）の最新が ${latest.conclusion} で終わっている：`
+        + `run ${latest.databaseId}・コミット ${String(latest.headSha).slice(0, 7)}「${latest.displayTitle}」・${jst(latest.createdAt)}（日本時間）。`,
+      running
+        ? `いま新しい公開（run ${running.databaseId}・コミット ${String(running.headSha).slice(0, 7)}）が進んでいる。終わったら成否を確かめる。`
+        : `公開されたものは古いまま。gh run view ${latest.databaseId} --log-failed で理由を見て直し、公開し直す（直せないなら利用者に知らせる）。`,
+    ].join('\n'))
+  }
+  return notices.join('\n')
 }
 
 /** 控えを使って最新の run の並びを返す（REFRESH_MS より古ければ聞き直す）。聞けなければ前の控え、なければ null。 */
@@ -86,7 +121,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exitCode = 1
   } else {
     const notice = deployNotice(runs)
-    console.log(notice || `最新の公開は成功（run ${runs.find((run) => run.status === 'completed')?.databaseId ?? 'なし'}）`)
+    const names = [...new Set(runs.map((run) => run.workflowName))]
+    console.log(notice || `最新の公開は成功（${names.map((name) => `${name} run ${runs.find((run) => run.workflowName === name && run.status === 'completed')?.databaseId ?? 'なし'}`).join('・')}）`)
     process.exitCode = notice ? 1 : 0
   }
 }

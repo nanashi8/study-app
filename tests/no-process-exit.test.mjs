@@ -81,6 +81,65 @@ test('stop() は終了コードを保って止め、止めたことは表示し�
   assert.equal(imported.stdout, '0\n')
 })
 
+// stop() は try の中で呼ぶと catch に捕まり、止まらずに進む。try の中で stop() を呼ぶ（stop() を呼ぶ同じファイルの関数を
+// 呼ぶ場合も含む）なら、その catch が isStop(error) なら投げ直すこと。全ファイルを構文で読んで確かめる。
+function swallowedStops(file, source, parseAst) {
+  const ast = parseAst(source)
+  const children = (node) => Object.values(node).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value) => value && typeof value.type === 'string')
+  const calls = (node, names, found = []) => {
+    if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && names.has(node.callee.name)) found.push(node)
+    for (const child of children(node)) calls(child, names, found)
+    return found
+  }
+  // stop() を呼ぶ関数の名前（同じファイルの中で、呼ぶ関数をたどる）。
+  const functions = []
+  const collect = (node) => {
+    if (node.type === 'FunctionDeclaration' && node.id) functions.push([node.id.name, node.body])
+    if (node.type === 'VariableDeclarator' && node.id.type === 'Identifier' && /Function/.test(node.init?.type ?? '')) functions.push([node.id.name, node.init.body])
+    for (const child of children(node)) collect(child)
+  }
+  collect(ast)
+  const stoppers = new Set(['stop'])
+  for (let grew = true; grew;) {
+    grew = false
+    for (const [name, body] of functions) {
+      if (!stoppers.has(name) && calls(body, stoppers).length) {
+        stoppers.add(name)
+        grew = true
+      }
+    }
+  }
+  const found = []
+  const visit = (node) => {
+    if (node.type === 'TryStatement' && calls(node.block, stoppers).length) {
+      const handler = node.handler ? source.slice(node.handler.start, node.handler.end) : ''
+      const param = node.handler?.param?.name
+      const rethrows = param && new RegExp(`if \\(isStop\\(${param}\\)\\) throw ${param}\\b`).test(handler)
+      if (node.handler && !rethrows) {
+        const line = source.slice(0, node.start).split('\n').length
+        found.push(`${file}:${line} の try の中で ${calls(node.block, stoppers).map((call) => call.callee.name).join('・')}() を呼ぶのに、catch が isStop で投げ直さない`)
+      }
+    }
+    for (const child of children(node)) visit(child)
+  }
+  visit(ast)
+  return found
+}
+
+test('stop() を try の中で呼ぶ所は、catch が isStop で投げ直す（全ファイルを構文で確かめる）', async () => {
+  const { parseAst } = await import('vite')
+  const files = walk('scripts').filter((file) => file.endsWith('.mjs') && file !== 'scripts/stop.mjs')
+  const users = files.filter((file) => /import \{[^}]*\bstop\b[^}]*\} from '[./]+(?:\.\.\/)*stop\.mjs'/.test(readFileSync(file, 'utf8')))
+  assert.ok(users.length >= 40, `stop() を使うファイル ${users.length}`)
+  assert.deepEqual(users.flatMap((file) => swallowedStops(file, readFileSync(file, 'utf8'), parseAst)), [])
+  // 検査そのものが見つけられること（直接・関数ごし・投げ直すときは通す）。
+  const imports = "import { isStop, stop } from './stop.mjs'\n"
+  assert.equal(swallowedStops('a', `${imports}try { stop(1) } catch (error) { console.log(error) }`, parseAst).length, 1)
+  assert.equal(swallowedStops('b', `${imports}function main() { stop(1) }\nconst run = () => main()\ntry { run() } catch { }`, parseAst).length, 1)
+  assert.equal(swallowedStops('c', `${imports}try { stop(1) } catch (error) { if (isStop(error)) throw error\n console.log(error) }`, parseAst).length, 0)
+  assert.equal(swallowedStops('d', `${imports}try { stop(1) } finally { console.log('後') }`, parseAst).length, 0)
+})
+
 test('書き換えた道具の終了コードは今までと同じ（使い方の誤り・通るとき・フックの止める合図）', () => {
   const run = (args, input) => spawnSync(process.execPath, args, { encoding: 'utf8', timeout: 120_000, input, env: { ...process.env, STUDY_APP_DEPLOY_STATUS: 'off' } })
   const usage = run(['scripts/check-level-cap-sheet.mjs'])

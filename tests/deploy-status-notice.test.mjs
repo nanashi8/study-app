@@ -2,11 +2,11 @@
 // （requests/2026-11-11-audit-leftovers-fix.json）。2026-11-10 の公開の失敗（run 42768524753）に誰も気づかなかった。
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
-import { REFRESH_MS, deployNotice, deployRuns, isPublishedRepository } from '../scripts/checks/deploy-status.mjs'
+import { REFRESH_MS, deployNotice, deployRuns, isPublishedRepository, mainPushWorkflows } from '../scripts/checks/deploy-status.mjs'
 
 const made = []
 after(() => made.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
@@ -33,6 +33,28 @@ test('最新の終わった公開が失敗なら、run・コミット・時刻�
   // 失敗のあとに新しい公開が進んでいるときは、それを待つように知らせる。
   const running = deployNotice([run({ databaseId: 9, status: 'in_progress', conclusion: '', headSha: 'abcdef0123', createdAt: '2026-11-10T07:00:00Z' }), run()])
   assert.match(running, /いま新しい公開（run 9・コミット abcdef0）が進んでいる。終わったら成否を確かめる。/)
+})
+
+test('main への push で動く公開の自動処理すべてを、それぞれの最新で見る', () => {
+  // .github/workflows/ の全ワークフローのうち、main への push で動くもの（GitHub Pages とデータベースの規則）。
+  const all = readdirSync('.github/workflows').filter((name) => /\.ya?ml$/.test(name)).sort()
+  const onMainPush = all.filter((name) => /^on:[\s\S]*?^ {2}push:[\s\S]*?branches:[^\n]*\bmain\b/m.test(readFileSync(join('.github/workflows', name), 'utf8')))
+  assert.deepEqual(mainPushWorkflows(), onMainPush)
+  assert.deepEqual(mainPushWorkflows(), ['deploy.yml', 'firebase-rules.yml'])
+  // ワークフローを名指しして1つに絞らない。
+  assert.doesNotMatch(readFileSync('scripts/checks/deploy-status.mjs', 'utf8'), /'--workflow', 'deploy\.yml'/)
+  const pages = (overrides) => run({ conclusion: 'success', ...overrides })
+  const rules = (overrides) => run({ workflowName: 'Deploy Firebase DB rules', databaseId: 7, createdAt: '2026-09-25T00:44:25Z', ...overrides })
+  assert.equal(deployNotice([pages(), rules({ conclusion: 'success' })]), '')
+  // GitHub Pages が成功でも、データベースの規則の失敗は知らせる（並びの順に左右されない）。
+  const notice = deployNotice([pages({ createdAt: '2026-11-11T00:00:00Z' }), rules({ conclusion: 'failure' })])
+  assert.match(notice, /^【公開の失敗】main の公開の自動処理（Deploy Firebase DB rules）の最新が failure で終わっている：run 7・/)
+  assert.doesNotMatch(notice, /Deploy to GitHub Pages/)
+  // 両方の失敗は両方知らせる。
+  const both = deployNotice([run(), rules({ conclusion: 'failure' })])
+  assert.equal(both.match(/【公開の失敗】/g).length, 2)
+  // 古い順に並んでいても、新しい成功があれば古い失敗は知らせない。
+  assert.equal(deployNotice([run(), pages({ databaseId: 2, createdAt: '2026-11-11T00:00:00Z' })]), '')
 })
 
 test('GitHub に聞くのは控えが古いときだけで、聞けなければ前の控え、控えもなければ黙る', () => {

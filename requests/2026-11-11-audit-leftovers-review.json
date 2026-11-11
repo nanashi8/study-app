@@ -1,0 +1,38 @@
+{
+  "id": "2026-11-11-audit-leftovers-review",
+  "title": "前の直しで「直さなかった」「確かめていない」としたものを精査し、直すべきものを直す",
+  "asked": [
+    "直すべきものに直さなかったものがあるならば、精査して直すべきなら直しなさい。"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-11 の精査。前の報告で直さなかった・確かめていないとしたものと、精査で新しく見つけたもの。直す：(1) 公開の失敗の知らせが deploy.yml しか見ていない。main への push で動く公開の自動処理はもう1つ、データベースの規則を本番へ出す firebase-rules.yml がある（最近5回は成功）。(2) 手で使う道具の引数つきの道筋を流していない。前の直しで変えたのは止め方だけだが、stop() は try の中で呼ぶと catch に捕まり、止まらずに進む（前の直しでは1ファイルを手で見つけて直した）。人の目で見つけるのでなく、全ファイルを構文で読んで止める。直さない：(3) テスト以外の段の「動かない処理」の見張り：scripts/・tests/ の process.exit はなくなり、段の時間切れも残る。(4) Node の更新：要らなくなった。(5) 公開版の画面：道具だけの変更。(6) commit・push のたびの全依頼の確認：1回3〜21秒で、減らすと偽りの done を止める仕組みが弱くなる。精査で確かめて問題がなかったもの：scripts/・tests/ の外に process.exit はない（文書の中の文字だけ）。書き換えたスクリプトのうち終わりを妨げうるもの（開発サーバー・通信・タイマー）は、閉じてから終わるか、終わりを妨げない（AbortSignal.timeout のタイマーは終わりを待たせない）。引数なしの道筋で57本すべてが300秒以内に終わった（読み込むだけで開いたままになるものはない）。時間切れのない同期の子プロセスの呼び出し（git・tar など）は、どれも全教材監査の段・テストの組・フックの時間切れの内側で流れる。ビルドの道具（vite）が process.exit を呼ぶのは失敗したときだけで、段の時間切れ（10分）で止まる。",
+  "criteria": [
+    {
+      "id": "notice-all-deploy-workflows",
+      "text": "公開の失敗の知らせが、main への push で動く公開の自動処理すべて（GitHub Pages の deploy.yml と、データベースの規則の firebase-rules.yml）の、それぞれの最新の終わった run を見る",
+      "population": ".github/workflows/ の main への push で動く全ワークフロー（2026-11-11 の時点で2つ）",
+      "check": "node --test tests/deploy-status-notice.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/checks/deploy-status.mjs が .github/workflows/ から main への push で動くワークフロー（deploy.yml・firebase-rules.yml の2つ）を読み、それぞれに gh run list --workflow <ファイル> --branch main で聞き、ワークフローごとの最新の終わった run が成功でなければ知らせる。tests/deploy-status-notice.test.mjs が、.github/workflows/ の main への push で動く全ワークフローと見るものが同じこと、GitHub Pages が成功でもデータベースの規則の失敗を知らせること、両方の失敗を両方知らせること、並びの順に左右されないことを確かめる。いまの状態は node scripts/checks/deploy-status.mjs で「最新の公開は成功（Deploy to GitHub Pages run 43001674492・Deploy Firebase DB rules run 36078915155）」。"
+    },
+    {
+      "id": "stop-not-swallowed-by-try",
+      "text": "stop() を try の中で呼ぶ所は、その catch が isStop(error) なら投げ直す（そうでないと止まらずに進む）。scripts/ の全ファイルを構文で読んで確かめ、引数つきの道筋を流さなくても止め方の誤りが残らないようにする",
+      "population": "scripts/ の stop() を呼ぶ全ファイルの、全ての stop() の呼び出し",
+      "check": "node --test tests/no-process-exit.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: tests/no-process-exit.test.mjs が vite の parseAst で scripts/ の stop() を使う全ファイルを構文で読み、try の中の stop() と、stop() を呼ぶ同じファイルの関数（たどって集めた名前）の呼び出しのすべてについて、catch が if (isStop(error)) throw error で投げ直すかを確かめる。見つかったのは0か所（前の直しで手で直した scripts/checks/deployed-matches-head.mjs は投げ直している）。投げ直しの行を抜いた写しで検査が落ちることを確かめてから元に戻した。限り：別のファイルの関数を越えてはたどらない（stop() は各ファイルの、直接流したときの本体からだけ呼ばれ、ほかのファイルから読み込まれる関数の中にはない）。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "全テスト・全監査と公開の自動処理",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/deploy-status-notice.test.mjs tests/no-process-exit.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+    }
+  ]
+}
