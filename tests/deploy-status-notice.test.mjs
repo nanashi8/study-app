@@ -6,7 +6,7 @@ import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
-import { REFRESH_MS, deployNotice, deployRuns, isPublishedRepository, mainPushWorkflows } from '../scripts/checks/deploy-status.mjs'
+import { REFRESH_MS, STUCK_MS, deployNotice, deployRuns, isPublishedRepository, mainPushWorkflows } from '../scripts/checks/deploy-status.mjs'
 
 const made = []
 after(() => made.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
@@ -31,7 +31,7 @@ test('最新の終わった公開が失敗なら、run・コミット・時刻�
   assert.equal(deployNotice([]), '')
   assert.equal(deployNotice(null), '')
   // 失敗のあとに新しい公開が進んでいるときは、それを待つように知らせる。
-  const running = deployNotice([run({ databaseId: 9, status: 'in_progress', conclusion: '', headSha: 'abcdef0123', createdAt: '2026-11-10T07:00:00Z' }), run()])
+  const running = deployNotice([run({ databaseId: 9, status: 'in_progress', conclusion: '', headSha: 'abcdef0123', createdAt: '2026-11-10T07:00:00Z' }), run()], new Date('2026-11-10T07:05:00Z').getTime())
   assert.match(running, /いま新しい公開（run 9・コミット abcdef0）が進んでいる。終わったら成否を確かめる。/)
 })
 
@@ -57,16 +57,42 @@ test('main への push で動く公開の自動処理すべてを、それぞれ
   assert.equal(deployNotice([run(), pages({ databaseId: 2, createdAt: '2026-11-11T00:00:00Z' })]), '')
 })
 
+test('公開の自動処理が長いあいだ終わらないとき（固まり）も知らせる', () => {
+  const started = new Date('2026-11-10T06:34:20Z').getTime()
+  const going = run({ databaseId: 11, status: 'in_progress', conclusion: '' })
+  assert.equal(deployNotice([going], started + STUCK_MS - 1), '', 'ふだんの長さの間は黙る')
+  const notice = deployNotice([going], started + STUCK_MS + 60_000)
+  assert.match(notice, /^【公開が終わらない】main の公開の自動処理（Deploy to GitHub Pages）の run 11・コミット 2f45240「[^」]+」が、31分 たっても終わっていない（in_progress・11\/10 15:34 開始・日本時間）。/)
+  assert.match(notice, /gh run cancel 11 で止めて公開し直す/)
+  // 待ち行列に入ったまま（queued）も同じ。終わった run があっても、いちばん新しい run が終わらなければ知らせる。
+  const queued = deployNotice([run({ conclusion: 'success', createdAt: '2026-11-10T05:00:00Z' }), run({ databaseId: 12, status: 'queued', conclusion: '' })], started + 2 * STUCK_MS)
+  assert.match(queued, /run 12・[\s\S]*60分 たっても終わっていない（queued/)
+  // 古い run が終わっていなくても、新しい run が成功していれば黙る。
+  assert.equal(deployNotice([going, run({ databaseId: 13, conclusion: 'success', createdAt: '2026-11-10T07:00:00Z' })], started + 10 * STUCK_MS), '')
+  assert.ok(STUCK_MS >= 15 * 60_000 && STUCK_MS <= 60 * 60_000)
+})
+
 test('GitHub に聞くのは控えが古いときだけで、聞けなければ前の控え、控えもなければ黙る', () => {
   const cachePath = join(temp(), 'status.json')
   let asked = 0
   const query = (runs) => () => { asked++; return runs }
-  assert.equal(deployRuns({ cachePath, now: 1000, query: query(null) }), null)
   assert.deepEqual(deployRuns({ cachePath, now: 1000, query: query([run()]) }), [run()])
   assert.deepEqual(deployRuns({ cachePath, now: 1000 + REFRESH_MS - 1, query: query([]) }), [run()], '控えが新しい間は聞かない')
-  assert.equal(asked, 2)
+  assert.equal(asked, 1)
   assert.deepEqual(deployRuns({ cachePath, now: 1000 + REFRESH_MS, query: query(null) }), [run()], '聞けなければ前の控え')
-  assert.deepEqual(deployRuns({ cachePath, now: 1000 + REFRESH_MS, query: query([run({ conclusion: 'success' })]) }), [run({ conclusion: 'success' })])
+  assert.equal(asked, 2)
+  // 聞けなかったあとも、間隔をあけるまで聞き直さない（つながらない間、発言のたびに待たせない）。
+  assert.deepEqual(deployRuns({ cachePath, now: 1000 + REFRESH_MS + 1, query: query([]) }), [run()])
+  assert.deepEqual(deployRuns({ cachePath, now: 1000 + 2 * REFRESH_MS - 1, query: query([]) }), [run()])
+  assert.equal(asked, 2, '聞けなかったあと、間隔の中では聞き直さない')
+  assert.deepEqual(deployRuns({ cachePath, now: 1000 + 2 * REFRESH_MS, query: query([run({ conclusion: 'success' })]) }), [run({ conclusion: 'success' })])
+  // 控えがなくて聞けないときも、同じように間隔をあける。
+  const empty = join(temp(), 'status.json')
+  assert.equal(deployRuns({ cachePath: empty, now: 5000, query: query(null) }), null)
+  const before = asked
+  assert.equal(deployRuns({ cachePath: empty, now: 5001, query: query([run()]) }), null)
+  assert.equal(asked, before)
+  assert.deepEqual(deployRuns({ cachePath: empty, now: 5000 + REFRESH_MS, query: query([run()]) }), [run()])
   assert.equal(JSON.parse(readFileSync(cachePath, 'utf8')).runs[0].conclusion, 'success')
   assert.ok(REFRESH_MS >= 60_000 && REFRESH_MS <= 15 * 60_000)
 })

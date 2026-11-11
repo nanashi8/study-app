@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-11T13:34:02.503Z",
+  "auditedAt": "2026-11-11T14:24:09.768Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "06399dfbf59d3101986059ac9d9d25357f911d6ba6ab0a8d69a8c892da3bfef4",
+    "sha256": "24ea0aa4aa3293fd11c45e29e42d611a08dad11631ea65c5ccf11a042641cc51",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -177,6 +177,7 @@
       "tests/answer-reselect.test.mjs",
       "tests/app-navigation.test.mjs",
       "tests/app-recovery.test.mjs",
+      "tests/audit-flow-speed.test.mjs",
       "tests/audit-hang-guard.test.mjs",
       "tests/audit-speed.test.mjs",
       "tests/basic-reading-content.test.mjs",

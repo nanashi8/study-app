@@ -11,47 +11,9 @@ import { DICTATION_ITEMS } from '../src/data/dictation.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
 import { stop } from './stop.mjs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const LEVELS = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
-const LABEL = { 5: '5級', 4: '4級', 3: '3級', pre2: '準2級', 2: '2級', pre1: '準1級', 1: '1級' }
-const rank = (level) => LEVELS.indexOf(level)
-const errors = []
-const wordByHead = new Map(ALL_WORDS.map((word) => [word.word.toLowerCase(), word]))
-
-// ① 補完した単語は、補完データが持つ級で出す。
-// 食い違うと、同じ語を補完データでは4級、単語カードでは3級として教えることになる。
-for (const listed of CURRICULUM_1900_WORDS) {
-  const card = ALL_WORDS.find((word) => word.id === listed.id)
-  if (!card || card.level === listed.level) continue
-  errors.push(
-    `${listed.id}: 補完データは${LABEL[listed.level]}だがカードは${LABEL[card.level]}`
-    + ' → levels-override.js を補完データに合わせる',
-  )
-}
-
-// ② その級より3段以上やさしい英文に同じ語が出ていたら、級が高すぎる。
-// 例: typhoon を準1級にしたまま、4級の長文で "a strong typhoon" と読ませていた。
-const EN_KEYS = new Set(['en', 'text', 'title', 'phrase', 'sentence', 'script', 'answer', 'body'])
-const englishOf = (value, out = [], take = false) => {
-  if (typeof value === 'string') {
-    if (take && /[A-Za-z]/.test(value) && !/[ぁ-んァ-ヶ一-龠]/.test(value)) out.push(value)
-  } else if (Array.isArray(value)) value.forEach((item) => englishOf(item, out, take))
-  else if (value && typeof value === 'object') {
-    for (const [key, item] of Object.entries(value)) englishOf(item, out, EN_KEYS.has(key))
-  }
-  return out
-}
-const easiest = new Map()
-for (const source of [DICTATION_ITEMS, LISTENING_ITEMS, ALL_PASSAGES, PHRASES]) {
-  for (const item of source) {
-    if (!LEVELS.includes(item.level)) continue
-    const at = rank(item.level)
-    for (const token of new Set(englishOf(item).join(' ').toLowerCase().match(/[a-z']+/g) ?? [])) {
-      const seen = easiest.get(token)
-      if (seen === undefined || at < seen) easiest.set(token, at)
-    }
-  }
-}
 // 不規則変化のうち、別の見出し語と綴りがぶつかるもの。
 const IRREGULAR = {
   see: ['saw', 'seen'], find: ['found'], lie: ['lay', 'lain'], lay: ['laid'],
@@ -60,7 +22,7 @@ const IRREGULAR = {
   spring: ['sprang', 'sprung'], strike: ['struck'], bind: ['bound'], flee: ['fled'],
 }
 // 規則変化。子音を重ねるのは単音節の語だけ（rid → ridding。open は openning にならない）。
-const inflections = (head) => {
+export const inflections = (head) => {
   const word = head.toLowerCase()
   if (!/^[a-z]+$/.test(word)) return [word]
   const oneSyllable = (word.match(/[aeiou]+/g) ?? []).length === 1
@@ -75,38 +37,93 @@ const inflections = (head) => {
 }
 // 別の見出し語の活用形と綴りが同じ語は、その語が出た証拠にならない。
 // closing(結びの) は close の -ing、opening(開始) は open の -ing として現れる。
-const isInflectionOfAnotherCard = (head) => {
-  const word = head.toLowerCase()
-  for (const [other, card] of wordByHead) {
-    if (other === word) continue
-    if (inflections(other).includes(word)) return true
+// 活用形 → その形を作る見出し語、の索引を1回だけ作って引く。前は1語ごとに全見出し語の活用形を作り直していて
+// （約9,000語 × 9,000語）、この検査だけで32秒かかっていた（2026-11-11。check:content は全教材監査と公開のビルドのたびに流れる）。
+export function inflectionOwners(heads) {
+  const owners = new Map()
+  for (const head of heads) {
+    for (const form of inflections(head)) {
+      if (!owners.has(form)) owners.set(form, [])
+      owners.get(form).push(head)
+    }
   }
-  return false
-}
-for (const word of ALL_WORDS) {
-  // 同じつづりの別の語（homograph-words.js）は、英文に同じつづりが出ても、どちらの語として
-  // 使われたかが分からない。英文は元の語の級の根拠として見て、別の語の級の根拠にはしない。
-  if (word.homographOf) continue
-  if (isInflectionOfAnotherCard(word.word)) continue
-  let found
-  for (const form of inflections(word.word)) {
-    const at = easiest.get(form)
-    if (at !== undefined && (found === undefined || at < found)) found = at
-  }
-  if (found === undefined) continue
-  const gap = rank(word.level) - found
-  if (gap >= 3) {
-    errors.push(
-      `${word.id}: カードは${LABEL[word.level]}だが${LABEL[LEVELS[found]]}の英文に出ている(${gap}段)`
-      + ' → levels-override.js で級を下げる',
-    )
-  }
+  return owners
 }
 
-if (errors.length) {
-  console.error(`❌ 単語の級: ${errors.length}件の食い違い`)
-  for (const error of errors) console.error(`- ${error}`)
-  stop(1)
+// 検査の本体。直接流したときだけ動かす（テストは上の部品だけを読み込む）。
+function main() {
+  const LEVELS = ['5', '4', '3', 'pre2', '2', 'pre1', '1']
+  const LABEL = { 5: '5級', 4: '4級', 3: '3級', pre2: '準2級', 2: '2級', pre1: '準1級', 1: '1級' }
+  const rank = (level) => LEVELS.indexOf(level)
+  const errors = []
+  const wordByHead = new Map(ALL_WORDS.map((word) => [word.word.toLowerCase(), word]))
+
+  // ① 補完した単語は、補完データが持つ級で出す。
+  // 食い違うと、同じ語を補完データでは4級、単語カードでは3級として教えることになる。
+  for (const listed of CURRICULUM_1900_WORDS) {
+    const card = ALL_WORDS.find((word) => word.id === listed.id)
+    if (!card || card.level === listed.level) continue
+    errors.push(
+      `${listed.id}: 補完データは${LABEL[listed.level]}だがカードは${LABEL[card.level]}`
+      + ' → levels-override.js を補完データに合わせる',
+    )
+  }
+
+  // ② その級より3段以上やさしい英文に同じ語が出ていたら、級が高すぎる。
+  // 例: typhoon を準1級にしたまま、4級の長文で "a strong typhoon" と読ませていた。
+  const EN_KEYS = new Set(['en', 'text', 'title', 'phrase', 'sentence', 'script', 'answer', 'body'])
+  const englishOf = (value, out = [], take = false) => {
+    if (typeof value === 'string') {
+      if (take && /[A-Za-z]/.test(value) && !/[ぁ-んァ-ヶ一-龠]/.test(value)) out.push(value)
+    } else if (Array.isArray(value)) value.forEach((item) => englishOf(item, out, take))
+    else if (value && typeof value === 'object') {
+      for (const [key, item] of Object.entries(value)) englishOf(item, out, EN_KEYS.has(key))
+    }
+    return out
+  }
+  const easiest = new Map()
+  for (const source of [DICTATION_ITEMS, LISTENING_ITEMS, ALL_PASSAGES, PHRASES]) {
+    for (const item of source) {
+      if (!LEVELS.includes(item.level)) continue
+      const at = rank(item.level)
+      for (const token of new Set(englishOf(item).join(' ').toLowerCase().match(/[a-z']+/g) ?? [])) {
+        const seen = easiest.get(token)
+        if (seen === undefined || at < seen) easiest.set(token, at)
+      }
+    }
+  }
+  const owners = inflectionOwners(wordByHead.keys())
+  const isInflectionOfAnotherCard = (head) => {
+    const word = head.toLowerCase()
+    return (owners.get(word) ?? []).some((other) => other !== word)
+  }
+  for (const word of ALL_WORDS) {
+    // 同じつづりの別の語（homograph-words.js）は、英文に同じつづりが出ても、どちらの語として
+    // 使われたかが分からない。英文は元の語の級の根拠として見て、別の語の級の根拠にはしない。
+    if (word.homographOf) continue
+    if (isInflectionOfAnotherCard(word.word)) continue
+    let found
+    for (const form of inflections(word.word)) {
+      const at = easiest.get(form)
+      if (at !== undefined && (found === undefined || at < found)) found = at
+    }
+    if (found === undefined) continue
+    const gap = rank(word.level) - found
+    if (gap >= 3) {
+      errors.push(
+        `${word.id}: カードは${LABEL[word.level]}だが${LABEL[LEVELS[found]]}の英文に出ている(${gap}段)`
+        + ' → levels-override.js で級を下げる',
+      )
+    }
+  }
+
+  if (errors.length) {
+    console.error(`❌ 単語の級: ${errors.length}件の食い違い`)
+    for (const error of errors) console.error(`- ${error}`)
+    stop(1)
+  }
+  const spread = LEVELS.map((level) => `${LABEL[level]}${ALL_WORDS.filter((word) => word.level === level).length}`)
+  console.log(`✅ 単語の級OK: ${ALL_WORDS.length}語（${spread.join(' / ')}）／補完データの級と一致・教材と3段以上の食い違いなし`)
 }
-const spread = LEVELS.map((level) => `${LABEL[level]}${ALL_WORDS.filter((word) => word.level === level).length}`)
-console.log(`✅ 単語の級OK: ${ALL_WORDS.length}語（${spread.join(' / ')}）／補完データの級と一致・教材と3段以上の食い違いなし`)
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main()

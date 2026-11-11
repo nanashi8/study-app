@@ -43,8 +43,9 @@ import { readingChoiceNoteFor } from '../src/lib/readingChoiceNotes.js'
 import { auditExtendedReadings } from '../src/lib/extendedReadingAudit.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
-const LEDGER_PATH = path.join(ROOT, 'docs/audits/content-audit-ledger.json')
 const WRITE = process.argv.includes('--write')
+// 書き直す先は、テストだけが CONTENT_AUDIT_LEDGER_OUT で変えられる（確かめるとき（--write なし）は、必ずリポジトリの台帳を読む）。
+const LEDGER_PATH = (WRITE && process.env.CONTENT_AUDIT_LEDGER_OUT) || path.join(ROOT, 'docs/audits/content-audit-ledger.json')
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex')
 const dataHash = (value) => sha256(JSON.stringify(value))
@@ -639,11 +640,20 @@ try {
 }
 
 if (WRITE) {
-  const ledger = await buildLedger(new Date().toISOString())
+  // 中身が同じなら書き変えない（監査した時刻 auditedAt も前のまま）。前は全教材監査のたびに時刻だけが変わり、
+  // 中身を変えていない commit にも台帳の差分が入り、検証用の clone には監査のたびに未コミットの変更が出ていた（2026-11-11）。
+  const serialize = (value) => `${JSON.stringify(value, null, 2)}\n`
+  const ledger = await buildLedger(existing?.auditedAt ?? new Date().toISOString())
   assert.equal(ledger.result, 'pass', `監査失敗を台帳へ合格記録できません: ${ledger.failures.join(' / ')}`)
-  await mkdir(path.dirname(LEDGER_PATH), { recursive: true })
-  await writeFile(LEDGER_PATH, `${JSON.stringify(ledger, null, 2)}\n`, 'utf8')
-  console.log(`✅ 全教材監査台帳を更新: ${path.relative(ROOT, LEDGER_PATH)}`)
+  const unchanged = Boolean(existing) && serialize(existing) === serialize(ledger)
+  if (!unchanged) {
+    ledger.auditedAt = new Date().toISOString()
+    await mkdir(path.dirname(LEDGER_PATH), { recursive: true })
+    await writeFile(LEDGER_PATH, serialize(ledger), 'utf8')
+  }
+  console.log(unchanged
+    ? `✅ 全教材監査台帳は前の監査から中身が変わっていない（書き変えない）: ${path.relative(ROOT, LEDGER_PATH)}`
+    : `✅ 全教材監査台帳を更新: ${path.relative(ROOT, LEDGER_PATH)}`)
   console.log(`  ${ledger.scope.categoryCount}カテゴリ・教材${ledger.scope.learningItemCount}件・問題経路${ledger.scope.storedAndGeneratedQuestionPathCount}件`)
 } else {
   assert.ok(existing, '全教材監査台帳がありません。npm run audit:all-content で作成してください')

@@ -194,12 +194,24 @@ async function sourceFiles(directory) {
   return nested.flat()
 }
 
-function lineNumberAt(source, index) {
-  let line = 1
-  for (let cursor = 0; cursor < index; cursor += 1) {
-    if (source[cursor] === '\n') line += 1
+// 行番号（index より前の改行の数 + 1）。改行の位置の索引を、ファイルごとに1回だけ作って二分探索で引く。
+// 前は呼ぶたびにファイルの先頭から数え直していて、この検査の時間の96%（28秒）を使っていた（2026-11-11）。
+let indexedSource = null
+let newlineOffsets = []
+export function lineNumberAt(source, index) {
+  if (source !== indexedSource) {
+    indexedSource = source
+    newlineOffsets = []
+    for (let at = source.indexOf('\n'); at !== -1; at = source.indexOf('\n', at + 1)) newlineOffsets.push(at)
   }
-  return line
+  let low = 0
+  let high = newlineOffsets.length
+  while (low < high) {
+    const middle = (low + high) >> 1
+    if (newlineOffsets[middle] < index) low = middle + 1
+    else high = middle
+  }
+  return low + 1
 }
 
 function quotedJapanese(source) {

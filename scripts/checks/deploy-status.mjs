@@ -14,6 +14,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 export const DEPLOY_STATUS_CACHE = process.env.STUDY_APP_DEPLOY_STATUS_CACHE ?? join(homedir(), '.cache', 'study-app-deploy-status.json')
 export const REFRESH_MS = 5 * 60 * 1000
 export const QUERY_TIMEOUT_MS = 8000
+// 公開の自動処理はふだん4〜5分で終わる。これより長く終わらなければ、固まったとみなして知らせる
+// （deploy.yml の job には時間切れがなく、固まると最長6時間そのままで、後の公開も待たされる）。
+export const STUCK_MS = 30 * 60 * 1000
 const FIELDS = 'databaseId,headSha,status,conclusion,displayTitle,createdAt,workflowName'
 
 /** main への push で動くワークフローのファイル名（.github/workflows/ の on.push.branches に main があるもの）。 */
@@ -56,7 +59,7 @@ export function queryDeployRuns(root = ROOT) {
 const jst = (iso) => new Date(new Date(iso).getTime() + 9 * 3600 * 1000).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/')
 
 /** ワークフローごとの新しい順の run から、知らせる文を作る（どのワークフローも最新の終わった run が成功なら空）。 */
-export function deployNotice(runs) {
+export function deployNotice(runs, now = Date.now()) {
   if (!Array.isArray(runs) || !runs.length) return ''
   const byWorkflow = new Map()
   for (const run of runs) {
@@ -67,6 +70,16 @@ export function deployNotice(runs) {
   const notices = []
   for (const [name, list] of byWorkflow) {
     const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    // いちばん新しい run が、長いあいだ終わっていない。
+    const newest = sorted[0]
+    if (newest.status !== 'completed' && now - new Date(newest.createdAt).getTime() >= STUCK_MS) {
+      notices.push([
+        `【公開が終わらない】main の公開の自動処理（${name}）の run ${newest.databaseId}・コミット ${String(newest.headSha).slice(0, 7)}「${newest.displayTitle}」が、`
+          + `${Math.round((now - new Date(newest.createdAt).getTime()) / 60000)}分 たっても終わっていない（${newest.status}・${jst(newest.createdAt)} 開始・日本時間）。`,
+        `gh run view ${newest.databaseId} で進み具合を見て、固まっていれば gh run cancel ${newest.databaseId} で止めて公開し直す（直せないなら利用者に知らせる）。`,
+      ].join('\n'))
+      continue
+    }
     const latest = sorted.find((run) => run.status === 'completed')
     if (!latest || latest.conclusion === 'success') continue
     const running = sorted.find((run) => run.status !== 'completed' && new Date(run.createdAt) > new Date(latest.createdAt))
@@ -81,7 +94,7 @@ export function deployNotice(runs) {
   return notices.join('\n')
 }
 
-/** 控えを使って最新の run の並びを返す（REFRESH_MS より古ければ聞き直す）。聞けなければ前の控え、なければ null。 */
+/** 控えを使って最新の run の並びを返す（REFRESH_MS より古ければ聞き直す）。聞けなければ前の控え、なければ null。聞き直すのは REFRESH_MS に1回まで。 */
 export function deployRuns({ now = Date.now(), cachePath = DEPLOY_STATUS_CACHE, refreshMs = REFRESH_MS, query = () => queryDeployRuns() } = {}) {
   let cached = null
   try {
@@ -89,9 +102,9 @@ export function deployRuns({ now = Date.now(), cachePath = DEPLOY_STATUS_CACHE, 
   } catch {
     cached = null
   }
-  if (cached && now - cached.at < refreshMs) return cached.runs
-  const runs = query()
-  if (!runs) return cached?.runs ?? null
+  if (cached && now - cached.at < refreshMs) return cached.runs ?? null
+  // 聞けなかったときも、聞いた時刻を控える（つながらない間、利用者の発言のたびに聞き直して待たせない）。
+  const runs = query() ?? cached?.runs ?? null
   try {
     mkdirSync(dirname(cachePath), { recursive: true })
     writeFileSync(cachePath, JSON.stringify({ at: now, runs }))
@@ -111,7 +124,7 @@ export function isPublishedRepository(root = ROOT) {
 export function deployStatusNotice(options = {}) {
   if (process.env.STUDY_APP_DEPLOY_STATUS === 'off') return ''
   if (!isPublishedRepository(options.root)) return ''
-  return deployNotice(deployRuns(options))
+  return deployNotice(deployRuns(options), options.now)
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

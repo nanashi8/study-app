@@ -1,0 +1,54 @@
+{
+  "id": "2026-11-11-audit-flow-recheck",
+  "title": "監査等のフローに、まだ問題や負担が残っていないかを測って確かめ、見つけたものを直す",
+  "asked": [
+    "監査等のフローにまだ問題がないか確認改善しなさい。"
+  ],
+  "sessions": [
+    "48ed74b1-fb57-4c65-a347-738bac57861c"
+  ],
+  "status": "open",
+  "note": "2026-11-11 の調べ（読むだけ・測るだけ）。見たもの：npm のスクリプト、公開の手順（.github/workflows）、フックの設定、全教材監査の段ごとの時間、check:content の26個の検査ごとの時間、テストが流れ直した理由、監査台帳の変わり方（直近40コミット）、一時フォルダに残ったもの、控えの大きさ、push の権限。見つけて直すもの：(1) check:content 94秒のうち63秒を2つの検査が使っていた。audit:word-levels（32秒）は約9,000語それぞれについて全語の活用形を作り直す（約8,100万回）。audit:japanese（31秒）は行番号を求めるたびにファイルの先頭から数え直す（時間の96%）。check:content は全教材監査のたび・公開のビルド（prebuild）のたびに全部流れる。(2) 全教材監査のたびに監査台帳の auditedAt（時刻）が書き変わる。中身が同じでも台帳に差分が出て、直近40コミットのうち16コミットは台帳の変更が時刻の1行だけ、検証用の clone は監査のたびに未コミットの変更が出る（毎回手で戻していた）。(3) 公開の失敗の知らせ（前の依頼で足した）は、GitHub に聞けなかったとき控えの時刻を進めないので、つながらない間は利用者の発言のたびに聞き直す（最長8秒×2）。(4) 公開の手順（deploy.yml）の job に時間切れがなく（既定は6時間）、固まると後の公開も待たされるが、知らせは終わった run しか見ない。見つけたが直さないもの：deploy.yml に timeout-minutes を足すこと（push に使う権限に workflow がなく、ワークフローのファイルを変える push は GitHub に断られる。利用者の操作が要るので、知らせの側で気づけるようにする）。調べて問題なしとしたもの：一時フォルダに道具の残りはない、控えは 9.4MB・271件、フックは 0.07秒、台帳の検査は 2.3秒、順番のロックは残っていない。そのままにしたもの：テストの控えの1日の期限（その日の最初の監査は全テストで約13分。読むファイルの記録の漏れに備えた安全側の作り）、台帳だけの変更でも重いテスト（本番ビルド・メモリの測定で25〜50秒）が流れること（読んだものが分からないテストは作業ツリーの中身で判定する。requests/ を指紋から外すと、全ファイルを読む検査が監査で流れなくなる）、1依頼に commit が2つ（公開の確認は push のあとにしかできない）、Bash での書き換えは台帳なしでも止まらない（Edit/Write のフックだけ。git のフックはセッションを知らないので止められない）、検証用の clone の手順が手作業（道具にすると push まで自動になる。利用者の判断）。",
+  "criteria": [
+    {
+      "id": "word-levels-check-fast",
+      "text": "audit:word-levels の結果を変えずに速くする（ほかの見出し語の活用形かどうかを、活用形の索引で引く）",
+      "population": "全見出し語（ALL_WORDS）の「ほかの見出し語の活用形か」の判定と、検査の出す文・終了コード",
+      "check": "node --test tests/audit-flow-speed.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/check-word-levels.mjs の「ほかの見出し語の活用形か」を、活用形→見出し語の索引（inflectionOwners）で引く形にした。32秒→0.65秒。全見出し語 8,929語で、前の数え方（全語の活用形を作り直す）と突き合わせて食い違い0件（ほかの語の活用形は428語）。検査の出す文・終了コードは直す前と同じ（cmp で一致）。検査の本体は直接流したときだけ動く形にし、tests/audit-flow-speed.test.mjs が、10語に1語と例の語で前の数え方と同じこと・検査が通ること・15秒より短いことを確かめる。"
+    },
+    {
+      "id": "japanese-audit-fast",
+      "text": "audit:japanese の結果を変えずに速くする（行番号を、行の始まりの索引で引く）",
+      "population": "検査が読む全ファイル（src/ の .js・.jsx）の行番号と、検査の出す文・終了コード",
+      "check": "node --test tests/audit-flow-speed.test.mjs tests/learner-japanese-audit.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/audit-learner-japanese.mjs の行番号を、改行の位置の索引を1回作って二分探索で引く形にした。31秒→0.85秒（前は時間の96%が先頭からの数え直し）。src の .js・.jsx 923ファイルの全位置（22,990,744位置）で前の数え方と食い違い0件。検査の出す文・終了コードは直す前と同じ（cmp で一致）。tests/audit-flow-speed.test.mjs が、形の違う短い文の全位置・いちばん大きい3ファイルの97文字おきで前の数え方と同じこと・検査が通ること・15秒より短いことを確かめ、tests/learner-japanese-audit.test.mjs も通る。check:content は合わせて94秒→31秒（全教材監査の記録で確かめた）。"
+    },
+    {
+      "id": "ledger-timestamp-stable",
+      "text": "中身が同じなら、全教材監査は監査台帳を書き変えない（時刻だけの差分を出さない）。中身が変わったときは今までどおり時刻ごと書き直す",
+      "population": "docs/audits/content-audit-ledger.json の全項目（auditedAt を除く全部が同じかどうか）",
+      "check": "node --test tests/content-audit-ledger.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/content-audit-ledger.mjs --write は、作り直した台帳が前の台帳と auditedAt を除いて同じなら書き変えない（同じでなければ今の時刻で書き直す）。作業ツリーで続けて2回書き直して、2回目は1バイトも変わらないことを確かめた。tests/content-audit-ledger.test.mjs が、一時の置き場所へ書き直して、2回目は同じ・中身を古くした台帳は時刻ごと書き直す・確かめるとき（--write なし）は置き場所の指定を見ないことを確かめる。"
+    },
+    {
+      "id": "deploy-notice-backoff-and-stuck",
+      "text": "公開の知らせは、GitHub に聞けなかったあとも決めた間隔をあけてから聞き直す。公開の自動処理が長く終わらない（固まっている）ときも知らせる",
+      "population": "main への push で動く全ワークフローの最新の run（終わったもの・終わっていないもの）と、GitHub に聞けた場合・聞けない場合",
+      "check": "node --test tests/deploy-status-notice.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-11: scripts/checks/deploy-status.mjs は、GitHub に聞けなかったときも聞いた時刻を控え、5分あけるまで聞き直さない（前の控えがあればそれを使い、なければ黙る）。ワークフローごとのいちばん新しい run が30分たっても終わっていなければ「【公開が終わらない】… run・コミット・何分・止め方」を知らせる（新しい run が成功していれば黙る）。tests/deploy-status-notice.test.mjs が、聞けなかったあとの間隔・控えがない場合・30分の前後・queued・新しい成功がある場合を確かめる。いまの状態は「最新の公開は成功（Deploy to GitHub Pages run 43030698739・Deploy Firebase DB rules run 36078915155）」。直していないこと：deploy.yml の job の時間切れ（既定6時間）そのものは、push の権限に workflow がなく変えられない。"
+    },
+    {
+      "id": "audit-and-deploy",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "全テスト・全監査と公開の自動処理",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/audit-flow-speed.test.mjs",
+      "status": "waiting",
+      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+    }
+  ]
+}

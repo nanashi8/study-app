@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 
 const readJson = async (relative) => JSON.parse(await readFile(new URL(relative, import.meta.url), 'utf8'))
@@ -132,4 +136,41 @@ test('全教材監査コマンドは成功後だけ台帳を書き、通常check
   assert.equal(packageJson.scripts['audit:all-content'], 'node scripts/record-content-audit.mjs')
   assert.equal(packageJson.scripts['audit:content-ledger'], 'node scripts/content-audit-ledger.mjs')
   assert.match(packageJson.scripts.check, /check:content.*audit:content-ledger/)
+})
+
+// 2026-11-11、全教材監査のたびに台帳の時刻（auditedAt）だけが変わり、中身を変えていない commit にも台帳の差分が入り
+// （直近40コミットのうち16コミットは時刻の1行だけ）、検証用の clone には監査のたびに未コミットの変更が出ていた。
+test('中身が同じなら、書き直しても全教材監査台帳は1バイトも変わらない。中身が変わっていれば時刻ごと書き直す', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'study-app-ledger-'))
+  try {
+    const out = join(dir, 'ledger.json')
+    const write = () => spawnSync(process.execPath, ['scripts/content-audit-ledger.mjs', '--write'], {
+      encoding: 'utf8', env: { ...process.env, CONTENT_AUDIT_LEDGER_OUT: out },
+    })
+    const first = write()
+    assert.equal(first.status, 0, first.stderr)
+    assert.match(first.stdout, /全教材監査台帳を更新/)
+    const written = readFileSync(out, 'utf8')
+    const second = write()
+    assert.equal(second.status, 0, second.stderr)
+    assert.match(second.stdout, /前の監査から中身が変わっていない（書き変えない）/)
+    assert.equal(readFileSync(out, 'utf8'), written)
+
+    // 古い中身の台帳は、時刻ごと書き直す。
+    const stale = JSON.parse(written)
+    stale.auditedAt = '2000-01-01T00:00:00.000Z'
+    stale.scope.learningItemCount += 1
+    writeFileSync(out, `${JSON.stringify(stale, null, 2)}\n`)
+    const third = write()
+    assert.equal(third.status, 0, third.stderr)
+    assert.match(third.stdout, /全教材監査台帳を更新/)
+    const rewritten = JSON.parse(readFileSync(out, 'utf8'))
+    assert.ok(rewritten.auditedAt > '2026-11-11', rewritten.auditedAt)
+    assert.deepEqual({ ...rewritten, auditedAt: '' }, { ...JSON.parse(written), auditedAt: '' })
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+  // 確かめるとき（--write なし）は、書き直す先の指定を見ない（必ずリポジトリの台帳を読む）。
+  const source = readFileSync('scripts/content-audit-ledger.mjs', 'utf8')
+  assert.match(source, /const LEDGER_PATH = \(WRITE && process\.env\.CONTENT_AUDIT_LEDGER_OUT\) \|\| path\.join\(ROOT, 'docs\/audits\/content-audit-ledger\.json'\)/)
 })
