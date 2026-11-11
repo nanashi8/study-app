@@ -7,7 +7,7 @@
   "sessions": [
     "48ed74b1-fb57-4c65-a347-738bac57861c"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-11 の前の報告の「やっていないこと」は6つ。(1) check:content の検査やテストの中など60ファイルあまりの process.exit（固まれば時間切れで止まるだけ）、(2) commit・push の前の確認の時間切れが孫のプロセスを止めない、(3) テスト以外の段の「動かない処理」の見張りをやめた、(4) Node 本体を更新していない、(5) 公開版の画面を見ていない、(6) 最初の調べの残り（公開の失敗に気づけない・commit と push のたびに開いた全依頼の check が流れる）。直すもの：(1)(2) と (6) の公開の失敗。直さないもの：(3) は (1) で固まりの元をなくし、段の時間切れも残るので不要。(4) は (1) で process.exit を使わなくなれば要らず、Node の更新は利用者の機械の設定を変える（brew の node 25.2.1 → 26.13.0）。--no-maglev は直す前の終わり方で 4,200回に1回まで減ったが0にならなかったので使わない。(5) は道具だけの変更でアプリの中身が変わらない。(6) の全依頼の check は、テストの控えで1回3〜14秒になっていて、done の確かめを減らすと偽りの done を止める仕組みが弱くなる。そのほか最初の調べで挙げた「1依頼に3コミット」「監査台帳に変更が集中」は作りの性質で不具合ではなく、返事待ちの 10-14 の依頼はほかのセッションの利用者の判断待ち。",
   "criteria": [
     {
@@ -55,8 +55,8 @@
       "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功することを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "全テスト・全監査と公開の自動処理",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/no-process-exit.test.mjs",
-      "status": "waiting",
-      "waitingFor": "クリーンな clone の npm run audit:all-content と push、公開の自動処理の終了"
+      "status": "done",
+      "verifiedBy": "2026-11-11: 作業ツリーの npm run audit:all-content が2回通り（327秒・149秒）、クリーンな clone（npm ci したての node_modules で、モデルの取り寄せを含むビルド）の npm run audit:all-content が通った（165秒）。67999169 を main へ push し、GitHub Pages の公開（run 43000202566）が成功。node scripts/checks/deploy-status.mjs も「最新の公開は成功（run 43000202566）」。作業ツリーは git pull --ff-only で 67999169 に合わせ、未コミットの変更は0件。検証用の clone は、この記録の commit を push したあとに消す。"
     }
   ]
 }
