@@ -18,10 +18,11 @@ test('全教材監査台帳は25カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.scope.categoryCount, 25)
   assert.equal(ledger.categories.length, 25)
   // 2026-11-04、地理総合・歴史総合の語句と問題を足し、地理探究・日本史探究を加えて 21,632 から 24,195 項目になった。
-  assert.equal(ledger.scope.learningItemCount, 24_195)
+  // 2026-11-13、文法の前置詞の3単元に選択問題54問を足して 24,249 項目・24,468 問になった（requests/2026-11-13-grammar-small-units.json）。
+  assert.equal(ledger.scope.learningItemCount, 24_249)
   // 2026-10-25、数学の歴史のテスト252問を削除した。2026-10-28、基礎長文のルールの問題150問を足した。
   // 2026-11-04、社会の語句（1,417）と演習（1,146）を足して 21,851 から 24,414 問になった。
-  assert.equal(ledger.scope.quizItemCount, 24_414)
+  assert.equal(ledger.scope.quizItemCount, 24_468)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {

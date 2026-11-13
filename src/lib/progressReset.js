@@ -44,7 +44,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'results',
     '診断・テスト結果',
-    '正答数、診断結果、数学・社会・理科の演習の記録、分野別・時間帯別の記録',
+    '正答数、診断結果、文法の実力診断、数学・社会・理科の演習の記録、分野別・時間帯別の記録',
     [
       'skillStats',
       'learningAnalytics',
@@ -57,6 +57,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'diagnosticSeed',
       'engPos',
       'grammarStrandPos',
+      'grammarDiagnostic',
       'stats',
     ],
   ),

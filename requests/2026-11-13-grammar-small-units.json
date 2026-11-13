@@ -1,0 +1,54 @@
+{
+  "id": "2026-11-13-grammar-small-units",
+  "title": "文法の問題の少ない単元（前置詞の4級・2級・準1級）に問題を足し、ほかの単元と同じくらいにする",
+  "asked": [
+    "問題の少ない単元を充実させなさい。",
+    "公開して"
+  ],
+  "sessions": [
+    "cc8e3e84-3dad-4081-b8c8-dd82ffcb177b"
+  ],
+  "status": "open",
+  "note": "2026-11-13。実力診断（requests/2026-11-13-grammar-diagnostic-in-app.json）の報告で、問題が6問しかなく3回で使い切る単元として挙げた続き。全127単元の問題数を数えると、前置詞の4級・2級・準1級の3単元だけが6問（並び替え3・語法3・選択0、型6）で、ほかの124単元はどれも24問以上（選択18問以上・型10以上）。そこで「少ない単元」はこの3単元とし、ほかの単元のいちばん少ない数（24問・選択18問・型10）を下回らないようにする。前置詞の単元は、ほかの級（5級・3級・準2級）でも前置詞を選ぶ問題を選択問題として出しているので、それにならって選択問題を各18問書く（語法問題は参考書の本文と結び付ける決まりがあるので増やさない）。",
+  "criteria": [
+    {
+      "id": "no-small-units",
+      "text": "全127単元が、24問以上・選択問題18問以上・型（言いかえだけの問題を1つと数える）10以上を持ち、前置詞の3単元は各24問（選択18・並び替え3・語法3）になる",
+      "population": "文法の全127単元（grammar-strands.js の25系統）",
+      "check": "node --test tests/grammar-unit-balance.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 前置詞の4級・2級・準1級に選択問題を18問ずつ（計54問）足し、3単元とも24問（選択18・並び替え3・語法3）・型24になった。tests/grammar-unit-balance.test.mjs が全127単元で 24問以上・選択18問以上・型10以上を確かめる（127単元中127単元が満たす。足す前は124単元）。"
+    },
+    {
+      "id": "new-questions-correct",
+      "text": "足した54問は、参考書のページで学ぶ組み合わせ・使い分けを問い、正解がただ1つで、誤りの選択肢はその文では成り立たず（辞書の認める言い方としても成り立たない）、和訳がその文の意味で、解説に正解の語が入り、4つの選択肢すべてにこの問題に当てはめた説明がある。完成した英文がほかの問題・参考書の例文と重ならない。1問ずつ読んで確かめる",
+      "population": "足した54問（前置詞の4級・2級・準1級 各18問）と、その選択肢216個",
+      "check": "node --test tests/grammar-unit-balance.test.mjs tests/grammar-unit-formats.test.mjs tests/grammar-choice-notes.test.mjs tests/grammar-explanation-completeness.test.mjs tests/grammar-quiz-translations.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 54問を1問ずつ読んだ。4級は参考書のページの look at／for／after／forward to・wait for・listen to・arrive in・get to・talk to・take care of・during・for・until・by・between・among・across・along、2級はページの place a burden on・have an effect on・depend on・account for・get over・go through・in addition to・at least・on the other hand・in spite of・according to・名詞化の of と、2級でよく問われる be responsible for・consist of・result in・contribute to・deal with・apply for、準1級はページの cast doubt on・have an impact on・be attributable to・be subject to・be at odds with・be consistent with・fall short of・in response to と、準1級の論説でよく使う in light of・at the expense of・in terms of・on behalf of・in accordance with・be conducive to・refrain from・be indicative of・comply with・in the wake of。誤りの選択肢は、その文に入れると別の決まった言い方として成り立つもの（wait on・look into・get through・result from・apply to など）を避けて選んだ。和訳の検査が拾った2問（for a minute の訳がない・公演を show と取り違え）は英文と和訳を言いかえ、既存の並び替え問題と同じ解説だった2問と30字に足りない1問は解説を書き足した。完成した英文の重複0（check-data・english-question-format-audit）、選択肢216個すべてに説明、解説に正解の語、参考書と結び付く問題の和訳の読んだ記録を3ページ書き直した（--stamp）。新しい漢字語2つ（日間泊・全社員）は読んで台帳へ。"
+    },
+    {
+      "id": "diagnostic-no-repeat",
+      "text": "実力診断で全部まちがえる受け方を続けても、全127単元で12回までは前の回の問題が出ない（前置詞の3単元が3回で使い切らない）",
+      "population": "全127単元・3つの範囲",
+      "check": "node --test tests/grammar-diagnostic.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: tests/grammar-diagnostic.test.mjs が3つの範囲で全部まちがえる受け方を12回続け、全127単元で前の回の問題が1問も出ないことを確かめる（足す前は前置詞の3単元が4回目から重なっていた）。"
+    },
+    {
+      "id": "audit-passes",
+      "text": "npm run audit:all-content を通す",
+      "population": "全テスト・全監査",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/grammar-unit-balance.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: npm run audit:all-content が通った（audit exit 0・820秒、重いブラウザのテストを含む全270ファイル・台帳を更新・失敗0件）。動いた固定値：文法の問題 4,430→4,484、単元別 875→929（選択 179→233）、選択式 4,049→4,103・説明 16,196→16,412、選択肢の経路 2,396→2,612・誤り 1,797→1,959、規則の解説 1,629→1,683、参考書と結び付く問題 1,523→1,577、教材 24,195→24,249 項目・24,414→24,468 問、ノート 23,372→23,426、段の作り 22,802→22,856、日本語の監査のソース 289,422。"
+    },
+    {
+      "id": "publish",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功して公開版に出ることを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "この依頼の変更 全部",
+      "check": "node --test tests/grammar-unit-balance.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -58,6 +58,9 @@ export function GrammarQuizScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const reviseReview = useStore((s) => s.reviseReview)
+  const recordDiagnosticAnswer = useStore((s) => s.recordGrammarDiagnosticAnswer)
+  // 文法の実力診断の1回分。答え（選び直しを含む）を診断の記録にも残す。
+  const diagnostic = params.source?.diagnostic === true
   const color = params.levelColor ?? '#6366f1'
 
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
@@ -181,11 +184,13 @@ export function GrammarQuizScreen() {
       // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
       receipts.set(i, reviseReview(receipts.get(i), answer))
       reviseQuizTally(results.current, item.id, resultOf(selected), answer)
+      if (diagnostic) recordDiagnosticAnswer(item.id, answer === 'correct')
       setSelected(opt)
       return
     }
     setSelected(opt)
     receipts.set(i, review(item.id, answer, 'grammar'))
+    if (diagnostic) recordDiagnosticAnswer(item.id, answer === 'correct')
     results.current[answer]++
     if (answer === 'correct') {
       autoAdvanceSequence.current += 1

@@ -15,11 +15,11 @@ const ledger = JSON.parse(readFileSync(GRAMMAR_QUIZ_TRANSLATION_REVIEW_PATH, 'ut
 const review = grammarQuizTranslationReview(ledger)
 const byId = new Map(GRAMMAR_PRACTICE.map((item) => [item.id, item]))
 
-test('読む問題：文法の問題4,430問のうち、参考書の台帳が読む1,523問を除く2,907問（自動で作った問題2,422・試験の型の問題421・そのほか64、124単元）', () => {
-  assert.equal(GRAMMAR_PRACTICE.length, 4_430)
+test('読む問題：文法の問題4,484問のうち、参考書の台帳が読む1,577問を除く2,907問（自動で作った問題2,422・試験の型の問題421・そのほか64、124単元）', () => {
+  assert.equal(GRAMMAR_PRACTICE.length, 4_484)
   const tied = new Set(grammarQuizSentences().map((item) => item.id))
   const rest = grammarQuizRestSentences()
-  assert.equal(tied.size, 1_523)
+  assert.equal(tied.size, 1_577)
   assert.equal(rest.length + tied.size, GRAMMAR_PRACTICE.length, '2つの台帳で文法の問題すべてを覆う')
   assert.ok(rest.every((item) => !tied.has(item.id)), '参考書の台帳と重ならない')
   assert.deepEqual(review.counts, { items: 2_907, auto: 2_422, exam: 421, other: 64, groups: 124 })
@@ -57,13 +57,13 @@ test('手がかり：2,907問から拾った候補6問すべてに、食いち�
   assert.deepEqual(review.stale, [])
 })
 
-test('自動で作る問題の部品：文末・目的語の語句が、文法の問題4,430問すべてで和訳に入っている', () => {
+test('自動で作る問題の部品：文末・目的語の語句が、文法の問題4,484問すべてで和訳に入っている', () => {
   const phrases = [
     [/\bin practice\b/iu, /実際(?:に|の|は)/u, 'in practice', 15],
     [/\bunder pressure\b/iu, /圧力|重圧/u, 'under pressure', 7],
     [/\bunder current conditions\b/iu, /現状/u, 'under current conditions', 9],
     [/\bat this stage\b/iu, /この段階|現段階/u, 'at this stage', 17],
-    [/\bthe company’s\b/iu, /会社の/u, 'the company’s', 7],
+    [/\bthe company’s\b/iu, /会社の/u, 'the company’s', 8],
   ]
   for (const [en, ja, label, count] of phrases) {
     const hits = GRAMMAR_PRACTICE.filter((item) => en.test(item.sentence.en))

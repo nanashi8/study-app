@@ -21,7 +21,7 @@ const result = surveyContentOverlaps()
 test('段の作り：17教材22,802件が、どの軸でもちょうど1つの決まった値を持ち、id の重なりがない', () => {
   assert.deepEqual(result.problems, [])
   assert.equal(result.structure.length, 17)
-  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 22_802)
+  assert.equal(result.structure.reduce((sum, content) => sum + content.total, 0), 22_856)
   for (const content of result.structure) {
     assert.deepEqual(content.duplicateIds, [], `${content.label}: id の重なり`)
     for (const axis of content.axes) assert.deepEqual(axis.bad, [], `${content.label}: ${axis.name}`)

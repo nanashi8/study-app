@@ -36,7 +36,7 @@ test('語法385問すべてが、英検で問われる語法の型と、問う�
 test('文法の規則だけで決まる問題は語法に置かず、選択問題へ移してある', () => {
   // 移した179問。問題文と解説はそのまま、形式の札だけを正した。
   const moved = GRAMMAR_UNIT_FORMATS.filter((item) => item.id.startsWith('gr_unit_ch_'))
-  assert.equal(moved.length, 179)
+  assert.equal(moved.length, 233)
   for (const item of moved) {
     assert.equal(item.questionType, 'choice', item.id)
     assert.equal(item.usageKind, undefined, `${item.id}: 選択問題に語法の型が残っている`)

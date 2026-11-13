@@ -38,14 +38,14 @@ test('参考書の全127単元が、並び替えも語法も3問以上持つ', (
   }
 })
 
-test('追加した875問は、単元の学習内容と結び付き、狙いが単元の中で重ならない', () => {
-  assert.equal(GRAMMAR_UNIT_FORMATS.length, 875)
+test('追加した929問は、単元の学習内容と結び付き、狙いが単元の中で重ならない', () => {
+  assert.equal(GRAMMAR_UNIT_FORMATS.length, 929)
   assert.deepEqual(
     Object.fromEntries(['word-order', 'usage', 'choice'].map((type) => [
       type,
       GRAMMAR_UNIT_FORMATS.filter((item) => item.questionType === type).length,
     ])),
-    { 'word-order': 346, usage: 350, choice: 179 },
+    { 'word-order': 346, usage: 350, choice: 233 },
   )
 
   const focuses = new Map()

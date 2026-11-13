@@ -225,7 +225,7 @@ test('アカウントの表示とログイン画面は、どこからも開け�
   assert.ok(!existsSync(join(ROOT, 'src/screens/Login.jsx')))
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routes = [...screenMap.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1])
-  assert.equal(routes.length, 90) // 出典の画面を外して 91 から 90（2026-11-04）
+  assert.equal(routes.length, 91) // 出典の画面を外して 91 から 90（2026-11-04）、文法の実力診断の画面で 91（2026-11-13）
   assert.ok(!routes.includes('login'))
   assert.doesNotMatch(app, /LoginScreen|screens\/Login/)
 

@@ -1,0 +1,48 @@
+{
+  "id": "2026-11-12-grammar-diagnostic-prototype",
+  "title": "入試の出題範囲を満遍なく少しずつ出す文法の実力テストと、結果から弱点の単元がぱっと分かる画面を試作する（実装はしない）",
+  "asked": [
+    "高校入試や大学入試で中高生が満遍なく出題範囲をテストし、テスト結果により弱点をぱっとして把握できるような画面を試作しなさい。実装はしなくてよい。テストは文法問題を満遍なく少しずつ出題して実力を確認するようにして、テスト後に弱点となっている単元を見つけられるようにしたい。",
+    "既存の英文法のアプリと連携できないか？",
+    "つないで試作"
+  ],
+  "sessions": [
+    "cc8e3e84-3dad-4081-b8c8-dd82ffcb177b"
+  ],
+  "status": "done",
+  "note": "2026-11-12。試作は scratchpad の HTML（Artifact で公開）で、src/ は変えない。問題は src/data/grammar.js の GRAMMAR_PRACTICE から、単元は src/data/grammar-strands.js の25系統・127単元（5級12・4級15・3級16・準2級26・2級26・準1級20・1級12）から取った。範囲は試作の仮置きで、高校入試＝5・4・3級の43単元、大学入試（共通テスト）＝5級〜2級の95単元、大学入試（難関大）＝全127単元。 2026-11-13、scratchpad の試作は消えるので、確かめはアプリに組み込んだ同じ作りのテスト（tests/grammar-diagnostic.test.mjs・grammar-diagnostic-screen.test.mjs）へ移して閉じた。",
+  "criteria": [
+    {
+      "id": "test-covers-every-unit",
+      "text": "実力テストが、選んだ入試の範囲の全単元から1問ずつ出題する（満遍なく）。少しずつ解けるように区切りがあり、まちがえた単元にはもう1問の確かめの問題を出す",
+      "population": "文法の全127単元（25系統）。範囲は3つ：高校入試43単元・大学入試（共通テスト）95単元・大学入試（難関大）127単元",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-12: check-prototype.mjs が Playwright（375px）で3つの範囲を最後まで解いた。1問目を出した単元：高校入試 43/43・共通テスト 95/95・難関大 127/127（重複0）。1問目をまちがえた単元だけに2問目（15・32・43問）。10問ごとの区切り 5・10・13回。埋めた127単元は grammar-strands.js と一致し、254問すべて GRAMMAR_PRACTICE の在庫の問題で正解が選択肢にある。"
+    },
+    {
+      "id": "result-finds-weak-units",
+      "text": "テストの結果画面で、範囲の全単元が正誤とともに並び、弱点の単元（2問ともまちがえた単元）と系統ごとの出来がひと目で分かり、弱点の単元から学習へ進む入口がある",
+      "population": "結果画面に載る範囲の全単元（高校入試43・共通テスト95・難関大127）と全25系統",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-12: 結果画面の弱点マップ（行＝系統・列＝範囲の級）に範囲の全単元 43/43・95/95・127/127 が正しい色（できた・あやふや・弱点）で載り、系統の行 18・22・25。見出しの弱点数・弱点の一覧（最初5件・残りは開く）・練習の入口の数が弱点の数と一致、あやふやの一覧も一致。弱点の四角を押すと2問の正誤と解説が出る。ページのエラー0。"
+    },
+    {
+      "id": "prototype-published",
+      "text": "試作を Artifact で公開し、スマホの幅（375px）で横にはみ出さないことを確かめる",
+      "population": "試作の画面すべて（範囲の選択・テスト・結果）",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-12: https://claude.ai/artifact/KDqyUJbqMYdUMibgUzm3RX に公開。375px で範囲を選ぶ・テスト・結果（3範囲）の横のはみ出し0（検査）、明るい・暗い配色の画面写真を目で見た。"
+    },
+    {
+      "id": "user-decides-next",
+      "text": "試作を見た利用者が、実装へ進めるか・直すところを決める",
+      "population": "試作の全画面",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 利用者の答え「つないで試作」で、文法モードにつないでアプリの中で動く試作にすることになった。続きは requests/2026-11-13-grammar-diagnostic-in-app.json。"
+    }
+  ]
+}

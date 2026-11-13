@@ -23,6 +23,7 @@ import { Chip, cx } from '../components/ui.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { StudyHistory } from '../components/GrammarStudyRecord.jsx'
 import {
+  ChooserTile,
   ChooserTiles,
   ReviewTodayRow,
   TodayCard,
@@ -37,7 +38,8 @@ import {
   grammarReferenceStatusCounts,
   strandReferencePageId,
 } from '../lib/grammarReferenceLog.js'
-import { BookOpen, Check } from '../components/Icons.jsx'
+import { BookOpen, Check, Target } from '../components/Icons.jsx'
+import { grammarDiagnosticScope, summarizeGrammarDiagnostic } from '../lib/grammarDiagnostic.js'
 
 // 出題のある級だけタブに出す。
 const ACTIVE_LEVELS = LEVELS.filter((l) => grammarPracticeByLevel(l.id).length > 0)
@@ -372,6 +374,7 @@ export function GrammarScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
   const grammarReferenceLog = useStore((s) => s.grammarReferenceLog)
+  const grammarDiagnostic = useStore((s) => s.grammarDiagnostic)
   const grammarStrandPos = useStore((s) => s.grammarStrandPos)
   const setGrammarStrandPos = useStore((s) => s.setGrammarStrandPos)
   const [division, setDivision] = useScreenParam('view', readDivision)
@@ -384,6 +387,14 @@ export function GrammarScreen() {
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const returnTo = { screen: 'grammar', params: { view: division, level, strand: strandId, questionType } }
   const nextUnit = nextGrammarReferenceUnit(grammarReferenceLog)
+  // 実力診断の入口：受けている診断があれば、解いた単元の数と弱点の数を出す。
+  const diagnostic = summarizeGrammarDiagnostic(grammarDiagnostic)
+  const diagnosticDetail = diagnostic
+    ? diagnostic.finished ? `弱点 ${diagnostic.counts.weak}単元` : `${diagnostic.answered}/${diagnostic.total}単元`
+    : '入試の範囲'
+  const diagnosticLabel = diagnostic
+    ? `実力診断。${grammarDiagnosticScope(diagnostic.scope).label}、${diagnosticDetail}`
+    : '実力診断。入試の範囲の全単元を1問ずつ解いて弱点を見つける'
 
   const overviews = useMemo(
     () => GRAMMAR_STRANDS.map((strand) => strandOverview(strand, srs, grammarStrandPos?.[strand.id])),
@@ -488,6 +499,16 @@ export function GrammarScreen() {
           {/* 単語帳：級・系統をまたいで自分で集めた問題 */}
           <ChooserTiles data-grammar-choosers>
             <WordBookTile domain="grammar" returnTo={returnTo} />
+            <ChooserTile
+              onClick={() => navigate('grammarDiagnostic')}
+              aria-label={diagnosticLabel}
+              data-grammar-diagnostic-entry
+              icon={<Target size={19} />}
+              iconClassName="bg-rose-100 text-rose-600"
+              label="実力診断"
+            >
+              {diagnosticDetail}
+            </ChooserTile>
           </ChooserTiles>
         </div>
 

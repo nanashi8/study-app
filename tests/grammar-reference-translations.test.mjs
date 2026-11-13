@@ -52,7 +52,7 @@ test('全152ページの英文と和訳・地の文・結び付く問題を読�
     pages: 152,
     pairs: 1_552,
     texts: 2_442,
-    quizSentences: 1_523,
+    quizSentences: 1_577,
     usageFocus: 385,
   })
   assert.deepEqual(

@@ -163,7 +163,10 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-04、出典のページ（src/screens/Credits.jsx・src/data/credits.js）を消して（利用者の指示「出典の表示を削除しなさい」）、学習者画面が 374 から 373 ファイルになった。
   // 2026-11-10、英単語・熟語のカードを暗記と辞書・一覧の詳細で同じ部品（src/components/WordStudyCard.jsx・
   // PhraseStudyCard.jsx）にして 375 ファイルになった（requests/2026-11-10-detail-uses-study-card.json）。
-  assert.equal(result.learnerFiles, 375)
+  // 2026-11-13、文法の実力診断の画面（src/screens/GrammarDiagnostic.jsx）と部品（src/lib/grammarDiagnostic.js）で 377 ファイルになり、
+  // 学習者画面の日本語が 18611 から 18689（重複なし 13833 から 13897）に、ソース全体が 923 から 925 ファイル・288941 から 289019 になった
+  // （requests/2026-11-13-grammar-diagnostic-in-app.json）。同じ日、回ごとの履歴の文で 18714（重複なし 13920）・ソース全体 289044 になった。
+  assert.equal(result.learnerFiles, 377)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
@@ -197,7 +200,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 辞書ページの分野の欄に見出し「分野」を足して 18605 になった（requests/2026-11-10-detail-uses-study-card.json）。
   // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
   // 学習者画面の日本語が 18605 から 18611 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
-  assert.equal(result.learnerJapaneseEntries, 18611)
+  assert.equal(result.learnerJapaneseEntries, 18714)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
@@ -208,7 +211,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-10、英和辞書の熟語の行をその場で開く詳細（使い方メモ・★ 単語帳から外す など）をやめ、暗記と同じカードを開く形にして 13829 になった。
   // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
   // 重複なしが 13829 から 13833 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 13833)
+  assert.equal(result.learnerUniqueJapaneseEntries, 13920)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -226,7 +229,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-04、地理探究・日本史探究の教材（src/data/subjects の geoTankyu・jhsTankyu の23本）で 898 から 921 ファイルになった
   // （requests/2026-11-04-high-school-social-tankyu.json）。
   // 2026-11-10、英単語・熟語のカードの共通の部品2つで 923 ファイルになった。
-  assert.equal(result.sourceFiles, 923)
+  assert.equal(result.sourceFiles, 925)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
@@ -247,7 +250,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-10、暗記と辞書・一覧の詳細で別々に書いていた英単語・熟語のカードを共通の部品にまとめ、辞書ページの分野の見出しを足して 288935 になった。
   // 2026-11-10、一文の構文解説の M を修飾語・修飾句・修飾節に呼び分ける変更（10-29 に作り、作業ツリーに残っていたもの）を公開版に載せて、
   // ソース全体の日本語が 288935 から 288941 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
-  assert.equal(result.sourceJapaneseEntries, 288941)
+  assert.equal(result.sourceJapaneseEntries, 289422)
   assert.equal(result.issues.length, 0)
 })
 

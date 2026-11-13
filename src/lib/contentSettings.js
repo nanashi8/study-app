@@ -42,7 +42,7 @@ export const SCOPE_SCREENS = Object.freeze({
   readingList: ['readingList', 'readingRules', 'readingPrep', 'sceneBundles', 'reader', 'readingSummary'],
   basicReading: ['basicReading', 'basicReadingPrep', 'basicReadingLesson'],
   phrases: ['phrases'],
-  grammar: ['grammar', 'grammarQuiz', 'grammarReference', 'grammarStrandReference'],
+  grammar: ['grammar', 'grammarQuiz', 'grammarDiagnostic', 'grammarReference', 'grammarStrandReference'],
   listening: ['listening', 'listeningQuiz'],
   diagnostic: ['diagnostic'],
   dictation: ['dictation', 'dictationPlay'],

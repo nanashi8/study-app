@@ -1,0 +1,95 @@
+{
+  "id": "2026-11-13-grammar-diagnostic-in-app",
+  "title": "文法の実力診断（入試の範囲の全単元を1問ずつ・弱点マップ）を既存の文法モードにつないで、アプリの中で動く試作にする",
+  "asked": [
+    "つないで試作",
+    "この実力診断は、回ごとに違う問題が出題されて、回ごとの成績の履歴を確認できるようにしなさい。",
+    "公開して"
+  ],
+  "sessions": [
+    "cc8e3e84-3dad-4081-b8c8-dd82ffcb177b"
+  ],
+  "status": "open",
+  "note": "2026-11-13。前の依頼 requests/2026-11-12-grammar-diagnostic-prototype.json（scratchpad の試作 https://claude.ai/artifact/KDqyUJbqMYdUMibgUzm3RX）の続き。問いに挙げた3つは、利用者が決めるまで仮に置く：範囲は高校入試＝5〜3級の43単元・共通テスト＝5級〜2級の95単元・難関大＝全127単元。弱点＝1問目と確かめの2問目の両方をまちがえた単元。診断の答えは今の文法テストと同じく学習記録（srs）にも入る（まちがえた問題は普段の復習に回る）。テストの画面は今の文法テスト（GrammarQuiz）をそのまま使い、確かめの2問目は次の回の頭に出す（試作の HTML では回の終わり）。 2026-11-13 の追加の指示：「回」は診断を受ける1回（範囲の全単元を解き終えるまで）と読んだ。10単元ずつの区切りを「回」と呼んでいた画面の言い方は「区切り」に改める。単元の問題は6〜数十問しかないので、問題が尽きた単元では、使った回数の少ない問題から出す（作らない）。",
+  "criteria": [
+    {
+      "id": "deck-covers-every-unit",
+      "text": "診断の出題（src/lib/grammarDiagnostic.js）が、選んだ範囲の全単元から1問目を1問ずつ、1回10単元ずつ出し、1問目をまちがえた単元にだけ同じ単元の別の問題を確かめの2問目として出す。問題は GRAMMAR_PRACTICE のその単元の問題",
+      "population": "文法の全127単元（grammar-strands.js の25系統）と3つの範囲（43・95・127単元）",
+      "check": "node --test tests/grammar-diagnostic.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: tests/grammar-diagnostic.test.mjs が3つの範囲を最後まで解き、1問目を出した単元は 高校入試 43/43・共通テスト 95/95・難関大 127/127（範囲の順・重複0）、1問目は10単元ずつ（5・10・13回）、2問目は1問目をまちがえた単元にだけ、同じ単元の別の問題（全問 GRAMMAR_PRACTICE のその単元）。単元の一覧は grammar-strands.js の25系統・127単元と一致。選び直し・もう一度受けたときの別の問題・途中の結果も確かめる。"
+    },
+    {
+      "id": "result-finds-weak-units",
+      "text": "診断の画面（grammarDiagnostic）の結果で、範囲の全単元が系統×級のマップに出来（できた・あやふや・弱点・まだ）つきで並び、弱点・あやふやの単元の一覧から、今の参考書のページ（grammarReference）・その単元のテスト・弱点まとめてのテストへ進める",
+      "population": "範囲の全単元（43・95・127）。参考書へのつながりは全127単元",
+      "check": "node --test tests/grammar-diagnostic.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 結果の数え方（できた・あやふや・弱点・確かめ待ち・まだ）を3つの範囲の全単元で、答えたとおりかを確かめた（tests/grammar-diagnostic.test.mjs）。全127単元に参考書のページ（grammarReferenceFor）とテストの問題（2問以上）がある。画面（tests/grammar-diagnostic-screen.test.mjs）：高校入試の結果のマップの43単元の色が答えたとおり、難関大は127単元・7級の列が375pxに収まる。弱点の四角から2問の正誤、参考書（grammarReference）へ進んで戻ると同じ単元を開いたまま、単元のテストはその単元の問題（source が級・単元・mixed）、弱点まとめのテストのボタン、一覧は5単元＋残りを開く。"
+    },
+    {
+      "id": "connected-to-grammar-mode",
+      "text": "文法のトップ（Grammar.jsx）に診断の入口があり、診断の回は今の文法テスト（GrammarQuiz）で解き、答え（選び直しを含む）が診断の記録に入り、回が終わると診断の画面へ戻る",
+      "population": "入口・テストの画面・戻り先",
+      "check": "node --test tests/grammar-diagnostic.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 文法のトップの「選び方」に「実力診断」のタイル（受けている診断の解いた数・解き終えたら弱点の数）。診断の回は文法テスト（GrammarQuiz）を source.diagnostic で開き、最初の答えと選び直しの両方で recordGrammarDiagnosticAnswer を呼ぶ。回の終わりは共通の結果画面の「診断の結果へ」から診断の画面へ戻る。画面のテストで、入口から高校入試の6回（5回＋確かめだけの回）を実際に解いて確かめた。単元のテストの答えは診断の記録を変えない。"
+    },
+    {
+      "id": "record-saved",
+      "text": "診断の記録（grammarDiagnostic）が端末の保存・進捗コード・端末間の同期・記録の消去に入り、途中でやめても続きから解ける",
+      "population": "保存する進捗の全項目の一覧（PERSISTED_PROGRESS_FIELDS ほか）",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/regressions.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: grammarDiagnostic を PERSISTED_PROGRESS_FIELDS（53項目）・進捗コードの検査・cloudSync・useStore の読み戻し・記録の消去の「診断・テスト結果」（消去の対象50項目）に足した。JSON で往復しても続きの回が同じになる（tests/grammar-diagnostic.test.mjs）。localStorage から IndexedDB への引き継ぎのテスト（study-save-quota-browser）も53項目で全欄同じ。"
+    },
+    {
+      "id": "works-in-app",
+      "text": "開発版のアプリ（スマホの幅375px）で、文法のトップから診断を始め、1回分を解いて戻り、結果のマップと弱点の一覧が出て、参考書・テストへ進めることを確かめる",
+      "population": "診断の画面の全部（範囲を選ぶ・回の間・結果）とテストの画面",
+      "check": "node --test tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: tests/grammar-diagnostic-screen.test.mjs が 375px の Chromium で開発版を動かし、入口→範囲を選ぶ→6回分43単元（2問目を含む）を文法テストの画面で解く→結果→参考書→戻る→単元のテストまで確かめる（横のはみ出し0）。手でも開発版（375px）で1回目・2回目を解き、マップ・弱点の一覧・参考書・単元のテストへのつながりを見た。"
+    },
+    {
+      "id": "audit-passes",
+      "text": "npm run audit:all-content（関係するテスト・全監査・監査台帳の書き直し）を通す",
+      "population": "全テスト・全監査",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 作業ツリーで npm run audit:all-content が通った（audit exit 0・合計120秒・全教材監査台帳を更新・失敗0件）。その前に全269テストファイルを流して（重いブラウザのテストを含む）、固定値6か所（ルート91・保存53・消去50・日本語の監査の5つの数）と読んだ漢字語5つの台帳を直した。"
+    },
+    {
+      "id": "publish",
+      "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功して公開版に出ることを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
+      "population": "この依頼の変更 全部",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs tests/content-audit-ledger.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "different-questions-per-attempt",
+      "text": "診断を受け直すたびに、前の回までに出した問題（1問目・2問目とも）を出さない。同じ型の言いかえだけの問題も、別の型が残る間は出さない。単元の問題を使い切ったら、それまでに出した回数の少ない問題から出す",
+      "population": "全127単元・3つの範囲で、続けて受けた回（各単元の問題数を使い切るまでの全回と、使い切ったあとの回）",
+      "check": "node --test tests/grammar-diagnostic.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 問題を選ぶとき、前の回までに出した回数の少ない問題 → 前の回に出していない型 → 選択問題 → まだ答えていない問題の順にする（pickGrammarDiagnosticQuestion）。tests/grammar-diagnostic.test.mjs が全127単元で、単元の問題数（6〜数十問）＋3回まで1回ずつ選び、問題を使い切るまで前の回の問題を選ばないこと・別の型が残る間は前の型を選ばないこと・使い切ったら出した回数のいちばん少ない問題を選ぶことを確かめる。3つの範囲で全部まちがえる受け方を4回続け、重なるのは問題が6問しかない前置詞の3単元（4級・2級・準1級）が3回で使い切ったあとだけ。画面のテストで、第2回の最初の区切りの10問が第1回と1問も重ならない。"
+    },
+    {
+      "id": "history-per-attempt",
+      "text": "受けた回ごとに、範囲・日付・できた／あやふや／弱点の数・単元ごとの出来を履歴に残し（解き終えた回も、途中で受け直した回も）、診断の画面で回の一覧（前の同じ範囲の回からの変化つき）を見て、どの回でも開いてその回の弱点マップと弱点の一覧を確かめられる",
+      "population": "履歴に残る全部の回（3つの範囲）と、その回の範囲の全単元",
+      "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 受けている回は答えるたびに履歴の同じ回の行へ写し、受け直しても途中の回が残る（最大50回）。結果の画面の「これまでの回」に、第N回・範囲・始めた日・できた／あやふや／弱点の数・正答率（途中なら解いた単元の数）と、同じ範囲の前の回からの弱点の増減を新しい回から並べ、押すとその回の弱点マップ・弱点の一覧（参考書・テストへのつながりつき）を開く。tests/grammar-diagnostic.test.mjs が、解き終えた回・途中の回・範囲のちがう回の3回で、一覧の並び・数・前の回からの変化・履歴から開いた回の全単元の出来・JSON での往復を確かめる。画面のテストで、第1回の43単元の出来が履歴から開いても答えたとおり、第2回は「途中 10/43単元」、375pxで横にはみ出さない。"
+    },
+    {
+      "id": "audit-after-history",
+      "text": "追加の変更のあと npm run audit:all-content を通す",
+      "population": "全テスト・全監査",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-13: 全269テストファイルを流して通り（797秒、重いブラウザのテストを含む）、npm run audit:all-content も通った（audit exit 0・41秒・台帳を更新・失敗0件）。日本語の監査の数を 18714・13920・289044 に直した。新しい漢字語はなかった。"
+    }
+  ]
+}

@@ -156,6 +156,12 @@ import {
 } from '../lib/contentSettings.js'
 import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
 import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/grammarReferenceLog.js'
+import {
+  emptyGrammarDiagnostic,
+  normalizeGrammarDiagnostic,
+  recordGrammarDiagnosticAnswer,
+  startGrammarDiagnostic,
+} from '../lib/grammarDiagnostic.js'
 import { appendMathStoryLog, normalizeMathStoryLog } from '../lib/mathStoryLog.js'
 import { appendMathExamLog, normalizeMathExamLog } from '../lib/mathExamLog.js'
 import { appendSubjectPracticeLog, normalizeSubjectPracticeLog } from '../lib/subjectPractice.js'
@@ -331,6 +337,8 @@ export const createInitialLearningState = () => ({
   // 文法の系統ごとの現在地。{ 系統id: その系統の級配列の添字(小数可) }。
   // 未登録の系統は成績から推定するので、ここには実際に解いた系統だけが載る。
   grammarStrandPos: {},
+  // 文法の実力診断。{ current: 受けている診断（範囲・単元ごとの1問目と確かめの2問目）, history: 解き終えた診断の結果 }
+  grammarDiagnostic: emptyGrammarDiagnostic(),
   battleRelicLevel: null, // バトルへ持ち込む取得済み戦利品の解放LV。nullは最新を自動選択
   battleStars: 0, // 旧ゲーム表示との保存互換用スター
   battleXpSpent: 0, // 旧保存データとの往復だけに残す不活性な互換値
@@ -667,6 +675,7 @@ export function progressStateFromPayload(payload = {}) {
     diagnosticSeed: payload.diagnosticSeed ?? null,
     engPos: payload.engPos ?? null,
     grammarStrandPos: payload.grammarStrandPos ?? {},
+    grammarDiagnostic: normalizeGrammarDiagnostic(payload.grammarDiagnostic),
     battleRelicLevel: payload.battleRelicLevel ?? null,
     battleStars,
     battleXpSpent: normalizeLegacyXp(payload.battleXpSpent),
@@ -1506,6 +1515,12 @@ export const useStore = create(
         set((st) => ({
           grammarReferenceLog: appendGrammarReferenceLog(st.grammarReferenceLog, pageId, result, today()),
         })),
+
+      // 文法の実力診断：範囲を選んで始め直す・1問ごとの答えを残す（文法テストの画面から呼ぶ）。
+      startGrammarDiagnostic: (scopeId) =>
+        set((st) => ({ grammarDiagnostic: startGrammarDiagnostic(st.grammarDiagnostic, scopeId, today()) })),
+      recordGrammarDiagnosticAnswer: (itemId, ok) =>
+        set((st) => ({ grammarDiagnostic: recordGrammarDiagnosticAnswer(st.grammarDiagnostic, itemId, ok, today()) })),
 
       recordMathStory: (pageId, result) =>
         set((st) => ({

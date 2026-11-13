@@ -46,6 +46,7 @@ import { normalizeGrammarReferenceLog } from './grammarReferenceLog.js'
 import { normalizeMathStoryLog } from './mathStoryLog.js'
 import { normalizeMathExamLog } from './mathExamLog.js'
 import { normalizeSubjectPracticeLog } from './subjectPractice.js'
+import { normalizeGrammarDiagnostic } from './grammarDiagnostic.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -127,6 +128,7 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
       : null,
     engPos: data.engPos ?? null,
     grammarStrandPos: data.grammarStrandPos ?? {},
+    grammarDiagnostic: normalizeGrammarDiagnostic(data.grammarDiagnostic),
     battleRelicLevel:
       Number.isSafeInteger(data.battleRelicLevel)
       && data.battleRelicLevel >= 1

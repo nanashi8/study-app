@@ -3,7 +3,7 @@
 //   英単語を1回のカード数を100で10問中10問未習からの出題で英検準1級を暗記していたところ、途中から自動で次の単語に
 //   進まなくなる不具合が発生したので、原因を究明して、同様の不具合が発生しないようにしなさい。
 //
-// ・capacity-all-content：全教材24,195項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ。
+// ・capacity-all-content：全教材24,249項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ。
 // ・migrate-local-storage：前の版が localStorage に残した記録を、読み直したときにそのまま引き継ぐ（前の版の読み戻しと全欄が一致）。
 // ・user-scenario：localStorage がいっぱいの端末で、準1級・100枚・未修だけの暗記を100枚とも進め、記録が読み直しても残る。
 // ・save-failure-notice：保存できない端末（IndexedDB なし・localStorage いっぱい）で知らせが出て、カードは進み、空いたら消える。
@@ -125,11 +125,11 @@ const FILL_LOCAL_STORAGE = () => {
   return used
 }
 
-test('全教材24,195項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ記録が戻る', async () => {
+test('全教材24,249項目を暗記とテストで学んだ最大の記録（localStorage の上限を超える）を保存し、読み直しても同じ記録が戻る', async () => {
   const { state, itemCount, counts } = buildFullLearningState()
   assert.equal(LEARNING_CONTENTS.length, 25)
   // 2026-11-04、地理総合・歴史総合の語句と問題を足し、地理探究・日本史探究を加えて 21,632 から 24,195 項目になった。
-  assert.equal(itemCount, 24195)
+  assert.equal(itemCount, 24249)
   const text = JSON.stringify({ state, version: 11 })
 
   const { context, page, errors } = await openPhone()
@@ -222,7 +222,7 @@ test('前の版が localStorage に残した記録を、前の版の読み戻し
     for (const field of PERSISTED_PROGRESS_FIELDS) {
       assert.equal(JSON.stringify(migrated[field]), JSON.stringify(expected[field]), `引き継いだ ${field} が前の版の読み戻しと違う`)
     }
-    assert.equal(PERSISTED_PROGRESS_FIELDS.length, 52)
+    assert.equal(PERSISTED_PROGRESS_FIELDS.length, 53)
     assert.equal(await page.evaluate(() => window.__readIdb()), legacy, '引き継いだ記録をそのまま IndexedDB へ写していない')
     assert.equal(await page.evaluate((key) => localStorage.getItem(key), KEY), null, 'localStorage の古い記録が残った')
     // 読み直しても、IndexedDB から同じ記録が戻る。

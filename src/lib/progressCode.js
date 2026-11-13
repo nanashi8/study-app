@@ -87,6 +87,7 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'diagnosticSeed',
   'engPos',
   'grammarStrandPos',
+  'grammarDiagnostic',
   'battleRelicLevel',
   'battleStars',
   'battleXpSpent',
@@ -239,6 +240,13 @@ export function decodeProgress(code) {
     ) {
       throw new Error('コードの grammarStrandPos が不正です。')
     }
+  }
+  if (
+    'grammarDiagnostic' in payload
+    && payload.grammarDiagnostic != null
+    && (typeof payload.grammarDiagnostic !== 'object' || Array.isArray(payload.grammarDiagnostic))
+  ) {
+    throw new Error('コードの grammarDiagnostic が不正です。')
   }
   if (
     'battleRelicLevel' in payload
