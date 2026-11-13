@@ -9,7 +9,7 @@
   "sessions": [
     "cc8e3e84-3dad-4081-b8c8-dd82ffcb177b"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-13。前の依頼 requests/2026-11-12-grammar-diagnostic-prototype.json（scratchpad の試作 https://claude.ai/artifact/KDqyUJbqMYdUMibgUzm3RX）の続き。問いに挙げた3つは、利用者が決めるまで仮に置く：範囲は高校入試＝5〜3級の43単元・共通テスト＝5級〜2級の95単元・難関大＝全127単元。弱点＝1問目と確かめの2問目の両方をまちがえた単元。診断の答えは今の文法テストと同じく学習記録（srs）にも入る（まちがえた問題は普段の復習に回る）。テストの画面は今の文法テスト（GrammarQuiz）をそのまま使い、確かめの2問目は次の回の頭に出す（試作の HTML では回の終わり）。 2026-11-13 の追加の指示：「回」は診断を受ける1回（範囲の全単元を解き終えるまで）と読んだ。10単元ずつの区切りを「回」と呼んでいた画面の言い方は「区切り」に改める。単元の問題は6〜数十問しかないので、問題が尽きた単元では、使った回数の少ない問題から出す（作らない）。",
   "criteria": [
     {
@@ -65,7 +65,8 @@
       "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功して公開版に出ることを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "この依頼の変更 全部",
       "check": "node --test tests/grammar-diagnostic.test.mjs tests/grammar-diagnostic-screen.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-11-13: 61458b97 をコミットし、クリーンな clone（npm ci したての node_modules）で npm run audit:all-content が通った（audit exit 0・111秒・監査のあとの未コミットの変更0件）。main へ push し（2404efed..61458b97）、GitHub Pages の公開（run 43338512162）が成功（build・deploy とも success）。公開版 https://nanashi8.github.io/study-app/ を375pxの Chromium で開き、英語→文法のトップに「実力診断」のタイル、範囲3つ（高校入試43・共通テスト95・難関大127単元）、難関大の診断を始めると文法テストの画面で「問題 1/10」が出て横のはみ出し0。公開版の部品（Sheet-BdvpaZq9.js）に足した前置詞の問題の文（4級 look for・2級 depend on の組の1つ・準1級 in the wake of）が入っている。"
     },
     {
       "id": "different-questions-per-attempt",

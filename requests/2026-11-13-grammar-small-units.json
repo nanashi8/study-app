@@ -8,7 +8,7 @@
   "sessions": [
     "cc8e3e84-3dad-4081-b8c8-dd82ffcb177b"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-13。実力診断（requests/2026-11-13-grammar-diagnostic-in-app.json）の報告で、問題が6問しかなく3回で使い切る単元として挙げた続き。全127単元の問題数を数えると、前置詞の4級・2級・準1級の3単元だけが6問（並び替え3・語法3・選択0、型6）で、ほかの124単元はどれも24問以上（選択18問以上・型10以上）。そこで「少ない単元」はこの3単元とし、ほかの単元のいちばん少ない数（24問・選択18問・型10）を下回らないようにする。前置詞の単元は、ほかの級（5級・3級・準2級）でも前置詞を選ぶ問題を選択問題として出しているので、それにならって選択問題を各18問書く（語法問題は参考書の本文と結び付ける決まりがあるので増やさない）。",
   "criteria": [
     {
@@ -48,7 +48,8 @@
       "text": "クリーンな clone で npm run audit:all-content を通して main へ push し、公開の自動処理が成功して公開版に出ることを確かめる。作業ツリーに未コミットの変更を残さず、検証用の clone は消す",
       "population": "この依頼の変更 全部",
       "check": "node --test tests/grammar-unit-balance.test.mjs tests/content-audit-ledger.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verifiedBy": "2026-11-13: 61458b97 をコミットし、クリーンな clone（npm ci したての node_modules）で npm run audit:all-content が通った（audit exit 0・111秒・監査のあとの未コミットの変更0件）。main へ push し（2404efed..61458b97）、GitHub Pages の公開（run 43338512162）が成功（build・deploy とも success）。公開版 https://nanashi8.github.io/study-app/ を375pxの Chromium で開き、英語→文法のトップに「実力診断」のタイル、範囲3つ（高校入試43・共通テスト95・難関大127単元）、難関大の診断を始めると文法テストの画面で「問題 1/10」が出て横のはみ出し0。公開版の部品（Sheet-BdvpaZq9.js）に足した前置詞の問題の文（4級 look for・2級 depend on の組の1つ・準1級 in the wake of）が入っている。"
     }
   ]
 }
