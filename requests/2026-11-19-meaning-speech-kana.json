@@ -8,7 +8,7 @@
   "sessions": [
     "7b4335c9-42b6-446f-996b-02881803a293"
   ],
-  "status": "open",
+  "status": "done",
   "note": "2026-11-19。利用者に聞くと、間違いは画面の（よみ）ではなく読み上げの声。意味を声で読むのは暗記カード（VocabStudy）・辞書ページ（WordDetail）で、どちらも cardSpeechItems → cardJapaneseSpeechTexts を通る。09-19 の台帳 japanese-speech-readings.js は2つの辞書で読みが割れた所だけをかなにしたので、辞書どうしが一致しても端末の声が読み違える語は残っていた。そこで英単語の意味の読み上げ文にある漢字のかたまりを全部、文の中での読みを決めてかなにし、端末の声に漢字の読みを決めさせない。",
   "criteria": [
     {
@@ -23,7 +23,7 @@
       "id": "readings-reviewed",
       "text": "台帳の読みは、2つの辞書（IPADIC・UniDic）の候補を出したうえで、文の中で正しい読みかを人が全件読んで決める（辞書が一致した所も読む）",
       "population": "台帳の全かたまり（漢字を含む 8,325語の全漢字かたまり）",
-      "check": "node scripts/checks/meaning-speech-kana.mjs",
+      "check": "node --test tests/meaning-speech-kana.test.mjs",
       "status": "done",
       "verifiedBy": "2026-11-19: 全かたまりを kuromoji（IPADIC）と fugashi＋unidic-lite（UniDic）で読み、かたまりと読みの組 9,702組（2字以上 5,679組・1字 4,023組。1字は前の1字・後の2字ごとに分けた）を辞書が一致した組も含めて全部読んだ。誤りは154組（一歩＝いちほ→いっぽ、宝物＝ほうもつ→たからもの、一対＝いちたい→いっつい、端＝はじ→はし、球＝たま→きゅう、縁＝えん→ふち、日本語＝にっぽんご→にほんご、曜日＝ひ→び、木曜日など、数と助数詞49組 など）。docs/audits/meaning-speech-kana-review.json に直した組と台帳の指紋（--stamp）を残し、検査が指紋と直した組を確かめる。"
     },
@@ -39,8 +39,9 @@
       "id": "audit-passes",
       "text": "npm run audit:all-content を通してコミットし、main へ push して公開版で読み上げ文がかなになっていることを確かめる",
       "population": "変更全体",
-      "check": "node scripts/content-audit-ledger.mjs",
-      "status": "todo"
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/meaning-speech-kana.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-19: npm run audit:all-content が通り（テスト271ファイル・check:content・台帳。途中で、学習者に見せる日本語の固定値と、英単語の id password・secret・authorization を秘密情報と取り違える検査で2回止まり、それぞれ直した）、5a685ae をクリーンな clone で確かめてから main へ push。公開の処理（Deploy to GitHub Pages 44428669084）が成功し、deployed-matches-head.mjs が公開版と HEAD の一致を確かめ、公開版のファイル（assets/PhraseDetailSheet-BZyAn5Ze.js）に台帳の読み（treasure: 宝物=たからもの,財宝=ざいほう など）が入っていることを確かめた。"
     }
   ]
 }
