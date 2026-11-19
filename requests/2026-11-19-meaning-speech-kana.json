@@ -1,0 +1,46 @@
+{
+  "id": "2026-11-19-meaning-speech-kana",
+  "title": "英単語の意味を日本語の声で読むとき、漢字を読み違えないようにする（全意味の漢字を人が決めたかなで読ませる）",
+  "asked": [
+    "英単語の意味の漢字の読みに間違いが多いので正しく読めるようになんとかしなさい。",
+    "（確認への答え）読み上げの声"
+  ],
+  "sessions": [
+    "7b4335c9-42b6-446f-996b-02881803a293"
+  ],
+  "status": "open",
+  "note": "2026-11-19。利用者に聞くと、間違いは画面の（よみ）ではなく読み上げの声。意味を声で読むのは暗記カード（VocabStudy）・辞書ページ（WordDetail）で、どちらも cardSpeechItems → cardJapaneseSpeechTexts を通る。09-19 の台帳 japanese-speech-readings.js は2つの辞書で読みが割れた所だけをかなにしたので、辞書どうしが一致しても端末の声が読み違える語は残っていた。そこで英単語の意味の読み上げ文にある漢字のかたまりを全部、文の中での読みを決めてかなにし、端末の声に漢字の読みを決めさせない。",
+  "criteria": [
+    {
+      "id": "every-kanji-run-has-reading",
+      "text": "英単語の意味の読み上げ文にある漢字のかたまり（前の数字を含む）すべてに、台帳の読み（ひらがな）があり、読み上げ文に漢字が1字も残らない。意味の文が変わって台帳と合わなくなったらテストが止める",
+      "population": "英単語の全見出し語 8,929語（ALL_WORDS）の意味の読み上げ文。うち漢字を含む 8,325語",
+      "check": "node --test tests/meaning-speech-kana.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-19: 英単語 8,929語中、意味の読み上げ文に漢字のある 8,325語・16,322か所すべてに台帳 src/data/meaning-speech-kana.js の読み（ひらがな）があり、台帳を当てた読み上げ文に漢字が残る語は0語。かたまりが台帳と合わない文は読みを当てずに返し、tests/meaning-speech-kana.test.mjs と scripts/checks/meaning-speech-kana.mjs（npm run check に入れた）が止める。"
+    },
+    {
+      "id": "readings-reviewed",
+      "text": "台帳の読みは、2つの辞書（IPADIC・UniDic）の候補を出したうえで、文の中で正しい読みかを人が全件読んで決める（辞書が一致した所も読む）",
+      "population": "台帳の全かたまり（漢字を含む 8,325語の全漢字かたまり）",
+      "check": "node scripts/checks/meaning-speech-kana.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-19: 全かたまりを kuromoji（IPADIC）と fugashi＋unidic-lite（UniDic）で読み、かたまりと読みの組 9,702組（2字以上 5,679組・1字 4,023組。1字は前の1字・後の2字ごとに分けた）を辞書が一致した組も含めて全部読んだ。誤りは154組（一歩＝いちほ→いっぽ、宝物＝ほうもつ→たからもの、一対＝いちたい→いっつい、端＝はじ→はし、球＝たま→きゅう、縁＝えん→ふち、日本語＝にっぽんご→にほんご、曜日＝ひ→び、木曜日など、数と助数詞49組 など）。docs/audits/meaning-speech-kana-review.json に直した組と台帳の指紋（--stamp）を残し、検査が指紋と直した組を確かめる。"
+    },
+    {
+      "id": "screens-use-kana",
+      "text": "意味を読む全画面（暗記カード・辞書ページ）の読み上げ列で、英単語の意味がかなで読まれる。画面に出す意味の文字は変えない",
+      "population": "cardSpeechItems を英単語で呼ぶ全画面（VocabStudy・WordDetail）",
+      "check": "node --test tests/meaning-speech-kana.test.mjs tests/card-speech-range.test.mjs",
+      "status": "done",
+      "verifiedBy": "2026-11-19: 英単語の意味を読むのは VocabStudy（暗記カード）と WordDetail（辞書ページ）の cardSpeechItems（meaningReadings: true）だけで、どちらも cardJapaneseSpeechTexts で台帳を当てる。開発版の辞書ページで treasure を範囲「単語・意味」で読ませ、speechSynthesis に渡った文が「たからもの、ざいほう、」、画面は「宝物・財宝」のままであることを確かめた。熟語・構文（PhraseStudy・PhraseDetailSheet）と自作単語は台帳を当てず、これまでどおり。"
+    },
+    {
+      "id": "audit-passes",
+      "text": "npm run audit:all-content を通してコミットし、main へ push して公開版で読み上げ文がかなになっていることを確かめる",
+      "population": "変更全体",
+      "check": "node scripts/content-audit-ledger.mjs",
+      "status": "todo"
+    }
+  ]
+}

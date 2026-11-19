@@ -1,0 +1,1340 @@
+{
+  "date": "2026-11-19",
+  "request": "requests/2026-11-19-meaning-speech-kana.json",
+  "method": "英単語の意味の読み上げ文（cardJapaneseSpeechTexts、meaningReadings: true）にある漢字のかたまりを全部、kuromoji@0.1.2（IPADIC）と fugashi＋unidic-lite（UniDic）で読み、かたまりと読み（1字のかたまりは前の1字・後の2字も）の組 9,702組を、辞書が一致した組も含めて全部人が読んだ。誤っていた組だけ reading を決め、ほかは IPADIC の読み（数字のかたまりは人が書いた読み）を採った。",
+  "population": {
+    "words": 8929,
+    "wordsWithKanji": 8325,
+    "runs": 16322,
+    "reviewedGroups": 9702
+  },
+  "corrections": [
+    {
+      "run": "100万",
+      "ipadic": "?まん",
+      "reading": "ひゃくまん",
+      "ids": [
+        "million"
+      ]
+    },
+    {
+      "run": "100年",
+      "ipadic": "?ねん",
+      "reading": "ひゃくねん",
+      "ids": [
+        "century"
+      ]
+    },
+    {
+      "run": "10代",
+      "ipadic": "?だい",
+      "reading": "じゅうだい",
+      "ids": [
+        "teenager"
+      ]
+    },
+    {
+      "run": "10億",
+      "ipadic": "?おく",
+      "reading": "じゅうおく",
+      "ids": [
+        "billion"
+      ]
+    },
+    {
+      "run": "10年間",
+      "ipadic": "?ねんかん",
+      "reading": "じゅうねんかん",
+      "ids": [
+        "decade"
+      ]
+    },
+    {
+      "run": "10番目",
+      "ipadic": "?ばんめ",
+      "reading": "じゅうばんめ",
+      "ids": [
+        "tenth"
+      ]
+    },
+    {
+      "run": "11番目",
+      "ipadic": "?ばんめ",
+      "reading": "じゅういちばんめ",
+      "ids": [
+        "eleventh"
+      ]
+    },
+    {
+      "run": "12番目",
+      "ipadic": "?ばんめ",
+      "reading": "じゅうにばんめ",
+      "ids": [
+        "twelfth"
+      ]
+    },
+    {
+      "run": "13番目",
+      "ipadic": "?ばんめ",
+      "reading": "じゅうさんばんめ",
+      "ids": [
+        "thirteenth"
+      ]
+    },
+    {
+      "run": "14個",
+      "ipadic": "?こ",
+      "reading": "じゅうよんこ",
+      "ids": [
+        "fourteen"
+      ]
+    },
+    {
+      "run": "15個",
+      "ipadic": "?こ",
+      "reading": "じゅうごこ",
+      "ids": [
+        "fifteen"
+      ]
+    },
+    {
+      "run": "15分",
+      "ipadic": "?ふん",
+      "unidic": "?ぶん",
+      "reading": "じゅうごふん",
+      "ids": [
+        "quarter"
+      ]
+    },
+    {
+      "run": "16個",
+      "ipadic": "?こ",
+      "reading": "じゅうろっこ",
+      "ids": [
+        "sixteen"
+      ]
+    },
+    {
+      "run": "17個",
+      "ipadic": "?こ",
+      "reading": "じゅうななこ",
+      "ids": [
+        "seventeen"
+      ]
+    },
+    {
+      "run": "18個",
+      "ipadic": "?こ",
+      "reading": "じゅうはっこ",
+      "ids": [
+        "eighteen"
+      ]
+    },
+    {
+      "run": "19個",
+      "ipadic": "?こ",
+      "reading": "じゅうきゅうこ",
+      "ids": [
+        "nineteen"
+      ]
+    },
+    {
+      "run": "1世帯分",
+      "ipadic": "?せたいぶん",
+      "reading": "ひとせたいぶん",
+      "ids": [
+        "flat_2"
+      ]
+    },
+    {
+      "run": "1兆",
+      "ipadic": "?ちょう",
+      "reading": "いっちょう",
+      "ids": [
+        "trillion"
+      ]
+    },
+    {
+      "run": "1回",
+      "ipadic": "?かい",
+      "reading": "いっかい",
+      "ids": [
+        "annual"
+      ]
+    },
+    {
+      "run": "1度",
+      "ipadic": "?ど",
+      "reading": "いちど",
+      "ids": [
+        "annually"
+      ]
+    },
+    {
+      "run": "1時間",
+      "ipadic": "?じかん",
+      "reading": "いちじかん",
+      "ids": [
+        "hour"
+      ]
+    },
+    {
+      "run": "1組",
+      "ipadic": "?くみ",
+      "reading": "ひとくみ",
+      "ids": [
+        "deck"
+      ]
+    },
+    {
+      "run": "1話",
+      "ipadic": "?わ",
+      "unidic": "?はなし",
+      "reading": "いちわ",
+      "ids": [
+        "episode"
+      ]
+    },
+    {
+      "run": "20番目",
+      "ipadic": "?ばんめ",
+      "reading": "にじゅうばんめ",
+      "ids": [
+        "twentieth"
+      ]
+    },
+    {
+      "run": "2倍",
+      "ipadic": "?ばい",
+      "reading": "にばい",
+      "ids": [
+        "double",
+        "twice"
+      ]
+    },
+    {
+      "run": "2回",
+      "ipadic": "?かい",
+      "reading": "にかい",
+      "ids": [
+        "twice"
+      ]
+    },
+    {
+      "run": "2学期制",
+      "ipadic": "?がっきせい",
+      "reading": "にがっきせい",
+      "ids": [
+        "semester"
+      ]
+    },
+    {
+      "run": "2年",
+      "ipadic": "?ねん",
+      "reading": "にねん",
+      "ids": [
+        "biennial",
+        "biennially"
+      ]
+    },
+    {
+      "run": "2年間続",
+      "ipadic": "?ねんかんつづ",
+      "reading": "にねんかんつづ",
+      "ids": [
+        "biennial"
+      ]
+    },
+    {
+      "run": "2番目",
+      "ipadic": "?ばんめ",
+      "reading": "にばんめ",
+      "ids": [
+        "second"
+      ]
+    },
+    {
+      "run": "2言語",
+      "ipadic": "?げんご",
+      "reading": "にげんご",
+      "ids": [
+        "bilingual"
+      ]
+    },
+    {
+      "run": "30個",
+      "ipadic": "?こ",
+      "reading": "さんじゅっこ",
+      "ids": [
+        "thirty"
+      ]
+    },
+    {
+      "run": "30番目",
+      "ipadic": "?ばんめ",
+      "reading": "さんじゅうばんめ",
+      "ids": [
+        "thirtieth"
+      ]
+    },
+    {
+      "run": "3倍",
+      "ipadic": "?ばい",
+      "reading": "さんばい",
+      "ids": [
+        "triple"
+      ]
+    },
+    {
+      "run": "3分",
+      "ipadic": "?ぶん",
+      "reading": "さんぶん",
+      "ids": [
+        "third"
+      ]
+    },
+    {
+      "run": "3番目",
+      "ipadic": "?ばんめ",
+      "reading": "さんばんめ",
+      "ids": [
+        "third"
+      ]
+    },
+    {
+      "run": "40個",
+      "ipadic": "?こ",
+      "reading": "よんじゅっこ",
+      "ids": [
+        "forty"
+      ]
+    },
+    {
+      "run": "4分",
+      "ipadic": "?ぶん",
+      "reading": "よんぶん",
+      "ids": [
+        "quarter"
+      ]
+    },
+    {
+      "run": "4番目",
+      "ipadic": "?ばんめ",
+      "reading": "よんばんめ",
+      "ids": [
+        "fourth"
+      ]
+    },
+    {
+      "run": "50個",
+      "ipadic": "?こ",
+      "reading": "ごじゅっこ",
+      "ids": [
+        "fifty"
+      ]
+    },
+    {
+      "run": "5番目",
+      "ipadic": "?ばんめ",
+      "reading": "ごばんめ",
+      "ids": [
+        "fifth"
+      ]
+    },
+    {
+      "run": "60個",
+      "ipadic": "?こ",
+      "reading": "ろくじゅっこ",
+      "ids": [
+        "sixty"
+      ]
+    },
+    {
+      "run": "6番目",
+      "ipadic": "?ばんめ",
+      "reading": "ろくばんめ",
+      "ids": [
+        "sixth"
+      ]
+    },
+    {
+      "run": "70個",
+      "ipadic": "?こ",
+      "reading": "ななじゅっこ",
+      "ids": [
+        "seventy"
+      ]
+    },
+    {
+      "run": "7番目",
+      "ipadic": "?ばんめ",
+      "reading": "ななばんめ",
+      "ids": [
+        "seventh"
+      ]
+    },
+    {
+      "run": "80個",
+      "ipadic": "?こ",
+      "reading": "はちじゅっこ",
+      "ids": [
+        "eighty"
+      ]
+    },
+    {
+      "run": "8番目",
+      "ipadic": "?ばんめ",
+      "reading": "はちばんめ",
+      "ids": [
+        "eighth"
+      ]
+    },
+    {
+      "run": "90個",
+      "ipadic": "?こ",
+      "reading": "きゅうじゅっこ",
+      "ids": [
+        "ninety"
+      ]
+    },
+    {
+      "run": "9番目",
+      "ipadic": "?ばんめ",
+      "reading": "きゅうばんめ",
+      "ids": [
+        "ninth"
+      ]
+    },
+    {
+      "run": "一切",
+      "ipadic": "いちき",
+      "reading": "ひとき",
+      "ids": [
+        "slice"
+      ]
+    },
+    {
+      "run": "一周",
+      "ipadic": "いっしゅう",
+      "unidic": "いちしゅう",
+      "reading": "いっしゅう",
+      "ids": [
+        "circuit",
+        "lap"
+      ]
+    },
+    {
+      "run": "一夜漬",
+      "ipadic": "いちやづ",
+      "unidic": "いちやつ",
+      "reading": "いちやづ",
+      "ids": [
+        "cram"
+      ]
+    },
+    {
+      "run": "一対",
+      "ipadic": "いちたい",
+      "reading": "いっつい",
+      "ids": [
+        "pair"
+      ]
+    },
+    {
+      "run": "一本調子",
+      "ipadic": "いっぽんぢょうし",
+      "unidic": "いちぽんちょうし",
+      "reading": "いっぽんちょうし",
+      "ids": [
+        "monotone"
+      ]
+    },
+    {
+      "run": "一歩",
+      "ipadic": "いちほ",
+      "reading": "いっぽ",
+      "ids": [
+        "step"
+      ]
+    },
+    {
+      "run": "一片",
+      "ipadic": "いっぺん",
+      "unidic": "いちへん",
+      "reading": "いっぺん",
+      "ids": [
+        "piece"
+      ]
+    },
+    {
+      "run": "一組",
+      "ipadic": "いちくみ",
+      "reading": "ひとくみ",
+      "ids": [
+        "couple",
+        "pair"
+      ]
+    },
+    {
+      "run": "三重",
+      "ipadic": "みえ",
+      "reading": "さんじゅう",
+      "ids": [
+        "triple"
+      ]
+    },
+    {
+      "run": "上手",
+      "ipadic": "じょうず",
+      "reading": "じょうず",
+      "ids": [
+        "adept",
+        "better",
+        "good",
+        "well"
+      ]
+    },
+    {
+      "run": "上手",
+      "ipadic": "じょうず",
+      "unidic": "かみて",
+      "reading": "じょうず",
+      "ids": [
+        "raconteur",
+        "serendipity",
+        "storyteller"
+      ]
+    },
+    {
+      "run": "上方",
+      "ipadic": "かみがた",
+      "reading": "じょうほう",
+      "ids": [
+        "over"
+      ]
+    },
+    {
+      "run": "不器用",
+      "ipadic": "ぶきよう",
+      "unidic": "ふきよう",
+      "reading": "ぶきよう",
+      "ids": [
+        "clumsiness",
+        "clumsy",
+        "gauche",
+        "inept",
+        "ineptitude",
+        "maladroit"
+      ]
+    },
+    {
+      "run": "不格好",
+      "ipadic": "ぶかっこう",
+      "unidic": "ふかっこう",
+      "reading": "ぶかっこう",
+      "ids": [
+        "clumsy"
+      ]
+    },
+    {
+      "run": "不気味",
+      "ipadic": "ぶきみ",
+      "unidic": "ふきみ",
+      "reading": "ぶきみ",
+      "ids": [
+        "creepy",
+        "eerie"
+      ]
+    },
+    {
+      "run": "不活発",
+      "ipadic": "ふかっぱつ",
+      "unidic": "ふかつはつ",
+      "reading": "ふかっぱつ",
+      "ids": [
+        "inactivity",
+        "inertia",
+        "sluggishness",
+        "torpor"
+      ]
+    },
+    {
+      "run": "世論調査",
+      "ipadic": "せろんちょうさ",
+      "unidic": "よろんちょうさ",
+      "reading": "よろんちょうさ",
+      "ids": [
+        "poll"
+      ]
+    },
+    {
+      "run": "中国人",
+      "ipadic": "ちゅうごくじん",
+      "unidic": "ちゅうごくにん",
+      "reading": "ちゅうごくじん",
+      "ids": [
+        "chinese"
+      ]
+    },
+    {
+      "run": "何気",
+      "ipadic": "なにげ",
+      "unidic": "なんげ",
+      "reading": "なにげ",
+      "ids": [
+        "casual",
+        "casually"
+      ]
+    },
+    {
+      "run": "信心深",
+      "ipadic": "しんじんふか",
+      "reading": "しんじんぶか",
+      "ids": [
+        "godly"
+      ]
+    },
+    {
+      "run": "信心深",
+      "ipadic": "しんじんふか",
+      "unidic": "しんじんぶか",
+      "reading": "しんじんぶか",
+      "ids": [
+        "devout",
+        "pious"
+      ]
+    },
+    {
+      "run": "偽情報",
+      "ipadic": "にせじょうほう",
+      "reading": "ぎじょうほう",
+      "ids": [
+        "disinformation"
+      ]
+    },
+    {
+      "run": "元気",
+      "ipadic": "げんき",
+      "unidic": "もとき",
+      "reading": "げんき",
+      "ids": [
+        "cheer"
+      ]
+    },
+    {
+      "run": "写真映",
+      "ipadic": "しゃしんは",
+      "reading": "しゃしんば",
+      "ids": [
+        "photogenic"
+      ]
+    },
+    {
+      "run": "動物相",
+      "ipadic": "どうぶつしょう",
+      "reading": "どうぶつそう",
+      "ids": [
+        "fauna"
+      ]
+    },
+    {
+      "run": "午前0時",
+      "ipadic": "ごぜん?じ",
+      "reading": "ごぜんれいじ",
+      "ids": [
+        "midnight"
+      ]
+    },
+    {
+      "run": "厄介者",
+      "ipadic": "やっかいしゃ",
+      "reading": "やっかいもの",
+      "ids": [
+        "pest"
+      ]
+    },
+    {
+      "run": "同国人",
+      "ipadic": "どうこくじん",
+      "unidic": "どうこくにん",
+      "reading": "どうこくじん",
+      "ids": [
+        "compatriot"
+      ]
+    },
+    {
+      "run": "土曜日",
+      "ipadic": "どようび",
+      "unidic": "どようひ",
+      "reading": "どようび",
+      "ids": [
+        "saturday"
+      ]
+    },
+    {
+      "run": "執念深",
+      "ipadic": "しゅうねんぶか",
+      "unidic": "しゅうねんふか",
+      "reading": "しゅうねんぶか",
+      "ids": [
+        "vindictive"
+      ]
+    },
+    {
+      "run": "外面",
+      "ipadic": "がいめん",
+      "unidic": "そとづら",
+      "reading": "がいめん",
+      "ids": [
+        "exterior"
+      ]
+    },
+    {
+      "run": "宇宙人",
+      "ipadic": "うちゅうじん",
+      "unidic": "うちゅうにん",
+      "reading": "うちゅうじん",
+      "ids": [
+        "alien"
+      ]
+    },
+    {
+      "run": "宝物",
+      "ipadic": "ほうもつ",
+      "reading": "たからもの",
+      "ids": [
+        "treasure"
+      ]
+    },
+    {
+      "run": "小作農",
+      "ipadic": "こさくのう",
+      "unidic": "おざくみのり",
+      "reading": "こさくのう",
+      "ids": [
+        "peasant"
+      ]
+    },
+    {
+      "run": "小心",
+      "ipadic": "しょうしん",
+      "unidic": "しあおしん",
+      "reading": "しょうしん",
+      "ids": [
+        "timidity"
+      ]
+    },
+    {
+      "run": "山小屋",
+      "ipadic": "やまごや",
+      "unidic": "やまこや",
+      "reading": "やまごや",
+      "ids": [
+        "lodge"
+      ]
+    },
+    {
+      "run": "思慮深",
+      "ipadic": "しりょふか",
+      "reading": "しりょぶか",
+      "ids": [
+        "discreet",
+        "prudence",
+        "reflective"
+      ]
+    },
+    {
+      "run": "思慮深",
+      "ipadic": "しりょふか",
+      "unidic": "しりょぶか",
+      "reading": "しりょぶか",
+      "ids": [
+        "prudent",
+        "thoughtful"
+      ]
+    },
+    {
+      "run": "愛情深",
+      "ipadic": "あいじょうふか",
+      "reading": "あいじょうぶか",
+      "ids": [
+        "affectionate",
+        "loving"
+      ]
+    },
+    {
+      "run": "慈悲深",
+      "ipadic": "じひふか",
+      "reading": "じひぶか",
+      "ids": [
+        "benevolent",
+        "merciful"
+      ]
+    },
+    {
+      "run": "日曜日",
+      "ipadic": "にちようび",
+      "unidic": "にちようひ",
+      "reading": "にちようび",
+      "ids": [
+        "sunday"
+      ]
+    },
+    {
+      "run": "日本",
+      "ipadic": "にっぽん",
+      "reading": "にほん",
+      "ids": [
+        "japan",
+        "japanese"
+      ]
+    },
+    {
+      "run": "日本人",
+      "ipadic": "にっぽんじん",
+      "unidic": "にっぽんにん",
+      "reading": "にほんじん",
+      "ids": [
+        "japanese"
+      ]
+    },
+    {
+      "run": "日本語",
+      "ipadic": "にほんご",
+      "unidic": "にっぽんご",
+      "reading": "にほんご",
+      "ids": [
+        "japanese"
+      ]
+    },
+    {
+      "run": "明日",
+      "ipadic": "あした",
+      "unidic": "あす",
+      "reading": "あした",
+      "ids": [
+        "tomorrow"
+      ]
+    },
+    {
+      "run": "月曜日",
+      "ipadic": "げつようび",
+      "unidic": "げつようひ",
+      "reading": "げつようび",
+      "ids": [
+        "monday"
+      ]
+    },
+    {
+      "run": "有名人",
+      "ipadic": "ゆうめいじん",
+      "unidic": "ゆうめいにん",
+      "reading": "ゆうめいじん",
+      "ids": [
+        "celebrity"
+      ]
+    },
+    {
+      "run": "木曜日",
+      "ipadic": "もくようび",
+      "unidic": "もくようひ",
+      "reading": "もくようび",
+      "ids": [
+        "thursday"
+      ]
+    },
+    {
+      "run": "植物相",
+      "ipadic": "しょくぶつしょう",
+      "reading": "しょくぶつそう",
+      "ids": [
+        "flora"
+      ]
+    },
+    {
+      "run": "正義",
+      "ipadic": "まさよし",
+      "reading": "せいぎ",
+      "ids": [
+        "justice"
+      ]
+    },
+    {
+      "run": "民間人",
+      "ipadic": "みんかんじん",
+      "unidic": "みんかんにん",
+      "reading": "みんかんじん",
+      "ids": [
+        "civilian"
+      ]
+    },
+    {
+      "run": "水曜日",
+      "ipadic": "すいようび",
+      "unidic": "すいようひ",
+      "reading": "すいようび",
+      "ids": [
+        "wednesday"
+      ]
+    },
+    {
+      "run": "注意深",
+      "ipadic": "ちゅういぶか",
+      "unidic": "ちゅういふか",
+      "reading": "ちゅういぶか",
+      "ids": [
+        "attentive",
+        "carefully"
+      ]
+    },
+    {
+      "run": "洗濯物",
+      "ipadic": "せんたくぶつ",
+      "reading": "せんたくもの",
+      "ids": [
+        "laundry"
+      ]
+    },
+    {
+      "run": "火曜日",
+      "ipadic": "かようび",
+      "unidic": "かようひ",
+      "reading": "かようび",
+      "ids": [
+        "tuesday"
+      ]
+    },
+    {
+      "run": "玉石",
+      "ipadic": "ぎょくせき",
+      "reading": "たまいし",
+      "ids": [
+        "pebble"
+      ]
+    },
+    {
+      "run": "生分解性",
+      "ipadic": "なまぶんかいせい",
+      "reading": "せいぶんかいせい",
+      "ids": [
+        "biodegradable"
+      ]
+    },
+    {
+      "run": "用心深",
+      "ipadic": "ようじんぶか",
+      "unidic": "ようじんふか",
+      "reading": "ようじんぶか",
+      "ids": [
+        "wary",
+        "watchful"
+      ]
+    },
+    {
+      "run": "町区",
+      "ipadic": "まちく",
+      "reading": "ちょうく",
+      "ids": [
+        "township"
+      ]
+    },
+    {
+      "run": "私生活",
+      "ipadic": "しせいかつ",
+      "unidic": "わたくしせいかつ",
+      "reading": "しせいかつ",
+      "ids": [
+        "privacy"
+      ]
+    },
+    {
+      "run": "稲妻",
+      "ipadic": "いなづま",
+      "unidic": "いなずま",
+      "reading": "いなずま",
+      "ids": [
+        "bolt",
+        "lightning"
+      ]
+    },
+    {
+      "run": "芸能人",
+      "ipadic": "げいのうじん",
+      "unidic": "げいのうにん",
+      "reading": "げいのうじん",
+      "ids": [
+        "entertainer"
+      ]
+    },
+    {
+      "run": "記念日",
+      "ipadic": "きねんび",
+      "unidic": "きねんひ",
+      "reading": "きねんび",
+      "ids": [
+        "anniversary"
+      ]
+    },
+    {
+      "run": "誕生日",
+      "ipadic": "たんじょうび",
+      "unidic": "たんじょうひ",
+      "reading": "たんじょうび",
+      "ids": [
+        "birthday"
+      ]
+    },
+    {
+      "run": "説得力",
+      "ipadic": "せっとくちから",
+      "reading": "せっとくりょく",
+      "ids": [
+        "lamely"
+      ]
+    },
+    {
+      "run": "象牙色",
+      "ipadic": "ぞうげしょく",
+      "reading": "ぞうげいろ",
+      "ids": [
+        "ivory"
+      ]
+    },
+    {
+      "run": "辛抱強",
+      "ipadic": "しんぼうづよ",
+      "unidic": "しんぼうつよ",
+      "reading": "しんぼうづよ",
+      "ids": [
+        "persevere"
+      ]
+    },
+    {
+      "run": "迷信深",
+      "ipadic": "めいしんふか",
+      "unidic": "めいしんぶか",
+      "reading": "めいしんぶか",
+      "ids": [
+        "superstitious"
+      ]
+    },
+    {
+      "run": "金曜日",
+      "ipadic": "きんようび",
+      "unidic": "きんようひ",
+      "reading": "きんようび",
+      "ids": [
+        "friday"
+      ]
+    },
+    {
+      "run": "間中",
+      "ipadic": "まなか",
+      "reading": "あいだじゅう",
+      "ids": [
+        "throughout"
+      ]
+    },
+    {
+      "run": "類人猿",
+      "ipadic": "るいじんえん",
+      "unidic": "るいじんさる",
+      "reading": "るいじんえん",
+      "ids": [
+        "ape"
+      ]
+    },
+    {
+      "run": "馬小屋",
+      "ipadic": "うまごや",
+      "unidic": "うまこや",
+      "reading": "うまごや",
+      "ids": [
+        "stable_2"
+      ]
+    },
+    {
+      "run": "高原",
+      "ipadic": "たかはら",
+      "reading": "こうげん",
+      "ids": [
+        "plateau"
+      ]
+    },
+    {
+      "run": "高名",
+      "ipadic": "こうみょう",
+      "reading": "こうめい",
+      "ids": [
+        "renown"
+      ]
+    },
+    {
+      "run": "主",
+      "ipadic": "しゅ",
+      "unidic": "ぬし",
+      "reading": "しゅ",
+      "ids": [
+        "chiefly"
+      ]
+    },
+    {
+      "run": "人",
+      "ipadic": "じん",
+      "unidic": "にん",
+      "reading": "じん",
+      "ids": [
+        "asian"
+      ]
+    },
+    {
+      "run": "人",
+      "ipadic": "じん",
+      "unidic": "にん",
+      "reading": "じん",
+      "ids": [
+        "american"
+      ]
+    },
+    {
+      "run": "人",
+      "ipadic": "じん",
+      "unidic": "にん",
+      "reading": "じん",
+      "ids": [
+        "european"
+      ]
+    },
+    {
+      "run": "人",
+      "ipadic": "びと",
+      "unidic": "にん",
+      "reading": "びと",
+      "ids": [
+        "recluse"
+      ]
+    },
+    {
+      "run": "割",
+      "ipadic": "われ",
+      "reading": "わ",
+      "ids": [
+        "split"
+      ]
+    },
+    {
+      "run": "割",
+      "ipadic": "われ",
+      "reading": "わ",
+      "ids": [
+        "break",
+        "crack",
+        "divide"
+      ]
+    },
+    {
+      "run": "対",
+      "ipadic": "たい",
+      "reading": "つい",
+      "ids": [
+        "matched"
+      ]
+    },
+    {
+      "run": "巻",
+      "ipadic": "まき",
+      "reading": "かん",
+      "ids": [
+        "volume"
+      ]
+    },
+    {
+      "run": "房",
+      "ipadic": "ぼう",
+      "reading": "ふさ",
+      "ids": [
+        "bunch"
+      ]
+    },
+    {
+      "run": "房",
+      "ipadic": "ぼう",
+      "reading": "ふさ",
+      "ids": [
+        "cluster"
+      ]
+    },
+    {
+      "run": "授",
+      "ipadic": "さづ",
+      "unidic": "さず",
+      "reading": "さず",
+      "ids": [
+        "bestow",
+        "endow"
+      ]
+    },
+    {
+      "run": "授",
+      "ipadic": "さづ",
+      "unidic": "さず",
+      "reading": "さず",
+      "ids": [
+        "decorate"
+      ]
+    },
+    {
+      "run": "明",
+      "ipadic": "あきら",
+      "reading": "めい",
+      "ids": [
+        "foresight"
+      ]
+    },
+    {
+      "run": "極",
+      "ipadic": "ごく",
+      "reading": "きょく",
+      "ids": [
+        "pole_2"
+      ]
+    },
+    {
+      "run": "汚",
+      "ipadic": "けが",
+      "unidic": "よご",
+      "reading": "よご",
+      "ids": [
+        "taint",
+        "tarnish"
+      ]
+    },
+    {
+      "run": "深",
+      "ipadic": "ふか",
+      "unidic": "ぶか",
+      "reading": "ぶか",
+      "ids": [
+        "jealous"
+      ]
+    },
+    {
+      "run": "球",
+      "ipadic": "たま",
+      "reading": "きゅう",
+      "ids": [
+        "sphere"
+      ]
+    },
+    {
+      "run": "界",
+      "ipadic": "さかい",
+      "reading": "かい",
+      "ids": [
+        "kingdom"
+      ]
+    },
+    {
+      "run": "端",
+      "ipadic": "はじ",
+      "unidic": "はし",
+      "reading": "はし",
+      "ids": [
+        "edge"
+      ]
+    },
+    {
+      "run": "節",
+      "ipadic": "ふし",
+      "reading": "せつ",
+      "ids": [
+        "clause",
+        "verse"
+      ]
+    },
+    {
+      "run": "米",
+      "ipadic": "べい",
+      "reading": "こめ",
+      "ids": [
+        "rice"
+      ]
+    },
+    {
+      "run": "縁",
+      "ipadic": "えん",
+      "reading": "ふち",
+      "ids": [
+        "rim"
+      ]
+    },
+    {
+      "run": "縁",
+      "ipadic": "えん",
+      "reading": "ふち",
+      "ids": [
+        "hat"
+      ]
+    },
+    {
+      "run": "縁",
+      "ipadic": "えん",
+      "reading": "ふち",
+      "ids": [
+        "brink",
+        "margin",
+        "verge"
+      ]
+    },
+    {
+      "run": "縁",
+      "ipadic": "えん",
+      "reading": "ふち",
+      "ids": [
+        "edge"
+      ]
+    },
+    {
+      "run": "縁",
+      "ipadic": "えん",
+      "reading": "ふち",
+      "ids": [
+        "border"
+      ]
+    },
+    {
+      "run": "色",
+      "ipadic": "しょく",
+      "reading": "いろ",
+      "ids": [
+        "coral"
+      ]
+    },
+    {
+      "run": "蒸",
+      "ipadic": "ふか",
+      "reading": "む",
+      "ids": [
+        "steam"
+      ]
+    },
+    {
+      "run": "長",
+      "ipadic": "なが",
+      "reading": "ちょう",
+      "ids": [
+        "chief"
+      ]
+    },
+    {
+      "run": "預",
+      "ipadic": "あづ",
+      "unidic": "あず",
+      "reading": "あず",
+      "ids": [
+        "deposit"
+      ]
+    }
+  ],
+  "ledgerSha256": "428ee60dd11ae99d41199d3a9f7cdf0d2d96fefedc0809edc90108fa6d987aa1"
+}

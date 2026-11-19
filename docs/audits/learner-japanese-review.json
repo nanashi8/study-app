@@ -53980,7 +53980,8 @@
   ],
   "readingSurfacesReason": "長文の和訳（ReadingSentenceDetail・ExtendedReader）と名作の訳（LiteratureReader）は <MeaningText> を通すので、読みの台帳の語には（よみ）が出る。このファイル群の中には読みの出ない文（設問など）も混じるので、難しい語を足すときは画面でも確かめる。 英単語の解説の文に添える意味の台帳（src/data/explanation-words.js）も、添えるときに <MeaningText> を通す（components/ExplainedText.jsx の AddedMeaning）。",
   "notLearnerFacing": [
-    "src/data/meaning-readings.js"
+    "src/data/meaning-readings.js",
+    "src/data/meaning-speech-kana.js"
   ],
   "notLearnerFacingReason": "読みの台帳そのもの。難読字の一覧は仕様の文字列で、画面には出ない。",
   "joyoExceptionsReason": "常用漢字表にない字を含む語のうち、読みを添えずに残すと決めたもの。理由は次の6つ: 固有の名前／学習マップの物語の名前／日常でよく目にする語／数学の教科書の用語／画面に出ない台帳のメモ／仮名の成り立ちの図で、もとの漢字の形を見せる字。"

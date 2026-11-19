@@ -76,7 +76,7 @@ test('読み上げる範囲は3つから選び、知らない値と前からの�
 test('英単語カードは範囲に合わせて 単語→意味→例文→例文の意味 と読み、開く前は意味を読まない', () => {
   const word = ['en-US:abandon']
   const example = ['en-US:They had to abandon the plan.']
-  const meaning = 'ja-JP:見捨てる、放棄する'
+  const meaning = 'ja-JP:みすてる、ほうきする'
   const exampleMeaning = 'ja-JP:彼らは計画を放棄せざるを得なかった。'
 
   // 単語のみ：前からと同じ。見出しは単語だけ、例文のボタンは英文だけ。
@@ -109,7 +109,7 @@ test('使い方で発音が変わる語は、意味は読み、単語を発音�
   assert.equal(head.segments[0].silent, true)
   assert.deepEqual(head.segments.slice(1).map((segment) => segment.label), ['意味'])
   assert.deepEqual(rest, [])
-  assert.deepEqual(spoken(wordItems('row_2', 'example', true)), [['en-US:row', 'ja-JP:口論、騒ぎ']])
+  assert.deepEqual(spoken(wordItems('row_2', 'example', true)), [['en-US:row', 'ja-JP:こうろん、さわぎ']])
   assert.deepEqual(spoken(wordItems('row_2', 'word', false)), [['en-US:row']])
 })
 
@@ -210,7 +210,7 @@ test('端末の声が読み違えやすい語は、台帳の読みをかなで�
   // 月の名前は、2つの辞書がそろって「つき」と読むので、辞書の食い違いとは別に全部書く。
   assert.deepEqual(japanese(wordItems('may', 'example', true))[0], ['ごがつ', 'ごがつには長い休みがある。'])
   assert.equal(japanese(wordItems('within', 'example', true))[1][0], 'みっか以内に返信して。')
-  assert.equal(japanese(wordItems('corner', 'meaning', true))[0][0], 'かど、隅')
+  assert.equal(japanese(wordItems('corner', 'meaning', true))[0][0], 'かど、すみ')
   // 助数詞や接尾語は、かなにした語と一緒に読む（なんびゃく人→なんびゃくにん、ふつか後→ふつかご）。
   assert.match(japanese(wordItems('eruption', 'example', true))[1][0], /なんびゃくにんもの人/)
   // convict（使い方で発音が変わる語）はカードで例文を読まないが、台帳の読みは例文の意味の文に当たる。
@@ -224,8 +224,8 @@ test('端末の声が読み違えやすい語は、台帳の読みをかなで�
     ['ケンが夕食を作っているあいだ、アヤはテーブルの準備をした。'],
     ['ケンが夕食を作っているあいだ、アヤはテーブルの準備をした。'],
   ])
-  // 台帳のない語はそのまま。カードを開く前は日本語を読まない。
-  assert.deepEqual(japanese(wordItems('abandon', 'example', true))[0], ['見捨てる、放棄する', '彼らは計画を放棄せざるを得なかった。'])
+  // 意味は漢字を台帳のかなで読み、例文の意味（台帳のない文）はそのまま。カードを開く前は日本語を読まない。
+  assert.deepEqual(japanese(wordItems('abandon', 'example', true))[0], ['みすてる、ほうきする', '彼らは計画を放棄せざるを得なかった。'])
   assert.deepEqual(japanese(wordItems('thirsty', 'example', false)), [[], []])
   // 画面に出す意味と例文は変えない。
   assert.equal(getWord('thirsty').example.ja, 'サッカーの練習の後で、とてものどが渇いている。')
@@ -329,7 +329,7 @@ test('再生パネルの「範囲」を変えると、同じカードの読み�
     assert.equal(replaceSpeechItems('0:abandon', wordItems('abandon', 'meaning', true), { restart: true }), true)
     assert.equal(queued.at(-1).text, 'abandon')
     queued.at(-1).onend()
-    assert.equal(queued.at(-1).text, '見捨てる、放棄する、')
+    assert.equal(queued.at(-1).text, 'みすてる、ほうきする、')
     queued.at(-1).onend()
     assert.equal(getSpeechPlayerSnapshot().status, 'ended')
 
@@ -346,7 +346,7 @@ test('再生パネルの「範囲」を変えると、同じカードの読み�
     }
     assert.deepEqual(replayed, [
       'abandon',
-      '見捨てる、放棄する、',
+      'みすてる、ほうきする、',
       'They had to abandon the plan.',
       '彼らは計画を放棄せざるを得なかった。',
     ])
@@ -380,7 +380,7 @@ test('再生パネルは途中の部分から読み始め、外した部分が�
   try {
     const [head] = wordItems('abandon', 'meaning', true)
     assert.equal(playSpeechItems([head], { startSegment: 1 }), true)
-    assert.equal(queued.at(-1).text, '見捨てる、放棄する、')
+    assert.equal(queued.at(-1).text, 'みすてる、ほうきする、')
     assert.equal(queued.at(-1).lang, 'ja-JP')
     queued.at(-1).onend()
     assert.equal(getSpeechPlayerSnapshot().status, 'ended')
@@ -390,9 +390,9 @@ test('再生パネルは途中の部分から読み始め、外した部分が�
     // record は単語だけでは読まない。単語を外しても、続きは意味から読む。
     const [record] = wordItems('record', 'meaning', true)
     assert.equal(playSpeechItems([record], { startSegment: 1 }), true)
-    assert.equal(queued.at(-1).text, '記録する、録音する、記録、')
+    assert.equal(queued.at(-1).text, 'きろくする、ろくおんする、きろく、')
     assert.equal(playSpeechItems([record]), true)
-    assert.equal(queued.at(-1).text, '記録する、録音する、記録、')
+    assert.equal(queued.at(-1).text, 'きろくする、ろくおんする、きろく、')
   } finally {
     dismissSpeechPlayer()
     if (previousWindow === undefined) delete globalThis.window

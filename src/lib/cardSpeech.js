@@ -4,6 +4,7 @@
 // 意味と例文の意味は答えにあたるので、カードに見えているときだけ読む。
 // 単語（見出し）を読まないカード（スペルを隠している、使い方で発音が変わる語）では、例文と例文の意味も読まない。
 import { JAPANESE_SPEECH_READINGS } from '../data/japanese-speech-readings.js'
+import { MEANING_SPEECH_KANA } from '../data/meaning-speech-kana.js'
 import { meaningSegments } from './meaningReadings.js'
 import { isAmbiguousSpeechText } from './speechGuard.js'
 import { normalizeSpeechRange } from './speechRange.js'
@@ -11,7 +12,7 @@ import { normalizeSpeechRange } from './speechRange.js'
 // 品詞の目印。「〜に水をやる(動)」の(動)は読まない。
 const POS_MARK = /[(（](?:名|動|形|副|前|接|代|助|冠|間|複)[)）]/gu
 // かっこの中が英語だけの補足（「（of）〜から成る」）は、日本語の声では読まない。
-const ENGLISH_NOTE = /[(（]\s*[A-Za-z][A-Za-z\s.'’/-]*[)）]/gu
+const ENGLISH_NOTE = /[(（]\s*[A-Za-z][A-Za-z\s.\u0027’/-]*[)）]/gu
 // 「ここに語が入る」印（〜・…・—）は読まない。
 const SLOT_MARKS = /[〜～~…‥—―]/gu
 const BRACKETED = /[(（]([^()（）]*)[)）]/gu
@@ -88,13 +89,57 @@ export function applyJapaneseSpeechReadings(text, pairs) {
   return spoken
 }
 
+// 読み上げ文の中の漢字のかたまり（前後の数字を含む）。meaning-speech-kana.js の台帳と同じ区切り。
+const KANJI_RUN = /[\p{Script=Han}々〆ヶ0-9０-９]*[\p{Script=Han}々〆ヶ]+[\p{Script=Han}々〆ヶ0-9０-９]*/gu
+
+/** 台帳の「かたまり=読み,…」を [かたまり, 読み] の並びにする。 */
+export function meaningSpeechKanaPairs(entry) {
+  if (!entry) return []
+  return entry.split(',').map((pair) => {
+    const at = pair.indexOf('=')
+    return [pair.slice(0, at), pair.slice(at + 1)]
+  })
+}
+
+/**
+ * 英単語の意味の読み上げ文の漢字を、台帳（meaning-speech-kana.js）の読みにして、端末の声に漢字の読みを決めさせない。
+ * 文の中のかたまりが台帳と1つでも合わないとき（意味を書き直したあと）は、文を変えずに返す（テストが止める）。
+ */
+export function applyMeaningSpeechKana(text, entry) {
+  const value = text == null ? String() : String(text)
+  const pairs = meaningSpeechKanaPairs(entry)
+  const runs = [...value.matchAll(KANJI_RUN)]
+  if (!pairs.length || runs.length !== pairs.length) return value
+  if (runs.some((run, index) => run[0] !== pairs[index][0])) return value
+  let spoken = ''
+  let cursor = 0
+  runs.forEach((run, index) => {
+    spoken += value.slice(cursor, run.index) + pairs[index][1]
+    cursor = run.index + run[0].length
+  })
+  return spoken + value.slice(cursor)
+}
+
+/**
+ * 英単語の意味の読み上げ文の、かなの台帳（meaning-speech-kana.js）を当てる前の文。
+ * （よみ）の台帳と japanese-speech-readings.js は当ててある。台帳のかたまりはこの文から数える。
+ */
+export function meaningSpeechTextBeforeKana({ id, meanings, meaningReadings = true }) {
+  const readings = (id && JAPANESE_SPEECH_READINGS[id]) || {}
+  return applyJapaneseSpeechReadings(meaningSpeechText(meanings, { readings: meaningReadings }), readings.meaning)
+}
+
 /** その英単語・熟語・構文の、意味と例文の意味の読み上げ文（台帳の読みを当てたもの）。 */
 export function cardJapaneseSpeechTexts({ id, meanings, meaningReadings = false, exampleJa }) {
   const readings = (id && JAPANESE_SPEECH_READINGS[id]) || {}
   const meaning = meaningSpeechText(meanings, { readings: meaningReadings })
   const exampleMeaning = exampleMeaningSpeechText(exampleJa, { readings: meaningReadings })
+  const spokenMeaning = meaningSpeechTextBeforeKana({ id, meanings, meaningReadings })
   return {
-    meaning: applyJapaneseSpeechReadings(meaning, readings.meaning),
+    // 英単語の意味（meaningReadings）は、漢字を全部台帳のかなにして読む。
+    meaning: meaningReadings && id
+      ? applyMeaningSpeechKana(spokenMeaning, MEANING_SPEECH_KANA[id])
+      : spokenMeaning,
     // 文法の例文は、意味が例文の和訳そのもの。同じ文には同じ読みを当てる。
     exampleMeaning: applyJapaneseSpeechReadings(
       exampleMeaning,
