@@ -27,7 +27,8 @@ test('英和辞書から見つからない語を自作カード（英単語）�
   const custom = read('../src/screens/CustomWords.jsx')
 
   // 辞書：見出しに無い英語なら登録の入口を出し、登録欄へ語を渡す。戻り先には引いていた語を載せる。
-  assert.match(search, /customWordDraftFromQuery\(q, \{ headwords: pool\.map\(headwordOf\), customWords \}\)/)
+  // 変化形（went など）で見出し語が引けたときも、辞書にある語として登録の入口を出さない（2026-11-26）。
+  assert.match(search, /customWordDraftFromQuery\(q, \{ headwords: \[\.\.\.pool\.map\(headwordOf\), \.\.\.\(formMatches\.size \? \[query\] : \[\]\)\], customWords \}\)/)
   assert.match(search, /data-dictionary-register-custom/)
   assert.match(search, /navigate\('customWords', \{\s*\/\/[^\n]*\n\s*subject: 'english',\s*draft: \{ word: draft\.word \},\s*returnTo: \{ screen: 'vocabSearch', params: \{ q: draft\.word \} \},/)
   // 見つからないときの案内の中にも入口を置く。

@@ -11,6 +11,7 @@ import { matchedOtherSense, normalizeVocabQuery, vocabMeaningMatchRank } from '.
 import {
   DICTIONARY_COUNTS,
   DICTIONARY_TYPE_META,
+  inflectionLookup,
   searchDictionary,
 } from '../lib/dictionary.js'
 import { customWordDraftFromQuery, customWordToStudyWord } from '../lib/customWords.js'
@@ -145,7 +146,7 @@ function CustomBadge() {
 // 右端の「単語帳」は、画面下部の「単語帳」で選んだ登録先に入れる（入っていれば塗り、もう一度押すと外す）。
 // ほかの意味で当たった語は、行に代表義しか出ないとなぜ出たか分からないので、当たった意味を下に添える
 // （辞書ページと同じく、疑問詞・関係詞の働きの意味は「文の中での働き」として出す）。
-function WordRow({ word, custom = false, sense = null, onOpen }) {
+function WordRow({ word, custom = false, sense = null, form = null, onOpen }) {
   const level = getLevel(word.level)
   const wordBook = useWordBookSlot([`vocab:${word.id}`], { label: word.word })
   const inBook = wordBook.inBook
@@ -167,6 +168,16 @@ function WordRow({ word, custom = false, sense = null, onOpen }) {
             <PosBadge pos={word.pos} className="h-5 min-w-5 px-1 text-[10px]" />
             <span className="truncate text-xs font-bold text-ink/55"><MeaningText>{word.meaning}</MeaningText></span>
           </div>
+          {/* 変化形（went など）で当たった語は、何の形で当たったかを添える。 */}
+          {form && (
+            <div className="mt-0.5 flex min-w-0 items-center gap-1.5" data-dictionary-inflection-match={form.labels.join('・')}>
+              <span className="shrink-0 text-[10px] font-extrabold text-sky-700">変化形</span>
+              <span className="truncate text-xs font-bold text-ink/70">
+                <span className="font-display font-extrabold text-ink">{form.query}</span>
+                {` は ${word.word} の${form.labels.join('・')}`}
+              </span>
+            </div>
+          )}
           {sense && (
             <div className="mt-0.5 flex min-w-0 items-center gap-1.5" data-dictionary-other-sense>
               <span className="shrink-0 text-[10px] font-extrabold text-amber-700">{sense.role ? '文の中での働き' : 'ほかの意味'}</span>
@@ -268,6 +279,11 @@ export function VocabSearchScreen() {
 
   // 単語・熟語・構文を1本にまとめ、一致の強い順に検索する。
   const matched = useMemo(() => searchDictionary(query), [query])
+  // 変化形（went・children など）で当たった語と、何の形か。
+  const formMatches = useMemo(
+    () => new Map(inflectionLookup(query).map((hit) => [hit.wordId, { ...hit, query }])),
+    [query],
+  )
   const pool = query ? matched : []
   // 自作カードの英単語は辞書に混ぜず、つづりか意味（ほかの意味の欄もふくむ）が合う語を検索結果の先頭へ別に並べる。
   const customMatches = useMemo(() => (
@@ -290,8 +306,8 @@ export function VocabSearchScreen() {
   )
   // 辞書の見出しにも自作カードの英単語にも無い英語なら、英単語のカードとして登録できる。
   const draft = useMemo(
-    () => customWordDraftFromQuery(q, { headwords: pool.map(headwordOf), customWords }),
-    [customWords, pool, q],
+    () => customWordDraftFromQuery(q, { headwords: [...pool.map(headwordOf), ...(formMatches.size ? [query] : [])], customWords }),
+    [customWords, formMatches, pool, q, query],
   )
   // 見出しに引いた語を含むものが無ければ入口を先頭に、あれば（入力の途中など）結果の後ろに置く。
   const draftFirst = Boolean(draft)
@@ -339,6 +355,7 @@ export function VocabSearchScreen() {
         key={entry.id}
         word={entry.word}
         sense={matchedOtherSense(entry.word, query)}
+        form={formMatches.get(entry.word.id) ?? null}
         onOpen={() => openWord(entry.word)}
       />
     ) : (

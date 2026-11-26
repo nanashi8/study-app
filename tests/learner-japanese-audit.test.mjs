@@ -212,7 +212,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 297738 から 297960 になった（requests/2026-11-26-word-inflections.json）。
   // 同じ依頼で、語形変化のタブ・行・学習ページ・問題の説明の文で 18735 から 18915（重複なし 13926 から 14027）に、
   // 発音記号の台帳・誤答の台帳をふくむ6ファイルでソース全体が 929 から 935 ファイル・297960 から 298290 になった。
-  assert.equal(result.learnerJapaneseEntries, 18915)
+  // 2026-11-26、英和辞書の結果の行に「変化形」と「went は go の過去形」の文を足して 18920（重複なし 14029）、
+  // ソース全体が 298295 になった（requests/2026-11-26-dictionary-inflection-lookup.json）。
+  assert.equal(result.learnerJapaneseEntries, 18920)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
@@ -225,7 +227,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 重複なしが 13829 から 13833 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、cardSpeech.js の引用符のずれを直し、コードの切れ端を数えなくなって重複なしが 13920 から 13908 になった
   // （ずれていた間は画面の4つの文も切れ端に含まれていた。requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 14027)
+  assert.equal(result.learnerUniqueJapaneseEntries, 14029)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -267,7 +269,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // ソース全体の日本語が 288935 から 288941 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、英単語の意味の読み上げの台帳（8,325語の「かたまり=よみ」）で 8,325 増え、cardSpeech.js の引用符のずれで数えていた
   // コードの切れ端 9 件が消えて、289422 から 297738 になった（requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.sourceJapaneseEntries, 298290)
+  assert.equal(result.sourceJapaneseEntries, 298295)
   assert.equal(result.issues.length, 0)
 })
 

@@ -9,6 +9,8 @@ import {
   phraseMatchRank,
   vocabMatchRank,
 } from './vocabSearch.js'
+import { WORD_INFLECTIONS } from '../data/word-inflections.js'
+import { parseInflection } from './wordInflections.js'
 
 export const DICTIONARY_TYPES = [
   { id: 'word', label: '単語', color: '#6366f1' },
@@ -110,6 +112,46 @@ export function dictionaryMatchRank(entry, query) {
     : phraseMatchRank(entry.phrase, query)
 }
 
+// ── 変化形から見出し語を引く ─────────────────────────────────
+// went → go（過去形）、children → child（複数形）、better → good（比較級）のように、
+// 変化形の台帳（word-inflections.js）の全部の形から元の見出し語へ戻す索引。
+// 見出し語と同じつづりの形（read の過去形 read）も入れ、何の形かを添えられるようにする。
+// 変化形で当たった語は、見出し語の完全一致（0）のすぐ次（前方一致 1 より前）に並べる。
+export const INFLECTION_MATCH_RANK = 0.5
+let inflectionIndex = null
+function buildInflectionIndex() {
+  const index = new Map()
+  const words = new Map(ALL_WORDS.map((word) => [word.id, word]))
+  for (const [id, record] of Object.entries(WORD_INFLECTIONS)) {
+    const word = words.get(id)
+    if (!word) continue
+    for (const [pos, value] of Object.entries(record)) {
+      for (const row of parseInflection(pos, value, word.word).rows) {
+        for (const form of row.forms) {
+          const key = normalizeVocabQuery(form.text)
+          if (!key) continue
+          if (!index.has(key)) index.set(key, new Map())
+          const byWord = index.get(key)
+          if (!byWord.has(id)) byWord.set(id, { wordId: id, head: word.word, labels: [] })
+          const hit = byWord.get(id)
+          const label = form.british ? `${row.label}（イギリス式のつづり）` : row.label
+          if (!hit.labels.includes(label)) hit.labels.push(label)
+        }
+      }
+    }
+  }
+  return index
+}
+
+/** 検索語が変化形のとき、その形を持つ見出し語と、何の形か（過去形・複数形など）の並び。 */
+export function inflectionLookup(rawQuery) {
+  const query = normalizeVocabQuery(rawQuery)
+  if (!query) return []
+  inflectionIndex ??= buildInflectionIndex()
+  return [...(inflectionIndex.get(query)?.values() ?? [])]
+}
+
+
 /**
  * 単語・熟語・構文をまとめて検索する。
  * 一致の強さでまとめたうえで、同じ強さのものは辞書と同じABC順に並べる。
@@ -118,10 +160,13 @@ export function searchDictionary(rawQuery, { type = 'all' } = {}) {
   const query = normalizeVocabQuery(rawQuery)
   if (!query) return []
   const hits = []
+  const formRanks = new Map(inflectionLookup(query).map((hit) => [`word:${hit.wordId}`, INFLECTION_MATCH_RANK]))
   for (const entry of DICTIONARY_ENTRIES) {
     if (!matchesType(entry, type)) continue
     const rank = dictionaryMatchRank(entry, query)
-    if (rank >= 0) hits.push({ entry, rank })
+    const formRank = formRanks.get(entry.id)
+    const best = formRank === undefined ? rank : rank >= 0 ? Math.min(rank, formRank) : formRank
+    if (best >= 0) hits.push({ entry, rank: best })
   }
   hits.sort((a, b) => a.rank - b.rank || compareDictionaryEntries(a.entry, b.entry))
   return hits.map((hit) => hit.entry)

@@ -1,0 +1,36 @@
+{
+  "id": "2026-11-26-dictionary-inflection-lookup",
+  "title": "英和辞書で、語形変化（went・children・better など）から元の見出し語を引けるようにする",
+  "asked": [
+    "英和辞書で語形変化から単語を引けるようにしなさい。"
+  ],
+  "sessions": [
+    "82f43731-28f0-4cad-83b7-48776aa5b7cd"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "every-form-finds-headword",
+      "text": "変化形の台帳のどの形を英和辞書に入れても、その形を持つ見出し語が結果に出て、「go の過去形」のように何の形かが分かる。見出し語そのものとつづりが同じ形（read の過去形 read など）も、何の形かを添える",
+      "population": "変化形の台帳（word-inflections.js）の全組の全部の形（形が見出し語と同じつづりのものもふくむ）",
+      "check": "node --test tests/dictionary-inflection-lookup.test.mjs",
+      "status": "done",
+      "result": "16,823形中16,823形で、その形を持つ見出し語が最初の60件に入り、何の形かが添う（検索そのものは300形で確認）"
+    },
+    {
+      "id": "no-false-request",
+      "text": "変化形で引けた語は「辞書にない語」として扱わない（見つからない語のリクエストの案内・送信を出さない）",
+      "population": "変化形の台帳の全部の形",
+      "check": "node --test tests/dictionary-inflection-lookup.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全監査を通して main に push し、公開版の英和辞書で went から go が引けることを確かめる",
+      "population": "公開版",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/dictionary-inflection-lookup.test.mjs",
+      "status": "waiting",
+      "waitingFor": "全教材監査"
+    }
+  ]
+}
