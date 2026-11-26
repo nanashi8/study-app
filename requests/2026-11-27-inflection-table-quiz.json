@@ -10,7 +10,7 @@
   "sessions": [
     "82f43731-28f0-4cad-83b7-48776aa5b7cd"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "scope",
@@ -38,8 +38,8 @@
       "text": "全監査を通して main に push し、公開版で表の問題を解いて確かめる",
       "population": "公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/inflection-quiz.test.mjs",
-      "status": "waiting",
-      "waitingFor": "全テストと全教材監査"
+      "status": "done",
+      "result": "0adc60b9 を main へ push（クリーンな clone で全教材監査 exit 0）。Deploy to GitHub Pages 成功。公開版で級別の語形変化の行が verb・noun・adjective の3行、名詞の表（party・pet・phone・point・prince）の空所3か所をタイルで埋めて「正解！」と空所ごとの解説が出ることを確かめた（2026-11-27）"
     }
   ]
 }
