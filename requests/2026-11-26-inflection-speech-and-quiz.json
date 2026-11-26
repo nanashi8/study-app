@@ -7,7 +7,7 @@
   "sessions": [
     "82f43731-28f0-4cad-83b7-48776aa5b7cd"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "form-speech-buttons",
@@ -50,8 +50,8 @@
       "text": "全監査を通して main に push し、公開版で発音ボタンと語形変化のタブ・テストを確かめる",
       "population": "公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/inflection-quiz.test.mjs",
-      "status": "waiting",
-      "waitingFor": "全テスト（scripts/run-tests.mjs）と全教材監査"
+      "status": "done",
+      "result": "3426ad73 を main へ push（クリーンな clone で全教材監査 exit 0）。Deploy to GitHub Pages 成功。公開版で、級別のタブが「語形変化／5級…」・形の種類7行、単元別が「語形変化／文の基本と文型…」・級7行、5級の行のテスト（mother の複数形）、read の辞書ページの発音記号と ing形の発音ボタンを確かめた（2026-11-26）"
     }
   ]
 }
