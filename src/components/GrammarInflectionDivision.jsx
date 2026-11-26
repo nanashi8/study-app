@@ -1,15 +1,14 @@
-import { LEVELS } from '../data/levels.js'
 import { GRAMMAR_QUESTION_TYPE_META } from '../data/grammar-format-expansion.js'
-import { INFLECTION_KINDS, inflectionQuestionsFor } from '../lib/inflectionQuiz.js'
+import { INFLECTION_GROUPS, INFLECTION_LEVEL_ROWS, inflectionQuestionsFor, inflectionStudyRows } from '../lib/inflectionQuiz.js'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { LearningEntryCard } from './LearningEntryCard.jsx'
 import { BookOpen } from './Icons.jsx'
 
 // 文法の入口の「語形変化」タブ。級別では5級の前、単元別では「文の基本と文型」の前に置く。
-//   級別（by='kind'）  形の種類ごとの行（動詞の3単現・過去形・過去分詞・ing形、名詞の複数形、比較級・最上級）
-//   単元別（by='level'）語の級ごとの行（下の級から）
-// どの行にも学習（形の作り方と全部の語の形の一覧）とテスト（4択）の入口を置く。
-// 問題は変化形の台帳から作る（src/lib/inflectionQuiz.js）。テストの問題の種類は選択だけ。
+//   級別（by='kind'）  表の種類ごとの行（動詞の活用表・名詞の複数形・形容詞と副詞の比較級と最上級）
+//   単元別（by='level'）級ごとの行（5級・4級・3級・準2級〜1級の不規則動詞）
+// どの行にも学習（形の作り方と全部の語の形の一覧）とテスト（約5語の表の3か所の空所を埋める）の入口を置く。
+// 問題は変化形の台帳から作る（src/lib/inflectionQuiz.js）。範囲は3級以下の語と準2級以上の不規則動詞。
 
 export const INFLECTION_TAB = Object.freeze({
   id: 'forms',
@@ -19,7 +18,7 @@ export const INFLECTION_TAB = Object.freeze({
   ariaLabel: '語形変化（動詞の活用・名詞の複数形・比較級）',
 })
 
-const QUESTION_UNITS = { learning: '語', quiz: '問' }
+const QUESTION_UNITS = { learning: '語', quiz: '表' }
 const usable = (questionType) => questionType === 'mixed' || questionType === 'choice'
 
 /** 語形変化の問題の数（テストの問題の種類ごと）。 */
@@ -40,12 +39,12 @@ function Row({ title, subtitle, emoji, items, questionType, srs, studyAriaLabel,
       status={shown.length ? summarizeSrsItems(shown, srs) : null}
       showLearningStatus={false}
       units={QUESTION_UNITS}
-      note={shown.length ? undefined : `${typeMeta.short}の問題はありません（語形変化は選択の問題）`}
+      note={shown.length ? undefined : `${typeMeta.short}の問題はありません（語形変化は表の空所を選んで埋める問題）`}
       studyLabel="学習"
       studyIcon={<BookOpen size={16} />}
       studyAriaLabel={studyAriaLabel}
       onStudy={onStudy}
-      quizAriaLabel={`${title}を${typeMeta.label}でテスト（${shown.length}問）`}
+      quizAriaLabel={`${title}をテスト（表${shown.length}問）`}
       quizDisabled={!shown.length}
       onQuiz={onQuiz}
     />
@@ -55,23 +54,22 @@ function Row({ title, subtitle, emoji, items, questionType, srs, studyAriaLabel,
 export function GrammarInflectionDivision({ by, questionType, srs, onStudy, onTest }) {
   const all = inflectionQuestionsFor()
   const rows = by === 'kind'
-    ? INFLECTION_KINDS.map((kind) => ({
-        key: kind.id,
-        title: kind.label,
-        emoji: kind.emoji,
-        subtitle: `${inflectionQuestionsFor({ kind: kind.id }).length}語・易しい級の語から出題`,
-        items: inflectionQuestionsFor({ kind: kind.id }),
-        params: { kind: kind.id },
+    ? INFLECTION_GROUPS.map((group) => ({
+        key: group.id,
+        title: group.label,
+        emoji: group.emoji,
+        subtitle: `${inflectionStudyRows({ group: group.id }).length}語・易しい級の語から出題`,
+        items: inflectionQuestionsFor({ group: group.id }),
+        params: { group: group.id },
       }))
-    : LEVELS.map((level) => ({
+    : INFLECTION_LEVEL_ROWS.map((level) => ({
         key: level.id,
-        title: `英検${level.label}の語の語形変化`,
-        emoji: level.emoji,
+        title: `${level.label}の語形変化`,
+        emoji: level.id === 'irregular' ? '⚡' : '📘',
+        subtitle: `${inflectionStudyRows({ level: level.id }).length}語の活用表・複数形・比較級`,
         items: inflectionQuestionsFor({ level: level.id }),
         params: { level: level.id },
       }))
-        .filter((row) => row.items.length)
-        .map((row) => ({ ...row, subtitle: `動詞の活用・複数形・比較級を ${row.items.length}問` }))
   return (
     <>
       <Row
@@ -79,12 +77,12 @@ export function GrammarInflectionDivision({ by, questionType, srs, onStudy, onTe
         data-grammar-inflection-summary={by}
         title="語形変化"
         emoji={INFLECTION_TAB.emoji}
-        subtitle="動詞の活用（3単現・過去形・過去分詞・ing形）、名詞の複数形、形容詞・副詞の比較級・最上級"
+        subtitle="3級以下の語と準2級以上の不規則動詞の、動詞の活用表・名詞の複数形・比較級と最上級"
         items={all}
         questionType={questionType}
         srs={srs}
         studyAriaLabel="語形変化の作り方を学習"
-        onStudy={() => onStudy(by === 'kind' ? { kind: INFLECTION_KINDS[0].id } : { level: LEVELS[0].id })}
+        onStudy={() => onStudy(by === 'kind' ? { group: INFLECTION_GROUPS[0].id } : { level: INFLECTION_LEVEL_ROWS[0].id })}
         onQuiz={() => onTest({}, '語形変化')}
       />
 

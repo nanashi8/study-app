@@ -21,6 +21,7 @@ import { LongSentenceTranslation } from '../components/LongSentenceTranslation.j
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { WordOrderExercise } from '../components/WordOrderExercise.jsx'
+import { InflectionTableExercise, InflectionTableExplanations } from '../components/InflectionTableExercise.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -144,6 +145,9 @@ export function GrammarQuizScreen() {
   const questionType = grammarQuestionType(item)
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const orderQuestion = questionType === 'word-order'
+  // 語形変化の表の問題：空所を埋めてから「答え合わせ」で答える（並べ替えと同じ流れ）。
+  const tableQuestion = Boolean(item.table)
+  const draftQuestion = orderQuestion || tableQuestion
   const rearranging = orderQuestion && rearrangingIndex === i && answered
   const isCorrectPick = answered && selected === item.answer
   const longSentenceTranslation = longSentenceTranslationFor(item)
@@ -283,9 +287,17 @@ export function GrammarQuizScreen() {
           </p>
         </div>
 
-        {reselectable && !rearranging && <ReselectNote className="mt-3" />}
+        {reselectable && !rearranging && !tableQuestion && <ReselectNote className="mt-3" />}
         <div className="mt-4 space-y-2.5">
-          {orderQuestion ? (
+          {tableQuestion ? (
+            <InflectionTableExercise
+              key={`${item.id}:${orderAttempt}`}
+              item={item}
+              value={answered ? (selected === UNKNOWN_CHOICE_ID ? '' : selected) : orderDraft.text}
+              checked={answered}
+              onChange={(text, status) => setOrderDraft({ text, complete: status.complete })}
+            />
+          ) : orderQuestion ? (
             <>
               <WordOrderExercise
                 key={`${item.id}:${orderAttempt}`}
@@ -340,24 +352,29 @@ export function GrammarQuizScreen() {
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
               {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
-            <div className="mt-2 flex items-start gap-2">
-              {/* 語形変化の問題で、使い方で発音が変わる形（read の過去形など）をふくむときは読み上げない（解説に注釈）。 */}
-              {item.speech !== false && <SpeakButton text={item.sentence.en} size="sm" />}
-              <div>
-                <p className="font-bold text-ink">{item.sentence.en}</p>
-                <p className="mt-0.5 text-sm font-bold text-ink/55">
-                  {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
-                  {item.sentence.ja}
-                </p>
+            {item.sentence && (
+              <div className="mt-2 flex items-start gap-2">
+                {item.speech !== false && <SpeakButton text={item.sentence.en} size="sm" />}
+                <div>
+                  <p className="font-bold text-ink">{item.sentence.en}</p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55">
+                    {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
+                    {item.sentence.ja}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
             <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
             {/* 形がどう決まるかを規則ごとに書いた解説（決まり文句の4段解説は置かない）。 */}
-            <div className="mt-3 rounded-xl bg-brand-50/60 px-3 py-2.5 ring-1 ring-brand-100" data-grammar-explanation>
-              <p className="text-[10px] font-extrabold text-brand-600">解説</p>
-              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{grammarRuleExplanationFor(item)}</p>
-            </div>
-            {!orderQuestion && (
+            {/* 語形変化の表は、空所ごとの解説（下）に作り方を書くので、まとめの解説は置かない。 */}
+            {!tableQuestion && (
+              <div className="mt-3 rounded-xl bg-brand-50/60 px-3 py-2.5 ring-1 ring-brand-100" data-grammar-explanation>
+                <p className="text-[10px] font-extrabold text-brand-600">解説</p>
+                <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{grammarRuleExplanationFor(item)}</p>
+              </div>
+            )}
+            {tableQuestion && <InflectionTableExplanations item={item} value={selected === UNKNOWN_CHOICE_ID ? '' : selected} className="mt-3" />}
+            {!orderQuestion && !tableQuestion && (
               <GrammarChoiceExplanations
                 item={item}
                 choices={options}
@@ -365,7 +382,7 @@ export function GrammarQuizScreen() {
                 className="mt-3"
               />
             )}
-            <div className="mt-3 border-t border-brand-100 pt-3">
+            {patternExamples.length > 0 && <div className="mt-3 border-t border-brand-100 pt-3">
               <p className="font-display text-sm font-extrabold text-ink/70">同じ形の例</p>
               <div className="mt-2 space-y-2">
                 {patternExamples.map((example, index) => (
@@ -381,7 +398,7 @@ export function GrammarQuizScreen() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
         )}
       </div>
@@ -390,10 +407,10 @@ export function GrammarQuizScreen() {
         <Button
           full
           size="lg"
-          disabled={orderQuestion ? (!answered || rearranging) && !activeOrderDraft.complete : !answered}
-          onClick={orderQuestion && (!answered || rearranging) ? () => choose(activeOrderDraft.text) : next}
+          disabled={draftQuestion ? (!answered || rearranging) && !activeOrderDraft.complete : !answered}
+          onClick={draftQuestion && (!answered || rearranging) ? () => choose(activeOrderDraft.text) : next}
         >
-          {orderQuestion && (!answered || rearranging)
+          {draftQuestion && (!answered || rearranging)
             ? '答え合わせ'
             : i + 1 >= deck.length
               ? '結果を見る'

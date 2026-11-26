@@ -443,7 +443,7 @@ export function GrammarScreen() {
   const quizInflection = (params, title) =>
     navigate('grammarQuiz', {
       source: { type: 'inflection', ...params, questionType },
-      title: `${title}・${questionTypeMeta.short}`,
+      title: `${title}・表`,
       levelColor: INFLECTION_TAB.color,
       returnTo,
     })

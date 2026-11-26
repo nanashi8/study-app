@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useScreenParam, useStore } from '../store/useStore.js'
-import { LEVELS, getLevel } from '../data/levels.js'
+import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
@@ -12,68 +12,70 @@ import { INFLECTION_TAB } from '../components/GrammarInflectionDivision.jsx'
 import { ArrowRight } from '../components/Icons.jsx'
 import { inflectionsForWord } from '../lib/wordInflections.js'
 import {
-  INFLECTION_KINDS,
+  INFLECTION_GROUPS,
+  INFLECTION_LEVEL_ROWS,
   INFLECTION_RULE_TEXT,
+  inflectionGroup,
   inflectionKind,
-  inflectionQuestionsFor,
+  inflectionRuleExamples,
   inflectionStudyRows,
 } from '../lib/inflectionQuiz.js'
 
 // 語形変化の学習ページ。文法の「語形変化」の行の「学習」から開く。
-//   形の種類（kind）… その形の作り方の決まりと、決まりごとの例、その形を持つ全部の語（易しい級から）
-//   級（level）      … その級の語の変化形を全部
+//   表の種類（group）… その表の形の作り方の決まりと、決まりごとの例、その表の全部の語（易しい級から）
+//   級（level）       … その級の語（準2級〜1級は不規則動詞）の変化形を全部
+// 範囲はテストと同じ（3級以下の語と準2級以上の不規則動詞）。
 // 形には発音ボタンを付ける（端末の声が読み違える形は発音記号）。下まで読むと続きを足す。
 
 const PAGE = 40
 
-function readKind(value) {
-  return inflectionKind(value) ? value : null
+function readGroup(value) {
+  return inflectionGroup(value) ? value : null
 }
 function readLevel(value) {
-  return LEVELS.some((level) => level.id === value) ? value : null
+  return INFLECTION_LEVEL_ROWS.some((level) => level.id === value) ? value : null
 }
 
-/** 形の種類の決まり。問題で使う決まりごとに、易しい語の例を2つ並べる。 */
-function RuleList({ kind }) {
-  const groups = useMemo(() => {
-    const map = new Map()
-    for (const item of inflectionQuestionsFor({ kind: kind.id })) {
-      if (!map.has(item.rule)) map.set(item.rule, [])
-      const list = map.get(item.rule)
-      if (list.length < 2) list.push(item)
-    }
-    return [...map]
-  }, [kind.id])
+/** 表の種類の形の作り方。形の種類ごと・決まりごとに、易しい語の例を2つ並べる。 */
+function RuleList({ group }) {
+  const sections = useMemo(
+    () => group.kinds.map((kindId) => ({ kind: inflectionKind(kindId), rules: inflectionRuleExamples(kindId) })),
+    [group],
+  )
   return (
-    <section className="rounded-2xl bg-white p-4 ring-1 ring-sky-100" data-inflection-rules={kind.id}>
-      <h2 className="text-xs font-extrabold text-sky-600">{`${kind.short}の作り方`}</h2>
-      <ul className="mt-2 space-y-2.5">
-        {groups.map(([rule, items]) => (
-          <li key={rule} className="rounded-xl bg-sky-50/70 p-2.5" data-inflection-rule={rule}>
-            <p className="text-sm font-bold leading-relaxed text-ink/80">{INFLECTION_RULE_TEXT[rule](kind.id)}</p>
-            <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm">
-              {items.map((item) => (
-                <span key={item.id} className="inline-flex items-center gap-1">
-                  <span className="font-display font-extrabold text-ink/60">{getWord(item.wordId)?.word}</span>
-                  <ArrowRight size={12} className="text-ink/30" />
-                  <InflectionForm form={{ text: item.answer }} wordId={item.wordId} label={kind.row} />
-                </span>
-              ))}
-            </p>
-          </li>
-        ))}
-      </ul>
+    <section className="space-y-3" data-inflection-rules={group.id}>
+      {sections.map(({ kind, rules }) => (
+        <div key={kind.id} className="rounded-2xl bg-white p-4 ring-1 ring-sky-100">
+          <h2 className="text-xs font-extrabold text-sky-600">{`${kind.short}の作り方`}</h2>
+          <ul className="mt-2 space-y-2.5">
+            {rules.map(([rule, examples]) => (
+              <li key={rule} className="rounded-xl bg-sky-50/70 p-2.5" data-inflection-rule={rule}>
+                <p className="text-sm font-bold leading-relaxed text-ink/80">{INFLECTION_RULE_TEXT[rule](kind.id)}</p>
+                <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                  {examples.map(({ row, cell }) => (
+                    <span key={row.wordId} className="inline-flex items-center gap-1">
+                      <span className="font-display font-extrabold text-ink/60">{row.head}</span>
+                      <ArrowRight size={12} className="text-ink/30" />
+                      <InflectionForm form={{ text: cell.answer }} wordId={row.wordId} label={kind.row} />
+                    </span>
+                  ))}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
   )
 }
 
 /** 語1つの行：見出し・意味・その行で見せる形（形の種類のページはその形だけ、級のページは全部）。 */
-function WordRow({ row, kind }) {
+function WordRow({ row }) {
   const word = getWord(row.wordId)
   if (!word) return null
   const level = getLevel(word.level)
   const entry = inflectionsForWord(word).find((item) => item.pos === row.pos)
-  const rows = (entry?.rows ?? []).filter((item) => !kind || item.label === kind.row)
+  const rows = entry?.rows ?? []
   return (
     <li className="rounded-2xl bg-white p-3 shadow-card" data-inflection-word={row.wordId} data-speech-group>
       <div className="flex items-start gap-2">
@@ -105,29 +107,30 @@ function WordRow({ row, kind }) {
 export function InflectionStudyScreen() {
   const navigate = useStore((s) => s.navigate)
   const params = useStore((s) => s.params)
-  const [kindId, setKindId] = useScreenParam('kind', readKind)
+  const [groupId, setGroupId] = useScreenParam('group', readGroup)
   const [levelId, setLevelId] = useScreenParam('level', readLevel)
-  const kind = inflectionKind(kindId)
-  const byLevel = !kind
-  const level = levelId ?? LEVELS[0].id
+  const group = inflectionGroup(groupId)
+  const byLevel = !group
+  const level = levelId ?? INFLECTION_LEVEL_ROWS[0].id
+  const levelRow = INFLECTION_LEVEL_ROWS.find((item) => item.id === level)
   const rows = useMemo(
-    () => (kind ? inflectionStudyRows({ kind: kind.id }) : inflectionStudyRows({ level })),
-    [kind, level],
+    () => (group ? inflectionStudyRows({ group: group.id }) : inflectionStudyRows({ level })),
+    [group, level],
   )
   const [shown, setShown] = useState(PAGE)
   const visible = rows.slice(0, shown)
-  const title = kind ? kind.label : `英検${getLevel(level).label}の語の語形変化`
+  const title = group ? group.label : `${levelRow.label}の語形変化`
   const tabs = byLevel
-    ? LEVELS.filter((item) => inflectionQuestionsFor({ level: item.id }).length).map((item) => ({ id: item.id, label: getLevel(item.id).label }))
-    : INFLECTION_KINDS.map((item) => ({ id: item.id, label: item.short }))
+    ? INFLECTION_LEVEL_ROWS.map((item) => ({ id: item.id, label: item.id === 'irregular' ? '不規則動詞' : getLevel(item.id).label }))
+    : INFLECTION_GROUPS.map((item) => ({ id: item.id, label: item.short }))
   const choose = (id) => {
     setShown(PAGE)
     if (byLevel) setLevelId(id)
-    else setKindId(id)
+    else setGroupId(id)
   }
   const test = () => navigate('grammarQuiz', {
-    source: { type: 'inflection', ...(kind ? { kind: kind.id } : { level }), questionType: 'choice' },
-    title: `${title}・選択`,
+    source: { type: 'inflection', ...(group ? { group: group.id } : { level }), questionType: 'choice' },
+    title: `${title}・表`,
     levelColor: INFLECTION_TAB.color,
     returnTo: params.returnTo ?? { screen: 'grammar', params: {} },
   })
@@ -136,9 +139,9 @@ export function InflectionStudyScreen() {
     <div className="flex h-full flex-col">
       <ScreenHeader title={title} subtitle="語形変化の学習" />
       <div className="flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="inflection-study">
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={byLevel ? '級' : '形の種類'}>
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={byLevel ? '級' : '表の種類'}>
           {tabs.map((tab) => {
-            const on = (byLevel ? level : kind?.id) === tab.id
+            const on = (byLevel ? level : group?.id) === tab.id
             return (
               <button
                 key={tab.id}
@@ -157,14 +160,14 @@ export function InflectionStudyScreen() {
           })}
         </div>
 
-        {kind && <div className="mt-3"><RuleList kind={kind} /></div>}
+        {group && <div className="mt-3"><RuleList group={group} /></div>}
 
         <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
           {`全${rows.length}語（易しい級から）`}
         </h2>
         <ul className="space-y-2.5" data-inflection-study-list>
           {visible.map((row) => (
-            <WordRow key={`${row.wordId}|${row.pos}`} row={row} kind={kind} />
+            <WordRow key={`${row.wordId}|${row.pos}`} row={row} />
           ))}
         </ul>
         {shown < rows.length && (

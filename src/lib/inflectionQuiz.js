@@ -7,6 +7,7 @@
 import { WORD_INFLECTIONS } from '../data/word-inflections.js'
 import { ALL_WORDS } from '../data/vocab.js'
 import { LEVELS } from '../data/levels.js'
+import { shuffle } from '../data/vocab.js'
 import { parseInflection } from './wordInflections.js'
 import { isAmbiguousSpeechText } from './speechGuard.js'
 import { inflectionPhoneticFor } from './inflectionSpeech.js'
@@ -312,8 +313,8 @@ function buildQuestion(word, pos, kind, entry, allForms) {
 
 let cache = null
 
-/** 台帳の問える形すべての問題（易しい級の語から）。 */
-export function inflectionQuestions() {
+/** 台帳の問える形すべての、形1つずつの問い（表のマスの正解・誤り・説明のもと）。易しい級の語から。 */
+function allCellQuestions() {
   if (cache) return cache
   const byId = new Map(ALL_WORDS.map((word) => [word.id, word]))
   const allForms = new Set()
@@ -327,7 +328,7 @@ export function inflectionQuestions() {
   for (const [id, record] of Object.entries(WORD_INFLECTIONS)) {
     const word = byId.get(id)
     for (const kind of INFLECTION_KINDS) {
-      // 形容詞と副詞で同じ形の語（fast など）は、1問にまとめる（形容詞を先に）。
+      // 形容詞と副詞で同じ形の語（fast など）は、1つにまとめる（形容詞を先に）。
       const posList = kind.pos.filter((pos) => record[pos])
       const seen = new Set()
       for (const pos of posList) {
@@ -343,21 +344,130 @@ export function inflectionQuestions() {
     }
   }
   list.sort((a, b) => levelRank(a.level) - levelRank(b.level))
-  // 同じ決まりで作る形の例（答え合わせの「同じ形の例」）。易しい語から2つ。
-  const byRule = new Map()
-  for (const item of list) {
-    const key = `${item.kind}|${item.rule}`
-    if (!byRule.has(key)) byRule.set(key, [])
-    byRule.get(key).push(item)
-  }
-  cache = Object.freeze(list.map((item) => Object.freeze({
-    ...item,
-    patternExamples: Object.freeze(byRule.get(`${item.kind}|${item.rule}`)
-      .filter((other) => other.id !== item.id)
-      .slice(0, 2)
-      .map((other) => Object.freeze({ id: other.id, en: other.sentence.en, ja: other.sentence.ja, speech: other.speech }))),
-  })))
+  cache = Object.freeze(list.map((item) => Object.freeze(item)))
   return cache
+}
+
+// ---- 問題にする語の範囲と、複数語の活用表 ----
+// 範囲：級が5級・4級・3級の語と、準2級より上で決まりどおりに作れない不規則動詞（2026-11-27、利用者の決定）。
+// 変化形そのものを問う問題は大学入試にほぼ出ないので、決まりを身につける3級以下の語にしぼる。
+// 上の級の不規則動詞（seek → sought など）は、長文で形を見て元の語が分かるよう残す。
+export const INFLECTION_SCOPE_LEVELS = Object.freeze(['5', '4', '3'])
+export const INFLECTION_IRREGULAR_KEY = 'irregular'
+export const INFLECTION_LEVEL_ROWS = Object.freeze([
+  ...INFLECTION_SCOPE_LEVELS.map((id) => ({ id, label: `英検${LEVELS.find((level) => level.id === id)?.label ?? id}の語` })),
+  { id: INFLECTION_IRREGULAR_KEY, label: '準2級〜1級の不規則動詞' },
+])
+
+// 表の種類。列は「もとの形」と、その品詞の形の種類。
+export const INFLECTION_GROUPS = Object.freeze([
+  { id: 'verb', label: '動詞の活用表', short: '活用表', emoji: '🔤', pos: ['動'], base: '原形', kinds: ['third', 'past', 'participle', 'ing'] },
+  { id: 'noun', label: '名詞の複数形', short: '複数形', emoji: '🍎', pos: ['名'], base: '単数形', kinds: ['plural'] },
+  { id: 'adjective', label: '形容詞・副詞の比較級と最上級', short: '比較級・最上級', emoji: '📈', pos: ['形', '副'], base: '原級', kinds: ['comparative', 'superlative'] },
+])
+export const inflectionGroup = (id) => INFLECTION_GROUPS.find((group) => group.id === id) ?? null
+const groupOfPos = (pos) => INFLECTION_GROUPS.find((group) => group.pos.includes(pos))
+const TABLE_SIZE = 5
+const BASE_NOTE = { verb: (head) => `${head} は原形（もとの形）。`, noun: (head) => `${head} は単数形（1つのときの形）。`, adjective: (head) => `${head} は原級（比べないときの形）。` }
+
+/** 範囲の語の行（語・品詞ごと）。表のすべてのマスの正解・誤り・説明を持つ。 */
+let rowCache = null
+function inflectionRows() {
+  if (rowCache) return rowCache
+  const byWordPos = new Map()
+  for (const item of allCellQuestions()) {
+    const group = groupOfPos(item.pos)
+    const key = `${item.wordId}|${group.id}`
+    if (!byWordPos.has(key)) byWordPos.set(key, { wordId: item.wordId, pos: item.pos, group: group.id, level: item.level, cells: {} })
+    byWordPos.get(key).cells[item.kind] = item
+  }
+  const rows = []
+  for (const row of byWordPos.values()) {
+    const group = inflectionGroup(row.group)
+    // 表の列がそろう語だけ（be・助動詞・変化形そのものの見出し語は表の形にならない）。
+    if (!group.kinds.every((kind) => row.cells[kind])) continue
+    const irregular = row.group === 'verb' && ['past', 'participle'].some((kind) => row.cells[kind].rule === 'irregular')
+    const inScope = INFLECTION_SCOPE_LEVELS.includes(row.level)
+    if (!inScope && !irregular) continue
+    const word = ALL_WORDS.find((item) => item.id === row.wordId)
+    const cells = [
+      {
+        id: `${row.wordId}|${group.base}`,
+        label: group.base,
+        answer: word.word,
+        note: BASE_NOTE[row.group](word.word),
+        mistakes: group.kinds.map((kind) => ({
+          text: row.cells[kind].answer,
+          note: `${row.cells[kind].answer} は ${word.word} の${inflectionKind(kind).short}で、${group.base}ではない。`,
+        })),
+      },
+      ...group.kinds.map((kind) => {
+        const question = row.cells[kind]
+        return {
+          id: `${row.wordId}|${inflectionKind(kind).short}`,
+          label: inflectionKind(kind).short,
+          kind,
+          rule: question.rule,
+          answer: question.answer,
+          note: question.choiceNotes[question.answer],
+          mistakes: question.choices.slice(1).map((text) => ({ text, note: question.choiceNotes[text] })),
+          speech: question.speech,
+        }
+      }),
+    ]
+    rows.push(Object.freeze({
+      wordId: row.wordId,
+      pos: row.pos,
+      group: row.group,
+      level: row.level,
+      levelKey: inScope ? row.level : INFLECTION_IRREGULAR_KEY,
+      head: word.word,
+      meaning: row.cells[group.kinds[0]].sentence.ja,
+      cells: Object.freeze(cells),
+    }))
+  }
+  const keyRank = (key) => (key === INFLECTION_IRREGULAR_KEY ? INFLECTION_SCOPE_LEVELS.length : INFLECTION_SCOPE_LEVELS.indexOf(key))
+  rows.sort((a, b) => keyRank(a.levelKey) - keyRank(b.levelKey) || levelRank(a.level) - levelRank(b.level))
+  rowCache = Object.freeze(rows)
+  return rowCache
+}
+
+let tableCache = null
+/** 範囲の語でできた全部の表（同じ表の種類・同じ級の語を約5語ずつ）。易しい級から。 */
+export function inflectionQuestions() {
+  if (tableCache) return tableCache
+  const tables = []
+  for (const levelRow of INFLECTION_LEVEL_ROWS) {
+    for (const group of INFLECTION_GROUPS) {
+      const rows = inflectionRows().filter((row) => row.levelKey === levelRow.id && row.group === group.id)
+      if (!rows.length) continue
+      const chunks = []
+      for (let i = 0; i < rows.length; i += TABLE_SIZE) chunks.push(rows.slice(i, i + TABLE_SIZE))
+      // 最後の表が2語以下なら、1つ前の表に入れる（空所3か所を散らせるように）。
+      if (chunks.length > 1 && chunks.at(-1).length < 3) chunks.at(-2).push(...chunks.pop())
+      chunks.forEach((chunk, index) => {
+        tables.push(Object.freeze({
+          id: `${INFLECTION_ID_PREFIX}tbl_${group.id}_${levelRow.id}_${index + 1}`,
+          inflection: true,
+          table: true,
+          group: group.id,
+          levelKey: levelRow.id,
+          level: levelRow.id === INFLECTION_IRREGULAR_KEY ? chunk[0].level : levelRow.id,
+          topic: `語形変化（${group.short}）`,
+          type: 'choice',
+          q: `${group.label}の空所を埋めよう`,
+          prompt: '空所を押して選び、下の語を押して入れる',
+          columns: Object.freeze([group.base, ...group.kinds.map((kind) => inflectionKind(kind).short)]),
+          rows: Object.freeze(chunk),
+          explain: `語形変化（${group.short}）`,
+          meaningCueRequired: false,
+          patternExamples: Object.freeze([]),
+        }))
+      })
+    }
+  }
+  tableCache = Object.freeze(tables)
+  return tableCache
 }
 
 let byIdCache = null
@@ -367,44 +477,128 @@ export function getInflectionQuestion(id) {
   return byIdCache.get(id) ?? null
 }
 
-/** 形の種類 kind・級 level で絞った問題。どちらも省けば全部。 */
-export function inflectionQuestionsFor({ kind = null, level = null } = {}) {
-  return inflectionQuestions().filter((item) => (!kind || item.kind === kind) && (!level || item.level === level))
+/** 表の種類 group・級 level（5・4・3・irregular）で絞った表。どちらも省けば全部。 */
+export function inflectionQuestionsFor({ group = null, level = null } = {}) {
+  return inflectionQuestions().filter((item) => (!group || item.group === group) && (!level || item.levelKey === level))
+}
+
+/** 表のマスの数（表の種類・級ごと）。 */
+export function inflectionCellCount(tables) {
+  return tables.reduce((sum, table) => sum + table.rows.reduce((n, row) => n + row.cells.length, 0), 0)
 }
 
 /**
- * テストに出す候補。易しい級の語から出すため、まだ答えていない問題が残る最初の級までに絞る
- * （それより下の級は、答えた問題の復習として残す）。級を指定したときはその級だけ。
+ * テストに出す候補。易しい級の語から出すため、まだ答えていない表が残る最初の級までに絞る
+ * （それより下の級は、答えた表の復習として残す）。級を指定したときはその級だけ。
  */
 export function inflectionCandidates(source = {}, srs = {}) {
   if (source.questionType && !['mixed', 'choice'].includes(source.questionType)) return []
-  const items = inflectionQuestionsFor({ kind: source.kind ?? null, level: source.level ?? null })
+  const items = inflectionQuestionsFor({ group: source.group ?? null, level: source.level ?? null })
   if (source.level) return items
   const firstOpen = items.find((item) => !srs?.[item.id])
   if (!firstOpen) return items
-  const limit = levelRank(firstOpen.level)
-  return items.filter((item) => levelRank(item.level) <= limit)
+  const order = INFLECTION_LEVEL_ROWS.map((row) => row.id)
+  const limit = order.indexOf(firstOpen.levelKey)
+  return items.filter((item) => order.indexOf(item.levelKey) <= limit)
 }
 
-/** 語形変化の学習ページ（形の種類・級ごと）に並べる語の行。 */
-export function inflectionStudyRows({ kind = null, level = null } = {}) {
-  const seen = new Set()
-  const rows = []
-  for (const item of inflectionQuestionsFor({ kind, level })) {
-    const key = `${item.wordId}|${item.pos}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    rows.push({ wordId: item.wordId, pos: item.pos, level: item.level, rule: item.rule })
+// ---- 1回分の出題：表の3か所を空所にし、入れる語のタイルを作る ----
+export const INFLECTION_BLANKS = 3
+
+/**
+ * 表 table から1回分の問題を作る。空所はランダムに3か所。タイルは空所の正解3つと、
+ * 空所ごとに誤り1つ（その語のその形として正しくない形。ほかの空所の正解・表に見えている形と同じつづりは使わない）。
+ * answer は空所の正解を「|」でつないだもの（GrammarQuiz は入れた語を同じ形にして比べる）。
+ */
+export function inflectionRound(table, rng = Math.random) {
+  if (!table?.table || table.blanks) return table
+  const positions = table.rows.flatMap((row, r) => row.cells.map((cell, c) => ({ r, c })))
+  const blanks = shuffle(positions, rng).slice(0, INFLECTION_BLANKS)
+    .sort((a, b) => a.r - b.r || a.c - b.c)
+  const cellAt = ({ r, c }) => table.rows[r].cells[c]
+  const answers = blanks.map((blank) => cellAt(blank).answer)
+  const blankSet = new Set(blanks.map(({ r, c }) => `${r}:${c}`))
+  const visible = new Set(table.rows.flatMap((row, r) => row.cells
+    .filter((cell, c) => !blankSet.has(`${r}:${c}`))
+    .map((cell) => cell.answer.toLowerCase())))
+  const used = new Set(answers.map((text) => text.toLowerCase()))
+  const extras = []
+  for (const blank of blanks) {
+    const cell = cellAt(blank)
+    const mistake = shuffle(cell.mistakes, rng)
+      .find((item) => !used.has(item.text.toLowerCase()) && !visible.has(item.text.toLowerCase()))
+    // もとの形の空所などで使える誤りがないときは、表のほかのマスの誤りから1つ足す。
+    const fallback = mistake ?? shuffle(table.rows.flatMap((row) => row.cells.flatMap((item) => item.mistakes)), rng)
+      .find((item) => !used.has(item.text.toLowerCase()) && !visible.has(item.text.toLowerCase()))
+    if (!fallback) continue
+    used.add(fallback.text.toLowerCase())
+    extras.push(fallback.text)
   }
-  return rows
+  const bank = shuffle([...answers, ...extras], rng)
+  return Object.freeze({
+    ...table,
+    blanks: Object.freeze(blanks),
+    bank: Object.freeze(bank),
+    answer: answers.join('|'),
+    ruleExplanation: blanks
+      .map((blank) => {
+        const cell = cellAt(blank)
+        const lead = `${table.rows[blank.r].head} の${cell.label}は ${cell.answer}。`
+        return cell.kind ? `${lead}${cell.note.replace(/^.*? が .*? の[^。]*。/, '')}` : lead
+      })
+      .join(' '),
+  })
+}
+
+/** 空所 blank に text を入れたときの説明（正解なら作り方、誤りならなぜ入らないか）。 */
+export function inflectionBlankNote(round, blank, text) {
+  const row = round.rows[blank.r]
+  const cell = row.cells[blank.c]
+  if (!text) return ''
+  if (text === cell.answer) return cell.note
+  const mistake = cell.mistakes.find((item) => item.text === text)
+  if (mistake) return mistake.note
+  // ほかのマスの正しい形（ほかの空所の正解など）を入れたとき：その形が何かを言う。
+  for (const other of round.rows) {
+    const hit = other.cells.find((item) => item.answer === text)
+    if (hit) return `${text} は ${other.head} の${hit.label}。ここ（${row.head} の${cell.label}）には ${cell.answer} が入る。`
+  }
+  // ほかのマスの誤りを入れたとき：その誤りの説明を、どのマスの誤りかを添えて言う。
+  for (const other of round.rows) {
+    for (const item of other.cells) {
+      const wrong = item.mistakes.find((entry) => entry.text === text)
+      if (wrong) {
+        return `${text} はここ（${row.head} の${cell.label}）には入らない。${cell.label}は ${cell.answer}。（${text} は ${other.head} の${item.label}としても誤り：${wrong.note}）`
+      }
+    }
+  }
+  return `${text} は ${row.head} の${cell.label}ではない。${cell.label}は ${cell.answer}。`
+}
+
+/** 語形変化の学習ページ（表の種類・級ごと）に並べる語の行。 */
+export function inflectionStudyRows({ group = null, level = null } = {}) {
+  return inflectionRows().filter((row) => (!group || row.group === group) && (!level || row.levelKey === level))
+}
+
+/** 決まりの説明に使う例（形の種類 kind・決まり rule ごとに易しい語から）。 */
+export function inflectionRuleExamples(kind, limit = 2) {
+  const map = new Map()
+  for (const row of inflectionRows()) {
+    const cell = row.cells.find((item) => item.kind === kind)
+    if (!cell) continue
+    if (!map.has(cell.rule)) map.set(cell.rule, [])
+    const list = map.get(cell.rule)
+    if (list.length < limit) list.push({ row, cell })
+  }
+  return [...map]
 }
 
 export const INFLECTION_RULE_TEXT = RULE_TEXT
 
-/** 全問題のつづりの取り違えの候補（台帳・辞書の語で外す前）。tests/inflection-quiz.test.mjs が辞書の語を突き合わせる。 */
+/** 全マスのつづりの取り違えの候補（台帳・辞書の語で外す前）。tests/inflection-quiz.test.mjs が辞書の語を突き合わせる。 */
 export function inflectionMistakeCandidates() {
   const out = new Set()
-  for (const item of inflectionQuestions()) {
+  for (const item of allCellQuestions()) {
     const word = ALL_WORDS.find((w) => w.id === item.wordId)
     for (const mistake of spellingMistakes(item.kind, word.word, item.answer, item.rule, item.pos)) out.add(mistake.text.toLowerCase())
   }

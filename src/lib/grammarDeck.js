@@ -14,7 +14,7 @@ import {
 } from '../data/grammar-format-expansion.js'
 import { getGrammarStrand, grammarStrandQuestions } from '../data/grammar-strands.js'
 import { shuffle } from '../data/vocab.js'
-import { inflectionCandidates, inflectionQuestions } from './inflectionQuiz.js'
+import { inflectionCandidates, inflectionQuestions, inflectionRound } from './inflectionQuiz.js'
 import { STUDY_ORDER_STAGE, rankForStudy, studyOrderKey } from './studyOrder.js'
 import { mixRankedForStudy, recordMixStockOf } from './studyMix.js'
 
@@ -177,9 +177,11 @@ export function buildGrammarDeck(
     freshShare = null,
   } = {},
 ) {
+  // 語形変化の表は、出題のたびに空所3か所と入れる語のタイルを決める（inflectionRound）。
+  const withRounds = (items) => items.map((item) => (item.table ? inflectionRound(item, rng) : item))
   const candidates = grammarCandidates(source, srs)
   if (source?.type === 'grammarList' && source.preserveOrder) {
-    return size > 0 ? candidates.slice(0, size) : candidates
+    return withRounds(size > 0 ? candidates.slice(0, size) : candidates)
   }
   let pool = shuffle(candidates, rng)
   if (source?.type === 'grammarDue') {
@@ -206,5 +208,5 @@ export function buildGrammarDeck(
   const ordered = source?.questionType === 'mixed'
     ? balanceQuestionTypes(unique, stageOf)
     : unique
-  return spreadTopicsByStage(ordered.slice(0, limit), stageOf)
+  return withRounds(spreadTopicsByStage(ordered.slice(0, limit), stageOf))
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-26T07:59:44.574Z",
+  "auditedAt": "2026-11-26T21:50:54.507Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "ddbd6457ac23db9821373d3ee69467d88c42af345520b07c63a20ef92be5a066",
+    "sha256": "69c358b676ef4c2e286f6f3517d935a2ac16cea8ad48738ef11007e34275521d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -293,6 +293,7 @@
       "tests/idiom-form-families.test.mjs",
       "tests/inflection-quiz.test.mjs",
       "tests/inflection-speech.test.mjs",
+      "tests/inflection-table-exercise.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
       "tests/junior-social-science-figure-enrich.test.mjs",
