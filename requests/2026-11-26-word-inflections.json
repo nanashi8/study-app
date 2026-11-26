@@ -1,0 +1,43 @@
+{
+  "id": "2026-11-26-word-inflections",
+  "title": "英和辞書と英単語に、動詞の変化形・名詞の複数形・形容詞と副詞の比較級を辞書のように表示する",
+  "asked": [
+    "英和辞書や英単語に、動詞の変化形や名詞の複数形を辞書のように表示できないか？",
+    "比較級も含めて始める"
+  ],
+  "sessions": [
+    "82f43731-28f0-4cad-83b7-48776aa5b7cd"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "inflections-all-reviewed",
+      "text": "動詞（3単現・過去形・過去分詞・ing形）、名詞（複数形・数えられるか）、形容詞・副詞（比較級・最上級・比較変化がないか）を、全見出し語の品詞ごとに1語ずつ決めて台帳 src/data/word-inflections.js に書く。規則で作れる語だけに狭めない。意味欄の品詞の印・ほかの意味（word-senses.js）で品詞がちがうものも含める",
+      "population": "品詞が名・動・形・副の全見出し語 8,820語の代表の品詞と、意味欄の品詞の印（例「報告(名)」）とほかの意味（word-senses.js）で加わる品詞 781組（計 9,601組）",
+      "check": "node --test tests/word-inflections-review.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "inflections-display",
+      "text": "辞書ページの詳細と暗記カードの裏（同じ WordStudyCard）に「変化形」の欄を出し、品詞ごとに見出し（3単現・過去形・過去分詞・ing形／複数形／比較級・最上級）つきで並べる。複数形がない名詞・比較変化がない語はそう示す",
+      "population": "WordStudyCard を開いた面で出す全画面（暗記カードの裏・辞書や一覧から開く詳細）と、台帳の全 9,601組",
+      "check": "node --test tests/word-inflections.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "ocr-uses-ledger",
+      "text": "写真の読み取りの変化形の表（ocrWordForms.js）に台帳の形を入れ、台帳の全部の形が元の見出し語へ戻る",
+      "population": "台帳の全 9,601組のすべての変化形",
+      "check": "node --test tests/ocr-forms-phrases.test.mjs tests/word-inflections.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全監査を通して main に push し、公開版の辞書ページで変化形の欄が出ることを確かめる",
+      "population": "公開版",
+      "check": "node scripts/check-requests.mjs --report",
+      "status": "waiting",
+      "waitingFor": "裏で流している全教材監査（npm run audit:all-content）の終了"
+    }
+  ]
+}

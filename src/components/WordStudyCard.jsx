@@ -4,6 +4,7 @@ import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { SpeakButton } from './SpeakButton.jsx'
 import { CustomEtymology, EtymologyBlock, HomographWords, OtherSenses, PosBadge } from './WordBits.jsx'
 import { GrammarRoles } from './GrammarRoles.jsx'
+import { WordInflections } from './WordInflections.jsx'
 import { PronunciationNote } from './PronunciationNote.jsx'
 import { MeaningText } from './MeaningText.jsx'
 import { ExplainedText, ExplanationScope } from './ExplainedText.jsx'
@@ -124,6 +125,9 @@ export function WordStudyCard({
               <MeaningText>{word.meanings.join('・')}</MeaningText>
             </div>
           </div>
+
+          {/* 辞書のような変化形（動詞の活用・名詞の複数形・形容詞と副詞の比較級）。 */}
+          <WordInflections word={word} />
 
           {/* 疑問詞・関係詞の語は、働き（疑問詞・関係代名詞など）ごとの意味と解説。参考書の単元へ移れる。 */}
           <GrammarRoles word={word} onGrammarRef={onGrammarRef ?? ((unitId) => navigateTo('grammarReference', { unitId }))} />

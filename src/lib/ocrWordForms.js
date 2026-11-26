@@ -4,6 +4,7 @@
 // 全見出し語の変化形が元の語へ戻ることは tests/ocr-forms-phrases.test.mjs が確かめる。
 import { IRREGULAR_WORD_FORMS } from '../data/phrase-irregular-links.js'
 import { IRREGULAR_PLURALS } from '../data/duplicate-forms.js'
+import { allInflectedForms } from './wordInflections.js'
 
 // IRREGULAR_WORD_FORMS にない不規則な形（見出し語の id ごと）。IRREGULAR_WORD_FORMS は熟語を語につなぐ台帳で、
 // 足すと熟語の候補が増えて1件ずつ読み直すことになるので、読み取りだけで使う形はここに書く。
@@ -260,6 +261,25 @@ export function wordFormIndex(words) {
     }
     if (word.pos === '名' || word.pos === '形') {
       for (const form of verbForms(word.word)) add(form, word, 'loose')
+    }
+  }
+  // 変化形の台帳（word-inflections.js）で1語ずつ決めた形。規則で作れない形（taught・criteria）も元の語へ戻す。
+  // 熟語の照合（phraseFormsOf）には入れない。熟語へのつなぎは phrase-irregular-links.js で1件ずつ決めている。
+  for (const word of entries) {
+    for (const form of allInflectedForms(word.id, word.word)) {
+      if (!/^[a-z]+$/.test(form) || form === word.word) continue
+      const list = byForm.get(form) ?? []
+      const existing = list.find((entry) => entry.word === word)
+      if (existing) {
+        if (existing.kind === 'loose') existing.kind = 'strict'
+      } else {
+        list.push({ word, kind: 'strict' })
+        byForm.set(form, list)
+      }
+      for (const [map, keyOf] of [[byHead, word.word], [byWordId, word.id], [looseByHead, word.word]]) {
+        if (!map.has(keyOf)) map.set(keyOf, new Set())
+        map.get(keyOf).add(form)
+      }
     }
   }
   const headSet = new Set(entries.map((word) => word.word))
