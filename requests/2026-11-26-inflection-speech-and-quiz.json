@@ -1,0 +1,57 @@
+{
+  "id": "2026-11-26-inflection-speech-and-quiz",
+  "title": "変化形に発音ボタンを付け、文法モードに語形変化の問題を置く",
+  "asked": [
+    "・語形変化の発音を確認できるように発音ボタンを設置しなさい。\n・文法問題の級別の5級の前と、単元別の文の基本と文型の前に語形変化を問う問題を実装しなさい。"
+  ],
+  "sessions": [
+    "82f43731-28f0-4cad-83b7-48776aa5b7cd"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "form-speech-buttons",
+      "text": "変化形の欄（辞書ページ・暗記カードの裏）の全部の形に発音ボタンを付ける。端末の声が正しく読めない形（read の過去形など、使い方で発音が変わるつづり）は、誤った音を出さずに発音記号と注釈を出す",
+      "population": "変化形の台帳（word-inflections.js）の全組の全部の形",
+      "check": "node --test tests/word-inflections.test.mjs tests/inflection-speech.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "quiz-all-forms",
+      "text": "台帳の問える形（動詞の3単現・過去形・過去分詞・ing形、数えられる名詞の複数形、形容詞・副詞の比較級・最上級）すべてに選択の問題を作る。正解は台帳の形、誤答はその語の正しい形にならない形（辞書にある語は使わない）で、すべての選択肢に説明がある。選択肢は4つ（はっきり誤りと言える誤答を3つ作れない語は3つ。画面は3択＋わからない）",
+      "population": "台帳の全組のうち、問える形の全件",
+      "check": "node --test tests/inflection-quiz.test.mjs",
+      "status": "done",
+      "result": "16,664形中16,664形に問題（4択16,025問・3択639問）"
+    },
+    {
+      "id": "level-tab-before-5",
+      "text": "文法の級別の区分で、5級のタブの前に「語形変化」のタブを置き、形の種類ごとの行に学習とテストの入口を置く。テストは易しい級の語から出す",
+      "population": "級別の区分のタブと、語形変化の形の種類の全行",
+      "check": "node --test tests/inflection-quiz.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "strand-tab-before-basics",
+      "text": "文法の単元別の区分で、「文の基本と文型」の前に「語形変化」のタブを置き、級ごとの行に学習とテストの入口を置く",
+      "population": "単元別の区分のタブと、語形変化の級の全行",
+      "check": "node --test tests/inflection-quiz.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "study-page",
+      "text": "学習の入口から、形の作り方の決まりと、その行の全部の語の形（発音ボタンつき）を読めるページを開く",
+      "population": "語形変化の全行（形の種類・級）",
+      "check": "node --test tests/inflection-quiz.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全監査を通して main に push し、公開版で発音ボタンと語形変化のタブ・テストを確かめる",
+      "population": "公開版",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/inflection-quiz.test.mjs",
+      "status": "waiting",
+      "waitingFor": "全テスト（scripts/run-tests.mjs）と全教材監査"
+    }
+  ]
+}

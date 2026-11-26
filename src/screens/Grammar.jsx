@@ -40,6 +40,12 @@ import {
 } from '../lib/grammarReferenceLog.js'
 import { BookOpen, Check, Target } from '../components/Icons.jsx'
 import { grammarDiagnosticScope, summarizeGrammarDiagnostic } from '../lib/grammarDiagnostic.js'
+import { inflectionQuestions } from '../lib/inflectionQuiz.js'
+import {
+  GrammarInflectionDivision,
+  INFLECTION_TAB,
+  inflectionTypeCount,
+} from '../components/GrammarInflectionDivision.jsx'
 
 // 出題のある級だけタブに出す。
 const ACTIVE_LEVELS = LEVELS.filter((l) => grammarPracticeByLevel(l.id).length > 0)
@@ -49,16 +55,19 @@ const DIVISIONS = Object.freeze([
   { id: 'strand', label: '単元別', note: '同じ単元を、級をまたいで下から順に並べる' },
 ])
 const readDivision = (value) => (DIVISIONS.some((d) => d.id === value) ? value : 'level')
+// 「語形変化」のタブ（forms）は、級別では5級の前、単元別では「文の基本と文型」の前に置く。
 const readLevel = (value) => (
-  ACTIVE_LEVELS.some((l) => l.id === value) ? value : ACTIVE_LEVELS[0]?.id ?? '5'
+  value === INFLECTION_TAB.id || ACTIVE_LEVELS.some((l) => l.id === value) ? value : ACTIVE_LEVELS[0]?.id ?? '5'
 )
-const readStrand = (value) => (getGrammarStrand(value) ? value : GRAMMAR_STRANDS[0].id)
+const readStrand = (value) => (value === INFLECTION_TAB.id || getGrammarStrand(value) ? value : GRAMMAR_STRANDS[0].id)
 const readQuestionType = (value) => (value && GRAMMAR_QUESTION_TYPE_META[value] ? value : 'mixed')
 const QUESTION_UNITS = { learning: '問', quiz: '問' }
 const GROUP_UNITS = { learning: '単元', quiz: '問' }
 // 目次の各単元に並べる学習日の数（それより前は「ほかN回」）。
 const HISTORY_SHOWN = 4
 const percent = (value) => `${Math.round(value * 100)}%`
+// 今日の復習には、答えたことのある語形変化の問題も入れる（1万を超える問題すべては並べない）。
+const answeredInflections = (srs) => inflectionQuestions().filter((item) => srs?.[item.id])
 
 /** 区分の切り替え。級別と単元別は、同じ並び・同じ部品で出す。 */
 function DivisionSwitch({ value, onChange }) {
@@ -382,8 +391,10 @@ export function GrammarScreen() {
   const [strandId, setStrandId] = useScreenParam('strand', readStrand)
   const [questionType, setQuestionType] = useScreenParam('questionType', readQuestionType)
 
-  const meta = getLevel(level)
-  const review = contentReviewSummary(GRAMMAR_PRACTICE, srs, todayIndex())
+  const formsTab = division === 'level' ? level === INFLECTION_TAB.id : strandId === INFLECTION_TAB.id
+  const meta = getLevel(level === INFLECTION_TAB.id ? '5' : level)
+  const reviewPool = useMemo(() => [...GRAMMAR_PRACTICE, ...answeredInflections(srs)], [srs])
+  const review = contentReviewSummary(reviewPool, srs, todayIndex())
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const returnTo = { screen: 'grammar', params: { view: division, level, strand: strandId, questionType } }
   const nextUnit = nextGrammarReferenceUnit(grammarReferenceLog)
@@ -402,30 +413,40 @@ export function GrammarScreen() {
   )
   const overview = overviews.find((item) => item.strand.id === strandId) ?? overviews[0]
 
-  const levelTabs = ACTIVE_LEVELS.map((l) => ({
+  const levelTabs = [INFLECTION_TAB, ...ACTIVE_LEVELS.map((l) => ({
     id: l.id,
     label: l.label,
     emoji: l.emoji,
     color: l.color,
     ariaLabel: `英検${l.label}の文法`,
-  }))
-  const strandTabs = overviews.map((item) => ({
+  }))]
+  const strandTabs = [INFLECTION_TAB, ...overviews.map((item) => ({
     id: item.strand.id,
     label: item.strand.name,
     emoji: item.strand.emoji,
     color: getLevel(item.currentLevel).color,
     alert: Boolean(item.weakest),
     ariaLabel: `${item.strand.name}${item.weakest ? '（苦手が残っています）' : ''}`,
-  }))
+  }))]
 
   const typeCounts = Object.fromEntries(['mixed', ...GRAMMAR_QUESTION_TYPES].map((type) => [
     type,
-    division === 'level'
-      ? grammarPracticeByLevel(level, type).length
-      : grammarStrandQuestions(overview.strand, null, type).length,
+    formsTab
+      ? inflectionTypeCount(type)
+      : division === 'level'
+        ? grammarPracticeByLevel(level, type).length
+        : grammarStrandQuestions(overview.strand, null, type).length,
   ]))
 
   const openUnit = (unitId) => navigate('grammarReference', { unitId })
+  const openInflectionStudy = (params) => navigate('inflectionStudy', { ...params, returnTo })
+  const quizInflection = (params, title) =>
+    navigate('grammarQuiz', {
+      source: { type: 'inflection', ...params, questionType },
+      title: `${title}・${questionTypeMeta.short}`,
+      levelColor: INFLECTION_TAB.color,
+      returnTo,
+    })
   const quizLevel = () =>
     navigate('grammarQuiz', { source: { type: 'grammar', level, questionType }, title: `${meta.label} ${questionTypeMeta.label}`, levelColor: meta.color, returnTo })
   const quizTopic = (topic, topicLevel = level) => {
@@ -525,7 +546,15 @@ export function GrammarScreen() {
 
         <QuestionTypePicker counts={typeCounts} value={questionType} onChange={setQuestionType} />
 
-        {division === 'level' ? (
+        {formsTab ? (
+          <GrammarInflectionDivision
+            by={division === 'level' ? 'kind' : 'level'}
+            questionType={questionType}
+            srs={srs}
+            onStudy={openInflectionStudy}
+            onTest={quizInflection}
+          />
+        ) : division === 'level' ? (
           <LevelDivision
             level={level}
             questionType={questionType}

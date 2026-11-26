@@ -502,7 +502,7 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全31 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全32 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -524,7 +524,8 @@ test('読み上げを持つ全31 UIモジュールが共通プレイヤー経由
   // 2026-11-10、英単語・熟語のカードを暗記と辞書・一覧の詳細で同じ部品（components/WordStudyCard.jsx・
   // components/PhraseStudyCard.jsx）にした。読み上げは部品が持つので、画面の VocabStudy・WordDetail・PhraseStudy・
   // ReadingPrep と部品の PhraseDetailSheet が抜け、部品が2つ増えて 34 から 31、画面は 20 から 16。
-  assert.equal(speechUi.length, 31)
+  // 2026-11-26、変化形の欄（WordInflections.jsx）に形ごとの発音ボタンを置いて 32（requests/2026-11-26-inflection-speech-and-quiz.json）。
+  assert.equal(speechUi.length, 32)
   assert.equal(screenCount, 16)
   assert.ok(speechUi.some(({ path }) => path === 'components/WordStudyCard.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/PhraseStudyCard.jsx'))

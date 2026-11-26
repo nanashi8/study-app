@@ -273,13 +273,13 @@ export function GrammarQuizScreen() {
             </div>
           )}
           <p className="mt-3 text-sm font-extrabold text-ink/55">
-            {orderQuestion
+            {item.prompt ?? (orderQuestion
               ? '単語を押して、英文の先頭から組み立てよう'
               : questionType === 'usage'
                 ? '意味と語の組み合わせの両方に合うのは？'
                 : needsMeaningCue
                   ? '英文と意味の両方に合うのは？'
-                  : '空所に入る正しい形は？'}
+                  : '空所に入る正しい形は？')}
           </p>
         </div>
 
@@ -341,7 +341,8 @@ export function GrammarQuizScreen() {
               {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <div className="mt-2 flex items-start gap-2">
-              <SpeakButton text={item.sentence.en} size="sm" />
+              {/* 語形変化の問題で、使い方で発音が変わる形（read の過去形など）をふくむときは読み上げない（解説に注釈）。 */}
+              {item.speech !== false && <SpeakButton text={item.sentence.en} size="sm" />}
               <div>
                 <p className="font-bold text-ink">{item.sentence.en}</p>
                 <p className="mt-0.5 text-sm font-bold text-ink/55">
@@ -376,7 +377,7 @@ export function GrammarQuizScreen() {
                       <p className="text-sm font-bold leading-relaxed text-ink">{example.en}</p>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">{example.ja}</p>
                     </div>
-                    <SpeakButton text={example.en} size="sm" />
+                    {example.speech !== false && <SpeakButton text={example.en} size="sm" />}
                   </div>
                 ))}
               </div>

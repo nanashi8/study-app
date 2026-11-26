@@ -168,7 +168,10 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （requests/2026-11-13-grammar-diagnostic-in-app.json）。同じ日、回ごとの履歴の文で 18714（重複なし 13920）・ソース全体 289044 になった。
   // 2026-11-26、変化形の欄（src/components/WordInflections.jsx）と台帳を読みほどく部品（src/lib/wordInflections.js）で
   // 379 ファイルになった（requests/2026-11-26-word-inflections.json）。
-  assert.equal(result.learnerFiles, 379)
+  // 2026-11-26、変化形の発音（src/lib/inflectionSpeech.js）と文法の「語形変化」（src/lib/inflectionQuiz.js・
+  // src/components/GrammarInflectionDivision.jsx・src/screens/InflectionStudy.jsx）で 383 ファイルになった
+  // （requests/2026-11-26-inflection-speech-and-quiz.json）。
+  assert.equal(result.learnerFiles, 383)
   // 2026-10-14、リスニングの本文の話者名に人物（女性・男性・男の子・女の子）を添える台帳（src/data/listening-speaker-roles.js）と
   // 話者名の部品が増え、学習者画面の日本語が 18417 から 18421 に、ソース全体が 834 から 835 ファイル・237212 から 237223 になった
   // （接尾辞カード -al を2枚に分けた見出し・意味・由来の3件をふくむ。requests/2026-10-14-content-observations-fix.json）。
@@ -207,7 +210,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 2026-11-26、変化形の欄（見出し・3単現などの行の名前・数えない名詞などの一言）と台帳の注意書きで、学習者画面の日本語が
   // 18705 から 18735（重複なし 13908 から 13926。解説の検査から外す印「変化形」3つをふくむ）に、台帳・部品の3ファイルでソース全体が 926 から 929 ファイル・
   // 297738 から 297960 になった（requests/2026-11-26-word-inflections.json）。
-  assert.equal(result.learnerJapaneseEntries, 18735)
+  // 同じ依頼で、語形変化のタブ・行・学習ページ・問題の説明の文で 18735 から 18915（重複なし 13926 から 14027）に、
+  // 発音記号の台帳・誤答の台帳をふくむ6ファイルでソース全体が 929 から 935 ファイル・297960 から 298290 になった。
+  assert.equal(result.learnerJapaneseEntries, 18915)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
@@ -220,7 +225,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 重複なしが 13829 から 13833 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、cardSpeech.js の引用符のずれを直し、コードの切れ端を数えなくなって重複なしが 13920 から 13908 になった
   // （ずれていた間は画面の4つの文も切れ端に含まれていた。requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 13926)
+  assert.equal(result.learnerUniqueJapaneseEntries, 14027)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -239,7 +244,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （requests/2026-11-04-high-school-social-tankyu.json）。
   // 2026-11-10、英単語・熟語のカードの共通の部品2つで 923 ファイルになった。
   // 2026-11-19、英単語の意味の読み上げの台帳（src/data/meaning-speech-kana.js）で 926 ファイルになった（requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.sourceFiles, 929)
+  assert.equal(result.sourceFiles, 935)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
@@ -262,7 +267,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // ソース全体の日本語が 288935 から 288941 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、英単語の意味の読み上げの台帳（8,325語の「かたまり=よみ」）で 8,325 増え、cardSpeech.js の引用符のずれで数えていた
   // コードの切れ端 9 件が消えて、289422 から 297738 になった（requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.sourceJapaneseEntries, 297960)
+  assert.equal(result.sourceJapaneseEntries, 298290)
   assert.equal(result.issues.length, 0)
 })
 

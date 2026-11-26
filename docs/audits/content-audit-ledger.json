@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-26T04:26:02.728Z",
+  "auditedAt": "2026-11-26T05:36:38.563Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "9ab44c8ffea32c36ed2519d37f588a2d0e9e612b11dd2e66eb24e9916f523d90",
+    "sha256": "e16e437c93e198f231b7b2fd0ec5d50507bf4ec30752b7d2e457e99200a64e24",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -290,6 +290,8 @@
       "tests/homograph-headwords.test.mjs",
       "tests/homograph-words.test.mjs",
       "tests/idiom-form-families.test.mjs",
+      "tests/inflection-quiz.test.mjs",
+      "tests/inflection-speech.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
       "tests/junior-social-science-figure-enrich.test.mjs",

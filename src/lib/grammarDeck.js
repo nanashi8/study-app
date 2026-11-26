@@ -14,6 +14,7 @@ import {
 } from '../data/grammar-format-expansion.js'
 import { getGrammarStrand, grammarStrandQuestions } from '../data/grammar-strands.js'
 import { shuffle } from '../data/vocab.js'
+import { inflectionCandidates, inflectionQuestions } from './inflectionQuiz.js'
 import { STUDY_ORDER_STAGE, rankForStudy, studyOrderKey } from './studyOrder.js'
 import { mixRankedForStudy, recordMixStockOf } from './studyMix.js'
 
@@ -37,15 +38,21 @@ export function grammarVariationKey(item) {
     : `pattern:${patternGroup}`
 }
 
-export function grammarCandidates(source = {}) {
+export function grammarCandidates(source = {}, srs = {}) {
+  // 語形変化（文法の入口の「語形変化」）。形の種類か級で絞り、易しい級の語から出す。
+  if (source.type === 'inflection') return inflectionCandidates(source, srs)
   if (source.type === 'grammarList') {
     return (source.ids ?? []).map(getGrammar).filter(Boolean)
   }
   if (source.type === 'grammarDue') {
+    // 語形変化は、答えたことのある問題だけを復習に入れる（1万を超える問題を毎回並べない）。
+    const inflections = source.questionType && source.questionType !== 'mixed' && source.questionType !== 'choice'
+      ? []
+      : inflectionQuestions().filter((item) => srs?.[item.id])
     return source.questionType
-      ? GRAMMAR_PRACTICE.filter((item) =>
-          source.questionType === 'mixed' || grammarQuestionType(item) === source.questionType)
-      : GRAMMAR
+      ? [...GRAMMAR_PRACTICE.filter((item) =>
+          source.questionType === 'mixed' || grammarQuestionType(item) === source.questionType), ...inflections]
+      : [...GRAMMAR, ...inflections]
   }
   // 系統は級をまたぐが、1回の出題は現在地の級だけに絞る。
   // 級を混ぜると「いまどの段にいるか」が学習者から見えなくなるため。
@@ -170,7 +177,7 @@ export function buildGrammarDeck(
     freshShare = null,
   } = {},
 ) {
-  const candidates = grammarCandidates(source)
+  const candidates = grammarCandidates(source, srs)
   if (source?.type === 'grammarList' && source.preserveOrder) {
     return size > 0 ? candidates.slice(0, size) : candidates
   }

@@ -6,6 +6,7 @@ import {
   grammarQuestionType,
 } from './grammar-format-expansion.js'
 import { GRAMMAR_UNIT_FORMATS } from './grammar-unit-formats/index.js'
+import { getInflectionQuestion } from '../lib/inflectionQuiz.js'
 
 // 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
 // IDや並び順は変えず、出題時だけ同じ variationGroup として重複を抑える。
@@ -462,13 +463,16 @@ export const grammarPracticeByTopic = (level, topic, questionType = 'mixed') =>
 export const grammarPracticeTopicsForLevel = (level, questionType = 'mixed') => [
   ...new Set(grammarPracticeByLevel(level, questionType).map((item) => item.topic)),
 ]
-export const getGrammar = (id) => GRAMMAR_PRACTICE.find((g) => g.id === id)
+// 語形変化の問題（src/lib/inflectionQuiz.js、台帳から作る）も同じ id の引き方で引ける。
+export const getGrammar = (id) => GRAMMAR_PRACTICE.find((g) => g.id === id) ?? getInflectionQuestion(id) ?? undefined
 export const grammarPatternGroup = (item) =>
   item?.variationGroup ?? item?.pattern ?? null
 
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {
   if (!item || limit <= 0) return []
+  // 語形変化の問題は、同じ決まりで形を作るほかの語を例にする。
+  if (item.patternExamples) return item.patternExamples.slice(0, limit)
   const patternGroup = grammarPatternGroup(item)
   const patternMatches = patternGroup
     ? GRAMMAR_PRACTICE.filter((candidate) =>
