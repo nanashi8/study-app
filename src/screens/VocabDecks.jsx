@@ -223,6 +223,21 @@ function VocabularyCatalog({
           onToggle={() => setSortOpen((current) => !current)}
           summary={`${activity === 'test' ? 'テストの記録' : '学習の記録'}・${fieldFilterLabel}・${statusFilter === 'all' ? 'すべての状況' : statusFilterLabel(statusFilter)}`}
           narrowed={fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL || statusFilter !== 'all'}
+          // 絞り込んだ範囲の数は、スクロールしても隠れないしぼり込みボタンの左に置く。
+          counts={(
+            <CatalogRecordCounts
+              rows={filteredRows}
+              activity={activity}
+              remaining={remainingRows.length}
+              unit="語"
+              scope={[
+                fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL ? `${fieldFilterLabel}の` : '',
+                statusFilter !== 'all' ? `「${statusFilterLabel(statusFilter)}」で絞り込んだ` : '',
+              ].join('') || '全'}
+              compact
+              data-vocab-catalog-counts
+            />
+          )}
           toggleProps={{ 'data-vocab-catalog-tools-toggle': true }}
           toolsProps={{ 'data-vocab-catalog-tools': true }}
           tabs={(
@@ -351,18 +366,7 @@ function VocabularyCatalog({
       </div>
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
-        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-          <CatalogRecordCounts
-            rows={filteredRows}
-            activity={activity}
-            remaining={remainingRows.length}
-            unit="語"
-            scope={[
-              fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL ? `${fieldFilterLabel}の` : '',
-              statusFilter !== 'all' ? `「${statusFilterLabel(statusFilter)}」で絞り込んだ` : '',
-            ].join('') || '全'}
-            data-vocab-catalog-counts
-          />
+        <div className="mb-2 flex justify-end px-1">
           <p
             className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
             aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}

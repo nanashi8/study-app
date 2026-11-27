@@ -198,3 +198,35 @@ test('英単語の一覧は固定した語を戻り状態に載せ、戻った�
   assert.match(vocab, /pinnedIds: statusSnapshot\.ids/)
   assert.match(vocab, /statusFilter !== 'all' && restored\?\.pinnedIds\s*\?\s*restored\.pinnedIds/)
 })
+
+// しぼり込み後の数は、スクロールで隠れるリストの中ではなく、隠れないところに出す
+// （requests/2026-11-27-catalog-counts-beside-filter.json）。
+test('絞り込んだ範囲の数は、スクロールしても隠れないところに出す（しぼり込みボタンの左・見出しの下）', () => {
+  const tools = read('src/components/CatalogTools.jsx')
+  assert.match(tools, /\n {2}counts,\n/, 'しぼり込みの部品が数を受け取る')
+  assert.match(tools, /<div className="min-w-0 flex-1">\{counts\}<\/div>\n\s*\{toggle\}/, '数をしぼり込みボタンの左に置く')
+
+  // 英単語の一覧3画面と18教材の一覧：数はしぼり込みの部品（上に固定した枠）へ渡し、スクロールするリストの中には置かない。
+  for (const [path, listMarker] of [
+    ['src/screens/VocabDecks.jsx', 'data-vocab-catalog-list'],
+    ['src/components/LearningContentCatalog.jsx', 'data-learning-catalog-list'],
+  ]) {
+    const source = read(path)
+    const tools = source.slice(source.indexOf('<CatalogTools'), source.indexOf('</CatalogTools>'))
+    assert.match(tools, /counts=\{[^]*?<CatalogRecordCounts\s+rows=\{filteredRows\}[^]*?compact/, `${path}: 数をしぼり込みボタンの左へ`)
+    const list = source.slice(source.indexOf(listMarker))
+    assert.doesNotMatch(list, /<CatalogRecordCounts/, `${path}: スクロールするリストの中に数を置かない`)
+    assert.equal((source.match(/<CatalogRecordCounts/g) ?? []).length, 1, `${path}: 数は1か所だけ`)
+    // 枠はスクロールしない（リストだけがスクロールする）。
+    assert.match(source, new RegExp(`className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto[^"]*" ${listMarker}`))
+  }
+
+  // 共通の一覧：しぼり込みボタンは呼び出す画面のページと一緒に流れるので、タブと数の行を見出しの下へ貼りつける。
+  const normal = read('src/components/NormalLearningRecordList.jsx')
+  const sticky = normal.slice(normal.indexOf('ref={stickyRef}'), normal.indexOf('data-normal-learning-record-message'))
+  assert.match(sticky, /className="sticky /)
+  assert.match(sticky, /style=\{\{ top: stickyTop \}\}/)
+  assert.match(sticky, /role="tablist"/)
+  assert.match(sticky, /<CatalogRecordCounts\s+rows=\{rows\}/)
+  assert.match(normal, /function useStickyBelowHeader\(ref\)/)
+})

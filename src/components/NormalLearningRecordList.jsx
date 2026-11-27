@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useScreenParam, useStore } from '../store/useStore.js'
 import { selectProgressState } from '../lib/progressCode.js'
@@ -43,6 +43,30 @@ const pagingKeyFor = (activity, itemKey, pageSize) => {
  * 各教材の通常画面に置く、学習・テスト記録用の共通一覧。
  * 一覧用の一時状態だけをここで持ち、結果は既存の教材別SRSへ保存する。
  */
+// 一覧のタブと件数の行を、スクロールしても見えるように、同じスクロールの中の見出し（上に貼りつく header）の下へ貼りつける。
+// 見出しの高さは画面ごとに違い、文字の大きさで変わるので、測って合わせる。見出しがなければ上端に貼りつく。
+function useStickyBelowHeader(ref) {
+  const [top, setTop] = useState(0)
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return undefined
+    let scroller = element.parentElement
+    while (scroller && !/(auto|scroll)/.test(getComputedStyle(scroller).overflowY)) scroller = scroller.parentElement
+    const header = [...(scroller ?? document).querySelectorAll('header')]
+      .find((candidate) => !candidate.contains(element) && getComputedStyle(candidate).position === 'sticky')
+    if (!header) {
+      setTop(0)
+      return undefined
+    }
+    const measure = () => setTop(header.getBoundingClientRect().height)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(header)
+    return () => observer.disconnect()
+  }, [ref])
+  return top
+}
+
 export function NormalLearningRecordList({
   entryId,
   contentId,
@@ -67,6 +91,8 @@ export function NormalLearningRecordList({
   const [listState, setListState] = useScreenParam(`recordList:${entryId}`, readListState)
   const { activity, dismissed: dismissedByActivity } = listState
   const [message, setMessage] = useState('')
+  const stickyRef = useRef(null)
+  const stickyTop = useStickyBelowHeader(stickyRef)
   const [now] = useState(() => Date.now())
   const content = LEARNING_CONTENTS.find((candidate) => candidate.id === contentId)
   const normalizedItems = Array.isArray(items) ? items : []
@@ -138,48 +164,56 @@ export function NormalLearningRecordList({
       data-normal-learning-record-list={entryId}
       data-normal-learning-record-content={contentId}
     >
-      <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="一覧で記録する内容">
-        {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
-          const count = option.id === 'test' ? recordedTest : recordedMemory
-          return (
-            <button
-              key={option.id}
-              type="button"
-              role="tab"
-              aria-selected={activity === option.id}
-              onClick={() => setListState((current) => ({ ...current, activity: option.id }))}
-              className={cx(
-                'min-h-11 rounded-lg px-1 text-xs font-extrabold',
-                activity === option.id
-                  ? 'bg-white text-brand-700 shadow-sm'
-                  : 'text-ink/55 active:bg-white/70',
-              )}
-              aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${itemUnit}、全${rows.length.toLocaleString('ja-JP')}${itemUnit}`}
-              data-normal-learning-record-activity-tab={option.id}
-            >
-              {option.id === 'test' ? 'テスト' : '学習'}
-              <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}{itemUnit}</span>
-            </button>
-          )
-        })}
-      </div>
+      {/* タブと件数の行は、スクロールしても見えるように見出しの下へ貼りつける。数は記録のたびに変わる。 */}
+      <div
+        ref={stickyRef}
+        className="sticky z-10 -mx-1 space-y-2 bg-paper/95 px-1 pb-1.5 pt-1 backdrop-blur"
+        style={{ top: stickyTop }}
+        data-normal-learning-record-sticky
+      >
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="一覧で記録する内容">
+          {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
+            const count = option.id === 'test' ? recordedTest : recordedMemory
+            return (
+              <button
+                key={option.id}
+                type="button"
+                role="tab"
+                aria-selected={activity === option.id}
+                onClick={() => setListState((current) => ({ ...current, activity: option.id }))}
+                className={cx(
+                  'min-h-11 rounded-lg px-1 text-xs font-extrabold',
+                  activity === option.id
+                    ? 'bg-white text-brand-700 shadow-sm'
+                    : 'text-ink/55 active:bg-white/70',
+                )}
+                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${itemUnit}、全${rows.length.toLocaleString('ja-JP')}${itemUnit}`}
+                data-normal-learning-record-activity-tab={option.id}
+              >
+                {option.id === 'test' ? 'テスト' : '学習'}
+                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}{itemUnit}</span>
+              </button>
+            )
+          })}
+        </div>
 
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-        {/* 母数は呼び出し側が絞り込んだ項目だけ。内訳はスワイプで記録するたびに動く。 */}
-        <CatalogRecordCounts
-          rows={rows}
-          activity={activity}
-          remaining={remainingRows.length}
-          unit={itemUnit}
-          data-normal-learning-record-counts
-        />
-        <p
-          className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
-          aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}`}
-          data-normal-learning-record-swipe-guide
-        >
-          <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
-        </p>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
+          {/* 母数は呼び出し側が絞り込んだ項目だけ。内訳はスワイプで記録するたびに動く。 */}
+          <CatalogRecordCounts
+            rows={rows}
+            activity={activity}
+            remaining={remainingRows.length}
+            unit={itemUnit}
+            data-normal-learning-record-counts
+          />
+          <p
+            className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
+            aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}`}
+            data-normal-learning-record-swipe-guide
+          >
+            <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
+          </p>
+        </div>
       </div>
       <p className="sr-only" aria-live="polite" data-normal-learning-record-message>{message}</p>
 

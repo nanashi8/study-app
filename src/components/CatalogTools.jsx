@@ -15,6 +15,9 @@ export function CatalogTools({
   // しぼり込みが「すべて」でないときは、閉じていてもボタンの色で分かるようにする。
   narrowed = false,
   tabs,
+  // 絞り込んだ範囲の数（CatalogRecordCounts）。渡すと、タブを上の段に、数をしぼり込みボタンの左に置く。
+  // 一覧をスクロールしても隠れないところで、記録のたびに変わる数を見せるため。
+  counts,
   // 畳む側の中身どうしの間。画面ごとのまわりの間隔にそろえる。
   toolsClassName = 'space-y-1.5',
   toggleProps,
@@ -22,25 +25,38 @@ export function CatalogTools({
   children,
 }) {
   const action = open ? '閉じる' : '開く'
+  const toggle = (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-label={summary ? `${label}を${action}。現在は${summary}` : `${label}を${action}`}
+      className={cx(
+        'learning-catalog-tools-toggle min-h-11 shrink-0 items-center justify-center gap-0.5 rounded-xl border px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50',
+        narrowed ? 'border-brand-300 bg-brand-50' : 'border-slate-300 bg-white',
+      )}
+      {...toggleProps}
+    >
+      <span>しぼり込み</span>
+      {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+    </button>
+  )
   return (
     <>
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1.5">
-        {tabs}
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-expanded={open}
-          aria-label={summary ? `${label}を${action}。現在は${summary}` : `${label}を${action}`}
-          className={cx(
-            'learning-catalog-tools-toggle min-h-11 shrink-0 items-center justify-center gap-0.5 rounded-xl border px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50',
-            narrowed ? 'border-brand-300 bg-brand-50' : 'border-slate-300 bg-white',
-          )}
-          {...toggleProps}
-        >
-          <span>しぼり込み</span>
-          {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-        </button>
-      </div>
+      {counts ? (
+        <div className="space-y-1.5">
+          {tabs}
+          <div className="flex items-center gap-1.5" data-catalog-tools-counts-row>
+            <div className="min-w-0 flex-1">{counts}</div>
+            {toggle}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1.5">
+          {tabs}
+          {toggle}
+        </div>
+      )}
       <div
         className={cx(toolsClassName, !open && 'learning-catalog-tools-collapsible')}
         {...toolsProps}

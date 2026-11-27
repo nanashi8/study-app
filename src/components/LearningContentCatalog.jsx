@@ -482,6 +482,20 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
           onToggle={() => setToolsOpen((current) => !current)}
           summary={`${content.label}${normalizedQuery ? `・検索「${query.trim()}」` : ''}`}
           narrowed={Boolean(normalizedQuery)}
+          // 絞り込んだ範囲の数は、スクロールしても隠れないしぼり込みボタンの左に置く。
+          counts={supportsDirectReview ? (
+            <CatalogRecordCounts
+              rows={filteredRows}
+              activity={recordActivity}
+              remaining={remainingRows.length}
+              unit={content.unit}
+              scope={normalizedQuery
+                ? `検索「${query.trim()}」に一致する`
+                : '全'}
+              compact
+              data-learning-catalog-counts
+            />
+          ) : null}
           toggleProps={{ 'data-learning-catalog-tools-toggle': true }}
           toolsProps={{ 'data-learning-catalog-tools': true }}
           tabs={supportsDirectReview ? (
@@ -640,19 +654,8 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
       </div>
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
-        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-          {supportsDirectReview ? (
-            <CatalogRecordCounts
-              rows={filteredRows}
-              activity={recordActivity}
-              remaining={remainingRows.length}
-              unit={content.unit}
-              scope={normalizedQuery
-                ? `検索「${query.trim()}」に一致する`
-                : '全'}
-              data-learning-catalog-counts
-            />
-          ) : <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
+        <div className={cx('mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-1 px-1', supportsDirectReview ? 'justify-end' : 'justify-between')}>
+          {supportsDirectReview ? null : <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
             {normalizedQuery
                 ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
                 : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}

@@ -44,6 +44,8 @@ export function CatalogRecordCounts({
   unit,
   // 絞り込みの条件（「分野名・」など）。絞り込んでいないときは空。
   scope = '',
+  // しぼり込みボタンの左に置くとき。字を詰め、内訳を1行に収める。
+  compact = false,
   className = '',
   ...rest
 }) {
@@ -56,14 +58,20 @@ export function CatalogRecordCounts({
   const format = (count) => count.toLocaleString('ja-JP')
   return (
     <div className={cx('min-w-0', className)} aria-live="polite" data-catalog-record-counts={summary.activity} {...rest}>
-      <p className="text-xs font-extrabold text-ink/50" data-catalog-record-counts-total>
-        {`${scope}${format(summary.total)}${unit}・残り${format(remaining)}${unit}`}
+      <p className={cx('font-extrabold text-ink/50', compact ? 'text-[11px] leading-tight' : 'text-xs')} data-catalog-record-counts-total>
+        {scope}
+        {/* 数と単位は1つのまとまりで折り返さない（条件の文が長くても「4」と「語」を分けない）。 */}
+        <span className="whitespace-nowrap">{`${format(summary.total)}${unit}・残り${format(remaining)}${unit}`}</span>
       </p>
-      <p className="mt-1 flex flex-wrap gap-1">
+      <p className={cx('mt-1 flex gap-1', compact ? 'flex-nowrap' : 'flex-wrap')}>
         {parts.map((part) => (
           <span
             key={part.key}
-            className={cx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-extrabold tabular-nums', part.className)}
+            className={cx(
+              'inline-flex items-center gap-1 whitespace-nowrap rounded-full py-0.5 font-extrabold tabular-nums',
+              compact ? 'px-1.5 text-[10px]' : 'px-2 text-[11px]',
+              part.className,
+            )}
             data-catalog-record-count={part.key}
           >
             <span aria-hidden="true">{part.symbol}</span>
