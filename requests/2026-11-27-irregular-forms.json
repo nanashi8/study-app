@@ -7,7 +7,7 @@
   "sessions": [
     "82f43731-28f0-4cad-83b7-48776aa5b7cd"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "all-irregular-words",
@@ -46,8 +46,8 @@
       "text": "全監査を通して main に push し、公開版で不規則な語の表と問題を確かめる",
       "population": "公開版",
       "check": "node --test tests/content-audit-ledger.test.mjs tests/irregular-forms.test.mjs",
-      "status": "waiting",
-      "waitingFor": "全テストと全教材監査"
+      "status": "done",
+      "result": "198bbf2c と 1749ba8d（表を画面の幅に収める直し）を全教材監査・クリーンな clone の監査を通して push し、公開版（375px）で6つの型の表が枠343pxに収まり（表319px）、行が A-A-A 27・A-B-A 5・A-B-B 68・A-B-C 71・複数形 64・比較級 8＝243語、形ごとの発音ボタンと49問のテストの入口を確かめた"
     }
   ]
 }
