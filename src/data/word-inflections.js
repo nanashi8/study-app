@@ -14,7 +14,7 @@
 //   名  'C:複数形'   数えられる名詞              'CU:複数形'  数える使い方と数えない使い方がある
 //       'U'  数えない（複数形にしない）  'SG'  ふつう a・the をつけて単数で使う
 //       'PL' 複数形で使う・複数扱い     'P'  固有名詞・月の名前（複数形にしない）
-//   形・副  '比較級|最上級'（more|most は前に more・most を置く形）  '-'  比較変化しない
+//   形・副  '比較級|最上級'（more|most は前に more・most を置く形。=more のように = を付けた形はそのままの語＝many → more）  '-'  比較変化しない
 //       'of:元の語:何の形'  見出し語そのものが別の語の比較級・最上級（better → good の比較級）
 export const WORD_INFLECTIONS = Object.freeze({
   book: { 名: 'C:books' },
@@ -7827,7 +7827,7 @@ export const WORD_INFLECTIONS = Object.freeze({
   scintilla: { 名: 'SG#a scintilla of の形で使う' },
   junior: { 形: '-' },
   english: { 名: 'U#言語の「英語」は数えない。「イングランドの人々」は the English', 形: '-' },
-  many: { 形: 'more|most' },
+  many: { 形: '=more|=most' },
   thank: { 動: 'thanks|thanked|thanked|thanking' },
   ms: { 名: 'P' },
   fifty: { 形: '-' },
@@ -7955,7 +7955,7 @@ export const WORD_INFLECTIONS = Object.freeze({
   pollinator: { 名: 'C:pollinators' },
   construction: { 名: 'C:constructions' },
   sunset: { 名: 'C:sunsets' },
-  much: { 形: 'more|most' },
+  much: { 形: '=more|=most' },
   timer: { 名: 'C:timers' },
   tourism: { 名: 'U' },
   architecture: { 名: 'U' },

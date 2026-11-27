@@ -22,7 +22,7 @@ export function inflectionPosOf(word) {
 }
 
 const FORM = "[A-Za-z][A-Za-z.' -]*"
-const FORMS = `英?${FORM}(?:/英?${FORM})*`
+const FORMS = `=?英?${FORM}(?:/=?英?${FORM})*`
 const NOTE = '(?:#[^#]+)?'
 const OF = `of:${FORM}:[^#:]+`
 export const VALUE_PATTERNS = {

@@ -82,6 +82,7 @@ function suffixRule(kind, head, form) {
   if (form.startsWith('more ') || form.startsWith('most ')) return 'more'
   if (last === 'e' && form === `${head}${est}`) return 'e-er'
   if (last === 'y' && form === `${head.slice(0, -1)}i${er}`) return 'ier'
+  if (head.endsWith('ey') && form === `${head.slice(0, -2)}i${er}`) return 'ier'
   if (form === `${head}${last}${er}`) return 'double-er'
   if (form === `${head}${er}`) return 'er'
   return 'irregular'
@@ -371,9 +372,10 @@ const TABLE_SIZE = 5
 const BASE_NOTE = { verb: (head) => `${head} は原形（もとの形）。`, noun: (head) => `${head} は単数形（1つのときの形）。`, adjective: (head) => `${head} は原級（比べないときの形）。` }
 
 /** 範囲の語の行（語・品詞ごと）。表のすべてのマスの正解・誤り・説明を持つ。 */
-let rowCache = null
-function inflectionRows() {
-  if (rowCache) return rowCache
+/** 全見出し語の行（語・表の種類ごと。範囲で絞る前）。表の列がそろう語だけ（be・助動詞・変化形そのものの見出し語は外す）。 */
+let allRowCache = null
+function allInflectionRows() {
+  if (allRowCache) return allRowCache
   const byWordPos = new Map()
   for (const item of allCellQuestions()) {
     const group = groupOfPos(item.pos)
@@ -384,11 +386,12 @@ function inflectionRows() {
   const rows = []
   for (const row of byWordPos.values()) {
     const group = inflectionGroup(row.group)
-    // 表の列がそろう語だけ（be・助動詞・変化形そのものの見出し語は表の形にならない）。
-    if (!group.kinds.every((kind) => row.cells[kind])) continue
-    const irregular = row.group === 'verb' && ['past', 'participle'].some((kind) => row.cells[kind].rule === 'irregular')
-    const inScope = INFLECTION_SCOPE_LEVELS.includes(row.level)
-    if (!inScope && !irregular) continue
+    // 列がそろう語（complete）だけを語形変化の表に使う。be は3単現の列がない（am・are・is）が、
+    // 過去形・過去分詞はあるので、不規則に変化する語の表（原形・過去形・過去分詞）には入れる。
+    const complete = group.kinds.every((kind) => row.cells[kind])
+    const irregularOnly = !complete && row.group === 'verb' && row.cells.past && row.cells.participle
+    if (!complete && !irregularOnly) continue
+    const kinds = group.kinds.filter((kind) => row.cells[kind])
     const word = ALL_WORDS.find((item) => item.id === row.wordId)
     const cells = [
       {
@@ -396,13 +399,26 @@ function inflectionRows() {
         label: group.base,
         answer: word.word,
         note: BASE_NOTE[row.group](word.word),
-        mistakes: group.kinds.map((kind) => ({
+        mistakes: kinds.map((kind) => ({
           text: row.cells[kind].answer,
           note: `${row.cells[kind].answer} は ${word.word} の${inflectionKind(kind).short}で、${group.base}ではない。`,
         })),
       },
-      ...group.kinds.map((kind) => {
+      ...kinds.map((kind) => {
         const question = row.cells[kind]
+        // be の過去形は主語で2つ（was・were）。別のつづりではないので、1つのマスに並べて書く。
+        if (row.wordId === 'be' && kind === 'past') {
+          return {
+            id: `${row.wordId}|${inflectionKind(kind).short}`,
+            label: inflectionKind(kind).short,
+            kind,
+            rule: question.rule,
+            answer: 'was / were',
+            note: 'be の過去形は、主語が I・he・she・it などなら was、you・we・they など（複数）なら were。',
+            mistakes: question.choices.slice(1).filter((text) => text !== 'were').map((text) => ({ text, note: question.choiceNotes[text] })),
+            speech: question.speech,
+          }
+        }
         return {
           id: `${row.wordId}|${inflectionKind(kind).short}`,
           label: inflectionKind(kind).short,
@@ -415,21 +431,106 @@ function inflectionRows() {
         }
       }),
     ]
+    const irregularVerb = row.group === 'verb' && ['past', 'participle'].some((kind) => row.cells[kind].rule === 'irregular')
     rows.push(Object.freeze({
+      complete,
       wordId: row.wordId,
       pos: row.pos,
       group: row.group,
       level: row.level,
-      levelKey: inScope ? row.level : INFLECTION_IRREGULAR_KEY,
+      levelKey: !complete ? null : INFLECTION_SCOPE_LEVELS.includes(row.level) ? row.level : irregularVerb ? INFLECTION_IRREGULAR_KEY : null,
       head: word.word,
-      meaning: row.cells[group.kinds[0]].sentence.ja,
+      meaning: row.cells[kinds[0]].sentence.ja,
       cells: Object.freeze(cells),
     }))
   }
+  rows.sort((a, b) => levelRank(a.level) - levelRank(b.level))
+  allRowCache = Object.freeze(rows)
+  return allRowCache
+}
+
+/** 範囲の語の行（3級以下の語と、準2級以上の不規則動詞）。 */
+let rowCache = null
+function inflectionRows() {
+  if (rowCache) return rowCache
   const keyRank = (key) => (key === INFLECTION_IRREGULAR_KEY ? INFLECTION_SCOPE_LEVELS.length : INFLECTION_SCOPE_LEVELS.indexOf(key))
-  rows.sort((a, b) => keyRank(a.levelKey) - keyRank(b.levelKey) || levelRank(a.level) - levelRank(b.level))
-  rowCache = Object.freeze(rows)
+  rowCache = Object.freeze(allInflectionRows()
+    .filter((row) => row.levelKey)
+    .sort((a, b) => keyRank(a.levelKey) - keyRank(b.levelKey) || levelRank(a.level) - levelRank(b.level)))
   return rowCache
+}
+
+// ---- 不規則に変化する語（級を問わず全部）を型ごとに ----
+// 動詞は原形・過去形・過去分詞の3つの形の並び方で4つの型に分ける（2026-11-27、利用者の依頼「不規則に変化するものを別に」）。
+//   A-A-A cut-cut-cut ／ A-B-A come-came-come ／ A-B-B buy-bought-bought ／ A-B-C go-went-gone
+// 名詞は決まりどおりでない複数形（children・crises・sheep・knives）、形容詞・副詞は決まりどおりでない比較級・最上級（good-better-best）。
+export const IRREGULAR_GROUP = 'irregular'
+export const IRREGULAR_CATEGORIES = Object.freeze([
+  { id: 'verb-aaa', label: '動詞 A-A-A型', short: 'A-A-A', example: 'cut - cut - cut', note: '原形・過去形・過去分詞がみな同じ形。', group: 'verb' },
+  { id: 'verb-aba', label: '動詞 A-B-A型', short: 'A-B-A', example: 'come - came - come', note: '過去分詞が原形と同じ形になる。', group: 'verb' },
+  { id: 'verb-abb', label: '動詞 A-B-B型', short: 'A-B-B', example: 'buy - bought - bought', note: '過去形と過去分詞が同じ形。', group: 'verb' },
+  { id: 'verb-abc', label: '動詞 A-B-C型', short: 'A-B-C', example: 'go - went - gone', note: '原形・過去形・過去分詞がみなちがう形。', group: 'verb' },
+  { id: 'noun', label: '名詞の不規則な複数形', short: '複数形', example: 'child - children', note: 's・es をつけるだけでは作れない複数形（形が変わる・同じ形・f を v に変える・ラテン語やギリシャ語から来た形）。', group: 'noun' },
+  { id: 'adjective', label: '不規則な比較級・最上級', short: '比較級・最上級', example: 'good - better - best', note: 'er・est も more・most も使わず、別の形になる。', group: 'adjective' },
+])
+export const irregularCategory = (id) => IRREGULAR_CATEGORIES.find((item) => item.id === id) ?? null
+const VERB_COLUMNS = ['原形', '過去形', '過去分詞']
+
+function irregularCategoryOf(row) {
+  const cell = (label) => row.cells.find((item) => item.label === label)
+  if (row.group === 'verb') {
+    if (![cell('過去形'), cell('過去分詞')].some((item) => item.rule === 'irregular')) return null
+    const [a, b, c] = VERB_COLUMNS.map((label) => cell(label).answer.toLowerCase())
+    if (a === b && b === c) return 'verb-aaa'
+    if (a === c) return 'verb-aba'
+    if (b === c) return 'verb-abb'
+    return 'verb-abc'
+  }
+  if (row.group === 'noun') return ['irregular', 'same', 'ves'].includes(cell('複数形').rule) ? 'noun' : null
+  return [cell('比較級'), cell('最上級')].some((item) => item.rule === 'irregular') ? 'adjective' : null
+}
+
+/** 不規則に変化する語の行（全級）。動詞は原形・過去形・過去分詞の3列にする。 */
+let irregularRowCache = null
+export function irregularRows({ category = null } = {}) {
+  irregularRowCache ??= Object.freeze(allInflectionRows().flatMap((row) => {
+    const id = irregularCategoryOf(row)
+    if (!id) return []
+    const cells = row.group === 'verb' ? row.cells.filter((cell) => VERB_COLUMNS.includes(cell.label)) : row.cells
+    return [Object.freeze({ ...row, category: id, cells: Object.freeze(cells) })]
+  }))
+  return category ? irregularRowCache.filter((row) => row.category === category) : irregularRowCache
+}
+
+function irregularTables() {
+  const tables = []
+  for (const category of IRREGULAR_CATEGORIES) {
+    const rows = irregularRows({ category: category.id })
+    const chunks = []
+    for (let i = 0; i < rows.length; i += TABLE_SIZE) chunks.push(rows.slice(i, i + TABLE_SIZE))
+    if (chunks.length > 1 && chunks.at(-1).length < 3) chunks.at(-2).push(...chunks.pop())
+    chunks.forEach((chunk, index) => {
+      tables.push(Object.freeze({
+        id: `${INFLECTION_ID_PREFIX}irr_${category.id}_${index + 1}`,
+        inflection: true,
+        table: true,
+        group: IRREGULAR_GROUP,
+        category: category.id,
+        levelKey: category.id,
+        level: chunk[0].level,
+        topic: `不規則変化（${category.short}）`,
+        type: 'choice',
+        q: `${category.label}の表の空所を埋めよう`,
+        prompt: '空所を押して選び、下の語を押して入れる',
+        columns: Object.freeze(chunk[0].cells.map((cell) => cell.label)),
+        rows: Object.freeze(chunk),
+        explain: `不規則変化（${category.short}）`,
+        meaningCueRequired: false,
+        patternExamples: Object.freeze([]),
+      }))
+    })
+  }
+  return tables
 }
 
 let tableCache = null
@@ -466,6 +567,7 @@ export function inflectionQuestions() {
       })
     }
   }
+  tables.push(...irregularTables())
   tableCache = Object.freeze(tables)
   return tableCache
 }
@@ -493,7 +595,10 @@ export function inflectionCellCount(tables) {
  */
 export function inflectionCandidates(source = {}, srs = {}) {
   if (source.questionType && !['mixed', 'choice'].includes(source.questionType)) return []
+  // 不規則に変化する語の表は、その行から開いたときだけ出す（型ごとに全部の表）。
+  if (source.group === IRREGULAR_GROUP) return inflectionQuestionsFor({ group: IRREGULAR_GROUP, level: source.category ?? null })
   const items = inflectionQuestionsFor({ group: source.group ?? null, level: source.level ?? null })
+    .filter((item) => item.group !== IRREGULAR_GROUP)
   if (source.level) return items
   const firstOpen = items.find((item) => !srs?.[item.id])
   if (!firstOpen) return items

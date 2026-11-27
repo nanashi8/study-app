@@ -7,7 +7,13 @@ const VERB_LABELS = ['3単現', '過去形', '過去分詞', 'ing形']
 
 /** 'traveled/英travelled' → [{ text: 'traveled' }, { text: 'travelled', british: true }] */
 function parseForms(field) {
-  return field.split('/').map((text) => (text.startsWith('英') ? { text: text.slice(1), british: true } : { text }))
+  return field.split('/').map((raw) => {
+    // = で始まる形はそのままの語（many の比較級 more）。前に more を置く形（more beautiful）と区別する。
+    const literal = raw.startsWith('=')
+    const text = literal ? raw.slice(1) : raw
+    const form = text.startsWith('英') ? { text: text.slice(1), british: true } : { text }
+    return literal ? { ...form, literal: true } : form
+  })
 }
 
 function splitNote(value) {
@@ -62,7 +68,10 @@ export function parseInflection(pos, value, head) {
   }
   const [comparative, superlative] = body.split('|')
   const periphrastic = (field, adverb) =>
-    parseForms(field).map((form) => (form.text === adverb ? { ...form, text: `${adverb} ${head}` } : form))
+    parseForms(field).map((form) => {
+      if (form.literal) return { text: form.text }
+      return form.text === adverb ? { ...form, text: `${adverb} ${head}` } : form
+    })
   entry.rows.push({ label: '比較級', forms: periphrastic(comparative, 'more') })
   entry.rows.push({ label: '最上級', forms: periphrastic(superlative, 'most') })
   return entry

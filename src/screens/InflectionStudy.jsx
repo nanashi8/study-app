@@ -14,6 +14,10 @@ import { inflectionsForWord } from '../lib/wordInflections.js'
 import {
   INFLECTION_GROUPS,
   INFLECTION_LEVEL_ROWS,
+  IRREGULAR_CATEGORIES,
+  IRREGULAR_GROUP,
+  irregularCategory,
+  irregularRows,
   INFLECTION_RULE_TEXT,
   inflectionGroup,
   inflectionKind,
@@ -30,7 +34,46 @@ import {
 const PAGE = 40
 
 function readGroup(value) {
-  return inflectionGroup(value) ? value : null
+  return inflectionGroup(value) || value === IRREGULAR_GROUP ? value : null
+}
+function readCategory(value) {
+  return irregularCategory(value) ? value : IRREGULAR_CATEGORIES[0].id
+}
+
+/** 不規則に変化する語の型ごとの表。その型の全部の語を易しい級から、形ごとに発音ボタンを付けて並べる。 */
+function IrregularTable({ category }) {
+  const rows = irregularRows({ category: category.id })
+  const columns = rows[0]?.cells.map((cell) => cell.label) ?? []
+  return (
+    <section className="rounded-2xl bg-white p-3 shadow-card" data-irregular-table={category.id} data-speech-group>
+      <h2 className="px-1 font-display text-base font-extrabold text-ink">{category.label}</h2>
+      <p className="mt-0.5 px-1 text-xs font-bold leading-relaxed text-ink/60">{category.note}</p>
+      <p className="mt-0.5 px-1 font-display text-sm font-extrabold text-sky-600">{category.example}</p>
+      <div className="mt-2 overflow-x-auto">
+        <table className="w-full min-w-[19rem] border-separate border-spacing-y-1 text-left">
+          <thead>
+            <tr>
+              {columns.map((label) => (
+                <th key={label} className="px-1.5 text-[10px] font-extrabold text-ink/45">{label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.wordId} data-irregular-row={row.wordId}>
+                {row.cells.map((cell, index) => (
+                  <td key={cell.id} className="rounded-lg bg-brand-50/50 px-1.5 py-1 align-top">
+                    <InflectionForm form={{ text: cell.answer }} wordId={row.wordId} label={cell.label} />
+                    {index === 0 && <span className="block text-[10px] font-bold leading-tight text-ink/50">{`${row.meaning}・${getLevel(row.level).label}`}</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
 }
 function readLevel(value) {
   return INFLECTION_LEVEL_ROWS.some((level) => level.id === value) ? value : null
@@ -109,8 +152,11 @@ export function InflectionStudyScreen() {
   const params = useStore((s) => s.params)
   const [groupId, setGroupId] = useScreenParam('group', readGroup)
   const [levelId, setLevelId] = useScreenParam('level', readLevel)
+  const [categoryId, setCategoryId] = useScreenParam('category', readCategory)
+  const irregular = groupId === IRREGULAR_GROUP
+  const category = irregularCategory(categoryId) ?? IRREGULAR_CATEGORIES[0]
   const group = inflectionGroup(groupId)
-  const byLevel = !group
+  const byLevel = !group && !irregular
   const level = levelId ?? INFLECTION_LEVEL_ROWS[0].id
   const levelRow = INFLECTION_LEVEL_ROWS.find((item) => item.id === level)
   const rows = useMemo(
@@ -119,18 +165,25 @@ export function InflectionStudyScreen() {
   )
   const [shown, setShown] = useState(PAGE)
   const visible = rows.slice(0, shown)
-  const title = group ? group.label : `${levelRow.label}の語形変化`
-  const tabs = byLevel
-    ? INFLECTION_LEVEL_ROWS.map((item) => ({ id: item.id, label: item.id === 'irregular' ? '不規則動詞' : getLevel(item.id).label }))
-    : INFLECTION_GROUPS.map((item) => ({ id: item.id, label: item.short }))
+  const title = irregular ? '不規則に変化する語' : group ? group.label : `${levelRow.label}の語形変化`
+  const tabs = irregular
+    ? IRREGULAR_CATEGORIES.map((item) => ({ id: item.id, label: item.short }))
+    : byLevel
+      ? INFLECTION_LEVEL_ROWS.map((item) => ({ id: item.id, label: item.id === 'irregular' ? '不規則動詞' : getLevel(item.id).label }))
+      : INFLECTION_GROUPS.map((item) => ({ id: item.id, label: item.short }))
   const choose = (id) => {
     setShown(PAGE)
-    if (byLevel) setLevelId(id)
+    if (irregular) setCategoryId(id)
+    else if (byLevel) setLevelId(id)
     else setGroupId(id)
   }
   const test = () => navigate('grammarQuiz', {
-    source: { type: 'inflection', ...(group ? { group: group.id } : { level }), questionType: 'choice' },
-    title: `${title}・表`,
+    source: {
+      type: 'inflection',
+      ...(irregular ? { group: IRREGULAR_GROUP, category: category.id } : group ? { group: group.id } : { level }),
+      questionType: 'choice',
+    },
+    title: `${irregular ? category.label : title}・表`,
     levelColor: INFLECTION_TAB.color,
     returnTo: params.returnTo ?? { screen: 'grammar', params: {} },
   })
@@ -139,9 +192,9 @@ export function InflectionStudyScreen() {
     <div className="flex h-full flex-col">
       <ScreenHeader title={title} subtitle="語形変化の学習" />
       <div className="flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="inflection-study">
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={byLevel ? '級' : '表の種類'}>
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={irregular ? '型' : byLevel ? '級' : '表の種類'}>
           {tabs.map((tab) => {
-            const on = (byLevel ? level : group?.id) === tab.id
+            const on = (irregular ? category.id : byLevel ? level : group?.id) === tab.id
             return (
               <button
                 key={tab.id}
@@ -160,27 +213,33 @@ export function InflectionStudyScreen() {
           })}
         </div>
 
-        {group && <div className="mt-3"><RuleList group={group} /></div>}
+        {irregular ? (
+          <div className="mt-3"><IrregularTable category={category} /></div>
+        ) : (
+          <>
+          {group && <div className="mt-3"><RuleList group={group} /></div>}
 
-        <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
-          {`全${rows.length}語（易しい級から）`}
-        </h2>
-        <ul className="space-y-2.5" data-inflection-study-list>
-          {visible.map((row) => (
-            <WordRow key={`${row.wordId}|${row.pos}`} row={row} />
-          ))}
-        </ul>
-        {shown < rows.length && (
-          <div className="mt-3">
-            <LoadMoreButton count={shown} onMore={() => setShown((value) => value + PAGE)}>
-              {`次の${Math.min(PAGE, rows.length - shown)}語を表示`}
-            </LoadMoreButton>
-          </div>
+          <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
+            {`全${rows.length}語（易しい級から）`}
+          </h2>
+          <ul className="space-y-2.5" data-inflection-study-list>
+            {visible.map((row) => (
+              <WordRow key={`${row.wordId}|${row.pos}`} row={row} />
+            ))}
+          </ul>
+          {shown < rows.length && (
+            <div className="mt-3">
+              <LoadMoreButton count={shown} onMore={() => setShown((value) => value + PAGE)}>
+                {`次の${Math.min(PAGE, rows.length - shown)}語を表示`}
+              </LoadMoreButton>
+            </div>
+          )}
+          </>
         )}
       </div>
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" onClick={test} data-inflection-study-test>
-          {`${title}をテストする`} <ArrowRight size={18} />
+          {`${irregular ? category.label : title}をテストする`} <ArrowRight size={18} />
         </Button>
       </div>
     </div>

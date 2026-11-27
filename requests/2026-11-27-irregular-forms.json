@@ -1,0 +1,53 @@
+{
+  "id": "2026-11-27-irregular-forms",
+  "title": "不規則に変化する語だけを学ぶ表（学習）と、その空所を埋める問題を語形変化に別に置く",
+  "asked": [
+    "特に別で不規則に変化するものを学習できる表や問題も実装しなさい。"
+  ],
+  "sessions": [
+    "82f43731-28f0-4cad-83b7-48776aa5b7cd"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "all-irregular-words",
+      "text": "変化形の台帳で不規則に変化する語を級を問わずすべて集め、型ごとに分ける。動詞は過去形・過去分詞が決まりどおりでない語を A-A-A（cut-cut-cut）・A-B-A（come-came-come）・A-B-B（buy-bought-bought）・A-B-C（go-went-gone）に、名詞は決まりどおりでない複数形（children・mice・crises・sheep・knives など）、形容詞・副詞は決まりどおりでない比較級・最上級（good-better-best など）",
+      "population": "変化形の台帳の全語のうち、不規則な形を持つ語（全級）",
+      "check": "node --test tests/irregular-forms.test.mjs",
+      "status": "done",
+      "result": "全級の不規則な語243語（A-A-A 27・A-B-A 5・A-B-B 68・A-B-C 71（be をふくむ）・名詞 64・比較級 8）。台帳から数え直した語と過不足なし"
+    },
+    {
+      "id": "study-tables",
+      "text": "学習：型ごとの表（動詞は原形・過去形・過去分詞、名詞は単数・複数、形容詞・副詞は原級・比較級・最上級）に、その型の全部の語を易しい級から並べ、形ごとに発音ボタン（読み違える形は発音記号）を付ける",
+      "population": "不規則な形を持つ全語・全型",
+      "check": "node --test tests/irregular-forms.test.mjs",
+      "status": "done",
+      "result": "6つの型の学習の表に243語すべて、形ごとに発音ボタン（読み違える形は発音記号）"
+    },
+    {
+      "id": "quiz-tables",
+      "text": "問題：型ごとに約5語の表を1問にし、毎回3か所を空所にして、空所を押してタイルで埋める（語形変化の表の問題と同じ答え方・説明）。誤りのタイルはその語のその形として正しくない形だけ",
+      "population": "不規則な形を持つ全語でできた全部の表",
+      "check": "node --test tests/irregular-forms.test.mjs tests/inflection-table-exercise.test.mjs",
+      "status": "done",
+      "result": "49表（A-A-A 5・A-B-A 1・A-B-B 14・A-B-C 14・名詞 13・比較級 2）に243語すべて"
+    },
+    {
+      "id": "entrances",
+      "text": "文法の「語形変化」タブの級別・単元別の両方に「不規則に変化する語」の行を置き、学習とテストの入口を付ける",
+      "population": "級別・単元別の語形変化の行",
+      "check": "node --test tests/irregular-forms.test.mjs",
+      "status": "done",
+      "result": "級別・単元別の両方の最後に「不規則に変化する語」の行"
+    },
+    {
+      "id": "deployed",
+      "text": "全監査を通して main に push し、公開版で不規則な語の表と問題を確かめる",
+      "population": "公開版",
+      "check": "node --test tests/content-audit-ledger.test.mjs tests/irregular-forms.test.mjs",
+      "status": "waiting",
+      "waitingFor": "全テストと全教材監査"
+    }
+  ]
+}

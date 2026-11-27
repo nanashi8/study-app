@@ -1,5 +1,12 @@
 import { GRAMMAR_QUESTION_TYPE_META } from '../data/grammar-format-expansion.js'
-import { INFLECTION_GROUPS, INFLECTION_LEVEL_ROWS, inflectionQuestionsFor, inflectionStudyRows } from '../lib/inflectionQuiz.js'
+import {
+  INFLECTION_GROUPS,
+  INFLECTION_LEVEL_ROWS,
+  IRREGULAR_GROUP,
+  inflectionQuestionsFor,
+  inflectionStudyRows,
+  irregularRows,
+} from '../lib/inflectionQuiz.js'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { LearningEntryCard } from './LearningEntryCard.jsx'
 import { BookOpen } from './Icons.jsx'
@@ -52,7 +59,7 @@ function Row({ title, subtitle, emoji, items, questionType, srs, studyAriaLabel,
 }
 
 export function GrammarInflectionDivision({ by, questionType, srs, onStudy, onTest }) {
-  const all = inflectionQuestionsFor()
+  const all = inflectionQuestionsFor().filter((item) => item.group !== IRREGULAR_GROUP)
   const rows = by === 'kind'
     ? INFLECTION_GROUPS.map((group) => ({
         key: group.id,
@@ -70,6 +77,15 @@ export function GrammarInflectionDivision({ by, questionType, srs, onStudy, onTe
         items: inflectionQuestionsFor({ level: level.id }),
         params: { level: level.id },
       }))
+  // 不規則に変化する語（級を問わず全部）は、どちらの区分でも最後の行に別に置く。
+  rows.push({
+    key: 'irregular-forms',
+    title: '不規則に変化する語',
+    emoji: '⚡',
+    subtitle: `全級の${irregularRows().length}語を型ごとの表で（A-A-A・A-B-A・A-B-B・A-B-C、名詞、比較級）`,
+    items: inflectionQuestionsFor({ group: IRREGULAR_GROUP }),
+    params: { group: IRREGULAR_GROUP },
+  })
   return (
     <>
       <Row

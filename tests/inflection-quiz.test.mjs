@@ -58,8 +58,11 @@ function population() {
   return list
 }
 
+// 不規則に変化する語の表（group: irregular、全級）は tests/irregular-forms.test.mjs が確かめる。
+const scopedTables = () => inflectionQuestions().filter((table) => table.group !== 'irregular')
+
 test('範囲の語の全部の形が、どれかの表のマスにある（表の形にならない語は理由つきで外す）', () => {
-  const tables = inflectionQuestions()
+  const tables = scopedTables()
   const cells = new Map()
   for (const table of tables) {
     for (const row of table.rows) for (const cell of row.cells) cells.set(cell.id, cell.answer)
@@ -87,7 +90,7 @@ test('範囲の語の全部の形が、どれかの表のマスにある（表�
 })
 
 test('表は同じ種類・同じ級の3〜7語で、範囲の外の語はない', () => {
-  for (const table of inflectionQuestions()) {
+  for (const table of scopedTables()) {
     assert.ok(table.rows.length >= 3 && table.rows.length <= 7, `${table.id}: ${table.rows.length}語`)
     for (const row of table.rows) {
       assert.equal(row.group, table.group)
@@ -103,7 +106,7 @@ test('表は同じ種類・同じ級の3〜7語で、範囲の外の語はない
 
 test('出題のたびに3か所を空所にし、タイルは正解3つと正しくない形だけで、どれにも説明がある', () => {
   const problems = []
-  for (const table of inflectionQuestions()) {
+  for (const table of scopedTables()) {
     for (let k = 0; k < 6; k += 1) {
       const round = inflectionRound(table, seeded(k * 97 + table.id.length))
       const answers = round.answer.split('|')
@@ -175,8 +178,8 @@ test('級別は表の種類の行、単元別は級の行に、学習とテス�
   assert.match(division, /onQuiz=\{\(\) => onTest\(row\.params, row\.title\)\}/)
   assert.deepEqual(INFLECTION_GROUPS.map((group) => group.id), ['verb', 'noun', 'adjective'])
   assert.deepEqual(INFLECTION_LEVEL_ROWS.map((row) => row.id), ['5', '4', '3', 'irregular'])
-  for (const group of INFLECTION_GROUPS) assert.ok(inflectionQuestions().some((table) => table.group === group.id), group.id)
-  for (const level of INFLECTION_LEVEL_ROWS) assert.ok(inflectionQuestions().some((table) => table.levelKey === level.id), level.id)
+  for (const group of INFLECTION_GROUPS) assert.ok(scopedTables().some((table) => table.group === group.id), group.id)
+  for (const level of INFLECTION_LEVEL_ROWS) assert.ok(scopedTables().some((table) => table.levelKey === level.id), level.id)
 })
 
 test('学習ページは、テストと同じ範囲の全部の語を表の種類・級ごとに並べる', () => {
@@ -184,7 +187,7 @@ test('学習ページは、テストと同じ範囲の全部の語を表の種�
   assert.match(page, /<RuleList group=\{group\} \/>/)
   assert.match(page, /<InflectionForm /)
   assert.match(page, /<LoadMoreButton /)
-  const inTables = (filter) => new Set(inflectionQuestions().filter(filter).flatMap((table) => table.rows.map((row) => `${row.wordId}|${row.group}`)))
+  const inTables = (filter) => new Set(scopedTables().filter(filter).flatMap((table) => table.rows.map((row) => `${row.wordId}|${row.group}`)))
   for (const group of INFLECTION_GROUPS) {
     assert.equal(inflectionStudyRows({ group: group.id }).length, inTables((table) => table.group === group.id).size, group.id)
   }
