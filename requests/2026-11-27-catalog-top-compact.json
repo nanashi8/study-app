@@ -7,7 +7,7 @@
   "sessions": [
     "73686405-b5bb-41c0-9e2a-441c33a39f52"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "top-compact",
@@ -30,7 +30,8 @@
       "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する",
       "population": "この依頼の変更すべて",
       "check": "node --test tests/catalog-narrowed-counts.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "result": "作業ツリーで1回目の全監査が日本語監査の固定値（消した文の分 18987→18983・重複なし 14070→14067・ソース 298362→298358）で落ち、固定値を直して通った。クリーンな clone でも通り（監査のあとに変更なし）、d1e14a1b を main へ push、公開の処理が success。公開版の CatalogTools の塊に2段の目印（data-catalog-tools-tabs-row）があることを確かめた"
     }
   ]
 }
