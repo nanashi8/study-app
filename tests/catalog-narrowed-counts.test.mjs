@@ -151,3 +151,50 @@ test('通常の一覧を使う画面はすべて、絞り込んだ項目をそ�
     }
   }
 })
+
+test('詳細から戻っても、学習状況で絞り込んだ語（記録で状況が変わった語をふくむ）と内訳を保つ', async () => {
+  const { catalogReturnState, readCatalogReturnState } = await import('../src/lib/catalogReturnState.js')
+  const srs = sampleSrs(levelWords)
+  const rows = vocabularyCatalogRows(levelWords, srs, { now: NOW })
+  const statuses = VOCAB_CATALOG_STATUS_FILTER_OPTIONS.map((option) => option.id).filter((id) => id !== 'all')
+  for (const status of statuses) {
+    const snapshot = vocabularyCatalogStatusSnapshot(rows, status)
+    const target = vocabularyCatalogStatusRows(rows, status)[0].word
+    const activity = status.startsWith('test') ? 'test' : 'memory'
+    // 一覧でスワイプして状況を変えてから、詳細へ移る。
+    const changed = {
+      ...srs,
+      [target.id]: activity === 'test'
+        ? { ...srs[target.id], memory: srs[target.id]?.memory ?? {}, test: { lastResult: status === 'testCorrect' ? 'wrong' : 'correct', lastAt: NOW } }
+        : { ...srs[target.id], memory: { lastJudgment: status === 'memoryLearned' ? 'forgot' : 'remembered', lastAt: NOW } },
+    }
+    const saved = catalogReturnState({
+      key: 'level:pre2',
+      activity,
+      sort: 'weight',
+      direction: 'desc',
+      filters: { fieldFilter: 'all', statusFilter: status },
+      visible: 80,
+      dismissedByActivity: { [activity]: new Set([target.id]) },
+      pinnedIds: snapshot,
+    })
+    // 履歴の params は複製されて戻る。
+    const restored = readCatalogReturnState(JSON.parse(JSON.stringify(saved)), {
+      key: 'level:pre2', sorts: ['weight'], defaultSort: 'weight', pageSize: 80,
+    })
+    assert.equal(restored.filters.statusFilter, status)
+    assert.deepEqual([...restored.pinnedIds].sort(), [...snapshot].sort(), `${status}: 固定した語が戻る`)
+    assert.ok(restored.dismissedByActivity[activity].has(target.id), `${status}: 隠した行も戻る`)
+    const back = vocabularyCatalogSnapshotRows(vocabularyCatalogRows(levelWords, changed, { now: NOW }), restored.pinnedIds)
+    assert.equal(back.length, snapshot.size, `${status}: 戻っても母数は同じ`)
+    assert.ok(back.some((row) => row.word.id === target.id), `${status}: 状況を変えた語も残る`)
+  }
+  // 絞り込んでいない一覧は固定しない。
+  assert.equal(readCatalogReturnState(catalogReturnState({ key: 'k' }), { key: 'k', pageSize: 80 }).pinnedIds, null)
+})
+
+test('英単語の一覧は固定した語を戻り状態に載せ、戻ったらそれを使う', () => {
+  const vocab = read('src/screens/VocabDecks.jsx')
+  assert.match(vocab, /pinnedIds: statusSnapshot\.ids/)
+  assert.match(vocab, /statusFilter !== 'all' && restored\?\.pinnedIds\s*\?\s*restored\.pinnedIds/)
+})

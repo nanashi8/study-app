@@ -1,6 +1,7 @@
 // 一覧から語の詳細や学習へ移って戻ったとき、一覧の見え方をそのまま戻すための保存形。
 // 画面の params に入れて履歴と一緒に運ぶ（端末には保存しない）。
-// 戻すのは、しぼり込み・並び替え・学習とテストの切替・スワイプで隠した行・表示件数・スクロール位置。
+// 戻すのは、しぼり込み・並び替え・学習とテストの切替・スワイプで隠した行・表示件数・スクロール位置と、
+// 学習状況で絞り込んだときに固定した行（pinnedIds。戻ったときのいまの状況で絞り直さないため）。
 
 const ACTIVITIES = ['memory', 'test']
 const DIRECTIONS = ['asc', 'desc']
@@ -16,6 +17,7 @@ export function catalogReturnState({
   visible,
   dismissedByActivity = {},
   scrollTop = 0,
+  pinnedIds = null,
 }) {
   return {
     key,
@@ -29,6 +31,7 @@ export function catalogReturnState({
       ACTIVITIES.map((id) => [id, [...(dismissedByActivity[id] ?? [])]]),
     ),
     scrollTop: Math.max(0, Math.round(Number(scrollTop) || 0)),
+    pinnedIds: pinnedIds ? [...pinnedIds] : null,
   }
 }
 
@@ -66,5 +69,8 @@ export function readCatalogReturnState(saved, {
       ),
     ])),
     scrollTop: Number.isFinite(saved.scrollTop) && saved.scrollTop > 0 ? saved.scrollTop : 0,
+    pinnedIds: Array.isArray(saved.pinnedIds)
+      ? new Set(saved.pinnedIds.filter((itemId) => typeof itemId === 'string'))
+      : null,
   }
 }

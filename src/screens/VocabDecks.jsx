@@ -132,9 +132,12 @@ function VocabularyCatalog({
   )
   // 学習状況で絞り込んだ語は、絞り込んだときに固定する。いまの状況で絞り直すと、
   // 「まだ」の語を覚えたとたんに一覧の母数から消え、覚えた・まだの数が動いて見えないため。
+  // 詳細から戻ったときは、離れる前に固定していた語をそのまま使う（いまの状況で絞り直さない）。
   const [statusSnapshot, setStatusSnapshot] = useState(() => ({
     filter: statusFilter,
-    ids: vocabularyCatalogStatusSnapshot(rows, statusFilter),
+    ids: statusFilter !== 'all' && restored?.pinnedIds
+      ? restored.pinnedIds
+      : vocabularyCatalogStatusSnapshot(rows, statusFilter),
   }))
   const chooseStatusFilter = (nextFilter) => {
     setStatusFilter(nextFilter)
@@ -204,6 +207,7 @@ function VocabularyCatalog({
     visible,
     dismissedByActivity,
     scrollTop: listRef.current?.scrollTop,
+    pinnedIds: statusSnapshot.ids,
   }))
 
   return (
