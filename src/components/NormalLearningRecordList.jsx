@@ -171,41 +171,32 @@ export function NormalLearningRecordList({
         style={{ top: stickyTop }}
         data-normal-learning-record-sticky
       >
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="一覧で記録する内容">
-          {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
-            const count = option.id === 'test' ? recordedTest : recordedMemory
-            return (
-              <button
-                key={option.id}
-                type="button"
-                role="tab"
-                aria-selected={activity === option.id}
-                onClick={() => setListState((current) => ({ ...current, activity: option.id }))}
-                className={cx(
-                  'min-h-11 rounded-lg px-1 text-xs font-extrabold',
-                  activity === option.id
-                    ? 'bg-white text-brand-700 shadow-sm'
-                    : 'text-ink/55 active:bg-white/70',
-                )}
-                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${itemUnit}、全${rows.length.toLocaleString('ja-JP')}${itemUnit}`}
-                data-normal-learning-record-activity-tab={option.id}
-              >
-                {option.id === 'test' ? 'テスト' : '学習'}
-                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}{itemUnit}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-          {/* 母数は呼び出し側が絞り込んだ項目だけ。内訳はスワイプで記録するたびに動く。 */}
-          <CatalogRecordCounts
-            rows={rows}
-            activity={activity}
-            remaining={remainingRows.length}
-            unit={itemUnit}
-            data-normal-learning-record-counts
-          />
+        {/* 1段目は学習・テストの切替とスワイプの案内、2段目は数と内訳。 */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="grid w-40 shrink-0 grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="一覧で記録する内容">
+            {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
+              const count = option.id === 'test' ? recordedTest : recordedMemory
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activity === option.id}
+                  onClick={() => setListState((current) => ({ ...current, activity: option.id }))}
+                  className={cx(
+                    'min-h-11 rounded-lg px-1 text-xs font-extrabold',
+                    activity === option.id
+                      ? 'bg-white text-brand-700 shadow-sm'
+                      : 'text-ink/55 active:bg-white/70',
+                  )}
+                  aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${itemUnit}、全${rows.length.toLocaleString('ja-JP')}${itemUnit}`}
+                  data-normal-learning-record-activity-tab={option.id}
+                >
+                  {option.id === 'test' ? 'テスト' : '学習'}
+                </button>
+              )
+            })}
+          </div>
           <p
             className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
             aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}`}
@@ -214,6 +205,15 @@ export function NormalLearningRecordList({
             <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
           </p>
         </div>
+        {/* 母数は呼び出し側が絞り込んだ項目だけ。内訳はスワイプで記録するたびに動く。 */}
+        <CatalogRecordCounts
+          rows={rows}
+          activity={activity}
+          remaining={remainingRows.length}
+          unit={itemUnit}
+          className="px-1"
+          data-normal-learning-record-counts
+        />
       </div>
       <p className="sr-only" aria-live="polite" data-normal-learning-record-message>{message}</p>
 

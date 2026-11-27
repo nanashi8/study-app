@@ -37,6 +37,12 @@ const RESULT_META = Object.freeze({
 
 // 一覧の件数の行。母数は絞り込んだあとの行だけで、学習は覚えた・まだ・学習前、テストは正解・不正解・テスト前の内訳を出す。
 // 行は記録のたびに作り直されるので、スワイプで記録するとその場で数が動く。
+/** 件数の行の頭に付ける絞り込みの条件。条件がなければ「全」、あれば「条件・条件：」。 */
+export function narrowedScope(parts) {
+  const shown = parts.filter(Boolean)
+  return shown.length ? `${shown.join('・')}：` : '全'
+}
+
 export function CatalogRecordCounts({
   rows,
   activity,

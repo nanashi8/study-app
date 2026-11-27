@@ -18,6 +18,8 @@ export function CatalogTools({
   // 絞り込んだ範囲の数（CatalogRecordCounts）。渡すと、タブを上の段に、数をしぼり込みボタンの左に置く。
   // 一覧をスクロールしても隠れないところで、記録のたびに変わる数を見せるため。
   counts,
+  // スワイプの案内（← 覚えた｜まだ →）。counts と一緒に渡すと、1段目のタブの右に置く。
+  guide,
   // 畳む側の中身どうしの間。画面ごとのまわりの間隔にそろえる。
   toolsClassName = 'space-y-1.5',
   toggleProps,
@@ -44,8 +46,12 @@ export function CatalogTools({
   return (
     <>
       {counts ? (
+        // 上の部分は2段：1段目は学習・テストの切替とスワイプの案内、2段目は絞り込んだ範囲の数としぼり込みボタン。
         <div className="space-y-1.5">
-          {tabs}
+          <div className="flex items-center justify-between gap-2" data-catalog-tools-tabs-row>
+            {tabs}
+            {guide}
+          </div>
           <div className="flex items-center gap-1.5" data-catalog-tools-counts-row>
             <div className="min-w-0 flex-1">{counts}</div>
             {toggle}

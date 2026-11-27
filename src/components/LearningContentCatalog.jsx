@@ -29,6 +29,7 @@ import { SubjectSourceText } from './SubjectText.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
 import {
   CatalogRecordCounts,
+  narrowedScope,
   LearningRecordRow,
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
@@ -489,17 +490,24 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
               activity={recordActivity}
               remaining={remainingRows.length}
               unit={content.unit}
-              scope={normalizedQuery
-                ? `検索「${query.trim()}」に一致する`
-                : '全'}
+              scope={narrowedScope([normalizedQuery ? `検索「${query.trim()}」` : ''])}
               compact
               data-learning-catalog-counts
             />
           ) : null}
+          guide={supportsDirectReview ? (
+            <p
+              className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
+              aria-label={`左スワイプで${recordActivityMeta.leftLabel}、右スワイプで${recordActivityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
+              data-learning-catalog-swipe-guide
+            >
+              <span aria-hidden="true">← {recordActivityMeta.leftLabel}｜{recordActivityMeta.rightLabel} →</span>
+            </p>
+          ) : null}
           toggleProps={{ 'data-learning-catalog-tools-toggle': true }}
           toolsProps={{ 'data-learning-catalog-tools': true }}
           tabs={supportsDirectReview ? (
-            <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
+            <div className="grid w-40 shrink-0 grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
               {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
                 const count = option.id === 'test'
                   ? recordedTestRows.length
@@ -525,7 +533,6 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
                     data-learning-catalog-vocab-activity-tab={isVocabulary ? option.id : undefined}
                   >
                     {option.id === 'test' ? 'テスト' : '学習'}
-                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{filteredRows.length.toLocaleString('ja-JP')}{content.unit}</span>
                   </button>
                 )
               })}
@@ -654,29 +661,22 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
       </div>
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
-        <div className={cx('mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-1 px-1', supportsDirectReview ? 'justify-end' : 'justify-between')}>
-          {supportsDirectReview ? null : <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
+        {/* 記録できる教材の数と案内は上の部分（しぼり込みの部品）に置く。ここは1件ずつ学ぶ教材だけ。 */}
+        {supportsDirectReview ? null : (
+        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
+          <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
             {normalizedQuery
                 ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
                 : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
-          </p>}
-          {supportsDirectReview ? (
-            <p
-              className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
-              aria-label={`左スワイプで${recordActivityMeta.leftLabel}、右スワイプで${recordActivityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
-              data-learning-catalog-swipe-guide
-            >
-              <span aria-hidden="true">← {recordActivityMeta.leftLabel}｜{recordActivityMeta.rightLabel} →</span>
-            </p>
-          ) : (
-            <p
-              className="text-[10px] font-extrabold text-brand-700"
-              data-learning-catalog-swipe-guide
-            >
-              {`右スワイプ：${swipeMeta.rightLabel}／左スワイプ：${swipeMeta.leftLabel}（タップで選ぶ）`}
-            </p>
-          )}
+          </p>
+          <p
+            className="text-[10px] font-extrabold text-brand-700"
+            data-learning-catalog-swipe-guide
+          >
+            {`右スワイプ：${swipeMeta.rightLabel}／左スワイプ：${swipeMeta.leftLabel}（タップで選ぶ）`}
+          </p>
         </div>
+        )}
         <div className="space-y-2">
           {visibleRows.map((row) => supportsDirectReview ? (
             isVocabulary ? <VocabularyHistoryRow

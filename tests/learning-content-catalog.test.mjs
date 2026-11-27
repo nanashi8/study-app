@@ -551,7 +551,7 @@ test('一覧から始めた各教材は選択順と一覧への帰り先を受�
   assert.match(summary, /教材一覧へ戻る/)
 })
 
-test('一覧の上は記録の切替1行だけを残し、しぼり込み・並び替え・見方は畳める', () => {
+test('一覧の上は記録の切替と数の2段だけを残し、しぼり込み・並び替え・見方は畳める', () => {
   const tools = readFileSync(new URL('../src/components/CatalogTools.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
   const decks = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
@@ -585,15 +585,13 @@ test('一覧の上は記録の切替1行だけを残し、しぼり込み・並�
     assert.ok(decksInside.includes(token), `英単語の一覧: ${token}`)
   }
 
-  // スワイプの案内は動かない上部ではなく、一覧と一緒に流れる側に置く。
-  assert.ok(
-    catalog.indexOf('data-learning-catalog-list') < catalog.indexOf('data-learning-catalog-swipe-guide'),
-    '24教材の一覧: スワイプの案内は一覧の中',
-  )
-  assert.ok(
-    decks.indexOf('data-vocab-catalog-list') < decks.indexOf('data-vocab-catalog-swipe-guide'),
-    '英単語の一覧: スワイプの案内は一覧の中',
-  )
+  // スワイプの案内は、上の部分の1段目（細くした学習・テストのタブの横）に置く。段は増やさない
+  // （2026-11-27 に、上の部分をまとめる依頼で一覧の中から移した。requests/2026-11-27-catalog-top-compact.json）。
+  const catalogTools = catalog.slice(catalog.indexOf('<CatalogTools'), catalog.indexOf('</CatalogTools>'))
+  const decksTools = decks.slice(decks.indexOf('<CatalogTools'), decks.indexOf('</CatalogTools>'))
+  assert.ok(catalogTools.includes('data-learning-catalog-swipe-guide'), '24教材の一覧: スワイプの案内は上の部分の1段目')
+  assert.ok(decksTools.includes('data-vocab-catalog-swipe-guide'), '英単語の一覧: スワイプの案内は上の部分の1段目')
+  assert.match(tools, /data-catalog-tools-tabs-row>\n\s*\{tabs\}\n\s*\{guide\}/, '案内はタブと同じ段')
   // 教材の通常画面は、隠した行があるときだけ一覧の下に戻す入口を出す。
   assert.match(normalList, /\{dismissedIds\.size > 0 && \(/)
   assert.ok(

@@ -35,6 +35,7 @@ import {
 } from '../lib/vocabCatalog.js'
 import {
   CatalogRecordCounts,
+  narrowedScope,
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
 } from '../components/VocabularyHistoryRow.jsx'
@@ -230,18 +231,27 @@ function VocabularyCatalog({
               activity={activity}
               remaining={remainingRows.length}
               unit="語"
-              scope={[
-                fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL ? `${fieldFilterLabel}の` : '',
-                statusFilter !== 'all' ? `「${statusFilterLabel(statusFilter)}」で絞り込んだ` : '',
-              ].join('') || '全'}
+              scope={narrowedScope([
+                fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL ? fieldFilterLabel : '',
+                statusFilter !== 'all' ? statusFilterLabel(statusFilter) : '',
+              ])}
               compact
               data-vocab-catalog-counts
             />
           )}
+          guide={(
+            <p
+              className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
+              aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
+              data-vocab-catalog-swipe-guide
+            >
+              <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
+            </p>
+          )}
           toggleProps={{ 'data-vocab-catalog-tools-toggle': true }}
           toolsProps={{ 'data-vocab-catalog-tools': true }}
           tabs={(
-            <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
+            <div className="grid w-40 shrink-0 grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
               {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
                 const count = option.id === 'test' ? testRecordedCount : memoryRecordedCount
                 return (
@@ -263,8 +273,8 @@ function VocabularyCatalog({
                     aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${filteredRows.length.toLocaleString('ja-JP')}語`}
                     data-vocab-catalog-activity-tab={option.id}
                   >
+                    {/* 済みの数と母数は、横の内訳（覚えた・まだ…）と重なるので画面には出さず、読み上げの名前にだけ残す。 */}
                     {option.id === 'test' ? 'テスト' : '学習'}
-                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{filteredRows.length.toLocaleString('ja-JP')}語</span>
                   </button>
                 )
               })}
@@ -366,15 +376,6 @@ function VocabularyCatalog({
       </div>
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
-        <div className="mb-2 flex justify-end px-1">
-          <p
-            className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
-            aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
-            data-vocab-catalog-swipe-guide
-          >
-            <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
-          </p>
-        </div>
         <div className="space-y-2">
           {visibleRows.map((row) => (
             <VocabularyHistoryRow

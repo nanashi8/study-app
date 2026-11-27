@@ -230,3 +230,44 @@ test('絞り込んだ範囲の数は、スクロールしても隠れないと�
   assert.match(sticky, /<CatalogRecordCounts\s+rows=\{rows\}/)
   assert.match(normal, /function useStickyBelowHeader\(ref\)/)
 })
+
+// 上の部分は2段にまとめる（requests/2026-11-27-catalog-top-compact.json）。
+test('上の部分は2段：1段目は切替とスワイプの案内、2段目は条件・数・内訳としぼり込みボタン', async () => {
+  const tools = read('src/components/CatalogTools.jsx')
+  assert.match(tools, /data-catalog-tools-tabs-row>\n\s*\{tabs\}\n\s*\{guide\}/, '1段目にタブと案内')
+  assert.match(tools, /\{counts\}<\/div>\n\s*\{toggle\}/, '2段目に数としぼり込みボタン')
+
+  const { narrowedScope } = await import('../src/components/VocabularyHistoryRow.jsx').catch(() => ({}))
+  // JSX を読めない node でも確かめられるよう、関数の文で見る。
+  const row = read('src/components/VocabularyHistoryRow.jsx')
+  assert.match(row, /export function narrowedScope\(parts\)/)
+  if (narrowedScope) {
+    assert.equal(narrowedScope(['', '']), '全')
+    assert.equal(narrowedScope(['仕事・経済', '学習前']), '仕事・経済・学習前：')
+  }
+
+  for (const [path, guideMarker] of [
+    ['src/screens/VocabDecks.jsx', 'data-vocab-catalog-swipe-guide'],
+    ['src/components/LearningContentCatalog.jsx', 'data-learning-catalog-swipe-guide'],
+  ]) {
+    const source = read(path)
+    const tools = source.slice(source.indexOf('<CatalogTools'), source.indexOf('</CatalogTools>'))
+    assert.match(tools, new RegExp(`guide=\\{[^]*?${guideMarker}`), `${path}: スワイプの案内を上の部分へ`)
+    assert.match(tools, /scope=\{narrowedScope\(/, `${path}: 条件の文は短く`)
+    assert.doesNotMatch(source, /で絞り込んだ`|に一致する`/, `${path}: 長い条件の文を残さない`)
+  }
+
+  // タブの「済み/母数」は内訳と重なるので画面の文字に出さず、読み上げの名前にだけ残す。
+  for (const path of ['src/screens/VocabDecks.jsx', 'src/components/LearningContentCatalog.jsx', 'src/components/NormalLearningRecordList.jsx']) {
+    const source = read(path)
+    assert.doesNotMatch(source, /<span className="ml-1 tabular-nums">\{count\.toLocaleString/, `${path}: タブに済み/母数を出さない`)
+    assert.match(source, /aria-label=\{`\$\{option\.label\}。済み\$\{count\.toLocaleString\('ja-JP'\)\}/, `${path}: 読み上げの名前には残す`)
+    assert.match(source, /className="grid w-40 shrink-0 grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist"/, `${path}: タブは細くして案内と並べる`)
+  }
+
+  // 共通の一覧：貼りつける部分の1段目にタブと案内、2段目に数。
+  const normal = read('src/components/NormalLearningRecordList.jsx')
+  const sticky = normal.slice(normal.indexOf('ref={stickyRef}'), normal.indexOf('data-normal-learning-record-message'))
+  assert.ok(sticky.indexOf('role="tablist"') < sticky.indexOf('data-normal-learning-record-swipe-guide'))
+  assert.ok(sticky.indexOf('data-normal-learning-record-swipe-guide') < sticky.indexOf('<CatalogRecordCounts'))
+})
