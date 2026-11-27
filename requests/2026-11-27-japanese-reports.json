@@ -7,7 +7,7 @@
   "sessions": [
     "73686405-b5bb-41c0-9e2a-441c33a39f52"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "stop-blocks-non-japanese-report",
@@ -38,7 +38,8 @@
       "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する",
       "population": "この依頼の変更すべて",
       "check": "node --test tests/japanese-reply.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "result": "作業ツリーとクリーンな clone で npm run audit:all-content が通り（clone で監査のあとに変更なし）、925d64bd を main へ push、公開の処理が success"
     }
   ]
 }

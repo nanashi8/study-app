@@ -1,0 +1,34 @@
+{
+  "id": "2026-11-27-catalog-counts-beside-filter",
+  "title": "一覧を確認のしぼり込み後の数を、スクロールで隠れる行ではなく「しぼり込み」ボタンの左に出す",
+  "asked": [
+    "しぼり込み後の数をスクロールで見えなくなるところではなく、しぼり込みボタンの左に表示するようにならないか。"
+  ],
+  "sessions": [
+    "73686405-b5bb-41c0-9e2a-441c33a39f52"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "counts-beside-filter-button",
+      "text": "絞り込んだ範囲の数（母数・残り・覚えた/まだ/学習前 または 正解/不正解/テスト前）を、スクロールしても隠れない「しぼり込み」ボタンの左に出し、記録のたびに変わる。リストの中の件数の行は重ねて出さない",
+      "population": "件数の行（CatalogRecordCounts）を出す一覧すべて：英単語の一覧（級・分野・単語帳の3画面）、18教材の一覧、共通の一覧（NormalLearningRecordList を使う全画面）",
+      "check": "node --test tests/catalog-narrowed-counts.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "browser-verified",
+      "text": "開発版の 375px で、3つの一覧それぞれでスクロールしても数が見え、スワイプで変わることを確かめる",
+      "population": "3つの部品それぞれの画面1つ以上",
+      "check": "node --test tests/catalog-narrowed-counts.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する",
+      "population": "この依頼の変更すべて",
+      "check": "node --test tests/catalog-narrowed-counts.test.mjs",
+      "status": "todo"
+    }
+  ]
+}
