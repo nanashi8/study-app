@@ -1,0 +1,44 @@
+{
+  "id": "2026-11-27-japanese-reports",
+  "title": "作業者の報告・進捗・ツールの説明文を日本語で書くことを仕組みで強制する",
+  "asked": [
+    "日本語で報告することを強制しなさい。"
+  ],
+  "sessions": [
+    "73686405-b5bb-41c0-9e2a-441c33a39f52"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "stop-blocks-non-japanese-report",
+      "text": "ターンを終えるとき、そのターンで作業者が書いた文（最終の回答と途中の進捗）が日本語でなければ Stop フックが止め、日本語で書き直させる。止めたあとは最後の回答だけを見て、書き直した日本語の回答で終われる",
+      "population": "このプロジェクトの全セッションの全ターン（利用者の発言・裏の処理の知らせで始まるターン）の、作業者の文すべて",
+      "check": "node --test tests/japanese-reply.test.mjs",
+      "status": "done",
+      "result": "scripts/check-japanese-reply.mjs --stop を Stop フックに足した。ターンの作業者の文を1つずつと全体で数え（日本語の字が英語の語の2倍に届かなければ日本語でない。コード・URL・道筋は数えない）、日本語でなければ書き直させる。止めたあとは最後の回答だけを見る。テストで英語のターンを止め、日本語のターン・前のターンの英語・書き直したあとは止めないことを確かめた"
+    },
+    {
+      "id": "tool-descriptions-japanese",
+      "text": "ツールの説明文（Bash の description、ブラウザ操作の action_summary など）が日本語でなければ、ツールを動かす前に PreToolUse フックが止める",
+      "population": "このプロジェクトの全セッションの、説明文を持つツール呼び出しすべて",
+      "check": "node --test tests/japanese-reply.test.mjs",
+      "status": "done",
+      "result": "scripts/check-japanese-reply.mjs --tool を matcher なしの PreToolUse フックに足した。description・action_summary・recap・ask・caption・作業の一覧・次の一歩のボタンの文字を見て、日本語でなければ終了コード2で止める。ファイルの中身は見ない"
+    },
+    {
+      "id": "real-transcript-judged",
+      "text": "この会話で実際に英語で書いてしまった報告・進捗・説明文は止め、日本語で書いた報告・説明文（コード名・英単語の例を含む）は止めない",
+      "population": "このセッションの会話の記録の作業者の文62件すべて（英語43件・日本語19件を全件判定）と、テストに写した英語の報告3件・日本語の報告3件、よくある英語の説明文4件・日本語の説明文4件",
+      "check": "node --test tests/japanese-reply.test.mjs",
+      "status": "done",
+      "result": "このセッションの記録の作業者の文62件を全件判定し、英語43件をすべて止め、日本語19件をすべて通した。説明文187件はすべて日本語で通した。テストに英語の報告3件・日本語の報告3件・英語の説明文4件・日本語の説明文4件を写した"
+    },
+    {
+      "id": "deployed",
+      "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する",
+      "population": "この依頼の変更すべて",
+      "check": "node --test tests/japanese-reply.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

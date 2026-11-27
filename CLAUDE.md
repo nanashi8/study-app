@@ -49,6 +49,7 @@
   - **古い全教材監査台帳を push できない**：main へ push するときは、push するコミットの中身だけを取り出して `node scripts/content-audit-ledger.mjs` を流し、台帳が中身と合わなければ止める（作業ツリーではなく push するコミットを見る）。
   - **nanashi8 以外の名前でコミット・push できない**：コミットの名前は `.claude/settings.json` の env（nanashi8 <nanashi8@users.noreply.github.com>）で全セッションの git に渡す。commit の前に git が使う名前（`--author` を含む）が違えば止め、push の前に、まだどのリモートにもないコミットに違う作者・コミッターがあれば止める。
   - git のフックを飛ばさない（push の `--no-verify`、core.hooksPath の書き換えをしない）。env が届いていないセッションには、利用者の発言ごとに注意が出る（セッションを起動し直す）。
+- **日本語でない報告で終われない・英語の説明文でツールを動かせない**：ターンを終えるとき、そのターンの回答・進捗が日本語でなければ Stop フックが止めて書き直させる（止めたあとは最後の回答だけを見る）。ツールの説明文（description・action_summary・recap・作業の一覧など）が日本語でなければ、ツールを動かす前に止める。2026-11-27、決まりがあるのに進捗と報告を英語で書いたため（`scripts/check-japanese-reply.mjs`、`tests/japanese-reply.test.mjs`）。
 - **毎回思い出させる**：利用者の発言ごとに、決まり・このセッションの id・このセッションの依頼の未完了の条件を作業者に見せる。ほかのセッションの依頼は1行に畳む。
 
 判定は `scripts/check-requests.mjs`。一覧は `node scripts/check-requests.mjs --report`、依頼ごとの持ち主のセッションは `--owners`。

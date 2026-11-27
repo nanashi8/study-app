@@ -31,6 +31,15 @@
             "timeout": 30
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-japanese-reply.mjs\" --tool",
+            "timeout": 30
+          }
+        ]
       }
     ],
     "Stop": [
@@ -39,6 +48,11 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-requests.mjs\" --stop",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-japanese-reply.mjs\" --stop",
             "timeout": 30
           }
         ]
