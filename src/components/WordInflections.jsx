@@ -14,8 +14,8 @@ import { cx } from './ui.jsx'
 export function InflectionForm({ form, wordId, label }) {
   const phonetic = inflectionPhoneticFor(wordId, label, form.text)
   return (
-    <span className="inline-flex items-center gap-1" data-inflection-form={form.text}>
-      <span className="font-display font-extrabold text-ink">
+    <span className="inline-flex max-w-full flex-wrap items-center gap-1" data-inflection-form={form.text}>
+      <span className="break-all font-display font-extrabold text-ink">
         {form.british && <span className="mr-0.5 text-[10px] font-bold text-ink/45">《英》</span>}
         {form.text}
       </span>

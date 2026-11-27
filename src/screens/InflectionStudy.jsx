@@ -49,8 +49,9 @@ function IrregularTable({ category }) {
       <h2 className="px-1 font-display text-base font-extrabold text-ink">{category.label}</h2>
       <p className="mt-0.5 px-1 text-xs font-bold leading-relaxed text-ink/60">{category.note}</p>
       <p className="mt-0.5 px-1 font-display text-sm font-extrabold text-sky-600">{category.example}</p>
-      <div className="mt-2 overflow-x-auto">
-        <table className="w-full min-w-[19rem] border-separate border-spacing-y-1 text-left">
+      {/* 画面の幅に収める（列の幅をそろえ、発音ボタンは語の下へ回り込む）。 */}
+      <div className="mt-2">
+        <table className="w-full table-fixed border-separate border-spacing-x-1 border-spacing-y-1 text-left">
           <thead>
             <tr>
               {columns.map((label) => (
