@@ -219,3 +219,49 @@ export function vocabularyCatalogResultForDirection(activity, direction) {
   if (activity === 'test') return direction === 'left' ? 'correct' : 'wrong'
   return direction === 'left' ? 'remembered' : 'forgot'
 }
+
+// 一覧の件数の行に出す内訳。学習は自己判定（覚えた・まだ・学習前）、テストは結果（正解・不正解・テスト前）。
+export const VOCAB_CATALOG_STATUS_COUNT_KEYS = Object.freeze({
+  memory: Object.freeze(['learned', 'reviewing', 'unlearned']),
+  test: Object.freeze(['correct', 'incorrect', 'unanswered']),
+})
+
+/**
+ * 絞り込んだあとの行だけを母数に、学習・テストの状況ごとの数を数える。
+ * 行は記録のたびに作り直されるので、スワイプで覚えた・まだを付けるとその場で数が動く。
+ */
+export function vocabularyCatalogStatusCounts(rows = [], activity = 'memory') {
+  const normalizedActivity = activity === 'test' ? 'test' : 'memory'
+  const keys = VOCAB_CATALOG_STATUS_COUNT_KEYS[normalizedActivity]
+  const counts = Object.fromEntries(keys.map((key) => [key, 0]))
+  const list = Array.isArray(rows) ? rows : []
+  for (const row of list) {
+    const status = normalizedActivity === 'test' ? row?.testStatus : row?.memoryStatus
+    if (Object.hasOwn(counts, status)) counts[status] += 1
+  }
+  const unrecordedKey = keys[keys.length - 1]
+  return {
+    activity: normalizedActivity,
+    total: list.length,
+    recorded: list.length - counts[unrecordedKey],
+    counts,
+  }
+}
+
+const catalogRowId = (row) => row?.word?.id ?? row?.item?.id ?? row?.id
+
+/**
+ * 学習状況で絞り込んだときの語を、絞り込んだ時点で固定する。
+ * 記録で状況が変わった語も一覧の母数に残し、「まだ」で絞った語を覚えたら「覚えた」の数が増えるようにする。
+ * 「すべて」のときは固定しない（null）。
+ */
+export function vocabularyCatalogStatusSnapshot(rows = [], status = 'all') {
+  if (!status || status === 'all') return null
+  return new Set(vocabularyCatalogStatusRows(rows, status).map(catalogRowId))
+}
+
+export function vocabularyCatalogSnapshotRows(rows = [], snapshot = null) {
+  const list = Array.isArray(rows) ? rows : []
+  if (!(snapshot instanceof Set)) return list
+  return list.filter((row) => snapshot.has(catalogRowId(row)))
+}

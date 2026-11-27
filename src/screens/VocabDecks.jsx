@@ -30,9 +30,11 @@ import {
   vocabularyCatalogRecordedRows,
   vocabularyCatalogRemainingRows,
   vocabularyCatalogResultForDirection,
-  vocabularyCatalogStatusRows,
+  vocabularyCatalogSnapshotRows,
+  vocabularyCatalogStatusSnapshot,
 } from '../lib/vocabCatalog.js'
 import {
+  CatalogRecordCounts,
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
 } from '../components/VocabularyHistoryRow.jsx'
@@ -128,18 +130,28 @@ function VocabularyCatalog({
     () => vocabularyCatalogFieldRows(rows, fieldFilter),
     [fieldFilter, rows],
   )
+  // 学習状況で絞り込んだ語は、絞り込んだときに固定する。いまの状況で絞り直すと、
+  // 「まだ」の語を覚えたとたんに一覧の母数から消え、覚えた・まだの数が動いて見えないため。
+  const [statusSnapshot, setStatusSnapshot] = useState(() => ({
+    filter: statusFilter,
+    ids: vocabularyCatalogStatusSnapshot(rows, statusFilter),
+  }))
+  const chooseStatusFilter = (nextFilter) => {
+    setStatusFilter(nextFilter)
+    setStatusSnapshot({ filter: nextFilter, ids: vocabularyCatalogStatusSnapshot(rows, nextFilter) })
+  }
+  const filteredRows = useMemo(
+    () => vocabularyCatalogSnapshotRows(fieldRows, statusSnapshot.ids),
+    [fieldRows, statusSnapshot],
+  )
+  // 学習・テストの済みの数も、絞り込んだ範囲を母数に数える。
   const memoryRecordedCount = useMemo(
-    () => vocabularyCatalogRecordedRows(fieldRows, 'memory').length,
-    [fieldRows],
+    () => vocabularyCatalogRecordedRows(filteredRows, 'memory').length,
+    [filteredRows],
   )
   const testRecordedCount = useMemo(
-    () => vocabularyCatalogRecordedRows(fieldRows, 'test').length,
-    [fieldRows],
-  )
-  const recordedCount = activity === 'test' ? testRecordedCount : memoryRecordedCount
-  const filteredRows = useMemo(
-    () => vocabularyCatalogStatusRows(fieldRows, statusFilter),
-    [fieldRows, statusFilter],
+    () => vocabularyCatalogRecordedRows(filteredRows, 'test').length,
+    [filteredRows],
   )
   const fieldFilterLabel = fieldOptions.find((option) => option.id === fieldFilter)?.label
     ?? 'すべての分野'
@@ -229,11 +241,11 @@ function VocabularyCatalog({
                         ? 'bg-white text-brand-700 shadow-sm'
                         : 'text-ink/55 active:bg-white/70',
                     )}
-                    aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${fieldRows.length.toLocaleString('ja-JP')}語`}
+                    aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${filteredRows.length.toLocaleString('ja-JP')}語`}
                     data-vocab-catalog-activity-tab={option.id}
                   >
                     {option.id === 'test' ? 'テスト' : '学習'}
-                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{fieldRows.length.toLocaleString('ja-JP')}語</span>
+                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{filteredRows.length.toLocaleString('ja-JP')}語</span>
                   </button>
                 )
               })}
@@ -270,7 +282,7 @@ function VocabularyCatalog({
             <span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/50">学習状況でしぼり込み</span>
             <select
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
+              onChange={(event) => chooseStatusFilter(event.target.value)}
               aria-label="学習状況でしぼり込み"
               className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
               data-vocab-catalog-status-filter={statusFilter}
@@ -336,12 +348,17 @@ function VocabularyCatalog({
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-          <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
-            {fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL && `${fieldFilterLabel}・`}
-            {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${fieldRows.length.toLocaleString('ja-JP')}語`}
-            {statusFilter !== 'all' && `・「${statusFilterLabel(statusFilter)}」${filteredRows.length.toLocaleString('ja-JP')}語`}
-            {`・残り${remainingRows.length.toLocaleString('ja-JP')}語`}
-          </p>
+          <CatalogRecordCounts
+            rows={filteredRows}
+            activity={activity}
+            remaining={remainingRows.length}
+            unit="語"
+            scope={[
+              fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL ? `${fieldFilterLabel}の` : '',
+              statusFilter !== 'all' ? `「${statusFilterLabel(statusFilter)}」で絞り込んだ` : '',
+            ].join('') || '全'}
+            data-vocab-catalog-counts
+          />
           <p
             className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
             aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}

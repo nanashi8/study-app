@@ -5,6 +5,7 @@ import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 import { MeaningText } from './MeaningText.jsx'
 import { SubjectSourceText } from './SubjectText.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
+import { VOCAB_CATALOG_STATUS_COUNT_KEYS, vocabularyCatalogStatusCounts } from '../lib/vocabCatalog.js'
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
 
@@ -33,6 +34,46 @@ const RESULT_META = Object.freeze({
   correct: { label: '正解', symbol: '✓', className: 'bg-emerald-50 text-emerald-700' },
   incorrect: { label: '不正解', symbol: '×', className: 'bg-rose-50 text-rose-700' },
 })
+
+// 一覧の件数の行。母数は絞り込んだあとの行だけで、学習は覚えた・まだ・学習前、テストは正解・不正解・テスト前の内訳を出す。
+// 行は記録のたびに作り直されるので、スワイプで記録するとその場で数が動く。
+export function CatalogRecordCounts({
+  rows,
+  activity,
+  remaining,
+  unit,
+  // 絞り込みの条件（「分野名・」など）。絞り込んでいないときは空。
+  scope = '',
+  className = '',
+  ...rest
+}) {
+  const summary = vocabularyCatalogStatusCounts(rows, activity)
+  const parts = VOCAB_CATALOG_STATUS_COUNT_KEYS[summary.activity].map((key) => ({
+    key,
+    ...RESULT_META[key],
+    count: summary.counts[key],
+  }))
+  const format = (count) => count.toLocaleString('ja-JP')
+  return (
+    <div className={cx('min-w-0', className)} aria-live="polite" data-catalog-record-counts={summary.activity} {...rest}>
+      <p className="text-xs font-extrabold text-ink/50" data-catalog-record-counts-total>
+        {`${scope}${format(summary.total)}${unit}・残り${format(remaining)}${unit}`}
+      </p>
+      <p className="mt-1 flex flex-wrap gap-1">
+        {parts.map((part) => (
+          <span
+            key={part.key}
+            className={cx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-extrabold tabular-nums', part.className)}
+            data-catalog-record-count={part.key}
+          >
+            <span aria-hidden="true">{part.symbol}</span>
+            {`${part.label} ${format(part.count)}`}
+          </span>
+        ))}
+      </p>
+    </div>
+  )
+}
 
 const ACTIVITY_DATE_FORMATTER = new Intl.DateTimeFormat('ja-JP', {
   year: 'numeric',

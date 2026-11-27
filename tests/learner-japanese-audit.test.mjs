@@ -220,7 +220,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // ソース全体が 935 から 936 ファイル・298295 から 298329 になった。
   // 2026-11-27、不規則に変化する語の型ごとの表・行・学習の表の文で 18954 から 18989（重複なし 14051 から 14073）、
   // ソース全体が 298329 から 298364 になった（requests/2026-11-27-irregular-forms.json）。
-  assert.equal(result.learnerJapaneseEntries, 18989)
+  // 2026-11-27、一覧を確認の件数の行を3つの部品で共通の内訳（CatalogRecordCounts）にし、3か所の「学習済・テスト済 n/m」の文を
+  // 内訳の1つの部品にまとめて 18989 から 18987 になった（requests/2026-11-27-catalog-narrowed-counts.json）。
+  assert.equal(result.learnerJapaneseEntries, 18987)
   // 2026-10-26、語源カード詳細と語根の一覧の単語の行に級の印（badgeFor）を足し、2画面の行の属性の並びが同じ文になったので、
   // 重複なしが 13752 から 13751 になった（見える文は変わらない。requests/2026-10-26-etymology-word-levels.json）。
   // 2026-10-26、似た語の行の「ほか◯語」を、語のカードの下のボタン「ほか◯語も見る」にした。文の数は同じで、
@@ -233,7 +235,8 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // 重複なしが 13829 から 13833 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、cardSpeech.js の引用符のずれを直し、コードの切れ端を数えなくなって重複なしが 13920 から 13908 になった
   // （ずれていた間は画面の4つの文も切れ端に含まれていた。requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.learnerUniqueJapaneseEntries, 14073)
+  // 2026-11-27、一覧を確認の件数の行を共通の内訳の部品にまとめて、重複なしが 14073 から 14070 になった（requests/2026-11-27-catalog-narrowed-counts.json）。
+  assert.equal(result.learnerUniqueJapaneseEntries, 14070)
   // 2026-10-24、続き表示の共通の部品（src/components/LoadMoreButton.jsx）でソース全体が 867 から 868 ファイルになった
   // （requests/2026-10-24-load-more-on-scroll.json）。
   // 2026-10-25、数学の歴史のテストの画面と計算しない問いの検査を外して 868 から 867 ファイルになった。
@@ -275,7 +278,8 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // ソース全体の日本語が 288935 から 288941 になった（requests/2026-10-29-modifier-word-phrase-clause.json）。
   // 2026-11-19、英単語の意味の読み上げの台帳（8,325語の「かたまり=よみ」）で 8,325 増え、cardSpeech.js の引用符のずれで数えていた
   // コードの切れ端 9 件が消えて、289422 から 297738 になった（requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.sourceJapaneseEntries, 298364)
+  // 2026-11-27、一覧を確認の件数の行を共通の内訳の部品にまとめて、298364 から 298362 になった（requests/2026-11-27-catalog-narrowed-counts.json）。
+  assert.equal(result.sourceJapaneseEntries, 298362)
   assert.equal(result.issues.length, 0)
 })
 

@@ -12,6 +12,7 @@ import {
 } from '../lib/vocabCatalog.js'
 import { Button, cx } from './ui.jsx'
 import {
+  CatalogRecordCounts,
   LearningRecordRow,
   VOCABULARY_HISTORY_ACTIVITY_META,
 } from './VocabularyHistoryRow.jsx'
@@ -164,10 +165,14 @@ export function NormalLearningRecordList({
       </div>
 
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-        <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
-          {activity === 'test' ? 'テスト済' : '学習済'} {activity === 'test' ? recordedTest : recordedMemory}/{rows.length}{itemUnit}
-          ・残り{remainingRows.length}{itemUnit}
-        </p>
+        {/* 母数は呼び出し側が絞り込んだ項目だけ。内訳はスワイプで記録するたびに動く。 */}
+        <CatalogRecordCounts
+          rows={rows}
+          activity={activity}
+          remaining={remainingRows.length}
+          unit={itemUnit}
+          data-normal-learning-record-counts
+        />
         <p
           className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
           aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}`}

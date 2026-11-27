@@ -28,6 +28,7 @@ import { MeaningText } from './MeaningText.jsx'
 import { SubjectSourceText } from './SubjectText.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
 import {
+  CatalogRecordCounts,
   LearningRecordRow,
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
@@ -256,17 +257,6 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
     () => learningContentCatalogRows(content, state, { sort, direction, now }),
     [content, direction, now, sort, state],
   )
-  const recordedMemoryRows = useMemo(
-    () => supportsDirectReview ? vocabularyCatalogRecordedRows(rows, 'memory') : [],
-    [rows, supportsDirectReview],
-  )
-  const recordedTestRows = useMemo(
-    () => supportsDirectReview ? vocabularyCatalogRecordedRows(rows, 'test') : [],
-    [rows, supportsDirectReview],
-  )
-  const recordedCount = recordActivity === 'test'
-    ? recordedTestRows.length
-    : recordedMemoryRows.length
   const normalizedQuery = query.trim().toLocaleLowerCase('ja')
   // 教材・一覧・並び・検索・学習とテストの切替を変えたら、表示件数は最初の数へ戻す。
   const pagingKey = [contentId, catalogView, sort, direction, normalizedQuery, recordActivity].join('')
@@ -286,6 +276,15 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
       ? viewRows.filter((row) => row.searchText.includes(normalizedQuery))
       : viewRows,
     [normalizedQuery, viewRows],
+  )
+  // 学習・テストの済みの数は、検索で絞り込んだ範囲を母数に数える。
+  const recordedMemoryRows = useMemo(
+    () => supportsDirectReview ? vocabularyCatalogRecordedRows(filteredRows, 'memory') : [],
+    [filteredRows, supportsDirectReview],
+  )
+  const recordedTestRows = useMemo(
+    () => supportsDirectReview ? vocabularyCatalogRecordedRows(filteredRows, 'test') : [],
+    [filteredRows, supportsDirectReview],
   )
   const dismissedReviewIds = dismissedReviewByActivity[recordActivity] ?? new Set()
   const remainingRows = supportsDirectReview
@@ -507,12 +506,12 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
                         ? 'bg-white text-brand-700 shadow-sm'
                         : 'text-ink/55 active:bg-white/70',
                     )}
-                    aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${content.unit}、全${rows.length.toLocaleString('ja-JP')}${content.unit}`}
+                    aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${content.unit}、全${filteredRows.length.toLocaleString('ja-JP')}${content.unit}`}
                     data-learning-catalog-activity-tab={option.id}
                     data-learning-catalog-vocab-activity-tab={isVocabulary ? option.id : undefined}
                   >
                     {option.id === 'test' ? 'テスト' : '学習'}
-                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}{content.unit}</span>
+                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{filteredRows.length.toLocaleString('ja-JP')}{content.unit}</span>
                   </button>
                 )
               })}
@@ -642,15 +641,22 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView, r
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
-          <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
-            {supportsDirectReview
-              ? normalizedQuery
-                ? `${recordActivity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}${content.unit}・一致${filteredRows.length.toLocaleString('ja-JP')}${content.unit}・残り${remainingRows.length.toLocaleString('ja-JP')}${content.unit}`
-                : `${recordActivity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}${content.unit}・残り${remainingRows.length.toLocaleString('ja-JP')}${content.unit}`
-              : normalizedQuery
+          {supportsDirectReview ? (
+            <CatalogRecordCounts
+              rows={filteredRows}
+              activity={recordActivity}
+              remaining={remainingRows.length}
+              unit={content.unit}
+              scope={normalizedQuery
+                ? `検索「${query.trim()}」に一致する`
+                : '全'}
+              data-learning-catalog-counts
+            />
+          ) : <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
+            {normalizedQuery
                 ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
                 : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
-          </p>
+          </p>}
           {supportsDirectReview ? (
             <p
               className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"

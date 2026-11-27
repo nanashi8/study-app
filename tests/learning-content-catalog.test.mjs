@@ -426,7 +426,7 @@ test('マイ学習の入口を一覧確認へ統一し、英単語と指定11カ
   assert.doesNotMatch(vocabularyHistoryRow, /aria-pressed|type="checkbox"/)
   assert.match(catalog, /if \(supportsDirectReview\) return rows/)
   assert.match(catalog, /navigate\('wordDetail', \{ id: row\.id \}\)/)
-  assert.match(catalog, /recordedCount/)
+  assert.match(catalog, /<CatalogRecordCounts/)
   assert.match(catalog, /data-learning-catalog-tools-toggle/)
   assert.match(catalog, /<CatalogTools/)
   assert.match(catalog, /open=\{toolsOpen\}/)
