@@ -8,7 +8,7 @@
   "sessions": [
     "14ed8f4c-79f9-4905-9ea6-373fe93e733a"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "exam-questions-every-unit",
@@ -54,10 +54,10 @@
     },
     {
       "id": "deployed",
-      "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する",
+      "text": "全教材監査とクリーンな clone での確認を通し、main へ push して公開の処理が成功する。結果：作業ツリーで npm run audit:all-content が通り（全教材監査台帳を書き直し、教材26,247件）、クリーンな clone（88a634cf）で npm ci のあと全教材監査が通って台帳は書き変わらなかった。88a634cf を main へ push し、Deploy to GitHub Pages（run 46122704041）が success。公開版の本体（assets/main-Xblhq9MC.js）に足した問題の文（社会・理科）が入っていることを確かめた",
       "population": "この依頼の変更すべて",
       "check": "node --test tests/junior-exam-questions.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
