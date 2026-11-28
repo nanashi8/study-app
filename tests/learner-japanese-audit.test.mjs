@@ -258,7 +258,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // （requests/2026-11-04-high-school-social-tankyu.json）。
   // 2026-11-10、英単語・熟語のカードの共通の部品2つで 923 ファイルになった。
   // 2026-11-19、英単語の意味の読み上げの台帳（src/data/meaning-speech-kana.js）で 926 ファイルになった（requests/2026-11-19-meaning-speech-kana.json）。
-  assert.equal(result.sourceFiles, 936)
+  // 2026-11-28、中学の入試の段の問題の6ファイル（src/data/subjects の geographyExam.js など）で 936 から 942 ファイルになった
+  // （requests/2026-11-28-junior-exam-questions.json）。
+  assert.equal(result.sourceFiles, 942)
   // 2026-10-23、カタカナ語の台帳（src/data/loanword-hints.js）を全見出し語 8,929語で読み直して 1,550 語から約 2,950 語に増やし、
   // 注意書きの日本語でソース全体の日本語が 258252 から 260042 になった（学習者画面の日本語は変わらない。requests/2026-10-23-loanword-katakana-expand.json）。
   // 自作カードの「ー」の6文は、あとから足したのでソース全体は 260042 から 260048。
@@ -283,7 +285,9 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   // コードの切れ端 9 件が消えて、289422 から 297738 になった（requests/2026-11-19-meaning-speech-kana.json）。
   // 2026-11-27、一覧を確認の件数の行を共通の内訳の部品にまとめて、298364 から 298362 になった（requests/2026-11-27-catalog-narrowed-counts.json）。
   // 2026-11-27、一覧を確認の上の部分を2段にまとめて 298362 から 298358 になった（requests/2026-11-27-catalog-top-compact.json）。
-  assert.equal(result.sourceJapaneseEntries, 298358)
+  // 2026-11-28、中学の入試の段の問題1998問（問題文・選択肢・説明・解説・解き方・台帳の読み）と読みの辞書の39語で
+  // 298358 から 317541 になった（requests/2026-11-28-junior-exam-questions.json）。
+  assert.equal(result.sourceJapaneseEntries, 317541)
   assert.equal(result.issues.length, 0)
 })
 

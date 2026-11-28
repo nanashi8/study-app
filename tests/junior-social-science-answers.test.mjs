@@ -7,6 +7,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { ALL_SUBJECT_QUESTIONS } from '../src/data/subjects/index.js'
 import { answersLedgerProblems, readAnswersLedger, reviewedQuestions } from '../scripts/checks/junior-social-science-answers.mjs'
+import { EXAM_RECOMPUTE } from './junior-exam-recompute.mjs'
 
 // ドント式で、各党の当選者数を求める。
 function dhondt(votes, seats) {
@@ -128,6 +129,8 @@ const RECOMPUTE = {
   'gso-04-q01': { given: ['2万5千分の1', '4cm'], value: () => (4 * 25000) / 100 },
   'gso-15-q03': { given: ['600万t', '90万t'], value: () => (90 / 600) * 100 },
   'gso-20-q03': { given: ['12万人', '60km²'], value: () => 120000 / 60 },
+  // 中学の6冊に、実際の公立高校入試の問題をもとに足した問題（requests/2026-11-28-junior-exam-questions.json）。
+  ...EXAM_RECOMPUTE,
 }
 
 const numberQuestions = ALL_SUBJECT_QUESTIONS.filter((question) => question.kind === 'number')
@@ -149,14 +152,16 @@ test('数を入れる問題はすべて、問題文の数から計算し直し�
   }
   assert.deepEqual(failures, [])
   const junior = (question) => !/^(gso|hso|gtk|jtk)-/.test(question.id)
-  assert.equal(numberQuestions.filter(junior).length, 92)
+  // 中学の数を入れる問題は、もとの演習の92問と、入試をもとに足した223問。
+  assert.equal(numberQuestions.filter(junior).length, 92 + 223)
 })
 
 test('知識の問題（選ぶ・並べる）はすべて、1問ずつ読み直した記録があり、今の問題と一致する', () => {
   assert.deepEqual(answersLedgerProblems(), [])
   const ledger = readAnswersLedger()
   assert.equal(Object.keys(ledger.questions).length, reviewedQuestions().length)
-  assert.equal(reviewedQuestions().filter((question) => !/^(gso|hso|gtk|jtk)-/.test(question.id)).length, 826)
+  // 中学の選ぶ・並べる問題は、もとの演習の826問と、入試をもとに足した1775問（足した1998問のうち数を入れる223問を除く）。
+  assert.equal(reviewedQuestions().filter((question) => !/^(gso|hso|gtk|jtk)-/.test(question.id)).length, 826 + 1775)
   // 高校の4冊（地理総合・歴史総合 58単元×12問、地理探究・日本史探究 81単元×12問。数を入れる5問は上のテストで計算し直す）。
   assert.equal(reviewedQuestions().filter((question) => /^(gso|hso|gtk|jtk)-/.test(question.id)).length, (58 + 81) * 12 - 5)
 })

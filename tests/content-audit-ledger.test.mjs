@@ -19,10 +19,11 @@ test('全教材監査台帳は25カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.categories.length, 25)
   // 2026-11-04、地理総合・歴史総合の語句と問題を足し、地理探究・日本史探究を加えて 21,632 から 24,195 項目になった。
   // 2026-11-13、文法の前置詞の3単元に選択問題54問を足して 24,249 項目・24,468 問になった（requests/2026-11-13-grammar-small-units.json）。
-  assert.equal(ledger.scope.learningItemCount, 24_249)
+  // 2026-11-28、中学の入試の段に実際の公立高校入試をもとにした問題1998問を足した（requests/2026-11-28-junior-exam-questions.json）。
+  assert.equal(ledger.scope.learningItemCount, 24_249 + 1998)
   // 2026-10-25、数学の歴史のテスト252問を削除した。2026-10-28、基礎長文のルールの問題150問を足した。
   // 2026-11-04、社会の語句（1,417）と演習（1,146）を足して 21,851 から 24,414 問になった。
-  assert.equal(ledger.scope.quizItemCount, 24_468)
+  assert.equal(ledger.scope.quizItemCount, 24_468 + 1998)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -55,10 +56,11 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   // 社会・理科の演習の選ぶ問題（2,317問・9,268択）と語句テスト（3,135問・12,540択）は、どの選択肢にも説明がある。
   // 2026-11-04、地理総合・歴史総合を充実させ、地理探究・日本史探究を加えて、選ぶ問題 1,236→2,317、語句テスト 1,718→3,135。
   const subjectPractice = ledger.questionBanks.find((bank) => bank.id === 'subject-practice-choices')
-  assert.equal(subjectPractice.questionCount, 2_317)
-  assert.equal(subjectPractice.choiceCount, 9_268)
-  assert.equal(subjectPractice.generalRationaleCount, 2_317)
-  assert.equal(subjectPractice.choiceSpecificRationaleCount, 9_268)
+  // 2026-11-28、中学の入試の段に実際の公立高校入試をもとにした選ぶ問題1,719問（6,876択）を足した（requests/2026-11-28-junior-exam-questions.json）。
+  assert.equal(subjectPractice.questionCount, 2_317 + 1_719)
+  assert.equal(subjectPractice.choiceCount, 9_268 + 6_876)
+  assert.equal(subjectPractice.generalRationaleCount, 2_317 + 1_719)
+  assert.equal(subjectPractice.choiceSpecificRationaleCount, 9_268 + 6_876)
   assert.equal(subjectPractice.failureCount, 0)
   const subjectTerms = ledger.questionBanks.find((bank) => bank.id === 'subject-terms')
   assert.equal(subjectTerms.questionCount, 3_135)

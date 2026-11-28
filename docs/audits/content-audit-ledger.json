@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-11-27T07:42:01.217Z",
+  "auditedAt": "2026-11-28T07:43:37.460Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 25,
-    "learningItemCount": 24249,
-    "quizItemCount": 24468,
-    "storedAndGeneratedQuestionPathCount": 11199,
-    "storedAndGeneratedChoicePathCount": 43477,
-    "overallContentSha256": "9143338e4a5c6effa7c2fcf69b61041507f99725db3b9c3ebbe3a6f65cd938c8"
+    "learningItemCount": 26247,
+    "quizItemCount": 26466,
+    "storedAndGeneratedQuestionPathCount": 12918,
+    "storedAndGeneratedChoicePathCount": 50353,
+    "overallContentSha256": "1acf9c4ac586754ea760cee8103afefbe20c4f87c25d52b0aaf057052b76b9ce"
   },
   "completionCriteria": [
     "全25教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -120,7 +120,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "3a7e74b0ce344cbb076bcc7e2a0273a57ecb4a5ad0a7e3101611509aea4a30ac",
+    "sha256": "0119eac8d48e78f9ac8f2612d0289a8303a61414dd119f20ef0786483c4e513d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -298,6 +298,8 @@
       "tests/instructor-explanations.test.mjs",
       "tests/irregular-forms.test.mjs",
       "tests/japanese-reply.test.mjs",
+      "tests/junior-exam-questions.test.mjs",
+      "tests/junior-exam-screens.test.mjs",
       "tests/junior-social-science-answers.test.mjs",
       "tests/junior-social-science-figure-enrich.test.mjs",
       "tests/junior-social-science-figure-layout.test.mjs",
@@ -978,11 +980,11 @@
       "label": "社会の演習",
       "learningUnit": "問",
       "quizUnit": "問",
-      "learningItemCount": 2190,
-      "quizItemCount": 2190,
-      "learningIdOrderSha256": "50c68ff61ba8689619d18f50910bbab1918e0c8a61ed3510b2fb0e00fc82a752",
-      "quizIdOrderSha256": "50c68ff61ba8689619d18f50910bbab1918e0c8a61ed3510b2fb0e00fc82a752",
-      "contentSha256": "cb7eabdaa4153d24bb05cf7f237de502ea576832c4139f159a533a3d8e2200ae",
+      "learningItemCount": 3176,
+      "quizItemCount": 3176,
+      "learningIdOrderSha256": "b4999134a9b47f7f252f924958d0440480cdffbff3e4273b6a55e479eaab0a72",
+      "quizIdOrderSha256": "b4999134a9b47f7f252f924958d0440480cdffbff3e4273b6a55e479eaab0a72",
+      "contentSha256": "93c7ef6823de5ef579edfe2a7f4717b2c331aac2034e41d80333cbf742331e30",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1024,11 +1026,11 @@
       "label": "理科の演習",
       "learningUnit": "問",
       "quizUnit": "問",
-      "learningItemCount": 396,
-      "quizItemCount": 396,
-      "learningIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
-      "quizIdOrderSha256": "999a81c7bc1bf758eba59f4d6a9ff1d0a34409a145da7d427156c4a5650c2ba7",
-      "contentSha256": "59ab242964b1cd16340584a9379039b0d13c809f1846f7af5ec6f5f80b2c42b9",
+      "learningItemCount": 1408,
+      "quizItemCount": 1408,
+      "learningIdOrderSha256": "93145f169c203c618760fade13f7797842bdb5b36e337bf27c0abf541e396fae",
+      "quizIdOrderSha256": "93145f169c203c618760fade13f7797842bdb5b36e337bf27c0abf541e396fae",
+      "contentSha256": "b8b0c3d1def0f5ff629dfe5a477ef55d317c19769af44e1601d12439487b005c",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -1190,11 +1192,11 @@
     {
       "id": "subject-practice-choices",
       "label": "社会・理科の演習（選ぶ問題）",
-      "questionCount": 2317,
-      "choiceCount": 9268,
-      "generalRationaleCount": 2317,
-      "choiceSpecificRationaleCount": 9268,
-      "questionSetSha256": "19dfe9043b0bcda8315a5f928b18e4abcee773044555526f429a782998c245df",
+      "questionCount": 4036,
+      "choiceCount": 16144,
+      "generalRationaleCount": 4036,
+      "choiceSpecificRationaleCount": 16144,
+      "questionSetSha256": "c281daa21b2a96cf007b20583db70c64943239aab9e839649b58cad3f8eddc96",
       "result": "pass",
       "failureCount": 0,
       "failures": []

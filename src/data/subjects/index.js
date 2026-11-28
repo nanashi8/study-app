@@ -10,6 +10,12 @@ import { JHS_TANKYU_UNITS } from './jhsTankyu.js'
 import { SCIENCE1_UNITS } from './science1.js'
 import { SCIENCE2_UNITS } from './science2.js'
 import { SCIENCE3_UNITS } from './science3.js'
+import { GEOGRAPHY_EXAM_QUESTIONS } from './geographyExam.js'
+import { HISTORY_EXAM_QUESTIONS } from './historyExam.js'
+import { CIVICS_EXAM_QUESTIONS } from './civicsExam.js'
+import { SCIENCE1_EXAM_QUESTIONS } from './science1Exam.js'
+import { SCIENCE2_EXAM_QUESTIONS } from './science2Exam.js'
+import { SCIENCE3_EXAM_QUESTIONS } from './science3Exam.js'
 import { SUBJECTS, SUBJECT_IDS, PRACTICE_LEVEL_IDS } from './meta.js'
 import { orderForStudy, pickInStudyOrder, rankQuestionsForStudy } from '../../lib/studyOrder.js'
 import { mixItemsForStudy, mixRankedForStudy, questionMixStockOf } from '../../lib/studyMix.js'
@@ -28,6 +34,21 @@ const BOOK_SOURCES = Object.freeze({
   science2: SCIENCE2_UNITS,
   science3: SCIENCE3_UNITS,
 })
+
+// 中学の6冊の、実際の公立高校入試の問題をもとにした入試の段の問題（単元ID → 問題の並び）。
+// 単元の問題の後ろに続けるので、ID は単元の問題の続きの番号になる（足すときは末尾へ）。
+// もとにした入試（都道府県・年度・大問と小問）は docs/audits/junior-exam-basis.json。
+const EXAM_SOURCES = Object.freeze({
+  ...GEOGRAPHY_EXAM_QUESTIONS,
+  ...HISTORY_EXAM_QUESTIONS,
+  ...CIVICS_EXAM_QUESTIONS,
+  ...SCIENCE1_EXAM_QUESTIONS,
+  ...SCIENCE2_EXAM_QUESTIONS,
+  ...SCIENCE3_EXAM_QUESTIONS,
+})
+
+/** 入試をもとに足した問題がある単元の ID と、その問題の並び。 */
+export const examSourceQuestions = (unitId) => EXAM_SOURCES[unitId] ?? []
 
 const pad2 = (number) => String(number).padStart(2, '0')
 
@@ -98,7 +119,7 @@ function finalizeUnit(subject, bookId, source, order) {
     points: Object.freeze((source.points ?? []).map((point) => Object.freeze({ ...point }))),
   }
   unit.terms = Object.freeze((source.terms ?? []).map((entry, index) => finalizeTerm(unit, entry, index)))
-  unit.questions = Object.freeze((source.questions ?? []).map((question, index) => finalizeQuestion(unit, question, index)))
+  unit.questions = Object.freeze([...(source.questions ?? []), ...examSourceQuestions(source.id)].map((question, index) => finalizeQuestion(unit, question, index)))
   return Object.freeze(unit)
 }
 

@@ -131,10 +131,15 @@ export const PRACTICE_KINDS = Object.freeze({
   order: Object.freeze({ id: 'order', label: '並べる' }),
 })
 
-// 1つの単元に置く問題の数（段階ごと）。中学の冊は各3問、高校の4冊は各4問。tests/junior-social-science.test.mjs が全単元で確かめる。
+// 1つの単元に置く問題の数（段階ごと）。基礎・標準は3問。入試は3問に、実際の公立高校入試の問題をもとにした問題を足す
+// （理科の3冊は23問で計26問、社会の3冊は17問で計20問）。高校の4冊は各4問。tests/junior-social-science.test.mjs が全単元で確かめる。
 export const QUESTIONS_PER_LEVEL = Object.freeze({ basic: 3, standard: 3, exam: 3 })
 export const HIGH_SCHOOL_QUESTIONS_PER_LEVEL = Object.freeze({ basic: 4, standard: 4, exam: 4 })
 export const HIGH_SCHOOL_BOOK_IDS = Object.freeze(['geoSogo', 'hisSogo', 'geoTankyu', 'jhsTankyu'])
+// 中学の1単元に、実際の公立高校入試の問題をもとに足す問題の数（冊ごと。tests/junior-exam-questions.test.mjs）。
+export const EXAM_BASED_QUESTIONS_PER_UNIT = Object.freeze({ geography: 17, history: 17, civics: 17, science1: 23, science2: 23, science3: 23 })
 
 /** 冊の1単元あたりの問題の数（段階ごと）。 */
-export const questionsPerLevel = (bookId) => (HIGH_SCHOOL_BOOK_IDS.includes(bookId) ? HIGH_SCHOOL_QUESTIONS_PER_LEVEL : QUESTIONS_PER_LEVEL)
+export const questionsPerLevel = (bookId) => (HIGH_SCHOOL_BOOK_IDS.includes(bookId)
+  ? HIGH_SCHOOL_QUESTIONS_PER_LEVEL
+  : Object.freeze({ ...QUESTIONS_PER_LEVEL, exam: QUESTIONS_PER_LEVEL.exam + (EXAM_BASED_QUESTIONS_PER_UNIT[bookId] ?? 0) }))

@@ -6022,6 +6022,9 @@
     "geo-01-q07": {
       "sha256": "5b3e841bd1dc0eff35f5bf56b5cbc867726ca983ab709c31dd5cd079e3211bfb"
     },
+    "geo-01-q19": {
+      "sha256": "d2b962b47dcbc496f8547d622e5cc3246baf1d05e6f1f3df1342d84d63423502"
+    },
     "geo-02-q04": {
       "sha256": "40533771239b8a435aae418a6527b0d425ed69e92b84d3d2ef328305fd69dae7"
     },
@@ -6030,6 +6033,9 @@
     },
     "geo-02-q08": {
       "sha256": "886e6dacf5dc1c1f0b4badf4002fc06268814f86f8253a37fbeb48ab6f9d4080"
+    },
+    "geo-02-q16": {
+      "sha256": "67a2ab7b41c25f63a1c073ba5a0f25ce2c0c42d7e21920b56867fed55b552f00"
     },
     "geo-03-q02": {
       "sha256": "bf1f19a5a77355076d97878ac60a2fb715caa5f226a19b61c735c323559278a4"
@@ -6043,17 +6049,65 @@
     "geo-03-q07": {
       "sha256": "f28589563385ae6ab4ca3bfe2a89d2b4e849ddb620d054fc08bab77943179404"
     },
+    "geo-03-q10": {
+      "sha256": "d3a4ba7211b3dc42a00c7a0ed63140553f64b6cbadec9edfed7765bdfac56b5f"
+    },
+    "geo-03-q11": {
+      "sha256": "71fde187b7f21f01617130c64cddca7f15452bd80285238b8b6702bd10be3ded"
+    },
+    "geo-03-q16": {
+      "sha256": "4b7364ead380fc6680f0609d409aa671f7d5ac000056997abf9ebd2ad4dda1d0"
+    },
+    "geo-03-q18": {
+      "sha256": "33349a562fca05640b65c5aa8c1a07786235e3a80f9f2f6375c38cd3d7f25a0c"
+    },
+    "geo-03-q19": {
+      "sha256": "4e18ea04ea425a5975bb0877ab44bd6074edaac54271de51c14ae5905f61f3f0"
+    },
     "geo-04-q06": {
       "sha256": "821af3e23a0337e817924bff1b7520eac462f624558ef20934229bcb0cf2ece2"
+    },
+    "geo-04-q26": {
+      "sha256": "d5612393d0a6f8ee9b2bc58d0ea26fe0679d006f27d871236529b43faa5e7cd0"
     },
     "geo-05-q06": {
       "sha256": "fc84f1c3fff40f72e8209cf4faeeef1c29ac916714a5af646124f1074ce023a7"
     },
+    "geo-06-q11": {
+      "sha256": "0f3d08a0b47ffe09b9d5db31247651c68b782d7287e60f9c0a017f9a51b179d3"
+    },
+    "geo-06-q17": {
+      "sha256": "69ebced4fe3dc70eed16ffc2753bbcae885e41be0be59f468577cf83132c36e7"
+    },
+    "geo-06-q18": {
+      "sha256": "c2101ce530e0b8e4792a785579794c2a7fa4ccbdf0e0e4502d88e72022dd5f36"
+    },
+    "geo-06-q19": {
+      "sha256": "d15cc4d413c53de89c80839eb9574b5730133b0c08858456697b458b8d2a18d8"
+    },
+    "geo-07-q15": {
+      "sha256": "2f215789a1d45ced4924f5ab1baed9aa820ddc410ddeea27e44a7ad7ed2b3b05"
+    },
+    "geo-07-q16": {
+      "sha256": "145f0475a26facb32cee3b4882ca2469dd82bf0005480748428ca95c2f52f520"
+    },
     "geo-08-q09": {
       "sha256": "9ea3927a26a0dc9c12302eed83d10d3e5e80b34ba95e645a3f88040b9fcaec19"
     },
+    "geo-08-q15": {
+      "sha256": "f0e502e82a4f49f7c5c5f2e2f9e52a93d2ed4ea46a2ad2a79f6c41c8a4f3eea0"
+    },
+    "geo-08-q16": {
+      "sha256": "6b7b1467ce69037e42978b43da75a2c8137a408b7373d66e87ee930c8fb438ba"
+    },
+    "geo-08-q17": {
+      "sha256": "633e20b506d5d022c97dd825bf5c7fa020b9fa4e4459d80ac1d9101866d6f64a"
+    },
     "geo-09-q06": {
       "sha256": "015679c065a4ecad90a243975b2c56c476a57b70020ba47479fc2fb63a8ea359"
+    },
+    "geo-09-q21": {
+      "sha256": "db2684b555f6abe705251f06da32f161262a7c01d23f25c9ea04c3a7e8e3a445"
     },
     "geo-10-q07": {
       "sha256": "ec3a713f3eeffbd8280820263896b55f2cb745ca4c4e8ca8414ac39e066161f6"
@@ -6061,8 +6115,14 @@
     "geo-11-q04": {
       "sha256": "f41008131c82ca87423876e5b409b6ea3dac1f08648c019229a6b2acdd9e46cb"
     },
+    "geo-11-q11": {
+      "sha256": "38d67b014502803cddc8c4d36c036f5b34d07f741612032cfa8f95fc0bdb9ec7"
+    },
     "geo-12-q06": {
       "sha256": "001562094aae422e7b345ba60c9eb6964262fad911890b781b2c46b6bcea47b0"
+    },
+    "geo-12-q10": {
+      "sha256": "af9b63e3d560948ffff0355456da0d7c999f2fc31367dd2af6a395f2751fa752"
     },
     "geo-13-q04": {
       "sha256": "e220cf897a123387450dfc60e385d639823ea7ea69377636aca5a1b373303163"
@@ -6070,17 +6130,38 @@
     "geo-13-q07": {
       "sha256": "dea0a665d566564323b56cb616b16dc37a6d1f6302ea8135c888051ea94df2e5"
     },
+    "geo-13-q15": {
+      "sha256": "2e49029cf784b9c5b42c9e4c81d650e9da35980b60a634f9f5db1f32a683c8eb"
+    },
+    "geo-13-q16": {
+      "sha256": "d2471020e4b7ee85b2ea37e2333af6a7c72606be0c26bcb679b60def07927d67"
+    },
     "geo-14-q09": {
       "sha256": "8a4f3e21a7f8b3405f493727b01cb07f1fdc05cb94a518c9ac95c7825e37e528"
+    },
+    "geo-14-q18": {
+      "sha256": "68e33ead6837a050646a9facccaa1608db042ec0d267dc0bded43479a3b9705c"
     },
     "geo-15-q04": {
       "sha256": "084cb3d194c0cabff9726278e935356331785e87e0b462bf6ad1f4ce8c41733f"
     },
+    "geo-15-q14": {
+      "sha256": "17e69438e0e821fea4387ecff1aecc8758eddee7da7925c66fd82b1ec81d2be9"
+    },
     "geo-17-q09": {
       "sha256": "9a6e154fbab8c53b7f4ea4fb27c1195fc717a30c958fa5fca5632e93d27e0dc4"
     },
+    "geo-17-q12": {
+      "sha256": "2d53554671f25ea447f168d9859bb96d3101a5ebf730c7fa0a839e3318cd7689"
+    },
+    "geo-17-q21": {
+      "sha256": "09aefd16a04dcf17d3d2528775aa3a8e1cc4ff95a8b335fa5f768646bfdea66c"
+    },
     "geo-18-q07": {
       "sha256": "3a2384732baf55f54fe5bb920fa52ac2b9f2c453a94147c9fa704e466bc977f1"
+    },
+    "geo-18-q16": {
+      "sha256": "d24e450f0d63db6ff46e1fa182f2de1fc65b1fc5608f0336a445e94213ee4737"
     },
     "gso-01-q04": {
       "sha256": "51195a3af3dfd2745ba6de97966083dfac957cab4f9efbc3a971602a47819e44"
@@ -6742,17 +6823,74 @@
     "jtk-52-q11": {
       "sha256": "653c4b12bc933c2f934979537f8992a9eb3aaddb01bce6fd1d055ff0bc050b4f"
     },
+    "sc1-02-q10": {
+      "sha256": "bf6686482608876a8b59ca2aefbfcd2fe44ca9fa6a1a804fec67a4f913f9b922"
+    },
+    "sc1-02-q12": {
+      "sha256": "87958d0e9b62dd609f8962732b332ab37ba7ec19a7814856c72d0bd9f86cc2d9"
+    },
     "sc1-03-q07": {
       "sha256": "8c842cd06205fb0bf46baa5a882b5daa7db9fc02cb02f2110e9891a6fe9b0fb7"
+    },
+    "sc1-03-q13": {
+      "sha256": "72a928978f697bdfb5580dbd480b9bf01c423f50ac502604894554ab5cc6567d"
     },
     "sc1-04-q08": {
       "sha256": "2ee482ee794775a311e0d97c4d72b38bf04cf0cb840d206406cd848ab8fd1d05"
     },
+    "sc1-04-q12": {
+      "sha256": "2ad61de6fd0f863d5a8f61a6168b1f9baa218a1e505923afe59caf4908a408c3"
+    },
+    "sc1-04-q13": {
+      "sha256": "3fef39105e7d689d628da8ea11513d17377d34eb15bcfc7fcfe2868ab3665632"
+    },
+    "sc1-04-q15": {
+      "sha256": "674d25ae76436a0a21168b634c58c21205c03a480e9554804b2943c76c7033a2"
+    },
+    "sc1-04-q16": {
+      "sha256": "dfc9907aeb26451f42def4c314a9065e6071dedfefe5a2b9559e256705248536"
+    },
+    "sc1-05-q13": {
+      "sha256": "99a15d86dcf5c2ac243f3de5e0976745dfb6614a0ab70dfbaaeed8478a5c58a0"
+    },
     "sc1-06-q07": {
       "sha256": "48eb40ab26d6c6633199914440ce7ad15213d9f202dbd6ba1d89592961b0fc17"
     },
+    "sc1-06-q10": {
+      "sha256": "29a21df1cf964e72ceca3747e4070c8d8e7f1c268b3e98502d6edfd1f7a96e84"
+    },
+    "sc1-06-q11": {
+      "sha256": "038b0f7dbf257a9588ba54b432780a0bacd1256976d427b998a509624315a875"
+    },
+    "sc1-06-q15": {
+      "sha256": "1e78285c90bef9e3ddb1ba4f9d00e045ff086b0594b1f31d8a2785b9e36c18c3"
+    },
+    "sc1-06-q19": {
+      "sha256": "60f705c34d724a00bb2969b73b35b41fe2af5942a7eee13374d4904e3c5e8af2"
+    },
     "sc1-07-q06": {
       "sha256": "9d7430eb21867a0f5803925a4381abfc47c01e292eda485393c90a4743f9c1e7"
+    },
+    "sc1-07-q13": {
+      "sha256": "af6b2515b76cc8f1e1affbc17bf255d531628cb1a0e418d5e25a420de85bf670"
+    },
+    "sc1-07-q19": {
+      "sha256": "5355883bcb2d7434cef6828cd53cfa01f71bcfb1def572e9d7d50b37c0bec8bf"
+    },
+    "sc1-08-q13": {
+      "sha256": "3730047891f4cffde3da9dccdebe83b7d17e300f7e90bd1f927083ed2b6ec504"
+    },
+    "sc1-09-q15": {
+      "sha256": "feb4cfd9f411fabf0478fdab3ce3ccf1c70dd24be5ceb7c5583af565f816823d"
+    },
+    "sc1-10-q10": {
+      "sha256": "21674d699506be58e86d392540d362eb2e7f4d22c58053b0153438ebcf760a67"
+    },
+    "sc1-10-q11": {
+      "sha256": "47e11d5c24908c1a6f058f7cdc7fc3d47daa623b2b88685ec988a60cf2db11ff"
+    },
+    "sc1-10-q19": {
+      "sha256": "7f9a148622adab08b09511f890809866718f34165df07992fc5beeb0b51f9c9e"
     },
     "sc1-11-q08": {
       "sha256": "4d0f90669edde7c65c8b88550455bc8589332438c155a48f0050bb65cf7c1753"
@@ -6763,17 +6901,68 @@
     "sc1-13-q07": {
       "sha256": "08aee96ee16edf50f70a5cc09c9bb058e86773414f9cebd48c62469533a76cda"
     },
+    "sc2-03-q11": {
+      "sha256": "a4b9a1f879187d115d870c2920a0298b3750853cee497d39dce51757962b8a11"
+    },
+    "sc2-04-q10": {
+      "sha256": "1427e8bfe78c096bebc8ae1c6fac9b9ac18dfd21f5ae562b62c573acefede87b"
+    },
+    "sc2-04-q11": {
+      "sha256": "8c912b5af000e44c26522a2907ba9fd3f1423ad57a344be738f9285eaa9af7b5"
+    },
+    "sc2-04-q12": {
+      "sha256": "8dc16d230526764408cb5cf2d5daf63c880b5075e61af5bdea34b28b00c69055"
+    },
+    "sc2-04-q13": {
+      "sha256": "2c4963334d4ca24dac1bb05df637ee8229c273918ac409236789b1487b63fe3b"
+    },
+    "sc2-04-q16": {
+      "sha256": "a48642eb836199cb5aff4c990293d45053b935e4e3aeda56a283adec9f093f9a"
+    },
     "sc2-05-q07": {
       "sha256": "bcc5ca01523833dcfd5df0a699f36a2340010299d9183dbbfb68f3e013c70426"
     },
+    "sc2-05-q10": {
+      "sha256": "a872e3ba73657d8ff1d8829ebf3999227ef7e3944d277483349483fd957b1f2b"
+    },
+    "sc2-05-q12": {
+      "sha256": "0e4f72d674e133d752186c65d5b9e160ba656a3be47e4a09d4c5abd8ccc00e46"
+    },
     "sc2-07-q07": {
       "sha256": "40e1a838600990df819b11bb6fb8cfdd588e872faf65c3725cb02bd225db6318"
+    },
+    "sc2-07-q11": {
+      "sha256": "ea2566fd763d52bec8a248b20eb7e1e9cb69e9e70292f6af3efab057a0d3dd68"
+    },
+    "sc2-07-q13": {
+      "sha256": "6268fa1111af2ec8d0d6ec6ec3a35c8a909d3208dd1024c07924050fc7afed73"
+    },
+    "sc2-07-q14": {
+      "sha256": "bb1226d5a3a74b6d5fbc0aab4d6697d0979c3e47075c9617bad882d7e2eda0d4"
+    },
+    "sc2-08-q10": {
+      "sha256": "1e0b0b02e20af57e7f4e863de396cdeb2f562a08eeea07d29201102490aab09c"
+    },
+    "sc2-09-q13": {
+      "sha256": "75b169b336150b0be8a0a7a3d48049ebf456c91177a4b3e85a434e738aac1e64"
     },
     "sc2-10-q07": {
       "sha256": "6acbfc058e3018986d66eb798f5c95adef1c777fd5d90ecea2b33f0b70915316"
     },
     "sc2-10-q08": {
       "sha256": "262b019be17822d814e77d47c54645b3380ec8e124a38d1c4ebb0fa70aa69df8"
+    },
+    "sc2-10-q11": {
+      "sha256": "f00da5c504c3e461c5847c0fb3082d9b58623e7425f674714945db6e09530076"
+    },
+    "sc2-10-q14": {
+      "sha256": "ba2427acd9e6e5c0bf84e40d871edde3098f2a4112f29610d5eb824bd4b8973c"
+    },
+    "sc2-10-q15": {
+      "sha256": "ec1b6d37df56e689a47066f2f4460dce7cf65fd466dfd4bfd5fc95426e491180"
+    },
+    "sc2-10-q18": {
+      "sha256": "38e2e60f9914d957985f726b225bd6f8024ae1add61af0d4b0e618769a68f845"
     },
     "sc2-11-q08": {
       "sha256": "71be1d710d9c07fe62a034487cff4324365124ad8296fcc31c32c9c75f92ac71"
@@ -6784,20 +6973,59 @@
     "sc2-14-q09": {
       "sha256": "c3f9156b65b91789f6c0c4984596168e058424720fe7076c0939bac33fa677b5"
     },
+    "sc2-14-q10": {
+      "sha256": "41b9c6d80995f230405cec2bbc8a2d4343f73bce825e9cccef26443eb319652d"
+    },
+    "sc2-14-q17": {
+      "sha256": "f37a363b27b17b9eae1056ec67c4a15fae945ffc08d88a298f5221b7ab86f085"
+    },
     "sc3-02-q07": {
       "sha256": "34a7aba985f39fb4cb0b0e32f98b2f070b32414aa61ea5a171272e8658c4f423"
     },
     "sc3-03-q08": {
       "sha256": "5c8cd7d85c69ea0a4cf62917f5bde8abd7a9e788838e052d81c57702ac22eaca"
     },
+    "sc3-03-q10": {
+      "sha256": "fa53f6d3bf6c9adc9d2afb2339109be6062cfb7d4d1abab8feafd3a9e162f1f2"
+    },
     "sc3-06-q08": {
       "sha256": "d2519945d52797bed9ac51831a6da45352ea93ae62868dccf1112ffabe2590f7"
+    },
+    "sc3-06-q10": {
+      "sha256": "ea4b7c65537aa729b526018d81af4ebff2a5b20c07057c0714c5036f5bfa2dab"
+    },
+    "sc3-06-q11": {
+      "sha256": "618dbbf72de5aced6b7da0939aa7924b152a5767e86127c90de884658816e7a6"
     },
     "sc3-07-q06": {
       "sha256": "925daf37b20b6d3b52e0fad927493bab4525f78bb242524a6a8b0ec109cffe3d"
     },
     "sc3-07-q07": {
       "sha256": "b2cfd8316d16b100c7ded34134963db08b1190922ec23ac81f08e4c03f6bf437"
+    },
+    "sc3-07-q10": {
+      "sha256": "8fcc798e3e1e6da100ee94449e4a3589d82e97761277786771f2c2f30317e727"
+    },
+    "sc3-07-q11": {
+      "sha256": "a55387544d07ee42aac6d4fdfcdd93b3707e799baa9452c381f716c0787e54e5"
+    },
+    "sc3-08-q10": {
+      "sha256": "8684d3e626452d91e42c353d1fb455d6285e47f3503e4f6ad51ee6b97a1786e8"
+    },
+    "sc3-12-q14": {
+      "sha256": "fb53eab213fda24eb03816ee20195d763493487013b0d3420a41b671a43e15f1"
+    },
+    "sc3-12-q15": {
+      "sha256": "76e1d2be6b98d639ac9f8c4cc6b3453442cbfd7430eb59d1fe6533e87e78fd75"
+    },
+    "sc3-12-q18": {
+      "sha256": "96c5b7ced7a98428854bbb6573e8a1eb6b412f7097ccee0f8cba4bfd1ac9dc92"
+    },
+    "sc3-14-q10": {
+      "sha256": "f872ef64d027debed1da0233c9d03438e241eee16cd0d05a97a75e079a3b97cd"
+    },
+    "sc3-14-q11": {
+      "sha256": "c00a2b109acfaa87b8dee91b9272d9c06fe1622517e04690dfcd95aec13736e3"
     },
     "sc3-15-q08": {
       "sha256": "e3c7a87907512f2803993aa77daa6b71e202a221e3075717af645275a0ed74b2"
@@ -6980,6 +7208,38 @@
     "jtk-39-q10 演習の図": {
       "sha256": "3aeea7ab22553b4ed0a9f7eb8a322e4c15345ce2696a04e2042f61070d6b91cc",
       "illustrative": "要点の jtk-39#1 と同じく、条約で決められた主力艦の保有量の上限の比率（5：5：3：1.67：1.67）をそのまま帯にしたもので、統計の数値ではない"
+    },
+    "sc1-06-q15 水100gにとける物質の質量": {
+      "sha256": "41403c11e348561e4f9456f01bc4c93affbed7fdf4a733d712024c1d173b0476",
+      "illustrative": "硝酸カリウム（0℃約13g・20℃約32g・40℃約64g・60℃約109g）と塩化ナトリウム（約36〜37g）の水100gへの溶解度を、教科書や理科年表に載る値に合わせて整数に丸めた"
+    },
+    "sc1-07-q19 加熱したときの温度の変化": {
+      "sha256": "ba26f24550bb8098c628d35d578e0230c41538ed179eb69c9ddc1ccb590fa00d",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc1-10-q10 20gのおもりの数とばねののび": {
+      "sha256": "dd374196060469fa52f3c8e2cfa58ae2fd21523724dfdfe8a8964e4b1b10f408",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc1-10-q11 20gのおもりの数とばねののび": {
+      "sha256": "dd374196060469fa52f3c8e2cfa58ae2fd21523724dfdfe8a8964e4b1b10f408",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc1-10-q19 20gのおもりの数とばねののび": {
+      "sha256": "dd374196060469fa52f3c8e2cfa58ae2fd21523724dfdfe8a8964e4b1b10f408",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc2-09-q13 ものさしが落ちた距離と、落ちるのにかかる時間": {
+      "sha256": "241ad894876cbf42abde0097837903ad363ddfb62bc215eda7323e691000d7c9",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc3-07-q10 5打点ごとに切ったテープの長さ（1秒間に50回打点）": {
+      "sha256": "412747d51268cb3df8df933a86734b4209186877492ba7494552af3797207ddb",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
+    },
+    "sc3-07-q11 5打点ごとに切ったテープの長さ（1秒間に50回打点）": {
+      "sha256": "412747d51268cb3df8df933a86734b4209186877492ba7494552af3797207ddb",
+      "illustrative": "入試の問題の型にならって、実験・観察の例として作った数値（実際の測定値ではない）。値どうしの関係（比例・合計など）が問題文と解き方に合うことを確かめた"
     }
   }
 }

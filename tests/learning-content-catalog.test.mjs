@@ -56,9 +56,10 @@ const EXPECTED_COUNTS = Object.freeze({
   'math-exam': 360,
   // 社会は 2026-11-04 に地理総合・歴史総合を充実させ、地理探究・日本史探究を加えて、語句 1,216→2,633・演習 1,044→2,190。
   'social-terms': 2633,
-  'social-practice': 2190,
+  // 2026-11-28、中学の入試の段に実際の公立高校入試をもとにした問題（社会986・理科1012）を足した。
+  'social-practice': 2190 + 986,
   'science-terms': 502,
-  'science-practice': 396,
+  'science-practice': 396 + 1012,
 })
 
 const contentById = (id) => LEARNING_CONTENTS.find((content) => content.id === id)
@@ -105,9 +106,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全25教材・24,249項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全25教材・26,247項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 25)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 24_249)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 24_249 + 1998)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
